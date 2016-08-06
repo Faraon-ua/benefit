@@ -1,0 +1,47 @@
+﻿@model int
+@{
+    ViewBag.Title = "Партнери";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+}
+
+<div class="page-content">
+    @using (Ajax.BeginForm("UsersSearch", null, new AjaxOptions()
+    {
+        HttpMethod = "POST",
+        UpdateTargetId = "searchResults"
+    }, new { @class = "form-search" }))
+    {
+        <div class="row">
+            <div class="col-xs-12 col-sm-8">
+                <div class="input-group">
+                    <input name="search" type="text" placeholder="Введіть імя, email, телефон чи номер картки партнера" class="form-control search-query">
+                    <span class="input-group-btn">
+                        <button class="btn btn-purple btn-sm" type="submit">
+                            Пошук
+                            <i class="icon-search icon-on-right bigger-110"></i>
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <div class="col-sm-4 text-right">
+                <div class="infobox infobox-blue infobox-small infobox-dark">
+                    <div class="infobox-chart">
+                        <span data-values="3,4,2,3,4,4,2,2" class="sparkline">
+                            <canvas style="display: inline-block; width: 39px; height: 20px; vertical-align: top;" width="39" height="20"></canvas>
+                        </span>
+                    </div>
+
+                    <div class="infobox-data">
+                        <div class="infobox-content">Користувачів</div>
+                        <div class="infobox-content">@Model</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+<div id="searchResults">
+</div>

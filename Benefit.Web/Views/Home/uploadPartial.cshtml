@@ -1,0 +1,24 @@
+﻿
+@model IEnumerable<Benefit.Web.Models.ImagesViewModel>
+
+@foreach (var image in Model)
+{
+    <a href="#" class="returnImage" data-url="@Request.Url.GetLeftPart(UriPartial.Authority)@image.Url">
+        <img src="@image.Url" alt="Hejsan" id="#image" data-source="@image.Url" width="200" height="200" />
+    </a>
+}
+<script type="text/javascript">
+    $(document).ready(function () {
+        $(".returnImage").click("click", function (e) {
+            debugger;
+            var urlImage = $(this).attr("data-url");
+            window.opener.updateValue("cke_72_textInput", urlImage);
+            window.close();
+        });
+
+        function updateValue(id, value) {
+            // this gets called from the popup window and updates the field with a new value 
+            document.getElementById(id).value = value;
+        }
+    });
+</script>

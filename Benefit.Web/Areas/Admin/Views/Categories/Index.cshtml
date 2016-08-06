@@ -1,0 +1,60 @@
+﻿@model IEnumerable<Benefit.Domain.Models.Category>
+
+@{
+    ViewBag.Title = "Категорії";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles
+{
+    <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/styles/categories.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#categories").sortable();
+            $("#categories").disableSelection();
+        });
+
+        function SaveCatOrder() {
+            $("#saveCatsOrder").prop("disabled", true);
+            var sortedCats = [];
+            $("#categories li").each(function () {
+                var catId = $(this).attr("data-catid");
+                sortedCats.push(catId);
+            });
+            console.log(sortedCats);
+            $.ajax({
+                type: 'Post',
+                dataType: 'json',
+                url: routePrefix + "/Admin/Categories/Index",
+                data: JSON.stringify({ sortedCategories: sortedCats }),
+                contentType: 'application/json; charset=utf-8',
+                async: true,
+                success: function (data) {
+                    flashSuccess(data);
+                    $("#saveCatsOrder").removeAttr("disabled");
+                },
+                error: function (data) {
+                    console.debug(data);
+                }
+            });
+        }
+    </script>
+}
+
+<p>
+    @Html.ActionLink("Створити нову категорію", "Create", "Categories", null, new { @class = "btn btn-info" })
+</p>
+
+@Html.Action("CategoriesBox")
+<div class="clearfix"></div>
+@if (Model.Count() >= 2)
+{
+    <hr />
+    <div class="control-group">
+        <button id="saveCatsOrder" class="btn btn-success width-20" onclick="SaveCatOrder();">Зберегти сортування</button>
+        @Html.ActionLink("Cкасувати", "Index", "Categories", null, new { @class = "btn btn-danger width-20" })
+    </div>
+}

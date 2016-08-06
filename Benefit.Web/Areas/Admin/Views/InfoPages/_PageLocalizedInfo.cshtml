@@ -1,0 +1,74 @@
+﻿@using System.Globalization
+@model Benefit.Domain.Models.InfoPage
+<div class="tabbable">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active">
+            <a data-toggle="tab" href="#uk">
+                <i class="icon-country icon-uk bigger-110"></i>
+                Українська
+            </a>
+        </li>
+
+        <li>
+            <a data-toggle="tab" href="#ru">
+                <i class="icon-country icon-ru bigger-110"></i>
+                Русский
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="uk" class="tab-pane in active">
+            <div class="form-group">
+                <label class="control-label col-md-1" for="Name">Назва</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name)
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-1" for="Description">Контент</label>
+
+                <div class="col-md-10">
+                    @Html.HiddenFor(model => model.Content, new { id = "ukContent", @class = "hidden" })
+                    <iframe id="ukEditorFrame" src="~/Areas/Admin/Aspx/Editor.aspx" width="700" height="420"
+                            style="overflow:hidden;margin-top:0px;background-color:white; border: none;"></iframe>
+                </div>
+            </div>
+        </div>
+
+        <div id="ru" class="tab-pane">
+            @for (var i = 0; i < Model.Localizations.Count; i++)
+            {
+                <div class="form-group">
+                    @Html.HiddenFor(m => m.Localizations[i].Id)
+                    @Html.HiddenFor(m => m.Localizations[i].LanguageCode)
+                    @Html.HiddenFor(m => m.Localizations[i].ResourceField)
+                    @Html.HiddenFor(m => m.Localizations[i].ResourceId)
+                    @Html.HiddenFor(m => m.Localizations[i].ResourceType)
+                    <label class="control-label col-md-1" for="Name">
+                        @HttpContext.GetGlobalResourceObject("Resources", Model.Localizations[i].ResourceField, new CultureInfo("ru-RU"))
+                    </label>
+                    <div class="col-md-10">
+                        @if (Model.Localizations[i].ResourceField == "Content")
+                        {
+                            @Html.TextBoxFor(m => m.Localizations[i].ResourceValue, new {id = "ruContent", @class = "hidden"})
+                            <iframe id="ruEditorFrame" src="~/Areas/Admin/Aspx/Editor.aspx" width="700" height="420"
+                                    style="overflow: hidden; margin-top: 0px; background-color: white; border: none;"></iframe>
+                        }
+                        else
+                        {
+                            @Html.TextBoxFor(m => m.Localizations[i].ResourceValue)
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        document.getElementById("ukEditorFrame").contentWindow.SetHtml(@Model.Content);
+        document.getElementById("ruEditorFrame").contentWindow.SetHtml(@Model.Localizations.FirstOrDefault(entry=>entry.LanguageCode == "ru" && entry.ResourceField == "Content").ResourceValue);
+    });
+</script>

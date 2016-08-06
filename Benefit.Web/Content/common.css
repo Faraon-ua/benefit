@@ -1,0 +1,32 @@
+﻿.hidden {
+    visibility: hidden;
+}
+
+.cursor-move {
+    cursor: move;
+}
+
+.icon-country {
+    background-repeat: no-repeat !important;
+}
+.icon-country:before {
+    content: " ";
+}
+.icon-uk {
+    background-image: url(images/flags/uk.png);
+}
+.icon-ru {
+    background-image: url(images/flags/ru.png);
+}
+
+.margin-top-10 {
+    margin-top: 10px;
+}
+
+.margin-right-10 {
+    margin-right: 10px;
+}
+
+.bordered {
+     border: 1px solid #d6d6d6;
+}
