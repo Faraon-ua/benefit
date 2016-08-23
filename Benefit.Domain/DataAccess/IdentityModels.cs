@@ -1,4 +1,6 @@
-﻿using System.Data.Entity;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure.Annotations;
 using System.Data.Entity.Validation;
 using System.Linq;
 using Benefit.Domain.Models;
@@ -13,21 +15,41 @@ namespace Benefit.Domain.DataAccess
         {
         }
 
-//        public DbSet<Seller> Sellers { get; set; }
-        //        public DbSet<Category> Categories { get; set; }
-        //        public DbSet<Localization> Localizations { get; set; }
+        public DbSet<Seller> Sellers { get; set; }
+        public DbSet<Localization> Localizations { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<SellerCategory> SellerCategories { get; set; }
+        public DbSet<Product> Products { get; set; }
+        public DbSet<Currency> Currencies { get; set; }
+
         //        public DbSet<InfoPage> InfoPages { get; set; }
         //        public DbSet<Filter> Filters { get; set; }
 
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ApplicationUser>().Property(e => e.Email).HasColumnAnnotation(
+                IndexAnnotation.AnnotationName,
+                new IndexAnnotation(new IndexAttribute() { IsUnique = true }));
+            modelBuilder.Entity<ApplicationUser>().Property(e => e.PhoneNumber).HasColumnAnnotation(
+                IndexAnnotation.AnnotationName,
+                new IndexAnnotation(new IndexAttribute() { IsUnique = true }));
+            modelBuilder.Entity<ApplicationUser>().Property(e => e.PhoneNumber).HasMaxLength(16);
+            modelBuilder.Entity<ApplicationUser>().Property(e => e.Email).HasMaxLength(64);
             modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId);
             modelBuilder.Entity<IdentityRole>().HasKey<string>(r => r.Id);
             modelBuilder.Entity<IdentityUserRole>().HasKey(r => new { r.RoleId, r.UserId });
-            /*modelBuilder.Entity<ApplicationUser>()
-               .HasOptional(u => u.Seller)
-               .WithRequired(s => s.User);*/
+
+            modelBuilder.Entity<Seller>()
+                  .HasRequired<ApplicationUser>(s => s.Owner)
+                  .WithMany(s => s.OwnedSellers).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Seller>()
+                  .HasOptional<ApplicationUser>(s => s.WebSiteReferal)
+                  .WithMany(s => s.ReferedWebSiteSellers).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Seller>()
+                  .HasOptional<ApplicationUser>(s => s.BenefitCardReferal)
+                  .WithMany(s => s.ReferedBenefitCardSellers).WillCascadeOnDelete(false);
         }
 
         public override int SaveChanges()

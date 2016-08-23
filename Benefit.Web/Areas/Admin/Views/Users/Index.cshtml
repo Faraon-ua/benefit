@@ -3,21 +3,68 @@
     ViewBag.Title = "Партнери";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
+@section styles{
+    <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
+}
 @section scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
+
+    <script>
+        $(function() {
+            $('#id-date-range-picker-1').daterangepicker({
+                locale: {
+                    format: 'DD.MM.YYYY'
+                },
+                ranges: {
+                    'Сьогодні': [moment(), moment()],
+                    'Вчора': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Цей тиждень': [moment().startOf('week'), moment().endOf('week')],
+                    'Цей Місяць': [moment().startOf('month'), moment().endOf('month')],
+                    'Останній місяць': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            });
+        });
+     
+        function LockUnlock(id) {
+            $.post(routePrefix + "/Admin/Users/LockUnlock?id=" + id,
+                function (data) {
+                    flashSuccess("Статус партнера змінено");
+                    $(".lockUser-" + id).removeClass("icon-lock");
+                    $(".lockUser-" + id).removeClass("icon-unlock");
+                    if (data) {
+                        $(".lockUser-" + id).addClass("icon-lock");
+                    } else {
+                        $(".lockUser-" + id).addClass("icon-unlock");
+                    }
+                });
+        }
+
+        function DeleteUser(id) {
+            $.post(routePrefix + "/Admin/Users/Delete?id=" + id,
+                function (data) {
+                    if (data) {
+                        flashSuccess("Партнера видалено");
+                        $("#tr-" + id).remove();
+                    }
+                });
+        }
+    </script>
 }
 
 <div class="page-content">
     @using (Ajax.BeginForm("UsersSearch", null, new AjaxOptions()
     {
+        OnBegin = "CheckSearchLength",
         HttpMethod = "POST",
         UpdateTargetId = "searchResults"
     }, new { @class = "form-search" }))
     {
-        <div class="row">
+        <div class="row right">
             <div class="col-xs-12 col-sm-8">
                 <div class="input-group">
-                    <input name="search" type="text" placeholder="Введіть імя, email, телефон чи номер картки партнера" class="form-control search-query">
+                    <input name="search" id="searchText" type="text" placeholder="Введіть ID, імя, email, телефон чи номер картки партнера" class="form-control search-query">
                     <span class="input-group-btn">
                         <button class="btn btn-purple btn-sm" type="submit">
                             Пошук
@@ -26,7 +73,19 @@
                     </span>
                 </div>
             </div>
-            <div class="col-sm-4 text-right">
+            <div class="col-sm-3 text-right">
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            <i class="icon-calendar bigger-110"></i>
+                        </span>
+                        <input type="text" id="id-date-range-picker-1" name="dateRange" class="input-daterange pull-left width-60">
+                        <button class="btn btn-purple btn-sm pull-left" type="submit">
+                            Фільтр
+                            <i class="icon-search icon-on-right bigger-110"></i>
+                        </button>
+                </div>
+            </div>
+            <div class="col-sm-1 text-right">
                 <div class="infobox infobox-blue infobox-small infobox-dark">
                     <div class="infobox-chart">
                         <span data-values="3,4,2,3,4,4,2,2" class="sparkline">

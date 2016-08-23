@@ -1,0 +1,41 @@
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Benefit.Domain.Models
+{
+    public class Product
+    {
+        [Key]
+        [MaxLength(128)]
+        public string Id { get; set; }
+        [Required]
+        [MaxLength(256)]
+        [Index]
+        public string Name { get; set; }
+        [Required]
+        [MaxLength(128)]
+        public string UrlName { get; set; }
+        [Index]
+        public int SKU { get; set; }
+        [Required]
+        public string Description { get; set; }
+        public double Price { get; set; }
+        public int? Amount { get; set; }
+        public bool IsActive { get; set; }
+        public DateTime LastModified { get; set; }
+        [MaxLength(64)]
+        public string LastModifiedBy { get; set; }
+        [Required]
+        [MaxLength(128)]
+        public string CategoryId { get; set; }
+        public virtual Category Category { get; set; }
+        [Required]
+        [MaxLength(128)]
+        public string SellerId { get; set; }
+        public virtual Seller Seller { get; set; }
+        [MaxLength(128)]
+        public string CurrencyId { get; set; }
+        public virtual Currency Currency { get; set; }
+    }
+}

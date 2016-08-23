@@ -1,0 +1,119 @@
+﻿@model Benefit.Web.Models.Admin.SellerViewModel
+
+@{
+    ViewBag.Title = "Постачальник " + Model.Seller.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section scripts{
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+
+    <script>
+        function UpdateCurrenciesNumber() {
+            var maxNumber = GetMaxAttributeValue('.currency-id', 'data_number');
+            var href = $("#addNewCurrency").attr("href");
+            href = href.substring(0, href.length - 1) + (maxNumber + 1);
+            $("#addNewCurrency").attr("href", href);
+        }
+
+        $(function () {
+            $('.mask-number').mask("#0.00", { reverse: true });
+
+            $("#Seller_TotalDiscount, #WebSiteReferaExternalId, #BenefitCardReferaExternalId, #OwnerExternalId").mask('#');
+
+            CKEDITOR.replace('sellerDescription', {
+                //                filebrowserImageBrowseUrl: '/home/uploadPartial',
+                //                filebrowserImageUploadUrl: '/home/uploadnow'
+                filebrowserImageUploadUrl: '/home/UploadImage'
+            });
+
+            $("#Seller_UserDiscount").focus(function () {
+                if ($(this).val() == "" || $(this).val() == "0") {
+                    var userDiscount;
+                    var totalDiscount = parseInt($("#Seller_TotalDiscount").val());
+                    if (totalDiscount <= 10) {
+                        userDiscount = totalDiscount / 2;
+                    } else {
+                        userDiscount = 5 + (totalDiscount - 10) / 2;
+                    }
+                    $(this).val(userDiscount);
+                }
+            });
+        });
+
+    </script>
+
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    @Html.ValidationSummary()
+    
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#home" data-toggle="tab">
+                    <i class="blue icon-info bigger-110"></i>
+                    Основна інфо
+                </a>
+            </li>
+            <li>
+                <a href="#images" data-toggle="tab">
+                    <i class="red icon-camera bigger-110"></i>
+                    Зображення
+                </a>
+            </li>
+            <li>
+                <a href="#addresses" data-toggle="tab">
+                    <i class="green icon-home bigger-110"></i>
+                    Адреси
+                </a>
+            </li>
+            <li>
+                <a href="#shipping" data-toggle="tab">
+                    <i class="orange icon-fighter-jet bigger-110"></i>
+                    Доставка
+                </a>
+            </li>
+            <li>
+                <a href="#currency" data-toggle="tab">
+                    <i class="blue icon-money bigger-110"></i>
+                    Курси валют
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane in active" id="home">
+                @Html.Partial("_SellerForm")
+            </div>
+
+            <div class="tab-pane" id="addresses">
+                <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+            </div>
+            <div class="tab-pane" id="shipping">
+                <p>asd.</p>
+            </div>
+            <div class="tab-pane" id="currency">
+                @Html.Partial("_Currencies", Model.Seller)
+            </div>
+        </div>
+    </div>
+    <div class="clearfix form-actions">
+        <div class="col-md-offset-3 col-md-9">
+            <button type="submit" class="btn btn-info">
+                <i class="icon-ok bigger-110"></i>
+                Зберегти
+            </button>
+
+            &nbsp; &nbsp; &nbsp;
+            <a href="@Url.Action("Index", "Sellers")" class="btn">
+                <i class="icon-undo bigger-110"></i>
+                До пошуку
+            </a>
+        </div>
+    </div>
+}

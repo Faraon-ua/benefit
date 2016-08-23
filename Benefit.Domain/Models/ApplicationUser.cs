@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using Benefit.Domain.Models.Enums;
 
 namespace Benefit.Domain.Models
 {
@@ -12,14 +15,23 @@ namespace Benefit.Domain.Models
         public bool IsActive { get; set; }
         [Required]
         [MaxLength(64)]
+        [Index]
         public string FullName { get; set; }
+        [Index(IsUnique = true)]
+        [MaxLength(10)]
         public string CardNumber { get; set; }
         [Required]
+        [Index(IsUnique = true)]
         public int ExternalNumber { get; set; }
-        [Required]
-        public int ReferalNumber { get; set; }
-        public bool B2BDoubleReward { get; set; }
+        public BusinessLevel? BusinessLevel { get; set; }
+        public Status? Status { get; set; }
+        public string ReferalId { get; set; }
+        public ApplicationUser Referal { get; set; }
         public DateTime RegisteredOn { get; set; }
-//        public Seller Seller { get; set; }
+        public double CurrentBonusAccount { get; set; }
+        public double CurrentPointsAccount { get; set; }
+        public virtual ICollection<Seller> OwnedSellers { get; set; }
+        public virtual ICollection<Seller> ReferedWebSiteSellers { get; set; }
+        public virtual ICollection<Seller> ReferedBenefitCardSellers { get; set; }
     }
 }

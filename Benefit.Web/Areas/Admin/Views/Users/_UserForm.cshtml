@@ -1,0 +1,116 @@
+﻿@using Benefit.Common.Extensions
+@using Benefit.Domain.Models.Enums
+@model Benefit.Web.Models.Admin.EditUserViewModel
+
+@using (Html.BeginForm("Edit", "Users", FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @Html.ValidationSummary()
+    @Html.HiddenFor(m => m.Id)
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">ID</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.ExternalNumber, new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">ПІБ</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.FullName, new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Email</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.Email, new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Телефон</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Реферал</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.ReferalNumber, new { @class = "col-xs-10 col-sm-5" })
+            @if (Model.ReferalId != null)
+            {
+                @Html.ActionLink("Перейти до рефералу", "Edit", new { id = Model.ReferalId })
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Номер картки</label>
+
+        <div class="col-sm-9">
+            @Html.EditorFor(m => m.CardNumber, new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Бізнес рівень</label>
+
+        <div class="col-sm-9">
+            @Html.EnumDropDownListFor(m => m.BusinessLevel, "Не має", new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Статус</label>
+
+        <div class="col-sm-9">
+            @Html.EnumDropDownListFor(m => m.Status, "Не має", new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label>
+            <input type="checkbox" class="ace" name="IsActive" @(Model.IsActive ? "checked=checked" : "") value="@Model.IsActive">
+            <span class="lbl"> Активний</span>
+        </label>
+
+        <label class="col-sm-3 control-label no-padding-right" style="margin-left: 10px;"></label>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Зареєстрований</label>
+
+        <div class="col-sm-9">
+            <input type="text" class="col-xs-10 col-sm-5" value="@Model.RegisteredOn.ToLocalTimeWithFormat()" name="RegisteredOn" disabled="" />
+        </div>
+    </div>
+    <hr />
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right red">Новий Пароль</label>
+
+        <div class="col-sm-9">
+            <input type="text" class="col-xs-10 col-sm-5" name="newPassword" />
+        </div>
+    </div>
+
+    <div class="clearfix form-actions">
+        <div class="col-md-offset-3 col-md-9">
+            <button type="submit" class="btn btn-info">
+                <i class="icon-ok bigger-110"></i>
+                Зберегти
+            </button>
+
+            &nbsp; &nbsp; &nbsp;
+            <a href="@Url.Action("Index", "Users")" class="btn">
+                <i class="icon-undo bigger-110"></i>
+                До пошуку
+            </a>
+        </div>
+    </div>
+}

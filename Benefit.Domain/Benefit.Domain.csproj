@@ -53,9 +53,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\IdentityModels.cs" />
-    <Compile Include="Migrations\201608061121467_AddUsers.cs" />
-    <Compile Include="Migrations\201608061121467_AddUsers.Designer.cs">
-      <DependentUpon>201608061121467_AddUsers.cs</DependentUpon>
+    <Compile Include="Migrations\201608121114202_AddUsers.cs" />
+    <Compile Include="Migrations\201608121114202_AddUsers.Designer.cs">
+      <DependentUpon>201608121114202_AddUsers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608151105579_AddSellers.cs" />
+    <Compile Include="Migrations\201608151105579_AddSellers.Designer.cs">
+      <DependentUpon>201608151105579_AddSellers.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608151228212_AddLocalizations.cs" />
+    <Compile Include="Migrations\201608151228212_AddLocalizations.Designer.cs">
+      <DependentUpon>201608151228212_AddLocalizations.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608151230296_AddSellerCategories.cs" />
+    <Compile Include="Migrations\201608151230296_AddSellerCategories.Designer.cs">
+      <DependentUpon>201608151230296_AddSellerCategories.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608171332416_AddProducts.cs" />
+    <Compile Include="Migrations\201608171332416_AddProducts.Designer.cs">
+      <DependentUpon>201608171332416_AddProducts.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608191711322_AddCurrencies.cs" />
+    <Compile Include="Migrations\201608191711322_AddCurrencies.Designer.cs">
+      <DependentUpon>201608191711322_AddCurrencies.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Address.cs" />
@@ -64,13 +84,22 @@
     </Compile>
     <Compile Include="Models\Category.cs" />
     <Compile Include="Models\CategoryMetaInfo.cs" />
-    <Compile Include="Models\Filter.cs" />
+    <Compile Include="Models\Currency.cs" />
+    <Compile Include="Models\Enums\Distribution.cs" />
+    <Compile Include="Models\Enums\Level.cs" />
+    <Compile Include="Models\ProductOption.cs" />
+    <Compile Include="Models\Image.cs" />
     <Compile Include="Models\InfoPage.cs" />
     <Compile Include="Models\Localizations.cs" />
+    <Compile Include="Models\Order.cs" />
     <Compile Include="Models\PaymentTypes.cs" />
+    <Compile Include="Models\Enums\Status.cs" />
+    <Compile Include="Models\Product.cs" />
     <Compile Include="Models\Schedule.cs" />
     <Compile Include="Models\Seller.cs" />
+    <Compile Include="Models\SellerCategory.cs" />
     <Compile Include="Models\ShippingMethod.cs" />
+    <Compile Include="Models\Transaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -78,9 +107,30 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201608061121467_AddUsers.resx">
-      <DependentUpon>201608061121467_AddUsers.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201608121114202_AddUsers.resx">
+      <DependentUpon>201608121114202_AddUsers.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608151105579_AddSellers.resx">
+      <DependentUpon>201608151105579_AddSellers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608151228212_AddLocalizations.resx">
+      <DependentUpon>201608151228212_AddLocalizations.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608151230296_AddSellerCategories.resx">
+      <DependentUpon>201608151230296_AddSellerCategories.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608171332416_AddProducts.resx">
+      <DependentUpon>201608171332416_AddProducts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608191711322_AddCurrencies.resx">
+      <DependentUpon>201608191711322_AddCurrencies.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Benefit.Common\Benefit.Common.csproj">
+      <Project>{3946539e-a45a-46cd-be25-4e420e468082}</Project>
+      <Name>Benefit.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

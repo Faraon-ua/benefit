@@ -40,6 +40,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AutoMapper, Version=5.0.2.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
+      <HintPath>..\packages\AutoMapper.5.0.2\lib\net45\AutoMapper.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ckeditor3, Version=3.6.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ckeditor3.3.6.5\lib\net45\ckeditor3.dll</HintPath>
       <Private>True</Private>
@@ -189,8 +193,10 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\Automapper.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\Base\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\InfoPagesController.cs" />
@@ -201,6 +207,8 @@
     <Compile Include="Areas\Admin\Aspx\Editor.aspx.designer.cs">
       <DependentUpon>Editor.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SellersController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
     <Compile Include="Attributes\CustomAuthorization.cs" />
     <Compile Include="Controllers\AccountController.cs" />
@@ -209,7 +217,11 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\Admin\ProductFilters.cs" />
+    <Compile Include="Models\Admin\SellerFilters.cs" />
+    <Compile Include="Models\Admin\UserViewModels.cs" />
     <Compile Include="Models\ImagesViewModel.cs" />
+    <Compile Include="Models\Admin\SellerViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -429,6 +441,7 @@
     <Content Include="Areas\Admin\assets\js\jquery.hotkeys.min.js" />
     <Content Include="Areas\Admin\assets\js\jquery.inputlimiter.1.3.1.min.js" />
     <Content Include="Areas\Admin\assets\js\jquery.knob.min.js" />
+    <Content Include="Areas\Admin\assets\js\jquery.mask.min.js" />
     <Content Include="Areas\Admin\assets\js\jquery.maskedinput.min.js" />
     <Content Include="Areas\Admin\assets\js\jquery.mobile.custom.min.js" />
     <Content Include="Areas\Admin\assets\js\jquery.nestable.min.js" />
@@ -610,8 +623,7 @@
     <Content Include="Areas\Admin\assets\font\fontawesome-webfont.ttf" />
     <Content Include="Areas\Admin\assets\font\fontawesome-webfont.woff" />
     <Content Include="Areas\Admin\assets\font\FontAwesome.otf" />
-    <Content Include="Areas\Admin\Views\Categories\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Categories\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Categories\CreateOrUpdate.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\_CategoryLocalizedInfo.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\Create.cshtml" />
@@ -630,10 +642,23 @@
     <Content Include="Scripts\ckeditor\ckeditor_php4.php" />
     <Content Include="Scripts\ckeditor\ckeditor.php" />
     <Content Include="Scripts\ckeditor\ckeditor.pack" />
-    <Content Include="Areas\Admin\Views\Categories\Index - Copy.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\_CategoriesList.cshtml" />
     <Content Include="Areas\Admin\Views\Users\_UsersSearch.cshtml" />
     <Content Include="Areas\Admin\Views\Users\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_UserForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\CreateOrUpdate.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_SellerForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_SellersSearch.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Filters.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\CreateOrUpdate.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_Filters.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductsSearch.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Currencies.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_CurrencyForm.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />
     <Content Include="Scripts\ckeditor\config.js" />

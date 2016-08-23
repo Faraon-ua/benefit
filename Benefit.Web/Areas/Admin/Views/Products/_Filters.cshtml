@@ -1,0 +1,22 @@
+﻿@model Benefit.Web.Models.Admin.ProductFilters
+
+<label>Категорія</label>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        @Html.DropDownList("CategoryId", Model.Categories, "Не обрано", new { @class = "width-90 chosen-select" })
+    </div>
+</div>
+<br />
+<label>Постачальник</label>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        @Html.DropDownList("SellerId", Model.Sellers, "Не обрано", new { @class = "width-90 chosen-select" })
+    </div>
+</div>
+<br />
+<div class="row">
+    <button type="submit" class="btn btn-purple btn-sm">
+        Фільтрувати
+        <i class="icon-search icon-on-right bigger-110"></i>
+    </button>
+</div>

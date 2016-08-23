@@ -1,5 +1,6 @@
-﻿/*using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity.Core.Objects;
 using System.Linq;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -13,7 +14,7 @@ namespace Benefit.Services
         public List<Localization> Get<T>(T obj, string[] fields)
         {
             var id = obj.GetType().GetProperty("Id").GetValue(obj, null).ToString();
-            var type = obj.GetType().ToString();
+            var type = ObjectContext.GetObjectType(obj.GetType()).ToString();
             var localizations = new List<Localization>();
             foreach (var supportedLocalization in SettingsService.SupportedLocalizations)
             {
@@ -52,6 +53,13 @@ namespace Benefit.Services
             db.SaveChanges();
             db.Localizations.AddRange(localizations);
             db.SaveChanges();
+        } 
+
+        public void Delete(string resourceId)
+        {
+            var localizations = db.Localizations.Where(entry => entry.ResourceId == resourceId);
+            db.Localizations.RemoveRange(localizations);
+            db.SaveChanges();
         }
     }
-}*/
+}

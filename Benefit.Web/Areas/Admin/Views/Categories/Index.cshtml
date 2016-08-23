@@ -1,6 +1,4 @@
-﻿@model IEnumerable<Benefit.Domain.Models.Category>
-
-@{
+﻿@{
     ViewBag.Title = "Категорії";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
@@ -12,19 +10,41 @@
 @section scripts{
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
     <script type="text/javascript">
+
         $(function () {
-            $("#categories").sortable();
-            $("#categories").disableSelection();
+            $("#catLists").on("click", ".cat-list ul li", function () {
+                var currentListContaner = $(this).parents(".cat-list");
+                currentListContaner.find("ul li .controls").hide();
+                currentListContaner.find("ul li .cat-name").removeClass("cat-active");
+                currentListContaner.find("ul li").removeClass("cat-bg-active");
+                $(this).find(".controls").show();
+                $(this).find(".cat-name").addClass("cat-active");
+                $(this).addClass("cat-bg-active");
+            });
+
+            $("#catLists").on("click", ".cat-name", function () {
+                var catId = $(this).attr("data-cat-id");
+                var currentListContaner = $(this).parents(".cat-list");
+                currentListContaner.nextAll().remove();
+                $.get(routePrefix + "/Admin/Categories/CategoriesList?parentCategoryId=" + catId, function (data) {
+                    currentListContaner.after(data);
+                    currentListContaner.after('<span class="label label-lg label-pink arrowed-right pull-left margin-right-20 width-3">&nbsp;</span>');
+                    $(".cat-list ul").sortable();
+                });
+            });
+
+            $(".cat-list ul").sortable();
+            $(".cat-list ul").disableSelection();
         });
 
-        function SaveCatOrder() {
+        $("#catLists").on("click", "#saveCatsOrder", function () {
             $("#saveCatsOrder").prop("disabled", true);
+            var currentListContaner = $(this).parents(".cat-list");
             var sortedCats = [];
-            $("#categories li").each(function () {
-                var catId = $(this).attr("data-catid");
+            currentListContaner.find("li").each(function () {
+                var catId = $(this).attr("data-cat-id");
                 sortedCats.push(catId);
             });
-            console.log(sortedCats);
             $.ajax({
                 type: 'Post',
                 dataType: 'json',
@@ -40,21 +60,25 @@
                     console.debug(data);
                 }
             });
+        });
+
+        function DeleteCategory(id, name) {
+            if (!confirm('Видалити категорію ' + name + '?')) {
+                return false;
+            }
+            $.post(routePrefix + "/Admin/Categories/Delete?id=" + id,
+                function (data) {
+                    if (data) {
+                        flashSuccess("Категорію видалено");
+                        $("#li-" + id).remove();
+                    }
+                });
         }
     </script>
 }
+<div id="catLists">
+    @Html.Action("CategoriesList")
+</div>
+<div id="productsList">
 
-<p>
-    @Html.ActionLink("Створити нову категорію", "Create", "Categories", null, new { @class = "btn btn-info" })
-</p>
-
-@Html.Action("CategoriesBox")
-<div class="clearfix"></div>
-@if (Model.Count() >= 2)
-{
-    <hr />
-    <div class="control-group">
-        <button id="saveCatsOrder" class="btn btn-success width-20" onclick="SaveCatOrder();">Зберегти сортування</button>
-        @Html.ActionLink("Cкасувати", "Index", "Categories", null, new { @class = "btn btn-danger width-20" })
-    </div>
-}
+</div>

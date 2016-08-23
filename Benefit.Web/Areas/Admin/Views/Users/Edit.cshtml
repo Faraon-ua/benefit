@@ -1,0 +1,34 @@
+﻿@model Benefit.Web.Models.Admin.EditUserViewModel
+@{
+    ViewBag.Title = "Редагувати партнера " + Model.FullName;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section scripts{
+    
+}
+<div class="tabbable">
+    <ul class="nav nav-tabs">
+        <li class="active">
+            <a href="#home" data-toggle="tab">
+                <i class="blue icon-info bigger-110"></i>
+                Основна інфо
+            </a>
+        </li>
+        <li>
+            <a href="#addresses" data-toggle="tab">
+                <i class="green icon-home bigger-110"></i>
+                Адреси
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane in active" id="home">
+            @Html.Partial("_UserForm", Model)
+        </div>
+
+        <div class="tab-pane" id="addresses">
+            <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+        </div>
+    </div>
+</div>

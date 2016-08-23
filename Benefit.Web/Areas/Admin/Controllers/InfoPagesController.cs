@@ -10,7 +10,7 @@ using Benefit.Services;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class InfoPagesController : Controller
+    public class InfoPagesController : AdminController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private LocalizationService LocalizationService = new LocalizationService();

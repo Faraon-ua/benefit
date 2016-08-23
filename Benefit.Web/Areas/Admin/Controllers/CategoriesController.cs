@@ -1,34 +1,33 @@
-﻿/*
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
+using Benefit.Web.Areas.Admin.Controllers.Base;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class CategoriesController : Controller
+    public class CategoriesController : AdminController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private LocalizationService LocalizationService = new LocalizationService();
 
-        public ActionResult CategoriesBox(string parentCategoryId = null)
+        public ActionResult CategoriesList(string parentCategoryId = null)
         {
-            var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId);
-            return PartialView("_CategoriesList", cats);
+            var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry=>entry.Order);
+            var viewModel = new KeyValuePair<string, IEnumerable<Category>>(parentCategoryId, cats);
+            return PartialView("_CategoriesList", viewModel);
         }
 
         // GET: /Admin/Categories/
         public ActionResult Index()
         {
-            var categories = db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order);
-            return View(categories.ToList());
+            return View();
         }
 
         [HttpPost]
@@ -46,18 +45,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Categories/Create
-        public ActionResult Create()
+        public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
-            ViewBag.ParentCategoryId = new SelectList(db.Categories, "Id", "Name");
-            var category = new Category() { Id = Guid.NewGuid().ToString() };
-            category.Localizations = LocalizationService.Get(category, new[] {"Name", "Description"});
-
+            var category = db.Categories.Find(id) ?? new Category() { Id = Guid.NewGuid().ToString(), ParentCategoryId = parentCategoryId };
+            category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
             return View(category);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Category category, HttpPostedFileBase categoryImage)
+        public ActionResult CreateOrUpdate(Category category, HttpPostedFileBase categoryImage)
         {
             if (categoryImage != null && categoryImage.ContentLength > 0)
             {
@@ -71,76 +68,39 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             if (ModelState.IsValid)
             {
-                category.IsVerified = true;
                 category.LastModified = DateTime.UtcNow;
                 category.LastModifiedBy = User.Identity.Name;
-                db.Categories.Add(category);
-                LocalizationService.Save(category.Localizations);
+                if (db.Categories.Any(entry => entry.Id == category.Id))
+                {
+                    db.Entry(category).State = EntityState.Modified;
+                }
+                else
+                {
+                    db.Categories.Add(category);
+                    LocalizationService.Save(category.Localizations);
+                }
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "Категорію було збережено";
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ParentCategoryId = new SelectList(db.Categories, "Id", "Name", category.ParentCategoryId);
             return View(category);
         }
 
-        // GET: /Admin/Categories/Edit/5
-        public ActionResult Edit(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Category category = db.Categories.Find(id);
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.ParentCategoryId = new SelectList(db.Categories, "Id", "Name", category.ParentCategoryId);
-            return View(category);
-        }
-
-        // POST: /Admin/Categories/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Description,ImageUrl,ParentCategoryId")] Category category)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(category).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.ParentCategoryId = new SelectList(db.Categories, "Id", "Name", category.ParentCategoryId);
-            return View(category);
-        }
-
-        // GET: /Admin/Categories/Delete/5
         public ActionResult Delete(string id)
         {
-            if (id == null)
+            var category = db.Categories.Find(id);
+            if (category.ImageUrl != null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                var image = new FileInfo(Path.Combine(Server.MapPath("~/Images/"), category.ImageUrl));
+                if (image.Exists)
+                    image.Delete();
             }
-            Category category = db.Categories.Find(id);
-            if (category == null)
-            {
-                return HttpNotFound();
-            }
-            return View(category);
-        }
-
-        // POST: /Admin/Categories/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(string id)
-        {
-            Category category = db.Categories.Find(id);
+            LocalizationService.Delete(id);
             db.Categories.Remove(category);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return Json(true);
         }
 
         protected override void Dispose(bool disposing)
@@ -153,4 +113,3 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
     }
 }
-*/

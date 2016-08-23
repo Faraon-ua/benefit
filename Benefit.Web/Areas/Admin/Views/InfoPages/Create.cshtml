@@ -4,32 +4,27 @@
     ViewBag.Title = "Create";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
-@section scripts{
-    <script>
-        function SetContentValuesAndSubmit() {
-            var ukEditorHtml = document.getElementById("ukEditorFrame").contentWindow.GetHtml();
-            var ruEditorHtml = document.getElementById("ruEditorFrame").contentWindow.GetHtml();
-            $("#ukContent").val(ukEditorHtml);
-            $("#ruContent").val(ruEditorHtml);
-            debugger;
-            $("#createInfoPageForm").submit();
-        }
-    </script>
-}
 <h2>Створити нову сторінку</h2>
 <hr />
 
 @using (Html.BeginForm("Create", "InfoPages", null, FormMethod.Post, new { id= "createInfoPageForm" }))
 {
     @Html.AntiForgeryToken()
-
+      @*  <textarea name="editor1" id="editor1" cols="45" rows="5"></textarea>
+        <script type="text/javascript">
+            CKEDITOR.replace('editor1', {
+//                filebrowserImageBrowseUrl: '/home/uploadPartial',
+                //                filebrowserImageUploadUrl: '/home/uploadnow'
+                filebrowserImageUploadUrl: '/home/UploadImage'
+            });
+        </script>*@
     <div class="form-horizontal">
         @Html.ValidationSummary(true)
         @Html.HiddenFor(m => m.Id)
         @Html.Partial("_PageLocalizedInfo")
     </div>
     <div class="control-group">
-        <input type="button" value="Створити" class="btn btn-success width-20" onclick="SetContentValuesAndSubmit();" />
+        <input type="button" value="Створити" class="btn btn-success width-20" />
         @Html.ActionLink("Cкасувати", "Index", "InfoPages", null, new { @class = "btn btn-danger width-20" })
     </div>
 }

@@ -1,0 +1,25 @@
+﻿@using Benefit.Domain.Models
+@model Seller
+<div class="margin-left-10">
+    <div class="row">
+        @Ajax.ActionLink(
+            "Додати свій курс",
+            "NewCurrencyForm",
+            new { number = Model.Currencies.Count },
+            new AjaxOptions
+            {
+                UpdateTargetId = "extraCurrencies",
+                InsertionMode = InsertionMode.InsertAfter,
+                OnComplete = "UpdateCurrenciesNumber"
+            },
+                     new { @class = "btn btn-info", id = "addNewCurrency" }
+            )
+    </div>
+    <br/>
+    @for (var i = 0; i < Model.Currencies.Count; i++)
+    {
+        Html.RenderPartial("_CurrencyForm", new KeyValuePair<int, Currency>(i, Model.Currencies.ElementAt(i)));
+    }
+    <div id="extraCurrencies"></div>
+
+</div>

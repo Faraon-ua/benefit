@@ -1,0 +1,151 @@
+﻿@using Benefit.Common.Extensions
+@model Benefit.Web.Models.Admin.SellerViewModel
+
+<div class="form-horizontal">
+    @Html.HiddenFor(m => m.Seller.Id)
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Назва</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.Seller.Name, new { @class = "col-xs-10 col-sm-5 name" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Url назва</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.Seller.UrlName, new { @class = "col-xs-10 col-sm-5 urlName" })
+        </div>
+    </div>
+     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Текст кнопки каталога</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.Seller.CatalogButtonName, new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">ID власника</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.OwnerExternalId, new { @class = "col-xs-10 col-sm-5" })
+            @if (Model.Seller.Owner != null)
+            {
+                @Html.ActionLink("Перейти до власника", "Edit", "Users", new { id = Model.Seller.Owner.Id }, new { target = "_blank" })
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">ID реферала веб сайта</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.WebSiteReferaExternalId, new { @class = "col-xs-10 col-sm-5" })
+            @if (Model.Seller.WebSiteReferal != null)
+            {
+                @Html.ActionLink("Перейти до реферала веб сайту", "Edit", "Users", new { id = Model.Seller.WebSiteReferal.Id }, new { target = "_blank" })
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">ID реферала Benefit Card</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.BenefitCardReferaExternalId, new { @class = "col-xs-10 col-sm-5" })
+            @if (Model.Seller.BenefitCardReferal != null)
+            {
+                @Html.ActionLink("Перейти до реферала Benefit Card", "Edit", "Users", new { id = Model.Seller.BenefitCardReferal.Id }, new { target = "_blank" })
+            }
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Опис</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextAreaFor(entry => entry.Seller.Description, new { id = "sellerDescription", cols = 70, rows = 5 })
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Активний</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @*<label>
+                    <input type="checkbox" class="ace ace-switch ace-switch-4" name="Seller.IsBenefitCardActive" @(Model.Seller.IsBenefitCardActive ? "checked=checked" : "") $1$value="@Model.Seller.IsBenefitCardActive"#1#>
+                    <span class="lbl"></span>
+                </label>*@
+            @* <label>
+                    <input type="checkbox" class="ace" name="IsActive" @(Model.Seller.IsBenefitCardActive ? "checked=checked" : "") value="@Model.Seller.IsBenefitCardActive">
+                    <span class="lbl"> BenefitCard</span>
+                </label>*@
+            @Html.CheckBoxFor(m => m.Seller.IsActive)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Benefit Card</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @*<label>
+                    <input type="checkbox" class="ace ace-switch ace-switch-4" name="Seller.IsBenefitCardActive" @(Model.Seller.IsBenefitCardActive ? "checked=checked" : "") $1$value="@Model.Seller.IsBenefitCardActive"#1#>
+                    <span class="lbl"></span>
+                </label>*@
+            @* <label>
+                    <input type="checkbox" class="ace" name="IsActive" @(Model.Seller.IsBenefitCardActive ? "checked=checked" : "") value="@Model.Seller.IsBenefitCardActive">
+                    <span class="lbl"> BenefitCard</span>
+                </label>*@
+            @Html.CheckBoxFor(m => m.Seller.IsBenefitCardActive)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Інтернет магазин</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @*<label>
+                    <input type="checkbox" class="ace ace-switch ace-switch-4" name="Seller.HasEcommerce" @(Model.Seller.HasEcommerce ? "checked=checked" : "") $1$value="@Model.Seller.HasEcommerce"#1#>
+                    <span class="lbl"></span>
+                </label>*@
+            @*  <label>
+                    <input type="checkbox" class="ace" name="IsActive" @(Model.Seller.HasEcommerce ? "checked=checked" : "") value="@Model.Seller.HasEcommerce">
+                    <span class="lbl"> HasEcommerce</span>
+                </label>*@
+            @Html.CheckBoxFor(m => m.Seller.HasEcommerce)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Загальна знижка</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextBoxFor(model => model.Seller.TotalDiscount, new { @class = "width-5" }) %
+            @Html.ValidationMessageFor(model => model.Seller.TotalDiscount)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Особиста вигода</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextBoxFor(model => model.Seller.UserDiscount, new { @class = "width-5" }) %
+            @Html.ValidationMessageFor(model => model.Seller.UserDiscount)
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Коли останній раз редагувалось</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextBox("Seller.LastModified", @Model.Seller.LastModified.ToLocalTimeWithFormat(), new { disabled = "true" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Ким останній раз редагувалось</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextBoxFor(m => m.Seller.LastModifiedBy, new { disabled = "true" })
+        </div>
+    </div>
+</div>

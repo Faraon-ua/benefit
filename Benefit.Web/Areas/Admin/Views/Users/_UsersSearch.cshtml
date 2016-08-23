@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Benefit.Domain.Models.ApplicationUser>
+﻿@using Benefit.Common.Extensions
+@model IEnumerable<Benefit.Domain.Models.ApplicationUser>
 @if (!Model.Any())
 {
     <div>Пошук не дав жодних результатів</div>
@@ -9,6 +10,9 @@ else
         <table class="table table-striped table-bordered table-hover" id="sample-table-1">
             <thead>
                 <tr>
+                    <th>
+                        Реферальний код
+                    </th>
                     <th>
                         Ім'я
                     </th>
@@ -22,6 +26,9 @@ else
                         Номер Карти
                     </th>
                     <th>
+                        Зареєстрований
+                    </th>
+                    <th>
                         Дії
                     </th>
                 </tr>
@@ -29,8 +36,11 @@ else
             <tbody>
                 @foreach (var user in Model)
                 {
-                    <tr>
+                    <tr id="tr-@user.Id">
                         <td>
+                            @user.ExternalNumber
+                        </td>
+                         <td>
                             @user.FullName
                         </td>
                         <td>
@@ -41,18 +51,21 @@ else
                         </td>
                         <td>
                             @user.CardNumber
+                        </td> 
+                        <td>
+                            @user.RegisteredOn.ToLocalTimeWithFormat()
                         </td>
                         <td>
                             <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
-                                <a class="btn btn-xs btn-success" href="@Url.Action("Edit", new { id = user.Id })">
-                                    <i class="icon-ok bigger-120"></i>
-                                </a>
-
-                                <a class="btn btn-xs btn-info" href="@Url.Action("Edit", new { id = user.Id })">
+                                <a class="btn btn-xs btn-info" href="@Url.Action("Edit", new { id = user.Id })" target="_blank">
                                     <i class="icon-edit bigger-120"></i>
                                 </a>
 
-                                <a class="btn btn-xs btn-danger" href="@Url.Action("Delete", new { id = user.Id })">
+                                <a class="btn btn-xs btn-warning" onclick="LockUnlock('@user.Id');">
+                                    <i class="lockUser-@user.Id icon-lock bigger-120"></i>
+                                </a>
+
+                                <a class="btn btn-xs btn-danger" onclick="DeleteUser('@user.Id');">
                                     <i class="icon-trash bigger-120"></i>
                                 </a>
                             </div>

@@ -1,11 +1,35 @@
-﻿//var routePrefix = "/Benefit.Web";
-var routePrefix = "";
+﻿var routePrefix = "/Benefit.Web";
+//var routePrefix = "";
 
 $(function () {
     setTimeout(function () {
         $("#flashMessage").html("");
     }, 10000);
+
+    $(".urlName").focus(function () {
+        if ($(this).val() == "") {
+            var originalName = $(".name").val();
+            $(this).val(urlRusLat(originalName));
+        }
+    });
 });
+
+function GetMaxAttributeValue(selector, attributeName) {
+    var maximum = null;
+    $(selector).each(function () {
+        var value = parseFloat($(this).attr(attributeName));
+        maximum = (value > maximum) ? value : maximum;
+    });
+    return maximum;
+}
+
+function CheckSearchLength() {
+    var searchText = $("#searchText").val();
+    if (searchText.length > 1 && searchText.length < 3) {
+        alert("Поле пошуку має містити мінімум 3 символи");
+        return false;
+    }
+}
 
 function flashSuccess(text) {
     $("#flashMessage").html(

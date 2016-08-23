@@ -266,23 +266,30 @@ namespace Benefit.Web.Controllers
                     return View("ExternalLoginFailure");
                 }
                 int externalNumber;
+                ApplicationUser referal = null;
                 using (var db = new ApplicationDbContext())
                 {
                     externalNumber = db.Users.Max(entry => entry.ExternalNumber);
+                    referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber == model.ReferalNumber);
                 }
                 var user = new ApplicationUser()
                 {
                     UserName = model.UserName,
                     Email = model.UserName,
                     IsActive = false,
-                    B2BDoubleReward = false,
                     ExternalNumber = ++externalNumber,
                     CardNumber = model.CardNumber,
-                    ReferalNumber = model.ReferalNumber,
+                    //todo: add referal
                     FullName = model.FullName,
                     PhoneNumber = model.PhoneNumber,
-                    RegisteredOn = DateTime.UtcNow
+                    RegisteredOn = DateTime.UtcNow,
+
                 };
+                if (referal != null)
+                {
+                    user.ReferalId = referal.Id;
+                }
+
 
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)

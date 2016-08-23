@@ -1,0 +1,95 @@
+﻿@model Benefit.Domain.Models.Product
+
+@{
+    ViewBag.Title = "Товар " + Model.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section scripts{
+    <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+    <script>
+        $(function () {
+            $(".chosen-select").chosen();
+            $('#Price').mask("#0.00", { reverse: true });
+            $('#SKU').mask("#");
+            $('#Amount').mask("#");
+
+            $("#amountSwitcher").change(function () {
+                if (this.checked) {
+                    $("#Amount").val("");
+                    $("#Amount").prop("disabled", true);
+                }
+                else {
+                    $("#Amount").prop("disabled", false);
+                }
+            });
+
+            CKEDITOR.replace('Description', {
+                //                filebrowserImageBrowseUrl: '/home/uploadPartial',
+                //                filebrowserImageUploadUrl: '/home/uploadnow'
+                filebrowserImageUploadUrl: '/home/UploadImage'
+            });
+        });
+    </script>
+}
+@section styles{
+    <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
+}
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#home" data-toggle="tab">
+                    <i class="blue icon-info bigger-110"></i>
+                    Основна інфо
+                </a>
+            </li>
+            <li>
+                <a href="#options" data-toggle="tab">
+                    <i class="orange icon-check bigger-110"></i>
+                    Характеристики
+                </a>
+            </li>
+            <li>
+                <a href="#images" data-toggle="tab">
+                    <i class="red icon-camera bigger-110"></i>
+                    Зображення
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane in active" id="home">
+                @Html.Partial("_ProductForm")
+            </div>
+
+            <div class="tab-pane" id="options">
+                <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+            </div>
+            <div class="tab-pane" id="images">
+                <p>asd.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix form-actions">
+        <div class="col-md-offset-3 col-md-9">
+            <button type="submit" class="btn btn-info">
+                <i class="icon-ok bigger-110"></i>
+                Зберегти
+            </button>
+
+            &nbsp; &nbsp; &nbsp;
+            <a href="@Url.Action("Index", "Products")" class="btn">
+                <i class="icon-undo bigger-110"></i>
+                До пошуку
+            </a>
+        </div>
+    </div>
+}

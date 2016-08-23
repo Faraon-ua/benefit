@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
@@ -13,6 +14,7 @@ namespace Benefit.Domain.Models
         public string Region { get; set; }
         [Required]
         [MaxLength(64)]
+        [Index]
         public string City { get; set; }
         [Required]
         [MaxLength(256)]

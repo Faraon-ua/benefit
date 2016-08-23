@@ -1,9 +1,36 @@
-﻿@model System.Linq.IQueryable<Benefit.Domain.Models.Category>
+﻿@model  KeyValuePair<string, IEnumerable<Benefit.Domain.Models.Category>>
 
-<div class="pull-left width-20">
-    <div class="catBox bordered">
-        <ol>
-            
-        </ol>
+<div class="cat-list bordered position-relative pull-left">
+    <div class="padding_5 center border-bottom">
+        @Html.ActionLink("Створити категорію", "CreateOrUpdate", "Categories", new { parentCategoryId = Model.Key }, new { @class = "btn btn-info" })
     </div>
+    <ul>
+        @foreach (var cat in Model.Value)
+        {
+            <li data-cat-id="@cat.Id" id="li-@cat.Id">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <div class="cat-name @(cat.IsActive ? "": "cat-inactive")" data-cat-id="@cat.Id">
+                            @cat.Name
+                        </div>
+                    </div>
+                    <div class="col-sm-5 controls" style="display: none">
+                        <a class="btn btn-danger btn-sm pull-right btn-xs" onclick="DeleteCategory('@cat.Id','@cat.Name')">
+                            <i class="icon-trash"></i>
+                        </a>
+                        <a class="btn btn-primary btn-sm margin-right-10 pull-right btn-xs" href="@Url.Action("CreateOrUpdate", new { id = cat.Id })" target="blank">
+                            <i class="icon-edit"></i>
+                        </a>
+                        <div style="clear: both;"></div>
+                    </div>
+                </div>
+            </li>
+        }
+    </ul>
+    @if (Model.Value.Count() >= 2)
+    {
+        <div class="padding_5 center border-top position-bottom position-absolute width-100">
+            <button id="saveCatsOrder" class="btn btn-success width-80">Зберегти сортування</button>
+        </div>
+    }
 </div>

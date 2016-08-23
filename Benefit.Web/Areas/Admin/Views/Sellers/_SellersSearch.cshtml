@@ -1,0 +1,111 @@
+﻿@using Benefit.Services
+@model IEnumerable<Benefit.Domain.Models.Seller>
+@if (!Model.Any())
+{
+    <div>Пошук не дав жодних результатів</div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover" id="sample-table-1">
+            <thead>
+                <tr>
+                    <th>
+                        Назва
+                    </th>
+                    <th>
+                        Ім'я власника
+                    </th>
+                    <th>
+                        Телефон
+                    </th>
+                    <th>
+                        Місто
+                    </th>
+                    <th>
+                        Загальна<br/> знижка
+                    </th>
+                    <th>
+                        Особиста<br /> вигода
+                    </th>
+                    <th>
+                        Балове<br />співвідношення
+                    </th>
+                    <th>
+                        Benefit<br />
+                        Card
+                    </th>
+                    <th>
+                        Ecommerce
+                    </th>
+                    <th>
+                        Дії
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var seller in Model)
+                {
+                    <tr id="tr-@seller.Id">
+                        <td>
+                            @seller.Name
+                        </td>
+                         <td>
+                            @seller.Owner.FullName
+                        </td>
+                        <td>
+                            @seller.Owner.PhoneNumber
+                        </td>
+                        <td>
+                            @*@seller.*@ City
+                        </td>
+                        <td>
+                            @seller.TotalDiscount %
+                        </td> 
+                        <td>
+                            @seller.UserDiscount %
+                        </td>
+                        <td>
+                            @SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount] : 1
+                        </td>
+                        <td>
+                            @if (seller.IsBenefitCardActive)
+                            {
+                                <div class="icon-check green"></div>
+                            }
+                            else
+                            {
+                                <div class="icon-ban-circle red"></div>
+                            }
+                        </td>
+                           <td>
+                            @if (seller.HasEcommerce)
+                            {
+                                <div class="icon-check green"></div>
+                            }
+                            else
+                            {
+                                <div class="icon-ban-circle red"></div>
+                            }
+                        </td>
+                        <td>
+                            <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
+                                <a class="btn btn-xs btn-info" href="@Url.Action("CreateOrUpdate", new { id = seller.Id })" target="_blank">
+                                    <i class="icon-edit bigger-120"></i>
+                                </a>
+
+                                <a class="btn btn-xs btn-warning" onclick="LockUnlock('@seller.Id');">
+                                    <i class="lockUser-@seller.Id icon-lock bigger-120"></i>
+                                </a>
+
+                                <a class="btn btn-xs btn-danger" onclick="DeleteSeller('@seller.Id','@seller.Name');">
+                                    <i class="icon-trash bigger-120"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
