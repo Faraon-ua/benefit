@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
+using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 
 namespace Benefit.Web.Models.Admin
@@ -28,5 +27,6 @@ namespace Benefit.Web.Models.Admin
         [Required]
         public string PhoneNumber { get; set; }
         public DateTime RegisteredOn { get; set; }
+        public ICollection<Address> Addresses { get; set; } 
     }
 }

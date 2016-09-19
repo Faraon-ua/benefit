@@ -4,31 +4,55 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 @section scripts{
-    
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
+    <script src="~/Scripts/address.js"></script>
 }
-<div class="tabbable">
-    <ul class="nav nav-tabs">
-        <li class="active">
-            <a href="#home" data-toggle="tab">
-                <i class="blue icon-info bigger-110"></i>
-                Основна інфо
-            </a>
-        </li>
-        <li>
-            <a href="#addresses" data-toggle="tab">
-                <i class="green icon-home bigger-110"></i>
-                Адреси
-            </a>
-        </li>
-    </ul>
+@section styles{
+    <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />
+    <link href="~/Content/address.css" rel="stylesheet" />
+}
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#home" data-toggle="tab">
+                    <i class="blue icon-info bigger-110"></i>
+                    Основна інфо
+                </a>
+            </li>
+            <li>
+                <a href="#addresses" data-toggle="tab">
+                    <i class="green icon-home bigger-110"></i>
+                    Адреси
+                </a>
+            </li>
+        </ul>
 
-    <div class="tab-content">
-        <div class="tab-pane in active" id="home">
-            @Html.Partial("_UserForm", Model)
-        </div>
+        <div class="tab-content">
+            <div class="tab-pane in active" id="home">
+                @Html.Partial("_UserForm", Model)
+            </div>
 
-        <div class="tab-pane" id="addresses">
-            <p>Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.</p>
+            <div class="tab-pane" id="addresses">
+                @Html.Partial("_Addresses", Model)
+            </div>
         </div>
     </div>
-</div>
+    <div class="clearfix form-actions">
+        <div class="col-md-offset-3 col-md-9">
+            <button type="submit" class="btn btn-info">
+                <i class="icon-ok bigger-110"></i>
+                Зберегти
+            </button>
+
+            &nbsp; &nbsp; &nbsp;
+            <a href="@Url.Action("Index", "Users")" class="btn">
+                <i class="icon-undo bigger-110"></i>
+                До пошуку
+            </a>
+        </div>
+    </div>
+}

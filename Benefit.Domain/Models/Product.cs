@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,6 +8,11 @@ namespace Benefit.Domain.Models
 {
     public class Product
     {
+        public Product()
+        {
+            Images = new Collection<Image>();
+        }
+
         [Key]
         [MaxLength(128)]
         public string Id { get; set; }
@@ -37,5 +44,7 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string CurrencyId { get; set; }
         public virtual Currency Currency { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
     }
 }

@@ -1,0 +1,6 @@
+﻿@model  Benefit.Domain.Models.ProductParameterProduct
+<div>
+    @Html.DropDownList("ProductParameterProducts[{n}].StartValue", (IEnumerable<SelectListItem>)ViewBag.StartValue, "Не обрано", new { @class = "product-option-value" }) 
+    @Html.TextBox("ProductParameterProducts[{n}].Amount", Model.Amount, new { @class = "product-option-amount number-input", placeholder = "Кількість (за необхідністю)" }) 
+    @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", Model.ProductParameterId) 
+</div>

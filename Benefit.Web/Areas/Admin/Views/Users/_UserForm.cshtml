@@ -1,10 +1,8 @@
 ﻿@using Benefit.Common.Extensions
-@using Benefit.Domain.Models.Enums
 @model Benefit.Web.Models.Admin.EditUserViewModel
 
-@using (Html.BeginForm("Edit", "Users", FormMethod.Post, new { @class = "form-horizontal" }))
-{
-    @Html.ValidationSummary()
+<div class="form-horizontal">
+    
     @Html.HiddenFor(m => m.Id)
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">ID</label>
@@ -98,19 +96,4 @@
             <input type="text" class="col-xs-10 col-sm-5" name="newPassword" />
         </div>
     </div>
-
-    <div class="clearfix form-actions">
-        <div class="col-md-offset-3 col-md-9">
-            <button type="submit" class="btn btn-info">
-                <i class="icon-ok bigger-110"></i>
-                Зберегти
-            </button>
-
-            &nbsp; &nbsp; &nbsp;
-            <a href="@Url.Action("Index", "Users")" class="btn">
-                <i class="icon-undo bigger-110"></i>
-                До пошуку
-            </a>
-        </div>
-    </div>
-}
+</div>

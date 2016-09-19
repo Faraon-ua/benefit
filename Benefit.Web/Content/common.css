@@ -1,4 +1,23 @@
-﻿.position-bottom {
+﻿.progressBarLoad {
+    display: none;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.searchError {
+    display: none;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.sellerLogo {
+    max-height: 93px;
+    max-width: 170px;
+}
+
+.position-bottom {
     bottom: 0;
 }
 
@@ -26,6 +45,10 @@
     background-image: url(images/flags/ru.png);
 }
 
+.margin-top-0 {
+    margin-top: 0px;
+}
+
 .margin-top-10 {
     margin-top: 10px;
 }
@@ -37,6 +60,7 @@
 .margin-right-10 {
     margin-right: 10px;
 }
+
 .margin-left-10 {
     margin-left: 10px;
 }
@@ -68,6 +92,7 @@
 .width-5 {
     width: 5% !important;
 }
+
 .width-3 {
     width: 3% !important;
 }

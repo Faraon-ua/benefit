@@ -1,0 +1,17 @@
+﻿@model  List<Benefit.Domain.Models.Schedule>
+
+@{
+    var days = new[] { "Нд", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб" };
+}
+@for (var i = 0; i < days.Length; i++)
+{
+    <div class="row">
+        @Html.Hidden(string.Format("Seller.Schedules[{0}].Id", i), Model[i].Id, new { @class = "col-sm-2" })
+        @Html.Hidden(string.Format("Seller.Schedules[{0}].Day", i), i, new { @class = "col-sm-2" })
+        @Html.Hidden(string.Format("Seller.Schedules[{0}].SellerId", i), Model[i].SellerId, new { @class = "col-sm-2" })
+        @Html.Hidden(string.Format("Seller.Schedules[{0}].ScheduleType", i), 0, new { @class = "col-sm-2" })
+        <span class="col-sm-1">@days[i]</span>
+        @Html.TextBox(string.Format("Seller.Schedules[{0}].StartHour", i), Model[i].StartHour, new { @class = "col-sm-1 number-input", placeholder = "Початок роботи" })
+        @Html.TextBox(string.Format("Seller.Schedules[{0}].EndHour", i), Model[i].EndHour, new { @class = "col-sm-1 number-input", placeholder = "Кінець роботи" })
+    </div>
+}

@@ -13,7 +13,9 @@ namespace Benefit.Domain.Models
         public string Name { get; set; }
         public string Content { get; set; }
         public bool IsActive { get; set; }
+        public bool IsNews { get; set; }
         public int Order { get; set; }
+        public DateTime CreatedOn { get; set; }
         public DateTime LastModified { get; set; }
         public string LastModifiedBy { get; set; }
         [NotMapped]

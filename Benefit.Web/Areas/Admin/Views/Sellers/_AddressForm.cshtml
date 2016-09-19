@@ -1,0 +1,29 @@
+﻿@model  KeyValuePair<int, Benefit.Domain.Models.Address>
+
+<div id="DIV_3">
+    @Html.Hidden(string.Format("Seller.Addresses[{0}].Id", Model.Key), Model.Value.Id, new { @class = "address-id", data_number = Model.Key })
+
+    <div id="DIV_4">
+        <div id="DIV_5">
+            @Html.TextBox(string.Format("Seller.Addresses[{0}].FullName", Model.Key), Model.Value.FullName, new { placeholder = "Ім'я адміністратора" })
+        </div>
+        <div id="DIV_11">
+            @Html.TextBox(string.Format("Seller.Addresses[{0}].Phone", Model.Key), Model.Value.Phone, new { placeholder = "Телефон Адміністратора", @class = "margin-left-10" })
+        </div>
+        <ul id="UL_6">
+            <li id="LI_7">
+                @Html.TextBox(string.Format("Seller.Addresses[{0}].AddressLine", Model.Key), Model.Value.AddressLine, new { placeholder = "Вулиця, номер будинку і квартири" })
+            </li>
+            <li id="LI_8">
+                <input type="text" placeholder="Місто, область" class="regionSearch" value="@(Model.Value.Region == null ? string.Empty : Model.Value.Region.ExpandedName)" />
+                @Html.Hidden(string.Format("Seller.Addresses[{0}].RegionId", Model.Key), Model.Value.RegionId)
+            </li>
+        </ul>
+        <div id="DIV_10">
+            <i class="icon-envelope-alt"></i>
+            @Html.TextBox(string.Format("Seller.Addresses[{0}].ZIP", Model.Key), Model.Value.ZIP, new { placeholder = "Поштовий індекс", @class = "margin-left-10" })
+        </div> 
+        <br />
+        <a href="javascript:;" class="removeAddress">Видалити</a>
+    </div>
+</div>

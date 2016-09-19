@@ -8,6 +8,7 @@ using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -70,7 +71,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 IsActive = user.IsActive,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
-                RegisteredOn = user.RegisteredOn
+                RegisteredOn = user.RegisteredOn,
+                Addresses = user.Addresses
             };
             return View(userViewModel);
         }
@@ -121,6 +123,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 existingUser.PhoneNumber = user.PhoneNumber;
 
                 db.Entry(existingUser).State = EntityState.Modified;
+
+                user.Addresses.ForEach(entry => entry.UserId = existingUser.Id);
+                //to add
+                var addressesToAdd = user.Addresses.Where(entry => entry.Id == null).ToList();
+                addressesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
+                db.Addresses.AddRange(addressesToAdd);
+                //to edit
+                foreach (var address in user.Addresses.Except(addressesToAdd))
+                {
+                    db.Entry(address).State = EntityState.Modified;
+                }
+                //to remove
+                var addressesToRemove =
+                    existingUser.Addresses.Where(entry => !user.Addresses.Select(addr => addr.Id).Contains(entry.Id)).ToList();
+                db.Addresses.RemoveRange(addressesToRemove);
+
                 db.SaveChanges();
 
                 TempData["SuccessMessage"] = "Дані партнера збережено";

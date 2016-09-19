@@ -4,8 +4,9 @@ namespace Benefit.Domain.Models
 {
     public enum ImageType
     {
-        Cover,
-        Gallery
+        SellerLogo,
+        SellerGallery,
+        ProductGallery
     }
     public class Image
     {
@@ -13,9 +14,14 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string Id { get; set; }
         [Required]
+        [MaxLength(256)]
         public string ImageUrl { get; set; }
-        public string CategoryId { get; set; }
-        public string ProductId { get; set; }
+        public ImageType ImageType { get; set; }
+        [MaxLength(128)]
         public string SellerId { get; set; }
+        public Seller Seller { get; set; }
+        [MaxLength(128)]
+        public string ProductId { get; set; }
+        public Product Product { get; set; }
     }
 }

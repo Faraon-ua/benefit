@@ -1,0 +1,25 @@
+﻿@using Benefit.Domain.Models
+@model Seller
+<div class="margin-left-10">
+    <div class="row">
+        @Ajax.ActionLink(
+            "Додати метод доставки",
+            "NewShippingForm",
+            new { number = Model.ShippingMethods.Count },
+            new AjaxOptions
+            {
+                UpdateTargetId = "shippingMethods",
+                InsertionMode = InsertionMode.InsertAfter,
+                OnComplete = "UpdateShippingMethodsNumber"
+            },
+                     new { @class = "btn btn-info", id = "addNewShippingMethod" }
+            )
+    </div>
+    <br/>
+    @for (var i = 0; i < Model.ShippingMethods.Count; i++)
+    {
+        Html.RenderPartial("_ShippingForm", new KeyValuePair<int, ShippingMethod>(i, Model.ShippingMethods.ElementAt(i)));
+    }
+    <div id="shippingMethods"></div>
+
+</div>

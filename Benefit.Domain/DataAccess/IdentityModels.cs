@@ -21,6 +21,14 @@ namespace Benefit.Domain.DataAccess
         public DbSet<SellerCategory> SellerCategories { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<Currency> Currencies { get; set; }
+        public DbSet<Region> Regions { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Image> Images { get; set; }
+        public DbSet<Schedule> Schedules { get; set; }
+        public DbSet<ShippingMethod> ShippingMethods { get; set; }
+        public DbSet<ProductParameter> ProductParameters { get; set; }
+        public DbSet<ProductParameterValue> ProductParameterValues { get; set; }
+        public DbSet<ProductParameterProduct> ProductParameterProducts { get; set; }
 
         //        public DbSet<InfoPage> InfoPages { get; set; }
         //        public DbSet<Filter> Filters { get; set; }

@@ -1,0 +1,13 @@
+﻿@model Benefit.Domain.Models.ProductParameter
+<div id="dialog" title="Додати групу характеристик" class="hide">
+    <div class="ui-dialog-content ui-widget-content" id="dialog-confirm" style="width: auto; min-height: 27px; max-height: none; height: auto;">
+        @using (Html.BeginForm("CreateOrUpdate", "ProductParameters"))
+        {
+            @Html.AntiForgeryToken()
+            @Html.TextBoxFor(m=>m.Name, new { placeholder = "Назва групи", @class = "col-sm-12" })
+            @Html.Hidden("UrlName", "N/A")
+            @Html.HiddenFor(m=>m.CategoryId)
+            @Html.HiddenFor(m=>m.Id)
+        }
+    </div>
+</div>

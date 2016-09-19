@@ -1,0 +1,29 @@
+﻿@using Benefit.Domain.Models
+@model Benefit.Web.Models.Admin.EditUserViewModel
+<div class="margin-left-10">
+    <div class="row">
+        @Ajax.ActionLink(
+            "Додати нову адресу",
+            "NewAddressForm",
+            new { number = Model.Addresses.Count },
+            new AjaxOptions
+            {
+                UpdateTargetId = "addressesList",
+                InsertionMode = InsertionMode.InsertAfter,
+                OnComplete = "UpdateAddressesNumber"
+            },
+                     new { @class = "btn btn-info", id = "addNewAddress" }
+            )
+    </div>
+    <br />
+    @for (var i = 0; i < Model.Addresses.Count; i++)
+    {
+        Html.RenderPartial("_AddressForm", new KeyValuePair<int, Address>(i, Model.Addresses.ElementAt(i)));
+    }
+    <div>
+        <div id="addressesList">
+
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>

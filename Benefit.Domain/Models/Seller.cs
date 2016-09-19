@@ -11,6 +11,10 @@ namespace Benefit.Domain.Models
         public Seller()
         {
             Currencies = new Collection<Currency>();
+            Addresses = new Collection<Address>();
+            Images = new Collection<Image>();
+            Schedules = new Collection<Schedule>();
+            ShippingMethods = new Collection<ShippingMethod>();
         }
 
         [Key]
@@ -48,8 +52,9 @@ namespace Benefit.Domain.Models
         public virtual ApplicationUser WebSiteReferal { get; set; }
         public virtual ICollection<SellerCategory> SellerCategories { get; set; }
         public virtual ICollection<Currency> Currencies { get; set; }
-
-        //        public ICollection<Address> Addresses { get; set; }
-        //        public ICollection<Schedule> Schedules { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<Schedule> Schedules { get; set; }
+        public virtual ICollection<ShippingMethod> ShippingMethods { get; set; }
     }
 }

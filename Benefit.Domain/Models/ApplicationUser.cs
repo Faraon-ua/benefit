@@ -30,6 +30,7 @@ namespace Benefit.Domain.Models
         public DateTime RegisteredOn { get; set; }
         public double CurrentBonusAccount { get; set; }
         public double CurrentPointsAccount { get; set; }
+        public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<Seller> OwnedSellers { get; set; }
         public virtual ICollection<Seller> ReferedWebSiteSellers { get; set; }
         public virtual ICollection<Seller> ReferedBenefitCardSellers { get; set; }

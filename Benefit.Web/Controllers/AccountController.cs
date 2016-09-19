@@ -3,8 +3,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.Owin.Security;
@@ -214,8 +216,81 @@ namespace Benefit.Web.Controllers
                 // If the user does not have an account, then prompt the user to create an account
                 ViewBag.ReturnUrl = returnUrl;
                 ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { UserName = loginInfo.DefaultUserName });
+
+                var authSession = loginInfo.ExternalIdentity.Claims.First(entry => entry.Type == "FacebookAccessToken");
+                var client = new FacebookClient(authSession.Value);
+                dynamic fbresult = client.Get("me?fields=id,email,name");
+                FacebookUserModel facebookUser = Newtonsoft.Json.JsonConvert.DeserializeObject<FacebookUserModel>(fbresult.ToString());
+                var referalCookie = System.Web.HttpContext.Current.Request.Cookies[RouteConstants.ReferalCookieName];
+                var referalNumber = 0;
+                if (referalCookie != null)
+                {
+                    int.TryParse(referalCookie.Value, out referalNumber);
+                }
+                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { UserName = facebookUser.email, FullName = facebookUser.name, ReferalNumber = referalNumber });
             }
+        }
+
+        //
+        // POST: /Account/ExternalLoginConfirmation
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Manage");
+            }
+            int externalNumber;
+            ApplicationUser referal = null;
+            using (var db = new ApplicationDbContext())
+            {
+                externalNumber = db.Users.Max(entry => entry.ExternalNumber);
+                referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber == model.ReferalNumber);
+            }
+            if (referal == null)
+            {
+                ModelState.AddModelError("ReferalNumber", "Користувача з таким реферальним кодом не знайдено");
+            }
+
+            if (ModelState.IsValid)
+            {
+                // Get the information about the user from the external login provider
+                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
+                if (info == null)
+                {
+                    return View("ExternalLoginFailure");
+                }
+                var user = new ApplicationUser()
+                {
+                    ReferalId = referal.Id,
+                    UserName = model.UserName,
+                    Email = model.UserName,
+                    IsActive = false,
+                    ExternalNumber = ++externalNumber,
+                    CardNumber = model.CardNumber,
+                    FullName = model.FullName,
+                    PhoneNumber = model.PhoneNumber,
+                    RegisteredOn = DateTime.UtcNow,
+                };
+
+
+                var result = await UserManager.CreateAsync(user);
+                if (result.Succeeded)
+                {
+                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
+                    if (result.Succeeded)
+                    {
+                        await SignInAsync(user, isPersistent: false);
+                        return RedirectToLocal(returnUrl);
+                    }
+                }
+                AddErrors(result);
+            }
+
+            ViewBag.ReturnUrl = returnUrl;
+            return View(model);
         }
 
         //
@@ -243,69 +318,6 @@ namespace Benefit.Web.Controllers
                 return RedirectToAction("Manage");
             }
             return RedirectToAction("Manage", new { Message = ManageMessageId.Error });
-        }
-
-        //
-        // POST: /Account/ExternalLoginConfirmation
-        [HttpPost]
-        [AllowAnonymous]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
-        {
-            if (User.Identity.IsAuthenticated)
-            {
-                return RedirectToAction("Manage");
-            }
-
-            if (ModelState.IsValid)
-            {
-                // Get the information about the user from the external login provider
-                var info = await AuthenticationManager.GetExternalLoginInfoAsync();
-                if (info == null)
-                {
-                    return View("ExternalLoginFailure");
-                }
-                int externalNumber;
-                ApplicationUser referal = null;
-                using (var db = new ApplicationDbContext())
-                {
-                    externalNumber = db.Users.Max(entry => entry.ExternalNumber);
-                    referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber == model.ReferalNumber);
-                }
-                var user = new ApplicationUser()
-                {
-                    UserName = model.UserName,
-                    Email = model.UserName,
-                    IsActive = false,
-                    ExternalNumber = ++externalNumber,
-                    CardNumber = model.CardNumber,
-                    //todo: add referal
-                    FullName = model.FullName,
-                    PhoneNumber = model.PhoneNumber,
-                    RegisteredOn = DateTime.UtcNow,
-
-                };
-                if (referal != null)
-                {
-                    user.ReferalId = referal.Id;
-                }
-
-
-                var result = await UserManager.CreateAsync(user);
-                if (result.Succeeded)
-                {
-                    result = await UserManager.AddLoginAsync(user.Id, info.Login);
-                    if (result.Succeeded)
-                    {
-                        await SignInAsync(user, isPersistent: false);
-                        return RedirectToLocal(returnUrl);
-                    }
-                }
-                AddErrors(result);
-            }
-
-            ViewBag.ReturnUrl = returnUrl;
-            return View(model);
         }
 
         //

@@ -1,0 +1,10 @@
+﻿@model  KeyValuePair<int, Benefit.Domain.Models.ShippingMethod>
+
+<div class="row">
+    @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].Id", Model.Key), Model.Value.Id, new { @class = "col-sm-2 currency-id", data_number = Model.Key })
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].Name", Model.Key), Model.Value.Name, new { @class = "col-sm-2", placeholder = "Назва методу доставки" })
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].FreeStartsFrom", Model.Key), Model.Value.FreeStartsFrom, new { @class = "col-sm-2 mask-int-number", placeholder = "Безкоштовна доставка від (грн)" })
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].CostBeforeFree", Model.Key), Model.Value.CostBeforeFree, new { @class = "col-sm-2 mask-int-number", placeholder = "Вартість доставки до безкоштовної" })
+    <input type="text" placeholder="Місто, область" class="regionSearch col-sm-3" value="@(Model.Value.Region == null ? string.Empty : Model.Value.Region.ExpandedName)" />
+    @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].RegionId", Model.Key), Model.Value.RegionId, new { @class = "col-sm-2" })
+</div>

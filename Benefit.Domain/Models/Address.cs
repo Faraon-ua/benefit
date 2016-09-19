@@ -1,27 +1,29 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
     public class Address
     {
+        [Key]
         public string Id { get; set; }
         [Required]
-        [MaxLength(32)]
-        public string Country { get; set; }
-        [Required]
         [MaxLength(64)]
-        public string Region { get; set; }
+        public string FullName { get; set; }
         [Required]
-        [MaxLength(64)]
-        [Index]
-        public string City { get; set; }
+        [MaxLength(16)]
+        public string Phone { get; set; }
         [Required]
         [MaxLength(256)]
         public string AddressLine { get; set; }
-        public int ZIP { get; set; }
+        public int? ZIP { get; set; }
         public bool IsDefault { get; set; }
-        public ApplicationUser User { get; set; }
-        public Seller Seller { get; set; }
+        public int RegionId { get; set; }
+        public virtual Region Region { get; set; }
+        [MaxLength(128)]
+        public string UserId { get; set; }
+        public virtual ApplicationUser User { get; set; }
+        [MaxLength(128)]
+        public string SellerId { get; set; }
+        public virtual Seller Seller { get; set; }
     }
 }

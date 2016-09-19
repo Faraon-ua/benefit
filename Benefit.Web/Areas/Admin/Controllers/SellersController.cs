@@ -1,20 +1,40 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
+using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class SellersController : Controller
+    public class SellersController : AdminController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        public ActionResult GetSellerGallery(string id)
+        {
+            var seller = db.Sellers.Find(id);
+            return Json(seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).Select(entry => new { entry.ImageUrl }), JsonRequestBehavior.AllowGet);
+        }
 
+        private IEnumerable<Schedule> SetSellerSchedules()
+        {
+            for (var i = 0; i < 7; i++)
+            {
+                yield return new Schedule()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Day = (DayOfWeek)i
+                };
+            }
+        }
         public ActionResult SellersSearch(SellerFilterValues filters)
         {
             IQueryable<Seller> sellers = db.Sellers.Include("Owner").AsQueryable();
@@ -36,9 +56,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                 if (!string.IsNullOrEmpty(filters.CategoryId))
                 {
-                    //todo: add categories filter
-                    /*sellers = sellers.Where(entry => entry.Owner.FullName.ToLower().Contains(filters.Search) ||
-                                                 entry.Name.ToString().Contains(filters.Search));*/
+                    sellers = sellers.Where(entry => entry.SellerCategories.Select(sc=>sc.CategoryId).Contains(filters.CategoryId));
                 }
                 if (filters.TotalDiscountPercent.HasValue)
                 {
@@ -54,22 +72,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
             return PartialView("_SellersSearch", sellers);
         }
+
         // GET: /Admin/Sellers/
         public ActionResult Index()
         {
-            var routeCats = new List<Category>()
-            {
-                new Category()  
-                {
-                    Id = "1",
-                    Name = "Кафе"
-                },
-                 new Category()
-                {
-                    Id = "1",
-                    Name = "Магазин"
-                }
-            };
+            var routeCats = db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Name);
             var options = new SellerFilterOptions
             {
                 Categories = routeCats.Select(entry => new SelectListItem() { Text = entry.Name, Value = entry.Id }),
@@ -83,11 +90,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
         // GET: /Admin/Sellers/Create
         public ActionResult CreateOrUpdate(string id = null)
         {
-            var existingSeller = db.Sellers.Find(id);
+            var existingSeller = db.Sellers.Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {
-                Seller = existingSeller ?? new Seller()
+                Seller = existingSeller ?? new Seller() { Schedules = SetSellerSchedules().ToList() }
             };
+            if (!seller.Seller.Schedules.Any())
+            {
+                seller.Seller.Schedules = SetSellerSchedules().ToList();
+            }
+            seller.Seller.Schedules = seller.Seller.Schedules.OrderBy(entry => entry.Day).ToList();
             if (existingSeller != null)
             {
                 seller.OwnerExternalId = existingSeller.Owner.ExternalNumber;
@@ -147,8 +159,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                 var sellerId = seller.Id ?? Guid.NewGuid().ToString();
                 seller.Currencies.ForEach(entry => entry.SellerId = sellerId);
+                seller.Addresses.ForEach(entry => entry.SellerId = sellerId);
+                seller.ShippingMethods.ForEach(entry => entry.SellerId = sellerId);
+                seller.Schedules.ForEach(entry => entry.SellerId = sellerId);
+
                 var currenciesToAdd = seller.Currencies.Where(entry => entry.Id == null).ToList();
                 currenciesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
+
+                var addressesToAdd = seller.Addresses.Where(entry => entry.Id == null).ToList();
+                addressesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString()); 
+                
+                var shippingMethodsToAdd = seller.ShippingMethods.Where(entry => entry.Id == null).ToList();
+                shippingMethodsToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
 
                 if (seller.Id == null)
                 {
@@ -161,23 +183,71 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     db.Entry(seller).State = EntityState.Modified;
                     TempData["SuccessMessage"] = string.Format("Дані постачальника {0} було збережено", seller.Name);
+                    //to remove
+                    var existingSeller = db.Sellers.Find(sellerId);
+                    var addressesToRemove =
+                        existingSeller.Addresses.Where(
+                            entry => !seller.Addresses.Select(addr => addr.Id).Contains(entry.Id)).ToList();
+                    db.Addresses.RemoveRange(addressesToRemove);
                 }
                 db.Currencies.AddRange(currenciesToAdd);
+                db.Addresses.AddRange(addressesToAdd);
+                db.ShippingMethods.AddRange(shippingMethodsToAdd);
                 foreach (var currency in seller.Currencies.Except(currenciesToAdd))
                 {
                     db.Entry(currency).State = EntityState.Modified;
                 }
+                foreach (var address in seller.Addresses.Except(addressesToAdd))
+                {
+                    db.Entry(address).State = EntityState.Modified;
+                } 
+                foreach (var shipping in seller.ShippingMethods.Except(shippingMethodsToAdd))
+                {
+                    db.Entry(shipping).State = EntityState.Modified;
+                }
+                //schedules
+                seller.Schedules.ForEach(entry => entry.SellerId = sellerId);
+                if (!db.Schedules.Any(entry => entry.SellerId == sellerId))
+                {
+                    db.Schedules.AddRange(seller.Schedules);
+                }
+                else
+                {
+                    foreach (var schedule in seller.Schedules)
+                    {
+                        db.Entry(schedule).State = EntityState.Modified;
+                    }
+                }
+                var logo = Request.Files[0];
+                if (logo != null && logo.ContentLength != 0)
+                {
+                    var sellerLogo = Request.Files[0];
+                    var fileName = Path.GetFileName(sellerLogo.FileName);
+                    var dotIndex = fileName.IndexOf('.');
+                    var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
+                    var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                    var pathString = Path.Combine(originalDirectory, "Images", ImageType.SellerLogo.ToString());
+                    var img = new Image()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ImageType = ImageType.SellerLogo,
+                        SellerId = seller.Id
+                    };
+                    img.ImageUrl = img.Id + fileExt;
+
+                    db.Images.RemoveRange(
+                        db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerLogo));
+                    db.SaveChanges();
+                    db.Images.Add(img);
+                    sellerLogo.SaveAs(Path.Combine(pathString, img.ImageUrl));
+                    var imagesService = new ImagesService();
+                    imagesService.ResizeToSiteRatio(Path.Combine(pathString, img.ImageUrl), ImageType.SellerLogo);
+                }
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("CreateOrUpdate", new { id = seller.Id });
             }
 
             return View(sellervm);
-        }
-
-        public ActionResult NewCurrencyForm(int number)
-        {
-            return PartialView("_CurrencyForm",
-                new KeyValuePair<int, Currency>(number, new Currency()));
         }
 
         [HttpPost]

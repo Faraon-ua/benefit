@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Data.Entity;
 using System.Text;
 
 namespace Benefit.Domain.Models
@@ -14,6 +14,11 @@ namespace Benefit.Domain.Models
     }
     public class Category
     {
+        public Category()
+        {
+            ProductParameters = new Collection<ProductParameter>();
+        }
+
         [Key]
         public string Id { get; set; }
         [Required]
@@ -38,6 +43,7 @@ namespace Benefit.Domain.Models
         public ICollection<Category> ChildCategories { get; set; }
         public ICollection<SellerCategory> SellerCategories { get; set; }
         public ICollection<Product> Products { get; set; } 
+        public ICollection<ProductParameter> ProductParameters { get; set; } 
 
         [NotMapped]
         public List<Localization> Localizations { get; set; }

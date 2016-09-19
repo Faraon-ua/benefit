@@ -3,12 +3,24 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Domain.DataAccess;
 using Benefit.Web.Models;
 
 namespace Benefit.Web.Controllers
 {
     public class HomeController : Controller
     {
+        [HttpGet]
+        public ActionResult SearchRegion(string search, int minLevel)
+        {
+            search = search.ToLower();
+            using (var db = new ApplicationDbContext())
+            {
+                var regions = db.Regions.Where(entry => entry.RegionLevel >= minLevel && (entry.Name_ru.ToLower().Contains(search) || entry.Name_ua.ToLower().Contains(search))).OrderBy(entry => entry.RegionLevel).Take(10).ToList();
+                return Json(regions.Select(entry => new { entry.Id, entry.ExpandedName }).ToList(), JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public void uploadnow(HttpPostedFileWrapper upload)
         {
             if (upload != null)
@@ -41,7 +53,6 @@ namespace Benefit.Web.Controllers
             // path of the image
             string path = "/Images/uploads/" + upload.FileName;
 
-            // will create http://localhost:1457/Content/Images/my_uploaded_image.jpg
             url = Request.Url.GetLeftPart(UriPartial.Authority) + "/" + path;
 
             // passing message success/failure

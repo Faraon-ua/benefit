@@ -56,6 +56,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="Facebook, Version=6.0.10.0, Culture=neutral, PublicKeyToken=58cb4f2111d1e6de, processorArchitecture=MSIL">
+      <HintPath>..\packages\Facebook.7.0.6\lib\net45\Facebook.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -207,6 +211,7 @@
     <Compile Include="Areas\Admin\Aspx\Editor.aspx.designer.cs">
       <DependentUpon>Editor.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Areas\Admin\Controllers\ProductParametersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SellersController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
@@ -216,10 +221,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\HtmlHelpers.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin\ProductFilters.cs" />
+    <Compile Include="Models\Admin\ProductsViewModel.cs" />
     <Compile Include="Models\Admin\SellerFilters.cs" />
     <Compile Include="Models\Admin\UserViewModels.cs" />
+    <Compile Include="Models\FacebookAccountModel.cs" />
     <Compile Include="Models\ImagesViewModel.cs" />
     <Compile Include="Models\Admin\SellerViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -547,16 +555,19 @@
     <Content Include="Areas\Admin\assets\js\x-editable\bootstrap-editable.min.js" />
     <Content Include="Areas\Admin\styles\categories.css" />
     <Content Include="Areas\Admin\Aspx\Editor.aspx" />
+    <Content Include="Content\address.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\common.css" />
     <Content Include="Content\images\flags\ru.png" />
     <Content Include="Content\images\flags\uk.png" />
     <Content Include="Content\validation-errors.css" />
+    <Content Include="EmailTemplates\PasswordChanged.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\address.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admin\Views\web.config" />
@@ -659,6 +670,22 @@
     <Content Include="Areas\Admin\Views\Products\_ProductsSearch.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Currencies.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_CurrencyForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Addresses.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_AddressForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_Addresses.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_AddressForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Images.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_Images.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Schedules.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_ShippingForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_ShippingMethods.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductParameters\CreateOrUpdate.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductParameters\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterGroup.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductParameters\CreateOrUpdateValue.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductOptions.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductParameters\_ProductOption.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterValue.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />
     <Content Include="Scripts\ckeditor\config.js" />
@@ -1019,6 +1046,7 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\sorting-filtering.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\prettify.js" />
     <Content Include="Scripts\respond.js" />

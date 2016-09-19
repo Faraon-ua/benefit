@@ -18,7 +18,7 @@
         logging in.
     </p>
     <div class="form-group">
-        @Html.LabelFor(m => m.ReferalNumber, new { @class = "col-md-2 control-label" })
+        <label class="col-md-2 control-label">Реферальний код</label>
         <div class="col-md-10">
             @Html.TextBoxFor(m => m.ReferalNumber, new { @class = "form-control" })
             @Html.ValidationMessageFor(m => m.ReferalNumber)

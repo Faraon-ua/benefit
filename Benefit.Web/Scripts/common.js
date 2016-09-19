@@ -1,21 +1,66 @@
 ﻿var routePrefix = "/Benefit.Web";
 //var routePrefix = "";
 
+function onBegin() {
+    $('#searchError').hide(0);
+    $('#searchResults').hide(0);
+    $('#loadingDisplay').show(0);
+    $('#loadProgressBar').css('width', '50%').attr("aria-valuenow", 50);
+}
+
+function onComplete() {
+    $('#searchResults').show(0);
+    $('#loadProgressBar').css('width', '100%').attr("aria-valuenow", 100);
+    $("#loadingDisplay").delay(500).fadeOut(20).queue(function (next) {
+        $('#loadProgressBar').delay(1200).css('width', '0%').attr("aria-valuenow", 0);
+        next();
+    });
+}
+function onSuccess() {
+    $('#searchResults').show();
+}
+
+function onFailure() {
+    $('#searchError').show(0);
+}
+
 $(function () {
+    try {
+        $('.number-input').mask("#");
+    } catch(err) {
+        
+    }
+
     setTimeout(function () {
         $("#flashMessage").html("");
     }, 10000);
 
-    $(".urlName").focus(function () {
+  /*  $(".urlName").focus(function () {
+        if ($(this).val() == "") {
+            var originalName = $(".name").val();
+            $(this).val(urlRusLat(originalName));
+        }
+    });*/
+
+    $("body").on('focus', '.urlName', function () {
         if ($(this).val() == "") {
             var originalName = $(".name").val();
             $(this).val(urlRusLat(originalName));
         }
     });
+
+    //show specific tab on page load
+    var url = document.location.toString();
+    if (url.match('#')) {
+        $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
+    }
+    $('.nav-tabs a').on('shown.bs.tab', function (e) {
+        window.location.hash = e.target.hash;
+    });
 });
 
 function GetMaxAttributeValue(selector, attributeName) {
-    var maximum = null;
+    var maximum = 0;
     $(selector).each(function () {
         var value = parseFloat($(this).attr(attributeName));
         maximum = (value > maximum) ? value : maximum;
@@ -25,9 +70,11 @@ function GetMaxAttributeValue(selector, attributeName) {
 
 function CheckSearchLength() {
     var searchText = $("#searchText").val();
-    if (searchText.length > 1 && searchText.length < 3) {
+    if (searchText.length >= 1 && searchText.length < 3) {
         alert("Поле пошуку має містити мінімум 3 символи");
         return false;
+    } else {
+        onBegin();
     }
 }
 

@@ -1,0 +1,17 @@
+﻿@using Benefit.Domain.Models
+@model Product
+@if (Model.Id != null)
+{
+    <br/>
+    <p>
+        Галерея
+    </p>
+    <div id="dZUpload" class="dropzone">
+    </div>
+}
+else
+{
+    <p>
+        Редагування зображеннь доступно для збереженного продукта
+    </p>
+}

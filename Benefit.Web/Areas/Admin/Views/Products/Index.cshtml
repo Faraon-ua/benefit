@@ -1,4 +1,4 @@
-﻿@model Benefit.Web.Models.Admin.ProductFilters
+﻿@model Benefit.Web.Models.Admin.ProductsViewModel
 @{
     ViewBag.Title = "Товари";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -6,6 +6,8 @@
 @section scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+    @*    <script src="~/Scripts/sorting-filtering.js"></script>*@
+
     <script>
         $(function () {
             $(".chosen-select").chosen();
@@ -43,25 +45,20 @@
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
 }
 
-@using (Ajax.BeginForm("ProductsSearch", null, new AjaxOptions()
-    {
-        OnBegin = "CheckSearchLength",
-        HttpMethod = "POST",
-        UpdateTargetId = "searchResults"
-    }, new { @class = "form-search" }))
+@using (Html.BeginForm("Index", "Products", FormMethod.Get))
 {
     <div class="col-sm-2 border-right page-content">
         <div class="row">
             @Html.ActionLink("Створити товар", "CreateOrUpdate", "Products", null, new { @class = "btn btn-info" })
         </div>
         <br />
-        @Html.Partial("_Filters", Model)
+        @Html.Partial("_Filters", Model.ProductFilters)
     </div>
     <div class="col-sm-10">
         <div class="row right">
             <div class="col-xs-12 col-sm-8">
                 <div class="input-group">
-                    <input name="search" id="searchText" type="text" placeholder="Введіть назву або код товару" class="form-control search-query">
+                    <input name="search" id="searchText" type="text" placeholder="Введіть назву або код товару" class="form-control search-query" value="@Model.ProductFilters.Search">
                     <span class="input-group-btn">
                         <button class="btn btn-purple btn-sm" type="submit">
                             Пошук
@@ -73,6 +70,20 @@
         </div>
         <br />
         <div id="searchResults">
+            <div class="text-right">
+                Сортувати за
+                @*                @Html.DropDownList("Sorting", Model.ProductFilters.Sorting, "Не обрано")*@
+
+                <select name="Sorting" id="Sorting" data-val-required="The Sorting field is required." data-val="true">
+                    <option value="">Не обрано</option>
+                    @foreach (var option in Model.ProductFilters.Sorting)
+                    {
+                        <option value="@option.Value" @(option.Selected ? "selected='true'" : "")>@Html.Raw(option.Text)</option>
+                    }
+                </select>
+            </div>
+
+            @Html.Partial("_ProductsSearch", Model.Products)
         </div>
     </div>
 }

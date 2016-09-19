@@ -1,0 +1,26 @@
+﻿@using Benefit.Domain.Models
+@model Seller
+<div>
+    Логотип:
+    <input type="file" name="sellerLogo" id="sellerLogo" />
+    @{
+        var img = Model.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+        var imgSrc = img == null ? "" : img.ImageUrl; 
+    }
+    <img src="~/Images/SellerLogo/@imgSrc" class="sellerLogo"/>
+</div>
+@if (Model.Id != null)
+{
+    <br/>
+    <p>
+        Галерея
+    </p>
+    <div id="dZUpload" class="dropzone">
+    </div>
+}
+else
+{
+    <p>
+        Редагування зображеннь доступно для збереженного постачальника
+    </p>
+}

@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNet.Identity;
+﻿using System;
+using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
+using Microsoft.Owin.Security.Facebook;
 using Owin;
 
 namespace Benefit.Web
@@ -14,7 +16,8 @@ namespace Benefit.Web
             app.UseCookieAuthentication(new CookieAuthenticationOptions
             {
                 AuthenticationType = DefaultAuthenticationTypes.ApplicationCookie,
-                LoginPath = new PathString("/Account/Login")
+                LoginPath = new PathString("/Account/Login"),
+                ExpireTimeSpan = TimeSpan.FromHours(24*365)//year
             });
             // Use a cookie to temporarily store information about a user logging in with a third party login provider
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
@@ -28,10 +31,29 @@ namespace Benefit.Web
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            app.UseFacebookAuthentication(
-               appId: "635571649935665",
-               appSecret: "9e41686d14adae5ff26550c70f837229");
+            var faceBookSettings = new FacebookAuthenticationOptions();
+            faceBookSettings.Scope.Add("email");
+            faceBookSettings.Scope.Add("public_profile");
+            faceBookSettings.AppId = "635571649935665";
+            faceBookSettings.AppSecret = "9e41686d14adae5ff26550c70f837229";
+            faceBookSettings.Provider = new FacebookAuthenticationProvider()
+            {
+                OnAuthenticated = async context =>
+                {
+                    context.Identity.AddClaim(new System.Security.Claims.Claim("FacebookAccessToken", context.AccessToken));
+                    foreach (var claim in context.User)
+                    {
+                        var claimType = string.Format("urn:facebook:{0}", claim.Key);
+                        string claimValue = claim.Value.ToString();
+                        if (!context.Identity.HasClaim(claimType, claimValue))
+                            context.Identity.AddClaim(new System.Security.Claims.Claim(claimType, claimValue, "XmlSchemaString", "Facebook"));
+                    }
+                }
+            };
 
+            faceBookSettings.SignInAsAuthenticationType = DefaultAuthenticationTypes.ExternalCookie;
+            app.UseFacebookAuthentication(faceBookSettings);
+           
             //app.UseGoogleAuthentication();
         }
     }

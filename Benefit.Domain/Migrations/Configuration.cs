@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Microsoft.AspNet.Identity;
@@ -15,6 +17,7 @@ namespace Benefit.Domain.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
+            CommandTimeout = 2500; 
         }
 
         protected override void Seed(ApplicationDbContext context)
@@ -39,9 +42,9 @@ namespace Benefit.Domain.Migrations
                 var userToInsert = new ApplicationUser
                 {
                     IsActive = true,
-                    UserName = Common.Constants.DomainConstants.DefaultAdminUserName, 
-                    ExternalNumber = 1007, 
-                    ReferalId = null, 
+                    UserName = Common.Constants.DomainConstants.DefaultAdminUserName,
+                    ExternalNumber = 1007,
+                    ReferalId = null,
                     FullName = "¿‰Ï≥Ì ¿‰Ï≥ÌË˜",
                     Email = "faraon.ua@gmail.com",
                     CardNumber = "005656",
@@ -49,7 +52,7 @@ namespace Benefit.Domain.Migrations
                     RegisteredOn = DateTime.UtcNow
                 };
                 userManager.Create(userToInsert, Common.Constants.DomainConstants.DefaultAdminPassword);
-                
+
                 userManager.AddToRole(userToInsert.Id, "Admin");
             }
 
@@ -88,6 +91,12 @@ namespace Benefit.Domain.Migrations
                 };
                 context.Currencies.AddRange(defaultCurrencies);
                 context.SaveChanges();
+            }
+
+            if (!context.Regions.Any())
+            {
+                var regionsSql = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty) + "Migrations/SqlFiles/UkraineRegions.sql", Encoding.UTF8);
+                context.Database.ExecuteSqlCommand(regionsSql);
             }
         }
     }

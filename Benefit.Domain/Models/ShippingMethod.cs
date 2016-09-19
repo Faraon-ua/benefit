@@ -1,12 +1,20 @@
-﻿namespace Benefit.Domain.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Benefit.Domain.Models
 {
     public class ShippingMethod
     {
+        [Key]
         public string Id { get; set; }
+        [Required]
+        [MaxLength(256)]
         public string Name { get; set; }
-        public string DisplayName { get; set; }
-        public string Region { get; set; }
         public int? FreeStartsFrom { get; set; }
-        public int CostBeforeFree { get; set; }
+        public int? CostBeforeFree { get; set; }
+        public int RegionId { get; set; }
+        public Region Region { get; set; }
+        [MaxLength(128)]
+        public string SellerId { get; set; }
+        public Seller Seller { get; set; }
     }
 }

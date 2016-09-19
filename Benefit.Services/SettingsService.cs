@@ -23,6 +23,56 @@ namespace Benefit.Services
             }
         }
 
+        public class Email
+        {
+            public static string From
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["EmailFrom"];
+                }
+            }
+            public static string Admin
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["AdminEmail"];
+                }
+            }
+        }
+
+        public class Images
+        {
+            public static int SellerGalleryImageMaxWidth
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["SellerGalleryImageMaxWidth"]);
+                }
+            }
+            public static int SellerGalleryImageMaxHeight
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["SellerGalleryImageMaxHeight"]);
+                }
+            }
+            public static int SellerLogoMaxWidth
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["SellerLogoMaxWidth"]);
+                }
+            }
+            public static int SellerLogoMaxHeight
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["SellerLogoMaxHeight"]);
+                }
+            }     
+        }
+
         public static double[] UserDiscounts = { 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 
         public static Dictionary<DistributionType, int> DistributionToPointsPercentageMap

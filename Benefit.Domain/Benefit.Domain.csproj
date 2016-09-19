@@ -77,6 +77,26 @@
     <Compile Include="Migrations\201608191711322_AddCurrencies.Designer.cs">
       <DependentUpon>201608191711322_AddCurrencies.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201608241050093_AddAddressesAndRegions.cs" />
+    <Compile Include="Migrations\201608241050093_AddAddressesAndRegions.Designer.cs">
+      <DependentUpon>201608241050093_AddAddressesAndRegions.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608300905204_AddImages.cs" />
+    <Compile Include="Migrations\201608300905204_AddImages.Designer.cs">
+      <DependentUpon>201608300905204_AddImages.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201608311330104_AddSchedules.cs" />
+    <Compile Include="Migrations\201608311330104_AddSchedules.Designer.cs">
+      <DependentUpon>201608311330104_AddSchedules.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609020931230_AddShippingMethods.cs" />
+    <Compile Include="Migrations\201609020931230_AddShippingMethods.Designer.cs">
+      <DependentUpon>201609020931230_AddShippingMethods.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201609030916111_AddProductParameters.cs" />
+    <Compile Include="Migrations\201609030916111_AddProductParameters.Designer.cs">
+      <DependentUpon>201609030916111_AddProductParameters.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApplicationUser.cs">
@@ -87,7 +107,7 @@
     <Compile Include="Models\Currency.cs" />
     <Compile Include="Models\Enums\Distribution.cs" />
     <Compile Include="Models\Enums\Level.cs" />
-    <Compile Include="Models\ProductOption.cs" />
+    <Compile Include="Models\ProductParameter.cs" />
     <Compile Include="Models\Image.cs" />
     <Compile Include="Models\InfoPage.cs" />
     <Compile Include="Models\Localizations.cs" />
@@ -95,6 +115,9 @@
     <Compile Include="Models\PaymentTypes.cs" />
     <Compile Include="Models\Enums\Status.cs" />
     <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductParameterValue.cs" />
+    <Compile Include="Models\ProductParameterProduct.cs" />
+    <Compile Include="Models\Region.cs" />
     <Compile Include="Models\Schedule.cs" />
     <Compile Include="Models\Seller.cs" />
     <Compile Include="Models\SellerCategory.cs" />
@@ -125,12 +148,31 @@
     <EmbeddedResource Include="Migrations\201608191711322_AddCurrencies.resx">
       <DependentUpon>201608191711322_AddCurrencies.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608241050093_AddAddressesAndRegions.resx">
+      <DependentUpon>201608241050093_AddAddressesAndRegions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608300905204_AddImages.resx">
+      <DependentUpon>201608300905204_AddImages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201608311330104_AddSchedules.resx">
+      <DependentUpon>201608311330104_AddSchedules.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609020931230_AddShippingMethods.resx">
+      <DependentUpon>201609020931230_AddShippingMethods.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201609030916111_AddProductParameters.resx">
+      <DependentUpon>201609030916111_AddProductParameters.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Benefit.Common\Benefit.Common.csproj">
       <Project>{3946539e-a45a-46cd-be25-4e420e468082}</Project>
       <Name>Benefit.Common</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Migrations\SqlFiles\UkraineRegions.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
