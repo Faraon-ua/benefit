@@ -8,7 +8,7 @@ using Benefit.Services;
 
 namespace Benefit.Web.Areas.Admin.Controllers.Base
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Seller")]
     public class AdminController : Controller
     {
         public ActionResult DeleteUploadedFile(string fileName, ImageType type)

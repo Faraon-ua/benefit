@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -51,6 +52,8 @@ namespace Benefit.Web.Controllers
                 if (user != null)
                 {
                     await SignInAsync(user, model.RememberMe);
+                    var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName);
+                    System.Web.HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                     return RedirectToLocal(returnUrl);
                 }
                 else
@@ -209,6 +212,8 @@ namespace Benefit.Web.Controllers
             if (user != null)
             {
                 await SignInAsync(user, isPersistent: false);
+                var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName);
+                System.Web.HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                 return RedirectToLocal(returnUrl);
             }
             else
@@ -275,8 +280,10 @@ namespace Benefit.Web.Controllers
                     RegisteredOn = DateTime.UtcNow,
                 };
 
-
                 var result = await UserManager.CreateAsync(user);
+
+                var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName);
+                System.Web.HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
@@ -372,6 +379,7 @@ namespace Benefit.Web.Controllers
         {
             AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
             var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+            identity.AddClaim(new Claim(ClaimTypes.GivenName, user.FullName));
             AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
         }
 

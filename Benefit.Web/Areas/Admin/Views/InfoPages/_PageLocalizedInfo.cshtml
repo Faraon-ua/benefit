@@ -21,8 +21,28 @@
             <div class="form-group">
                 <label class="control-label col-md-1" for="Name">Назва</label>
                 <div class="col-md-10">
-                    @Html.EditorFor(model => model.Name)
+                    @Html.TextBoxFor(model => model.Name, new {@class = "name"})
                     @Html.ValidationMessageFor(model => model.Name)
+                </div>
+            </div>
+             <div class="form-group">
+                <label class="control-label col-md-1" for="UrlName">Url назва</label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.UrlName, new { @class = "urlName" })
+                    @Html.ValidationMessageFor(model => model.UrlName)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-1" for="IsActive">Активна</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.IsActive)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-1" for="IsNews">Новина</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.IsNews)
                 </div>
             </div>
 
@@ -30,9 +50,16 @@
                 <label class="control-label col-md-1" for="Description">Контент</label>
 
                 <div class="col-md-10">
-                    @Html.HiddenFor(model => model.Content, new { id = "ukContent", @class = "hidden" })
-                    <iframe id="ukEditorFrame" src="~/Areas/Admin/Aspx/Editor.aspx" width="700" height="420"
-                            style="overflow:hidden;margin-top:0px;background-color:white; border: none;"></iframe>
+                    @Html.TextAreaFor(m => m.Content, new { cols = 45, rows = 5 })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-1">Зображення</label>
+
+                <div class="col-md-10">
+                    <input type="file" name="newsLogo" id="newsLogo" />
+                    
+                    <img src="@Model.ImageUrl" class="sellerLogo" />
                 </div>
             </div>
         </div>
@@ -52,9 +79,14 @@
                     <div class="col-md-10">
                         @if (Model.Localizations[i].ResourceField == "Content")
                         {
-                            @Html.TextBoxFor(m => m.Localizations[i].ResourceValue, new {id = "ruContent", @class = "hidden"})
-                            <iframe id="ruEditorFrame" src="~/Areas/Admin/Aspx/Editor.aspx" width="700" height="420"
-                                    style="overflow: hidden; margin-top: 0px; background-color: white; border: none;"></iframe>
+                            @Html.TextAreaFor(m => m.Localizations[i].ResourceValue, new { cols = 45, rows = 5 })
+                          @*  <script type="text/javascript">
+                                CKEDITOR.replace("InfoPage.Localizations[" + i + "].ResourceValue", {
+                                    //                filebrowserImageBrowseUrl: '/home/uploadPartial',
+                                    //                filebrowserImageUploadUrl: '/home/uploadnow'
+                                    filebrowserImageUploadUrl: '/home/UploadImage'
+                                });
+                            </script>*@
                         }
                         else
                         {
@@ -66,9 +98,3 @@
         </div>
     </div>
 </div>
-<script>
-    $(function () {
-        document.getElementById("ukEditorFrame").contentWindow.SetHtml(@Model.Content);
-        document.getElementById("ruEditorFrame").contentWindow.SetHtml(@Model.Localizations.FirstOrDefault(entry=>entry.LanguageCode == "ru" && entry.ResourceField == "Content").ResourceValue);
-    });
-</script>

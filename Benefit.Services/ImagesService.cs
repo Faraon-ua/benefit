@@ -57,6 +57,10 @@ namespace Benefit.Services
                 case ImageType.SellerLogo:
                     maxWidth = SettingsService.Images.SellerLogoMaxWidth;
                     maxHeight = SettingsService.Images.SellerLogoMaxHeight;
+                    break; 
+                case ImageType.NewsLogo:
+                    maxWidth = SettingsService.Images.NewsLogoMaxWidth;
+                    maxHeight = SettingsService.Images.NewsLogoMaxHeight;
                     break;
                 case ImageType.SellerGallery:
                     maxHeight = SettingsService.Images.SellerGalleryImageMaxHeight;

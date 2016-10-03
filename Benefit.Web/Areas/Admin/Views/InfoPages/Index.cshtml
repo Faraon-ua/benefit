@@ -29,7 +29,7 @@
                 contentType: 'application/json; charset=utf-8',
                 async: true,
                 success: function (data) {
-                    flashSuccess(data);
+                    flashMessage(data);
                     $("#savePagesOrder").removeAttr("disabled");
                 },
                 error: function (data) {
@@ -40,7 +40,7 @@
     </script>
 }
 <p>
-    @Html.ActionLink("Створити нову сторінку", "Create", "InfoPages", null, new { @class = "btn btn-info" })
+    @Html.ActionLink("Створити сторінку", "CreateOrUpdate", "InfoPages", null, new { @class = "btn btn-info" })
 </p>
 <ol class="dd-list width-30" id="infoPages">
     @foreach (var page in Model)
@@ -52,7 +52,7 @@
                 <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = page.Id })" onclick="return confirm('Видалити сторінку @page.Name?');">
                     <i class="icon-trash"></i>
                 </a>
-                <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("Edit", new { id = page.Id })">
+                <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = page.Id })">
                     <i class="icon-edit"></i>
                 </a>
                 <div style="clear: both;"></div>

@@ -12,6 +12,9 @@
     margin-right: auto;
 }
 
+.underlined {
+    text-decoration: underline;
+}
 .sellerLogo {
     max-height: 93px;
     max-width: 170px;
@@ -38,11 +41,11 @@
     }
 
 .icon-uk {
-    background-image: url(images/flags/uk.png);
+    background-image: url(img/flags/uk.png);
 }
 
 .icon-ru {
-    background-image: url(images/flags/ru.png);
+    background-image: url(img/flags/ru.png);
 }
 
 .margin-top-0 {

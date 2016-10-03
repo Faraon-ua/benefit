@@ -15,6 +15,7 @@ namespace Benefit.Domain.Models
             Images = new Collection<Image>();
             Schedules = new Collection<Schedule>();
             ShippingMethods = new Collection<ShippingMethod>();
+            SellerCategories = new Collection<SellerCategory>();
         }
 
         [Key]

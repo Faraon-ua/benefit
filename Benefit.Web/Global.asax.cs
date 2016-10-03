@@ -24,10 +24,7 @@ namespace Benefit.Web
             {
                 var referalCookie = new HttpCookie(RouteConstants.ReferalCookieName,
                     HttpContext.Current.Request.QueryString[RouteConstants.ReferalUrlName]);
-//                referalCookie.Expires
-                HttpContext.Current.Request.Cookies.Add(referalCookie);
                 HttpContext.Current.Response.Cookies.Add(referalCookie);
-                var a = System.Web.HttpContext.Current.Request.Cookies[RouteConstants.ReferalCookieName];
             }
         }
     }

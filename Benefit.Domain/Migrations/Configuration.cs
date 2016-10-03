@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.Validation;
 using System.IO;
 using System.Text;
+using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Microsoft.AspNet.Identity;
@@ -17,46 +19,47 @@ namespace Benefit.Domain.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            CommandTimeout = 2500; 
+            AutomaticMigrationDataLossAllowed = true;
+            CommandTimeout = 2500;
         }
 
         protected override void Seed(ApplicationDbContext context)
         {
-            if (!context.Roles.Any(r => r.Name == "Admin"))
+            if (!context.Roles.Any(r => r.Name == DomainConstants.AdminRoleName))
             {
                 var store = new RoleStore<IdentityRole>(context);
                 var manager = new RoleManager<IdentityRole>(store);
-                var adminRole = new IdentityRole { Name = "Admin" };
-                var contentManagerRole = new IdentityRole { Name = "ContentManager" };
-                var sellerRole = new IdentityRole { Name = "Seller" };
+                var adminRole = new IdentityRole { Name = DomainConstants.AdminRoleName };
+                var contentManagerRole = new IdentityRole { Name = DomainConstants.ContentManagerName };
+                var sellerRole = new IdentityRole { Name = DomainConstants.SellerRoleName };
 
                 manager.Create(adminRole);
                 manager.Create(contentManagerRole);
                 manager.Create(sellerRole);
             }
 
-            if (!(context.Users.Any(u => u.UserName == Common.Constants.DomainConstants.DefaultAdminUserName)))
+            if (!(context.Users.Any(u => u.UserName == DomainConstants.DefaultAdminUserName)))
             {
                 var userStore = new UserStore<ApplicationUser>(context);
                 var userManager = new UserManager<ApplicationUser>(userStore);
                 var userToInsert = new ApplicationUser
                 {
                     IsActive = true,
-                    UserName = Common.Constants.DomainConstants.DefaultAdminUserName,
+                    UserName = DomainConstants.DefaultAdminUserName,
                     ExternalNumber = 1007,
                     ReferalId = null,
                     FullName = "Àäì³í Àäì³íè÷",
-                    Email = "faraon.ua@gmail.com",
-                    CardNumber = "005656",
-                    PhoneNumber = "0630517004",
+                    Email = "benefit.admin@gmail.com",
+                    CardNumber = "000000",
+                    PhoneNumber = "0630000000",
                     RegisteredOn = DateTime.UtcNow
                 };
-                userManager.Create(userToInsert, Common.Constants.DomainConstants.DefaultAdminPassword);
+                userManager.Create(userToInsert, DomainConstants.DefaultAdminPassword);
 
-                userManager.AddToRole(userToInsert.Id, "Admin");
+                userManager.AddToRole(userToInsert.Id, DomainConstants.AdminRoleName);
             }
 
-            if (!(context.Currencies.Any(u => u.Provider == Common.Constants.DomainConstants.DefaultUSDCurrencyProvider)))
+            if (!(context.Currencies.Any(u => u.Provider == DomainConstants.DefaultUSDCurrencyProvider)))
             {
                 var defaultCurrencies = new List<Currency>()
                 {
@@ -64,28 +67,28 @@ namespace Benefit.Domain.Migrations
                     {
                         Id = "125c1e97-f765-45e7-b47a-36a99c28947a",
                         Name = "UAH",
-                        Provider = Common.Constants.DomainConstants.DefaultUSDCurrencyProvider,
+                        Provider = DomainConstants.DefaultUSDCurrencyProvider,
                         Rate = 1
                     },
                     new Currency()
                     {
                         Id = "225c1e97-f765-45e7-b47a-36a99c28947a",
                         Name = "USD",
-                        Provider = Common.Constants.DomainConstants.DefaultUSDCurrencyProvider,
+                        Provider = DomainConstants.DefaultUSDCurrencyProvider,
                         Rate = 1
                     },
                     new Currency()
                     {
                         Id = "325c1e97-f765-45e7-b47a-36a99c28947a",
                         Name = "EUR",
-                        Provider = Common.Constants.DomainConstants.DefaultUSDCurrencyProvider,
+                        Provider = DomainConstants.DefaultUSDCurrencyProvider,
                         Rate = 1
                     },
                     new Currency()
                     {
                         Id = "425c1e97-f765-45e7-b47a-36a99c28947a",
                         Name = "RUR",
-                        Provider = Common.Constants.DomainConstants.DefaultUSDCurrencyProvider,
+                        Provider = DomainConstants.DefaultUSDCurrencyProvider,
                         Rate = 1
                     }
                 };

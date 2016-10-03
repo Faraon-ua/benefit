@@ -93,10 +93,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return PartialView(productsViewModel);
         }
 
+
         public ActionResult CreateOrUpdate(string id)
         {
             //todo: add check for seller role
-            var seller = db.Sellers.FirstOrDefault(entry => User.Identity.Name == entry.Owner.UserName);
             var product = db.Products.Include("Category").Include(entry=>entry.Category.ProductParameters).FirstOrDefault(entry=>entry.Id == id) ??
                           new Product()
                           {
@@ -107,8 +107,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var resultCurrencies =
                 db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider)
                     .OrderBy(entry => entry.Id).ToList();
-            var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id);
-            resultCurrencies.AddRange(sellerCurrencies);
+            if (User.IsInRole(DomainConstants.SellerRoleName))
+            {
+                var seller = db.Sellers.FirstOrDefault(entry => User.Identity.Name == entry.Owner.UserName);
+                var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id);
+                resultCurrencies.AddRange(sellerCurrencies);
+            }
             ViewBag.CurrencyId = new SelectList(resultCurrencies, "Id", "ExpandedName", product.CurrencyId);
             return View(product);
         }

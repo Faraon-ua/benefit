@@ -1,31 +1,337 @@
 ﻿@{
-    ViewBag.Title = "Home Page";
+    ViewBag.Title = "Головна";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="http://asp.net" class="btn btn-primary btn-large">Learn more &raquo;</a></p>
+<div class="top_slider">
+    <img class="item" src="~/Content/img/top_slide_1.jpg">
+    <img class="item" src="~/Content/img/top_slide_1.jpg">
 </div>
-
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-    </div>
+<!-- product carousel -->
+<p class="center_p">Акційні пропозиції</p>
+<div class="product_carousel">
+    <!-- product item -->
+    <a class="item product_item" href="#">
+        <div class="product_special">
+            <div class="special red">-45%</div>
+            <div class="special orange">бонус 15%</div>
+        </div>
+        <div class="img" style="background-image: url('http://www.mercedes-benz.ru/content/media_library/hq/hq_mpc_reference_site/passenger_cars_ng/new_cars/models/slc/r172/pad_10-2015/model_navigation_library/mercedes-benz-slc-r172_model_navigation_960x298_10-2015_jpg.object-Single-MEDIA.tmp/mercedes-benz-slc_r172_model_navigation_960x298_10-2015.jpg');"></div>
+        <p>Тур у Європу  6 дн.</p>
+        <span class="price old">3999,00 грн</span>
+        <span class="price new">2345,00 грн</span>
+    </a>
+    <!-- .product item -->
+    <!-- product item -->
+    <a class="item product_item" href="#">
+        <div class="product_special">
+            <div class="special red">-35%</div>
+            <div class="special orange">бонус 3%</div>
+        </div>
+        <div class="img" style="background-image: url('http://gallery.ykt.ru/galleries/mobil/2015/12/04/1973552_0.png');"></div>
+        <p>Гавайська</p>
+        <span class="price old">53,00 грн</span>
+        <span class="price new">39,00 грн</span>
+    </a>
+    <!-- .product item -->
+    <!-- product item -->
+    <a class="item product_item" href="#">
+        <div class="product_special">
+            <div class="special red">-10%</div>
+            <div class="special orange">бонус 5%</div>
+        </div>
+        <div class="img" style="background-image: url('assets/img/product_3.jpg');"></div>
+        <p>iPhone SE</p>
+        <span class="price old">11800,00 грн</span>
+        <span class="price new">10400,00 грн</span>
+    </a>
+    <!-- .product item -->
+    <!-- product item -->
+    <a class="item product_item" href="#">
+        <div class="product_special">
+            <div class="special red">-30%</div>
+            <div class="special orange">бонус 10%</div>
+        </div>
+        <div class="img" style="background-image: url('assets/img/product_4.jpg');"></div>
+        <p>Шкіряний диван</p>
+        <span class="price old">229000,00 грн</span>
+        <span class="price new">153450,00 грн</span>
+    </a>
+    <!-- .product item -->
+    <!-- product item -->
+    <a class="item product_item" href="#">
+        <div class="product_special">
+            <div class="special red">-45%</div>
+            <div class="special orange">бонус 15%</div>
+        </div>
+        <div class="img" style="background-image: url('assets/img/product_1.jpg');"></div>			    		<p>Тур у Європу  6 дн.</p>
+        <span class="price old">3999,00 грн</span>
+        <span class="price new">2345,00 грн</span>
+    </a>
+    <!-- .product item -->
+    <!-- product item -->
+    <a class="item product_item" href="#">
+        <div class="product_special">
+            <div class="special red">-35%</div>
+            <div class="special orange">бонус 3%</div>
+        </div>
+        <div class="img" style="background-image: url('assets/img/product_2.jpg');"></div>
+        <p>Гавайська</p>
+        <span class="price old">53,00 грн</span>
+        <span class="price new">39,00 грн</span>
+    </a>
+    <!-- .product item -->
+    <!-- product item -->
+    <a class="item product_item" href="#">
+        <div class="product_special">
+            <div class="special red">-10%</div>
+            <div class="special orange">бонус 5%</div>
+        </div>
+        <div class="img" style="background-image: url('assets/img/product_3.jpg');"></div>
+        <p>iPhone SE</p>
+        <span class="price old">11800,00 грн</span>
+        <span class="price new">10400,00 грн</span>
+    </a>
+    <!-- .product item -->
+    <!-- product item -->
+    <a class="item product_item" href="#">
+        <div class="product_special">
+            <div class="special red">-30%</div>
+            <div class="special orange">бонус 10%</div>
+        </div>
+        <div class="img" style="background-image: url('assets/img/product_4.jpg');"></div>
+        <p>Шкіряний диван</p>
+        <span class="price old">229000,00 грн</span>
+        <span class="price new">153450,00 грн</span>
+    </a>
+    <!-- .product item -->
 </div>
+<!-- .product carousel -->
+<!-- product carousel -->
+<p class="center_p center_p_s">Ми рекомендуємо</p>
+<div class="product_carousel recomend_slider">
+    <!-- product item -->
+    <div class="item product_item">
+        <div class="product_special">
+            <div class="special orange">бонус до 15%</div>
+        </div>
+        <a href="#" class="img" style="background-image: url('assets/img/product_2_1.jpg');"></a>
+        <p><a href="#">Coral 24</a></p>
+        <span class="price desc">Туристична агенція</span>
+        <span class="rating_p">
+            <fieldset class="rating">
+                <input type="radio" id="1-star5" name="1-rating" value="5" /><label class="full" for="1-star5" title="5"></label>
+                <input type="radio" id="1-star4" name="1-rating" value="4" /><label class="full" for="1-star4" title="4"></label>
+                <input checked type="radio" id="1-star3" name="1-rating" value="3" /><label class="full" for="1-star3" title="3"></label>
+                <input type="radio" id="1-star2" name="1-rating" value="2" /><label class="full" for="1-star2" title="2"></label>
+                <input type="radio" id="1-star1" name="1-rating" value="1" /><label class="full" for="1-star1" title="1"></label>
+            </fieldset>
+            15 відгуків
+        </span>
+        <div class="buttons">
+            <div>
+                <a href="#">Інфо</a>
+            </div>
+            <div>
+                <a href="#">Послуги</a>
+            </div>
+        </div>
+    </div>
+    <!-- .product item -->
+    <!-- product item -->
+    <div class="item product_item">
+        <div class="product_special">
+            <div class="special orange">бонус 10%</div>
+        </div>
+        <a href="#" class="img" style="background-image: url('assets/img/product_2_2.jpg');"></a>
+        <p><a href="#">Play</a></p>
+        <span class="price desc">Фітнес-студія</span>
+        <span class="rating_p">
+            <fieldset class="rating">
+                <input type="radio" id="2-star5" name="2-rating" value="5" /><label class="full" for="2-star5" title="5"></label>
+                <input type="radio" id="2-star4" name="2-rating" value="4" /><label class="full" for="2-star4" title="4"></label>
+                <input checked type="radio" id="2-star3" name="2-rating" value="3" /><label class="full" for="2-star3" title="3"></label>
+                <input type="radio" id="2-star2" name="2-rating" value="2" /><label class="full" for="2-star2" title="2"></label>
+                <input type="radio" id="2-star1" name="2-rating" value="1" /><label class="full" for="2-star1" title="1"></label>
+            </fieldset>
+            15 відгуків
+        </span>
+        <div class="buttons">
+            <div>
+                <a href="#">Інфо</a>
+            </div>
+            <div>
+                <a href="#">Послуги</a>
+            </div>
+        </div>
+    </div>
+    <!-- .product item -->
+    <!-- product item -->
+    <div class="item product_item">
+        <div class="product_special">
+            <div class="special orange">бонус 15%</div>
+        </div>
+        <a href="#" class="img" style="background-image: url('assets/img/product_2_3.jpg');"></a>
+        <p><a href="#">Greenwich Lounge Bar</a></p>
+        <span class="price desc">Ресторан</span>
+        <span class="rating_p">
+            <fieldset class="rating">
+                <input type="radio" id="3-star5" name="3-rating" value="5" /><label class="full" for="3-star5" title="5"></label>
+                <input type="radio" id="3-star4" name="3-rating" value="4" /><label class="full" for="3-star4" title="4"></label>
+                <input checked type="radio" id="3-star3" name="3-rating" value="3" /><label class="full" for="3-star3" title="3"></label>
+                <input type="radio" id="3-star2" name="3-rating" value="2" /><label class="full" for="3-star2" title="2"></label>
+                <input type="radio" id="3-star1" name="3-rating" value="1" /><label class="full" for="3-star1" title="1"></label>
+            </fieldset>
+            15 відгуків
+        </span>
+        <div class="buttons">
+            <div>
+                <a href="#">Інфо</a>
+            </div>
+            <div>
+                <a href="#">Послуги</a>
+            </div>
+        </div>
+    </div>
+    <!-- .product item -->
+    <!-- product item -->
+    <div class="item product_item">
+        <div class="product_special">
+            <div class="special orange">бонус 5%</div>
+        </div>
+        <a href="#" class="img" style="background-image: url('assets/img/product_2_4.jpg');"></a>
+        <p><a href="#">Koshik 24</a></p>
+        <span class="price desc">Міні-маркет</span>
+        <span class="rating_p">
+            <fieldset class="rating">
+                <input type="radio" id="4-star5" name="4-rating" value="5" /><label class="full" for="4-star5" title="5"></label>
+                <input type="radio" id="4-star4" name="4-rating" value="4" /><label class="full" for="4-star4" title="4"></label>
+                <input checked type="radio" id="4-star3" name="4-rating" value="3" /><label class="full" for="4-star3" title="3"></label>
+                <input type="radio" id="4-star2" name="4-rating" value="2" /><label class="full" for="4-star2" title="2"></label>
+                <input type="radio" id="4-star1" name="4-rating" value="1" /><label class="full" for="4-star1" title="1"></label>
+            </fieldset>
+            15 відгуків
+        </span>
+        <div class="buttons">
+            <div>
+                <a href="#">Інфо</a>
+            </div>
+            <div>
+                <a href="#">Послуги</a>
+            </div>
+        </div>
+    </div>
+    <!-- .product item -->
+    <!-- product item -->
+    <div class="item product_item">
+        <div class="product_special">
+            <div class="special orange">бонус до 15%</div>
+        </div>
+        <a href="#" class="img" style="background-image: url('assets/img/product_2_1.jpg');"></a>
+        <p><a href="#">Coral</a></p>
+        <span class="price desc">Туристична агенція</span>
+        <span class="rating_p">
+            <fieldset class="rating">
+                <input type="radio" id="1-star5" name="1-rating" value="5" /><label class="full" for="1-star5" title="5"></label>
+                <input type="radio" id="1-star4" name="1-rating" value="4" /><label class="full" for="1-star4" title="4"></label>
+                <input checked type="radio" id="1-star3" name="1-rating" value="3" /><label class="full" for="1-star3" title="3"></label>
+                <input type="radio" id="1-star2" name="1-rating" value="2" /><label class="full" for="1-star2" title="2"></label>
+                <input type="radio" id="1-star1" name="1-rating" value="1" /><label class="full" for="1-star1" title="1"></label>
+            </fieldset>
+            15 відгуків
+        </span>
+        <div class="buttons">
+            <div>
+                <a href="#">Інфо</a>
+            </div>
+            <div>
+                <a href="#">Послуги</a>
+            </div>
+        </div>
+    </div>
+    <!-- .product item -->
+    <!-- product item -->
+    <div class="item product_item">
+        <div class="product_special">
+            <div class="special orange">бонус 10%</div>
+        </div>
+        <a href="#" class="img" style="background-image: url('assets/img/product_2_2.jpg');"></a>
+        <p><a href="#">Play</a></p>
+        <span class="price desc">Фітнес-студія</span>
+        <span class="rating_p">
+            <fieldset class="rating">
+                <input type="radio" id="2-star5" name="2-rating" value="5" /><label class="full" for="2-star5" title="5"></label>
+                <input type="radio" id="2-star4" name="2-rating" value="4" /><label class="full" for="2-star4" title="4"></label>
+                <input checked type="radio" id="2-star3" name="2-rating" value="3" /><label class="full" for="2-star3" title="3"></label>
+                <input type="radio" id="2-star2" name="2-rating" value="2" /><label class="full" for="2-star2" title="2"></label>
+                <input type="radio" id="2-star1" name="2-rating" value="1" /><label class="full" for="2-star1" title="1"></label>
+            </fieldset>
+            15 відгуків
+        </span>
+        <div class="buttons">
+            <div>
+                <a href="#">Інфо</a>
+            </div>
+            <div>
+                <a href="#">Послуги</a>
+            </div>
+        </div>
+    </div>
+    <!-- .product item -->
+    <!-- product item -->
+    <div class="item product_item">
+        <div class="product_special">
+            <div class="special orange">бонус 15%</div>
+        </div>
+        <a href="#" class="img" style="background-image: url('assets/img/product_2_3.jpg');"></a>
+        <p><a href="#">Greenwich Lounge Bar</a></p>
+        <span class="price desc">Ресторан</span>
+        <span class="rating_p">
+            <fieldset class="rating">
+                <input type="radio" id="3-star5" name="3-rating" value="5" /><label class="full" for="3-star5" title="5"></label>
+                <input type="radio" id="3-star4" name="3-rating" value="4" /><label class="full" for="3-star4" title="4"></label>
+                <input checked type="radio" id="3-star3" name="3-rating" value="3" /><label class="full" for="3-star3" title="3"></label>
+                <input type="radio" id="3-star2" name="3-rating" value="2" /><label class="full" for="3-star2" title="2"></label>
+                <input type="radio" id="3-star1" name="3-rating" value="1" /><label class="full" for="3-star1" title="1"></label>
+            </fieldset>
+            15 відгуків
+        </span>
+        <div class="buttons">
+            <div>
+                <a href="#">Інфо</a>
+            </div>
+            <div>
+                <a href="#">Послуги</a>
+            </div>
+        </div>
+    </div>
+    <!-- .product item -->
+    <!-- product item -->
+    <div class="item product_item">
+        <div class="product_special">
+            <div class="special orange">бонус 5%</div>
+        </div>
+        <a href="#" class="img" style="background-image: url('assets/img/product_2_4.jpg');"></a>
+        <p><a href="#">Koshik 24</a></p>
+        <span class="price desc">Міні-маркет</span>
+        <span class="rating_p">
+            <fieldset class="rating">
+                <input type="radio" id="4-star5" name="4-rating" value="5" /><label class="full" for="4-star5" title="5"></label>
+                <input type="radio" id="4-star4" name="4-rating" value="4" /><label class="full" for="4-star4" title="4"></label>
+                <input checked type="radio" id="4-star3" name="4-rating" value="3" /><label class="full" for="4-star3" title="3"></label>
+                <input type="radio" id="4-star2" name="4-rating" value="2" /><label class="full" for="4-star2" title="2"></label>
+                <input type="radio" id="4-star1" name="4-rating" value="1" /><label class="full" for="4-star1" title="1"></label>
+            </fieldset>
+            15 відгуків
+        </span>
+        <div class="buttons">
+            <div>
+                <a href="#">Інфо</a>
+            </div>
+            <div>
+                <a href="#">Послуги</a>
+            </div>
+        </div>
+    </div>
+    <!-- .product item -->
+</div>
+<!-- .product carousel -->

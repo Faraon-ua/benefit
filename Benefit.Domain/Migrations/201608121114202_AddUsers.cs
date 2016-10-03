@@ -61,7 +61,7 @@ namespace Benefit.Domain.Migrations
                 .PrimaryKey(t => t.Id)
                 .ForeignKey("dbo.ApplicationUsers", t => t.ReferalId)
                 .Index(t => t.FullName)
-                .Index(t => t.CardNumber, unique: true)
+                .Index(t => t.CardNumber)
                 .Index(t => t.ExternalNumber, unique: true)
                 .Index(t => t.ReferalId)
                 .Index(t => t.Email, unique: true)

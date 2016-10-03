@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
@@ -23,11 +24,11 @@ namespace Benefit.Domain.Models
         public DateTime Time { get; set; }
         public OrderType OrderType { get; set; }
         public OrderStatus Status { get; set; }
-        public ApplicationUser User { get; set; }
-        public Seller Seller { get; set; }
+        public virtual Seller Seller { get; set; }
         [MaxLength(128)]
         public string SellerId { get; set; }
         [MaxLength(128)]
         public string UserId { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

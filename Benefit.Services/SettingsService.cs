@@ -70,6 +70,20 @@ namespace Benefit.Services
                 {
                     return int.Parse(ConfigurationManager.AppSettings["SellerLogoMaxHeight"]);
                 }
+            }    
+            public static int NewsLogoMaxWidth
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["NewsLogoMaxWidth"]);
+                }
+            }
+            public static int NewsLogoMaxHeight
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["NewsLogoMaxHeight"]);
+                }
             }     
         }
 

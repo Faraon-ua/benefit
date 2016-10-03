@@ -9,9 +9,14 @@ namespace Benefit.Domain.Models
     {
         public string Id { get; set; }
         [Required]
-        [MaxLength(64)]
+        [MaxLength(250)]
         public string Name { get; set; }
+        [MaxLength(250)]
+        [Required]
+        public string UrlName { get; set; }
         public string Content { get; set; }
+        [MaxLength(128)]
+        public string ImageUrl { get; set; }
         public bool IsActive { get; set; }
         public bool IsNews { get; set; }
         public int Order { get; set; }

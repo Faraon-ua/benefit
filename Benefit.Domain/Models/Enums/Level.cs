@@ -4,6 +4,7 @@
     {
         Ultimate,
         Premium,
-        Standart
+        Standart,
+        Client
     }
 }

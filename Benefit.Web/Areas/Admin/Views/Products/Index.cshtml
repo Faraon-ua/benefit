@@ -16,7 +16,7 @@
         function LockUnlock(id) {
             $.post(routePrefix + "/Admin/Products/LockUnlock?id=" + id,
                 function (data) {
-                    flashSuccess("Статус товару змінено");
+                    flashMessage("Статус товару змінено");
                     $(".lockUser-" + id).removeClass("icon-lock");
                     $(".lockUser-" + id).removeClass("icon-unlock");
                     if (data) {
@@ -32,7 +32,7 @@
                 $.post(routePrefix + "/Admin/Products/Delete?id=" + id,
                     function (data) {
                         if (data) {
-                            flashSuccess("Товар видалено");
+                            flashMessage("Товар видалено");
                             $("#tr-" + id).remove();
                         }
                     });

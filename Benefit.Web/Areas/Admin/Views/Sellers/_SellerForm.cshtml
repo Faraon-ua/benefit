@@ -1,4 +1,5 @@
-﻿@using Benefit.Common.Extensions
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
 @model Benefit.Web.Models.Admin.SellerViewModel
 
 <div class="form-horizontal">
@@ -18,7 +19,16 @@
             @Html.TextBoxFor(m => m.Seller.UrlName, new { @class = "col-xs-10 col-sm-5 urlName" })
         </div>
     </div>
-     <div class="form-group">
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Категорія</label>
+            <div class="col-md-9">
+                @Html.DropDownList("Seller.SellerCategories[0].CategoryId", ViewBag.Categories as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select col-xs-10 col-sm-5" })
+            </div>
+        </div>
+    }
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Текст кнопки каталога</label>
 
         <div class="col-sm-9">
@@ -33,6 +43,7 @@
             @Html.TextBoxFor(m => m.OwnerExternalId, new { @class = "col-xs-10 col-sm-5" })
             @if (Model.Seller.Owner != null)
             {
+                @Html.HiddenFor(m => m.Seller.OwnerId)
                 @Html.ActionLink("Перейти до власника", "Edit", "Users", new { id = Model.Seller.Owner.Id }, new { target = "_blank" })
             }
         </div>
@@ -43,6 +54,8 @@
 
         <div class="col-sm-9">
             @Html.TextBoxFor(m => m.WebSiteReferaExternalId, new { @class = "col-xs-10 col-sm-5" })
+            @Html.HiddenFor(m => m.Seller.WebSiteReferalId)
+
             @if (Model.Seller.WebSiteReferal != null)
             {
                 @Html.ActionLink("Перейти до реферала веб сайту", "Edit", "Users", new { id = Model.Seller.WebSiteReferal.Id }, new { target = "_blank" })
@@ -55,6 +68,8 @@
 
         <div class="col-sm-9">
             @Html.TextBoxFor(m => m.BenefitCardReferaExternalId, new { @class = "col-xs-10 col-sm-5" })
+            @Html.HiddenFor(m => m.Seller.BenefitCardReferalId)
+
             @if (Model.Seller.BenefitCardReferal != null)
             {
                 @Html.ActionLink("Перейти до реферала Benefit Card", "Edit", "Users", new { id = Model.Seller.BenefitCardReferal.Id }, new { target = "_blank" })
@@ -69,7 +84,7 @@
             @Html.TextAreaFor(entry => entry.Seller.Description, new { id = "sellerDescription", cols = 70, rows = 5 })
         </div>
     </div>
-    
+
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Активний</label>
 

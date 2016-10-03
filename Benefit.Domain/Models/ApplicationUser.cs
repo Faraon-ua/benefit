@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web.Mvc;
 using Benefit.Domain.Models.Enums;
+using Benefit.Domain.ValidationAttributes;
 
 namespace Benefit.Domain.Models
 {
@@ -17,8 +19,11 @@ namespace Benefit.Domain.Models
         [MaxLength(64)]
         [Index]
         public string FullName { get; set; }
-        [Index(IsUnique = true)]
-        [MaxLength(10)]
+//        [MaxLength(24)]
+//        public string FinancialPassword { get; set; }
+        [Remote("IsCardUnique", "Validation")]
+//        [Index]
+//        [MaxLength(10)]
         public string CardNumber { get; set; }
         [Required]
         [Index(IsUnique = true)]

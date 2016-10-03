@@ -27,20 +27,20 @@ function onFailure() {
 $(function () {
     try {
         $('.number-input').mask("#");
-    } catch(err) {
-        
+    } catch (err) {
+
     }
 
     setTimeout(function () {
         $("#flashMessage").html("");
     }, 10000);
 
-  /*  $(".urlName").focus(function () {
-        if ($(this).val() == "") {
-            var originalName = $(".name").val();
-            $(this).val(urlRusLat(originalName));
-        }
-    });*/
+    /*  $(".urlName").focus(function () {
+          if ($(this).val() == "") {
+              var originalName = $(".name").val();
+              $(this).val(urlRusLat(originalName));
+          }
+      });*/
 
     $("body").on('focus', '.urlName', function () {
         if ($(this).val() == "") {
@@ -78,9 +78,13 @@ function CheckSearchLength() {
     }
 }
 
-function flashSuccess(text) {
+function flashMessage(text, error) {
+    var status = "alert-success";
+    if (error) {
+        status = "alert-danger";
+    }
     $("#flashMessage").html(
-        "<p class='alert alert-success'>" + text + "</p>"
+        "<p class='alert " + status + "'>" + text + "</p>"
     );
     setTimeout(function () {
         $("#flashMessage").html("");

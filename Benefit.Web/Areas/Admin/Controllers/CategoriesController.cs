@@ -17,14 +17,24 @@ namespace Benefit.Web.Areas.Admin.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private LocalizationService LocalizationService = new LocalizationService();
 
+        [Authorize(Roles = "Admin, Seller")]
         public ActionResult CategoriesList(string parentCategoryId = null)
         {
+            if (User.IsInRole("Seller"))
+            {
+                var seller = db.Sellers.FirstOrDefault(entry => User.Identity.Name == entry.Owner.UserName);
+                if (seller.SellerCategories.Any())
+                {
+                    parentCategoryId = seller.SellerCategories.First().CategoryId;
+                }
+            }
             var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry=>entry.Order);
             var viewModel = new KeyValuePair<string, IEnumerable<Category>>(parentCategoryId, cats);
             return PartialView("_CategoriesList", viewModel);
         }
 
         // GET: /Admin/Categories/
+        [Authorize(Roles = "Admin, Seller")]
         public ActionResult Index()
         {
             return View();
@@ -45,6 +55,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Categories/Create
+        [Authorize(Roles = "Admin, Seller")]
         public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
             var category = db.Categories.Find(id) ?? new Category() { Id = Guid.NewGuid().ToString(), ParentCategoryId = parentCategoryId };
@@ -54,6 +65,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin, Seller")]
         public ActionResult CreateOrUpdate(Category category, HttpPostedFileBase categoryImage)
         {
             if (categoryImage != null && categoryImage.ContentLength > 0)

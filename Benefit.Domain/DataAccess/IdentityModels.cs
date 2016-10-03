@@ -29,18 +29,20 @@ namespace Benefit.Domain.DataAccess
         public DbSet<ProductParameter> ProductParameters { get; set; }
         public DbSet<ProductParameterValue> ProductParameterValues { get; set; }
         public DbSet<ProductParameterProduct> ProductParameterProducts { get; set; }
-
-        //        public DbSet<InfoPage> InfoPages { get; set; }
-        //        public DbSet<Filter> Filters { get; set; }
+        public DbSet<InfoPage> InfoPages { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ApplicationUser>().Property(e => e.Email).HasColumnAnnotation(
                 IndexAnnotation.AnnotationName,
                 new IndexAnnotation(new IndexAttribute() { IsUnique = true }));
+            modelBuilder.Entity<ApplicationUser>().Property(e => e.CardNumber).HasColumnAnnotation(
+              IndexAnnotation.AnnotationName,
+              new IndexAnnotation(new IndexAttribute() { IsUnique = false }));
             modelBuilder.Entity<ApplicationUser>().Property(e => e.PhoneNumber).HasColumnAnnotation(
                 IndexAnnotation.AnnotationName,
                 new IndexAnnotation(new IndexAttribute() { IsUnique = true }));
+            modelBuilder.Entity<ApplicationUser>().Property(e => e.CardNumber).HasMaxLength(10);
             modelBuilder.Entity<ApplicationUser>().Property(e => e.PhoneNumber).HasMaxLength(16);
             modelBuilder.Entity<ApplicationUser>().Property(e => e.Email).HasMaxLength(64);
             modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId);

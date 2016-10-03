@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@using Benefit.Common.Constants
+@using Microsoft.AspNet.Identity
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <meta charset="utf-8" />
@@ -255,7 +257,7 @@
                             <img class="nav-user-photo" src="" alt="Jason's Photo" />
                             <span class="user-info">
                                 <small>Welcome,</small>
-                                Jason
+                                @((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("FullName")
                             </span>
 
                             <i class="icon-caret-down"></i>
@@ -346,18 +348,34 @@
                             <span class="menu-text">Головна</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="@Url.Action("Index", "Users")">
-                            <i class="icon-group"></i>
-                            <span class="menu-text"> Партнери </span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="@Url.Action("Index", "Sellers")">
-                            <i class="icon-truck"></i>
-                            <span class="menu-text"> Постачальники </span>
-                        </a>
-                    </li>
+                    @if (User.IsInRole(DomainConstants.AdminRoleName))
+                    {
+                        <li>
+                            <a href="@Url.Action("Index", "Users")">
+                                <i class="icon-group"></i>
+                                <span class="menu-text"> Партнери </span>
+                            </a>
+                        </li>
+                    }
+                    @if (User.IsInRole(DomainConstants.AdminRoleName))
+                    {
+                        <li>
+                            <a href="@Url.Action("Index", "Sellers")">
+                                <i class="icon-truck"></i>
+                                <span class="menu-text"> Постачальники </span>
+                            </a>
+                        </li>
+                    }
+                    else if (User.IsInRole(DomainConstants.SellerRoleName))
+                    {
+                        <li>
+                            <a href="@Url.Action("UpdateSellerByOwenrId", "Sellers", new { ownerId = User.Identity.GetUserId() })">
+                                <i class="icon-truck"></i>
+                                <span class="menu-text"> Дані постачальника </span>
+                            </a>
+                        </li>
+                    }
+
                     <li>
                         <a href="@Url.Action("Index", "Categories")">
                             <i class="icon-list"></i>
@@ -396,13 +414,15 @@
                             </ul>
                         </li>*@
 
-
-                    <li>
-                        <a href="@Url.Action("Index", "InfoPages")">
-                            <i class="icon-desktop"></i>
-                            <span class="menu-text">Інформаційні сторінки</span>
-                        </a>
-                    </li>
+                    @if (User.IsInRole(DomainConstants.AdminRoleName))
+                    {
+                        <li>
+                            <a href="@Url.Action("Index", "InfoPages")">
+                                <i class="icon-desktop"></i>
+                                <span class="menu-text">Інформаційні сторінки</span>
+                            </a>
+                        </li>
+                    }
                 </ul><!-- /.nav-list -->
 
                 <div class="sidebar-collapse" id="sidebar-collapse">

@@ -93,6 +93,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.FtpClient, Version=1.0.5824.34026, Culture=neutral, PublicKeyToken=fa4be07daa57c2b7, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Net.FtpClient.1.0.5824.34026\lib\net40\System.Net.FtpClient.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -204,13 +208,6 @@
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\InfoPagesController.cs" />
-    <Compile Include="Areas\Admin\Aspx\Editor.aspx.cs">
-      <DependentUpon>Editor.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Areas\Admin\Aspx\Editor.aspx.designer.cs">
-      <DependentUpon>Editor.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Areas\Admin\Controllers\ProductParametersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SellersController.cs" />
@@ -218,6 +215,7 @@
     <Compile Include="Attributes\CustomAuthorization.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -554,19 +552,63 @@
     <Content Include="Areas\Admin\assets\js\x-editable\ace-editable.min.js" />
     <Content Include="Areas\Admin\assets\js\x-editable\bootstrap-editable.min.js" />
     <Content Include="Areas\Admin\styles\categories.css" />
-    <Content Include="Areas\Admin\Aspx\Editor.aspx" />
     <Content Include="Content\address.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\common.css" />
-    <Content Include="Content\images\flags\ru.png" />
-    <Content Include="Content\images\flags\uk.png" />
+    <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\img\at.png" />
+    <Content Include="Content\img\banner.png" />
+    <Content Include="Content\img\flags\ru.png" />
+    <Content Include="Content\img\flags\uk.png" />
+    <Content Include="Content\img\flag_ua.png" />
+    <Content Include="Content\img\icon_dropdown.png" />
+    <Content Include="Content\img\icon_location.png" />
+    <Content Include="Content\img\icon_phone.png" />
+    <Content Include="Content\img\icon_search.png" />
+    <Content Include="Content\img\icon_top_bar.png" />
+    <Content Include="Content\img\logo.png" />
+    <Content Include="Content\img\padlock.png" />
+    <Content Include="Content\img\product_1.jpg" />
+    <Content Include="Content\img\product_2.jpg" />
+    <Content Include="Content\img\product_2_1.jpg" />
+    <Content Include="Content\img\product_2_2.jpg" />
+    <Content Include="Content\img\product_2_3.jpg" />
+    <Content Include="Content\img\product_2_4.jpg" />
+    <Content Include="Content\img\product_3.jpg" />
+    <Content Include="Content\img\product_4.jpg" />
+    <Content Include="Content\img\soc_1.png" />
+    <Content Include="Content\img\soc_2.png" />
+    <Content Include="Content\img\soc_2_1.png" />
+    <Content Include="Content\img\soc_2_2.png" />
+    <Content Include="Content\img\soc_2_3.png" />
+    <Content Include="Content\img\soc_2_4.png" />
+    <Content Include="Content\img\soc_2_5.png" />
+    <Content Include="Content\img\soc_2_6.png" />
+    <Content Include="Content\img\soc_3.png" />
+    <Content Include="Content\img\soc_4.png" />
+    <Content Include="Content\img\soc_5.png" />
+    <Content Include="Content\img\soc_6.png" />
+    <Content Include="Content\img\tablet\icon_basket.png" />
+    <Content Include="Content\img\tablet\icon_envelop.png" />
+    <Content Include="Content\img\tablet\icon_location.png" />
+    <Content Include="Content\img\tablet\icon_menu_left.png" />
+    <Content Include="Content\img\tablet\icon_menu_right.png" />
+    <Content Include="Content\img\tablet\icon_search.png" />
+    <Content Include="Content\img\tablet\logo.png" />
+    <Content Include="Content\img\top_slide_1.jpg" />
+    <Content Include="Content\img\wrong.png" />
+    <Content Include="Content\jquery-ui.css" />
+    <Content Include="Content\css\main.css" />
+    <Content Include="Content\css\media.css" />
+    <Content Include="Content\owl.carousel.css" />
     <Content Include="Content\validation-errors.css" />
     <Content Include="EmailTemplates\PasswordChanged.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Content\img\fav.jpg" />
     <Content Include="Scripts\address.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -637,10 +679,8 @@
     <Content Include="Areas\Admin\Views\Categories\CreateOrUpdate.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\_CategoryLocalizedInfo.cshtml" />
-    <Content Include="Areas\Admin\Views\InfoPages\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\InfoPages\CreateOrUpdate.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\Delete.cshtml" />
-    <Content Include="Areas\Admin\Views\InfoPages\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\InfoPages\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\Index.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\_PageLocalizedInfo.cshtml" />
     <Content Include="Scripts\ckeditor\adapters\jquery.js" />
@@ -686,6 +726,7 @@
     <Content Include="Areas\Admin\Views\Products\_ProductOptions.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductOption.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterValue.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Import.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />
     <Content Include="Scripts\ckeditor\config.js" />
@@ -1040,12 +1081,16 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery-2.2.3.min.js" />
+    <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\owl.carousel.min.js" />
+    <Content Include="Scripts\scripts.js" />
     <Content Include="Scripts\sorting-filtering.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\prettify.js" />
@@ -1079,6 +1124,8 @@
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\uploadPartial.cshtml" />
+    <Content Include="Views\Shared\_SocialGroups.cshtml" />
+    <Content Include="Views\Shared\_Categories.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1130,10 +1177,6 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\licenses.licx" />
   </ItemGroup>
-  <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-  </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />

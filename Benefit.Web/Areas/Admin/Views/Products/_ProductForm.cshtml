@@ -1,4 +1,5 @@
-﻿@using Benefit.Common.Extensions
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
 @model  Benefit.Domain.Models.Product
 
 <div class="form-horizontal">
@@ -55,13 +56,13 @@
             @Html.ValidationMessageFor(model => model.IsActive)
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Категорія</label>
-        <div class="col-md-9">
-            @Html.DropDownListFor(m=>m.CategoryId, null, "Не обрано", new { @class = "chosen-select col-xs-10 col-sm-5" })
-            @Html.ValidationMessageFor(model => model.CategoryId)
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Категорія</label>
+            <div class="col-md-9">
+                @Html.DropDownListFor(m=>m.CategoryId, null, "Не обрано", new { @class = "chosen-select col-xs-10 col-sm-5" })
+                @Html.ValidationMessageFor(model => model.CategoryId)
+            </div>
         </div>
-    </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Постачальник</label>
         <div class="col-md-9">

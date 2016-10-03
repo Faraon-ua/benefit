@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Web;
+using System.Net;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Xml;
+using System.Xml.Linq;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -18,6 +22,45 @@ namespace Benefit.Web.Areas.Admin.Controllers
     public class SellersController : AdminController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private UserManager<ApplicationUser> UserManager { get; set; }
+
+        public SellersController()
+        {
+            var userStore = new UserStore<ApplicationUser>(db);
+            UserManager = new UserManager<ApplicationUser>(userStore);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Import1C(string id)
+        {
+            try
+            {
+                foreach (string file in Request.Files)
+                {
+                    var fileContent = Request.Files[file];
+                    if (fileContent != null && fileContent.ContentLength > 0)
+                    {
+                        // get a stream
+                        var xml = XDocument.Load(fileContent.InputStream);
+
+
+                    }
+                }
+            }
+            catch (XmlException)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json("Завантажений файл має невірну структуру");
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                return Json("Помилка імпорту файлу");
+            }
+
+            return Json("Імпорт файлу успішно виконаний");
+        }
+
         public ActionResult GetSellerGallery(string id)
         {
             var seller = db.Sellers.Find(id);
@@ -56,7 +99,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                 if (!string.IsNullOrEmpty(filters.CategoryId))
                 {
-                    sellers = sellers.Where(entry => entry.SellerCategories.Select(sc=>sc.CategoryId).Contains(filters.CategoryId));
+                    sellers = sellers.Where(entry => entry.SellerCategories.Select(sc => sc.CategoryId).Contains(filters.CategoryId));
                 }
                 if (filters.TotalDiscountPercent.HasValue)
                 {
@@ -74,6 +117,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Sellers/
+        [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
             var routeCats = db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Name);
@@ -88,8 +132,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Sellers/Create
+        public ActionResult UpdateSellerByOwenrId(string ownerId)
+        {
+            var owner = db.Users.Find(ownerId);
+            if (owner == null) return HttpNotFound();
+            if (!owner.OwnedSellers.Any()) return HttpNotFound();
+            return RedirectToAction("CreateOrUpdate", new { id = owner.OwnedSellers.First().Id });
+        }
+
         public ActionResult CreateOrUpdate(string id = null)
         {
+            string sellerCategory = string.Empty;
             var existingSeller = db.Sellers.Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {
@@ -107,7 +160,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     seller.BenefitCardReferaExternalId = existingSeller.BenefitCardReferal.ExternalNumber;
                 if (existingSeller.WebSiteReferal != null)
                     seller.WebSiteReferaExternalId = existingSeller.WebSiteReferal.ExternalNumber;
+                sellerCategory = seller.Seller.SellerCategories.Any()
+                    ? seller.Seller.SellerCategories.ElementAt(0).CategoryId
+                    : string.Empty;
             }
+            ViewBag.Categories = db.Categories.ToList().Select(
+                entry =>
+                    new SelectListItem()
+                    {
+                        Text = entry.ExpandedName,
+                        Value = entry.Id,
+                        Selected = entry.Id == sellerCategory
+                    });
             return View(seller);
         }
 
@@ -151,7 +215,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var seller = sellervm.Seller;
-                seller.OwnerId = owner.Id;
+                if (seller.OwnerId != owner.Id)
+                {
+                    //remove old owner a seller role if it was his only seller
+                    if (owner.OwnedSellers.Count == 1)
+                    {
+                        UserManager.RemoveFromRole(seller.OwnerId, "Seller");
+                    }
+                    //add new owner a seller role
+                    UserManager.AddToRole(owner.Id, "Seller");
+                    seller.OwnerId = owner.Id;
+                }
+
                 seller.WebSiteReferalId = websiteReferal == null ? null : websiteReferal.Id;
                 seller.BenefitCardReferalId = benefitCardReferal == null ? null : benefitCardReferal.Id;
                 seller.LastModified = DateTime.UtcNow;
@@ -162,13 +237,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 seller.Addresses.ForEach(entry => entry.SellerId = sellerId);
                 seller.ShippingMethods.ForEach(entry => entry.SellerId = sellerId);
                 seller.Schedules.ForEach(entry => entry.SellerId = sellerId);
+                seller.SellerCategories.ForEach(entry => entry.SellerId = sellerId);
 
                 var currenciesToAdd = seller.Currencies.Where(entry => entry.Id == null).ToList();
                 currenciesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
 
                 var addressesToAdd = seller.Addresses.Where(entry => entry.Id == null).ToList();
-                addressesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString()); 
-                
+                addressesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
+
                 var shippingMethodsToAdd = seller.ShippingMethods.Where(entry => entry.Id == null).ToList();
                 shippingMethodsToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
 
@@ -200,7 +276,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 foreach (var address in seller.Addresses.Except(addressesToAdd))
                 {
                     db.Entry(address).State = EntityState.Modified;
-                } 
+                }
                 foreach (var shipping in seller.ShippingMethods.Except(shippingMethodsToAdd))
                 {
                     db.Entry(shipping).State = EntityState.Modified;
@@ -218,6 +294,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         db.Entry(schedule).State = EntityState.Modified;
                     }
                 }
+                //categories
+                db.SellerCategories.RemoveRange(db.SellerCategories.Where(entry => entry.SellerId == sellerId));
+                if (seller.SellerCategories.Any())
+                {
+                    seller.SellerCategories.ForEach(entry =>
+                    {
+                        entry.CustomDiscount = seller.TotalDiscount;
+                        db.SellerCategories.Add(entry);
+                    });
+                }
+
                 var logo = Request.Files[0];
                 if (logo != null && logo.ContentLength != 0)
                 {
@@ -246,7 +333,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.SaveChanges();
                 return RedirectToAction("CreateOrUpdate", new { id = seller.Id });
             }
-
+            var sellerCategory = sellervm.Seller.SellerCategories.Any()
+                   ? sellervm.Seller.SellerCategories.ElementAt(0).CategoryId
+                   : string.Empty;
+            ViewBag.Categories =
+                db.Categories.ToList().Select(
+                    entry =>
+                        new SelectListItem()
+                        {
+                            Text = entry.ExpandedName,
+                            Value = entry.Id,
+                            Selected = entry.Id == sellerCategory
+                        });
             return View(sellervm);
         }
 
