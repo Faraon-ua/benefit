@@ -1131,6 +1131,10 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Models\ViewModels\" />
     <Folder Include="Content\UserFiles\" />
+    <Folder Include="Images\NewsLogo\" />
+    <Folder Include="Images\ProductGallery\" />
+    <Folder Include="Images\SellerGallery\" />
+    <Folder Include="Images\SellerLogo\" />
     <Folder Include="Images\uploads\" />
     <Folder Include="Views\Localizations\" />
   </ItemGroup>
