@@ -11,6 +11,7 @@ namespace Benefit.Domain.Models
         public Product()
         {
             Images = new Collection<Image>();
+            ProductOptions = new Collection<ProductOption>();
         }
 
         [Key]
@@ -25,7 +26,7 @@ namespace Benefit.Domain.Models
         public string UrlName { get; set; }
         [Index]
         public int SKU { get; set; }
-        [Required]
+        [Required(AllowEmptyStrings = true)]
         public string Description { get; set; }
         public double Price { get; set; }
         public int? Amount { get; set; }
@@ -46,5 +47,6 @@ namespace Benefit.Domain.Models
         public virtual Currency Currency { get; set; }
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
+        public virtual ICollection<ProductOption> ProductOptions { get; set; }
     }
 }

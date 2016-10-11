@@ -46,6 +46,11 @@ header.fixed {
 	vertical-align: top;
 	width: 225px;
 }
+.container_table .col-3 {
+	display: table-cell;
+	vertical-align: top;
+	width: 350px;
+}
 .container_table .col-2:first-child {
 	width: 242px;
 }
@@ -949,11 +954,6 @@ footer > .container > .row > .col-md-2 { padding: 0; }
 	width: 100%;
 	text-align: center;
 }
-
-
-
-
-
 .rating { 
 	border: none;
 	float: left;
@@ -1001,3 +1001,4 @@ footer > .container > .row > .col-md-2 { padding: 0; }
 .form-control:focus {
 	box-shadow: none;
 }
+

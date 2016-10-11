@@ -1,0 +1,16 @@
+﻿@model Benefit.Domain.Models.ProductParameterValue
+<div id="dialog" title="Додати значення характеристики" class="hide">
+    <div class="ui-dialog-content ui-widget-content" id="dialog-confirm" style="width: auto; min-height: 27px; max-height: none; height: auto;">
+        @using (Html.BeginForm("CreateOrUpdateValue", "ProductParameters"))
+        {
+            @Html.AntiForgeryToken()
+            
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.ProductParameterId)
+            @Html.Hidden("categoryId", (string)ViewBag.CategoryId)
+            
+            @Html.TextBoxFor(m => m.ParameterValue, new { placeholder = "Значення", @class = "col-sm-12 name" })
+            @Html.TextBoxFor(m => m.ParameterValueUrl, new { placeholder = "Url назва", @class = "col-sm-12 urlName" })
+        }
+    </div>
+</div>

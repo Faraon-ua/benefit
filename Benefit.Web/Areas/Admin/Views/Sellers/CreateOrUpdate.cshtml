@@ -55,7 +55,7 @@
                             processData: false,
                             data: data,
                             success: function (result) {
-                                flashMessage(result);
+                                flashMessage(result.message);
                             },
                             error: function (xhr) {
                                 flashMessage(xhr.responseJSON, true);
@@ -131,7 +131,7 @@
                             $.each(data, function (key, value) {
                                 var mockFile = { name: value.ImageUrl, size: 100000 };
                                 thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile, routePrefix + "/Images/SellerGallery/" + value.ImageUrl);
+                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile, routePrefix + "/Images/SellerGallery/" + value.SellerId + "/" + value.ImageUrl);
                             });
 
                         });

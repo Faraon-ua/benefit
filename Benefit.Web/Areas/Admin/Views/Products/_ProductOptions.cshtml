@@ -1,49 +1,9 @@
 ﻿@model Benefit.Domain.Models.Product
 @if (Model.Category == null)
 {
-    <div>Редагування характеристик доступно після збереження продукта</div>
+    <div>Редагування опцій доступно після збереження продукта</div>
 }
 else
 {
-    foreach (var group in Model.Category.ProductParameters.Where(entry => entry.ParentProductParameterId == null))
-    {
-        <div>
-            <h3>@group.Name</h3>
-        </div>
-        <hr class="margin-top-0" />
-        foreach (var parameter in group.ChildProductParameters)
-        {
-            <div class="row">
-                @{
-            var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
-                }
-                <div class="col-sm-2">
-                    @parameter.Name (@type)
-                    @if (parameter.Type == typeof(string).ToString())
-                    {
-                        <a href="#" class="add-product-option-value" data-parameter-id="@parameter.Id" data-parameter-type="@parameter.Type">+ Додати значення</a>
-                    }
-                </div>
-                <div class="col-sm-3">
-                    @foreach (var parValue in Model.ProductParameterProducts.Where(entry => entry.ProductParameterId == parameter.Id))
-                    {
-                        if (parameter.Type == typeof(int).ToString() || parameter.Type == typeof(double).ToString())
-                        {
-                            <input name="ProductParameterProducts[{n}].StartValue" class="number-input product-option-value" value="@parValue.StartValue" />
-                            @parameter.MeasureUnit
-                            @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", parameter.Id)
-                        }
-                        else if (parameter.Type == typeof(string).ToString())
-                        {
-                            {
-                                @Html.Action("GetProductParameterDefinedValues", "ProductParameters", new { parameterId = parameter.Id, amount = parValue.Amount, selected = parValue.StartValue })
-                            }
-                        }
-                    }
-                </div>
-            </div>
-            <br />
-            <hr />
-        }
-    }
+    @Html.ActionLink("Редагувати опції", "Index", "ProductOptions", new { productId = Model.Id }, new { target = "blank" })
 }

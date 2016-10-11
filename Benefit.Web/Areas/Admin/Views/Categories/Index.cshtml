@@ -63,7 +63,7 @@
         });
 
         function DeleteCategory(id, name) {
-            if (!confirm('Видалити категорію ' + name + '?')) {
+            if (!confirm('Видалити категорію ' + name + ' і всі дочірні категорії?')) {
                 return false;
             }
             $.post(routePrefix + "/Admin/Categories/Delete?id=" + id,

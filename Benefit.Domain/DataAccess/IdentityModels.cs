@@ -26,6 +26,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<Image> Images { get; set; }
         public DbSet<Schedule> Schedules { get; set; }
         public DbSet<ShippingMethod> ShippingMethods { get; set; }
+        public DbSet<ProductOption> ProductOptions { get; set; }
         public DbSet<ProductParameter> ProductParameters { get; set; }
         public DbSet<ProductParameterValue> ProductParameterValues { get; set; }
         public DbSet<ProductParameterProduct> ProductParameterProducts { get; set; }

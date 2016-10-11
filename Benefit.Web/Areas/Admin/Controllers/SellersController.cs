@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
+using Benefit.Domain.ModelExtensions;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
+using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
@@ -23,6 +26,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserManager<ApplicationUser> UserManager { get; set; }
+        ProductsService ProductService = new ProductsService();
+        EmailService EmailService = new EmailService();
 
         public SellersController()
         {
@@ -33,6 +38,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<JsonResult> Import1C(string id)
         {
+            ProductImportResults results = null;
+
+            List<XmlCategory> xmlCategories = null;
+            List<XmlProduct> xmlProducts = null;
+            var xmlToDbCategoriesMapping = new Dictionary<string, string>();
+
+            var seller = db.Sellers.Find(id);
+            if (seller == null)
+            {
+                Response.StatusCode = (int)HttpStatusCode.NotFound;
+                return Json("Постачальника не знайдено");
+            }
             try
             {
                 foreach (string file in Request.Files)
@@ -42,8 +59,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         // get a stream
                         var xml = XDocument.Load(fileContent.InputStream);
+                        xmlCategories = xml.Descendants("Группы").First().Elements().Select(entry=>new XmlCategory(entry)).ToList();
+                        var defaultCategory = seller.SellerCategories.First(entry => entry.IsDefault).Category;
+                        var allDbCategories = defaultCategory.GetAllChildrenRecursively().ToList();
 
+                        foreach (var dbCategory in allDbCategories)
+                        {
+                            var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Name == dbCategory.Name);
+                            if (xmlCategory != null)
+                            {
+                                xmlToDbCategoriesMapping.Add(xmlCategory.Id, dbCategory.Id);
+                            }
+                        }
 
+                        xmlProducts = xml.Descendants("Товары").First().Elements().Select(entry => new XmlProduct(entry)).ToList();
+                        xmlProducts =
+                            xmlProducts.Where(
+                                entry =>
+                                    entry.Price.HasValue && xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
+                        xmlProducts.ForEach(entry=>entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
+                        results = ProductService.ProcessImportedProducts(xmlProducts, xmlToDbCategoriesMapping.Values, seller.Id);
+                        EmailService.SendImportResults(seller.Owner.Email, results);
                     }
                 }
             }
@@ -58,13 +94,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return Json("Помилка імпорту файлу");
             }
 
-            return Json("Імпорт файлу успішно виконаний");
+            return Json(new
+            {
+                message = "Імпорт файлу успішно виконаний"
+            });
         }
 
         public ActionResult GetSellerGallery(string id)
         {
             var seller = db.Sellers.Find(id);
-            return Json(seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).Select(entry => new { entry.ImageUrl }), JsonRequestBehavior.AllowGet);
+            return Json(seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).Select(entry => new { entry.ImageUrl, entry.SellerId }), JsonRequestBehavior.AllowGet);
         }
 
         private IEnumerable<Schedule> SetSellerSchedules()
@@ -237,7 +276,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 seller.Addresses.ForEach(entry => entry.SellerId = sellerId);
                 seller.ShippingMethods.ForEach(entry => entry.SellerId = sellerId);
                 seller.Schedules.ForEach(entry => entry.SellerId = sellerId);
-                seller.SellerCategories.ForEach(entry => entry.SellerId = sellerId);
+                seller.SellerCategories.ForEach(entry =>
+                {
+                    entry.SellerId = sellerId;
+                    entry.IsDefault = true;
+                });
 
                 var currenciesToAdd = seller.Currencies.Where(entry => entry.Id == null).ToList();
                 currenciesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());

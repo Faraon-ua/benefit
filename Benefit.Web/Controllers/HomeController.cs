@@ -6,14 +6,17 @@ using System.Net;
 using System.Net.FtpClient;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services;
+using Benefit.Web.Controllers.Base;
 using Benefit.Web.Models;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         [HttpGet]
         public ActionResult SearchRegion(string search, int minLevel)
@@ -78,6 +81,7 @@ namespace Benefit.Web.Controllers
             return Content(output);
         }
 
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public ActionResult Index()
         {
             return View();
@@ -103,7 +107,7 @@ namespace Benefit.Web.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                /* //string empty card numbers to null
+                 //string empty card numbers to null
                 db.Users.Where(entry=>entry.CardNumber == "").ForEach(entry =>
                 {
                     entry.CardNumber = null;
@@ -114,12 +118,13 @@ namespace Benefit.Web.Controllers
                 foreach (var seller in db.Sellers)
                 {
                     seller.Description = Server.HtmlDecode(seller.Description);
+                    seller.Name = seller.Name.Replace("&quot;", string.Empty);
                     db.Entry(seller).State = EntityState.Modified;
                 }
 
                 db.SaveChanges();
 
-                //resave seller images*/
+                //resave seller images
 
                 #region ftp
 
@@ -185,6 +190,7 @@ namespace Benefit.Web.Controllers
                         sellerImage.ImageUrl.Length - dotIndex);
 
                     var destPath = string.Empty;
+                    var sourcePath = Path.Combine(imagesPath, sellerImage.ImageUrl);
                     if (sellerImage.ImageType == ImageType.SellerLogo)
                     {
                         sellerImage.ImageUrl = sellerImage.SellerId + fileExt;
@@ -192,13 +198,15 @@ namespace Benefit.Web.Controllers
                     }
                     if (sellerImage.ImageType == ImageType.SellerGallery)
                     {
+                        Directory.CreateDirectory(Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId));
                         sellerImage.ImageUrl = sellerImage.Id + fileExt;
                         destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId, sellerImage.Id + fileExt);
                     }
-                    var sourcePath = Path.Combine(imagesPath, sellerImage.ImageUrl);
-                    System.IO.File.Copy(sourcePath, destPath, true);
-                    
-                    db.Entry(sellerImage).State = EntityState.Modified;
+                    if (System.IO.File.Exists(sourcePath))
+                    {
+                        System.IO.File.Copy(sourcePath, destPath, true);
+                        db.Entry(sellerImage).State = EntityState.Modified;
+                    }
                 }
 
                 db.SaveChanges();

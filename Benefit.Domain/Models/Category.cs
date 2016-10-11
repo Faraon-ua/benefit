@@ -16,7 +16,9 @@ namespace Benefit.Domain.Models
     {
         public Category()
         {
+            ProductOptions = new Collection<ProductOption>();
             ProductParameters = new Collection<ProductParameter>();
+            ChildCategories = new Collection<Category>();
         }
 
         [Key]
@@ -38,12 +40,14 @@ namespace Benefit.Domain.Models
         public bool IsActive { get; set; }
         public DateTime LastModified { get; set; }
         public string LastModifiedBy { get; set; }
+        [MaxLength(128)]
         public string ParentCategoryId { get; set; }
         public virtual Category ParentCategory { get; set; }
         public ICollection<Category> ChildCategories { get; set; }
         public ICollection<SellerCategory> SellerCategories { get; set; }
         public ICollection<Product> Products { get; set; } 
-        public ICollection<ProductParameter> ProductParameters { get; set; } 
+        public ICollection<ProductParameter> ProductParameters { get; set; }
+        public ICollection<ProductOption> ProductOptions { get; set; }
 
         [NotMapped]
         public List<Localization> Localizations { get; set; }

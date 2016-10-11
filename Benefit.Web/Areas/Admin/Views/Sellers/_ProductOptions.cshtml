@@ -1,0 +1,9 @@
+﻿@model Benefit.Domain.Models.Seller
+@if (Model.OwnerId == null)
+{
+    <div>Редагування опцій доступно після збереження постачальника</div>
+}
+else
+{
+    @Html.ActionLink("Редагувати опції", "Index", "ProductOptions", new { sellerId = Model.Id }, new { target = "blank" })
+}

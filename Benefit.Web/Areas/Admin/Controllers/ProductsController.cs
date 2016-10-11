@@ -28,9 +28,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
 
         [HttpGet]
-        public ActionResult Index(ProductFilterValues filters, int skip = 0, int take = ListConstants.DefaultTakePerPage)
+        public ActionResult Index(ProductFilterValues filters)
         {
             var resultProducts = new List<Product>();
+            int resultsCount = 0;
             if (filters.HasValues)
             {
                 IQueryable<Product> products = db.Products.AsQueryable();
@@ -66,12 +67,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             products = products.OrderBy(entry => entry.SKU);
                             break;
                         case ProductSortOption.SKUDesc:
-                            products = products.OrderByDescending(entry => entry.Name);
+                            products = products.OrderByDescending(entry => entry.SKU);
+                            break;
+                        case ProductSortOption.PriceAsc:
+                            products = products.OrderBy(entry => entry.Price);
+                            break;
+                        case ProductSortOption.PriceDesc:
+                            products = products.OrderByDescending(entry => entry.Price);
                             break;
                     }
                 }
-
-                resultProducts = products.OrderBy(entry => entry.SKU).Skip(skip).Take(take).ToList();
+                else
+                {
+                    products = products.OrderBy(entry => entry.SKU);
+                }
+                resultsCount = products.Count();
+                var skip = filters.Page > 0 ? ListConstants.DefaultTakePerPage*(filters.Page - 1) : 0;
+                resultProducts = products.Skip(skip).Take(ListConstants.DefaultTakePerPage).ToList();
             }
 
             var productsViewModel = new ProductsViewModel()
@@ -87,7 +99,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id }),
                     Sorting = (from ProductSortOption sortOption in Enum.GetValues(typeof(ProductSortOption))
                                select new SelectListItem() { Text = Enumerations.GetEnumDescription(sortOption), Value = sortOption.ToString(), Selected = sortOption == filters.Sorting }).ToList(),
-                    Search = filters.Search
+                    Search = filters.Search,
+                    PagesCount = resultsCount/ListConstants.DefaultTakePerPage
                 }
             };
             return PartialView(productsViewModel);
@@ -97,7 +110,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult CreateOrUpdate(string id)
         {
             //todo: add check for seller role
-            var product = db.Products.Include("Category").Include(entry=>entry.Category.ProductParameters).FirstOrDefault(entry=>entry.Id == id) ??
+            var product = db.Products.Include("Category").Include(entry => entry.Category.ProductParameters).FirstOrDefault(entry => entry.Id == id) ??
                           new Product()
                           {
                               Id = Guid.NewGuid().ToString()
@@ -126,7 +139,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = User.Identity.Name;
-                product.ProductParameterProducts.ForEach(entry=>entry.ProductId = product.Id);
+                product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
                 if (db.Products.Any(entry => entry.Id == product.Id))
                 {
                     db.Entry(product).State = EntityState.Modified;

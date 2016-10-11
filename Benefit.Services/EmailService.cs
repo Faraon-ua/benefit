@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using Benefit.Web.Models.Admin;
 
 namespace Benefit.Services
 {
@@ -62,8 +63,14 @@ namespace Benefit.Services
         public void PasswordChanged(string userEmail, string newPassword)
         {
             SendTemplatedEmail(System.Reflection.MethodInfo.GetCurrentMethod().Name, userEmail, "Ваш пароль було змінено", new[] { newPassword });
+        } 
+        
+        public void SendImportResults(string userEmail, ProductImportResults importResults)
+        {
+            SendTemplatedEmail(System.Reflection.MethodInfo.GetCurrentMethod().Name, userEmail, 
+                "Результати імпорту",
+                new[] { string.Join("<br/>", importResults.ProcessedCategories), string.Join("<br/>", importResults.IgnoredCategories), importResults.ProductsAdded.ToString(), importResults.ProductsUpdated.ToString(), importResults.ProductsRemoved.ToString() });
         }
-
 
         public void SendLoginFailed(string email, string accontName)
         {

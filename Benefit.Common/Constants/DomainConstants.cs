@@ -10,5 +10,6 @@
         public const string SellerRoleName = "Seller";
         public const string ContentManagerName = "ContentManager";
 
+        public const string SellerSessionIdKey = "SellerId";        
     }
 }

@@ -12,7 +12,7 @@ else
                     <th>
                         Код товару
                     </th>
-                     <th>
+                    <th>
                         Назва
                     </th>
                     <th>
@@ -23,6 +23,9 @@ else
                     </th>
                     <th>
                         Наявність
+                    </th>
+                    <th>
+                        Ціна
                     </th>
                     <th>
                         Дії
@@ -36,7 +39,7 @@ else
                         <td>
                             @product.SKU
                         </td>
-                         <td>
+                        <td>
                             @product.Name
                         </td>
                         <td>
@@ -46,8 +49,22 @@ else
                             @product.Seller.Name
                         </td>
                         <td>
-                            @product.Amount
-                        </td> 
+                            @if (product.Amount == 0)
+                            {
+                                <div class="icon-ban-circle red"></div>
+                            }
+                            else if (product.Amount == null)
+                            {
+                                <div class="icon-check-sign green"></div>
+                            }
+                            else
+                            {
+                                @product.Amount
+                            }
+                        </td>
+                        <td>
+                            @product.Price
+                        </td>
                         <td>
                             <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
                                 <a class="btn btn-xs btn-info" href="@Url.Action("CreateOrUpdate", new { id = product.Id })" target="_blank">

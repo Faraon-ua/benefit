@@ -1,5 +1,5 @@
-﻿using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using Benefit.Web.Filters;
 
 namespace Benefit.Web
 {
@@ -8,6 +8,7 @@ namespace Benefit.Web
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
             filters.Add(new HandleErrorAttribute());
+            filters.Add(new UserFilterAttribute());
         }
     }
 }

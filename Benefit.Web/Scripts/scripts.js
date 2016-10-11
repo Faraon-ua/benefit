@@ -341,7 +341,18 @@ $('body').on('click', function (e) {
         $('.mega-dropdown').parent().removeClass('open');
     }
 });
-$(function() {
+$(function () {
+    $("#select_place").click(function() {
+        $("#region-search-txt").show();
+        $("#region-search-txt").focus();
+        $(this).hide();
+    });
+
+    $("#region-search-txt").focusout(function() {
+        $("#select_place").show();
+        $(this).hide();
+    });
+
     var availableTags = [
       "Глазго",
       "Киев",

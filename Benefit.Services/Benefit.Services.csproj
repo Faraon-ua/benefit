@@ -55,13 +55,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheService.cs" />
+    <Compile Include="Domain\CategoriesService.cs" />
+    <Compile Include="Domain\ProductsService.cs" />
     <Compile Include="EmailService.cs" />
-    <Compile Include="ImagesService.cs" />
-    <Compile Include="LocalizationService.cs" />
+    <Compile Include="Domain\ImagesService.cs" />
+    <Compile Include="Domain\LocalizationService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SettingsService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Benefit.Common\Benefit.Common.csproj">
+      <Project>{3946539e-a45a-46cd-be25-4e420e468082}</Project>
+      <Name>Benefit.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Benefit.Domain\Benefit.Domain.csproj">
       <Project>{c187c6ad-93f5-457b-aa6e-2f43ba4374f3}</Project>
       <Name>Benefit.Domain</Name>

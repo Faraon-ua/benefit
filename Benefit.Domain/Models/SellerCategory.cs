@@ -6,6 +6,7 @@ namespace Benefit.Domain.Models
     public class SellerCategory
     {
         public double? CustomDiscount { get; set; }
+        public bool IsDefault { get; set; }
         [Key, Column(Order = 0)]
         public string SellerId { get; set; }
         public virtual Seller Seller { get; set; }

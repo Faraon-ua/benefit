@@ -10,7 +10,18 @@
 
     <script>
         $(function () {
-            $(".chosen-select").chosen();
+            $(".chosen-select").chosen({
+                search_contains: true
+            });
+
+            $(".pagination a").click(function () {
+                $("#Page").val($(this).text());
+                $("form").submit();
+            });
+
+            $("button[type=submit]").click(function () {
+                $("#Page").val(1);
+            });
         });
 
         function LockUnlock(id) {
@@ -72,8 +83,6 @@
         <div id="searchResults">
             <div class="text-right">
                 Сортувати за
-                @*                @Html.DropDownList("Sorting", Model.ProductFilters.Sorting, "Не обрано")*@
-
                 <select name="Sorting" id="Sorting" data-val-required="The Sorting field is required." data-val="true">
                     <option value="">Не обрано</option>
                     @foreach (var option in Model.ProductFilters.Sorting)
@@ -84,6 +93,23 @@
             </div>
 
             @Html.Partial("_ProductsSearch", Model.Products)
+
+            @Html.Hidden("Page", 1)
+            <div class="table-responsive">
+
+                @if (Model.ProductFilters.PagesCount > 0)
+                {
+                    <ul class="pagination">
+                        @for (var i = 0; i < Model.ProductFilters.PagesCount; i++)
+                        {
+                            var className = Request.QueryString["Page"] == (i + 1).ToString() ? "active" : "";
+                            <li class="@className">
+                                <a href="#">@(i + 1)</a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
         </div>
     </div>
 }

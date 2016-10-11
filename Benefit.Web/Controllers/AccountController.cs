@@ -52,7 +52,11 @@ namespace Benefit.Web.Controllers
                 if (user != null)
                 {
                     await SignInAsync(user, model.RememberMe);
-                    var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName);
+                    //todo: move full name cookies to exernal method
+                    var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName)
+                    {
+                        Expires = DateTime.UtcNow.AddYears(1)
+                    };
                     System.Web.HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                     return RedirectToLocal(returnUrl);
                 }
@@ -212,8 +216,6 @@ namespace Benefit.Web.Controllers
             if (user != null)
             {
                 await SignInAsync(user, isPersistent: false);
-                var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName);
-                System.Web.HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                 return RedirectToLocal(returnUrl);
             }
             else
@@ -282,8 +284,6 @@ namespace Benefit.Web.Controllers
 
                 var result = await UserManager.CreateAsync(user);
 
-                var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName);
-                System.Web.HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                 if (result.Succeeded)
                 {
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);

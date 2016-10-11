@@ -208,14 +208,18 @@
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\InfoPagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ProductOptionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductParametersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SellersController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
     <Compile Include="Attributes\CustomAuthorization.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Base\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
+    <Compile Include="Filters\UserFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -228,6 +232,8 @@
     <Compile Include="Models\FacebookAccountModel.cs" />
     <Compile Include="Models\ImagesViewModel.cs" />
     <Compile Include="Models\Admin\SellerViewModel.cs" />
+    <Compile Include="Models\ProductOptionsViewModel.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -723,10 +729,18 @@
     <Content Include="Areas\Admin\Views\ProductParameters\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterGroup.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\CreateOrUpdateValue.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\_ProductOptions.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductParameters.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductOption.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterValue.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Import.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductOptions\_ProductOption.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductOptions\_ProductOptionGroup.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductOptions\_ProductParameterValue.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductOptions\CreateOrUpdate.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductOptions\CreateOrUpdateValue.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductOptions\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductOptions.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_ProductOptions.cshtml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />
     <Content Include="Scripts\ckeditor\config.js" />
@@ -1136,6 +1150,8 @@
     <Folder Include="Images\SellerGallery\" />
     <Folder Include="Images\SellerLogo\" />
     <Folder Include="Images\uploads\" />
+    <Folder Include="Views\Base\" />
+    <Folder Include="Views\Layout\" />
     <Folder Include="Views\Localizations\" />
   </ItemGroup>
   <ItemGroup>

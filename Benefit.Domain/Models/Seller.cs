@@ -16,6 +16,7 @@ namespace Benefit.Domain.Models
             Schedules = new Collection<Schedule>();
             ShippingMethods = new Collection<ShippingMethod>();
             SellerCategories = new Collection<SellerCategory>();
+            ProductOptions = new Collection<ProductOption>();
         }
 
         [Key]
@@ -57,5 +58,6 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Schedule> Schedules { get; set; }
         public virtual ICollection<ShippingMethod> ShippingMethods { get; set; }
+        public ICollection<ProductOption> ProductOptions { get; set; }
     }
 }

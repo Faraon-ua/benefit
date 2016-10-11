@@ -26,7 +26,7 @@ namespace Benefit.Web.Models.Admin
         public string SellerId { get; set; }
         public ProductSortOption? Sorting{ get; set; }
         public bool IsAvailable { get; set; }
-
+        public int Page { get; set; }
         public bool HasValues
         {
             get { return (Search != null || CategoryId != null || SellerId != null); }
@@ -39,5 +39,6 @@ namespace Benefit.Web.Models.Admin
         public IEnumerable<SelectListItem> Sorting { get; set; }
         public bool IsAvailable { get; set; }
         public string Search { get; set; }
+        public int PagesCount { get; set; }
     }
 }

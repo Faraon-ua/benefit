@@ -8,7 +8,9 @@ using System.Web.Mvc;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
+using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
+using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -20,15 +22,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public ActionResult CategoriesList(string parentCategoryId = null)
         {
-            if (User.IsInRole("Seller"))
+            if (parentCategoryId == null && User.IsInRole("Seller"))
             {
-                var seller = db.Sellers.FirstOrDefault(entry => User.Identity.Name == entry.Owner.UserName);
+                var userId = User.Identity.GetUserId();
+                var seller = db.Sellers.FirstOrDefault(entry => userId == entry.OwnerId);
                 if (seller.SellerCategories.Any())
                 {
                     parentCategoryId = seller.SellerCategories.First().CategoryId;
                 }
             }
-            var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry=>entry.Order);
+            var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry => entry.Order);
             var viewModel = new KeyValuePair<string, IEnumerable<Category>>(parentCategoryId, cats);
             return PartialView("_CategoriesList", viewModel);
         }
@@ -59,6 +62,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
             var category = db.Categories.Find(id) ?? new Category() { Id = Guid.NewGuid().ToString(), ParentCategoryId = parentCategoryId };
+            ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id), "Id", "ExpandedName", category.ParentCategoryId);
             category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
             return View(category);
         }
@@ -102,16 +106,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(string id)
         {
-            var category = db.Categories.Find(id);
-            if (category.ImageUrl != null)
-            {
-                var image = new FileInfo(Path.Combine(Server.MapPath("~/Images/"), category.ImageUrl));
-                if (image.Exists)
-                    image.Delete();
-            }
-            LocalizationService.Delete(id);
-            db.Categories.Remove(category);
-            db.SaveChanges();
+            var categoriesService = new CategoriesService();
+            categoriesService.Delete(id);
             return Json(true);
         }
 

@@ -44,11 +44,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants\CacheConstants.cs" />
     <Compile Include="Constants\DomainConstants.cs" />
     <Compile Include="Constants\FilterAndSortingConstants.cs" />
     <Compile Include="Constants\ListConstants.cs" />
     <Compile Include="Constants\RouteConstants.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\UrlExtensions.cs" />
     <Compile Include="Helpers\Enumerations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
