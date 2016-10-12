@@ -1,6 +1,7 @@
 ﻿.cat-active {
     color: #83b81a !important;
 }
+
 .cat-inactive {
     color: #E0E0E0 !important;
 }
@@ -11,10 +12,14 @@
 
 .cat-list {
     float: left;
-    height: 600px;
-    width: 330px;
+    width: 340px;
     margin-right: 20px;
 }
+
+    .cat-list div.container {
+        height: 500px;
+        overflow-y: auto;
+    }
 
     .cat-list ul {
         font-family: "Acer Foco", ​"Trebuchet MS", ​ Arial, ​ sans-serif;

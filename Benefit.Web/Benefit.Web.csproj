@@ -1147,7 +1147,7 @@
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\uploadPartial.cshtml" />
     <Content Include="Views\Shared\_SocialGroups.cshtml" />
-    <Content Include="Views\Shared\_Categories.cshtml" />
+    <Content Include="Views\Shared\_CategoriesPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

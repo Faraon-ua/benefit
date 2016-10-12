@@ -26,6 +26,15 @@ namespace Benefit.Web.Controllers
             return PartialView("_LoginPartial");
         }
 
+        public ActionResult CategoriesPartial(string parentCategoryId = null)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var categories = db.Categories.Include("ChildCategories").Where(entry => entry.ParentCategoryId == parentCategoryId).ToList();
+                return PartialView("_CategoriesPartial", categories);
+            }
+        }
+
         [HttpGet]
         public ActionResult SearchRegion(string search, int minLevel)
         {

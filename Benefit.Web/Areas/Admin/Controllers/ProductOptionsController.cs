@@ -102,14 +102,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Entry(productparameter).State = EntityState.Modified;
                 }
                 db.SaveChanges();
-                return RedirectToAction("Index", new { categoryId = productparameter.CategoryId, sellerId = productparameter.SellerId, produdctId = productparameter.ProductId });
+                return RedirectToAction("Index", new { categoryId = productparameter.CategoryId, sellerId = productparameter.SellerId, productId = productparameter.ProductId });
             }
             return View(productparameter);
         }
 
-        [HttpPost]
+       /* [HttpPost]
         public ActionResult CreateOrUpdateValue(ProductParameterValue productParameterValue, string categoryId)
         {
+            throw new Exception();
             if (ModelState.IsValid)
             {
                 productParameterValue.Id = Guid.NewGuid().ToString();
@@ -118,7 +119,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return RedirectToAction("Index", new { categoryId });
             }
             return View();
-        }
+        }*/
 
         public ActionResult Delete(string id, string categoryId)
         {

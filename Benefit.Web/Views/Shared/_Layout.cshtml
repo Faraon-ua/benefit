@@ -199,7 +199,6 @@
             <div class="col-2">
                 <!-- vertical menu -->
                 <div class="vertical_menu" id="right-menu">
-                    @Html.Partial("_Categories")
                 </div><!-- /.navbar-collapse -->
                 <!-- .vertical menu -->
             </div>
@@ -314,6 +313,7 @@
     @RenderSection("scripts", required: false)
     <script>
         $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
+        $('#right-menu').load('@Url.Action("CategoriesPartial", "Home")');
     </script>
 </body>
 </html>

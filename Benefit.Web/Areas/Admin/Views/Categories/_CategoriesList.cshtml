@@ -8,42 +8,44 @@
             @Html.ActionLink("Створити категорію", "CreateOrUpdate", "Categories", new { parentCategoryId = Model.Key }, new { @class = "btn btn-info" })
         </div>
     }
-    <ul>
-        @foreach (var cat in Model.Value)
-        {
-            <li data-cat-id="@cat.Id" id="li-@cat.Id">
-                <div class="row">
-                    <div class="col-sm-6">
-                        <div class="cat-name @(cat.IsActive ? "": "cat-inactive")" data-cat-id="@cat.Id">
-                            @cat.Name
+    <div class="container">
+        <ul>
+            @foreach (var cat in Model.Value)
+            {
+                <li data-cat-id="@cat.Id" id="li-@cat.Id">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="cat-name @(cat.IsActive ? "": "cat-inactive")" data-cat-id="@cat.Id">
+                                @cat.Name
+                            </div>
+                        </div>
+                        <div class="col-sm-6 controls" style="display: none">
+                            @if (User.IsInRole(DomainConstants.AdminRoleName))
+                            {
+                                <a class="btn btn-danger btn-sm pull-right btn-xs" onclick="DeleteCategory('@cat.Id', '@cat.Name')" title="Видалити категорію">
+                                    <i class="icon-trash"></i>
+                                </a>
+                                <a class="btn btn-primary btn-sm margin-right-10 pull-right btn-xs" href="@Url.Action("CreateOrUpdate", new {id = cat.Id})" target="blank" title="Редагувати категорію">
+                                    <i class="icon-edit"></i>
+                                </a>
+                            }
+                            <a class="btn btn-purple btn-sm pull-right btn-xs" href="@Url.Action("Index", "ProductOptions", new { categoryId = cat.Id, sellerId = Session[DomainConstants.SellerSessionIdKey] })" title="Редагувати додаткові опції" target="blank">
+                                <i class="icon-plus"></i>
+                            </a>
+
+                            <a class="btn btn-warning btn-sm pull-right btn-xs" href="@Url.Action("Index", "ProductParameters", new {categoryId = cat.Id})" title="Редагувати фільтри" target="blank">
+                                <i class="icon-check"></i>
+                            </a>
+                            <div style="clear: both;"></div>
                         </div>
                     </div>
-                    <div class="col-sm-6 controls" style="display: none">
-                        @if (User.IsInRole(DomainConstants.AdminRoleName))
-                        {
-                            <a class="btn btn-danger btn-sm pull-right btn-xs" onclick="DeleteCategory('@cat.Id', '@cat.Name')" title="Видалити категорію">
-                                <i class="icon-trash"></i>
-                            </a>
-                            <a class="btn btn-primary btn-sm margin-right-10 pull-right btn-xs" href="@Url.Action("CreateOrUpdate", new {id = cat.Id})" target="blank" title="Редагувати категорію">
-                                <i class="icon-edit"></i>
-                            </a>
-                        }
-                        <a class="btn btn-purple btn-sm pull-right btn-xs" href="@Url.Action("Index", "ProductOptions", new { categoryId = cat.Id, sellerId = Session[DomainConstants.SellerSessionIdKey] })" title="Редагувати додаткові опції" target="blank">
-                            <i class="icon-plus"></i>
-                        </a>
-
-                        <a class="btn btn-warning btn-sm pull-right btn-xs" href="@Url.Action("Index", "ProductParameters", new {categoryId = cat.Id})" title="Редагувати фільтри" target="blank">
-                            <i class="icon-check"></i>
-                        </a>
-                        <div style="clear: both;"></div>
-                    </div>
-                </div>
-            </li>
-        }
-    </ul>
+                </li>
+            }
+        </ul>
+    </div>
     @if (Model.Value.Count() >= 2 && User.IsInRole(DomainConstants.AdminRoleName))
     {
-        <div class="padding_5 center border-top position-bottom position-absolute width-100">
+        <div class="padding_5 center border-top">
             <button id="saveCatsOrder" class="btn btn-success width-80">Зберегти сортування</button>
         </div>
     }
