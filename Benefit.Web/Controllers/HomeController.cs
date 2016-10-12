@@ -2,14 +2,11 @@
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Net.FtpClient;
 using System.Web;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
-using Benefit.Services;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Models;
 using WebGrease.Css.Extensions;
@@ -18,6 +15,17 @@ namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult LoginPartial()
+        {
+            return PartialView("_LoginPartial");
+        }
+
         [HttpGet]
         public ActionResult SearchRegion(string search, int minLevel)
         {
@@ -79,12 +87,6 @@ namespace Benefit.Web.Controllers
             string output = @"<html><body><script>window.parent.CKEDITOR.tools.callFunction(" + CKEditorFuncNum + ", \"" +
                             url + "\", \"" + message + "\");</script></body></html>";
             return Content(output);
-        }
-
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
-        public ActionResult Index()
-        {
-            return View();
         }
 
         public ActionResult About()

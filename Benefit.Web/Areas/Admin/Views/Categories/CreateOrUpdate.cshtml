@@ -70,12 +70,12 @@
 
             $(".chosen-select").chosen();
 
-            $(".switchNavigationType").click(function () {
+           /* $(".switchNavigationType").click(function () {
                 $(".switchNavigationType").removeClass("btn-primary");
                 $(this).addClass("btn-primary");
                 var navType = $(this).attr("data-navtype");
                 $("#navType").val(navType);
-            });
+            });*/
         })
     </script>
 }
@@ -111,14 +111,13 @@
 
         <div class="tab-content">
             <div class="tab-pane in active" id="home">
-
                 <div class="form-horizontal">
-                    <label>Тип навігації</label>
+                   @* <label>Тип навігації</label>
                     <div>
                         <a data-navtype="SellersOnly" class="btn switchNavigationType @(Model.NavigationType == "SellersOnly" ? "btn-primary" : "")">Тільки постачальники</a>
                         <a data-navtype="SellersAndProducts" class="btn switchNavigationType @(Model.NavigationType == "SellersAndProducts" ? "btn-primary" : "")">Постачальники та товари</a>
                     </div>
-                    <br />
+                    <br />*@
                     @Html.HiddenFor(entry => entry.NavigationType, new { id = "navType" })
 
                     @Html.ValidationSummary(true)

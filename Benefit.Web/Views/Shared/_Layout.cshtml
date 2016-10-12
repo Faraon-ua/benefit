@@ -186,8 +186,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-2">
-                    @Html.Partial("_LoginPartial")
+                <div class="col-2" id="loginPartial">
                 </div>
             </div>
         </div>
@@ -313,5 +312,8 @@
     <!-- libs -->
     @Scripts.Render("~/bundles/master")
     @RenderSection("scripts", required: false)
+    <script>
+        $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
+    </script>
 </body>
 </html>

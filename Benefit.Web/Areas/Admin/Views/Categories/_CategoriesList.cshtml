@@ -2,9 +2,12 @@
 @model  KeyValuePair<string, IEnumerable<Benefit.Domain.Models.Category>>
 
 <div class="cat-list bordered position-relative pull-left">
-    <div class="padding_5 center border-bottom">
-        @Html.ActionLink("Створити категорію", "CreateOrUpdate", "Categories", new { parentCategoryId = Model.Key }, new { @class = "btn btn-info" })
-    </div>
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <div class="padding_5 center border-bottom">
+            @Html.ActionLink("Створити категорію", "CreateOrUpdate", "Categories", new { parentCategoryId = Model.Key }, new { @class = "btn btn-info" })
+        </div>
+    }
     <ul>
         @foreach (var cat in Model.Value)
         {
@@ -38,7 +41,7 @@
             </li>
         }
     </ul>
-    @if (Model.Value.Count() >= 2 && User.IsInRole("Admin"))
+    @if (Model.Value.Count() >= 2 && User.IsInRole(DomainConstants.AdminRoleName))
     {
         <div class="padding_5 center border-top position-bottom position-absolute width-100">
             <button id="saveCatsOrder" class="btn btn-success width-80">Зберегти сортування</button>
