@@ -92,6 +92,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 else
                 {
+                    category.Order = db.Categories.Max(entry => entry.Order) + 1;
                     db.Categories.Add(category);
                     LocalizationService.Save(category.Localizations);
                 }
