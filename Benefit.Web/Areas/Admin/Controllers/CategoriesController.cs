@@ -100,6 +100,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
 
+            ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id), "Id", "ExpandedName", category.ParentCategoryId);
             return View(category);
         }
 
