@@ -1,0 +1,20 @@
+﻿@model Benefit.Domain.Models.ProductOption
+<div id="dialog" title="Додати опцію" class="hide">
+    <div class="ui-dialog-content ui-widget-content" id="dialog-confirm" style="width: auto; min-height: 27px; max-height: none; height: auto;">
+        @using (Html.BeginForm("CreateOrUpdate", "ProductOptions"))
+        {
+            @Html.AntiForgeryToken()
+            <label class="control-label col-sm-4">Назва опції</label>
+            @Html.TextBoxFor(m => m.Name, new { @class = "col-sm-8" })
+            <br />
+            <label class="control-label col-sm-4">Збільшення вартості</label>
+            @Html.EditorFor(m => m.PriceGrowth, new { @class = "col-sm-8" })
+            <br />
+
+            @Html.HiddenFor(m => m.ParentProductOptionId)
+            @Html.HiddenFor(m => m.CategoryId)
+            @Html.HiddenFor(m => m.SellerId)
+            @Html.HiddenFor(m => m.ProductId)
+        }
+    </div>
+</div>

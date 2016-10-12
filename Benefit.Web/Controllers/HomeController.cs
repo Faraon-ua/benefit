@@ -30,7 +30,7 @@ namespace Benefit.Web.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                var categories = db.Categories.Include("ChildCategories").Where(entry => entry.ParentCategoryId == parentCategoryId).ToList();
+                var categories = db.Categories.Include("ChildCategories").Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry=>entry.Order).ToList();
                 return PartialView("_CategoriesPartial", categories);
             }
         }

@@ -740,11 +740,8 @@
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductOption.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterValue.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Import.cshtml" />
-    <Content Include="Areas\Admin\Views\ProductOptions\_ProductOption.cshtml" />
     <Content Include="Areas\Admin\Views\ProductOptions\_ProductOptionGroup.cshtml" />
-    <Content Include="Areas\Admin\Views\ProductOptions\_ProductParameterValue.cshtml" />
-    <Content Include="Areas\Admin\Views\ProductOptions\CreateOrUpdate.cshtml" />
-    <Content Include="Areas\Admin\Views\ProductOptions\CreateOrUpdateValue.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductOptions\_ProductOptionValue.cshtml" />
     <Content Include="Areas\Admin\Views\ProductOptions\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ProductOptions.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_ProductOptions.cshtml" />

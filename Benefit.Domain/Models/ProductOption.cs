@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
     public class ProductOption
     {
+        public ProductOption()
+        {
+            ChildProductOptions = new Collection<ProductOption>();
+        }
         [Key]
         public string Id { get; set; }
         [MaxLength(64)]
@@ -25,5 +31,8 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string SellerId { get; set; }
         public Seller Seller { get; set; }
+
+        [NotMapped]
+        public bool Editable { get; set; }
     }
 }

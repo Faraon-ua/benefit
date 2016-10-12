@@ -22,10 +22,28 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 sellerId = Session[DomainConstants.SellerSessionIdKey].ToString();
             }
-            var productOptions =
-                db.ProductOptions.Where(
+            List<ProductOption> productOptions;
+            if (!string.IsNullOrEmpty(productId))
+            {
+                var product =
+                    db.Products.Include(entry => entry.ProductOptions)
+                        .Include(entry => entry.Category)
+                        .FirstOrDefault(entry => entry.Id == productId);
+                productOptions = product.ProductOptions.Where(entry => entry.ParentProductOptionId == null).ToList();
+                productOptions.ForEach(entry => entry.Editable = true);
+                var categoryProductOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(
                     entry =>
-                        entry.CategoryId == categoryId && entry.SellerId == sellerId && entry.ProductId == productId && entry.ParentProductOptionId == null).ToList();
+                        entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId &&
+                        entry.ParentProductOptionId == null).ToList();
+                productOptions.InsertRange(0, categoryProductOptions);
+            }
+            else
+            {
+                productOptions = db.ProductOptions.Include("ChildProductOptions").Where(
+                entry =>
+                    entry.CategoryId == categoryId && entry.SellerId == sellerId && entry.ParentProductOptionId == null).ToList();
+                productOptions.ForEach(entry => entry.Editable = true);
+            }
 
             return View(new ProductOptionsViewModel
             {
@@ -36,54 +54,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
             });
         }
 
-        public ActionResult ProductParameterCategory(string id = null, string categoryId = null, string sellerId = null, string productId = null)
+        public ActionResult ProductOptionGroup(string id = null, string categoryId = null, string sellerId = null, string productId = null)
         {
             var productParameter = db.ProductOptions.Find(id) ?? new ProductOption() { CategoryId = categoryId, SellerId = sellerId, ProductId = productId };
             return PartialView("_ProductOptionGroup", productParameter);
         }
 
-        public ActionResult GetProductParameterDefinedValues(string parameterId, int? amount = null, string selected = null)
+        public ActionResult ProductOptionValue(string parentId, string categoryId = null, string sellerId = null, string productId = null)
         {
-            var parameter = db.ProductParameters.Find(parameterId);
-            var values =
-                parameter.ProductParameterValues.Select(
-                    entry =>
-                        new SelectListItem()
-                        {
-                            Text = entry.ParameterValue,
-                            Selected = entry.ParameterValue == selected
-                        });
-            var model = new ProductParameterProduct()
-            {
-                Amount = amount,
-                ProductParameterId = parameterId
-            };
-            ViewBag.StartValue = values;
-            return PartialView("_ProductOption", model);
-        }
-
-       
-        public ActionResult ProductParameterValue(string parameterId, string categoryId)
-        {
-            var productParameter = new ProductParameterValue() { ProductParameterId = parameterId };
-            ViewBag.CategoryId = categoryId;
-            return PartialView("_ProductParameterValue", productParameter);
-        }
-
-        public ActionResult CreateOrUpdate(string categoryId, string parentId = null)
-        {
-            ViewBag.Type = new List<SelectListItem>()
-            {
-                new SelectListItem() {Text = "Текст", Value = typeof (string).ToString()},
-                new SelectListItem() {Text = "Ціле число", Value = typeof (int).ToString()},
-                new SelectListItem() {Text = "Десятичне число", Value = typeof (double).ToString()}
-            };
-            var productParameter = new ProductParameter()
-            {
-                CategoryId = categoryId,
-                ParentProductParameterId = parentId
-            };
-            return View(productParameter);
+            var productParameter = new ProductOption() { ParentProductOptionId = parentId, CategoryId = categoryId, SellerId = sellerId, ProductId = productId };
+            return PartialView("_ProductOptionValue", productParameter);
         }
 
         [HttpPost]
@@ -92,7 +72,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (productparameter.Id == null)
+                if (!db.ProductOptions.Any(entry => entry.Id == productparameter.Id))
                 {
                     productparameter.Id = Guid.NewGuid().ToString();
                     db.ProductOptions.Add(productparameter);
@@ -107,36 +87,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(productparameter);
         }
 
-       /* [HttpPost]
-        public ActionResult CreateOrUpdateValue(ProductParameterValue productParameterValue, string categoryId)
+        public ActionResult Delete(string id, string categoryId = null, string sellerId = null, string productId = null)
         {
-            throw new Exception();
-            if (ModelState.IsValid)
-            {
-                productParameterValue.Id = Guid.NewGuid().ToString();
-                db.ProductParameterValues.Add(productParameterValue);
-                db.SaveChanges();
-                return RedirectToAction("Index", new { categoryId });
-            }
-            return View();
-        }*/
-
-        public ActionResult Delete(string id, string categoryId)
-        {
-            ProductParameter productparameter = db.ProductParameters.Find(id);
-
-            db.ProductParameterValues.RemoveRange(productparameter.ProductParameterValues);
-            db.ProductParameters.Remove(productparameter);
+            var productOption = db.ProductOptions.Include("ChildProductOptions").FirstOrDefault(entry => entry.Id == id);
+            db.ProductOptions.RemoveRange(productOption.ChildProductOptions);
+            db.ProductOptions.Remove(productOption);
             db.SaveChanges();
-            return RedirectToAction("Index", new { categoryId });
-        }
-
-        public ActionResult DeleteValue(string id, string categoryId)
-        {
-            var productparameterValue = db.ProductParameterValues.Find(id);
-            db.ProductParameterValues.Remove(productparameterValue);
-            db.SaveChanges();
-            return RedirectToAction("Index", new { categoryId });
+            return RedirectToAction("Index", new { categoryId, sellerId, productId });
         }
 
         protected override void Dispose(bool disposing)

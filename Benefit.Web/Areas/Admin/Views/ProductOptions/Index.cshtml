@@ -11,8 +11,8 @@
 @section scripts{
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
     <script>
-    function ProductParameterGroup(id) {
-        $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductParameterCategory?categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.ProductId&id=" + id, function (response, status, xhr) {
+        function ProductOptionGroup(id) {
+            $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionGroup?categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.ProductId&id=" + id, function (response, status, xhr) {
                 $("#dialog").removeClass('hide').dialog({
                     buttons: [
                         {
@@ -27,75 +27,59 @@
             });
         }
 
-        function ProductParameterValue(parameterId) {
-            $("#groupEditContainer").load(routePrefix + "/Admin/ProductParameters/ProductParameterValue?parameterId=" + parameterId + "&categoryId=", function (response, status, xhr) {
-            $("#dialog").removeClass('hide').dialog({
-                buttons: [
-                    {
-                        text: "Зберегти",
-                        "class": "btn btn-info",
-                        click: function () {
-                            $("form").submit();
+        function ProductOptionValue(parentId) {
+            $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionValue?parentId=" + parentId + "&categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.ProductId", function (response, status, xhr) {
+                $("#dialog").removeClass('hide').dialog({
+                    minWidth: 500,
+                    buttons: [
+                        {
+                            text: "Зберегти",
+                            "class": "btn btn-info",
+                            click: function () {
+                                $("form").submit();
+                            }
                         }
-                    }
-                ]
+                    ]
+                });
             });
-        });
-    }
-</script>
+        }
+    </script>
 }
 
-<a class="btn btn-purple btn-sm" onclick="ProductParameterGroup()" href="#">Додати групу опцій</a>
-<br/>
+<a class="btn btn-purple btn-sm" onclick="ProductOptionGroup('')" href="#">Додати групу опцій</a>
+<br />
 <div id="groupEditContainer" class="margin-top-10">
 
 </div>
-@*
-
-@foreach (var group in Model.Value)
+@foreach (var group in Model.ProductOptions)
 {
-    <div>
+    <div class="margin-top-10">
         <h3 class="pull-left">@group.Name</h3>
-        <a class="btn btn-success btn-sm margin-right-10 pull-left" href="@Url.Action("CreateOrUpdate", new { categoryId = Model.Key.Id, parentId = group.Id })" target="blank" title="Додати характеристику">
-            <i class="icon-plus"></i>
-        </a>
-        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" target="blank" title="Редагувати" onclick="ProductParameterGroup('@Model.Key.Id', '@group.Id')">
-            <i class="icon-edit"></i>
-        </a>
-        <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryId = Model.Key.Id })" onclick="return confirm('Ви впевненні?')">
-            <i class="icon-trash"></i>
-        </a>
+        @if (group.Editable)
+        {
+            <a class="btn btn-success btn-sm margin-right-10 pull-left" onclick="ProductOptionValue('@group.Id')" title=" додати опцію">
+                <i class="icon-plus"></i>
+            </a>
+            <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" target="_blank" title="Редагувати" onclick="ProductOptionGroup('@group.Id')">
+                <i class="icon-edit"></i>
+            </a>
+            <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
+                <i class="icon-trash"></i>
+            </a>
+        }
         <div class="clearfix"></div>
     </div>
     <hr class="margin-top-0" />
-    foreach (var parameter in group.ChildProductParameters)
+    foreach (var child in group.ChildProductOptions)
     {
         <div>
-            @{
-        var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
+            @child.Name (+@child.PriceGrowth)
+            @if (group.Editable)
+            {
+                <a href="@Url.Action("Delete", new { id = child.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
+                    <i class="icon-remove red"></i>
+                </a>
             }
-            <div class="col-sm-2">
-                @parameter.Name (@type)
-                @if (parameter.Type == typeof (string).ToString())
-                {
-                    <a onclick="ProductParameterValue('@parameter.Id')" href="#">+ Додати значення</a>
-                }
-            </div>
-            <div class="col-sm-3">
-                @foreach (var prParValue in @parameter.ProductParameterValues)
-                {
-                    <div>
-                        @prParValue.ParameterValue
-                        <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("DeleteValue", new { id = prParValue.Id, categoryId = Model.Key.Id })">
-                            <i class="icon-remove red"></i>
-                        </a>
-                    </div>
-                }
-            </div>
         </div>
-        <br />
-        <hr />
     }
 }
-
-*@
