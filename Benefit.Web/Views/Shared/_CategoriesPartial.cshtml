@@ -1,13 +1,13 @@
-﻿@model IEnumerable<Benefit.Domain.Models.Category>
+﻿@model KeyValuePair<string, IEnumerable<Benefit.Domain.Models.Category>>
 <ul class="nav navbar-nav">
     <li>
-        <span class="bold">Категорії</span>
+        <span class="bold">@(Model.Key ?? "Категорії")</span>
     </li>
-    @foreach (var category in Model)
+    @foreach (var category in Model.Value)
     {
         <li>
             <a href="#" title="@category.Description">@category.Name</a>
-            @if (category.ChildCategories.Any())
+            @if (Model.Key == null && category.ChildCategories.Any())
             {
                 <ul>
                     @foreach (var subCategory in category.ChildCategories)

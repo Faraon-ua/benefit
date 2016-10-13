@@ -16,6 +16,7 @@ namespace Benefit.Domain.Models
     {
         public Category()
         {
+            Products = new Collection<Product>();
             ProductOptions = new Collection<ProductOption>();
             ProductParameters = new Collection<ProductParameter>();
             ChildCategories = new Collection<Category>();

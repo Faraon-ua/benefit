@@ -1,10 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Web.Controllers.Base;
@@ -15,7 +15,7 @@ namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
+        //        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public ActionResult Index()
         {
             return View();
@@ -30,8 +30,10 @@ namespace Benefit.Web.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                var categories = db.Categories.Include("ChildCategories").Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry=>entry.Order).ToList();
-                return PartialView("_CategoriesPartial", categories);
+                var parent = db.Categories.Find(parentCategoryId);
+                var parentName = parent == null ? null : parent.Name;
+                var categories = db.Categories.Include("ChildCategories").Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry => entry.Order).ToList();
+                return PartialView("_CategoriesPartial", new KeyValuePair<string, IEnumerable<Category>>(parentName, categories));
             }
         }
 
@@ -118,8 +120,8 @@ namespace Benefit.Web.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                 //string empty card numbers to null
-                db.Users.Where(entry=>entry.CardNumber == "").ForEach(entry =>
+                //string empty card numbers to null
+                db.Users.Where(entry => entry.CardNumber == "").ForEach(entry =>
                 {
                     entry.CardNumber = null;
                     db.Entry(entry).State = EntityState.Modified;

@@ -18,7 +18,8 @@ namespace Benefit.Web.Filters
                     filterContext.HttpContext.Request.Cookies[RouteConstants.FullNameCookieName] == null)
                 {
                     var user = db.Users.Find(filterContext.RequestContext.HttpContext.User.Identity.GetUserId());
-                    var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName)
+                    var cookieValue = HttpUtility.UrlEncode(user.FullName);
+                    var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, cookieValue)
                     {
                         Expires = DateTime.UtcNow.AddYears(1)
                     };

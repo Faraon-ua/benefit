@@ -52,12 +52,6 @@ namespace Benefit.Web.Controllers
                 if (user != null)
                 {
                     await SignInAsync(user, model.RememberMe);
-                    //todo: move full name cookies to exernal method
-                    var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, user.FullName)
-                    {
-                        Expires = DateTime.UtcNow.AddYears(1)
-                    };
-                    System.Web.HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                     return RedirectToLocal(returnUrl);
                 }
                 else
