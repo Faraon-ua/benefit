@@ -1,0 +1,24 @@
+﻿@using Benefit.Domain.Models
+@model Seller
+<div class="margin-left-10">
+    <div class="row">
+        @Ajax.ActionLink(
+            "Додати категорію",
+            "CategoryForm",
+            new { number = Model.SellerCategories.Count },
+            new AjaxOptions
+            {
+                UpdateTargetId = "belongCategories",
+                InsertionMode = InsertionMode.InsertAfter,
+                OnComplete = "UpdateCategoriesNumber"
+            },
+                     new { @class = "btn btn-info", id = "addNewCategory" }
+            )
+    </div>
+    <br/>
+    @for (var i = 0; i < Model.SellerCategories.Count; i++)
+    {
+        Html.RenderAction("CategoryForm", new { number = i, categoryId = Model.SellerCategories.ElementAt(i).CategoryId, sellerId = Model.SellerCategories.ElementAt(i).SellerId });
+    }
+    <div id="belongCategories"></div>
+</div>

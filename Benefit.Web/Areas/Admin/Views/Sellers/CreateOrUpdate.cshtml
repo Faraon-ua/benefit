@@ -28,6 +28,17 @@
             href = href.substring(0, href.length - 1) + (maxNumber + 1);
             $("#addNewCurrency").attr("href", href);
         }
+         
+        function UpdateCategoriesNumber() {
+            var maxNumber = GetMaxAttributeValue('.category-id', 'data-number');
+            var href = $("#addNewCategory").attr("href");
+            href = href.substring(0, href.length - 1) + (maxNumber + 1);
+            $("#addNewCategory").attr("href", href);
+            $(".chosen-select").chosen({
+                search_contains: true,
+                width: "250px"
+            });
+        }
 
         function UpdateShippingMethodsNumber() {
             var maxNumber = GetMaxAttributeValue('.shipping-id', 'data-number');
@@ -37,7 +48,10 @@
         }
 
         $(function () {
-            $(".chosen-select").chosen();
+            $(".chosen-select").chosen({
+                search_contains: true,
+                width: "250px"
+            });
 
             $('#txtUploadFile').on('change', function (e) {
                 var files = e.target.files;
@@ -184,6 +198,12 @@
                     Основна інфо
                 </a>
             </li>
+            <li class="@displayClass ">
+                <a href="#categories" data-toggle="tab">
+                    <i class="grey icon-list bigger-110"></i>
+                    Категорії
+                </a>
+            </li>
             <li>
                 <a href="#images" data-toggle="tab">
                     <i class="red icon-camera bigger-110"></i>
@@ -225,6 +245,9 @@
         <div class="tab-content">
             <div class="tab-pane in active @displayClass" id="home">
                 @Html.Partial("_SellerForm")
+            </div> 
+            <div class="tab-pane @displayClass" id="categories">
+                @Html.Partial("_Categories", Model.Seller)
             </div>
             <div class="tab-pane" id="images">
                 @Html.Partial("_Images", Model.Seller)

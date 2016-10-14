@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -91,6 +92,31 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             return Json(new { Message = "Error in saving file" });
         }
 
+        public ActionResult CategoryForm(int number, string categoryId, string sellerId)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                ViewBag.Categories =
+                    db.Categories.ToList().Select(
+                        entry =>
+                            new SelectListItem()
+                            {
+                                Text = entry.ExpandedName,
+                                Value = entry.Id,
+                                Selected = entry.Id == categoryId
+                            });
+                var sellerCategory =
+                    db.SellerCategories.FirstOrDefault(
+                        entry => entry.CategoryId == categoryId && entry.SellerId == sellerId) ?? new SellerCategory()
+                        {
+                            SellerId = sellerId,
+                            CategoryId = categoryId
+                        };
+
+                return PartialView("_CategoryForm",
+                       new KeyValuePair<int, SellerCategory>(number, sellerCategory));
+            }
+        }
         public ActionResult NewCurrencyForm(int number)
         {
             return PartialView("_CurrencyForm",

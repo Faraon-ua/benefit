@@ -16,7 +16,9 @@
 
     <script>
         $(function() {
-            $(".chosen-select").chosen();
+            $(".chosen-select").chosen({
+                search_contains: true
+            });
 
             $('#id-date-range-picker-1').daterangepicker({
                 locale: {

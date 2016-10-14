@@ -1,0 +1,15 @@
+﻿@model  KeyValuePair<int, Benefit.Domain.Models.SellerCategory>
+
+<div class="row">
+    <div class="col-sm-2">
+        @Html.DropDownList(string.Format("Seller.SellerCategories[{0}].CategoryId", Model.Key), ViewBag.Categories as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select category-id col-xs-10 col-sm-5", data_number = Model.Key })
+    </div>
+    <div class="col-sm-1">
+        @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomDiscount", Model.Key), Model.Value.CustomDiscount, new { @class = "number-input width-80", placeholder = "Загальний відсоток знижки" }) %
+    </div>
+    <div class="col-sm-1">
+        <a href="#" onclick="$(this).parent().parent().remove();">
+            <i class="icon-remove red"></i>
+        </a>
+    </div>
+</div>

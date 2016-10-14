@@ -40,7 +40,9 @@
                 }
             });
 
-            $(".chosen-select").chosen();
+            $(".chosen-select").chosen({
+                search_contains: true
+            });
             $('#Price').mask("#0.00", { reverse: true });
             $('#SKU').mask("#");
             $('#Amount').mask("#");

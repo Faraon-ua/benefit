@@ -721,7 +721,7 @@
     <Content Include="Areas\Admin\Views\Products\_Filters.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ProductForm.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ProductsSearch.cshtml" />
-    <Content Include="Areas\Admin\Views\Sellers\_Currencies.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Categories.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_CurrencyForm.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Addresses.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_AddressForm.cshtml" />
@@ -745,6 +745,8 @@
     <Content Include="Areas\Admin\Views\ProductOptions\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ProductOptions.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_ProductOptions.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Currencies.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_CategoryForm.cshtml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />

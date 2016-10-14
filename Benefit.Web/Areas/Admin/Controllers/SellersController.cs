@@ -181,7 +181,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult CreateOrUpdate(string id = null)
         {
-            string sellerCategory = string.Empty;
             var existingSeller = db.Sellers.Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {
@@ -199,18 +198,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     seller.BenefitCardReferaExternalId = existingSeller.BenefitCardReferal.ExternalNumber;
                 if (existingSeller.WebSiteReferal != null)
                     seller.WebSiteReferaExternalId = existingSeller.WebSiteReferal.ExternalNumber;
-                sellerCategory = seller.Seller.SellerCategories.Any()
-                    ? seller.Seller.SellerCategories.ElementAt(0).CategoryId
-                    : string.Empty;
             }
-            ViewBag.Categories = db.Categories.ToList().Select(
-                entry =>
-                    new SelectListItem()
-                    {
-                        Text = entry.ExpandedName,
-                        Value = entry.Id,
-                        Selected = entry.Id == sellerCategory
-                    });
             return View(seller);
         }
 
@@ -279,7 +267,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 seller.SellerCategories.ForEach(entry =>
                 {
                     entry.SellerId = sellerId;
-                    entry.IsDefault = true;
                 });
 
                 var currenciesToAdd = seller.Currencies.Where(entry => entry.Id == null).ToList();
@@ -338,12 +325,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                 }
                 //categories
+                var sellerCategories = seller.SellerCategories.ToList();
                 db.SellerCategories.RemoveRange(db.SellerCategories.Where(entry => entry.SellerId == sellerId));
-                if (seller.SellerCategories.Any())
+                //to remove
+                db.SaveChanges();
+                if (sellerCategories.Any())
                 {
-                    seller.SellerCategories.ForEach(entry =>
+                    sellerCategories.ForEach(entry =>
                     {
-                        entry.CustomDiscount = seller.TotalDiscount;
                         db.SellerCategories.Add(entry);
                     });
                 }
@@ -376,18 +365,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.SaveChanges();
                 return RedirectToAction("CreateOrUpdate", new { id = seller.Id });
             }
-            var sellerCategory = sellervm.Seller.SellerCategories.Any()
-                   ? sellervm.Seller.SellerCategories.ElementAt(0).CategoryId
-                   : string.Empty;
-            ViewBag.Categories =
-                db.Categories.ToList().Select(
-                    entry =>
-                        new SelectListItem()
-                        {
-                            Text = entry.ExpandedName,
-                            Value = entry.Id,
-                            Selected = entry.Id == sellerCategory
-                        });
             return View(sellervm);
         }
 

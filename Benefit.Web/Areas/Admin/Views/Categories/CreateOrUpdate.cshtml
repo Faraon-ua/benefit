@@ -68,7 +68,9 @@
                 }
             });
 
-            $(".chosen-select").chosen();
+            $(".chosen-select").chosen({
+                search_contains: true
+            });
 
            /* $(".switchNavigationType").click(function () {
                 $(".switchNavigationType").removeClass("btn-primary");
