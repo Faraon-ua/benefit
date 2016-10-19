@@ -29,12 +29,27 @@ namespace Benefit.Domain.Models
         {
             get
             {
+                var containsBracket = false;
+
                 var current = this;
                 var sb = new StringBuilder(RegionType + " " + Name_ua);
-                while (current.Parent != null)
+                while (current.Parent != null && current.Parent.RegionLevel > 0)
                 {
-                    sb.Append(" " + current.Parent.Name_ua + " " + current.Parent.RegionType);
+                    if (current.Id == Id)
+                    {
+                        sb.Append(" (");
+                        containsBracket = true;
+                    }
+                    else
+                    {
+                        sb.Append(" ");
+                    }
+                    sb.Append(current.Parent.Name_ua + " " + current.Parent.RegionType);
                     current = current.Parent;
+                }
+                if (containsBracket)
+                {
+                    sb.Append(")");
                 }
                 return sb.ToString().Trim();
             }

@@ -72,21 +72,7 @@
                                 <li><a href="#"><i class="icn flag ua"></i> РУС</a></li>
                             </ul>
                         </div>
-                        <div class="dropdown dropdown_inline">
-                            <i class="icn location"></i>
-                            <button class="btn btn-default mega-dropdown" type="button" id="select_place">
-                                Оберіть місто
-                                <span class="caret"></span>
-                            </button>
-                            <input id="region-search-txt" type="text" class="col-2" style="display: none;"/>
-                           @* <ul class="dropdown-menu" aria-labelledby="select_place">
-                                <div class="f_sp">
-                                    <div class="input-group select_place">
-                                        <input type="text" class="form-control select_place_input" placeholder="введіть місто" aria-describedby="lb-pass">
-                                    </div>
-                                </div>
-                            </ul>*@
-                        </div>
+                        @Html.Partial("_SelectRegionPartial")
                     </div>
                     <div class="top_right_phone">
                         <div>

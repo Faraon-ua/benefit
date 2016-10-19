@@ -51,14 +51,21 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     var relativePathString = Path.Combine("Images", ImageType.NewsLogo.ToString(), infopage.Id + fileExt);
                     var pathString = Path.Combine(originalDirectory, relativePathString);
                     newsLogo.SaveAs(pathString);
-                    infopage.ImageUrl = relativePathString;
+                    infopage.ImageUrl = infopage.Id + fileExt;
                     var imagesService = new ImagesService();
                     imagesService.ResizeToSiteRatio(pathString, ImageType.NewsLogo);
                 }
-                db.InfoPages.Add(infopage);
+                if (db.InfoPages.Any(entry => entry.Id == infopage.Id))
+                {
+                    db.Entry(infopage).State = EntityState.Modified;
+                }
+                else
+                {
+                    db.InfoPages.Add(infopage);
+                }
                 LocalizationService.Save(infopage.Localizations);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("CreateOrUpdate", new { id=infopage.Id });
             }
 
             return View(infopage);

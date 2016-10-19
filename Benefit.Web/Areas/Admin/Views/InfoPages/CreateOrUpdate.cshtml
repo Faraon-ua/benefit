@@ -1,7 +1,7 @@
 ﻿@model Benefit.Domain.Models.InfoPage
 
 @{
-    ViewBag.Title = "Create";
+    ViewBag.Title = "Інфо сторінка "+ Model.Name;
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 @section scripts {
@@ -15,11 +15,9 @@
         });
     </script>
 }
-<h2>Створити нову сторінку</h2>
-<hr />
-
 @using (Html.BeginForm("CreateOrUpdate", "InfoPages", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
+    @Html.ValidationSummary()
     @Html.AntiForgeryToken()
     @*  <textarea name="editor1" id="editor1" cols="45" rows="5"></textarea>
                 <script type="text/javascript">
@@ -35,7 +33,7 @@
         @Html.Partial("_PageLocalizedInfo")
     </div>
     <div class="control-group">
-        <input type="submit" value="Створити" class="btn btn-success width-20" />
+        <input type="submit" value="Зберегти" class="btn btn-success width-20" />
         @Html.ActionLink("Cкасувати", "Index", "InfoPages", null, new { @class = "btn btn-danger width-20" })
     </div>
 }

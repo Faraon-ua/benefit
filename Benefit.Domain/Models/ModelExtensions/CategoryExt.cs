@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Benefit.Domain.DataAccess;
-using Benefit.Domain.Models;
 
-namespace Benefit.Domain.ModelExtensions
+namespace Benefit.Domain.Models.ModelExtensions
 {
     public static class CategoryExt
     {

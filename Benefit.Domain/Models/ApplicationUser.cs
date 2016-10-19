@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Web.Mvc;
 using Benefit.Domain.Models.Enums;
-using Benefit.Domain.ValidationAttributes;
 
 namespace Benefit.Domain.Models
 {
@@ -19,12 +18,20 @@ namespace Benefit.Domain.Models
         [MaxLength(64)]
         [Index]
         public string FullName { get; set; }
-//        [MaxLength(24)]
-//        public string FinancialPassword { get; set; }
-        [Remote("IsCardUnique", "Validation")]
-//        [Index]
-//        [MaxLength(10)]
+        [Index]
+        [MaxLength(10)]
         public string CardNumber { get; set; }
+        [Index]
+        [MaxLength(10)]
+        public string NFCCardNumber { get; set; }
+        //todo: add md5 with salt
+        [MaxLength(8)]
+        public string FinancialPassword { get; set; }
+        public int RegionId { get; set; }
+        public Region Region { get; set; }
+        [MaxLength(128)]
+        public string Address { get; set; }
+        [Remote("IsCardUnique", "Validation")]
         [Required]
         [Index(IsUnique = true)]
         public int ExternalNumber { get; set; }
@@ -33,6 +40,7 @@ namespace Benefit.Domain.Models
         public string ReferalId { get; set; }
         public ApplicationUser Referal { get; set; }
         public DateTime RegisteredOn { get; set; }
+        public double CurrentHandlingBonusAccount { get; set; }
         public double CurrentBonusAccount { get; set; }
         public double CurrentPointsAccount { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }

@@ -8,6 +8,9 @@
         @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomDiscount", Model.Key), Model.Value.CustomDiscount, new { @class = "number-input width-80", placeholder = "Загальний відсоток знижки" }) %
     </div>
     <div class="col-sm-1">
+        <label for="@string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key)">Базова категорія</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key), Model.Value.IsDefault)
+    </div>
+    <div class="col-sm-1">
         <a href="#" onclick="$(this).parent().parent().remove();">
             <i class="icon-remove red"></i>
         </a>

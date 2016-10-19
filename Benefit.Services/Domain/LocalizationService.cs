@@ -43,11 +43,9 @@ namespace Benefit.Services
         public void Save(List<Localization> localizations)
         {
             var resourceId = localizations.First().ResourceId;
-            var resourceField = localizations.First().ResourceField;
             var resourceType = localizations.First().ResourceType;
             var existingLocalizations = db.Localizations.Where(entry =>
                 entry.ResourceId == resourceId &&
-                entry.ResourceField == resourceField &&
                 entry.ResourceType == resourceType);
             db.Localizations.RemoveRange(existingLocalizations);
             db.SaveChanges();

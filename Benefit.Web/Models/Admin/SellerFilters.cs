@@ -15,10 +15,10 @@ namespace Benefit.Web.Models.Admin
     }
     public class SellerFilterOptions
     {
-        public IEnumerable<SelectListItem> Categories { get; set; }
-        public IEnumerable<SelectListItem> PointRatio { get; set; }
-        public IEnumerable<SelectListItem> TotalDiscountPercent { get; set; }
-        public IEnumerable<SelectListItem> UserDiscountPercent { get; set; }
+        public List<SelectListItem> Categories { get; set; }
+        public List<SelectListItem> PointRatio { get; set; }
+        public List<SelectListItem> TotalDiscountPercent { get; set; }
+        public List<SelectListItem> UserDiscountPercent { get; set; }
         public bool BenefitCard { get; set; }
         public bool Ecommerce { get; set; }
     }

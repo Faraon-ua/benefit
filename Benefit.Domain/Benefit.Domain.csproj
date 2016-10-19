@@ -144,6 +144,10 @@
     <Compile Include="Migrations\201610101148387_AddProductOptions.Designer.cs">
       <DependentUpon>201610101148387_AddProductOptions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610171448312_AddAddressAndNFCToUser.cs" />
+    <Compile Include="Migrations\201610171448312_AddAddressAndNFCToUser.Designer.cs">
+      <DependentUpon>201610171448312_AddAddressAndNFCToUser.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -228,6 +232,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610101148387_AddProductOptions.resx">
       <DependentUpon>201610101148387_AddProductOptions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610171448312_AddAddressAndNFCToUser.resx">
+      <DependentUpon>201610171448312_AddAddressAndNFCToUser.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -256,7 +256,7 @@
                         <a data-toggle="dropdown" href="#" class="dropdown-toggle">
                             <span class="user-info">
                                 <small>Вітаю,</small>
-                                @Request.Cookies[RouteConstants.FullNameCookieName].Value
+                                @HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
                             </span>
 
                             <i class="icon-caret-down"></i>

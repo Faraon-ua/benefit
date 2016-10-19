@@ -10,12 +10,14 @@
     <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/dropzone.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
+    <link href="~/Content/autocomplete.css" rel="stylesheet" />
 }
 @section scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
     <script src="~/Scripts/ckeditor/ckeditor.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
     <script src="~/Scripts/address.js"></script>
     <script src="~/Areas/Admin/assets/js/dropzone.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
@@ -28,7 +30,7 @@
             href = href.substring(0, href.length - 1) + (maxNumber + 1);
             $("#addNewCurrency").attr("href", href);
         }
-         
+
         function UpdateCategoriesNumber() {
             var maxNumber = GetMaxAttributeValue('.category-id', 'data-number');
             var href = $("#addNewCategory").attr("href");
@@ -190,7 +192,7 @@
     <div class="tabbable">
         <ul class="nav nav-tabs">
             @{
-                var displayClass = User.IsInRole(DomainConstants.SellerRoleName) ? "hidden" : "";
+    var displayClass = User.IsInRole(DomainConstants.SellerRoleName) ? "hidden" : "";
             }
             <li class="active @displayClass ">
                 <a href="#home" data-toggle="tab">
@@ -245,7 +247,7 @@
         <div class="tab-content">
             <div class="tab-pane in active @displayClass" id="home">
                 @Html.Partial("_SellerForm")
-            </div> 
+            </div>
             <div class="tab-pane @displayClass" id="categories">
                 @Html.Partial("_Categories", Model.Seller)
             </div>

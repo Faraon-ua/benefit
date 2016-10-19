@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Image = System.Drawing.Image;
 
@@ -10,6 +11,7 @@ namespace Benefit.Services
 {
     public class ImagesService
     {
+        private ApplicationDbContext db = new ApplicationDbContext();
         private ImageFormat GetImageFormatByExtension(string imagePath)
         {
             var extension = Path.GetExtension(imagePath);
@@ -97,6 +99,29 @@ namespace Benefit.Services
                     byte[] bytes = memory.ToArray();
                     fs.Write(bytes, 0, bytes.Length);
                 }
+            }
+        }
+
+        public void Delete(string imageId, ImageType type)
+        {
+            var image = db.Images.Find(imageId);
+            if(image ==null) return;
+            DeleteFile(image.ImageUrl, type);
+        }
+
+        private void DeleteFile(string fileName, ImageType type)
+        {
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var pathString = Path.Combine(originalDirectory, "Images", type.ToString());
+            var file = new FileInfo(Path.Combine(pathString, fileName));
+            file.Delete();
+            var dotIndex = fileName.IndexOf('.');
+            var id = fileName.Substring(0, dotIndex);
+            using (var db = new ApplicationDbContext())
+            {
+                var image = db.Images.Find(id);
+                db.Images.Remove(image);
+                db.SaveChanges();
             }
         }
     }

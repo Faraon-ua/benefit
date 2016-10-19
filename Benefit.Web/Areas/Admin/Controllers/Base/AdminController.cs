@@ -14,18 +14,10 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
     {
         public ActionResult DeleteUploadedFile(string fileName, ImageType type)
         {
-            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-            var pathString = Path.Combine(originalDirectory, "Images", type.ToString());
-            var file = new FileInfo(Path.Combine(pathString, fileName));
-            file.Delete();
+            var imagesService = new ImagesService();
             var dotIndex = fileName.IndexOf('.');
             var id = fileName.Substring(0, dotIndex);
-            using (var db = new ApplicationDbContext())
-            {
-                var image = db.Images.Find(id);
-                db.Images.Remove(image);
-                db.SaveChanges();
-            }
+            imagesService.Delete(id, type);
             return Json(true);
         }
 

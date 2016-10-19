@@ -6,8 +6,8 @@ using System.Web;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
-using Benefit.Domain.ModelExtensions;
 using Benefit.Domain.Models;
+using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Domain.Models.XmlModels;
 
 namespace Benefit.Services.Domain
@@ -30,22 +30,6 @@ namespace Benefit.Services.Domain
                     xmlToDbCategoriesMapping.Add(xmlCategory.Id, dbCategory.Id);
                 }
             }
-
-            /*var xmlCategoryIds = xmlCategories.Select(entry => entry.Id).ToList();
-            //select all 
-            var dbCategoryIds = seller.SellerCategories.Where(entry=>!entry.IsDefault).Select(entry => entry.CategoryId).ToList();
-
-            //remove categories
-            var categoryIdsToDelete = dbCategoryIds.Except(xmlCategoryIds).ToList();
-            categoryIdsToDelete.ToList().ForEach(Delete);
-
-            //add or update categories
-            foreach (var xmlCategory in xmlCategories.Where(entry => !categoryIdsToDelete.Contains(entry.Id) && entry.ParentId == null))
-            {
-                SaveCategoryFromXmlCategory(xmlCategory, xmlCategories);
-            }
-
-            db.SaveChanges();*/
         }
 
         private void SaveCategoryFromXmlCategory(XmlCategory xmlCategory, IEnumerable<XmlCategory> xmlCategories)
@@ -106,7 +90,5 @@ namespace Benefit.Services.Domain
             db.Categories.Remove(category);
             db.SaveChanges();
         }
-
-
     }
 }

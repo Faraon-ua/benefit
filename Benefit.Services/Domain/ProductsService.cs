@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Web.UI;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
@@ -64,7 +65,6 @@ namespace Benefit.Services.Domain
             xmlProducts.Where(entry => productIdsToUpdate.Contains(entry.Id)).ToList().ForEach(entry =>
             {
                 var dbProduct = db.Products.Find(entry.Id);
-
                 dbProduct.Name = entry.Name;
                 dbProduct.UrlName = entry.Name.Translit();
                 dbProduct.Description = entry.Description;
@@ -81,6 +81,26 @@ namespace Benefit.Services.Domain
 
             db.SaveChanges();
             return result;
+        }
+
+        public void Delete(string productId)
+        {
+            var product =
+                db.Products.Include(entry => entry.Images)
+                    .Include(entry => entry.ProductOptions)
+                    .Include(entry => entry.ProductParameterProducts)
+                    .FirstOrDefault(entry => entry.Id == productId);
+            if (product == null) return;
+            var imagesService = new ImagesService();
+            foreach (var image in product.Images)
+            {
+                imagesService.Delete(image.Id, image.ImageType);
+            }
+
+            db.ProductOptions.RemoveRange(product.ProductOptions);
+            db.ProductParameterProducts.RemoveRange(product.ProductParameterProducts);
+            db.Products.Remove(product);
+            db.SaveChanges();
         }
     }
 }

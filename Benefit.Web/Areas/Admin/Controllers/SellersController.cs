@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
-using Benefit.Domain.ModelExtensions;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
 using Benefit.Services.Domain;
@@ -59,9 +59,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         // get a stream
                         var xml = XDocument.Load(fileContent.InputStream);
-                        xmlCategories = xml.Descendants("Группы").First().Elements().Select(entry=>new XmlCategory(entry)).ToList();
-                        var defaultCategory = seller.SellerCategories.First(entry => entry.IsDefault).Category;
-                        var allDbCategories = defaultCategory.GetAllChildrenRecursively().ToList();
+                        xmlCategories = xml.Descendants("Группы").First().Elements().Select(entry => new XmlCategory(entry)).ToList();
+
+                        var defaultCategories = seller.SellerCategories.Where(entry => entry.IsDefault).Select(entry => entry.Category).ToList();
+                        var allDbCategories = defaultCategories.SelectMany(entry => entry.GetAllChildrenRecursively()).Distinct().ToList();
 
                         foreach (var dbCategory in allDbCategories)
                         {
@@ -77,7 +78,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             xmlProducts.Where(
                                 entry =>
                                     entry.Price.HasValue && xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
-                        xmlProducts.ForEach(entry=>entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
+                        xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
                         results = ProductService.ProcessImportedProducts(xmlProducts, xmlToDbCategoriesMapping.Values, seller.Id);
                         EmailService.SendImportResults(seller.Owner.Email, results);
                     }
@@ -120,6 +121,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult SellersSearch(SellerFilterValues filters)
         {
             IQueryable<Seller> sellers = db.Sellers.Include("Owner").AsQueryable();
+            if (filters.CategoryId == "all")
+            {
+                return PartialView("_SellersSearch", sellers);
+            }
             if (!string.IsNullOrEmpty(filters.Search))
             {
                 filters.Search = filters.Search.ToLower();
@@ -159,14 +164,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin")]
         public ActionResult Index()
         {
-            var routeCats = db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Name);
+            var catsList = new List<Category>();
+            var cats = db.Categories.Include(entry => entry.ChildCategories).Where(entry => entry.ParentCategoryId == null).ToList();
+            catsList.AddRange(cats);
+            catsList.AddRange(cats.SelectMany(entry => entry.ChildCategories));
+            catsList = catsList.OrderBy(entry => entry.ExpandedName).ToList();
             var options = new SellerFilterOptions
             {
-                Categories = routeCats.Select(entry => new SelectListItem() { Text = entry.Name, Value = entry.Id }),
-                PointRatio = SettingsService.DiscountPercentToPointRatio.Values.Distinct().Select(entry => new SelectListItem() { Text = entry + ":1", Value = entry.ToString() }),
-                TotalDiscountPercent = SettingsService.DiscountPercentToPointRatio.Keys.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() }),
-                UserDiscountPercent = SettingsService.UserDiscounts.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() })
+                Categories = catsList.Select(entry => new SelectListItem() { Text = entry.ExpandedName, Value = entry.Id }).ToList(),
+                PointRatio = SettingsService.DiscountPercentToPointRatio.Values.Distinct().Select(entry => new SelectListItem() { Text = entry + ":1", Value = entry.ToString() }).ToList(),
+                TotalDiscountPercent = SettingsService.DiscountPercentToPointRatio.Keys.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() }).ToList(),
+                UserDiscountPercent = SettingsService.UserDiscounts.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() }).ToList()
             };
+            options.Categories.Insert(0, new SelectListItem() { Text = "Всі постачальники", Value = "all" });
             return View(options);
         }
 

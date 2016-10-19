@@ -566,10 +566,13 @@
     <Content Include="Areas\Admin\assets\js\x-editable\bootstrap-editable.min.js" />
     <Content Include="Areas\Admin\styles\categories.css" />
     <Content Include="Content\address.css" />
+    <Content Include="Content\autocomplete.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\common.css" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\img\at.png" />
     <Content Include="Content\img\banner.png" />
     <Content Include="Content\img\flags\ru.png" />
@@ -747,6 +750,15 @@
     <Content Include="Areas\Admin\Views\Sellers\_ProductOptions.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Currencies.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_CategoryForm.cshtml" />
+    <Content Include="Content\fonts\fontawesome-webfont.eot" />
+    <Content Include="Content\fonts\fontawesome-webfont.ttf" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff" />
+    <Content Include="Content\fonts\fontawesome-webfont.woff2" />
+    <Content Include="Content\fonts\FontAwesome.otf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Content\fonts\glyphicons-halflings-regular.woff2" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />
@@ -1104,6 +1116,7 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-2.2.3.min.js" />
     <Content Include="Scripts\jquery-ui.js" />
+    <Content Include="Scripts\jquery.autocomplete.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
@@ -1147,6 +1160,7 @@
     <Content Include="Views\Home\uploadPartial.cshtml" />
     <Content Include="Views\Shared\_SocialGroups.cshtml" />
     <Content Include="Views\Shared\_CategoriesPartial.cshtml" />
+    <Content Include="Views\Shared\_SelectRegionPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1161,7 +1175,6 @@
     <Folder Include="Images\SellerLogo\" />
     <Folder Include="Images\uploads\" />
     <Folder Include="Views\Base\" />
-    <Folder Include="Views\Layout\" />
     <Folder Include="Views\Localizations\" />
   </ItemGroup>
   <ItemGroup>
@@ -1175,6 +1188,10 @@
     <ProjectReference Include="..\Benefit.Common\Benefit.Common.csproj">
       <Project>{3946539e-a45a-46cd-be25-4e420e468082}</Project>
       <Name>Benefit.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Benefit.DataTransfer\Benefit.DataTransfer.csproj">
+      <Project>{0fcf456f-ddc3-4a34-8942-7f88e9d2164f}</Project>
+      <Name>Benefit.DataTransfer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Benefit.Domain\Benefit.Domain.csproj">
       <Project>{C187C6AD-93F5-457B-AA6E-2F43BA4374F3}</Project>

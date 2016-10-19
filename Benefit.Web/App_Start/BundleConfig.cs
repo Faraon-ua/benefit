@@ -7,8 +7,10 @@ namespace Benefit.Web
         // For more information on bundling, visit http://go.microsoft.com/fwlink/?LinkId=301862
         public static void RegisterBundles(BundleCollection bundles)
         {
+            //todo: add conventional autocomplete script and css load
             bundles.Add(new ScriptBundle("~/bundles/master").Include(
                         "~/Scripts/jquery-2.2.3.min.js",
+                        "~/Scripts/jquery.autocomplete.min.js",
                         "~/Scripts/jquery-ui.js",
                         "~/Scripts/bootstrap.min.js",
                         "~/Scripts/owl.carousel.min.js",
@@ -35,7 +37,8 @@ namespace Benefit.Web
                       "~/Content/owl.carousel.css",
                       "~/Content/jquery-ui.css",
                       "~/Content/css/main.css",
-                      "~/Content/css/media.css"));
+                      "~/Content/css/media.css",
+                      "~/Content/autocomplete.css"));
         }
     }
 }
