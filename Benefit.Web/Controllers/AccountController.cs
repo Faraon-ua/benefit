@@ -7,11 +7,14 @@ using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services;
 using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Benefit.Web.Models;
+using Microsoft.Owin.Security.DataProtection;
 
 namespace Benefit.Web.Controllers
 {
@@ -21,11 +24,16 @@ namespace Benefit.Web.Controllers
         public AccountController()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
+
         }
 
         public AccountController(UserManager<ApplicationUser> userManager)
         {
             UserManager = userManager;
+            var provider = new DpapiDataProtectionProvider("Sample");
+            UserManager.EmailService = new EmailService();
+            UserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(
+                provider.Create("EmailConfirmation"));
         }
 
         public UserManager<ApplicationUser> UserManager { get; private set; }
@@ -86,6 +94,14 @@ namespace Benefit.Web.Controllers
                 if (result.Succeeded)
                 {
                     await SignInAsync(user, isPersistent: false);
+
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                       new { userId = user.Id, code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id,
+                       "Confirm your account", "Please confirm your account by clicking <a href=\""
+                       + callbackUrl + "\">here</a>");
+
                     return RedirectToAction("Index", "Home");
                 }
                 else
@@ -96,6 +112,91 @@ namespace Benefit.Web.Controllers
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public async Task<ActionResult> ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ForgotPassword(string Email)
+        {
+            var user = await UserManager.FindByNameAsync(Email);
+            if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+            {
+                // Don't reveal that the user does not exist or is not confirmed
+                return View("ForgotPasswordConfirmation");
+            }
+
+            string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            return View("ForgotPasswordConfirmation");
+        }
+
+        //
+        // GET: /Account/ResetPassword
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResetPassword(string userId, string code = null)
+        {
+            return code == null ? View("Error") : View(new ResetPasswordViewModel
+            {
+                Id = userId
+            });
+        }
+
+        //
+        // POST: /Account/ResetPassword
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+            var user = await UserManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                // Don't reveal that the user does not exist
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+            var result = await UserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("ResetPasswordConfirmation", "Account");
+            }
+            AddErrors(result);
+            return View();
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+        public async Task<ActionResult> ConfirmEmail(string userId, string code)
+        {
+            if (userId == null || code == null)
+            {
+                return View("Error");
+            }
+            var result = await UserManager.ConfirmEmailAsync(userId, code);
+            if (result.Succeeded)
+            {
+                return View("ConfirmEmail");
+            }
+            AddErrors(result);
+            return View();
         }
 
         //
@@ -327,6 +428,10 @@ namespace Benefit.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
+            if (Request.Cookies[RouteConstants.FullNameCookieName] != null)
+            {
+                Response.Cookies[RouteConstants.FullNameCookieName].Expires = DateTime.UtcNow.AddDays(-1);
+            }
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }

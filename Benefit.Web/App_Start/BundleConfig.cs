@@ -38,6 +38,7 @@ namespace Benefit.Web
                       "~/Content/jquery-ui.css",
                       "~/Content/css/main.css",
                       "~/Content/css/media.css",
+                      "~/Content/common.css",
                       "~/Content/autocomplete.css"));
         }
     }

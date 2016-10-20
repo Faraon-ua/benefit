@@ -2,12 +2,14 @@
 using System.IO;
 using System.Net.Mail;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web;
 using Benefit.Web.Models.Admin;
+using Microsoft.AspNet.Identity;
 
 namespace Benefit.Services
 {
-    public class EmailService
+    public class EmailService : IIdentityMessageService
     {
         private const string DisplayName = "Benefit Company";
 
@@ -63,11 +65,11 @@ namespace Benefit.Services
         public void PasswordChanged(string userEmail, string newPassword)
         {
             SendTemplatedEmail(System.Reflection.MethodInfo.GetCurrentMethod().Name, userEmail, "Ваш пароль було змінено", new[] { newPassword });
-        } 
-        
+        }
+
         public void SendImportResults(string userEmail, ProductImportResults importResults)
         {
-            SendTemplatedEmail(System.Reflection.MethodInfo.GetCurrentMethod().Name, userEmail, 
+            SendTemplatedEmail(System.Reflection.MethodInfo.GetCurrentMethod().Name, userEmail,
                 "Результати імпорту",
                 new[] { string.Join("<br/>", importResults.ProcessedCategories), string.Join("<br/>", importResults.IgnoredCategories), importResults.ProductsAdded.ToString(), importResults.ProductsUpdated.ToString(), importResults.ProductsRemoved.ToString() });
         }
@@ -77,6 +79,11 @@ namespace Benefit.Services
             var body = new StringBuilder();
             body.Append(string.Format("Не удалось залогинится на сайт caribbeanbridge.com под логином {0} с реквизитами, которые вы указали, пожалуйста проверте правильность ввода логина и пароля.", accontName));
             SendEmail(email, body.ToString(), string.Format("[{0}] Login failed to caribbeanbridge.com", accontName));
+        }
+
+        public Task SendAsync(IdentityMessage message)
+        {
+            return Task.Run(() => SendEmail(message.Destination, message.Body, message.Subject));
         }
     }
 }

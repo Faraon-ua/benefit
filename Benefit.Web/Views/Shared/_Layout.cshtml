@@ -13,7 +13,6 @@
     <link rel="icon" href="~/Content/img/fav.jpg">
 </head>
 <body>
-
     <header>
         <div class="container">
             <div class="container_table topheader_content">
@@ -237,10 +236,6 @@
                                     <span>Сб., Нд.</span>
                                     <span>вихідний</span>
                                 </div>
-                                @*<div>
-                                    <span>Нд.</span>
-                                    <span>вихідний</span>
-                                </div>*@
                             </div>
                         </div>
                         <div class="f_addr show_on_tablet">
@@ -301,5 +296,6 @@
         $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
         $('#right-menu').load('@Url.Action("CategoriesPartial", "Home")');
     </script>
+    @Html.Partial("_RegionModal")
 </body>
 </html>

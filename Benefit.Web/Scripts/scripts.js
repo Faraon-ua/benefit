@@ -48,15 +48,20 @@ function deleteCookie(name) {
 }
 
 $(function () {
-    $("#region-search-txt").devbridgeAutocomplete({
+    if (!getCookie("regionName")) {
+        $(".region_modal").modal();
+    }
+
+    $(".region-search-txt, .region-modal-search-txt").devbridgeAutocomplete({
         minChars: 3,
         serviceUrl: routePrefix + '/Home/SearchRegion',
         onSelect: function (suggestion) {
             var result = suggestion.value.substring(0, suggestion.value.indexOf(" ("));
             $("#select_place .inside").text(result);
-            $("#region-search-txt").val(result);
-            setCookie("regionName", result, {expires: 31536000});//year
-            setCookie("regionId", suggestion.data, { expires: 31536000 });//year
+            $(".region-search-txt").val(result);
+            $(".region_modal").modal("hide");
+            setCookie("regionName", result, { expires: 31536000, path: "/" });//year
+            setCookie("regionId", suggestion.data, { expires: 31536000, path: "/" });//year
         }
     });
 
@@ -411,12 +416,12 @@ $('body').on('click', function (e) {
 });
 $(function () {
     $("#select_place").click(function () {
-        $("#region-search-txt").show();
-        $("#region-search-txt").focus();
+        $(".region-search-txt").show();
+        $(".region-search-txt").focus();
         $(this).hide();
     });
 
-    $("#region-search-txt").focusout(function () {
+    $(".region-search-txt").focusout(function () {
         $("#select_place").show();
         $(this).hide();
     });

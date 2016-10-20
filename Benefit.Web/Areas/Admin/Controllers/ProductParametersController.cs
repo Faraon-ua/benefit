@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Microsoft.AspNet.Identity;
 
@@ -115,11 +116,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult Delete(string id, string categoryId)
         {
-            ProductParameter productparameter = db.ProductParameters.Find(id);
-
-            db.ProductParameterValues.RemoveRange(productparameter.ProductParameterValues);
-            db.ProductParameters.Remove(productparameter);
-            db.SaveChanges();
+            var productService = new ProductsService();
+            productService.DeleteProductParameter(id);
             return RedirectToAction("Index", new { categoryId });
         }
 

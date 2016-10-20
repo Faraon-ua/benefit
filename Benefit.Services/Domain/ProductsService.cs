@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web.UI;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
@@ -100,6 +99,23 @@ namespace Benefit.Services.Domain
             db.ProductOptions.RemoveRange(product.ProductOptions);
             db.ProductParameterProducts.RemoveRange(product.ProductParameterProducts);
             db.Products.Remove(product);
+            db.SaveChanges();
+        }
+
+        public void DeleteProductParameter(string id)
+        {
+            var productparameter = db.ProductParameters.Include(entry => entry.ChildProductParameters).Include(entry => entry.ChildProductParameters.Select(child => child.ProductParameterValues)).FirstOrDefault(entry => entry.Id == id);
+            //remove self values and product relations
+            db.ProductParameterValues.RemoveRange(productparameter.ProductParameterValues);
+            db.ProductParameterProducts.RemoveRange(productparameter.ProductParameterProducts);
+
+            //remove childs's values and product relations
+            db.ProductParameterValues.RemoveRange(productparameter.ChildProductParameters.SelectMany(entry => entry.ProductParameterValues));
+            db.ProductParameterProducts.RemoveRange(productparameter.ChildProductParameters.SelectMany(entry => entry.ProductParameterProducts));
+            //remove childs
+            db.ProductParameters.RemoveRange(productparameter.ChildProductParameters);
+
+            db.ProductParameters.Remove(productparameter);
             db.SaveChanges();
         }
     }

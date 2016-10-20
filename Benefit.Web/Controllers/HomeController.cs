@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Benefit.DataTransfer.JSON;
@@ -17,7 +18,7 @@ namespace Benefit.Web.Controllers
     public class HomeController : BaseController
     {
         //        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
             return View();
         }

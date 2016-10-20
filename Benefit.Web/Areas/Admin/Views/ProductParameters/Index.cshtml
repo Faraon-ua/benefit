@@ -75,6 +75,9 @@
             }
             <div class="col-sm-2">
                 @parameter.Name (@type)
+                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = parameter.Id, categoryId = Model.Key.Id })">
+                    <i class="icon-remove red"></i>
+                </a>
                 @if (parameter.Type == typeof (string).ToString())
                 {
                     <a onclick="ProductParameterValue('@parameter.Id')" href="#">+ Додати значення</a>
