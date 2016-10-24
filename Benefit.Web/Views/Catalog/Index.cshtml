@@ -1,0 +1,50 @@
+﻿@model Benefit.DataTransfer.SellersDto
+
+@{
+    ViewBag.Title = Model.Category.Name;
+}
+
+@Html.HiddenFor(m => m.Category.Id)
+
+<main class="full_content full_content_provider">
+    <div class="provider_row clearfix">
+        @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+        <div class="provider_sort">
+            <label for="provider_sort_title">Сортувати</label>
+            <select id="provider_sort_select" class="provider_sort_select">
+                <option>по рейтингу</option>
+            </select>
+        </div>
+       
+        @foreach (var seller in Model.Items)
+        {
+            @Html.Partial("_ProviderPartial", seller)
+        }
+
+    </div>
+    @*  //todo: Add easy loadings
+             <div class="bottom_control clearfix">
+            <div class="pagination_wrap">
+                <div class="pagination_prew">&lt;</div>
+                <ul class="pagination">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li class="active">4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>...</li>
+                    <li>54</li>
+                </ul>
+                <div class="pagination_next">&gt;</div>
+            </div>
+            <div class="show_more">
+                <label for="more_providers">Показати</label>
+                <select id="more_providers" class="orders_org_choice">
+                    <option>16</option>
+                    <option>32</option>
+                </select>
+            </div>
+        </div>*@
+</main>
+

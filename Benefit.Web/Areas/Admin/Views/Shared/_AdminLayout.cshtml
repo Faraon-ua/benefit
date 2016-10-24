@@ -10,7 +10,7 @@
     <!-- basic styles -->
     <link href="~/Areas/Admin/assets/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="~/Content/common.css" rel="stylesheet" />
+    <link href="~/Content/css/common.css" rel="stylesheet" />
     <!-- page specific plugin styles -->
     @RenderSection("styles", required: false)
     <!-- fonts -->
@@ -19,7 +19,7 @@
     <link href="~/Areas/Admin/assets/css/ace-rtl.min.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/uncompressed/ace.css" rel="stylesheet" />
 
-    <link href="~/Content/validation-errors.css" rel="stylesheet" />
+    <link href="~/Content/css/validation-errors.css" rel="stylesheet" />
     <!-- ace settings handler -->
     <script src="~/Areas/Admin/assets/js/jquery-2.0.3.min.js"></script>
     <script src="~/Areas/Admin/assets/js/ace-extra.min.js"></script>
@@ -33,7 +33,7 @@
 
         <div class="navbar-container" id="navbar-container">
             <div class="navbar-header pull-left">
-                <a href="#" class="navbar-brand">
+                <a href="@Url.Action("Index", "Dashboard")" class="navbar-brand">
                     <small>
                         <i class="icon-leaf"></i>
                         Benefit Admin
@@ -388,6 +388,7 @@
                         </a>
                     </li>
 
+
                     @*    <li>
                             <a href="#" class="dropdown-toggle">
                                 <i class="icon-list"></i>
@@ -421,7 +422,14 @@
                                 <span class="menu-text">Інформаційні сторінки</span>
                             </a>
                         </li>
+                        <li>
+                            <a href="@Url.Action("Index", "Regions")">
+                                <i class="icon-globe"></i>
+                                <span class="menu-text"> Регіони</span>
+                            </a>
+                        </li>
                     }
+
                 </ul><!-- /.nav-list -->
 
                 <div class="sidebar-collapse" id="sidebar-collapse">

@@ -1,0 +1,69 @@
+﻿@model IEnumerable<Benefit.Domain.Models.Region>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+@using (Html.BeginForm("Index", "Regions", FormMethod.Get))
+{
+    <input name="name" />
+    <input type="submit" value="Пошук" />
+}
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Id)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name_ua)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name_ru)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RegionType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RegionLevel)
+        </th> 
+         <th>
+            Батьківський регіон
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name_ua)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name_ru)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegionType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegionLevel)
+            </td> 
+            <td>
+                @item.Parent.Name_ua  @item.Parent.RegionType (@item.Parent.Id)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

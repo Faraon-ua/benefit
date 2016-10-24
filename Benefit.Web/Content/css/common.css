@@ -108,3 +108,7 @@
 .width-3 {
     width: 3% !important;
 }
+
+.bold {
+    font-weight: bold;
+}

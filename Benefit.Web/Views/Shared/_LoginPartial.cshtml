@@ -1,22 +1,19 @@
 ﻿@using Benefit.Common.Constants
-@if (Request.IsAuthenticated)
-{
-    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-    {
-        @Html.AntiForgeryToken()
+<div class="sub_header_right_links">
 
-        <ul class="nav navbar-nav navbar-right">
-            <li>
-                @Html.ActionLink(HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value), "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage" })
-            </li>
-            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
-        </ul>
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+            @*            <div class="col-sm-10">*@
+            @Html.ActionLink(HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value), "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage", @class = "sub_header_user_name" })
+            <a href="javascript:document.getElementById('logoutForm').submit()"><img src="~/Content/img/logout.png" /> </a>
+        }
     }
-}
-else
-{
-    <div class="sub_header_right_links">
+    else
+    {
         <a href="@Url.Action("Login", "Account")">Вхід</a>
         <a href="@Url.Action("Register", "Account")">Реєстрація</a>
-    </div>
-}
+    }
+</div>

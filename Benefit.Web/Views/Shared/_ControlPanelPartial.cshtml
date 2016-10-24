@@ -1,0 +1,72 @@
+﻿@{
+    var controllerName = HttpContext.Current.Request.RequestContext.RouteData.Values["controller"].ToString();
+    var isDropDown = (controllerName != "Home");
+}
+
+<div class="sub_header">
+    <div class="container">
+        <div class="container_table subheader_content">
+            <div class="col-2 @(isDropDown ? "header_categories_wrap" : "")">
+                <a class="header_categories @(isDropDown ? "categories_drop" : "" )" href="#categories">Категорії</a>
+            </div>
+            <div class="col-8">
+                <div class="row sub_header_row">
+                    <div class="col-sm-8">
+                        <div class="search_block">
+                            <div class="input-group">
+                                <input class="form-control" aria-label="Пошук" placeholder="Пошук">
+                                <div class="input-group-btn">
+                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Всі категорії <span class="caret"></span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="#">1</a></li>
+                                        <li><a href="#">2</a></li>
+                                        <li><a href="#">3</a></li>
+                                        <li><a href="#">4</a></li>
+                                    </ul>
+                                    <button type="button" class="btn btn-default"><i class="icn search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="position_block show_on_tablet">
+                            <p>Оберіть місто</p>
+                            <div class="input-group select_place min">
+                                <input type="text" class="form-control select_place_input" placeholder="введіть місто" aria-describedby="lb-pass">
+                            </div>
+                        </div>
+                        <div class="login_box">
+                            <div class="login_box_header">
+                                <button class="close"></button>
+                                <span>Вхід в особистий кабінет</span>
+                            </div>
+                            <div class="login_box_content">
+                                <form action="" method="post">
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="lb-at"><span class="at"></span></span>
+                                        <input type="text" class="form-control" placeholder="e-mail" aria-describedby="lb-at">
+                                    </div>
+                                    <div class="input-group">
+                                        <span class="input-group-addon" id="lb-pass"><span class="padlock"></span></span>
+                                        <input type="password" class="form-control" placeholder="пароль" aria-describedby="lb-pass">
+                                    </div>
+                                    <button>Вхід</button>
+                                    <div class="login_box_u_links">
+                                        <span><a href="#" class="forgot">Забули пароль?</a></span>
+                                        <span><a href="#" class="toreg">Реєстрація</a></span>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        @Html.Partial("_ControlPanelButtons")
+                    </div>
+                </div>
+            </div>
+            <div class="col-2" id="loginPartial">
+            </div>
+        </div>
+    </div>
+</div>

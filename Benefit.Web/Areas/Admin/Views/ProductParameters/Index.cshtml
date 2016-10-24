@@ -58,7 +58,7 @@
         <a class="btn btn-success btn-sm margin-right-10 pull-left" href="@Url.Action("CreateOrUpdate", new { categoryId = Model.Key.Id, parentId = group.Id })" target="_blank" title="Додати характеристику">
             <i class="icon-plus"></i>
         </a>
-        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" target="_blank" title="Редагувати" onclick="ProductParameterGroup('@Model.Key.Id', '@group.Id')">
+        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Редагувати" onclick="ProductParameterGroup('@Model.Key.Id', '@group.Id')">
             <i class="icon-edit"></i>
         </a>
         <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryId = Model.Key.Id })" onclick="return confirm('Ви впевненні?')">

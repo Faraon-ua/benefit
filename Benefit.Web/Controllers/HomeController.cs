@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.JSON;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -28,13 +29,15 @@ namespace Benefit.Web.Controllers
             return PartialView("_LoginPartial");
         }
 
-        public ActionResult CategoriesPartial(string parentCategoryId = null)
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;isDropDown;")]
+        public ActionResult CategoriesPartial(string parentCategoryId = null, bool? isDropDown = null)
         {
             using (var db = new ApplicationDbContext())
             {
                 var parent = db.Categories.Find(parentCategoryId);
                 var parentName = parent == null ? null : parent.Name;
                 var categories = db.Categories.Include("ChildCategories").Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry => entry.Order).ToList();
+                ViewBag.IsDropDown = isDropDown ?? false;
                 return PartialView("_CategoriesPartial", new KeyValuePair<string, IEnumerable<Category>>(parentName, categories));
             }
         }

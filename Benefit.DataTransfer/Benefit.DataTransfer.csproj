@@ -43,7 +43,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JSON\AutocompleteSearch.cs" />
+    <Compile Include="SellersDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Benefit.Domain\Benefit.Domain.csproj">
+      <Project>{c187c6ad-93f5-457b-aa6e-2f43ba4374f3}</Project>
+      <Name>Benefit.Domain</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -61,6 +61,7 @@
     <Compile Include="CacheService.cs" />
     <Compile Include="Domain\CategoriesService.cs" />
     <Compile Include="Domain\ProductsService.cs" />
+    <Compile Include="Domain\RegionService.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="Domain\ImagesService.cs" />
     <Compile Include="Domain\LocalizationService.cs" />
@@ -71,6 +72,10 @@
     <ProjectReference Include="..\Benefit.Common\Benefit.Common.csproj">
       <Project>{3946539e-a45a-46cd-be25-4e420e468082}</Project>
       <Name>Benefit.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Benefit.DataTransfer\Benefit.DataTransfer.csproj">
+      <Project>{0fcf456f-ddc3-4a34-8942-7f88e9d2164f}</Project>
+      <Name>Benefit.DataTransfer</Name>
     </ProjectReference>
     <ProjectReference Include="..\Benefit.Domain\Benefit.Domain.csproj">
       <Project>{c187c6ad-93f5-457b-aa6e-2f43ba4374f3}</Project>

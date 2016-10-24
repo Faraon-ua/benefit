@@ -1,0 +1,32 @@
+﻿@using Benefit.Domain.Models
+@model Benefit.Domain.Models.Seller
+<div class="provider_container">
+    <div class="provider">
+        <div class="provider_main_info">
+            <div class="provider_bonus_label">@Model.UserDiscount% <br>бонус</div>
+            <div class="provider_img_wrap">
+                <img src="~/Images/SellerLogo/@Model.Images.FirstOrDefault(entry=>entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo)" alt="@Model.Name">
+            </div>
+            <p class="provider_name">@Model.Name</p>
+            <p class="provider_type">Ресторан   </p>
+            <div class="rating_wrap">
+                <div class="perelik_rating top"></div>
+                <p class="rating_reviews">15 відгуків</p>
+            </div>
+            <div class="reviews_menu_wrap">
+                <a href="#" class="reviews_info">Інфо</a>
+                <a href="#" class="reviews_menu">Меню</a>
+            </div>
+        </div>
+        <div class="provider_additional_info">
+            <div class="provider_address">
+                <span>м. Мукачево,<br> вул. Д. Галицького, 15</span>
+            </div>
+            <div class="provider_benefit_card"><span>Benefit Card</span></div>
+            <div class="provider_delivery"><span>Доставка по м. Мукачево та району</span></div>
+            <div class="provider_order_intake"><span>Прийом замовлень<br> з 9:00 до 23:00</span></div>
+            <div class="provider_ball_ratio"><span>2 грн = 1 бал</span></div>
+            <div class="provider_bonus_payment"><span>Розрахунок бонусами</span></div>
+        </div>
+    </div>
+</div>

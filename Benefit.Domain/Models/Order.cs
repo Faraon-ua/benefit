@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
@@ -21,6 +20,7 @@ namespace Benefit.Domain.Models
     {
         public string Id { get; set; }
         public double Sum { get; set; }
+        public string CardNumber { get; set; }
         public DateTime Time { get; set; }
         public OrderType OrderType { get; set; }
         public OrderStatus Status { get; set; }

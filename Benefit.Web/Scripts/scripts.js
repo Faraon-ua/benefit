@@ -1,77 +1,3 @@
-var routePrefix = "/Benefit.Web";
-//var routePrefix = "";
-
-// возвращает cookie с именем name, если есть, если нет, то undefined
-function getCookie(name) {
-    var matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
-    ));
-    return matches ? decodeURIComponent(matches[1]) : undefined;
-}
-
-// устанавливает cookie с именем name и значением value
-// options - объект с свойствами cookie (expires, path, domain, secure)
-function setCookie(name, value, options) {
-    options = options || {};
-
-    var expires = options.expires;
-
-    if (typeof expires == "number" && expires) {
-        var d = new Date();
-        d.setTime(d.getTime() + expires * 1000);
-        expires = options.expires = d;
-    }
-    if (expires && expires.toUTCString) {
-        options.expires = expires.toUTCString();
-    }
-
-    value = encodeURIComponent(value);
-
-    var updatedCookie = name + "=" + value;
-
-    for (var propName in options) {
-        updatedCookie += "; " + propName;
-        var propValue = options[propName];
-        if (propValue !== true) {
-            updatedCookie += "=" + propValue;
-        }
-    }
-
-    document.cookie = updatedCookie;
-}
-
-// удаляет cookie с именем name
-function deleteCookie(name) {
-    setCookie(name, "", {
-        expires: -1
-    });
-}
-
-$(function () {
-    if (!getCookie("regionName")) {
-        $(".region_modal").modal();
-    }
-
-    $(".region-search-txt, .region-modal-search-txt").devbridgeAutocomplete({
-        minChars: 3,
-        serviceUrl: routePrefix + '/Home/SearchRegion',
-        onSelect: function (suggestion) {
-            var result = suggestion.value.substring(0, suggestion.value.indexOf(" ("));
-            $("#select_place .inside").text(result);
-            $(".region-search-txt").val(result);
-            $(".region_modal").modal("hide");
-            setCookie("regionName", result, { expires: 31536000, path: "/" });//year
-            setCookie("regionId", suggestion.data, { expires: 31536000, path: "/" });//year
-        }
-    });
-
-    if (getCookie("regionName")) {
-        $("#select_place .inside").text(getCookie("regionName"));
-    } else {
-        $("#select_place .inside").text("Оберіть місто");
-    }
-});
-
 window.onload = function () {
     (function (d) {
         var
@@ -101,6 +27,7 @@ window.onload = function () {
 
     document.getElementById('left-menu').addEventListener('swl', l, false);
     document.getElementById('right-menu').addEventListener('swr', r, false);
+
 }
 
 $.fn.isolatedScroll = function () {
@@ -125,6 +52,24 @@ $('.top_slider').owlCarousel({
     loop: true,
     margin: 0,
     dots: true,
+    responsiveClass: true,
+    nav: true,
+    navText: [
+      "<i class='fa fa-angle-left' aria-hidden='true'></i>",
+      "<i class='fa fa-angle-right' aria-hidden='true'></i>"
+    ],
+    items: 1,
+    autoplay: true,
+    autoplayTimeout: 7000,
+    startPosition: '0',
+    fluidSpeed: true,
+    smartSpeed: 1000
+});
+
+/*organization slider*/
+$('.organization_slider').owlCarousel({
+    loop: true,
+    margin: 0,
     responsiveClass: true,
     nav: true,
     navText: [
@@ -415,17 +360,6 @@ $('body').on('click', function (e) {
     }
 });
 $(function () {
-    $("#select_place").click(function () {
-        $(".region-search-txt").show();
-        $(".region-search-txt").focus();
-        $(this).hide();
-    });
-
-    $(".region-search-txt").focusout(function () {
-        $("#select_place").show();
-        $(this).hide();
-    });
-
     var availableTags = [
       "Глазго",
       "Киев",
@@ -453,4 +387,168 @@ $(window).resize(function () {
         $('.vertical_menu').attr('style', '');
         $('.vertical_menu ul li ul').attr('style', '');
     }
+});
+
+// tooltip
+$('.battery').tooltip();
+
+//structure table
+$('.expand_close').on('click', function () {
+    $(this).toggleClass('expand_close expand_open')
+    $(this).parent().parent().children('ul').toggleClass('hidden');
+});
+$('.expand_open').on('click', function () {
+    $(this).toggleClass('expand_close expand_open')
+    $(this).parent().parent().children('ul').toggleClass('hidden');
+});
+
+var balls = $(".structure_table_balls");
+jQuery.each(balls, function () {
+    if (parseInt($(this).html()) >= 500) {
+        $(this).addClass('green_color');
+    }
+});
+
+var bonusLevel = $('.bonusLevel');
+jQuery.each(bonusLevel, function () {
+    var tmp = $(this).html().split(' ');
+    if (tmp[0] === '-') {
+        $(this).parent().addClass('pink');
+    }
+});
+
+var structureLine = $('.structureLine');
+jQuery.each(structureLine, function () {
+    if ($(this).html() === '1' || $(this).html() === 1) {
+        $(this).parent().addClass('bg_pink');
+    } else {
+        $(this).parent().addClass('bg_grey');
+    }
+});
+
+var today = new Date();
+var currentYear = today.getFullYear();
+for (var i = 1901; i <= currentYear; i++) {
+    var tmp;
+    if (i === currentYear) {
+        var tmp = '<option selected>' + i + '</option>';
+    } else {
+        var tmp = '<option>' + i + '</option>';
+    }
+    $('.bonuses_invitation_year').append(tmp);
+    $('.structre_year').append(tmp);
+}
+
+
+
+/*organization slider*/
+$('.grr').owlCarousel({
+    loop: true,
+    margin: 0,
+    dots: true,
+    responsiveClass: true,
+    nav: true,
+    navText: [
+      "<i class='fa fa-angle-left' aria-hidden='true'></i>",
+      "<i class='fa fa-angle-right' aria-hidden='true'></i>"
+    ],
+    items: 1,
+    autoplay: true,
+    autoplayTimeout: 7000,
+    startPosition: '0',
+    fluidSpeed: true,
+    smartSpeed: 1000
+});
+
+/*product_description_amount*/
+var productCurrentValue;
+
+$('.product_description_amount_minus').on('click', function () {
+    productCurrentValue = parseInt($('.product_description_amount').val());
+    var newValue = productCurrentValue - 1;
+    if (productCurrentValue <= 1) {
+        return;
+    } else {
+        $('.product_description_amount').val(newValue);
+    }
+});
+
+$('.product_description_amount_plus').on('click', function () {
+    productCurrentValue = parseInt($('.product_description_amount').val());
+    var newValue = productCurrentValue + 1;
+    $('.product_description_amount').val(newValue);
+
+});
+
+/*product_modal_amount*/
+$('.product_modal_minus').on('click', function () {
+    var temp = $(this).parent().children('.product_modal_amount').val().split(',');
+    productCurrentValue = parseFloat(temp.join('.'));
+    if (productCurrentValue <= 1 && temp.length === 1) {
+        return;
+    } else if (temp.length > 1) {
+        var fixed = (productCurrentValue - 0.01).toFixed(2).split('.').join(',');
+        $(this).parent().children('.product_modal_amount').val(fixed);
+    } else {
+        $(this).parent().children('.product_modal_amount').val(productCurrentValue - 1);
+    }
+});
+
+$('.product_modal_plus').on('click', function () {
+    var temp = $(this).parent().children('.product_modal_amount').val().split(',').join('.');
+    productCurrentValue = parseFloat(temp);
+    if (temp.length > 1) {
+        var fixed = (productCurrentValue + 0.01).toFixed(2).split('.').join(',');
+        $(this).parent().children('.product_modal_amount').val(fixed);
+    } else {
+        $(this).parent().children('.product_modal_amount').val(productCurrentValue + 1);
+    }
+
+});
+
+$('.product_modal_amount, .product_description_amount').blur(function () {
+    var value = $(this).val();
+    if (value !== '') {
+        if (!this.value.match(/^[0-9-]+$/)) {
+            $(this).val(1);
+        }
+    }
+});
+/*basket_modal_table delete product*/
+$('.delete_product').on('click', function () {
+    if ($(this).parents('.basket_modal_td').is(':has(ul)')) {
+        var parentRow = $(this).parents('.basket_modal_table_row');
+        var index = $(this).parent().index();
+
+        if (index === 0) {
+            $(this).parents('.basket_modal_table_row').remove();
+        } else {
+            var newIndex = index + 1;
+            var tempStr = 'ul li:nth-child(' + newIndex + ')';
+            $(this).parents('.basket_modal_table_row').find(tempStr).remove();
+        }
+    } else {
+        $(this).parent().parent().remove();
+    }
+});
+
+/*categories darker background*/
+
+//$('#categories li, .header_categories_wrap li').on('mouseenter', function() {
+
+$("body").on("mouseenter", "#categories li, .header_categories_wrap li", function () {
+    //$('#categories li, .header_categories_wrap li').on('mouseenter', function() {
+    $('.darker').removeClass('hidden');
+});
+
+//$('.darker, header, .sub_header').on('mouseenter', function() {
+$("body").on("mouseenter", ".darker, header, .sub_header", function () {
+
+    $('.darker').addClass('hidden');
+});
+
+
+/*header categorias link*/
+$('.header_categories_wrap .header_categories').on('click', function (e) {
+    e.preventDefault();
 });

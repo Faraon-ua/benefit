@@ -1,12 +1,18 @@
-﻿@model KeyValuePair<string, IEnumerable<Benefit.Domain.Models.Category>>
-<ul class="nav navbar-nav">
-    <li>
-        <span class="bold">@(Model.Key ?? "Категорії")</span>
-    </li>
+﻿@using Benefit.Common.Constants
+@model KeyValuePair<string, IEnumerable<Benefit.Domain.Models.Category>>
+
+<ul id="@(Model.Key == null ? "categories" : "")" class="@(ViewBag.IsDropDown ? "" : "nav navbar-nav")">
+    @if (Model.Key != null)
+    {
+        <li>
+            <span class="bold">@Model.Key</span>
+        </li>
+    }
+
     @foreach (var category in Model.Value)
     {
         <li>
-            <a href="#" title="@category.Description">@category.Name</a>
+            <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id = category.UrlName })" title="@category.Description">@category.Name</a>
             @if (Model.Key == null && category.ChildCategories.Any())
             {
                 <ul>

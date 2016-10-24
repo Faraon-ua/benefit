@@ -13,6 +13,7 @@
     <link rel="icon" href="~/Content/img/fav.jpg">
 </head>
 <body>
+    <div class="darker hidden"></div>
     <header>
         <div class="container">
             <div class="container_table topheader_content">
@@ -22,27 +23,7 @@
                 </div>
                 <div class="col-8">
                     <div class="menu lmenu_block" id="left-menu">
-                        <ul>
-                            <li class="login_links show_on_tablet">
-                                <a href="@Url.Action("Login", "Account")" title="Вхід">Вхід</a> | <a href="@Url.Action("Register", "Account")" title="Реєстрація">Реєстрація</a>
-                            </li>
-                            <li><a href="#">Бізнес-можливості</a></li>
-                            <li>
-                                <a href="#">Benefit Card</a>
-                            </li>
-                            <li>
-                                <a href="#">Новини</a>
-                            </li>
-                            <li>
-                                <a href="#">Про нас</a>
-                            </li>
-                            <li>
-                                <a href="#">Форум</a>
-                            </li>
-                            <li>
-                                <a href="#">Контакти</a>
-                            </li>
-                        </ul>
+                        @Html.Partial("_MenuPartial")
                         <div class="f_soc_p">
                             <a href="#" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
                             <a href="#" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
@@ -53,13 +34,19 @@
                         </div>
                         <div class="lmenu_contact">
                             <span>Служба підтримки:</span>
-                            <span>(050) 035 45 55</span>
-                            <span>(063) 035 45 55</span>
-                            <span>(097) 035 45 55</span>
+                            <a href="tel:+380500354555">
+                                <span>(050) 035 45 55</span>
+                            </a>
+                            <a href="tel:+380630354555">
+                                <span>(063) 035 45 55</span>
+                            </a>
+                            <a href="tel:+380970354555">
+                                <span>(097) 035 45 55</span>
+                            </a>
                         </div>
                     </div>
                 </div>
-                <div class="col-3">
+                <div class="col-2">
                     <div class="top_right_selectors">
                         <div class="dropdown dropdown_inline">
                             <button class="btn btn-default dropdown-toggle" type="button" id="select_language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -87,95 +74,7 @@
             </div>
         </div>
     </header>
-    <div class="sub_header">
-        <div class="container">
-            <div class="container_table subheader_content">
-                <div class="col-2">
-                </div>
-                <div class="col-8">
-                    <div class="row sub_header_row">
-                        <div class="col-sm-8">
-                            <div class="search_block">
-                                <div class="input-group">
-                                    <input class="form-control" aria-label="Пошук" placeholder="Пошук">
-                                    <div class="input-group-btn">
-                                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            Всі категорії <span class="caret"></span>
-                                            <span class="sr-only">Toggle Dropdown</span>
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="#">1</a></li>
-                                            <li><a href="#">2</a></li>
-                                            <li><a href="#">3</a></li>
-                                            <li><a href="#">4</a></li>
-                                        </ul>
-                                        <button type="button" class="btn btn-default"><i class="icn search"></i></button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="position_block show_on_tablet">
-                                <p>Оберіть місто</p>
-                                <div class="input-group select_place min">
-                                    <input type="text" class="form-control select_place_input" placeholder="введіть місто" aria-describedby="lb-pass">
-                                </div>
-                            </div>
-                            <div class="login_box">
-                                <div class="login_box_header">
-                                    <button class="close"></button>
-                                    <span>Вхід в особистий кабінет</span>
-                                </div>
-                                <div class="login_box_content">
-                                    <form action="" method="post">
-                                        <div class="input-group">
-                                            <span class="input-group-addon" id="lb-at"><span class="at"></span></span>
-                                            <input type="text" class="form-control" placeholder="e-mail" aria-describedby="lb-at">
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="input-group-addon" id="lb-pass"><span class="padlock"></span></span>
-                                            <input type="password" class="form-control" placeholder="пароль" aria-describedby="lb-pass">
-                                        </div>
-                                        <button>Вхід</button>
-                                        <div class="login_box_u_links">
-                                            <span><a href="#" class="forgot">Забули пароль?</a></span>
-                                            <span><a href="#" class="toreg">Реєстрація</a></span>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <button class="sh_btn show_on_tablet pull-left toggleleftmenu">
-                                <i class="icn lmenu"></i>
-                            </button>
-                            <button class="sh_btn show_on_tablet pull-left toggleposition">
-                                <i class="icn location"></i>
-                            </button>
-                            <button class="sh_btn show_on_tablet pull-left togglesearch">
-                                <i class="icn search"></i>
-                            </button>
-                            <button class="sh_btn show_on_tablet togglerightmenu">
-                                <i class="icn rmenu"></i>
-                            </button>
-                            <button class="sh_btn">
-                                <span>2</span>
-                                <i class="icn mail"></i>
-                            </button>
-                            <button class="sh_btn">
-                                <span>11</span>
-                                <i class="icn cart"></i>
-                            </button>
-                            <button class="sh_btn hide_on_tablet">
-                                <span>12</span>
-                                <i class="icn ves"></i>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-2" id="loginPartial">
-                </div>
-            </div>
-        </div>
-    </div>
+    @Html.Partial("_ControlPanelPartial")
     <!-- overlay -->
     <div class="login_box_over hidden"></div>
     <div class="empty_over hidden"></div>
@@ -201,100 +100,29 @@
                         <a href="#"><i class="fa fa-apple" aria-hidden="true"></i> App Store</a>
                     </div>
                 </div><!-- mob block -->
-                <a href="#" class="banner_right hide_on_tablet">
-                    <img src="assets/img/banner.png">
-                </a>
             </div>
         </div>
     </div>
     <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-3">
-                    <div class="f_soc_p f_show_on_mobile">
-                        <a href="#" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                        <a href="#" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="#" class="vk"><i class="fa fa-vk" aria-hidden="true"></i></a>
-                        <a href="#" class="gp"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
-                        <a href="#" class="tw"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="#" class="ig"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                    </div>
-                    <div class="f_contact">
-                        Служба підтримки:
-                        <div class="row">
-                            <div class="col-sm-5">
-                                (050) 035 45 55<br>
-                                (063) 035 45 55<br>
-                                (097) 035 45 55
-                            </div>
-                            <div class="col-sm-6 lebedev">
-                                <div>
-                                    <span>Пн.-Пт.</span>
-                                    <span>9:00 — 18:00</span>
-                                </div>
-                                <div>
-                                    <span>Сб., Нд.</span>
-                                    <span>вихідний</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="f_addr show_on_tablet">
-                            м.Мукачево,<br>
-                            вул. Парканія, 2А<br>
-                            e-maіl:<br>
-                            info@benefit-company.com
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-2">
-                    <div class="f_addr">
-                        м.Мукачево,<br>
-                        вул. Парканія, 2А<br>
-                        e-maіl:<br>
-                        <a class="whitelink_no_changes" href="mailto:info@benefit-company.com">info@benefit-company.com</a>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="f_links">
-                        <a href="#">Політика конфіденційності</a>
-                        <a href="#">Співпраця з Benefit Company</a>
-                        <a href="#">Реклама на сайті</a>
-                        <a href="#">Акції</a>
-                        <a href="#">Новини</a>
-                        <a href="#">Мапа сайту</a>
-                    </div>
-                    <div class="f_soc_p show_on_tablet f_hide_on_mobile">
-                        <a href="#" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                        <a href="#" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="#" class="vk"><i class="fa fa-vk" aria-hidden="true"></i></a>
-                        <a href="#" class="gp"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
-                        <a href="#" class="tw"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="#" class="ig"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="f_soc_p hide_on_tablet">
-                        <a href="#" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                        <a href="#" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="#" class="vk"><i class="fa fa-vk" aria-hidden="true"></i></a>
-                        <a href="#" class="gp"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
-                        <a href="#" class="tw"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="#" class="ig"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                    </div>
-                    <p class="f_soc_under">
-                        © 2016 ТОВ «GLOBAL BENEFIT NETWORK COMPANY».
-                        Всі права захищені.
-                    </p>
-                </div>
-            </div>
-        </div>
+        @Html.Partial("_FooterPartial")
     </footer>
-    <!-- libs -->
     @Scripts.Render("~/bundles/master")
     @RenderSection("scripts", required: false)
     <script>
         $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
-        $('#right-menu').load('@Url.Action("CategoriesPartial", "Home")');
+        var categoriesUrl = '@Url.Action("CategoriesPartial", "Home")';
+        var categoryId = $("#Category_Id").val();
+        if (categoryId) {
+            categoriesUrl = categoriesUrl + "?parentCategoryId=" + categoryId;
+        }
+        $('#right-menu').load(categoriesUrl);
+
+        if ($(".categories_drop").length > 0) {
+            $.get('@Url.Action("CategoriesPartial", "Home")?isDropDown=true',
+                function (data) {
+                    $(".categories_drop").after(data);
+                });
+        }
     </script>
     @Html.Partial("_RegionModal")
 </body>

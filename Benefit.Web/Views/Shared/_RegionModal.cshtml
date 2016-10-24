@@ -2,13 +2,45 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title" id="myModalLabel">Оберіть своє місто</h4>
+                <h4 class="modal-title" id="myModalLabel">Оберіть свій населений пункт</h4>
             </div>
             <div class="modal-body">
-                <div class="dropdown dropdown_inline">
-                    <i class="icn location"></i>
-                    <input type="text" class="region-modal-search-txt width-50" />
+                <div class="container" id="predefinedRegions">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <a href="#" data-region-id="400000">Вся Україна</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" data-region-id="400000">Київ</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" data-region-id="401106">Харків</a>
+                        </div>
+                    </div>  
+                    <div class="row margin-top-10">
+                        <div class="col-sm-4">
+                            <a href="#" data-region-id="400954">Одеса</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" data-region-id="400734">Дніпро</a>
+                        </div>
+                        <div class="col-sm-4">
+                            <a href="#" data-region-id="400879">Львів</a>
+                        </div>
+                    </div>
                 </div>
+                <div class="dropdown dropdown_inline margin-top-10">
+                    <i class="icn location"></i>
+                    <input type="text" class="region-modal-search-txt width-50" placeholder="Почніть вводити назву" />
+                </div>
+                <br />
+                <p class="no-adapt-lg">
+                    Населений пункт- це місто або село(селище міського типу), в якому знаходиться Покупець. Якщо населений пункт відображений правильно, тоді Ви зможете бачити:
+                </p>
+                <ul class="info grey-6 no-adapt-lg">
+                    <li>всіх постачальників, які знаходятся у Вашому місті</li>
+                    <li>інтернет-магазини, які доставляють товари у Ваше місто</li>
+                </ul>
             </div>
         </div>
     </div>

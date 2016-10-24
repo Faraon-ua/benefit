@@ -391,6 +391,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Delete(string id)
         {
             var seller = db.Sellers.Find(id);
+            var imagesService = new ImagesService();
+            foreach (var image in seller.Images)
+            {
+                imagesService.Delete(image.Id, image.ImageType);
+            }
             db.Sellers.Remove(seller);
             db.SaveChanges();
             return Json(true);

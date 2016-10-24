@@ -1,0 +1,15 @@
+﻿@using Benefit.Common.Constants
+@model @IEnumerable<Benefit.Domain.Models.Category>
+           
+<div class="bread_crumbs">
+    <ul>
+        <li><a href="#">Головна</a></li>
+        @foreach (var breadCrumb in Model)
+        {
+            <li>
+                &gt; <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id=breadCrumb.UrlName })">@breadCrumb.Name</a>
+            </li>
+        }
+    </ul>
+</div>
+

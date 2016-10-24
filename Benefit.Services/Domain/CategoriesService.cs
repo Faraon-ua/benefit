@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using Benefit.Common.Extensions;
+using Benefit.DataTransfer;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
 using Benefit.Domain.Models;
@@ -15,6 +16,51 @@ namespace Benefit.Services.Domain
     public class CategoriesService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        public List<Category> GetBreadcrumbs(string categoryId)
+        {
+            var resultList = new List<Category>();
+            var category = db.Categories.Include(entry => entry.ParentCategory).FirstOrDefault(entry => entry.Id == categoryId);
+            resultList.Add(category);
+            while (category.ParentCategory != null)
+            {
+                resultList.Add(category.ParentCategory);
+                category = category.ParentCategory;
+            }
+            resultList.Reverse();
+            return resultList;
+        }
+
+        public SellersDto GetCategorySellers(string urlName)
+        {
+            var sellerIds = new List<string>();
+            var breadCrumbsList = new List<Category>();
+            var category = db.Categories.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
+            if (category == null) return null;
+            var sellersDto = new SellersDto()
+            {
+                Category = category
+            };
+            sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
+            breadCrumbsList.Add(category);
+            while (category.ParentCategoryId != null)
+            {
+                category = db.Categories.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.Id == category.ParentCategoryId);
+                sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
+                breadCrumbsList.Add(category);
+            }
+            var regionId = RegionService.GetRegionId();
+            sellersDto.Items =
+                db.Sellers.Include(entry => entry.Images).Include(entry => entry.Addresses).Where(
+                    entry =>
+                        sellerIds.Contains(entry.Id) &&
+                        entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
+            sellersDto.Items.ForEach(entry=>entry.Addresses = (ICollection<Address>) entry.Addresses.Where(addr=>addr.RegionId == regionId));
+            breadCrumbsList.Reverse();
+            sellersDto.Breadcrumbs = breadCrumbsList;
+
+            return sellersDto;
+        }
 
         public void AddOrUpdateCategoriesFromXml(Seller seller, IEnumerable<XmlCategory> xmlCategories)
         {
@@ -61,13 +107,13 @@ namespace Benefit.Services.Domain
             var childCategories = xmlCategories.Where(entry => entry.ParentId == xmlCategory.Id).ToList();
             if (xmlCategories.Any())
             {
-                childCategories.ForEach(entry=>SaveCategoryFromXmlCategory(entry, xmlCategories));
+                childCategories.ForEach(entry => SaveCategoryFromXmlCategory(entry, xmlCategories));
             }
         }
 
         public void Delete(string id)
         {
-            var category = db.Categories.Include("ChildCategories").FirstOrDefault(entry=>entry.Id == id);
+            var category = db.Categories.Include("ChildCategories").FirstOrDefault(entry => entry.Id == id);
             if (category == null) return;
             foreach (var childCategory in category.ChildCategories)
             {

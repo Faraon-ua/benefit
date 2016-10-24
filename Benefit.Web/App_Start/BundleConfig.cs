@@ -14,6 +14,7 @@ namespace Benefit.Web
                         "~/Scripts/jquery-ui.js",
                         "~/Scripts/bootstrap.min.js",
                         "~/Scripts/owl.carousel.min.js",
+                        "~/Scripts/site.js",
                         "~/Scripts/scripts.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
@@ -32,14 +33,14 @@ namespace Benefit.Web
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.min.css",
+                      "~/Content/css/bootstrap.min.css",
                       "~/Content/css/font-awesome.min.css",
-                      "~/Content/owl.carousel.css",
-                      "~/Content/jquery-ui.css",
+                      "~/Content/css/owl.carousel.css",
+                      "~/Content/css/jquery-ui.css",
                       "~/Content/css/main.css",
                       "~/Content/css/media.css",
-                      "~/Content/common.css",
-                      "~/Content/autocomplete.css"));
+                      "~/Content/css/common.css",
+                      "~/Content/css/autocomplete.css"));
         }
     }
 }
