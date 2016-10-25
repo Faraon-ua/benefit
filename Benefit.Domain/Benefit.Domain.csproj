@@ -148,6 +148,10 @@
     <Compile Include="Migrations\201610171448312_AddAddressAndNFCToUser.Designer.cs">
       <DependentUpon>201610171448312_AddAddressAndNFCToUser.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610250909598_AddChildCategoriesAsFilters.cs" />
+    <Compile Include="Migrations\201610250909598_AddChildCategoriesAsFilters.Designer.cs">
+      <DependentUpon>201610250909598_AddChildCategoriesAsFilters.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -235,6 +239,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610171448312_AddAddressAndNFCToUser.resx">
       <DependentUpon>201610171448312_AddAddressAndNFCToUser.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610250909598_AddChildCategoriesAsFilters.resx">
+      <DependentUpon>201610250909598_AddChildCategoriesAsFilters.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

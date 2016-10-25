@@ -35,7 +35,7 @@ namespace Benefit.Services.Domain
         {
             var sellerIds = new List<string>();
             var breadCrumbsList = new List<Category>();
-            var category = db.Categories.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
+            var category = db.Categories.Include(entry=>entry.ChildCategories).Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
             if (category == null) return null;
             var sellersDto = new SellersDto()
             {

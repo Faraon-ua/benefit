@@ -1176,7 +1176,7 @@
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\_RegionModal.cshtml" />
-    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Shared\_Layout_main.cshtml" />
     <Content Include="Views\Shared\_ControlPanelPartial.cshtml" />
     <Content Include="Views\Shared\_ControlPanelButtons.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
@@ -1185,6 +1185,7 @@
     <Content Include="Views\Catalog\_SellerPartial.cshtml" />
     <Content Include="Views\Catalog\_BreadcrumbsPartial.cshtml" />
     <Content Include="Views\Catalog\_ProviderPartial.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1193,6 +1194,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Models\ViewModels\" />
     <Folder Include="Content\UserFiles\" />
+    <Folder Include="Images\CategoryLogo\" />
     <Folder Include="Images\NewsLogo\" />
     <Folder Include="Images\ProductGallery\" />
     <Folder Include="Images\SellerGallery\" />

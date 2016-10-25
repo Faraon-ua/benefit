@@ -5,6 +5,24 @@
 }
 
 @Html.HiddenFor(m => m.Category.Id)
+@section LeftAside{
+    @if (Model.Category.ChildAsFilters)
+    {
+        <fieldset>
+            @foreach (var child in Model.Category.ChildCategories)
+            {
+                <input class="hidden" type="checkbox" name="kitchen_type_01">
+                <label class="label_for_check" for="kitchen_type_01">Пісна</label>
+            }
+          
+        </fieldset>
+    }
+    else
+    {
+        <div class="vertical_menu" id="right-menu">
+        </div>
+    }
+}
 
 <main class="full_content full_content_provider">
     <div class="provider_row clearfix">
@@ -15,7 +33,7 @@
                 <option>по рейтингу</option>
             </select>
         </div>
-       
+
         @foreach (var seller in Model.Items)
         {
             @Html.Partial("_ProviderPartial", seller)

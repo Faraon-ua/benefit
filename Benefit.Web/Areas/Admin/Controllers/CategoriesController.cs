@@ -98,7 +98,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Категорію було збережено";
-                return RedirectToAction("Index");
+                return RedirectToAction("CreateOrUpdate", new { id = category.Id });
             }
 
             ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id), "Id", "ExpandedName", category.ParentCategoryId);

@@ -6,11 +6,11 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 @section styles{
-    <link href="~/Content/address.css" rel="stylesheet" />
+    <link href="~/Content/css/address.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/dropzone.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
-    <link href="~/Content/autocomplete.css" rel="stylesheet" />
+    <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
 }
 @section scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -38,7 +38,7 @@
             $("#addNewCategory").attr("href", href);
             $(".chosen-select").chosen({
                 search_contains: true,
-                width: "250px"
+                width: "450px"
             });
         }
 
@@ -47,12 +47,13 @@
             var href = $("#addNewShippingMethod").attr("href");
             href = href.substring(0, href.length - 1) + (maxNumber + 1);
             $("#addNewShippingMethod").attr("href", href);
+            SetAutocomplete();
         }
 
         $(function () {
             $(".chosen-select").chosen({
                 search_contains: true,
-                width: "250px"
+                width: "450px"
             });
 
             $('#txtUploadFile').on('change', function (e) {

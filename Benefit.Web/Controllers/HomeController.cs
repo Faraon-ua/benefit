@@ -36,7 +36,12 @@ namespace Benefit.Web.Controllers
             {
                 var parent = db.Categories.Find(parentCategoryId);
                 var parentName = parent == null ? null : parent.Name;
-                var categories = db.Categories.Include("ChildCategories").Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry => entry.Order).ToList();
+                var categories = db.Categories.Include("ChildCategories").Include(entry=>entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive).OrderBy(entry => entry.Order).ToList();
+                if (parent != null)
+                {
+                    categories =
+                        categories.Where(entry =>!entry.ParentCategory.ChildAsFilters).ToList();
+                }
                 ViewBag.IsDropDown = isDropDown ?? false;
                 return PartialView("_CategoriesPartial", new KeyValuePair<string, IEnumerable<Category>>(parentName, categories));
             }
@@ -208,33 +213,36 @@ namespace Benefit.Web.Controllers
 
                 #endregion
 
-                var imagesPath = "D:/BenefitStuff/images/";
-                var destinationDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty), "Images");
-                foreach (var sellerImage in db.Images.Where(entry => entry.SellerId != null))
-                {
-                    var dotIndex = sellerImage.ImageUrl.LastIndexOf('.');
-                    var fileExt = sellerImage.ImageUrl.Substring(dotIndex,
-                        sellerImage.ImageUrl.Length - dotIndex);
+                #region Images local
 
-                    var destPath = string.Empty;
-                    var sourcePath = Path.Combine(imagesPath, sellerImage.ImageUrl);
-                    if (sellerImage.ImageType == ImageType.SellerLogo)
-                    {
-                        sellerImage.ImageUrl = sellerImage.SellerId + fileExt;
-                        destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId + fileExt);
-                    }
-                    if (sellerImage.ImageType == ImageType.SellerGallery)
-                    {
-                        Directory.CreateDirectory(Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId));
-                        sellerImage.ImageUrl = sellerImage.Id + fileExt;
-                        destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId, sellerImage.Id + fileExt);
-                    }
-                    if (System.IO.File.Exists(sourcePath))
-                    {
-                        System.IO.File.Copy(sourcePath, destPath, true);
-                        db.Entry(sellerImage).State = EntityState.Modified;
-                    }
-                }
+                //var imagesPath = "D:/BenefitStuff/images/";
+                //var destinationDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty), "Images");
+                //foreach (var sellerImage in db.Images.Where(entry => entry.SellerId != null))
+                //{
+                //    var dotIndex = sellerImage.ImageUrl.LastIndexOf('.');
+                //    var fileExt = sellerImage.ImageUrl.Substring(dotIndex,
+                //        sellerImage.ImageUrl.Length - dotIndex);
+
+                //    var destPath = string.Empty;
+                //    var sourcePath = Path.Combine(imagesPath, sellerImage.ImageUrl);
+                //    if (sellerImage.ImageType == ImageType.SellerLogo)
+                //    {
+                //        sellerImage.ImageUrl = sellerImage.SellerId + fileExt;
+                //        destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId + fileExt);
+                //    }
+                //    if (sellerImage.ImageType == ImageType.SellerGallery)
+                //    {
+                //        Directory.CreateDirectory(Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId));
+                //        sellerImage.ImageUrl = sellerImage.Id + fileExt;
+                //        destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId, sellerImage.Id + fileExt);
+                //    }
+                //    if (System.IO.File.Exists(sourcePath))
+                //    {
+                //        System.IO.File.Copy(sourcePath, destPath, true);
+                //        db.Entry(sellerImage).State = EntityState.Modified;
+                //    }
+                //}
+                #endregion  
 
                 db.SaveChanges();
                 return Content("ok");

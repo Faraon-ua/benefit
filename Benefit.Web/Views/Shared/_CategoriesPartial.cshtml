@@ -19,7 +19,7 @@
                     @foreach (var subCategory in category.ChildCategories)
                     {
                         <li>
-                            <a href="#" title="@subCategory.Description">@subCategory.Name</a>
+                            <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id = subCategory.UrlName })" title="@subCategory.Description">@subCategory.Name</a>
                         </li>
                     }
                 </ul>

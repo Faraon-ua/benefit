@@ -33,6 +33,7 @@ namespace Benefit.Domain.Models
         [Required]
         [MaxLength(32)]
         public string NavigationType { get; set; }
+        public bool ChildAsFilters { get; set; }
         [Required]
         [MaxLength(256)]
         public string Description { get; set; }
