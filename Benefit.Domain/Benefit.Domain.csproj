@@ -152,6 +152,10 @@
     <Compile Include="Migrations\201610250909598_AddChildCategoriesAsFilters.Designer.cs">
       <DependentUpon>201610250909598_AddChildCategoriesAsFilters.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610251444329_AddBonusesPayment.cs" />
+    <Compile Include="Migrations\201610251444329_AddBonusesPayment.Designer.cs">
+      <DependentUpon>201610251444329_AddBonusesPayment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -242,6 +246,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610250909598_AddChildCategoriesAsFilters.resx">
       <DependentUpon>201610250909598_AddChildCategoriesAsFilters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610251444329_AddBonusesPayment.resx">
+      <DependentUpon>201610251444329_AddBonusesPayment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

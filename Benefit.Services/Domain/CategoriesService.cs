@@ -35,27 +35,34 @@ namespace Benefit.Services.Domain
         {
             var sellerIds = new List<string>();
             var breadCrumbsList = new List<Category>();
-            var category = db.Categories.Include(entry=>entry.ChildCategories).Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
+            var category = db.Categories.Include(entry => entry.ChildCategories).Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
             if (category == null) return null;
             var sellersDto = new SellersDto()
             {
                 Category = category
             };
             sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
+            sellerIds.AddRange(category.GetAllChildrenRecursively().SelectMany(entry => entry.SellerCategories).Select(entry => entry.SellerId));
+
             breadCrumbsList.Add(category);
-            while (category.ParentCategoryId != null)
-            {
-                category = db.Categories.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.Id == category.ParentCategoryId);
-                sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
-                breadCrumbsList.Add(category);
-            }
+
             var regionId = RegionService.GetRegionId();
             sellersDto.Items =
-                db.Sellers.Include(entry => entry.Images).Include(entry => entry.Addresses).Where(
+                db.Sellers
+                .Include(entry => entry.Images)
+                .Include(entry => entry.Addresses)
+                .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
+                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                .Where(
                     entry =>
                         sellerIds.Contains(entry.Id) &&
                         entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
-            sellersDto.Items.ForEach(entry=>entry.Addresses = (ICollection<Address>) entry.Addresses.Where(addr=>addr.RegionId == regionId));
+            sellersDto.Items.ForEach(entry =>
+            {
+                entry.Addresses = entry.Addresses.Where(addr => addr.RegionId == regionId).ToList();
+                entry.ShippingMethods = entry.ShippingMethods.Where(sh => sh.RegionId == entry.ShippingMethods.Min(shm => shm.RegionId)).ToList();
+            }
+                );
             breadCrumbsList.Reverse();
             sellersDto.Breadcrumbs = breadCrumbsList;
 

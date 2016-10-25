@@ -47,10 +47,12 @@
             var href = $("#addNewShippingMethod").attr("href");
             href = href.substring(0, href.length - 1) + (maxNumber + 1);
             $("#addNewShippingMethod").attr("href", href);
-            SetAutocomplete();
+            SetRegionsAutocomplete();
         }
 
         $(function () {
+            SetRegionsAutocomplete();
+
             $(".chosen-select").chosen({
                 search_contains: true,
                 width: "450px"

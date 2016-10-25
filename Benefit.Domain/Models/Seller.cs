@@ -36,6 +36,7 @@ namespace Benefit.Domain.Models
         public string CatalogButtonName { get; set; }
         public bool IsActive { get; set; }
         public bool IsBenefitCardActive { get; set; }
+        public bool IsBonusesPaymentActive { get; set; }
         public bool HasEcommerce { get; set; }
         public int TotalDiscount { get; set; }
         public double UserDiscount { get; set; }

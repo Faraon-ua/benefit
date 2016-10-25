@@ -7,4 +7,9 @@
     @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].CostBeforeFree", Model.Key), Model.Value.CostBeforeFree, new { @class = "col-sm-2 mask-int-number", placeholder = "Вартість доставки до безкоштовної" })
     <input type="text" placeholder="Місто, область" class="regionSearch col-sm-3" value="@(Model.Value.Region == null ? string.Empty : Model.Value.Region.ExpandedName)" />
     @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].RegionId", Model.Key), Model.Value.RegionId, new { @class = "col-sm-2" })
+    <div class="col-sm-1">
+        <a href="#" onclick="$(this).parent().parent().remove();">
+            <i class="icon-remove red"></i>
+        </a>
+    </div>
 </div>

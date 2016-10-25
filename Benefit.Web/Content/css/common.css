@@ -112,3 +112,7 @@
 .bold {
     font-weight: bold;
 }
+
+.provider_img_wrap img {
+    width: 100%;
+}

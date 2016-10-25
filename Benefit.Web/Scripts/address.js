@@ -1,4 +1,4 @@
-﻿function SetAutocomplete() {
+﻿function SetRegionsAutocomplete() {
     $(".regionSearch").devbridgeAutocomplete({
         minChars: 3,
         serviceUrl: routePrefix + '/Home/SearchRegion',
@@ -14,7 +14,7 @@ function UpdateAddressesNumber() {
     var href = $("#addNewAddress").attr("href");
     href = href.substring(0, href.length - 1) + (maxNumber + 1);
     $("#addNewAddress").attr("href", href);
-    SetAutocomplete();
+    SetRegionsAutocomplete();
 }
 
 $(function () {
