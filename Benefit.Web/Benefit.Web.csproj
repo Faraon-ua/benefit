@@ -1186,6 +1186,7 @@
     <Content Include="Views\Catalog\_BreadcrumbsPartial.cshtml" />
     <Content Include="Views\Catalog\_ProviderPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Catalog\_SellerFilters.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

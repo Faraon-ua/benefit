@@ -50,6 +50,12 @@ header.fixed {
 	padding: 0 20px;
 	max-width: 10px;
 }
+.col-8.full_content {
+    padding: 0 3px;
+    padding-left: 20px;
+}
+
+/*old design*/
 .container_table .col-2 {
 	display: table-cell;
 	vertical-align: top;
@@ -58,6 +64,16 @@ header.fixed {
 .container_table .col-2:first-child {
 	width: 242px;
 }
+/*******/
+
+/*.left_sidebar.left_sidebar_main {
+    padding-right: 0;
+}*/
+.right_sidebar.right_sidebar_main {
+    padding-top: 0;
+    padding-left: 15px;
+}
+
 .header_categories,
 .header_categories:hover,
 .header_categories:visited,
@@ -755,6 +771,9 @@ header {
 	display: block;
 	overflow: hidden;
 	margin: 16px auto 0 auto;
+}
+.banner_right img {
+    width: 100%;
 }
 
 .center_p  {
@@ -2781,7 +2800,6 @@ li:last-child .expand.expand_open {
 .left_sidebar fieldset {
     margin-bottom: 10px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #cccccc;
 }
 
 .full_content {
@@ -2995,7 +3013,7 @@ li:last-child .expand.expand_open {
     /*display: table;*/
     width: 100%;
 }
-/* todo:clenup css .provider_address,
+/*.provider_address,
 .provider_delivery,
 .provider_ball_ratio {
     background-color: #e5e0e0;

@@ -8,55 +8,7 @@
 @section LeftAside{
     @if (Model.Category.ChildAsFilters)
     {
-        <form>
-            <fieldset>
-                @foreach (var child in Model.Category.ChildCategories)
-                {
-                    <input class="hidden" type="checkbox" name="kitchen_type_01">
-                    <label class="label_for_check" for="kitchen_type_01">Пісна</label>
-                }
-            </fieldset>
-            <fieldset>
-                <input class="hidden" type="checkbox" id="kitchen_sort_01" name="kitchen_sort_01">
-                <label class="label_for_check" for="kitchen_sort_01">Акційні пропозиції</label>
-
-                <input class="hidden" type="checkbox" id="kitchen_sort_02" name="kitchen_sort_02">
-                <label class="label_for_check" for="kitchen_sort_02">Benefit Card</label>
-
-                <input class="hidden" type="checkbox" id="kitchen_sort_03" name="kitchen_sort_02">
-                <label class="label_for_check" for="kitchen_sort_03">Безкоштовна доставка</label>
-
-                <input class="hidden" type="checkbox" id="kitchen_sort_04" name="kitchen_sort_04">
-                <label class="label_for_check" for="kitchen_sort_04">Оплата карткою</label>
-
-                <input class="hidden" type="checkbox" id="kitchen_sort_05" name="kitchen_sort_05">
-                <label class="label_for_check" for="kitchen_sort_05">Оплата бонусами</label>
-            </fieldset>
-
-            <p class="left_sidebar_subtitle">Балове співвідношення</p>
-            <fieldset>
-                <input class="hidden" type="checkbox" id="ball_ratio_01" name="ball_ratio_01" checked>
-                <label class="label_for_check" for="ball_ratio_01">2 грн = 1 бал</label>
-
-                <input class="hidden" type="checkbox" id="ball_ratio_02" name="ball_ratio_02">
-                <label class="label_for_check" for="ball_ratio_02">4 грн = 1 бал</label>
-
-                <input class="hidden" type="checkbox" id="ball_ratio_03" name="ball_ratio_03">
-                <label class="label_for_check" for="ball_ratio_03">1 грн = 2 бали</label>
-            </fieldset>
-
-            <p class="left_sidebar_subtitle">Мін. сума замовлення</p>
-            <fieldset>
-                <input class="hidden" type="checkbox" id="min_sum_01" name="min_sum_01">
-                <label class="label_for_check" for="min_sum_01">до 100 грн</label>
-
-                <input class="hidden" type="checkbox" id="min_sum_02" name="min_sum_02">
-                <label class="label_for_check" for="min_sum_02">до 200 грн</label>
-
-                <input class="hidden" type="checkbox" id="min_sum_03" name="min_sum_03">
-                <label class="label_for_check" for="min_sum_03">до 300 грн</label>
-            </fieldset>
-        </form>
+        @Html.Partial("_SellerFilters", Model)
     }
     else
     {

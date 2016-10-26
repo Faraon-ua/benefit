@@ -34,7 +34,6 @@ namespace Benefit.Services.Domain
         public SellersDto GetCategorySellers(string urlName)
         {
             var sellerIds = new List<string>();
-            var breadCrumbsList = new List<Category>();
             var category = db.Categories.Include(entry => entry.ChildCategories).Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
             if (category == null) return null;
             var sellersDto = new SellersDto()
@@ -43,8 +42,6 @@ namespace Benefit.Services.Domain
             };
             sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
             sellerIds.AddRange(category.GetAllChildrenRecursively().SelectMany(entry => entry.SellerCategories).Select(entry => entry.SellerId));
-
-            breadCrumbsList.Add(category);
 
             var regionId = RegionService.GetRegionId();
             sellersDto.Items =
@@ -60,11 +57,11 @@ namespace Benefit.Services.Domain
             sellersDto.Items.ForEach(entry =>
             {
                 entry.Addresses = entry.Addresses.Where(addr => addr.RegionId == regionId).ToList();
-                entry.ShippingMethods = entry.ShippingMethods.Where(sh => sh.RegionId == entry.ShippingMethods.Min(shm => shm.RegionId)).ToList();
-            }
-                );
-            breadCrumbsList.Reverse();
-            sellersDto.Breadcrumbs = breadCrumbsList;
+                entry.ShippingMethods =
+                    entry.ShippingMethods.Where(sh => sh.RegionId == entry.ShippingMethods.Min(shm => shm.RegionId))
+                        .ToList();
+            });
+            sellersDto.Breadcrumbs = GetBreadcrumbs(category.Id);
 
             return sellersDto;
         }

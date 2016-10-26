@@ -79,14 +79,14 @@
     <div class="login_box_over hidden"></div>
     <div class="empty_over hidden"></div>
     <div class="container">
-        <div class="container_table main_content">
-            <div class="col-2">
+        <div class="container_table main_content clearfix">
+            <aside class="left_sidebar left_sidebar_main">
                 @RenderSection("LeftAside", false)
-            </div>
-            <div class="col-8">
+            </aside>
+            <main class="col-8 full_content">
                 @RenderBody()
-            </div>
-            <div class="col-2">
+            </main>
+            <aside class="right_sidebar right_sidebar_main">
                 @Html.Partial("_SocialGroups")
                 <div class="mob_block">
                     <p>Завантажити додаток</p>
@@ -97,7 +97,7 @@
                         <a href="#"><i class="fa fa-apple" aria-hidden="true"></i> App Store</a>
                     </div>
                 </div><!-- mob block -->
-            </div>
+            </aside>
         </div>
     </div>
     <footer>
