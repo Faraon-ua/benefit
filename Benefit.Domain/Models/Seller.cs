@@ -37,6 +37,7 @@ namespace Benefit.Domain.Models
         public bool IsActive { get; set; }
         public bool IsBenefitCardActive { get; set; }
         public bool IsBonusesPaymentActive { get; set; }
+        public bool IsAcquiringActive { get; set; }
         public bool HasEcommerce { get; set; }
         public int TotalDiscount { get; set; }
         public double UserDiscount { get; set; }

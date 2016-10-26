@@ -8,10 +8,12 @@ namespace Benefit.Domain.Migrations
         public override void Up()
         {
             AddColumn("dbo.Sellers", "IsBonusesPaymentActive", c => c.Boolean(nullable: false));
+            AddColumn("dbo.Sellers", "IsAcquiringActive", c => c.Boolean(nullable: false));
         }
         
         public override void Down()
         {
+            DropColumn("dbo.Sellers", "IsAcquiringActive");
             DropColumn("dbo.Sellers", "IsBonusesPaymentActive");
         }
     }

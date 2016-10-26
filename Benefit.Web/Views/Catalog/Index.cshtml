@@ -4,7 +4,36 @@
     ViewBag.Title = Model.Category.Name;
 }
 
-@Html.HiddenFor(m => m.Category.Id)
+@section scripts{
+    <script>
+        $("#sellerFilters input[type=checkbox]").change(function() {
+            //if none selected - show all
+            if ($("#sellerFilters input[type=checkbox]:checked").length == 0) {
+                $(".provider_container").removeClass("hidden");
+            } else {
+                //hide all
+                $(".provider_container").addClass("hidden");
+
+                var allCheckedFilters = $("#sellerFilters input[type=checkbox]:checked");
+                var allFilterNames = allCheckedFilters.map(function() { return $(this).attr("name"); }).get();
+                //distinct
+                allFilterNames = jQuery.unique(allFilterNames);
+                for (var i = 0; i < allFilterNames.length; i++) {
+                    allCheckedFilters.filter(
+                        function() {
+                            return $(this).attr("name") == allFilterNames[i];
+                        }).map(function() { return $(this).val() }).each(function() {
+                        //show selected
+                        var currentValue = this.toString();
+                        $(".provider_container").filter(function() {
+                            return $(this).attr("data-" + allFilterNames[i]).indexOf(currentValue) >= 0;
+                        }).removeClass("hidden");
+                    });
+                }
+            }
+        });
+    </script>
+}
 @section LeftAside{
     @if (Model.Category.ChildAsFilters)
     {
@@ -17,15 +46,16 @@
     }
 }
 
+@Html.HiddenFor(m => m.Category.Id)
 <main class="full_content full_content_provider">
     <div class="provider_row clearfix">
         @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
-        <div class="provider_sort">
+      @*  <div class="provider_sort">
             <label for="provider_sort_title">Сортувати</label>
             <select id="provider_sort_select" class="provider_sort_select">
                 <option>по рейтингу</option>
             </select>
-        </div>
+        </div>*@
 
         @foreach (var seller in Model.Items)
         {

@@ -25,9 +25,12 @@ window.onload = function () {
         }
     };
 
-    document.getElementById('left-menu').addEventListener('swl', l, false);
-    document.getElementById('right-menu').addEventListener('swr', r, false);
-
+    if (document.getElementById('left-menu')) {
+        document.getElementById('left-menu').addEventListener('swl', l, false);
+    }
+    if (document.getElementById('right-menu')) {
+        document.getElementById('right-menu').addEventListener('swr', r, false);
+    }
 }
 
 $.fn.isolatedScroll = function () {

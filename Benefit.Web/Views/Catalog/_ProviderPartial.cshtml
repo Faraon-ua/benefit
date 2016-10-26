@@ -1,6 +1,31 @@
-﻿@using Benefit.Domain.Models
+﻿@using System.Text
+@using Benefit.Domain.Models
 @model Seller
-<div class="provider_container">
+@{
+    var categoryIds = string.Join(",", Model.SellerCategories.Select(entry => entry.CategoryId));
+    var sellerOptions = new StringBuilder();
+    if (Model.IsBenefitCardActive)
+    {
+        sellerOptions.Append("BenefitCard");
+    }
+    if (Model.IsBonusesPaymentActive)
+    {
+        sellerOptions.Append(",");
+        sellerOptions.Append("BonusPayment");
+    }
+    if (Model.ShippingMethods.Any(entry=>entry.FreeStartsFrom!=null))
+    {
+        sellerOptions.Append(",");
+        
+        sellerOptions.Append("FreeShipping");
+    }
+    if (Model.IsAcquiringActive)
+    {
+        sellerOptions.Append(",");
+        sellerOptions.Append("Acquiring");
+    }
+}
+<div class="provider_container" data-category-ids="@categoryIds" data-seller-options="@sellerOptions">
     <div class="provider">
         <div class="provider_main_info">
             <div class="provider_bonus_label">@Model.UserDiscount% <br>бонус</div>

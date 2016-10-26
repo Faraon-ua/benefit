@@ -53,6 +53,7 @@ namespace Benefit.Services.Domain
                 .Where(
                     entry =>
                         sellerIds.Contains(entry.Id) &&
+                        entry.IsActive &&
                         entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
             sellersDto.Items.ForEach(entry =>
             {

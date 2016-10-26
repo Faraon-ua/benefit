@@ -195,15 +195,15 @@
     <div class="tabbable">
         <ul class="nav nav-tabs">
             @{
-    var displayClass = User.IsInRole(DomainConstants.SellerRoleName) ? "hidden" : "";
+                var displayClass = User.IsInRole(DomainConstants.AdminRoleName) ? "" : "hidden";
             }
-            <li class="active @displayClass ">
+            <li class="active @displayClass">
                 <a href="#home" data-toggle="tab">
                     <i class="blue icon-info bigger-110"></i>
                     Основна інфо
                 </a>
             </li>
-            <li class="@displayClass ">
+            <li class="@displayClass">
                 <a href="#categories" data-toggle="tab">
                     <i class="grey icon-list bigger-110"></i>
                     Категорії
