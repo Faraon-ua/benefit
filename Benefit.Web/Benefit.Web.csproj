@@ -1176,13 +1176,11 @@
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\_RegionModal.cshtml" />
-    <Content Include="Views\Shared\_Layout_main.cshtml" />
     <Content Include="Views\Shared\_ControlPanelPartial.cshtml" />
     <Content Include="Views\Shared\_ControlPanelButtons.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
     <Content Include="Views\Catalog\Index.cshtml" />
-    <Content Include="Views\Catalog\_SellerPartial.cshtml" />
     <Content Include="Views\Catalog\_BreadcrumbsPartial.cshtml" />
     <Content Include="Views\Catalog\_ProviderPartial.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />

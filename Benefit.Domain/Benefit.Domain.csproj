@@ -156,6 +156,10 @@
     <Compile Include="Migrations\201610251444329_AddBonusesPayment.Designer.cs">
       <DependentUpon>201610251444329_AddBonusesPayment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201610270831443_AddressLineNulable.cs" />
+    <Compile Include="Migrations\201610270831443_AddressLineNulable.Designer.cs">
+      <DependentUpon>201610270831443_AddressLineNulable.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -249,6 +253,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610251444329_AddBonusesPayment.resx">
       <DependentUpon>201610251444329_AddBonusesPayment.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201610270831443_AddressLineNulable.resx">
+      <DependentUpon>201610270831443_AddressLineNulable.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

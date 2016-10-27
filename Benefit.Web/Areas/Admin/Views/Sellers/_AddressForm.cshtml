@@ -1,6 +1,6 @@
 ﻿@model  KeyValuePair<int, Benefit.Domain.Models.Address>
 
-<div id="DIV_3">
+<div id="DIV_3" class="belong-address">
     @Html.Hidden(string.Format("Seller.Addresses[{0}].Id", Model.Key), Model.Value.Id, new { @class = "address-id", data_number = Model.Key })
 
     <div id="DIV_4">
@@ -22,7 +22,7 @@
         <div id="DIV_10">
             <i class="icon-envelope-alt"></i>
             @Html.TextBox(string.Format("Seller.Addresses[{0}].ZIP", Model.Key), Model.Value.ZIP, new { placeholder = "Поштовий індекс", @class = "margin-left-10" })
-        </div> 
+        </div>
         <br />
         <a href="javascript:;" class="removeAddress">Видалити</a>
     </div>

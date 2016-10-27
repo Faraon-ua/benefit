@@ -20,5 +20,6 @@ function UpdateAddressesNumber() {
 $(function () {
     $("#addresses").on("click", ".removeAddress", function () {
         $(this).parent().parent().remove();
+        ReAssignIndexesToChildren('addresses', 'belong-address');
     });
 });

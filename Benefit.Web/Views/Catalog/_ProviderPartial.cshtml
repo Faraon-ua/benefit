@@ -1,5 +1,6 @@
 ﻿@using System.Text
 @using Benefit.Domain.Models
+@using WebGrease.Css.Extensions
 @model Seller
 @{
     var categoryIds = string.Join(",", Model.SellerCategories.Select(entry => entry.CategoryId));
@@ -35,8 +36,9 @@
             <p class="provider_name">@Model.Name</p>
 
             @{
-                var specifics = @Model.SellerCategories.Select(entry => entry.Category.ParentCategory.Name).Distinct();
-                var specificsStr = string.Join("/", specifics);
+                var specifics = @Model.SellerCategories.Select(entry => entry.Category.ParentCategory).Distinct();
+                var result = (from specific in specifics where !specifics.Select(entry => entry.Id).Contains(specific.ParentCategoryId) select specific.Name).ToList();
+                var specificsStr = string.Join("/", result);
             }
             <p class="provider_type">@specificsStr</p>
             <div class="rating_wrap">

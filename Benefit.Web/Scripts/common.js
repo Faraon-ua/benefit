@@ -30,6 +30,31 @@ function onFailure() {
     $('#searchError').show(0);
 }
 
+function ReAssignIndexesToChildren(id, itemSelector) {
+    var container = $("#" + id);
+    var rows = container.find("." + itemSelector);
+    rows.each(function (rowIndex) {
+        $(this).find("input, select").each(function () {
+            var name = $(this).attr("name");
+            var id = $(this).attr("id");
+            if (name) {
+                name = name.replace(/\d/, rowIndex);
+                id = id.replace(/\d/, rowIndex);
+                $(this).attr("name", name);
+                $(this).attr("id", id);
+                if ($(this).attr("data-number")) {
+                    $(this).attr("data-number", rowIndex);
+                }
+            }
+        });
+    });
+
+    UpdateCategoriesNumber();
+    UpdateCurrenciesNumber();
+    UpdateShippingMethodsNumber();
+    UpdateAddressesNumber();
+}
+
 $(function () {
     try {
         $('.number-input').mask("#");

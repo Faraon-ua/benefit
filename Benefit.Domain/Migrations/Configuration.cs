@@ -25,6 +25,10 @@ namespace Benefit.Domain.Migrations
 
         protected override void Seed(ApplicationDbContext context)
         {
+           /* if (System.Diagnostics.Debugger.IsAttached == false)
+            {
+                System.Diagnostics.Debugger.Launch();
+            }*/
             if (!context.Roles.Any(r => r.Name == DomainConstants.AdminRoleName))
             {
                 var store = new RoleStore<IdentityRole>(context);
@@ -49,6 +53,7 @@ namespace Benefit.Domain.Migrations
                     ExternalNumber = 1007,
                     ReferalId = null,
                     FullName = "Адмін Адмінич",
+                    RegionId = 400000,
                     Email = "benefit.admin@gmail.com",
                     CardNumber = "000000",
                     PhoneNumber = "0630000000",
