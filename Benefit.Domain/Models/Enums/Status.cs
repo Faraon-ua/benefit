@@ -2,6 +2,7 @@
 {
     public enum Status
     {
+        Partner,
         VIP,
         Director,
         Silver,

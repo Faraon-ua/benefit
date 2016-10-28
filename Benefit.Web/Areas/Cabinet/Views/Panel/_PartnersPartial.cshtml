@@ -1,0 +1,32 @@
+﻿@using System.Web.UI.WebControls.WebParts
+@using Benefit.Common.Extensions
+@model IEnumerable<Benefit.Domain.Models.ApplicationUser>
+@foreach (var partner in Model)
+{
+    <li>
+        <div class="structure_table_row">
+            @{
+    var avaClass = partner.Partners.Any() ? "expand expand_close" : "expand";
+            }
+            <div class="@avaClass"></div>
+            <div class="table_content">
+                <div class="structure_table_name">@partner.FullName</div>
+                <div class="structure_table_status">@partner.Status.ToString()</div>
+                <div class="structure_table_balls">@partner.CurrentPointsAccount</div>
+                <div class="structure_table_bonuses">@partner.CurrentBonusAccount</div>
+                <div class="structure_table_register_date">@partner.RegisteredOn.ToLocalTimeWithDateFormat()</div>
+                <div class="structure_table_register_location">@partner.Region.Name_ua</div>
+                <div class="structure_table_register_email">@partner.Email</div>
+                <div class="structure_table_register_phone">@partner.PhoneNumber</div>
+                <div class="structure_table_register_card_number">@partner.CardNumber</div>
+                <div class="structure_table_register_ref_code">@partner.ExternalNumber</div>
+            </div>
+        </div>
+        @if (partner.Partners.Any())
+        {
+            <ul class="structure_table">
+                @Html.Action("GetPartners", new { id = partner.Id, skip = -1, take = -1 })
+            </ul>
+        }
+    </li>
+}

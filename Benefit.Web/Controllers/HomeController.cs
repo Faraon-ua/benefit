@@ -145,7 +145,7 @@ namespace Benefit.Web.Controllers
                     entry.CardNumber = null;
                     db.Entry(entry).State = EntityState.Modified;
                 });
-
+                
                 //decode seller descriptions
                 foreach (var seller in db.Sellers)
                 {

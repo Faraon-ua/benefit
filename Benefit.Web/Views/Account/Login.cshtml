@@ -1,15 +1,51 @@
 ﻿@model Benefit.Web.Models.LoginViewModel
 
 @{
-    ViewBag.Title = "Log in";
+    ViewBag.Title = "Вхід в особистий кабінет";
 }
 
-<h2>@ViewBag.Title.</h2>
-<div class="row">
-    <div class="col-md-8">
-        <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
+<div class="enter_wrap">
+    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        <p class="enter_title">Вхід в особистий кабінет</p>
+        @Html.TextBoxFor(m => m.UserName, new { @class = "enter_email", placeholder = "E-mail" })
+        @Html.ValidationMessageFor(m => m.UserName)
+        @Html.PasswordFor(m => m.Password, new { @class = "enter_password", placeholder = "Пароль" })
+        @Html.ValidationMessageFor(m => m.Password)
+        @Html.ActionLink("Забули пароль", "ForgotPassword", null, new { @class = "enter_forgot" })
+        <input type="submit" class="enter_button" value="Вхід" />
+        <input class="hidden" type="checkbox" id="check01" name="check01">
+        <label class="label_for_check" for="check01">Запам’ятати мене</label>
+        <a href="" class="enter_registration">Реєстрація</a>
+    }
+
+    <div class="enter_right">
+        <p class="enter_title_social">Вхід через</p>
+        <a href="" class="enter_soc enter_fb clearfix">
+            <span class="enter_soc_logo">
+                <i class="fa fa-facebook" aria-hidden="true"></i>
+            </span>
+            <span class="enter_soc_text">Facebook</span>
+        </a>
+        <a href="" class="enter_soc enter_vk clearfix">
+            <span class="enter_soc_logo">
+                <i class="fa fa-vk" aria-hidden="true"></i>
+            </span>
+            <span class="enter_soc_text">ВКонтакте</span>
+        </a>
+        <a href="" class="enter_soc enter_go clearfix">
+            <span class="enter_soc_logo">
+                <i class="fa fa-google" aria-hidden="true"></i>
+            </span>
+            <span class="enter_soc_text">Google</span>
+        </a>
+    </div>
+</div>
+@*<div class="row">
+        <div class="col-md-8">
+            <section id="loginForm">
+
                 @Html.AntiForgeryToken()
                 <h4>Use a local account to log in.</h4>
                 <hr />
@@ -47,15 +83,12 @@
                 <p>
                     @Html.ActionLink("Register", "Register") if you don't have a local account.
                 </p>
-            }
-        </section>
-    </div>
-    <div class="col-md-4">
-        <section id="socialLoginForm">
-            @Html.Partial("_ExternalLoginsListPartial", new { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })
-        </section>
-    </div>
-</div>
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+            </section>
+
+        </div>
+        <div class="col-md-4">
+            <section id="socialLoginForm">
+                @Html.Partial("_ExternalLoginsListPartial", new { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })
+            </section>
+        </div>
+    </div>*@

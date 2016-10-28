@@ -1,13 +1,13 @@
 ﻿<div class="partner_menu ol-lg-1 col-md-1 col-sm-1 col-xs-1">
     <ul>
         <li>
-            <a class="partner_menu_main active" href="@Url.Action("Index","Panel")">Головна</a>
+            <a class="partner_menu_main @(ViewContext.RouteData.GetRequiredString("action") == "Index" ? "active" : "")" href="@Url.Action("Index","Panel")">Головна</a>
         </li>
         <li>
-            <a class="partner_menu_profile" href="#">Профіль</a>
+            <a class="partner_menu_profile @(ViewContext.RouteData.GetRequiredString("action") == "Profile" ? "active" : "")" href="@Url.Action("Profile", "Panel")">Профіль</a>
         </li>
         <li>
-            <a class="partner_menu_network" href="#">Структура</a>
+            <a class="partner_menu_network @(ViewContext.RouteData.GetRequiredString("action") == "Structure" ? "active" : "")" href="@Url.Action("Structure", "Panel")">Структура</a>
         </li>
         <li>
             <a class="partner_menu_reward" href="#">План винагород</a>

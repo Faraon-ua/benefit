@@ -1,7 +1,6 @@
 ﻿@using System.Text
 @using Benefit.Common.Constants
 @using Benefit.Domain.Models
-@using WebGrease.Css.Extensions
 @model Seller
 @{
     var categoryIds = string.Join(",", Model.SellerCategories.Select(entry => entry.CategoryId));
@@ -35,7 +34,6 @@
                 <img src="~/Images/SellerLogo/@Model.Images.FirstOrDefault(entry=>entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo).ImageUrl" alt="@Model.Name">
             </div>
             <p class="provider_name">@Model.Name</p>
-
             @{
                 var specifics = @Model.SellerCategories.Select(entry => entry.Category.ParentCategory).Distinct();
                 var result = (from specific in specifics where !specifics.Select(entry => entry.Id).Contains(specific.ParentCategoryId) select specific.Name).ToList();
@@ -55,11 +53,17 @@
             @{
                 var address = Model.Addresses.FirstOrDefault();
             }
-            @if (address != null && !string.IsNullOrEmpty(address.AddressLine))
+            @if (address != null)
             {
                 <div class="provider_address">
-                    <span>@address.Region.Name_ua, @address.AddressLine</span>
-                </div>
+                    <span>
+                        @address.Region.Name_ua
+                    @if (!string.IsNullOrEmpty(address.AddressLine))
+                    {
+                        <span>, @address.AddressLine</span>
+                    }
+                </span>
+            </div>
             }
             @if (Model.IsBenefitCardActive)
             {

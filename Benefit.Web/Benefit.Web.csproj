@@ -1055,6 +1055,8 @@
     <Content Include="Areas\Cabinet\Views\Panel\Profile.cshtml" />
     <Content Include="Areas\Cabinet\Views\Shared\_PartnerMenu.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\Index.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Panel\Structure.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Panel\_PartnersPartial.cshtml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />
@@ -1488,12 +1490,14 @@
     <Folder Include="Areas\Cabinet\Views\BasePartner\" />
     <Folder Include="Content\UserFiles\" />
     <Folder Include="Images\CategoryLogo\" />
+    <Folder Include="Images\MainPageBanners\" />
     <Folder Include="Images\NewsLogo\" />
     <Folder Include="Images\PartnerPageBanners\" />
     <Folder Include="Images\ProductGallery\" />
     <Folder Include="Images\SellerGallery\" />
     <Folder Include="Images\SellerLogo\" />
     <Folder Include="Images\uploads\" />
+    <Folder Include="Images\UserPictures\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Localizations\" />
   </ItemGroup>

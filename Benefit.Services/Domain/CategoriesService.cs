@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -57,7 +58,16 @@ namespace Benefit.Services.Domain
                         entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
             sellersDto.Items.ForEach(entry =>
             {
-                entry.Addresses = entry.Addresses.Where(addr => addr.RegionId == regionId).ToList();
+                var tempAddresses = new List<Address>(entry.Addresses.ToList());
+                entry.Addresses = new Collection<Address>();
+                foreach (var address in tempAddresses.Where(addr => addr.RegionId == regionId))
+                {
+                    entry.Addresses.Add(address);
+                }
+                foreach (var address in tempAddresses.Where(addr => addr.RegionId != regionId))
+                {
+                    entry.Addresses.Add(address);
+                }
                 entry.ShippingMethods =
                     entry.ShippingMethods.Where(sh => sh.RegionId == entry.ShippingMethods.Min(shm => shm.RegionId))
                         .ToList();

@@ -8,4 +8,102 @@
 {
     @Html.Partial("_PartnerHead", Model)
 }
+<div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
+    <ul class="profile_menu nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#base">Основна</a></li>
+        @*        <li><a data-toggle="tab" href="#addition">Додатково</a></li>*@
+        <li><a data-toggle="tab" href="#address">Адреси доставки</a></li>
+        <li><a data-toggle="tab" href="#security">Безпека</a></li>
+        <li><a data-toggle="tab" href="#change_data">Зміна даних</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="base" class="base tab-pane fade in active">
+            <p class="profile_title">Прізвище, ім’я, по-батькові</p>
+            <p class="profile_title_description">@Model.FullName</p>
+            <p class="profile_title">Електронна пошта</p>
+            <p class="profile_title_description">@Model.Email</p>
+            <p class="profile_title">Телефон</p>
+            <p class="profile_title_description">@Model.PhoneNumber</p>
+            <p class="profile_title">Номер картки</p>
+            <p class="profile_title_description">@Model.CardNumber</p>
+
+            <form class="profile_base_form">
+                <label for="profile_name">Місто / Населений пункт</label>
+                <input id="profile_name" type="text" value="@Model.Region.Name_ua">
+
+                <label for="profile_address">Адреса</label>
+                <input id="profile_address" type="text" value="@Model.Address">
+
+                <p class="verification_data">Для отримання можливості взяти участь у плані винагород<br> необхідно пройти процедуру верифікації бонусної картки</p>
+
+                <button class="profile_verification">Верифікація картки</button>
+
+                <p class="verification_data">Для операцій по перерахунку бонусів чи виведення їх в готівку<br> в цілях безпеки та згідно чинного законодавства України<br> вам потрібно пройти верифікацію акаунту</p>
+
+                <button class="profile_verification">Верифікація акаунту</button>
+            </form>
+        </div>
+
+        @*<div id="addition" class="addition tab-pane fade">
+                <form class="profile_addition_form">
+                    <label for="profile_birthday">Дата народження</label>
+                    <input onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" id="profile_birthday" type="text" placeholder="18.04.1994">
+
+                    <label for="profile_sex">Стать</label>
+                    <select name="profile_sex" id="profile_sex">
+                        <option selected>жіноча</option>
+                        <option>чоловіча</option>
+                    </select>
+
+                    <label for="profile_aducation">Освіта</label>
+                    <input id="profile_aducation" type="text" placeholder="базова вища">
+
+                    <label for="profile_job">Професія</label>
+                    <input id="profile_job" type="text" placeholder="викладач">
+
+                    <label for="profile_family">Сімейний статус</label>
+                    <input id="profile_family" type="text" placeholder="Заміжня">
+
+                    <label for="profile_children">Діти</label>
+                    <input id="profile_children" type="text" placeholder="1">
+
+                </form>
+            </div>*@
+
+        <div id="address" class="address tab-pane fade">
+            <p class="profile_adress_title">Адреси доставки</p>
+            @*   <div class="address_block">
+                    <p class="adress_name">Македонська Олександра</p>
+                    <p class="adress_main">Закарпатська, <br>м. Ужгород, <br>вул. Минайська, 87, 99</p>
+                    <p class="adress_phone">+38 091 123 45 67</p>
+                    <button class="address_adit">Редагувати</button>
+                    <button class="address_delete">Видалити</button>
+                </div>
+                <div class="address_block">
+                    <p class="adress_name">Македонська Олександра</p>
+                    <p class="adress_main">Закарпатська, <br>м. Мукачево, <br>вул. Миру, 31</p>
+                    <p class="adress_phone">+38 091 123 45 67</p>
+                    <button class="address_adit">Редагувати</button>
+                    <button class="address_delete">Видалити</button>
+                </div>*@
+            <button class="address_add">Додати нову адресу</button>
+        </div>
+
+        <div id="security" class="security tab-pane fade">
+            <button class="change_password">змінити пароль</button>
+            <button class="change_pin">змінити пін-код</button>
+            <p class="security_description">Пін-код використовується під час проведення будь-яких фінансових операцій, які пов’язані із використанням бонусів.</p>
+            <p class="security_description">При зміні паролю чи пін-коду необхідно перейти за посиланням, яке буде відправлено компанією на вашу електронну пошту.</p>
+        </div>
+
+        <div id="change_data" class="change_data tab-pane fade">
+            <form class="profile_change_data_form">
+                <textarea placeholder="Введіть дані, які необхідно змінити.
+Та вкажіть причину зміни."></textarea>
+                <button class="request_change_data">Подати запит на зміну персональних даних</button>
+            </form>
+        </div>
+    </div>
+</div>
 

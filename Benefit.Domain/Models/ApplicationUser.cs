@@ -47,5 +47,6 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Seller> OwnedSellers { get; set; }
         public virtual ICollection<Seller> ReferedWebSiteSellers { get; set; }
         public virtual ICollection<Seller> ReferedBenefitCardSellers { get; set; }
+        public virtual ICollection<ApplicationUser> Partners { get; set; }
     }
 }

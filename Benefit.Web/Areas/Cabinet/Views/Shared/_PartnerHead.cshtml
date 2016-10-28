@@ -2,7 +2,7 @@
 <div class="partner_head col-lg-2 col-md-2 col-sm-2 col-xs-2">
     <div class="userpic">
         <div class="userpic_wrap">
-            <img src="assets/img/userpic.png" alt="userpic" class="userpic">
+            <img src="~/Images/UserPictures/avatar.jpg" alt="userpic" class="userpic">
         </div>
     </div>
 
@@ -14,6 +14,28 @@
     <p class="bonus_available">Доступні бонуси:<br><span class="bonus_border">@Model.CurrentBonusAccount</span></p>
     <p class="bonus_personal">Особисті бонуси за поточний період:<br><span class="bonus_border">0</span></p>
     <p class="ball_personal">Особисті бали за поточний період:<br><span class="bonus_border">@Model.CurrentPointsAccount</span></p>
-    <div class="battery battary_low" data-toggle="tooltip" data-placement="top" title="до виконання кваліфікації та отримання комісійної винагороди залишилось набрати 300,21 балів"></div>
+    @{
+        var batteryStatus = "battary_full";
+        //todo: to constants
+        if (Model.CurrentPointsAccount < 199)
+        {
+            batteryStatus = "battary_low";
+        }
+        if (Model.CurrentPointsAccount >= 200 && Model.CurrentPointsAccount < 499)
+        {
+            batteryStatus = "battary_middle";
+        }
+        string qualificationEpsilonStr;
+        var qualificationEpsilon = 500 - Model.CurrentPointsAccount;
+        if (qualificationEpsilon > 0)
+        {
+            qualificationEpsilonStr = string.Format("До виконання кваліфікації та отримання комісійної винагороди залишилось набрати {0} балів", qualificationEpsilon);
+        }
+        else
+        {
+            qualificationEpsilonStr = "Ви виконали кваліфікацію!";
+        }
+    }
+    <div class="battery @batteryStatus" data-toggle="tooltip" data-placement="top" title="@qualificationEpsilonStr"></div>
 </div>
 

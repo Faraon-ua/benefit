@@ -8,5 +8,9 @@ namespace Benefit.Common.Extensions
         {
             return dateTime.ToLocalTime().ToString("d.M.yyyy HH:mm");
         }
+        public static string ToLocalTimeWithDateFormat(this DateTime dateTime)
+        {
+            return dateTime.ToLocalTime().ToString("d.M.yyyy");
+        }
     }
 }

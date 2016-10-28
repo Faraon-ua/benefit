@@ -35,9 +35,22 @@
         @if (Model.Seller.Addresses.Any())
         {
             <div class="organization_adress">
-                @*            <span>@address.Region.Name_ua, @address.AddressLine</span>*@
-
-                м. Мукачево,<br> вул. Данила Галицького, 15
+                @{
+                    var address = Model.Seller.Addresses.FirstOrDefault();
+                }
+                @if (address != null)
+                {
+                    <div class="provider_address">
+                        <span>
+                            @address.Region.Name_ua
+                            @if (!string.IsNullOrEmpty(address.AddressLine))
+                            {
+                                <br />
+                                <span>@address.AddressLine</span>
+                            }
+                        </span>
+                    </div>
+                }
             </div>
         }
 
@@ -57,8 +70,8 @@
             {
                 <span>@monSchedule.StartHour:00 - @monSchedule.EndHour:00</span>
             }
-            <br /> 
-            Сб. 
+            <br />
+            Сб.
             @if (satSchedule.StartHour == null)
             {
                 <span>вихідний</span>
@@ -67,7 +80,7 @@
             {
                 <span>@satSchedule.StartHour:00 - @satSchedule.EndHour:00</span>
             }
-            <br/>
+            <br />
             Нд.
             @if (sunSchedule.StartHour == null)
             {

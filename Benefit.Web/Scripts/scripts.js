@@ -396,12 +396,12 @@ $(window).resize(function () {
 $('.battery').tooltip();
 
 //structure table
-$('.expand_close').on('click', function () {
-    $(this).toggleClass('expand_close expand_open')
+$('body').on('click', '.expand_close', function () {
+    $(this).toggleClass('expand_close expand_open');
     $(this).parent().parent().children('ul').toggleClass('hidden');
 });
-$('.expand_open').on('click', function () {
-    $(this).toggleClass('expand_close expand_open')
+$('body').on('click', '.expand_open', function () {
+    $(this).toggleClass('expand_close expand_open');
     $(this).parent().parent().children('ul').toggleClass('hidden');
 });
 

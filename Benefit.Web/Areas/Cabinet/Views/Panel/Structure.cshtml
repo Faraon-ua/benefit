@@ -1,0 +1,116 @@
+﻿@model Benefit.Domain.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Структура";
+    Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
+}
+
+@section PartnerHead
+{
+    @Html.Partial("_PartnerHead", Model)
+}
+@section scripts{
+    <script>
+        var skip = 0;
+        function loadPartners() {
+            $.get('@Url.Action("GetPartners", "Panel", new {id=Model.Id})?skip='+skip,
+               function (data) {
+                   $(".structure_table li:last-child").after(data);
+                   if (data.length > 0) {
+                       skip = skip + 10;
+                       loadPartners();
+                   }
+               });
+        }
+        $(function () {
+            loadPartners();
+        })
+    </script>
+}
+<div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
+    <div class="structure_menu">
+        <div class="structure_menu_mentor">
+            <p class="mentor_title">Наставник</p>
+            @{
+                var referal = Model.Referal == null ? "Немає" : Model.Referal.FullName;
+            }
+            <a class="mentor_name" data-toggle="modal" data-target="#mentor_modal">@referal</a>
+        </div>
+        <div class="structure_menu_date">
+            <p class="structure_menu_date_title">Період нарахувань структури:</p>
+            <form>
+                <select id="structre_month" class="structre_month">
+                    <option>Січень</option>
+                    <option>Лютий</option>
+                    <option>Березень</option>
+                    <option>Квітень</option>
+                    <option>Травень</option>
+                    <option>Червень</option>
+                    <option>Липень</option>
+                    <option>Серпень</option>
+                    <option selected>Вересень</option>
+                    <option>Жовтень</option>
+                    <option>Листопад</option>
+                    <option>Грудень</option>
+                </select>
+                <select id="structre_year" class="structre_year"></select>
+            </form>
+        </div>
+        <div class="structure_search_wrap">
+            <form>
+                <label for="structure_search">Пошук по структурі</label>
+                <input class="structure_search" id="structure_search" type="search" placeholder="Введіть ім’я партнера">
+            </form>
+        </div>
+        <div class="registration_search_wrap">
+            <p class="registration_search_title">Пошук по даті реєстрації</p>
+            <div>
+                <div class="calendar"></div>
+                <input class="orders_search" type="text" onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" placeholder="Оберіть дату">
+                <button class="orders_search_btn"><i></i>Знайти</button>
+            </div>
+        </div>
+    </div>
+    <div class="structure_submenu clearfix">
+        <form class="structure_submenu_filters">
+            <fieldset>
+                <input class="hidden" type="checkbox" id="check01" name="check01">
+                <label class="label_for_check" for="check01">Показати всю структуру</label>
+
+                <input class="hidden" type="checkbox" id="check02" name="check02" checked>
+                <label class="label_for_check" for="check02">Не мають бонусної картки</label>
+
+            </fieldset>
+            <label for="status_select" class="status_select_label">Статус:</label>
+            <select id="status_select">
+                <option>Всі </option>
+            </select>
+        </form>
+        <div class="structure_registration">
+            <a href="#">Зареєструвати нового партнера в свою структуру</a>
+        </div>
+    </div>
+
+    <div class="structure_table_wrap">
+        <ul class="clearfix structure_table">
+
+            <li class="structure_table_head">
+                <div class="structure_table_row">
+                    <div class="expand"></div>
+                    <div class="table_content">
+                        <div class="structure_table_name"><span>ПІБ</span></div>
+                        <div class="structure_table_status"><span>Статус</span></div>
+                        <div class="structure_table_balls"><span>Бали</span></div>
+                        <div class="structure_table_bonuses"><span>Доступні бонуси</span></div>
+                        <div class="structure_table_register_date"><span>Дата реєстрації</span></div>
+                        <div class="structure_table_register_location"><span>Населений пункт</span></div>
+                        <div class="structure_table_register_email"><span>E-mail</span></div>
+                        <div class="structure_table_register_phone"><span>Телефон</span></div>
+                        <div class="structure_table_register_card_number"><span>Номер картки</span></div>
+                        <div class="structure_table_register_ref_code"><span>Реферальний код</span></div>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
