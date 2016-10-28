@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using Benefit.Common.Extensions;
-using Benefit.DataTransfer;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
 using Benefit.Domain.Models;
@@ -17,10 +17,10 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public List<Category> GetBreadcrumbs(string categoryId)
+        public List<Category> GetBreadcrumbs(string categoryId = null, string urlName = null)
         {
             var resultList = new List<Category>();
-            var category = db.Categories.Include(entry => entry.ParentCategory).FirstOrDefault(entry => entry.Id == categoryId);
+            var category = db.Categories.Include(entry => entry.ParentCategory).FirstOrDefault(entry => entry.Id == categoryId || entry.UrlName == urlName);
             resultList.Add(category);
             while (category.ParentCategory != null)
             {
@@ -31,12 +31,12 @@ namespace Benefit.Services.Domain
             return resultList;
         }
 
-        public SellersDto GetCategorySellers(string urlName)
+        public SellersViewModel GetCategorySellers(string urlName)
         {
             var sellerIds = new List<string>();
             var category = db.Categories.Include(entry => entry.ChildCategories).Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
             if (category == null) return null;
-            var sellersDto = new SellersDto()
+            var sellersDto = new SellersViewModel()
             {
                 Category = category
             };
@@ -62,7 +62,7 @@ namespace Benefit.Services.Domain
                     entry.ShippingMethods.Where(sh => sh.RegionId == entry.ShippingMethods.Min(shm => shm.RegionId))
                         .ToList();
             });
-            sellersDto.Breadcrumbs = GetBreadcrumbs(category.Id);
+            sellersDto.Breadcrumbs = new BreadCrumbsViewModel { Categories = GetBreadcrumbs(category.Id) };
 
             return sellersDto;
         }

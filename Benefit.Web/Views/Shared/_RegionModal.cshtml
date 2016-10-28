@@ -1,4 +1,5 @@
-﻿<div class="region_modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+﻿@using Benefit.Common.Constants
+<div class="region_modal modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -8,10 +9,10 @@
                 <div class="container" id="predefinedRegions">
                     <div class="row">
                         <div class="col-sm-4">
-                            <a href="#" data-region-id="400000">Вся Україна</a>
+                            <a href="#" data-region-id="@RegionConstants.AllUkraineRegionId">Вся Україна</a>
                         </div>
                         <div class="col-sm-4">
-                            <a href="#" data-region-id="400000">Київ</a>
+                            <a href="#" data-region-id="430513">Київ</a>
                         </div>
                         <div class="col-sm-4">
                             <a href="#" data-region-id="401106">Харків</a>

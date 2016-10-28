@@ -1,4 +1,5 @@
 ﻿@using System.Text
+@using Benefit.Common.Constants
 @using Benefit.Domain.Models
 @using WebGrease.Css.Extensions
 @model Seller
@@ -14,10 +15,10 @@
         sellerOptions.Append(",");
         sellerOptions.Append("BonusPayment");
     }
-    if (Model.ShippingMethods.Any(entry=>entry.FreeStartsFrom!=null))
+    if (Model.ShippingMethods.Any(entry => entry.FreeStartsFrom != null))
     {
         sellerOptions.Append(",");
-        
+
         sellerOptions.Append("FreeShipping");
     }
     if (Model.IsAcquiringActive)
@@ -46,7 +47,7 @@
                 <p class="rating_reviews">15 відгуків</p>
             </div>
             <div class="reviews_menu_wrap">
-                <a href="#" class="reviews_info">Інфо</a>
+                <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { action = "Info", id = Model.UrlName })" class="reviews_info">Інфо</a>
                 <a href="#" class="reviews_menu">Меню</a>
             </div>
         </div>
@@ -54,10 +55,10 @@
             @{
                 var address = Model.Addresses.FirstOrDefault();
             }
-            @if (address != null)
+            @if (address != null && !string.IsNullOrEmpty(address.AddressLine))
             {
                 <div class="provider_address">
-                    <span>@address.AddressLine</span>
+                    <span>@address.Region.Name_ua, @address.AddressLine</span>
                 </div>
             }
             @if (Model.IsBenefitCardActive)

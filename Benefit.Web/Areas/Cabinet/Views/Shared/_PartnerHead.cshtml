@@ -1,0 +1,19 @@
+﻿@model Benefit.Domain.Models.ApplicationUser
+<div class="partner_head col-lg-2 col-md-2 col-sm-2 col-xs-2">
+    <div class="userpic">
+        <div class="userpic_wrap">
+            <img src="assets/img/userpic.png" alt="userpic" class="userpic">
+        </div>
+    </div>
+
+    <p class="user_name">@Model.FullName</p>
+    <p class="user_statuse">@Model.Status.ToString()</p>
+    <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
+    <p class="card_numb">Номер бонусної картки:<br>@Model.CardNumber</p>
+    <p class="bonus_count">Загальна сума зароблених бонусів:<br><span class="bonus_border">356089,90</span></p>
+    <p class="bonus_available">Доступні бонуси:<br><span class="bonus_border">@Model.CurrentBonusAccount</span></p>
+    <p class="bonus_personal">Особисті бонуси за поточний період:<br><span class="bonus_border">0</span></p>
+    <p class="ball_personal">Особисті бали за поточний період:<br><span class="bonus_border">@Model.CurrentPointsAccount</span></p>
+    <div class="battery battary_low" data-toggle="tooltip" data-placement="top" title="до виконання кваліфікації та отримання комісійної винагороди залишилось набрати 300,21 балів"></div>
+</div>
+

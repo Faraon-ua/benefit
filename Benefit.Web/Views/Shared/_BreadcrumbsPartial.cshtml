@@ -1,0 +1,27 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.BreadCrumbsViewModel
+
+<div class="bread_crumbs">
+    <ul>
+        <li><a href="@Url.Action("Index", "Home")">Головна</a></li>
+        @foreach (var breadCrumb in Model.Categories)
+        {
+            <li>
+                &gt; <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id=breadCrumb.UrlName })">@breadCrumb.Name</a>
+            </li>
+        }
+        @if (Model.Seller != null)
+        {
+            <li>
+                &gt; <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { action = "Info", id=Model.Seller.UrlName })">@Model.Seller.Name</a>
+            </li>
+        }
+        @if (Model.Product != null)
+        {
+            <li>
+                &gt; <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { action = "Info", id=Model.Product.UrlName })">@Model.Product.Name</a>
+            </li>
+        }
+    </ul>
+</div>
+

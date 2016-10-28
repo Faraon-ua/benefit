@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using Benefit.Domain.Models;
 
-namespace Benefit.DataTransfer
+namespace Benefit.DataTransfer.ViewModels
 {
-    public class SellersDto
+    public class SellersViewModel
     {
         public List<Seller> Items { get; set; }
         public Category Category { get; set; }
-        public List<Category> Breadcrumbs { get; set; }
+        public BreadCrumbsViewModel Breadcrumbs { get; set; }
     }
 }

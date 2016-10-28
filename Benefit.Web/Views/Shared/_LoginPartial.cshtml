@@ -6,8 +6,7 @@
         using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
         {
             @Html.AntiForgeryToken()
-            @*            <div class="col-sm-10">*@
-            @Html.ActionLink(HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value), "Manage", "Account", routeValues: null, htmlAttributes: new { title = "Manage", @class = "sub_header_user_name" })
+            @Html.ActionLink(HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value), "Index", "Panel", routeValues: new { area = "Cabinet" }, htmlAttributes: new { title = "Manage", @class = "sub_header_user_name" })
             <a href="javascript:document.getElementById('logoutForm').submit()"><img src="~/Content/img/logout.png" /> </a>
         }
     }

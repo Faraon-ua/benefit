@@ -1,14 +1,10 @@
-﻿@model Benefit.DataTransfer.SellersDto
-@*@{
-        int sellersCount = 0;
-    }*@
-@using (Html.BeginForm("Index", "Catalog", FormMethod.Get))
-{
-    <div id="sellerFilters">
-        @{
-            var childCategories = Model.Category.ChildCategories.Where(entry => entry.IsActive).ToList();
-        }
-        @if (childCategories.Any())
+﻿@model Benefit.DataTransfer.ViewModels.SellersViewModel
+
+<div id="sellerFilters">
+    @if (Model.Category.ChildAsFilters)
+    {
+        var childCategories = Model.Category.ChildCategories.Where(entry => entry.IsActive).ToList();
+        if (childCategories.Any())
         {
             <fieldset>
                 <legend>Спеціалізація</legend>
@@ -20,44 +16,54 @@
                 }
             </fieldset>
         }
+    }
+    else
+    {
+        <div class="vertical_menu" id="right-menu">
+        </div>
+    }
 
-        <fieldset>
-            <legend>Критерії</legend>
-            <input class="hidden" type="checkbox" name="seller-options" value="BenefitCard" id="BenefitCard">
-            <label class="label_for_check" for="BenefitCard">Benefit Card (@Model.Items.Count(entry => entry.IsBenefitCardActive))</label>
+    <fieldset>
+        <legend>Критерії</legend>
+        <input class="hidden" type="checkbox" name="seller-options" value="BenefitCard" id="BenefitCard">
+        <label class="label_for_check" for="BenefitCard">Тільки моє місто (@Model.Items.Count(entry => entry.IsBenefitCardActive))</label>
 
-            <input class="hidden" type="checkbox" name="seller-options" value="FreeShipping" id="FreeShipping">
-            <label class="label_for_check" for="FreeShipping">Безкоштовна доставка (@Model.Items.Count(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom != null)))</label>
+        <input class="hidden" type="checkbox" name="seller-options" value="BenefitCard" id="BenefitCard">
+        <label class="label_for_check" for="BenefitCard">Benefit Card (@Model.Items.Count(entry => entry.IsBenefitCardActive))</label>
 
-            <input class="hidden" type="checkbox" name="seller-options" value="Acquiring" id="BankCard">
-            <label class="label_for_check" for="BankCard">Оплата карткою (@Model.Items.Count(entry => entry.IsAcquiringActive))</label>
+        <input class="hidden" type="checkbox" name="seller-options" value="FreeShipping" id="FreeShipping">
+        <label class="label_for_check" for="FreeShipping">Безкоштовна доставка (@Model.Items.Count(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom != null)))</label>
 
-            <input class="hidden" type="checkbox" name="seller-options" value="BonusPayment" id="BonusPayment">
-            <label class="label_for_check" for="BonusPayment">Оплата бонусами (@Model.Items.Count(entry => entry.IsBonusesPaymentActive))</label>
-        </fieldset>
-    </div>
-    @*  <p class="left_sidebar_subtitle">Балове співвідношення</p>
-        <fieldset>
-            <input class="hidden" type="checkbox" id="ball_ratio_01" name="ball_ratio_01" checked>
-            <label class="label_for_check" for="ball_ratio_01">2 грн = 1 бал</label>
+        <input class="hidden" type="checkbox" name="seller-options" value="Acquiring" id="BankCard">
+        <label class="label_for_check" for="BankCard">Оплата карткою (@Model.Items.Count(entry => entry.IsAcquiringActive))</label>
 
-            <input class="hidden" type="checkbox" id="ball_ratio_02" name="ball_ratio_02">
-            <label class="label_for_check" for="ball_ratio_02">4 грн = 1 бал</label>
+        <input class="hidden" type="checkbox" name="seller-options" value="BonusPayment" id="BonusPayment">
+        <label class="label_for_check" for="BonusPayment">Оплата бонусами (@Model.Items.Count(entry => entry.IsBonusesPaymentActive))</label>
+    </fieldset>
+</div>
 
-            <input class="hidden" type="checkbox" id="ball_ratio_03" name="ball_ratio_03">
-            <label class="label_for_check" for="ball_ratio_03">1 грн = 2 бали</label>
-        </fieldset>
 
-        <p class="left_sidebar_subtitle">Мін. сума замовлення</p>
-        <fieldset>
-            <input class="hidden" type="checkbox" id="min_sum_01" name="min_sum_01">
-            <label class="label_for_check" for="min_sum_01">до 100 грн</label>
+@*  <p class="left_sidebar_subtitle">Балове співвідношення</p>
+    <fieldset>
+        <input class="hidden" type="checkbox" id="ball_ratio_01" name="ball_ratio_01" checked>
+        <label class="label_for_check" for="ball_ratio_01">2 грн = 1 бал</label>
 
-            <input class="hidden" type="checkbox" id="min_sum_02" name="min_sum_02">
-            <label class="label_for_check" for="min_sum_02">до 200 грн</label>
+        <input class="hidden" type="checkbox" id="ball_ratio_02" name="ball_ratio_02">
+        <label class="label_for_check" for="ball_ratio_02">4 грн = 1 бал</label>
 
-            <input class="hidden" type="checkbox" id="min_sum_03" name="min_sum_03">
-            <label class="label_for_check" for="min_sum_03">до 300 грн</label>
-        </fieldset>
-        <input type="submit" value="Фільтрувати"/>*@
-}
+        <input class="hidden" type="checkbox" id="ball_ratio_03" name="ball_ratio_03">
+        <label class="label_for_check" for="ball_ratio_03">1 грн = 2 бали</label>
+    </fieldset>
+
+    <p class="left_sidebar_subtitle">Мін. сума замовлення</p>
+    <fieldset>
+        <input class="hidden" type="checkbox" id="min_sum_01" name="min_sum_01">
+        <label class="label_for_check" for="min_sum_01">до 100 грн</label>
+
+        <input class="hidden" type="checkbox" id="min_sum_02" name="min_sum_02">
+        <label class="label_for_check" for="min_sum_02">до 200 грн</label>
+
+        <input class="hidden" type="checkbox" id="min_sum_03" name="min_sum_03">
+        <label class="label_for_check" for="min_sum_03">до 300 грн</label>
+    </fieldset>
+    <input type="submit" value="Фільтрувати"/>*@

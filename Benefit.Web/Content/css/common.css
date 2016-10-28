@@ -56,6 +56,10 @@
     margin-top: 10px;
 }
 
+.margin-bottom-5 {
+    margin-bottom: 5px !important;
+}
+
 .margin-right-20 {
     margin-right: 20px !important;
 }

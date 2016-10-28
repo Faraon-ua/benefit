@@ -1,0 +1,38 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <title>@ViewBag.Title - Кабінет партнера Benefit Company</title>
+    @Html.Partial("_head")
+    @RenderSection("styles", required: false)
+</head>
+<body>
+    <div class="darker hidden"></div>
+    @Html.Partial("_header")
+    @Html.Partial("_ControlPanelPartial")
+    <!-- overlay -->
+    <div class="login_box_over hidden"></div>
+    <div class="empty_over hidden"></div>
+    <div class="container container_cabinet">
+        <div class="row container_table">
+            @RenderSection("PartnerHead", true)
+            @Html.Partial("_PartnerMenu")
+            @RenderBody()
+        </div>
+    </div>
+    <footer>
+        @Html.Partial("_FooterPartial")
+    </footer>
+    @Scripts.Render("~/bundles/master")
+    @RenderSection("scripts", required: false)
+    <script>
+        $('#loginPartial').load('@Url.Action("LoginPartial", "Home", new {area=string.Empty}, Request.Url.Scheme)');
+        if ($(".categories_drop").length > 0) {
+            $.get('@Url.Action("CategoriesPartial", "Home", new { area = string.Empty }, Request.Url.Scheme)?isDropDown=true',
+                function (data) {
+                    $(".categories_drop").after(data);
+                });
+        }
+    </script>
+    @Html.Partial("_RegionModal")
+</body>
+</html>

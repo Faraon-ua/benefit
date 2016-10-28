@@ -43,7 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="JSON\AutocompleteSearch.cs" />
-    <Compile Include="SellersDto.cs" />
+    <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
+    <Compile Include="ViewModels\SellerDetailsViewModel.cs" />
+    <Compile Include="ViewModels\SellersDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

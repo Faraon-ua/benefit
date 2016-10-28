@@ -11,8 +11,14 @@ namespace Benefit.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+               name: RouteConstants.SellersRouteName,
+               url: RouteConstants.SellersRoutePrefix + "/{id}/{action}",
+               defaults: new { controller = "Postachalnyk", action = "Info", id = UrlParameter.Optional }
+           );
+
+            routes.MapRoute(
                 name: RouteConstants.CategoriesRouteName,
-                url: "catalog/{id}",
+                url: RouteConstants.CategoriesRoutePrefix + "/{id}",
                 defaults: new { controller = "Catalog", action = "Index", id = UrlParameter.Optional }
             );
 
@@ -20,7 +26,7 @@ namespace Benefit.Web
                 name: "Default",
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            ); 
+            );
         }
     }
 }
