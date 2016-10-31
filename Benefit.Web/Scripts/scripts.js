@@ -442,8 +442,6 @@ for (var i = 1901; i <= currentYear; i++) {
     $('.structre_year').append(tmp);
 }
 
-
-
 /*organization slider*/
 $('.grr').owlCarousel({
     loop: true,

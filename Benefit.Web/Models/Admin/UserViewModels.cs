@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
@@ -8,6 +9,10 @@ namespace Benefit.Web.Models.Admin
 {
     public class EditUserViewModel
     {
+        public EditUserViewModel()
+        {
+            Addresses = new Collection<Address>();
+        }
         public string Id { get; set; }
         [Required]
         public int ExternalNumber { get; set; }

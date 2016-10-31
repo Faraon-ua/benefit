@@ -2820,7 +2820,7 @@ footer {
 .structure_table_wrap {
     width: 100%;
     /*max-width: 965px;*/
-    max-height: 695px;
+    /*max-height: 695px;*/
     overflow: scroll;
 }
 
@@ -2923,9 +2923,13 @@ footer {
     line-height: 30px;
 }
 
+.structure_table_register_email input {
+    border: 0; outline: 0; background: transparent;
+}
+
 .structure_table_register_email {
     display: inline-block;
-    width: 325px;
+    width: 225px;
     text-align: left;
     line-height: 30px;
 }

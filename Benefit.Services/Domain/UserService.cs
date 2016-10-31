@@ -11,18 +11,22 @@ namespace Benefit.Services.Domain
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
+        public ApplicationUser GetUserInfoWithPartners(string id)
+        {
+            var user = db.Users.Include(entry=>entry.Region).Include(entry => entry.Partners).FirstOrDefault(entry => entry.Id == id);
+            user.Partners = user.Partners.OrderByDescending(entry => entry.RegisteredOn).ToList();
+            return user;
+        }
         public ApplicationUser GetUserInfoWithRegions(string id)
         {
             var user = db.Users.Include(entry => entry.Region).FirstOrDefault(entry => entry.Id == id);
             return user;
         }
 
-        public ApplicationUser GetUserInfo(string id)
+        public List<ApplicationUser> GetPartners(string userId)
         {
-            var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Referal).FirstOrDefault(entry => entry.Id == id);
-            return user;
+            return db.Users.Include(entry=>entry.Region).Where(entry => entry.ReferalId == userId).OrderByDescending(entry=>entry.RegisteredOn).ToList();
         }
-
         public List<ApplicationUser> GetPartnersInDepth(string userId, int skip, int take = UserConstants.DefaultPartnersTakeCount)
         {
             var partners =

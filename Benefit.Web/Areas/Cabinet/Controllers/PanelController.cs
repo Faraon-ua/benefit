@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
 using System.Web.Mvc;
-using Benefit.Common.Constants;
-using Benefit.Domain.Models.ModelExtensions;
+using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Microsoft.AspNet.Identity;
 
@@ -35,14 +31,14 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult Structure()
         {
-            var user = UserService.GetUserInfo(User.Identity.GetUserId());
+            var user = UserService.GetUserInfoWithPartners(User.Identity.GetUserId());
             return View(user);
         }
 
-        public ActionResult GetPartners(string id, int skip, int take = UserConstants.DefaultPartnersTakeCount)
+        public ActionResult GetPartners(string id, int level)
         {
-            var partners = UserService.GetPartnersInDepth(id, skip, take);
-            return PartialView("_PartnersPartial", partners);
+            var partners = UserService.GetPartners(id);
+            return PartialView("_PartnersPartial", new KeyValuePair<int, IEnumerable<ApplicationUser>>(level, partners));
         }
 	}
 }

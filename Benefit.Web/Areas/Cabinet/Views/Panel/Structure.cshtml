@@ -1,4 +1,5 @@
-﻿@model Benefit.Domain.Models.ApplicationUser
+﻿@using Benefit.Domain.Models
+@model ApplicationUser
 
 @{
     ViewBag.Title = "Структура";
@@ -12,19 +13,24 @@
 @section scripts{
     <script>
         var skip = 0;
-        function loadPartners() {
-            $.get('@Url.Action("GetPartners", "Panel", new {id=Model.Id})?skip='+skip,
-               function (data) {
-                   $(".structure_table li:last-child").after(data);
-                   if (data.length > 0) {
-                       skip = skip + 10;
-                       loadPartners();
-                   }
-               });
+        var loadPartnersUrl = '@Url.Action("GetPartners", "Panel")';
+        function loadPartners(level) {
+            $("li.partner-level-" + level).each(function () {
+                var currentRow = $(this).find(".structure_table_row");
+                $.get(loadPartnersUrl + '?id=' + $(this).attr("data-partner-id") + '&level=' + level + 1,
+                    function (data) {
+                        if (data.length > 0) {
+                            currentRow.find(">:first-child").addClass("expand_close");
+                            currentRow.after(data);
+                        }
+                    });
+            });
+            setTimeout(function () { loadPartners(level + 1); }, 2000);
         }
+
         $(function () {
-            loadPartners();
-        })
+            loadPartners(0);
+        });
     </script>
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
@@ -111,6 +117,7 @@
                     </div>
                 </div>
             </li>
+            @Html.Partial("_PartnersPartial", new KeyValuePair<int, IEnumerable<ApplicationUser>>(0, Model.Partners))
         </ul>
     </div>
 </div>

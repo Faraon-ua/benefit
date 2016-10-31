@@ -12,10 +12,10 @@ namespace Benefit.Web.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            using (var db = new ApplicationDbContext())
+            if (filterContext.HttpContext.Request.IsAuthenticated &&
+                filterContext.HttpContext.Request.Cookies[RouteConstants.FullNameCookieName] == null)
             {
-                if (filterContext.HttpContext.Request.IsAuthenticated &&
-                    filterContext.HttpContext.Request.Cookies[RouteConstants.FullNameCookieName] == null)
+                using (var db = new ApplicationDbContext())
                 {
                     var user = db.Users.Find(filterContext.RequestContext.HttpContext.User.Identity.GetUserId());
                     var cookieValue = HttpUtility.UrlEncode(user.FullName);
@@ -26,11 +26,15 @@ namespace Benefit.Web.Filters
                     HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                 }
 
-                if (filterContext.RouteData.DataTokens["area"] != null &&
-                    filterContext.RouteData.DataTokens["area"] == "Admin")
+            }
+
+            if (filterContext.RouteData.DataTokens["area"] != null &&
+                filterContext.RouteData.DataTokens["area"] == "Admin")
+            {
+                if (filterContext.HttpContext.User.IsInRole(DomainConstants.SellerRoleName) &&
+                    filterContext.HttpContext.Session[DomainConstants.SellerSessionIdKey] == null)
                 {
-                    if (filterContext.HttpContext.User.IsInRole(DomainConstants.SellerRoleName) &&
-                        filterContext.HttpContext.Session[DomainConstants.SellerSessionIdKey] == null)
+                    using (var db = new ApplicationDbContext())
                     {
                         var userId = filterContext.HttpContext.User.Identity.GetUserId();
                         filterContext.HttpContext.Session.Add(DomainConstants.SellerSessionIdKey,

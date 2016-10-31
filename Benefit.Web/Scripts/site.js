@@ -83,4 +83,8 @@ $(function () {
     } else {
         $("#select_place .inside").text("Оберіть місто");
     }
+
+    $("body").on("click", ".structure_table_register_email input", function() {
+        $(this).select();
+    });
 });
