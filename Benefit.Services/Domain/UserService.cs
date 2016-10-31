@@ -13,7 +13,7 @@ namespace Benefit.Services.Domain
 
         public ApplicationUser GetUserInfoWithPartners(string id)
         {
-            var user = db.Users.Include(entry=>entry.Region).Include(entry => entry.Partners).FirstOrDefault(entry => entry.Id == id);
+            var user = db.Users.Include(entry=>entry.Region).Include(entry => entry.Partners).Include(entry => entry.Referal).FirstOrDefault(entry => entry.Id == id);
             user.Partners = user.Partners.OrderByDescending(entry => entry.RegisteredOn).ToList();
             return user;
         }

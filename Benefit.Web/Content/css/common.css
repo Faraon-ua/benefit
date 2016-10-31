@@ -128,3 +128,9 @@
  .owl-stage-outer img{
      max-height: 768px;
  }
+.pointer:hover {
+    font-weight: bold;
+}
+ .pointer {
+     cursor: pointer;
+ }

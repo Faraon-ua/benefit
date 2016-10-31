@@ -84,7 +84,50 @@ $(function () {
         $("#select_place .inside").text("Оберіть місто");
     }
 
-    $("body").on("click", ".structure_table_register_email input", function() {
+    $("body").on("click", ".structure_table_register_email input", function () {
         $(this).select();
+    });
+
+    $(".structure_table_balls").click(function () {
+        $(".structure_table_wrap ul").each(function () {
+            var currentUl = $(this);
+            currentUl.children("li").not(".structure_table_head").sort(function (a, b) {
+                var aFloat = parseFloat($(a).find(".structure_table_balls").text());
+                var bFloat = parseFloat($(b).find(".structure_table_balls").text());
+                return aFloat < bFloat;
+            }).appendTo(currentUl);
+        });
+    });
+
+    $(".structure_table_bonuses").click(function () {
+        $(".structure_table_wrap ul").each(function () {
+            var currentUl = $(this);
+            currentUl.children("li").not(".structure_table_head").sort(function (a, b) {
+                var aFloat = parseFloat($(a).find(".structure_table_bonuses").text());
+                var bFloat = parseFloat($(b).find(".structure_table_bonuses").text());
+                return aFloat < bFloat;
+            }).appendTo(currentUl);
+        });
+    });
+
+    $("#showAllStructure").change(function () {
+        if (this.checked) {
+            $(".expand_close").click();
+        } else {
+            $(".expand_open").click();
+        }
+    });
+
+    $("#hasNoCard").change(function () {
+        debugger;
+        if (this.checked) {
+            $(".structure_table_wrap li").not(".structure_table_head").filter(function () {
+                return $(this).find(".structure_table_register_card_number").text() != "";
+            }).hide();
+        } else {
+            $(".structure_table_wrap li").not(".structure_table_head").filter(function () {
+                return $(this).find(".structure_table_register_card_number").text() != "";
+            }).show();
+        }
     });
 });

@@ -17,7 +17,7 @@
         function loadPartners(level) {
             $("li.partner-level-" + level).each(function () {
                 var currentRow = $(this).find(".structure_table_row");
-                $.get(loadPartnersUrl + '?id=' + $(this).attr("data-partner-id") + '&level=' + level + 1,
+                $.get(loadPartnersUrl + '?id=' + $(this).attr("data-partner-id") + '&level=' + parseInt(level + 1),
                     function (data) {
                         if (data.length > 0) {
                             currentRow.find(">:first-child").addClass("expand_close");
@@ -80,11 +80,11 @@
     <div class="structure_submenu clearfix">
         <form class="structure_submenu_filters">
             <fieldset>
-                <input class="hidden" type="checkbox" id="check01" name="check01">
-                <label class="label_for_check" for="check01">Показати всю структуру</label>
+                <input class="hidden" type="checkbox" id="showAllStructure" name="showAllStructure">
+                <label class="label_for_check" for="showAllStructure">Показати всю структуру</label>
 
-                <input class="hidden" type="checkbox" id="check02" name="check02" checked>
-                <label class="label_for_check" for="check02">Не мають бонусної картки</label>
+                <input class="hidden" type="checkbox" id="hasNoCard" name="hasNoCard">
+                <label class="label_for_check" for="hasNoCard">Не мають бонусної картки</label>
 
             </fieldset>
             <label for="status_select" class="status_select_label">Статус:</label>
@@ -106,8 +106,8 @@
                     <div class="table_content">
                         <div class="structure_table_name"><span>ПІБ</span></div>
                         <div class="structure_table_status"><span>Статус</span></div>
-                        <div class="structure_table_balls"><span>Бали</span></div>
-                        <div class="structure_table_bonuses"><span>Доступні бонуси</span></div>
+                        <div class="structure_table_balls pointer"><span>Бали</span></div>
+                        <div class="structure_table_bonuses pointer"><span>Доступні бонуси</span></div>
                         <div class="structure_table_register_date"><span>Дата реєстрації</span></div>
                         <div class="structure_table_register_location"><span>Населений пункт</span></div>
                         <div class="structure_table_register_email"><span>E-mail</span></div>
