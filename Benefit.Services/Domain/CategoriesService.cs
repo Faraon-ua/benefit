@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Web;
+using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
@@ -47,15 +48,19 @@ namespace Benefit.Services.Domain
             var regionId = RegionService.GetRegionId();
             sellersDto.Items =
                 db.Sellers
-                .Include(entry => entry.Images)
-                .Include(entry => entry.Addresses)
-                .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
-                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                .Where(
-                    entry =>
-                        sellerIds.Contains(entry.Id) &&
-                        entry.IsActive &&
-                        entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
+                    .Include(entry => entry.Images)
+                    .Include(entry => entry.Addresses)
+                    .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                    .Where(
+                        entry =>
+                            sellerIds.Contains(entry.Id) &&
+                            entry.IsActive &&
+                            //todo: order by selected region
+                            (entry.Addresses.Select(addr => addr.RegionId).Contains(regionId) ||
+                             entry.ShippingMethods.Select(sm => sm.Region.Id)
+                                 .Contains(RegionConstants.AllUkraineRegionId))
+                    ).ToList();
             sellersDto.Items.ForEach(entry =>
             {
                 var tempAddresses = new List<Address>(entry.Addresses.ToList());

@@ -41,7 +41,6 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult GetPartners(string id, int skip, int take = UserConstants.DefaultPartnersTakeCount)
         {
-//            var user = UserService.GetUserInfo(User.Identity.GetUserId());
             var partners = UserService.GetPartnersInDepth(id, skip, take);
             return PartialView("_PartnersPartial", partners);
         }

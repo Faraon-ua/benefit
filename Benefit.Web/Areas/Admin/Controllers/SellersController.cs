@@ -28,6 +28,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         private UserManager<ApplicationUser> UserManager { get; set; }
         ProductsService ProductService = new ProductsService();
         EmailService EmailService = new EmailService();
+        SellerService SellerService = new SellerService();
 
         public SellersController()
         {
@@ -270,23 +271,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 seller.LastModifiedBy = User.Identity.Name;
 
                 var sellerId = seller.Id ?? Guid.NewGuid().ToString();
-                seller.Currencies.ForEach(entry => entry.SellerId = sellerId);
-                seller.Addresses.ForEach(entry => entry.SellerId = sellerId);
-                seller.ShippingMethods.ForEach(entry => entry.SellerId = sellerId);
                 seller.Schedules.ForEach(entry => entry.SellerId = sellerId);
-                seller.SellerCategories.ForEach(entry =>
-                {
-                    entry.SellerId = sellerId;
-                });
-
-                var currenciesToAdd = seller.Currencies.Where(entry => entry.Id == null).ToList();
-                currenciesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
-
-                var addressesToAdd = seller.Addresses.Where(entry => entry.Id == null).ToList();
-                addressesToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
-
-                var shippingMethodsToAdd = seller.ShippingMethods.Where(entry => entry.Id == null).ToList();
-                shippingMethodsToAdd.ForEach(entry => entry.Id = Guid.NewGuid().ToString());
 
                 if (seller.Id == null)
                 {
@@ -297,32 +282,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 else
                 {
+                    SellerService.ProcessCategories(seller.SellerCategories.ToList(), sellerId);
+                    SellerService.ProcessAddresses(seller.Addresses.ToList(), sellerId);
+                    SellerService.ProcessCurrencies(seller.Currencies.ToList(), sellerId);
+                    SellerService.ProcessShippingMethods(seller.ShippingMethods.ToList(), sellerId);
                     db.Entry(seller).State = EntityState.Modified;
                     TempData["SuccessMessage"] = string.Format("Дані постачальника {0} було збережено", seller.Name);
-                    //to remove
-                    var existingSeller = db.Sellers.Find(sellerId);
-                    var addressesToRemove =
-                        existingSeller.Addresses.Where(
-                            entry => !seller.Addresses.Select(addr => addr.Id).Contains(entry.Id)).ToList();
-                    db.Addresses.RemoveRange(addressesToRemove);
+                    db.SaveChanges();
                 }
-                db.Currencies.AddRange(currenciesToAdd);
-                db.Addresses.AddRange(addressesToAdd);
-                db.ShippingMethods.AddRange(shippingMethodsToAdd);
-                foreach (var currency in seller.Currencies.Except(currenciesToAdd))
-                {
-                    db.Entry(currency).State = EntityState.Modified;
-                }
-                foreach (var address in seller.Addresses.Except(addressesToAdd))
-                {
-                    db.Entry(address).State = EntityState.Modified;
-                }
-                foreach (var shipping in seller.ShippingMethods.Except(shippingMethodsToAdd))
-                {
-                    db.Entry(shipping).State = EntityState.Modified;
-                }
+
                 //schedules
-                seller.Schedules.ForEach(entry => entry.SellerId = sellerId);
                 if (!db.Schedules.Any(entry => entry.SellerId == sellerId))
                 {
                     db.Schedules.AddRange(seller.Schedules);
@@ -333,18 +302,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         db.Entry(schedule).State = EntityState.Modified;
                     }
-                }
-                //categories
-                var sellerCategories = seller.SellerCategories.ToList();
-                db.SellerCategories.RemoveRange(db.SellerCategories.Where(entry => entry.SellerId == sellerId));
-                //to remove
-                db.SaveChanges();
-                if (sellerCategories.Any())
-                {
-                    sellerCategories.ForEach(entry =>
-                    {
-                        db.SellerCategories.Add(entry);
-                    });
                 }
 
                 var logo = Request.Files[0];

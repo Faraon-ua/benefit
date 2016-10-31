@@ -35,9 +35,9 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
                     if (file != null && file.ContentLength > 0)
                     {
                         var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                        var pathString = Path.Combine(originalDirectory, "Images", type.ToString());
-                        var slashIndex = file.ContentType.IndexOf('/');
-                        fileExt = file.ContentType.Substring(slashIndex + 1);
+                        var pathString = Path.Combine(originalDirectory, "Images", type.ToString(), parentId);
+                        var dotIndex = file.FileName.IndexOf('.');
+                        fileExt = file.FileName.Substring(dotIndex + 1);
                         var isExists = Directory.Exists(pathString);
                         if (!isExists)
                             Directory.CreateDirectory(pathString);
@@ -112,17 +112,17 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
         public ActionResult NewCurrencyForm(int number)
         {
             return PartialView("_CurrencyForm",
-                new KeyValuePair<int, Currency>(number, new Currency()));
+                new KeyValuePair<int, Currency>(number, new Currency() { Id = Guid.NewGuid().ToString() }));
         }
         public ActionResult NewAddressForm(int number)
         {
             return PartialView("_AddressForm",
-                new KeyValuePair<int, Address>(number, new Address()));
+                new KeyValuePair<int, Address>(number, new Address() { Id = Guid.NewGuid().ToString() }));
         }
         public ActionResult NewShippingForm(int number)
         {
             return PartialView("_ShippingForm",
-                new KeyValuePair<int, ShippingMethod>(number, new ShippingMethod()));
+                new KeyValuePair<int, ShippingMethod>(number, new ShippingMethod() { Id = Guid.NewGuid().ToString() }));
         }
 
     }

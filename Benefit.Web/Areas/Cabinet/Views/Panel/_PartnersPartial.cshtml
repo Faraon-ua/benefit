@@ -6,7 +6,7 @@
     <li>
         <div class="structure_table_row">
             @{
-    var avaClass = partner.Partners.Any() ? "expand expand_close" : "expand";
+                var avaClass = partner.Partners.Any() ? "expand expand_close" : "expand";
             }
             <div class="@avaClass"></div>
             <div class="table_content">
@@ -24,7 +24,7 @@
         </div>
         @if (partner.Partners.Any())
         {
-            <ul class="structure_table">
+            <ul class="structure_table hidden">
                 @Html.Action("GetPartners", new { id = partner.Id, skip = -1, take = -1 })
             </ul>
         }
