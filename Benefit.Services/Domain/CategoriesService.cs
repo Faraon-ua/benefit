@@ -21,6 +21,10 @@ namespace Benefit.Services.Domain
 
         public List<Category> GetBreadcrumbs(string categoryId = null, string urlName = null)
         {
+            if (HttpRuntime.Cache[CacheConstants.BreadCrumbsKey] != null)
+            {
+                return HttpRuntime.Cache[CacheConstants.BreadCrumbsKey] as List<Category>;
+            }
             var resultList = new List<Category>();
             var category = db.Categories.Include(entry => entry.ParentCategory).FirstOrDefault(entry => entry.Id == categoryId || entry.UrlName == urlName);
             resultList.Add(category);
@@ -35,6 +39,8 @@ namespace Benefit.Services.Domain
 
         public ProductsViewModel GetCategoryProducts(string urlName)
         {
+            var category = db.Categories.FirstOrDefault(entry => entry.UrlName == urlName);
+//            category.
             return new ProductsViewModel();
         }
 
@@ -83,7 +89,6 @@ namespace Benefit.Services.Domain
                         .ToList();
             });
             sellersDto.Breadcrumbs = new BreadCrumbsViewModel { Categories = GetBreadcrumbs(category.Id) };
-
             return sellersDto;
         }
 

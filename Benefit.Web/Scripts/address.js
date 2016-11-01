@@ -10,9 +10,10 @@
 }
 
 function UpdateAddressesNumber() {
-    var maxNumber = GetMaxAttributeValue('.address-id', 'data-number');
+    var maxNumber = parseInt(GetMaxAttributeValue('.address-id', 'data-number'));
     var href = $("#addNewAddress").attr("href");
-    href = href.substring(0, href.length - 1) + (maxNumber + 1);
+    href = href.replace(/[0-9]/g, "");
+    href = href + (maxNumber + 1);
     $("#addNewAddress").attr("href", href);
     SetRegionsAutocomplete();
 }

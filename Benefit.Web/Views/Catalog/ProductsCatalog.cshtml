@@ -1,4 +1,4 @@
-﻿@model Benefit.DataTransfer.ViewModels.SellersViewModel
+﻿@model Benefit.DataTransfer.ViewModels.ProductsViewModel
 
 @{
     ViewBag.Title = Model.Category.Name;
@@ -22,7 +22,7 @@
                     allCheckedFilters.filter(
                         function () {
                             return $(this).attr("name") == allFilterNames[i];
-                        }).map(function () { return $(this).val() }).each(function () {
+                        }).map(function () { return $(this).val(); }).each(function () {
                             //show selected
                             var currentValue = this.toString();
                             $(".provider_container").filter(function () {

@@ -1,0 +1,89 @@
+﻿@model Benefit.DataTransfer.ViewModels.SellersViewModel
+
+@{
+    ViewBag.Title = Model.Category.Name;
+}
+
+@section scripts{
+    <script>
+        $("#sellerFilters input[type=checkbox]").change(function () {
+            //if none selected - show all
+            if ($("#sellerFilters input[type=checkbox]:checked").length == 0) {
+                $(".provider_container").removeClass("hidden");
+            } else {
+                //hide all
+                $(".provider_container").addClass("hidden");
+
+                var allCheckedFilters = $("#sellerFilters input[type=checkbox]:checked");
+                var allFilterNames = allCheckedFilters.map(function () { return $(this).attr("name"); }).get();
+                //distinct
+                allFilterNames = jQuery.unique(allFilterNames);
+                for (var i = 0; i < allFilterNames.length; i++) {
+                    allCheckedFilters.filter(
+                        function () {
+                            return $(this).attr("name") == allFilterNames[i];
+                        }).map(function () { return $(this).val(); }).each(function () {
+                            //show selected
+                            var currentValue = this.toString();
+                            $(".provider_container").filter(function () {
+                                return $(this).attr("data-" + allFilterNames[i]).indexOf(currentValue) >= 0;
+                            }).removeClass("hidden");
+                        });
+                }
+            }
+        });
+    </script>
+}
+@section LeftAside{
+    @Html.Partial("_SellerFilters", Model)
+}
+
+@Html.HiddenFor(m => m.Category.Id)
+<main class="full_content full_content_provider">
+    <div class="provider_row clearfix">
+        @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+        @*  <div class="provider_sort">
+                <label for="provider_sort_title">Сортувати</label>
+                <select id="provider_sort_select" class="provider_sort_select">
+                    <option>по рейтингу</option>
+                </select>
+            </div>*@
+        @if (Model.Items.Any())
+        {
+            foreach (var seller in Model.Items)
+            {
+                @Html.Partial("_ProviderPartial", seller)
+            }
+        }
+        else
+        {
+            <div>У вибраному вами населеному пункті не знайдено жодного постачальника в категорії @Model.Category.Name</div>
+        }
+
+    </div>
+    @*  //todo: Add easy loadingsn
+             <div class="bottom_control clearfix">
+            <div class="pagination_wrap">
+                <div class="pagination_prew">&lt;</div>
+                <ul class="pagination">
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li class="active">4</li>
+                    <li>5</li>
+                    <li>6</li>
+                    <li>...</li>
+                    <li>54</li>
+                </ul>
+                <div class="pagination_next">&gt;</div>
+            </div>
+            <div class="show_more">
+                <label for="more_providers">Показати</label>
+                <select id="more_providers" class="orders_org_choice">
+                    <option>16</option>
+                    <option>32</option>
+                </select>
+            </div>
+        </div>*@
+</main>
+

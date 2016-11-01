@@ -25,16 +25,21 @@
 
     <script>
         function UpdateCurrenciesNumber() {
-            var maxNumber = GetMaxAttributeValue('.currency-id', 'data-number');
+            var maxNumber = parseInt(GetMaxAttributeValue('.currency-id', 'data-number'));
             var href = $("#addNewCurrency").attr("href");
-            href = href.substring(0, href.length - 1) + (maxNumber + 1);
+            href = href.replace(/[0-9]/g, "");
+            href = href + (maxNumber + 1);
             $("#addNewCurrency").attr("href", href);
         }
 
         function UpdateCategoriesNumber() {
-            var maxNumber = GetMaxAttributeValue('.category-id', 'data-number');
+            var maxNumber = parseInt(GetMaxAttributeValue('.category-id', 'data-number'));
             var href = $("#addNewCategory").attr("href");
-            href = href.substring(0, href.length - 1) + (maxNumber + 1);
+            if (maxNumber == 10) {
+                debugger;
+            }
+            href = href.replace(/[0-9]/g, "");
+            href = href + (maxNumber + 1);
             $("#addNewCategory").attr("href", href);
             $(".chosen-select").chosen({
                 search_contains: true,
@@ -43,9 +48,10 @@
         }
 
         function UpdateShippingMethodsNumber() {
-            var maxNumber = GetMaxAttributeValue('.shipping-id', 'data-number');
+            var maxNumber = parseInt(GetMaxAttributeValue('.shipping-id', 'data-number'));
             var href = $("#addNewShippingMethod").attr("href");
-            href = href.substring(0, href.length - 1) + (maxNumber + 1);
+            href = href.replace(/[0-9]/g, "");
+            href = href + (maxNumber + 1);
             $("#addNewShippingMethod").attr("href", href);
             SetRegionsAutocomplete();
         }
