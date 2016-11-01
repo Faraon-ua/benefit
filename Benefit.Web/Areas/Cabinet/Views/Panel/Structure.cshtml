@@ -17,23 +17,23 @@
 
         function loadPartners(level) {
             var partnerLevelIds = $("li.partner-level-" + level).map(function () { return $(this).attr("id"); }).get();
-            if (partnerLevelIds.length > 0) {
-                var postData = { ids: partnerLevelIds };
-                $.post(loadPartnersUrl + '?&level=' + parseInt(level + 1),
-                    postData,
-                    function (data) {
-                        var keys = Object.keys(data);
-                        $(keys).each(function (index, key) {
-                            var li = $("#" + key);
-                            if (data[key].length > 0) {
-                                var currentRow = li.find("div.structure_table_row");
-                                currentRow.find(".expand").addClass("expand_close");
-                                currentRow.after(data[key]);
-                            }
-                        });
+            var postData = { ids: partnerLevelIds };
+            $.post(loadPartnersUrl + '?&level=' + parseInt(level + 1),
+                postData,
+                function (data) {
+                    var keys = Object.keys(data);
+                    $(keys).each(function (index, key) {
+                        var li = $("#" + key);
+                        if (data[key].length > 0) {
+                            var currentRow = li.find("div.structure_table_row");
+                            currentRow.find(".expand").addClass("expand_close");
+                            currentRow.after(data[key]);
+                        }
+                        if (partnerLevelIds.length == (index + 1)) {
+                            setTimeout(function () { loadPartners(level + 1); }, 2000);
+                        }
                     });
-                setTimeout(function () { loadPartners(level + 1); }, 2000);
-            }
+                });
         }
 
         $(function () {

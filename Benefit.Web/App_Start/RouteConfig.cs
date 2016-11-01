@@ -14,7 +14,13 @@ namespace Benefit.Web
                name: RouteConstants.SellersRouteName,
                url: RouteConstants.SellersRoutePrefix + "/{id}/{action}",
                defaults: new { controller = "Postachalnyk", action = "Info", id = UrlParameter.Optional }
-           );
+           );  
+            
+           /* routes.MapRoute(
+               name: RouteConstants.SellersRouteName,
+               url: RouteConstants.SellersRoutePrefix + "/{id}/catalog/{categoryUrl}",
+               defaults: new { controller = "Postachalnyk", action = "Info", id = UrlParameter.Optional }
+           );*/
 
             routes.MapRoute(
                 name: RouteConstants.CategoriesRouteName,

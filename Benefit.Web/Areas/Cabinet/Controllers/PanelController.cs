@@ -44,6 +44,10 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         [HttpPost]
         public ActionResult GetPartnersByReferalIds(string[] ids, int level)
         {
+            if (ids == null)
+            {
+                return Json(new {});
+            }
             var partners = UserService.GetPartnersByReferalIds(ids);
             var result = partners.ToDictionary(entry => entry.Key,
                 entry => ControllerContext.RenderPartialToString("_PartnersPartial",
