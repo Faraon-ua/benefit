@@ -237,6 +237,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\HtmlHelpers.cs" />
+    <Compile Include="Helpers\PartialToString.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin\ProductFilters.cs" />
     <Compile Include="Models\Admin\ProductsViewModel.cs" />

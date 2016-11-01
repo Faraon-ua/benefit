@@ -1,7 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Web.Mvc;
+using System.Web.UI;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
+using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Areas.Cabinet.Controllers
@@ -35,10 +41,14 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             return View(user);
         }
 
-        public ActionResult GetPartners(string id, int level)
+        [HttpPost]
+        public ActionResult GetPartnersByReferalIds(string[] ids, int level)
         {
-            var partners = UserService.GetPartners(id);
-            return PartialView("_PartnersPartial", new KeyValuePair<int, IEnumerable<ApplicationUser>>(level, partners));
+            var partners = UserService.GetPartnersByReferalIds(ids);
+            var result = partners.ToDictionary(entry => entry.Key,
+                entry => ControllerContext.RenderPartialToString("_PartnersPartial",
+                    new KeyValuePair<int, IEnumerable<ApplicationUser>>(level, entry.Value)));
+            return Json(result);
         }
-	}
+    }
 }

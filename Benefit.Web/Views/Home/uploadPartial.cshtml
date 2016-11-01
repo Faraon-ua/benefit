@@ -10,7 +10,6 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $(".returnImage").click("click", function (e) {
-            debugger;
             var urlImage = $(this).attr("data-url");
             window.opener.updateValue("cke_72_textInput", urlImage);
             window.close();

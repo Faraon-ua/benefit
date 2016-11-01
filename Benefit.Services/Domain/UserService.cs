@@ -23,9 +23,10 @@ namespace Benefit.Services.Domain
             return user;
         }
 
-        public List<ApplicationUser> GetPartners(string userId)
+        public Dictionary<string, List<ApplicationUser>> GetPartnersByReferalIds(string[] userIds)
         {
-            return db.Users.Include(entry=>entry.Region).Where(entry => entry.ReferalId == userId).OrderByDescending(entry=>entry.RegisteredOn).ToList();
+            var allPartners = db.Users.Include(entry=>entry.Region).Where(entry => userIds.Contains(entry.ReferalId)).ToList();
+            return userIds.ToDictionary(userId => userId, userId => allPartners.Where(entry => entry.ReferalId == userId).ToList());
         }
         public List<ApplicationUser> GetPartnersInDepth(string userId, int skip, int take = UserConstants.DefaultPartnersTakeCount)
         {

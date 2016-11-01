@@ -18,7 +18,6 @@
         $(function () {
             $('form').submit(function () {
                 $(".product-option-value").each(function (index) {
-                    debugger;
                     $(this).attr("name", $(this).attr("name").replace("{n}", index));
                     if ($(this).next().length > 0) {
                         $(this).next().attr("name", $(this).next().attr("name").replace("{n}", index));
@@ -115,7 +114,6 @@
 
                         });
                         this.on("removedfile", function (file) {
-                            debugger;
                             var rmvFile = "";
                             for (f = 0; f < fileList.length; f++) {
                                 if (fileList[f].fileName == file.name) {

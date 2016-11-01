@@ -94,7 +94,7 @@ $(function () {
             currentUl.children("li").not(".structure_table_head").sort(function (a, b) {
                 var aFloat = parseFloat($(a).find(".structure_table_balls").text());
                 var bFloat = parseFloat($(b).find(".structure_table_balls").text());
-                return aFloat < bFloat;
+                return (aFloat > bFloat) ? -1 : (aFloat < bFloat) ? 1 : 0;
             }).appendTo(currentUl);
         });
     });
@@ -105,7 +105,7 @@ $(function () {
             currentUl.children("li").not(".structure_table_head").sort(function (a, b) {
                 var aFloat = parseFloat($(a).find(".structure_table_bonuses").text());
                 var bFloat = parseFloat($(b).find(".structure_table_bonuses").text());
-                return aFloat < bFloat;
+                return (aFloat > bFloat) ? -1 : (aFloat < bFloat) ? 1 : 0;
             }).appendTo(currentUl);
         });
     });
@@ -119,7 +119,6 @@ $(function () {
     });
 
     $("#hasNoCard").change(function () {
-        debugger;
         if (this.checked) {
             $(".structure_table_wrap li").not(".structure_table_head").filter(function () {
                 return $(this).find(".structure_table_register_card_number").text() != "";
