@@ -33,10 +33,11 @@ namespace Benefit.Services.Domain
             return resultList;
         }
 
-       /* public SellersViewModel GetCategoryProducts(string urlName)
+        public ProductsViewModel GetCategoryProducts(string urlName)
         {
-            
-        }*/
+            return new ProductsViewModel();
+        }
+
         public SellersViewModel GetCategorySellers(string urlName)
         {
             var sellerIds = new List<string>();

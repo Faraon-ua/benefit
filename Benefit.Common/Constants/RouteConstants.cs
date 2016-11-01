@@ -8,6 +8,8 @@
         public const string SellersRouteName = "SellersRoute";
         public const string SellersRoutePrefix = "postachalnyk";
 
+        public const string SellerCatalogRouteName = "SellerCatalogRoute";
+
         public const string ReferalUrlName = "referal";
         public const string ReferalCookieName = "ReferalNumber";
         public const string FullNameCookieName = "FullName";

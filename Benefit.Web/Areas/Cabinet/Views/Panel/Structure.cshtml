@@ -12,7 +12,6 @@
 }
 @section scripts{
     <script>
-        var skip = 0;
         var loadPartnersUrl = '@Url.Action("GetPartnersByReferalIds", "Panel")';
 
         function loadPartners(level) {
@@ -22,6 +21,9 @@
                 postData,
                 function (data) {
                     var keys = Object.keys(data);
+                    if (keys.length == 0) {
+                        $("#showAllStructureLbl").removeClass("hidden");
+                    }
                     $(keys).each(function (index, key) {
                         var li = $("#" + key);
                         if (data[key].length > 0) {
@@ -30,7 +32,7 @@
                             currentRow.after(data[key]);
                         }
                         if (partnerLevelIds.length == (index + 1)) {
-                            setTimeout(function () { loadPartners(level + 1); }, 2000);
+                            setTimeout(function () { loadPartners(level + 1); }, 1000);
                         }
                     });
                 });
@@ -89,7 +91,7 @@
         <form class="structure_submenu_filters">
             <fieldset>
                 <input class="hidden" type="checkbox" id="showAllStructure" name="showAllStructure">
-                <label class="label_for_check" for="showAllStructure">Показати всю структуру</label>
+                <label class="label_for_check hidden" id="showAllStructureLbl" for="showAllStructure">Показати всю структуру</label>
 
                 <input class="hidden" type="checkbox" id="hasNoCard" name="hasNoCard">
                 <label class="label_for_check" for="hasNoCard">Не мають бонусної картки</label>

@@ -17,10 +17,10 @@ namespace Benefit.Services.Domain
         {
             var sellerVM = new SellerDetailsViewModel();
             var seller = db.Sellers
-                .Include(entry=>entry.SellerCategories)
-                .Include(entry=>entry.Schedules)
-                .Include(entry=>entry.Addresses)
-                .Include(entry=>entry.ShippingMethods)
+                .Include(entry => entry.SellerCategories)
+                .Include(entry => entry.Schedules)
+                .Include(entry => entry.Addresses)
+                .Include(entry => entry.ShippingMethods)
                 .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
                 .FirstOrDefault(entry => entry.UrlName == urlName);
             if (seller != null)
@@ -36,7 +36,7 @@ namespace Benefit.Services.Domain
                 {
                     seller.Addresses.Add(address);
                 }
-                    
+
                 sellerVM.Seller = seller;
                 var categoriesService = new CategoriesService();
                 sellerVM.Breadcrumbs = new BreadCrumbsViewModel
@@ -57,9 +57,13 @@ namespace Benefit.Services.Domain
 
         public void ProcessCategories(List<SellerCategory> categories, string sellerId)
         {
-            if (!categories.Any()) return;
             var toRemove = db.SellerCategories.Where(entry => entry.SellerId == sellerId).ToList();
             db.SellerCategories.RemoveRange(toRemove);
+            if (!categories.Any())
+            {
+                db.SaveChanges();
+                return;
+            }
             categories.ForEach(entry =>
             {
                 entry.SellerId = sellerId;
@@ -67,12 +71,16 @@ namespace Benefit.Services.Domain
             db.SellerCategories.AddRange(categories);
             db.SaveChanges();
         }
-        
+
         public void ProcessCurrencies(List<Currency> currencies, string sellerId)
         {
-            if(!currencies.Any()) return;
             var toRemove = db.Currencies.Where(entry => entry.SellerId == sellerId).ToList();
             db.Currencies.RemoveRange(toRemove);
+            if (!currencies.Any())
+            {
+                db.SaveChanges();
+                return;
+            }
             currencies.ForEach(entry =>
             {
                 entry.Id = Guid.NewGuid().ToString();
@@ -84,9 +92,13 @@ namespace Benefit.Services.Domain
 
         public void ProcessAddresses(List<Address> addresses, string sellerId)
         {
-            if (!addresses.Any()) return;
             var toRemove = db.Addresses.Where(entry => entry.SellerId == sellerId).ToList();
             db.Addresses.RemoveRange(toRemove);
+            if (!addresses.Any())
+            {
+                db.SaveChanges();
+                return;
+            }
             addresses.ForEach(entry =>
             {
                 entry.Id = Guid.NewGuid().ToString();
@@ -97,9 +109,13 @@ namespace Benefit.Services.Domain
         }
         public void ProcessShippingMethods(List<ShippingMethod> shippingMethods, string sellerId)
         {
-            if (!shippingMethods.Any()) return;
             var toRemove = db.ShippingMethods.Where(entry => entry.SellerId == sellerId).ToList();
             db.ShippingMethods.RemoveRange(toRemove);
+            if (!shippingMethods.Any())
+            {
+                db.SaveChanges();
+                return;
+            }
             shippingMethods.ForEach(entry =>
             {
                 entry.Id = Guid.NewGuid().ToString();

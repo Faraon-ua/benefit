@@ -28,5 +28,10 @@ namespace Benefit.Web.Controllers
             if (sellerVm.Seller == null) return HttpNotFound();
             return View(sellerVm);
         }
+
+        public ActionResult Catalog(string sellerUrl, string categoryUrl)
+        {
+            return HttpNotFound();
+        }
     }
 }

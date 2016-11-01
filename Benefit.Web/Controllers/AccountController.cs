@@ -34,6 +34,10 @@ namespace Benefit.Web.Controllers
             UserManager.EmailService = new EmailService();
             UserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(
                 provider.Create("EmailConfirmation"));
+            UserManager.UserValidator = new UserValidator<ApplicationUser>(UserManager)
+            {
+                AllowOnlyAlphanumericUserNames = false
+            };
         }
 
         public UserManager<ApplicationUser> UserManager { get; private set; }
