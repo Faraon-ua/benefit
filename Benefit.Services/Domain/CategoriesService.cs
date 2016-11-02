@@ -41,7 +41,7 @@ namespace Benefit.Services.Domain
         public ProductsViewModel GetCategoryProducts(string urlName, int skip, int take = ListConstants.DefaultTakePerPage)
         {
             var category = db.Categories.FirstOrDefault(entry => entry.UrlName == urlName);
-            var products = category.Products.Skip(skip).Take(take).ToList();
+            var products = category.Products.Where(entry=>entry.IsActive).Skip(skip).Take(take).ToList();
             if (!products.Any()) return null;
             var result = new ProductsViewModel()
             {

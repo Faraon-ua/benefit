@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Web.Mvc;
-using System.Web.UI;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
@@ -52,7 +48,9 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             var result = partners.ToDictionary(entry => entry.Key,
                 entry => ControllerContext.RenderPartialToString("_PartnersPartial",
                     new KeyValuePair<int, IEnumerable<ApplicationUser>>(level, entry.Value)));
-            return Json(result);
+            var jsonResult = Json(result);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
         }
     }
 }

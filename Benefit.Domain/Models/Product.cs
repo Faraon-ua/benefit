@@ -12,6 +12,7 @@ namespace Benefit.Domain.Models
         {
             Images = new Collection<Image>();
             ProductOptions = new Collection<ProductOption>();
+            ProductParameterProducts = new Collection<ProductParameterProduct>();
         }
 
         [Key]

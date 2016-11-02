@@ -19,8 +19,7 @@ namespace Benefit.Web.Models.Admin
         [Required]
         [MaxLength(64)]
         public string FullName { get; set; }
-        [Required]
-        public int ReferalNumber { get; set; }
+        public int? ReferalNumber { get; set; }
         public string ReferalId { get; set; }
         [MaxLength(10)]
         public string CardNumber { get; set; }

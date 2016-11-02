@@ -36,7 +36,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
                     {
                         var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                         var pathString = Path.Combine(originalDirectory, "Images", type.ToString(), parentId);
-                        var dotIndex = file.FileName.IndexOf('.');
+                        var dotIndex = file.FileName.LastIndexOf('.');
                         fileExt = file.FileName.Substring(dotIndex + 1);
                         var isExists = Directory.Exists(pathString);
                         if (!isExists)

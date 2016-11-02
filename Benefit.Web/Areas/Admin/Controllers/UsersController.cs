@@ -100,12 +100,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Edit(EditUserViewModel user, string newPassword)
         {
             ApplicationUser referalUser = null;
-            if (user.ReferalNumber != 0)
+            if ( user.ReferalNumber != null && user.ReferalNumber != 0)
             {
                 referalUser = db.Users.FirstOrDefault(entry => entry.ExternalNumber == user.ReferalNumber);
+                if (referalUser == null)
+                    ModelState.AddModelError("ReferalNumber", "Користувача з таким ID не знайдено");
             }
-            if (referalUser == null) 
-                ModelState.AddModelError("ReferalNumber", "Користувача з таким ID не знайдено");
+           
             if (ModelState.IsValid)
             {
                 var existingUser = db.Users.FirstOrDefault(entry => entry.Id == user.Id);
