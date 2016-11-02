@@ -30,14 +30,12 @@
             href = href.replace(/[0-9]/g, "");
             href = href + (maxNumber + 1);
             $("#addNewCurrency").attr("href", href);
+            $("#addNewCurrency").removeAttr('disabled');
         }
 
         function UpdateCategoriesNumber() {
             var maxNumber = parseInt(GetMaxAttributeValue('.category-id', 'data-number'));
             var href = $("#addNewCategory").attr("href");
-            if (maxNumber == 10) {
-                debugger;
-            }
             href = href.replace(/[0-9]/g, "");
             href = href + (maxNumber + 1);
             $("#addNewCategory").attr("href", href);
@@ -45,6 +43,7 @@
                 search_contains: true,
                 width: "450px"
             });
+            $('#addNewCategory').removeAttr('disabled');
         }
 
         function UpdateShippingMethodsNumber() {
@@ -53,6 +52,7 @@
             href = href.replace(/[0-9]/g, "");
             href = href + (maxNumber + 1);
             $("#addNewShippingMethod").attr("href", href);
+            $("#addNewShippingMethod").removeAttr('disabled');
             SetRegionsAutocomplete();
         }
 

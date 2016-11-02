@@ -8,6 +8,7 @@
             new { number = Model.Addresses.Count },
             new AjaxOptions
             {
+                OnBegin = "$('#addNewAddress').attr('disabled','disabled');",
                 UpdateTargetId = "addressesList",
                 InsertionMode = InsertionMode.InsertAfter,
                 OnComplete = "UpdateAddressesNumber"

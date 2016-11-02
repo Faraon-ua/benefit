@@ -8,11 +8,12 @@
             new { number = Model.SellerCategories.Count },
             new AjaxOptions
             {
+                OnBegin = "$('#addNewCategory').attr('disabled','disabled');",
                 UpdateTargetId = "belongCategories",
                 InsertionMode = InsertionMode.InsertAfter,
                 OnComplete = "UpdateCategoriesNumber"
             },
-                     new { @class = "btn btn-info", id = "addNewCategory" }
+            new { @class = "btn btn-info", id = "addNewCategory" }
             )
     </div>
     <br/>

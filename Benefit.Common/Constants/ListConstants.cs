@@ -2,6 +2,6 @@
 {
     public class ListConstants
     {
-        public const int DefaultTakePerPage = 30;
+        public const int DefaultTakePerPage = 50;
     }
 }

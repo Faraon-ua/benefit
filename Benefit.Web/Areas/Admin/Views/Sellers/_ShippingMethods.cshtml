@@ -8,6 +8,7 @@
             new { number = Model.ShippingMethods.Count },
             new AjaxOptions
             {
+                OnBegin = "$('#addNewShippingMethod').attr('disabled','disabled');",
                 UpdateTargetId = "shippingMethods",
                 InsertionMode = InsertionMode.InsertAfter,
                 OnComplete = "UpdateShippingMethodsNumber"

@@ -15,6 +15,7 @@ function UpdateAddressesNumber() {
     href = href.replace(/[0-9]/g, "");
     href = href + (maxNumber + 1);
     $("#addNewAddress").attr("href", href);
+    $("#addNewAddress").removeAttr('disabled');
     SetRegionsAutocomplete();
 }
 

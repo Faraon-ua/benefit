@@ -8,6 +8,7 @@
             new { number = Model.Currencies.Count },
             new AjaxOptions
             {
+                OnBegin = "$('#addNewCurrency').attr('disabled','disabled');",
                 UpdateTargetId = "extraCurrencies",
                 InsertionMode = InsertionMode.InsertAfter,
                 OnComplete = "UpdateCurrenciesNumber"
