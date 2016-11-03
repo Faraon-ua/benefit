@@ -156,3 +156,7 @@
     line-height: 30em;
     display: block;
 }
+
+.product_photo_big img {
+    width: 100%;
+}

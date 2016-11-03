@@ -1,14 +1,210 @@
-﻿@model Benefit.Domain.Models.Product
+﻿@model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
 
 @{
-    ViewBag.Title = @Model.Name;
+    ViewBag.Title = @Model.Product.Name;
 }
 
 @section LeftAside{
 
 }
-<main class="full_content full_content_product">
-    <div class="product_row clearfix">
-@*        @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)*@
+<main class="full_content product_content">
+    <div class="clearfix">
+        @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+        <div class="product_info_wrap clearfix">
+            <div id="product_gallery" class="product_photo_wrap carousel slide" @*data-ride="carousel"*@>
+                <div class="product_photo_smal">
+                    @for (var i = 0; i < Model.Product.Images.Take(4).Count(); i++)
+                    {
+                        <img src="~/Images/ProductGallery/@Model.Product.Id/@Model.Product.Images.ElementAt(i).ImageUrl" data-target="#product_gallery" data-slide-to="@i">
+                    }
+                </div>
+                <div class="product_photo_big carousel-inner">
+                    @if (Model.Product.Images.Any())
+                    {
+                        foreach (var image in Model.Product.Images)
+                        {
+                            <div class="item">
+                                <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <img src="~/Images/ProductGallery/default_product_picture.png" alt="@Model.Product.Name">
+                    }
+                </div>
+            </div>
+            <div class="product_description_wrap">
+                <p class="product_description_title">@Model.Product.Name</p>
+                <p class="product_description_code">Код  товару @Model.Product.SKU</p>
+                <div class="product_description_rating">
+                    <span class="rating_star good"></span>
+                    <span class="rating_all">2 відгука</span>
+                </div>
+                <p class="product_description_in_stock">В наявності</p>
+                <p class="product_description_price">@Model.Product.Price грн</p>
+                <div class="product_description">@Html.Raw(Model.Product.Description)</div>
+                <div class="product_description_amount_wrap">
+                    <div class="product_description_amount_minus">-</div>
+                    <input type="text" class="product_description_amount" value="1">
+                    <div class="product_description_amount_plus">+</div>
+                </div>
+                <div class="product_description_control_wrap">
+                    <div class="product_description_like"></div>
+                    <div class="product_description_scale"></div>
+                    <a class="product_description_buy" href="" data-toggle="modal" data-target="#product_modal">Купити</a>
+                </div>
+                <div class="product_description_share_title">
+                    <div class="product_description_share_icon"></div>
+                    <div class="product_description_share_text">Поділитись</div>
+                </div>
+                <div class="product_description_share_wrap">
+                    <ul>
+                        <li><a class="facebook" href=""></a></li>
+                        <li><a class="vk" href=""></a></li>
+                        <li><a class="ok" href=""></a></li>
+                        <li><a class="sml" href=""></a></li>
+                        <li><a class="twitter" href=""></a></li>
+                        <li><a class="instagram" href=""></a></li>
+                        <li><a class="google" href=""></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="carousel-example-generic" class="carousel slide">
+            <ol class="carousel-indicators">
+                <li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="1"></li>
+                <li data-target="#carousel-example-generic" data-slide-to="2"></li>
+            </ol>
+            <div class="carousel-inner" role="listbox">
+                <div class="carousel-item active">
+                    <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBxMTEhMSEhMWFhUVFRgYFRgYFxcWFxsVFxsWFhgYGBUYHyggGxolHRgWITEiJiktLi4uFx8zODMsNygtLisBCgoKDg0OGxAQGyslICUwMC0vMC0tLS0tLS8tLy0tLS8wLS0tLTUtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLf/AABEIAK8BHwMBEQACEQEDEQH/xAAcAAEAAgMBAQEAAAAAAAAAAAAABgcDBAUCCAH/xABFEAABAwEFBAUJBQcBCQAAAAABAAIDEQQFEiExBkFRYQcTInGBMkJSYnKRobGyIzNzwdE0gqLC0uHwJBQVJUNTdJKTw//EABsBAQACAwEBAAAAAAAAAAAAAAAEBQIDBgEH/8QAMxEAAgIBAgMFCAIDAAMBAAAAAAECAxEEIQUxQRIiUWFxE4GRobHB0fAy4RQzQiNy8TT/2gAMAwEAAhEDEQA/ALxQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEBjnnaxpc40A1P+ar1Jt4R43ghVv6S7OxxbHG+Sh1xMaD3Zn40UyOhm1u0iNLVwT2RhZ0q2bz4Jm93VuH1hevQT6NfP8AB4tZDwf77zci6TbAdTK3vjJ+mqweit/WZ/5Vfj8jJaukewBhcyXE7c0skbXxc0D4/qvFpLc7o9/ya8bMr29tuLVK4kTPjafJDHYRTkWip8Se9T4aauK5ZIcr7G+eDnz7a26MVbaZTmBmWu1y85pXsqKsfxEbLG8dr6HYt+1N6WdsLpLSD1zMbRgidSji0g/ZjPL4rBaemTa7PLzZk7rY4eefoa8fSVeA8+N3tRt/loj0dXmFqbPImOyHSUy0OENpaIpDo4H7Mnxzb7z4KNbo3FZhv9TfXqU3iWxYCgkoIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAICm+k7aV81o/2OGpa1waQ3V8h3ZajTL9Fa6WpQh23zIF83OXYXI3LD0VzGIOfaGskIrgwYgOReHDPuB8Vi9es8tgtG8cyG3/AHHLZ5eqnZmCCaUIcyuZaTQEEAjOnOilwsjZHMSO4uEsSPV92yF8VnEbMJjY9rxhaMzI9zfJJGhSEWnJv92E2mlj93OZYLJJM4Mibic4gAVAqTkKVPFZOaWX4HnYkbBZaLFN2oyxwzLHtq1zTkeycnA+4rHuTjlboy70HjkzvbTXRDLZo7dZ24Y3kNliFaRy+UCw7mGlRwy40GmEmpOue/VPxX5NjScVOO3j5EYtVsmmdFDiL3CrWYiXUBJc4kmppn/lVt5PbqYpZW/JFtbPdFllZEDascspFT23MDSdwDCPjVV1mrn2u5yJkdPHHeRFdv8AYY2IC02dxdFiAIdm5jjpU72E5eI1qpOn1PbeHz+pHuo7PLkWbsRefX2SJ9a9huZzNCMqniM2n2VD1UFGzbqSaJNw36HfUY3hAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQFI9H9nE17OkfmWySuz9IB1PdWv7oVxqX2aNvJFdRvYXcqcsSGdKd3tfZOtp2onCh9V5DSPfhPgpmim1Z2fEi6qOYZ8Clo7K6aVsLci9waO9xDR8XBWknhZ8CHWssmdw3eyz30+Fg7Mb4mtrmaAbzxJNe9RnJy07b6o3crkvMsnbbZ9lssz2EfaMBdC7eHgVpXgdD/AGCr9Pa6556dSXdX24+fQq/Zu2tN12yF3mnsjlijkb7i9wVlZF+0i/3qQoSXYZytg7KHXgwnzcB/d6xuL+X3rOzaEn5GMd3FeZ9CqjLQ5W1kIfYrU1wqDBL8GEg+8BbKXiyPqjCxZg15EK6FLQTZ3tOjdP8A2Sn81M1q7sX6/YjaZ96SLKVeTAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIClOjR//ABRw4vl+T/0Vvqv9HwK/T/7PiXWqgsCLdJclLBIPScwfxA/kpWjX/lRH1T/8bKj2SnjjtjXSmgHaB9Zha8fAO9ytLE3FpdSDW0nlkkEg/wB/yuqMJkidXdSjc68KFR4//mefD8m5/wC5Y8fsiYW3pHsLXdWx75SThBjjcW1OQo91ARzBIVPGackkXf8Ag3dhzawks7vwKcuqcNimBNA5zRyOTSPkr+2yEF2pPCyUOnostfYrWXg/LHanwzNkj8o9mmlWuoKA99COYC8dkOz2s5R77GxT9m01J7Yezz0J3buke1ZBgjbQAE4S4k7zmaAHhTxXLT1Tcn2VhHc08EqjFe0k2+uNl++80LRt7a5Y5IXujLZGOY44KOAcCDQg0rnvBWVeqlGSews4LRNNLK9/5Rv9F96QWTFFK8tx+S5w7GrnULhkNd9FNs10boxi1hr4FTZwK2iUp1vtL5/Dr7vgWy01FRmDosSuP1AEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQFH9HRpe9PXm+mVW+p/0P3fYr6P9nxLwVQWBBOlq00ghj9KQu8GCn8wU7Qx7zZD1j7qRT9pjVmQUzDCXgSAuqXR4AS6nZ5nhSoWi2uUq5QXUlaa6Fd0LJJ4TzsZoniNpo7HIQRUVDWA5GhObn0qK0AFd5oWxdLoPZy7U3lljr+L+3h7OpNJ888/39ycp9pcHiMeSTiPMhtB+aw4pJ+zx5m3gEV/kZ8mdOzzEU+W7+x5hc77SSyk9mdu6ITak0m1y8V6Gy9pcKtPeDqO/9USTPHlGpJibqCmD1SM9mt1MjmN4XmTcmmTfY/bB1lIY8l9mJzGro672+ry/wyKruzs+RW6/hkdQu1Hafyfr+S3YJmva17CHNcAQRoQVOTychOEoScZLDRkQxCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAozYZ1L7aOMs/0Tq31H+h+77FfT/s+P3LzVQWBUnSlb8dqEYOUTAD7Tu0fhhVtooYrz4lbq5ZnjwIFMpZHPMDgMRIBoMqio0OdN+lO813KDr7p1wXY6vGfDqW3CdNVdOTs37Kzjx3xv6bHLMueW8VpwzpSu8cDyWrh+psszCe+Opu4tpKa1GyvbtdPwYHCswPAZ+5YcUTcDdwBpX7+D+x041zrO6ibUEhBBH9qcDyWKeDOUVJHZiia8Bw0OoOoO8Hmt6w1kivZ4ZqW+5Msceu8fojiIzwzm2W0lpofEFaXsS4vKLE6PtrBA4WeV32Lz2HHzHHcfVKk0XdnuvkU/FuG+2j7Wtd5c/NfktgFTzkQgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgKDuS1MgvlssjsLRaJWknQY+tjJJ3AYwa9/BXFsXKnC8F9iuqaVmfN/cvi0TNY1z3GjWguJ4AZlVCTbwiwbSWWfPl628zTSzO1kcXdwJyHgKDwV9CPZioroU0pdqTZzHlZg8Ba7aoWx7M1lG6jUWUS7dTw+X7k15oKknesKdPXUmoLGTZqdZbqGna848kvoa8TCXuprhH5LTqbfZd7HkStBpXqX2E8dfp+TNASMne+nzXP6lVzfagseK6Ha8PeoqXs72muj3z7/wA59TbaoLRbpnRsFoLDi1HnjiOI5hewnhmNlakiQQ0yINQcweIUleJCfgzl35dFR1kYzGo4rGcM7o2VWYeGcSyzUyOm9RmT4vKLU6PtrfJss7uULz9Djx4Kbp7/APiXuOc4xwvOb6l/7L7r7ljKacwEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAfN9/RA2m0V/wCtJ9bl0EF3F6IppNqT9X9Tpv2mtBs4suN3V0ocTsRoNGg7m8s9FrVEFLtJbmTum49ls45zW2TwsmEIuUlFdTXt5w0LakADET9QFNPiMu9VVfFIysw1hdGdDfwGddPaTzJc109xhjtAKtcnP4PeMFenmDXszRjdWlBTUV+Cq+IpuKS8fydDwGUY2ty5dl/WJs3veYMeEueQOOnuqqp6a580zpJ8S0kE0mvdj7GldV4h5wHIjya+cP1HyWnUaaVa7Rs4fxSvUTdfJ9M9f7+x1Yn0KgsujrXbberND92Tn6p4jkd62V2Y2Zouq7W65kiaMuSlEHJGb8uvCesYMjqOC0WQ6omUWdGaNknpkdPiDxCjsm8y2thNr+sDbNaHfaAfZvPnjgfW+fzsdPqO13Zc/qcnxfhXs83Uru9V4f19CcqWc8EAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQHznfn7RaPxpPqcugr/gvRFLL+T9X9TTasjw9gIDVt0ZcP80rWnwCqa+FqFikpbLpj+zoruPu6mUHDDaxnP2waIaQclaYKHJtQvLsjlz/zemDxs13Hyz6w+RWqfM3w/geSvD00prGK4mHCRmO/lwWmdKksG6u6UGmnuup3brtIkFHCkjfKHEekOXyXN6zSSol5P9wd7wricdZDD/mua8fNfu3wOlGFDLc6N227q+w49jzT6J4E+j8luqsxsyNdTnvLn9f7Oq81yOi3kZEcvW7Cw42eTv5LROHVE2q3OzNey2ilM+YI1B4haeRJxktnYjbAS4bPaHDradh+54/q+asdPqO13Zc/qcjxbhPss3Uru9V4f19CbqWc+EAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEB8539+0T/jSfUV0Ff8F6Ipp/yfq/qakbdwzJyA31OgCyMT9c6hoQQeByKDB4JQHhzQdQgPBbRAanVOcH4dzhXTSh4qs18pRinF43/JfcGrrssasSax19UcuO1vxllMWdBTXwpqvNNZNxXa3NWtqrjdLscvkSF2zVuADjY7RQioIie7LuaDRSVbDOMohuEvA1CxzHZgte3c4EEHgQc/BZWVQth2Zbpim+yixTreGjtWZxfG2XCQDlyDhXKvgSP7LldXpJ6eWHyfJ/vU+jcN4lXra8raS5rw8/QzNPFQyyN+77Zhox57OjXHdwa48OBW+uzoyNdS/5R5/U7HV7iMlIwRVIjt73SWVfGOzvHBaLK+qJlN/RmjZrTT8uIPELRyJfMtfYnbPrMNntLhj0jkOj+TuDvmrDT6jtd2XM5PivCPZ5upW3VeHp5fQnSmHOhAEAQBAEAQBAEAQBAEAQBAEAQBAEAQHznfn7RaPxpPrKv6/4L0RTT/k/VmvAaEGpHdrz+FVE4h2/YPs+/wBCz4N7L/LXtMcnjPjy+mff54OXPI7GCOHwByNN1R8lD4XObbTzgs+PQrxFrGfDyNls1aChqTQAZkk6AcVc5OYwZ7whdA8xTN6t4AJa4gEBwDhUV4ELFWRaymZuqS6GJ+izzkwxjmcm8W1id+IPdhdkol8O0TaJuK2fPYtjoc2Haxgts7QXH7oEaetTj+deGcS+fYXYXPqbq12u8+XQttQzeVb032KMMs9ooBIXmIn0m4S8AnlhNPaKn6Gby4kXUx5SR56I7vjnsdoilbia4t7wayUIO4jivOIRUoxT8zboL502ucHhrBw9p9nZLHJhd2mO+7fuI4Hg4bwuctpcGfQNDroaqGVs1zX70OQCtOCfk6F3Xhgox57G53o8j6vPct1VuNpEW+jPejz+v9ncw+5ScEJSI9fNyEVkiGW9v6LRZV1RNp1HSRyLPaKZHRRsE5PJZuxe2/kwWp2Wkcp+DZP1U6jU/wDM/iczxTg2c26desfuvwWKCpxy5+oAgCAIAgCAIAgCAIAgCAIAgCAIAgPnK/D/AKmf8aT6ir+v+C9EU0/5P1ZqVWZia87GgE6b1ioxisJYNkrJTlmTbfnudC4nthInc8NePI1xN3EimYPP9VV63Ub9hP1Og4XoU4+1nHOeX5/fuad5WkTymTN5J8p7a6aVxVJ8Qq1WTT7raL7/ABqJRxOCfuR6NmwtJrrTLCGgHlT9BorPh985zcZPO2Sh43oaaKo2Vxxvjm30b6+hrWGx9a9jKVrOKjjRrjT5BT2u9uUkXiJ9OWGzCKNkbdGNDR4ClVSyk5NtljFYWDOsT0rDp6/ZbN/3H/zkUvR/yfoab/4mfoSH+ml9ofORbNd/ya9NzkT687vjnjdFK3E13vB3EHcRxVdKKksMn0XzpmpweGim9qNnJLHJhd2o3H7N9MjyPBw4eKrbanB+R22h10NVDK2kua/ehxQVHZPR0LtvExdl1TH7yzu4t5bluqt7Oz5Ea/T9vdc/r/ZIo3AgEEEHMEZghTFh7orstPDOJfdw4qyRZO3t4rTZVndEujU9naRHI5S0kEd4KhtYLOMk0TvY3bZ0FIpiXw7jq+P+pnyUqjUuHdly+hScT4PG/NlW0/k/wy1LNaGyND2ODmuFQQaghWKaayjj51yrk4yWGjKvTAIAgCAIAgCAIAgCAIAgCAIAgCA+db3lwzWl1AazSd9A+uXx71I1uqsrcIQeNkyVwnh9N9c7LVnvNc2ttn0OHZ5zUtduJFdO7LdkrDR3O2pSfMquJaZUXuMeXNGZ0Ze9kbRUucABxJIAHvIUlvG76EKCy8EysvRdbpadY6OIbsTi407m6LmnCUn2pPc7N8QorioVxeFt4ciMbQXQbFaXWdz+sc1zRUdkEuYH768aKZVooyipSb3IFnGrFJxhFLHV7mmbJLFLKyU1LWMORJFJMD2+OEqbpaI1t9n93KvXa23URSm/d7v7PyxW8wEStGLDLp+6dOYND4KQ3hkWKzEtO7+meylo6+GZjqdota1za8RnWirpaTfuslxu23RIbJ0j2CSlHvFdKxv/AJQVg9JYvD4nvt4efwK/6ZNo2WkwQw1LI6yOdQirnDC2leAxe/lnI01Ljls1W2J7Eo6FP2WT2h83rHXf8num5yLGUAlGteFhjnjdFK0OY4Zg/Ag7iOKxlFSWGbabp0zU4PDRT+1uy0ljdXN8Lj2X8PVfwdz0PwFbdS6/Q7Ph/EYaqOOUlzX3Xl9PmR9pUYszcu+3uiOWbD5TPzZwPLQrbXa4Ee+hWLPXx/JJ7JaWvaHMNQfnwI3FToyUllFXKLg+zI073uRkwqOy/jx71hZWpG6nUSrfkQ+aJ8LsLwQQoUoOL3Lau2M1lEh2W2qlsruwcUZPbiJyPNp81yzqvlW/Iia7h1Wrj3tpdH+fFFv3HfcNqjxxOr6TTk5p4OCtK7IzWYnE6vR26WfZsXo+jOksyKEAQBAEAQBAEAQBAEAQBAEAQHzVtDaWMnmDg6rppaUpSgc7dTVW9lULYRU10IWm1FtFkpVPHj4Pn08uhpTWUxucwjNji12+jgaHPfnvW+EYqKUeRGsnKUm5PL6ma7LSYpWyNaHOYatB0BBBB7wQCsmsrBinjcuK7uk2zuaOuiljdQYsIbIyu+ha6tPBVktFNPu7k+Oqg+ZWu29pjtNtlnjJLCWGMlrmkuDGtOWRFM/cFLqrlGCTW6I8ppzbT5nLtDXgudLXG/CADWuBgoK4s6aUqt0TVN9DnPbWM/ifktdk4w3k8Eiimy3u1rLNiy3E54xFwDeIFfDEaNHvUOetj/ys/ItquD2v/ZJLy5v9+J0YLqgj3Yj6xJz7hRtPeo0tXY+Tx6FlVwjTx3az6/j8o1b5hYGudhGM0Az7gKfoVhRZP2iSb3fibNdpqFpptwWy22xv0LV6Fm/6WQ8x83qbrucfQ5fTf9FiqASggMVps7ZGuY9oc1wo4EVBHcvGk1hmUJyhJSi8NFT7Y7GOs1Zoavg1O90ftcW+t7+Jrb9O4bx5fQ7DhvFo6jFdm0/k/wC/L4eBEaqKXJnslqdG7Ew0O8HyXDg4fnqs4WOLyjVbVGxYf/wlV2XkyUZZPHlMOo5g7xzU6uxTRU3Uyqe/LxNi3WBkzcLx3HeFlKCksMxrtlB5iQq9rnks5rqzc4fmodlLiW1GqjZt1PN13tJC8SRvLHjQjeODhvHJaoylB5Ruuprug4TWUW1sptzFaMMc1I5tBn2Hn1TuPIqyp1MZ7PZnIcQ4NZp8zr70fmvX8kvUkpAgCAIAgCAIAgCAIAgCAIAgPmu+42G0TF5b99KACXAkFxrSgV7Fd1ehU5ak8eJgDiS5zsy5xce866rYlg1t5Z+ABenh+FAI5CCKEjMaEj5LGbxFs2VRUpxT6tGG3WguOvkga1pTSm/fn3k96oKdZd7SLbznodbqOH6f2U4Rio9nk35eLfQ27mikc09XG55D69mPGRlrkDh71P16bjHHiV3BpwjObm8LHj5/MW+1vYaPD8dNHgtd/FmosNFZPdtfX9+JZ28a09fdgm/dhfP8HGtN7yHIHD3a+8rdHSQjz3K+3jF8/wCOI/N/P8Gzdd2tminmfMQ6JhcwOdXGQ9jS0AmvkuJyUiEVDHZXXBXW2zsffbfXcufoYH+kf7Q/MrVrucfQ803/AF6lgqASggCA/CEBXW2OwWs1jbzfCPnH/T7uCg36X/qHwOl4dxnlXqH6S/P5+PiVyaioORGRB1BGoI4qAdKn1PTH0IIJBGYINCDyK9TaPJRUlhkjuraAGjJqA6B+jT7Xon4dym13p7SKu/RuO8OXh1/v6nedQjC4VB1BUghp9URi+dltXweLP0UayjrEsKNdjuz+JGcRaS1woRqCoji0WkZqSyicbK9IEkNI56yxaA6yNHf5w+KlU6px2luvmUmv4LXdmdXdl8n+C07svKK0MEkLw9p4buRG48lPjJSWUcnfp7KJ9ixYZtrI0hAEAQBAEAQBAEAQBAEB8yXzZ8VoeScJbJJka5EvOtOHBXqjmKfkVSl2ZP1PVqnL5JZCKdZI99NwxEu92azisJI1yeXkwF6yPBiQH4SvAeorKZnSNZ/yWOe6p1DBicRzpnRRfYUxs7ajvy+P7zJ71eonT7OU8x5467efP3ZLE6Dh27T7LfqctWu/jH3nmm5stS22KOZpZLG2Rp1a9ocPcVXKTTyiW0nsysNq+huOV2OxSiKuscmJzK+q8dpo5GvhopC1Lx3jV7JLkRI9Ed5RnJsD+bJf62tW6GpguZjKqTWxbnR/s7JYrP1crml7iCQ2pAoKUqdTqtOpuVkljoZU1uCeepJ1GNwQBAEAQEV2t2MjtYMkdI5/Sp2X8ngfUM+/RR7tOp7rZltw/itmm7st4eHVen45ehUl5XfLBIYpmFjhuOhHEHQjmFWyi4vDOvpvrugp1vKNUOWJsOndd8vho3y4/RJzHsOP0nLuW+u5x2fIiX6WM91s/H8/kl13W+OUYo3VpqNHA8HDcpsJKSyiqshKt4mjFe1yxWgdoYXbnDXx4rydanzM6dROp7ciE3rck0BzFW7nDTx4KHOlxLenVws9Txc99TWd/WQvLHb+BHBzdCFhCcoPMTO+irUQ7Niyv3kWpsx0iwzUZaKQyaVr9m48neaeR96n1amMtnszltbwSyrMqu9H5r8k3a4HMZhSSiawfqAIAgCAIAgCAIAgCA4157K2O0OL5rPG5x1cBhce97aE+9bI3WR2TMJVwlu0cZ3RldxIPVyU9HrZKHvJOL4rb/l2+PyRr/xq/D6ndsuzdjjFGWWED8NlT3kip8Vpds3zbNqhFckaN6bDWCcGtnaw+lEOrcDx7OR8QVshqbI8n8TCVEJdCtNoejq1QPPUMNojOjm0DxycyuvMVry0U+vWQku9syHPTTi+7uRuew2mIEPhmjBrWrJGA4hQ1NAHZZZ1C3qcHyaNTjNbNMsXoZuyWMTyPjcxjw0NLgW4iC45A6ihGemfeoOtnFpRTJmmi1lss1QCUEAQBAEAQBAEAQBAc6+7khtUfVzMqPNcMnNPFrt3yO+qwnXGaxIkabVW6efarf4fqVFtVsfPYyX/AHkO6QDTgJG+aeendWirbaJV79Dr9DxOrUrs8peHj6ePpz+pG6rSWOTJDO5rg5ri1w0cNe7mORyWUZNPKMJwjJYa2JPdW1IybOKeuB2f3m6t79O5S69QntIq7tE1vX8P3mSVjmvbUUc0jkQQpPMgZae/M4V67JRyVdF9m7+E/otM6Iy5EyrXThtLdERvO55rOftGmnpDMKLOmUeZZ06uFnJnZ2P21lsr2sc4vgJALDnhHFhOndosqb5Q2fIi6/h1Wqi5Lafj4+peMErXta9pq1wBaeIOYKs08nFSi4txfNHtDEIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgCAIAgPxzQQQRUHUckCeCvtqujlr6y2OjHamI5MPsHzDy09lQ7dKnvD4HQaLjUo9y/dePX3+P19SsbXZ3xPMcjHMe3VrhQj+3PQqE008M6SE4zj2oPK8jEHLw9N6674fZ3YmZtPlMPkkcR6LuY8arbXa4PbkR79PG1b8/H96FgXdb2zRtkjNQfeDvBVhGSksoo7IOEuzI3sTXDC8AjfXRZ8zVunlEL2mu+xj7k/aE+S01aOZO5RbYQ6cyz0t1/wD3yLS2Ljc2xWcPrXBv9Eklv8NFJrWIo5vXyUtRNx8f/vzO2syIEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEBy7+2fgtbME7KkeS8ZPb7Lvy0O8LCdcZrck6bV26eWa37uj9xUm1Ow1oslXsrNCM8bR2mj12bvaGXGigWaeUN1ujqdHxWrUd192Xh0fo/t9SJl+S0osJPB1tnrykha/Do479K8RzUmltLYgaqMJPcmdg2St1rAfNJ1Mbs6EEvp+GKU8SDyUhQlLmyqs19NTxBZf71JXc+wtkgoS0yuG+Q1H/gKNp3grNVxRX3cQus649PySdbCCEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEBFL56PrFaH9YWOjcc3dU4MDjxLaEV5gArTKiEnksaeKaiqPZzlee5v3JsjZLLQxRdoaOeS9w5gu8nwos4wjHkR7tXbd/N/Y7izIwQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAEAQBAf//Z" alt="First slide">
+                </div>
+                <div class="carousel-item">
+                    <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRUz7jYQcB7W8Lb7HYwAUj66gZBM12r0ga-QkjwGvmHDgg7atkcZA" alt="Second slide">
+                </div>
+                <div class="carousel-item">
+                    <img src="..." alt="Third slide">
+                </div>
+            </div>
+            <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+                <span class="icon-prev" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+                <span class="icon-next" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        @*   <ul class="tab_menu nav nav-tabs">
+                <li class="active"><a data-toggle="tab" href="#product_descr_tab">Опис</a></li>
+                <li><a data-toggle="tab" href="#prodact_recall">Відгуки</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="product_descr_tab" class="product_descr_tab tab-pane fade in active">
+                    <table>
+                        <tr>
+                            <td>Вага</td>
+                            <td>30/80/210</td>
+                        </tr>
+                        <tr>
+                            <td>Склад</td>
+                            <td>Яйця, молоко, цибуля, сир, шинка</td>
+                        </tr>
+                    </table>
+                </div>
+
+
+                <div id="prodact_recall" class="prodact_recall tab-pane fade">
+                    <form>
+                        <label class="recall_label" for="recall">Залишити відгук</label>
+                        <textarea class="recall_text" id="recall" placeholder="Залишити відгук може лише авторизований користувач"></textarea>
+                        <p class="recall_register_notice"><a href="">Увійдіть</a> або <a href="">зареєструйтесь,</a> щоб залишити коментар</p>
+                    </form>
+
+                    <div class="recall_title_wrap clearfix">
+                        <div class="recall_title">Відгуки про «Омлет з сиром та шинкою»</div>
+                        <div class="recall_rating">
+                            <span class="rating_star good"></span>
+                            <span class="rating_all">2 відгука</span>
+                        </div>
+                    </div>
+
+                    <div class="recall_item">
+                        <div class="recall_item_head">
+                            <div class="recall_name">Максим</div>
+                            <div class="recall_time">12.04.16 в 13:00</div>
+                        </div>
+                        <span class="rating_star good"></span>
+                        <p class="recall_main">
+                            Це кращий омлет з усіх які я лише куштував. Ніжний по текстурі, смачна шинка та сир дуже гармонійно
+                            поєднуються в омлеті. Але мені здається можна було додати більше шинки. Буду замовляти ще.
+                        </p>
+                    </div>
+
+                    <div class="recall_item">
+                        <div class="recall_item_head">
+                            <div class="recall_name">Яна</div>
+                            <div class="recall_time">12.04.16 в 13:00</div>
+                        </div>
+                        <span class="rating_star top"></span>
+                        <p class="recall_main">Замовляйте, не пошкодуєте!</p>
+                    </div>
+                </div>
+            </div>
+
+            <p class="product_recomendation_title">Рекомендовані товари</p>
+            <div class="product_recomendation">
+                <div class="product_recomendation_item">
+                    <div class="product_recomendation_img_wrap">
+                        <img src="assets/img/cola.jpg" alt="cola">
+                    </div>
+                    <p class="product_recomendation_name">Coca-cola, 1л</p>
+                    <div class="product_recomendation_rating">
+                        <span class="rating_star good"></span>
+                        <span class="rating_all">35 відгуків</span>
+                    </div>
+                    <p class="product_recomendation_price">18,50 грн</p>
+                </div>
+
+                <div class="product_recomendation_item">
+                    <div class="product_recomendation_img_wrap">
+                        <img src="assets/img/nestea.jpg" alt="nestea">
+                    </div>
+                    <p class="product_recomendation_name">Nestea, 1л</p>
+                    <div class="product_recomendation_rating">
+                        <span class="rating_star good"></span>
+                        <span class="rating_all">8 відгуків</span>
+                    </div>
+                    <p class="product_recomendation_price">28,50 грн</p>
+                </div>
+
+                <div class="product_recomendation_item">
+                    <div class="product_recomendation_img_wrap">
+                        <img src="assets/img/plate_01.jpg" alt="cezar">
+                    </div>
+                    <p class="product_recomendation_name">Салат Цезар, 350 гр.</p>
+                    <div class="product_recomendation_rating">
+                        <span class="rating_star middle"></span>
+                        <span class="rating_all">18 відгуків</span>
+                    </div>
+                    <p class="product_recomendation_price">94,00 грн</p>
+                </div>
+
+                <div class="product_recomendation_item">
+                    <div class="product_recomendation_img_wrap">
+                        <img src="assets/img/plate_02.jpg" alt="spring_salad">
+                    </div>
+                    <p class="product_recomendation_name">Салат весняний, 220 гр</p>
+                    <div class="product_recomendation_rating">
+                        <span class="rating_star good"></span>
+                        <span class="rating_all">15 відгуків</span>
+                    </div>
+                    <p class="product_recomendation_price">69,00 грн</p>
+                </div>
+            </div>*@
     </div>
 </main>

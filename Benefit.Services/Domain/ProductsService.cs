@@ -18,6 +18,7 @@ namespace Benefit.Services.Domain
         public Product GetProduct(string urlName)
         {
             var product = db.Products.Include(entry=>entry.Images).FirstOrDefault(entry => entry.UrlName == urlName);
+            if (product == null) return null;
             return product;
         }
 

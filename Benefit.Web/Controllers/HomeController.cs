@@ -36,11 +36,11 @@ namespace Benefit.Web.Controllers
             {
                 var parent = db.Categories.Find(parentCategoryId);
                 var parentName = parent == null ? null : parent.Name;
-                var categories = db.Categories.Include("ChildCategories").Include(entry=>entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive).OrderBy(entry => entry.Order).ToList();
+                var categories = db.Categories.Include("ChildCategories").Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive).OrderBy(entry => entry.Order).ToList();
                 if (parent != null)
                 {
                     categories =
-                        categories.Where(entry =>!entry.ParentCategory.ChildAsFilters).ToList();
+                        categories.Where(entry => !entry.ParentCategory.ChildAsFilters).ToList();
                 }
                 ViewBag.IsDropDown = isDropDown ?? false;
                 return PartialView("_CategoriesPartial", new KeyValuePair<string, IEnumerable<Category>>(parentName, categories));
@@ -106,9 +106,10 @@ namespace Benefit.Web.Controllers
             // and get file path of the image
 
             // path of the image
-            string path = "/Images/uploads/" + upload.FileName;
+            string path = Server.MapPath("~/Images/uploads/") + upload.FileName;
+            upload.SaveAs(path);
 
-            url = Request.Url.GetLeftPart(UriPartial.Authority) + "/" + path;
+            url = Request.Url.GetLeftPart(UriPartial.Authority) + "/Images/uploads/" + upload.FileName; ;
 
             // passing message success/failure
             message = "Image was saved correctly";
@@ -145,7 +146,7 @@ namespace Benefit.Web.Controllers
                     entry.CardNumber = null;
                     db.Entry(entry).State = EntityState.Modified;
                 });
-                
+
                 //decode seller descriptions
                 foreach (var seller in db.Sellers)
                 {
@@ -242,7 +243,7 @@ namespace Benefit.Web.Controllers
                 //        db.Entry(sellerImage).State = EntityState.Modified;
                 //    }
                 //}
-                #endregion  
+                #endregion
 
                 db.SaveChanges();
                 return Content("ok");

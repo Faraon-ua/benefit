@@ -10,7 +10,7 @@
     <script>
         $(function () {
             $('textarea').ckeditor({
-                filebrowserImageUploadUrl: '/home/UploadImage'
+                filebrowserImageUploadUrl: routePrefix + '/home/UploadImage'
             });
         });
     </script>
@@ -19,14 +19,6 @@
 {
     @Html.ValidationSummary()
     @Html.AntiForgeryToken()
-    @*  <textarea name="editor1" id="editor1" cols="45" rows="5"></textarea>
-                <script type="text/javascript">
-                    CKEDITOR.replace('editor1', {
-        //                filebrowserImageBrowseUrl: '/home/uploadPartial',
-                        //                filebrowserImageUploadUrl: '/home/uploadnow'
-                        filebrowserImageUploadUrl: '/home/UploadImage'
-                    });
-                </script>*@
     <div class="form-horizontal">
         @Html.ValidationSummary(true)
         @Html.HiddenFor(m => m.Id)

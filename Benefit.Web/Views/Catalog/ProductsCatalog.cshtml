@@ -1,4 +1,5 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
 @model Benefit.DataTransfer.ViewModels.ProductsViewModel
 
 @{
@@ -40,7 +41,8 @@
         {
             foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
             {
-                @Html.Partial("_ProductPartial", product)
+                var partialModel = new ProductPartialViewModel {Product = product, CategoryUrl = Model.Category.UrlName};
+                @Html.Partial("_ProductPartial", partialModel)
             }
             if (Model.Items.Count > ListConstants.DefaultTakePerPage)
             {

@@ -102,7 +102,7 @@
                             $.each(data, function (key, value) {
                                 var mockFile = { name: value.ImageUrl, size: 100000 };
                                 thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile, routePrefix + "/Images/ProductGallery/" + value.ImageUrl);
+                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile, routePrefix + "/Images/ProductGallery/@Model.Id/" + value.ImageUrl);
                             });
 
                         });

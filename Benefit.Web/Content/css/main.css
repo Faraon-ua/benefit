@@ -4073,6 +4073,7 @@ li:last-child .expand {
         display: block;
         width: 70px;
         height: 70px;
+        border: 1px solid #cccccc;
     }
 
 .product_photo_big {

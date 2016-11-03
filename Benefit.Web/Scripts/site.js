@@ -56,6 +56,7 @@ $(function () {
         $(".region_modal").modal("hide");
         setCookie("regionName", regionName, { expires: 31536000, path: "/" });//year
         setCookie("regionId", regionId, { expires: 31536000, path: "/" });//year
+        location.reload();
     });
 
     if (!getCookie("regionName")) {
@@ -75,6 +76,7 @@ $(function () {
             $(".region_modal").modal("hide");
             setCookie("regionName", result, { expires: 31536000, path: "/" });//year
             setCookie("regionId", suggestion.data, { expires: 31536000, path: "/" });//year
+            location.reload();
         }
     });
 
