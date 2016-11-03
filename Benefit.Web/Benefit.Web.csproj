@@ -231,6 +231,7 @@
     <Compile Include="Controllers\CatalogController.cs" />
     <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\PostachalnykController.cs" />
+    <Compile Include="Controllers\TovarController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -1481,6 +1482,8 @@
     <Content Include="Views\Shared\_MobileApplications.cshtml" />
     <Content Include="Areas\Cabinet\Views\Shared\_CabinetLayout.cshtml" />
     <Content Include="Views\Catalog\ProductsCatalog.cshtml" />
+    <Content Include="Views\Catalog\_ProductPartial.cshtml" />
+    <Content Include="Views\Tovar\Index.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
@@ -13,5 +14,22 @@ namespace Benefit.Domain.Models
         [Key, Column(Order = 1)]
         public string CategoryId { get; set; }
         public virtual Category Category { get; set; }
+    }
+
+    public class SellerCategoryComparer : IEqualityComparer<SellerCategory>
+    {
+        public bool Equals(SellerCategory x, SellerCategory y)
+        {
+            if (x.CategoryId == y.CategoryId && x.SellerId == y.SellerId)
+            {
+                return true;
+            }
+            return false;
+        }
+        public int GetHashCode(SellerCategory codeh)
+        {
+            return (codeh.CategoryId + codeh.SellerId).GetHashCode();
+        }
+
     }
 }

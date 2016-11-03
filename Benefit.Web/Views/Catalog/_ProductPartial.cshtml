@@ -1,0 +1,37 @@
+﻿@using Benefit.Domain.Models
+@model Product
+<div class="product_container">
+    <div class="product">
+        <div class="product_img_wrap">
+            @{
+                var image = Model.Images.FirstOrDefault();
+            }
+            <a href="#" title="@Model.Name">
+                @if (image == null)
+                {
+                    <img src="~/Images/ProductGallery/default_product_picture.png" alt="@Model.Name">
+                }
+                else
+                {
+                    <img src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="@Model.Name">
+                }
+            </a>
+        </div>
+        <p class="product_name">
+            <a href="#" title="@Model.Name">
+                <span>@Model.Name</span>
+            </a>
+        </p>
+        <div class="rating_wrap">
+            <div class="perelik_rating top"></div>
+            <p class="rating_reviews">0 відгуків</p>
+        </div>
+        <div class="product_price"><span class="old_price">80,40</span>62,21 грн</div>
+        <div class="product_control_wrap">
+            <div class="product_like product_like_red"></div>
+            <div class="product_scale"></div>
+            <a class="product_buy" href="">Купити</a>
+        </div>
+        <div class="product_stock">Акція</div>
+    </div>
+</div>

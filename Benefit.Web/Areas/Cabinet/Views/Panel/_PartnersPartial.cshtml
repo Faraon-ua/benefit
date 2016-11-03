@@ -6,7 +6,7 @@
     <ul class="clearfix structure_table @isHiddenClass">
         @foreach (var partner in Model.Value)
         {
-            <li class="partner-level-@Model.Key" id="@partner.Id">
+            <li class="partner-level-@Model.Key" id="@partner.Id" data-structure-level="@Model.Key">
                 <div class="structure_table_row">
                     <div class="expand"></div>
                     <div class="table_content">

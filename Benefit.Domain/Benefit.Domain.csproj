@@ -160,6 +160,10 @@
     <Compile Include="Migrations\201610270831443_AddressLineNulable.Designer.cs">
       <DependentUpon>201610270831443_AddressLineNulable.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611030833027_UniqUrlNames.cs" />
+    <Compile Include="Migrations\201611030833027_UniqUrlNames.Designer.cs">
+      <DependentUpon>201611030833027_UniqUrlNames.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -256,6 +260,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201610270831443_AddressLineNulable.resx">
       <DependentUpon>201610270831443_AddressLineNulable.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611030833027_UniqUrlNames.resx">
+      <DependentUpon>201611030833027_UniqUrlNames.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

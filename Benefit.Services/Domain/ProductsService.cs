@@ -15,6 +15,12 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        public Product GetProduct(string urlName)
+        {
+            var product = db.Products.Include(entry=>entry.Images).FirstOrDefault(entry => entry.UrlName == urlName);
+            return product;
+        }
+
         public ProductImportResults ProcessImportedProducts(IEnumerable<XmlProduct> xmlProducts, IEnumerable<string> dbCategoryIds, string sellerId)
         {
             var result = new ProductImportResults();

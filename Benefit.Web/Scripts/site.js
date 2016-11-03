@@ -111,6 +111,9 @@ $(function () {
     });
 
     $("#showAllStructure").change(function () {
+        var levels = $(".structure_table_wrap li").map(function() {
+            return parseInt($(this).attr("data-structure-level"));
+        }).get();
         if (this.checked) {
             $(".expand_close").click();
         } else {

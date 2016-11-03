@@ -3638,7 +3638,7 @@ li:last-child .expand {
     margin: 0 -1px -1px 0;
     width: 20%;
     min-width: 206px;
-    height: 268px;
+    height: 288px;
     text-align: center;
     text-align-last: center;
     vertical-align: top;
@@ -3652,7 +3652,7 @@ li:last-child .expand {
 
 .product_img_wrap {
     margin-bottom: 3px;
-    height: 138px;
+    height: 158px;
     overflow: hidden;
 }
 

@@ -18,7 +18,6 @@ namespace Benefit.Services.Domain
     public class CategoriesService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
         public List<Category> GetBreadcrumbs(string categoryId = null, string urlName = null)
         {
             var cacheKey = string.Format("{0}{1}{2}", CacheConstants.BreadCrumbsKey, categoryId, urlName);
@@ -38,10 +37,18 @@ namespace Benefit.Services.Domain
             return resultList;
         }
 
+        public List<Product> GetCategoryProductsOnly(string categoryId, int skip, int take = ListConstants.DefaultTakePerPage)
+        {
+            var products = db.Products.Include(entry => entry.Images).Include(entry=>entry.Currency).Where(entry => entry.CategoryId == categoryId).OrderByDescending(entry=>entry.LastModified).Skip(skip).Take(take + 1).ToList();
+            products.ForEach(entry=>entry.Price = (double) (entry.Price * entry.Currency.Rate));
+            return products;
+        }
+
         public ProductsViewModel GetCategoryProducts(string urlName, int skip, int take = ListConstants.DefaultTakePerPage)
         {
-            var category = db.Categories.FirstOrDefault(entry => entry.UrlName == urlName);
-            var products = category.Products.Where(entry=>entry.IsActive).Skip(skip).Take(take).ToList();
+            var category = db.Categories.Include(entry => entry.Products).Include(entry => entry.Products.Select(pr => pr.Images)).Include(entry => entry.Products.Select(pr => pr.Currency)).FirstOrDefault(entry => entry.UrlName == urlName);
+            var products = category.Products.Where(entry => entry.IsActive).OrderByDescending(entry=>entry.LastModified).Skip(skip).Take(take + 1).ToList();
+            products.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
             if (!products.Any()) return null;
             var result = new ProductsViewModel()
             {

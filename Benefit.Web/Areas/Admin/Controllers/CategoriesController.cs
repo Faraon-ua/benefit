@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
@@ -22,7 +23,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public ActionResult CategoriesList(string parentCategoryId = null)
         {
-            if (parentCategoryId == null && User.IsInRole("Seller"))
+            if (parentCategoryId == null && User.IsInRole(DomainConstants.SellerRoleName) && !User.IsInRole(DomainConstants.AdminRoleName))
             {
                 var userId = User.Identity.GetUserId();
                 var seller = db.Sellers.FirstOrDefault(entry => userId == entry.OwnerId);
