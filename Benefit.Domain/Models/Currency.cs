@@ -1,8 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
+    public class CurrencyComparer : IEqualityComparer<Currency>
+    {
+        public bool Equals(Currency x, Currency y)
+        {
+            if (x.Name == y.Name && x.Provider == y.Provider)
+            {
+                return true;
+            }
+            return false;
+        }
+        public int GetHashCode(Currency codeh)
+        {
+            return (codeh.Id).GetHashCode();
+        }
+    }
     public class Currency
     {
         [Key]

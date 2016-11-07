@@ -30,6 +30,5 @@ namespace Benefit.Domain.Models
         {
             return (codeh.CategoryId + codeh.SellerId).GetHashCode();
         }
-
     }
 }

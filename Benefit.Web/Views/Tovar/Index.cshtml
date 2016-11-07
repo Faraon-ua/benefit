@@ -89,15 +89,18 @@
         <div class="tab-content">
             <div id="product_descr_tab" class="product_descr_tab tab-pane fade in active">
                 <table>
-                    @foreach(var productParameter in Model.Product.ProductParameterProducts)
-                    <tr>
-                        <td>Вага</td>
-                        <td>30/80/210</td>
-                    </tr>
-                    <tr>
-                        <td>Склад</td>
-                        <td>Яйця, молоко, цибуля, сир, шинка</td>
-                    </tr>
+                    @foreach (var productParameter in Model.Product.ProductParameterProducts)
+                    {
+                        <tr>
+                            <td>@productParameter.ProductParameter.Name</td>
+                            <td>@productParameter.StartValue 
+                            @if (!string.IsNullOrEmpty(productParameter.EndValue))
+                            {
+                                <span>- @productParameter.EndValue</span>
+                            }
+                            </td>
+                        </tr>
+                    }
                 </table>
             </div>
 
@@ -111,55 +114,55 @@
             </div>
         </div>
 
-      @*  <p class="product_recomendation_title">Рекомендовані товари</p>
-        <div class="product_recomendation">
-            <div class="product_recomendation_item">
-                <div class="product_recomendation_img_wrap">
-                    <img src="assets/img/cola.jpg" alt="cola">
+        @*  <p class="product_recomendation_title">Рекомендовані товари</p>
+            <div class="product_recomendation">
+                <div class="product_recomendation_item">
+                    <div class="product_recomendation_img_wrap">
+                        <img src="assets/img/cola.jpg" alt="cola">
+                    </div>
+                    <p class="product_recomendation_name">Coca-cola, 1л</p>
+                    <div class="product_recomendation_rating">
+                        <span class="rating_star good"></span>
+                        <span class="rating_all">35 відгуків</span>
+                    </div>
+                    <p class="product_recomendation_price">18,50 грн</p>
                 </div>
-                <p class="product_recomendation_name">Coca-cola, 1л</p>
-                <div class="product_recomendation_rating">
-                    <span class="rating_star good"></span>
-                    <span class="rating_all">35 відгуків</span>
-                </div>
-                <p class="product_recomendation_price">18,50 грн</p>
-            </div>
 
-            <div class="product_recomendation_item">
-                <div class="product_recomendation_img_wrap">
-                    <img src="assets/img/nestea.jpg" alt="nestea">
+                <div class="product_recomendation_item">
+                    <div class="product_recomendation_img_wrap">
+                        <img src="assets/img/nestea.jpg" alt="nestea">
+                    </div>
+                    <p class="product_recomendation_name">Nestea, 1л</p>
+                    <div class="product_recomendation_rating">
+                        <span class="rating_star good"></span>
+                        <span class="rating_all">8 відгуків</span>
+                    </div>
+                    <p class="product_recomendation_price">28,50 грн</p>
                 </div>
-                <p class="product_recomendation_name">Nestea, 1л</p>
-                <div class="product_recomendation_rating">
-                    <span class="rating_star good"></span>
-                    <span class="rating_all">8 відгуків</span>
-                </div>
-                <p class="product_recomendation_price">28,50 грн</p>
-            </div>
 
-            <div class="product_recomendation_item">
-                <div class="product_recomendation_img_wrap">
-                    <img src="assets/img/plate_01.jpg" alt="cezar">
+                <div class="product_recomendation_item">
+                    <div class="product_recomendation_img_wrap">
+                        <img src="assets/img/plate_01.jpg" alt="cezar">
+                    </div>
+                    <p class="product_recomendation_name">Салат Цезар, 350 гр.</p>
+                    <div class="product_recomendation_rating">
+                        <span class="rating_star middle"></span>
+                        <span class="rating_all">18 відгуків</span>
+                    </div>
+                    <p class="product_recomendation_price">94,00 грн</p>
                 </div>
-                <p class="product_recomendation_name">Салат Цезар, 350 гр.</p>
-                <div class="product_recomendation_rating">
-                    <span class="rating_star middle"></span>
-                    <span class="rating_all">18 відгуків</span>
-                </div>
-                <p class="product_recomendation_price">94,00 грн</p>
-            </div>
 
-            <div class="product_recomendation_item">
-                <div class="product_recomendation_img_wrap">
-                    <img src="assets/img/plate_02.jpg" alt="spring_salad">
+                <div class="product_recomendation_item">
+                    <div class="product_recomendation_img_wrap">
+                        <img src="assets/img/plate_02.jpg" alt="spring_salad">
+                    </div>
+                    <p class="product_recomendation_name">Салат весняний, 220 гр</p>
+                    <div class="product_recomendation_rating">
+                        <span class="rating_star good"></span>
+                        <span class="rating_all">15 відгуків</span>
+                    </div>
+                    <p class="product_recomendation_price">69,00 грн</p>
                 </div>
-                <p class="product_recomendation_name">Салат весняний, 220 гр</p>
-                <div class="product_recomendation_rating">
-                    <span class="rating_star good"></span>
-                    <span class="rating_all">15 відгуків</span>
-                </div>
-                <p class="product_recomendation_price">69,00 грн</p>
-            </div>
-        </div>*@
+            </div>*@
     </div>
 </main>

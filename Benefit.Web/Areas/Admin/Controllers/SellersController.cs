@@ -192,7 +192,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult CreateOrUpdate(string id = null)
         {
-            var existingSeller = db.Sellers.Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).FirstOrDefault(entry => entry.Id == id);
+            var existingSeller = db.Sellers.Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry=>entry.SellerCategories.Select(sc=>sc.Category)).FirstOrDefault(entry => entry.Id == id);
+            existingSeller.SellerCategories = existingSeller.SellerCategories.OrderBy(entry => entry.Category.Order).ToList();
             var seller = new SellerViewModel()
             {
                 Seller = existingSeller ?? new Seller() { Schedules = SetSellerSchedules().ToList() }
@@ -282,9 +283,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 else
                 {
+                    seller.SellerCategories = seller.SellerCategories.Distinct(new SellerCategoryComparer()).ToList();
                     SellerService.ProcessCategories(seller.SellerCategories.ToList(), sellerId);
+
                     SellerService.ProcessAddresses(seller.Addresses.ToList(), sellerId);
+
+                    seller.Currencies = seller.Currencies.Distinct(new CurrencyComparer()).ToList();
                     SellerService.ProcessCurrencies(seller.Currencies.ToList(), sellerId);
+
                     SellerService.ProcessShippingMethods(seller.ShippingMethods.ToList(), sellerId);
                     db.Entry(seller).State = EntityState.Modified;
                     TempData["SuccessMessage"] = string.Format("Дані постачальника {0} було збережено", seller.Name);

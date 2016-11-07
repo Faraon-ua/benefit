@@ -68,7 +68,6 @@ namespace Benefit.Services.Domain
             {
                 entry.SellerId = sellerId;
             });
-            categories = categories.Distinct(new SellerCategoryComparer()).ToList();
             db.SellerCategories.AddRange(categories);
             db.SaveChanges();
         }
