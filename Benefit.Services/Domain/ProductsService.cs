@@ -15,10 +15,17 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public Product GetProduct(string urlName)
+        public Product GetProductWithProductOptions(string urlName)
         {
             var product = db.Products.Include(entry=>entry.Images).FirstOrDefault(entry => entry.UrlName == urlName);
             if (product == null) return null;
+           /* var productOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(entry => entry.ParentProductOptionId == null).ToList();
+                var categoryProductOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(
+                    entry =>
+                        entry.CategoryId == product.CategoryId && entry.SellerId == sellerId &&
+                        entry.ParentProductOptionId == null).ToList();
+                productOptions.InsertRange(0, categoryProductOptions);*/
+
             return product;
         }
 

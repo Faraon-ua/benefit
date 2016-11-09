@@ -40,13 +40,29 @@ namespace Benefit.Domain.Models
         public string ReferalId { get; set; }
         public ApplicationUser Referal { get; set; }
         public DateTime RegisteredOn { get; set; }
-        public double CurrentHandlingBonusAccount { get; set; }
+        public double BonusAccount { get; set; }
+        public double TotalBonusAccount { get; set; }
         public double CurrentBonusAccount { get; set; }
-        public double CurrentPointsAccount { get; set; }
+        public double HangingBonusAccount { get; set; }
+        public double PointsAccount { get; set; }
+        public double HangingPointsAccount { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<Seller> OwnedSellers { get; set; }
         public virtual ICollection<Seller> ReferedWebSiteSellers { get; set; }
         public virtual ICollection<Seller> ReferedBenefitCardSellers { get; set; }
         public virtual ICollection<ApplicationUser> Partners { get; set; }
+    }
+
+    public class ApplicationUserComparer : IEqualityComparer<ApplicationUser>
+    {
+        public bool Equals(ApplicationUser x, ApplicationUser y)
+        {
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(ApplicationUser obj)
+        {
+            return obj.GetHashCode();
+        }
     }
 }

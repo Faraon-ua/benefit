@@ -1,5 +1,4 @@
 ﻿@using Benefit.Common.Constants
-@using Microsoft.AspNet.Identity
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -340,97 +339,7 @@
                     </div>
                 </div><!-- #sidebar-shortcuts -->
 
-                <ul class="nav nav-list">
-                    <li>
-                        <a href="@Url.Action("Index", "Dashboard")">
-                            <i class="icon-home"></i>
-                            <span class="menu-text">Головна</span>
-                        </a>
-                    </li>
-                    @if (User.IsInRole(DomainConstants.AdminRoleName))
-                    {
-                        <li>
-                            <a href="@Url.Action("Index", "Users")">
-                                <i class="icon-group"></i>
-                                <span class="menu-text"> Партнери </span>
-                            </a>
-                        </li>
-                    }
-                    @if (User.IsInRole(DomainConstants.AdminRoleName))
-                    {
-                        <li>
-                            <a href="@Url.Action("Index", "Sellers")">
-                                <i class="icon-truck"></i>
-                                <span class="menu-text"> Постачальники </span>
-                            </a>
-                        </li>
-                    }
-                    else if (User.IsInRole(DomainConstants.SellerRoleName))
-                    {
-                        <li>
-                            <a href="@Url.Action("UpdateSellerByOwenrId", "Sellers", new { ownerId = User.Identity.GetUserId() })">
-                                <i class="icon-truck"></i>
-                                <span class="menu-text"> Дані постачальника </span>
-                            </a>
-                        </li>
-                    }
-
-                    <li>
-                        <a href="@Url.Action("Index", "Categories")">
-                            <i class="icon-list"></i>
-                            <span class="menu-text"> Категорії</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="@Url.Action("Index", "Products")">
-                            <i class="icon-barcode"></i>
-                            <span class="menu-text"> Товари</span>
-                        </a>
-                    </li>
-
-
-                    @*    <li>
-                            <a href="#" class="dropdown-toggle">
-                                <i class="icon-list"></i>
-                                <span class="menu-text"> Категорії </span>
-
-                                <b class="arrow icon-angle-down"></b>
-                            </a>
-
-                            <ul class="submenu">
-                                <li>
-                                    <a href="@Url.Action("Index", "Categories")">
-                                        <i class="icon-text-width"></i>
-                                        <span class="menu-text">Основні</span>
-                                    </a>
-                                </li>
-
-                                <li>
-                                    <a href="jqgrid.html">
-                                        <i class="icon-double-angle-right"></i>
-                                        Підкатегорії
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>*@
-
-                    @if (User.IsInRole(DomainConstants.AdminRoleName))
-                    {
-                        <li>
-                            <a href="@Url.Action("Index", "InfoPages")">
-                                <i class="icon-desktop"></i>
-                                <span class="menu-text">Інформаційні сторінки</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="@Url.Action("Index", "Regions")">
-                                <i class="icon-globe"></i>
-                                <span class="menu-text"> Регіони</span>
-                            </a>
-                        </li>
-                    }
-
-                </ul><!-- /.nav-list -->
+                @Html.Partial("_AdminMenuPartial")
 
                 <div class="sidebar-collapse" id="sidebar-collapse">
                     <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>

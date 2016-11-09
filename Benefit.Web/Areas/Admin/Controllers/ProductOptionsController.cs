@@ -23,9 +23,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 sellerId = Session[DomainConstants.SellerSessionIdKey].ToString();
             }
             List<ProductOption> productOptions;
+            Product product = null;
             if (!string.IsNullOrEmpty(productId))
             {
-                var product =
+                product =
                     db.Products.Include(entry => entry.ProductOptions)
                         .Include(entry => entry.Category)
                         .FirstOrDefault(entry => entry.Id == productId);
@@ -33,13 +34,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 productOptions.ForEach(entry => entry.Editable = true);
                 var categoryProductOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(
                     entry =>
-                        entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId &&
+                        entry.CategoryId == product.CategoryId && entry.SellerId == sellerId &&
                         entry.ParentProductOptionId == null).ToList();
                 productOptions.InsertRange(0, categoryProductOptions);
             }
             else
             {
-                productOptions = db.ProductOptions.Include("ChildProductOptions").Where(
+                productOptions = db.ProductOptions.Include(entry=>entry.ChildProductOptions).Where(
                 entry =>
                     entry.CategoryId == categoryId && entry.SellerId == sellerId && entry.ParentProductOptionId == null).ToList();
                 productOptions.ForEach(entry => entry.Editable = true);
@@ -47,7 +48,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
             return View(new ProductOptionsViewModel
             {
-                ProductId = productId,
+                Product = product,
                 CategoryId = categoryId,
                 SellerId = sellerId,
                 ProductOptions = productOptions

@@ -1,6 +1,6 @@
 ﻿@model Benefit.DataTransfer.ViewModels.SellersViewModel
 
-<div id="sellerFilters">
+<div id="sellerFilters" class="padding-left-19">
     @if (Model.Category.ChildAsFilters)
     {
         var childCategories = Model.Category.ChildCategories.Where(entry => entry.IsActive).ToList();
@@ -10,7 +10,12 @@
                 <legend>Спеціалізація</legend>
                 @foreach (var child in childCategories)
                 {
-                    var nameWithSellersCount = string.Format("{0} ({1})", child.Name, Model.Items.Count(entry => entry.SellerCategories.Select(sc => sc.CategoryId).Contains(child.Id)));
+                    var nameWithSellersCount = string.Format("{0} ({1})", child.Name, 
+                        Model.Items.Count(entry => 
+                                entry.SellerCategories.Select(sc => sc.CategoryId).Contains(child.Id)
+                                ||
+                                entry.SellerCategories.Select(sc=>sc.Category.ParentCategory.Id).Contains(child.Id)
+                            ));
                     <input class="hidden" type="checkbox" id="subcategory-@child.Id" name="category-ids" value="@child.Id" />
                     <label class="label_for_check" for="subcategory-@child.Id">@nameWithSellersCount</label>
                 }

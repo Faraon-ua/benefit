@@ -175,7 +175,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Categories = catsList.Select(entry => new SelectListItem() { Text = entry.ExpandedName, Value = entry.Id }).ToList(),
                 PointRatio = SettingsService.DiscountPercentToPointRatio.Values.Distinct().Select(entry => new SelectListItem() { Text = entry + ":1", Value = entry.ToString() }).ToList(),
                 TotalDiscountPercent = SettingsService.DiscountPercentToPointRatio.Keys.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() }).ToList(),
-                UserDiscountPercent = SettingsService.UserDiscounts.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() }).ToList()
+                UserDiscountPercent = SettingsService.RewardsPlan.UserDiscounts.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() }).ToList()
             };
             options.Categories.Insert(0, new SelectListItem() { Text = "Всі постачальники", Value = "all" });
             return View(options);

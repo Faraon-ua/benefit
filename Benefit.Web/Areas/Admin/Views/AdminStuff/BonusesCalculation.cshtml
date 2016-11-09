@@ -1,0 +1,27 @@
+﻿@model Benefit.DataTransfer.ViewModels.ProcessBonusesViewModel
+
+@{
+    ViewBag.Title = "Результати розрахунку";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Результати розрахунку</h2>
+
+<fieldset>
+    <legend>Бонуси наставника</legend>
+    <table>
+        <tr>
+            <th>Імя</th>
+            <th>Кількість бонусів</th>
+        </tr>
+        @foreach (var partner in Model.Partners)
+        {
+            <tr>
+                <td>@partner.User.FullName</td>
+                <td>@partner.BonusesReckoned</td>
+            </tr>
+        }
+    </table>
+    
+
+</fieldset>

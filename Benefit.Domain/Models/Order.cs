@@ -20,6 +20,8 @@ namespace Benefit.Domain.Models
     {
         public string Id { get; set; }
         public double Sum { get; set; }
+        public double PersonalBonusesSum { get; set; }
+        public double PointsSum { get; set; }
         public string CardNumber { get; set; }
         public DateTime Time { get; set; }
         public OrderType OrderType { get; set; }

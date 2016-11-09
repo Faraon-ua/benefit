@@ -6,6 +6,7 @@
         public const string DefaultAdminUserName = "admin";
         public const string DefaultAdminPassword = "xD67F_gH367";
 
+        public const string SuperAdminRoleName = "SuperAdmin";
         public const string AdminRoleName = "Admin";
         public const string SellerRoleName = "Seller";
         public const string ContentManagerName = "ContentManager";

@@ -1,0 +1,17 @@
+﻿@{
+    ViewBag.Title = "VIP функції";
+}
+@section scripts{
+    <script>
+        $("#start-bonuses-calculations").click(function () {
+            $("#start-bonuses-calculations").attr('disabled', 'disabled');
+            $("#start-bonuses-calculations").after("<h1>НЕ ЗАКРИВАЙТЕ ЦЕ ВІКНО БРАЗУРА ДО ЗАВЕРШЕННЯ РОЗРАХУНКУ!</h1>");
+        });
+    </script>
+}
+<fieldset>
+    <legend>
+        Розрахунок
+    </legend>
+    <a class="btn btn-info" id="start-bonuses-calculations" href="@Url.Action("BonusesCalculation", "AdminStuff")">Провести розрахунок</a>
+</fieldset>

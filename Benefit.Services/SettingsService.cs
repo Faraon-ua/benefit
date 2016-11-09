@@ -87,21 +87,30 @@ namespace Benefit.Services
             }     
         }
 
-        public static double[] UserDiscounts = { 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-
-        public static Dictionary<DistributionType, int> DistributionToPointsPercentageMap
+        public class RewardsPlan
         {
-            get
+            public static int PointsQualificationAmount = 500;
+            public static int VIPPointsQualificationAmount = 1000;
+            public static int VIPQualifiedPartnersNumber = 5;
+            public static int VIPPortionPointsAmount = 1000;
+            public static int VIPMaxPortions = 1000;
+
+            public static double[] UserDiscounts = { 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
+
+            public static Dictionary<DistributionType, int> DistributionToPointsPercentageMap
             {
-                return new Dictionary<DistributionType, int>()
+                get
                 {
-                    {DistributionType.Mentor, 4},
-                    {DistributionType.VIP, 2},
-                    {DistributionType.Director, 2},
-                    {DistributionType.Silver, 2},
-                    {DistributionType.Gold, 1},
-                    {DistributionType.SellerInvolvement, 1}
-                };
+                    return new Dictionary<DistributionType, int>()
+                    {
+                        {DistributionType.Mentor, 4},
+                        {DistributionType.VIP, 2},
+                        {DistributionType.Director, 2},
+                        {DistributionType.Silver, 2},
+                        {DistributionType.Gold, 1},
+                        {DistributionType.SellerInvolvement, 1}
+                    };
+                }
             }
         }
 
@@ -131,6 +140,15 @@ namespace Benefit.Services
                     {18, 2},
                     {19, 2},
                     {20, 2},
+                    {21, 2},
+                    {22, 2},
+                    {23, 2},
+                    {24, 2},
+                    {25, 2},
+                    {26, 2},
+                    {27, 2},
+                    {28, 2},
+                    {29, 2},
                     {30, 2}
                 };
             }

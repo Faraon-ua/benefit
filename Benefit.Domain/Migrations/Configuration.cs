@@ -29,14 +29,22 @@ namespace Benefit.Domain.Migrations
             {
                 System.Diagnostics.Debugger.Launch();
             }*/
+            if (!context.Regions.Any())
+            {
+                var regionsSql = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty) + "Migrations/SqlFiles/UkraineRegions.sql", Encoding.UTF8);
+                context.Database.ExecuteSqlCommand(regionsSql);
+            }
             if (!context.Roles.Any(r => r.Name == DomainConstants.AdminRoleName))
             {
                 var store = new RoleStore<IdentityRole>(context);
                 var manager = new RoleManager<IdentityRole>(store);
+
+                var superAdminRole = new IdentityRole { Name = DomainConstants.SuperAdminRoleName };
                 var adminRole = new IdentityRole { Name = DomainConstants.AdminRoleName };
                 var contentManagerRole = new IdentityRole { Name = DomainConstants.ContentManagerName };
                 var sellerRole = new IdentityRole { Name = DomainConstants.SellerRoleName };
 
+                manager.Create(superAdminRole);
                 manager.Create(adminRole);
                 manager.Create(contentManagerRole);
                 manager.Create(sellerRole);
@@ -99,12 +107,6 @@ namespace Benefit.Domain.Migrations
                 };
                 context.Currencies.AddRange(defaultCurrencies);
                 context.SaveChanges();
-            }
-
-            if (!context.Regions.Any())
-            {
-                var regionsSql = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty) + "Migrations/SqlFiles/UkraineRegions.sql", Encoding.UTF8);
-                context.Database.ExecuteSqlCommand(regionsSql);
             }
         }
     }

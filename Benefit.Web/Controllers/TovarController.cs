@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 
 namespace Benefit.Web.Controllers
@@ -16,9 +18,10 @@ namespace Benefit.Web.Controllers
         }
         public ActionResult Index(string productUrl, string categoryUrl, string sellerUrl)
         {
-            var product = ProductsService.GetProduct(productUrl);
+            var product = ProductsService.GetProductWithProductOptions(productUrl);
             if (product == null) return HttpNotFound();
             var categoriesService = new CategoriesService();
+
             var result = new ProductDetailsViewModel()
             {
                 Product = product,

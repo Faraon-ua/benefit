@@ -3,7 +3,9 @@
 @using Benefit.Domain.Models
 @model Seller
 @{
-    var categoryIds = string.Join(",", Model.SellerCategories.Select(entry => entry.CategoryId));
+    var categoryIds = Model.SellerCategories.Select(entry => entry.CategoryId).Distinct().ToList();
+    categoryIds.AddRange(Model.SellerCategories.Select(entry => entry.Category.ParentCategory.Id).Distinct());
+    var categoryIdsStr = string.Join(",", categoryIds);
     var sellerOptions = new StringBuilder();
     if (Model.IsBenefitCardActive)
     {
@@ -26,7 +28,7 @@
         sellerOptions.Append("Acquiring");
     }
 }
-<div class="provider_container" data-category-ids="@categoryIds" data-seller-options="@sellerOptions">
+<div class="provider_container" data-category-ids="@categoryIdsStr" data-seller-options="@sellerOptions">
     <div class="provider">
         <div class="provider_main_info">
             <div class="provider_bonus_label">@Model.UserDiscount% <br>бонус</div>
@@ -35,9 +37,8 @@
             </div>
             <p class="provider_name">@Model.Name</p>
             @{
-                var specifics = @Model.SellerCategories.Select(entry => entry.Category.ParentCategory).Distinct();
-                var result = (from specific in specifics where !specifics.Select(entry => entry.Id).Contains(specific.ParentCategoryId) select specific.Name).ToList();
-                var specificsStr = string.Join("/", result);
+                var specifics = Model.SellerCategories.FirstOrDefault(entry => entry.IsDefault);
+                var specificsStr =  specifics == null ? "не доступно" : specifics.Category.Name;
             }
             <p class="provider_type">@specificsStr</p>
             <div class="rating_wrap">

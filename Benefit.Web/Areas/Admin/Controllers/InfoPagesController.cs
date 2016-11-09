@@ -65,6 +65,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 LocalizationService.Save(infopage.Localizations);
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "Сторінку збережено";
                 return RedirectToAction("CreateOrUpdate", new { id=infopage.Id });
             }
 

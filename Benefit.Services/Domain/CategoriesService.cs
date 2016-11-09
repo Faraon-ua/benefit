@@ -61,16 +61,20 @@ namespace Benefit.Services.Domain
 
         public SellersViewModel GetCategorySellers(string urlName)
         {
+            //which sellers to display
             var sellerIds = new List<string>();
+            //get selected category with child categories and sellers
             var category = db.Categories.Include(entry => entry.ChildCategories).Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
             if (category == null) return null;
             var sellersDto = new SellersViewModel()
             {
                 Category = category
             };
-            sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
-            sellerIds.AddRange(category.GetAllChildrenRecursively().SelectMany(entry => entry.SellerCategories).Select(entry => entry.SellerId));
+            //add all sellers categories except default
+            sellerIds.AddRange(category.SellerCategories.Where(entry=>!entry.IsDefault).Select(entry => entry.SellerId));
+            sellerIds.AddRange(category.GetAllChildrenRecursively().SelectMany(entry => entry.SellerCategories).Where(entry => !entry.IsDefault).Select(entry => entry.SellerId));
 
+            //filter by region and shippings
             var regionId = RegionService.GetRegionId();
             sellersDto.Items =
                 db.Sellers
@@ -87,6 +91,7 @@ namespace Benefit.Services.Domain
                              entry.ShippingMethods.Select(sm => sm.Region.Id)
                                  .Contains(RegionConstants.AllUkraineRegionId))
                     ).ToList();
+
             sellersDto.Items.ForEach(entry =>
             {
                 var tempAddresses = new List<Address>(entry.Addresses.ToList());
@@ -158,7 +163,7 @@ namespace Benefit.Services.Domain
 
         public void Delete(string id)
         {
-            var category = db.Categories.Include("ChildCategories").FirstOrDefault(entry => entry.Id == id);
+            var category = db.Categories.Include(entry=>entry.SellerCategories).Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.Id == id);
             if (category == null) return;
             foreach (var childCategory in category.ChildCategories)
             {
@@ -170,6 +175,14 @@ namespace Benefit.Services.Domain
                 entry.CategoryId = null;
                 db.Entry(entry).State = EntityState.Modified;
             });
+
+            db.SellerCategories.RemoveRange(category.SellerCategories);
+            category.SellerCategories.ToList().ForEach(entry =>
+            {
+                entry.CategoryId = null;
+                db.Entry(entry).State = EntityState.Modified;
+            });
+            
             db.ProductParameters.RemoveRange(category.ProductParameters);
             db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
             if (category.ImageUrl != null)

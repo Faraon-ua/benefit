@@ -166,3 +166,7 @@
             </div>*@
     </div>
 </main>
+@if (Model.ProductOptions.Any())
+{
+    @Html.Partial("_ProductOptions", Model.Product)
+}

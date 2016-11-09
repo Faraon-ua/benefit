@@ -30,7 +30,7 @@ namespace Benefit.Domain.Models
         public string Description { get; set; }
         [Required]
         [MaxLength(128)]
-//        [Index(IsUnique = true)]
+        [Index(IsUnique = true)]
         public string UrlName { get; set; }
         [Required]
         [MaxLength(16)]

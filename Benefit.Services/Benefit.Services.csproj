@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Admin\ScheduleService.cs" />
     <Compile Include="CacheService.cs" />
     <Compile Include="Domain\CategoriesService.cs" />
     <Compile Include="Domain\ProductsService.cs" />

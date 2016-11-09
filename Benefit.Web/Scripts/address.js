@@ -1,7 +1,13 @@
 ﻿function SetRegionsAutocomplete() {
+    var regionSearchUrl = '/Home/SearchRegion';
+    var regionSearch = $(".regionSearch");
+    if (regionSearch.hasClass("includeRegions")) {
+        regionSearchUrl = regionSearchUrl + "?minLevel=1";
+    }
+        
     $(".regionSearch").devbridgeAutocomplete({
         minChars: 3,
-        serviceUrl: routePrefix + '/Home/SearchRegion',
+        serviceUrl: routePrefix + regionSearchUrl,
         onSelect: function (suggestion) {
             $(this).val(suggestion.value);
             $(this).next().val(suggestion.data);

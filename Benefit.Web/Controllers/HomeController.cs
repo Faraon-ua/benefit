@@ -48,7 +48,7 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult SearchRegion(string query)
+        public ActionResult SearchRegion(string query, int? minLevel = 4)
         {
             query = query.ToLower();
             using (var db = new ApplicationDbContext())
@@ -56,7 +56,7 @@ namespace Benefit.Web.Controllers
                 var regions =
                     db.Regions.Where(
                         entry =>
-                            (entry.RegionLevel >= 4 || entry.RegionLevel == 0) &&
+                            (entry.RegionLevel >= minLevel || entry.RegionLevel == 0) &&
                             (entry.Name_ru.ToLower().Contains(query) || entry.Name_ua.ToLower().Contains(query)))
                         .OrderBy(entry => entry.RegionLevel)
                         .Take(10)

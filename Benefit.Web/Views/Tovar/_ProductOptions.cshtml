@@ -1,0 +1,273 @@
+﻿@using Benefit.Domain.Models
+@model Benefit.Domain.Models.Product    
+           
+<div class="product_modal modal fade" id="product_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal_close" data-dismiss="modal" aria-hidden="true"><span></span></div>
+            <div class="modal-body">
+                <p class="product_modal_title">@Model.Name</p>
+                <form class="product_modal_form">
+                    <div class="product_modal_form_top clearfix">
+                        
+                        <fieldset class="product_modal_portion">
+                            <p class="product_modal_subtitle">Порція</p>
+                            <input class="hidden" type="radio" id="product_portion_01" name="product_portion">
+                            <label class="label_for_radio" for="product_portion_01">150 грам (72,90)</label>
+
+                            <input class="hidden" type="radio" id="product_portion_02" name="product_portion" checked>
+                            <label class="label_for_radio" for="product_portion_02">250 грам ( 99,00)</label>
+
+                            <input class="hidden" type="radio" id="product_portion_03" name="product_portion">
+                            <label class="label_for_radio" for="product_portion_03">450 грам ( 118,30)</label>
+                        </fieldset>
+
+                        <fieldset class="product_modal_dishes">
+                            <p class="product_modal_subtitle">Посуд</p>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_dishe_01" checked>
+                                <label class="label_for_check" for="product_dishe_01">Упаковка ( +4,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_dishe_02" checked>
+                                <label class="label_for_check" for="product_dishe_02">Виделка (+0,50)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_dishe_03">
+                                <label class="label_for_check" for="product_dishe_03">Ніж ( +0,50)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_dishe_04">
+                                <label class="label_for_check" for="product_dishe_04">Ложка ( +0,50)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <fieldset class="product_modal_addition">
+                            <p class="product_modal_subtitle">Додатково</p>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_01">
+                                <label class="label_for_check" for="product_addition_01">Хліб чорний (+0,50)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_02" checked>
+                                <label class="label_for_check" for="product_addition_02">Хліб сірий ( +0,50)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_03">
+                                <label class="label_for_check" for="product_addition_03">Хліб білий ( +0,50)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="product_modal_form_bottom">
+                        <p class="product_modal_subtitle">Додаткові інгрідієнти</p>
+                        <div class="product_modal_addition_ingridients">
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_01" checked>
+                                <label class="label_for_check" for="product_addition_ingridients_01">Сир 50 г (+5,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_02">
+                                <label class="label_for_check" for="product_addition_ingridients_02">Пармезан 25 г (+36,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_03">
+                                <label class="label_for_check" for="product_addition_ingridients_03">Ананас 50г (+7,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_04">
+                                <label class="label_for_check" for="product_addition_ingridients_04">Болгарський перець 50г (+9,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_05">
+                                <label class="label_for_check" for="product_addition_ingridients_05">Маслини 50 г (+12,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_06">
+                                <label class="label_for_check" for="product_addition_ingridients_06">Шинка 50 г (+10,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_07">
+                                <label class="label_for_check" for="product_addition_ingridients_07">Сир копчений 50 г ( +10,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_08">
+                                <label class="label_for_check" for="product_addition_ingridients_08">Моцарелла 50 г (+18,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_09">
+                                <label class="label_for_check" for="product_addition_ingridients_09">Печериці 50г (+8,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_10" checked>
+                                <label class="label_for_check" for="product_addition_ingridients_10">Цукіні 50г (+9,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_11">
+                                <label class="label_for_check" for="product_addition_ingridients_11">Курка 50 г (+12,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_12">
+                                <label class="label_for_check" for="product_addition_ingridients_12">Бекон 50 г (+10,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_13">
+                                <label class="label_for_check" for="product_addition_ingridients_13">Томати 50 г (+10,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_14">
+                                <label class="label_for_check" for="product_addition_ingridients_14">Кукурудза 50 г (+18,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_15">
+                                <label class="label_for_check" for="product_addition_ingridients_15">Бейбі-кукурудза 50г (+8,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_16">
+                                <label class="label_for_check" for="product_addition_ingridients_16">Мариновані огірки 50г (+9,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_17">
+                                <label class="label_for_check" for="product_addition_ingridients_17">Салямі 50 г (+12,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                            <div class="product_modal_row">
+                                <input class="hidden" type="checkbox" id="product_addition_ingridients_18">
+                                <label class="label_for_check" for="product_addition_ingridients_18">Домашня ковбаса 50 г (+11,00)</label>
+                                <div class="modal_amount_wrap">
+                                    <div class="product_modal_minus">-</div>
+                                    <input class="product_modal_amount" type="text" value="1">
+                                    <div class="product_modal_plus">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <p class="product_modal_price">Сума 118,00 грн</p>
+                <div class="product_modal_kontrols clearfix">
+                    <a href="#" class="goto_back" data-dismiss="modal" aria-hidden="true">До товару</a>
+                    <a href="#" class="goto_ahead">Додати в кошик</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

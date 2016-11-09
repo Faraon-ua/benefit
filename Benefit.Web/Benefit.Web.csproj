@@ -211,6 +211,7 @@
     <Compile Include="App_Start\Automapper.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AdminStuffController.cs" />
     <Compile Include="Areas\Admin\Controllers\Base\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
@@ -1059,6 +1060,10 @@
     <Content Include="Areas\Cabinet\Views\Panel\Index.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\Structure.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\_PartnersPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_AdminMenuPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminStuff\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminStuff\BonusesCalculation.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminStuff\BonusesCalculationError.cshtml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />
@@ -1484,6 +1489,7 @@
     <Content Include="Views\Catalog\ProductsCatalog.cshtml" />
     <Content Include="Views\Catalog\_ProductPartial.cshtml" />
     <Content Include="Views\Tovar\Index.cshtml" />
+    <Content Include="Views\Tovar\_ProductOptions.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

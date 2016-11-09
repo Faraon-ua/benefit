@@ -7,13 +7,13 @@ namespace Benefit.Domain.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class UniqUrlNames : IMigrationMetadata
+    public sealed partial class UniqUrlNamesAndTransactions : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(UniqUrlNames));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UniqUrlNamesAndTransactions));
         
         string IMigrationMetadata.Id
         {
-            get { return "201611030833027_UniqUrlNames"; }
+            get { return "201611080836535_UniqUrlNamesAndTransactions"; }
         }
         
         string IMigrationMetadata.Source

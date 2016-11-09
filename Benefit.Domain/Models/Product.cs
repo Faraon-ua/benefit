@@ -24,7 +24,7 @@ namespace Benefit.Domain.Models
         public string Name { get; set; }
         [Required]
         [MaxLength(128)]
-//        [Index(IsUnique = true)]
+        [Index(IsUnique = true)]
         public string UrlName { get; set; }
         [Index]
         public int SKU { get; set; }

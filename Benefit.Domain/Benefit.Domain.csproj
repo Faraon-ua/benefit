@@ -160,9 +160,9 @@
     <Compile Include="Migrations\201610270831443_AddressLineNulable.Designer.cs">
       <DependentUpon>201610270831443_AddressLineNulable.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201611030833027_UniqUrlNames.cs" />
-    <Compile Include="Migrations\201611030833027_UniqUrlNames.Designer.cs">
-      <DependentUpon>201611030833027_UniqUrlNames.cs</DependentUpon>
+    <Compile Include="Migrations\201611080836535_UniqUrlNamesAndTransactions.cs" />
+    <Compile Include="Migrations\201611080836535_UniqUrlNamesAndTransactions.Designer.cs">
+      <DependentUpon>201611080836535_UniqUrlNamesAndTransactions.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
@@ -175,6 +175,7 @@
     <Compile Include="Models\Currency.cs" />
     <Compile Include="Models\Enums\Distribution.cs" />
     <Compile Include="Models\Enums\Level.cs" />
+    <Compile Include="Models\ModelExtensions\UserExt.cs" />
     <Compile Include="Models\OrderProduct.cs" />
     <Compile Include="Models\ProductOption.cs" />
     <Compile Include="Models\ProductParameter.cs" />
@@ -192,6 +193,9 @@
     <Compile Include="Models\Schedule.cs" />
     <Compile Include="Models\Seller.cs" />
     <Compile Include="Models\SellerCategory.cs" />
+    <Compile Include="Models\Service\PartnerRecon.cs" />
+    <Compile Include="Models\Service\TransactionServiceModel.cs" />
+    <Compile Include="Models\Service\VipPortion.cs" />
     <Compile Include="Models\ShippingMethod.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Models\XmlModels\XmlProduct.cs" />
@@ -261,8 +265,8 @@
     <EmbeddedResource Include="Migrations\201610270831443_AddressLineNulable.resx">
       <DependentUpon>201610270831443_AddressLineNulable.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201611030833027_UniqUrlNames.resx">
-      <DependentUpon>201611030833027_UniqUrlNames.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201611080836535_UniqUrlNamesAndTransactions.resx">
+      <DependentUpon>201611080836535_UniqUrlNamesAndTransactions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
