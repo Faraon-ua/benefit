@@ -64,6 +64,14 @@
                 width: "450px"
             });
 
+            $("body").on("change", "#categories input[type=checkbox]", function() {
+                if (this.checked) {
+                    $("#categories input[type=checkbox]").not(this).prop("disabled", true);
+                } else {
+                    $("#categories input[type=checkbox]").not(this).prop("disabled", false);
+                }
+            });
+
             $('#txtUploadFile').on('change', function (e) {
                 var files = e.target.files;
                 if (files.length > 0) {
