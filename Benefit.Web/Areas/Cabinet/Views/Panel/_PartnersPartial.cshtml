@@ -12,8 +12,8 @@
                     <div class="table_content">
                         <div class="structure_table_name">@partner.FullName</div>
                         <div class="structure_table_status">@partner.Status.ToString()</div>
-                        <div class="structure_table_balls">@partner.CurrentPointsAccount.ToString("F")</div>
-                        <div class="structure_table_bonuses">@partner.CurrentBonusAccount.ToString("F")</div>
+                        <div class="structure_table_balls">@partner.PointsAccount.ToString("F")</div>
+                        <div class="structure_table_bonuses">@partner.BonusAccount.ToString("F")</div>
                         <div class="structure_table_register_date">@partner.RegisteredOn.ToLocalTimeWithDateFormat()</div>
                         <div class="structure_table_register_location">@partner.Region.Name_ua</div>
                         <div class="structure_table_register_email">

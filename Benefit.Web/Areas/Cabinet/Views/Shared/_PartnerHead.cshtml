@@ -10,23 +10,24 @@
     <p class="user_statuse">@Model.Status.ToString()</p>
     <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
     <p class="card_numb">Номер бонусної картки:<br>@Model.CardNumber</p>
-    <p class="bonus_count">Загальна сума зароблених бонусів:<br><span class="bonus_border">356089,90</span></p>
-    <p class="bonus_available">Доступні бонуси:<br><span class="bonus_border">@Model.CurrentBonusAccount</span></p>
-    <p class="bonus_personal">Особисті бонуси за поточний період:<br><span class="bonus_border">0</span></p>
-    <p class="ball_personal">Особисті бали за поточний період:<br><span class="bonus_border">@Model.CurrentPointsAccount</span></p>
+    <p class="bonus_count">Загальна сума зароблених бонусів:<br><span class="bonus_border">@Model.TotalBonusAccount</span></p>
+    <p class="bonus_available">Доступні бонуси:<br><span class="bonus_border">@Model.BonusAccount</span></p>
+    <p class="bonus_personal">Бонуси в обробці<br><span class="bonus_border">@Model.HangingBonusAccount</span></p>
+    <p class="bonus_personal">Особисті бонуси за поточний період:<br><span class="bonus_border">@Model.CurrentBonusAccount</span></p>
+    <p class="ball_personal">Особисті бали за поточний період:<br><span class="bonus_border">@Model.PointsAccount</span></p>
     @{
         var batteryStatus = "battary_full";
         //todo: to constants
-        if (Model.CurrentPointsAccount < 199)
+        if (Model.PointsAccount < 199)
         {
             batteryStatus = "battary_low";
         }
-        if (Model.CurrentPointsAccount >= 200 && Model.CurrentPointsAccount < 499)
+        if (Model.PointsAccount >= 200 && Model.PointsAccount < 499)
         {
             batteryStatus = "battary_middle";
         }
         string qualificationEpsilonStr;
-        var qualificationEpsilon = 500 - Model.CurrentPointsAccount;
+        var qualificationEpsilon = 500 - Model.PointsAccount;
         if (qualificationEpsilon > 0)
         {
             qualificationEpsilonStr = string.Format("До виконання кваліфікації та отримання комісійної винагороди залишилось набрати {0} балів", qualificationEpsilon);

@@ -22,6 +22,21 @@
             </tr>
         }
     </table>
-    
-
+</fieldset>
+<br/>
+<fieldset>
+    <legend>Бонуси VIP</legend>
+    <table>
+        <tr>
+            <th>Імя</th>
+            <th>Кількість бонусів</th>
+        </tr>
+        @foreach (var partner in Model.VipPartners)
+        {
+            <tr>
+                <td>@partner.User.FullName</td>
+                <td>@partner.BonusesReckoned</td>
+            </tr>
+        }
+    </table>
 </fieldset>

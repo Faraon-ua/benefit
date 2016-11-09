@@ -64,6 +64,7 @@ namespace Benefit.Services.Admin
                         //берем всех партнеров, которые сделали хотя бы какой-то товарооборот за предыдущий период
                         var partners =
                             allUsers.Where(entry => entry.HangingPointsAccount > 0 && entry.ReferalId != null).ToList();
+                        //транзакции
                         var partnerReckons = new List<TransactionServiceModel>();
 
                         //рассчет бонусов за приглашение
@@ -118,15 +119,13 @@ namespace Benefit.Services.Admin
                                     (double)
                                         partnerReckons.Where(entry => entry.Transaction.PayeeId == payee.Id)
                                             .Sum(entry => entry.Transaction.Bonuses),
-                                QualifiedPartnersNumber = partnerReckons.Count(entry => entry.PointsAmount >= SettingsService.RewardsPlan.PointsQualificationAmount)
+                                QualifiedPartnersNumber = partnerReckons.Count(entry => entry.PointsAmount >= SettingsService.RewardsPlan.PointsQualificationAmount && entry.Transaction.PayeeId == payee.Id)
                             };
                             payee.BonusAccount += partnerRecon.BonusesReckoned;
                             payee.TotalBonusAccount += partnerRecon.BonusesReckoned;
                             result.Partners.Add(partnerRecon);
                             db.Entry(payee).State = EntityState.Modified;
                         }
-
-                        db.Transactions.AddRange(partnerReckons.Select(entry => entry.Transaction));
 
                         /*Рассчет комиссионных вип партнеров*/
 
@@ -161,8 +160,38 @@ namespace Benefit.Services.Admin
                                         ? SettingsService.RewardsPlan.VIPMaxPortions
                                         : entry.Portions));
 
-                        var vipPortiontoBonusRate = vipBonusesStack/totalVipPortions;
+                        var vipPortionBonusRate = vipBonusesStack/totalVipPortions;
 
+                        foreach (var vipPortion in vipPortions)
+                        {
+                            var bonusesRecon = (vipPortion.Portions > SettingsService.RewardsPlan.VIPMaxPortions
+                                ? SettingsService.RewardsPlan.VIPMaxPortions
+                                : vipPortion.Portions)*vipPortionBonusRate;
+                            var totalBalansBeforeRecon = vipPortion.User.BonusAccount +
+                                                     partnerReckons.Where(entry => entry.Transaction.PayeeId == vipPortion.User.Id)
+                                                         .Sum(entry => entry.Transaction.Bonuses);
+                            var transaction = new TransactionServiceModel()
+                            {
+                                Transaction = new Transaction()
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    Bonuses = bonusesRecon,
+                                    BonusesBalans = totalBalansBeforeRecon + bonusesRecon,
+                                    Time = DateTime.UtcNow,
+                                    Type = TransactionType.VIPBonus,
+                                    PayeeId = vipPortion.User.Id,
+                                    Payee = vipPortion.User
+                                },
+                                PointsAmount = 0
+                            };
+                            result.VipPartners.Add(new PartnerReckon()
+                            {
+                                User = vipPortion.User,
+                                BonusesReckoned = bonusesRecon,
+                                QualifiedPartnersNumber = vipPortion.UserStructurePoints
+                            });
+                            partnerReckons.Add(transaction);
+                        }
 
 
                         //для всех пользователей, у кого есть баллы в обработке
@@ -178,6 +207,7 @@ namespace Benefit.Services.Admin
                             db.Entry(entry).State = EntityState.Modified;
                         });
 
+                        db.Transactions.AddRange(partnerReckons.Select(entry => entry.Transaction));
                         //                        db.SaveChanges();
                         //                        dbTransaction.Commit();
                     }
