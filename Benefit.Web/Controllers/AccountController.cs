@@ -68,7 +68,7 @@ namespace Benefit.Web.Controllers
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid username or password.");
+                    ModelState.AddModelError("", "Невірний логін чи пароль");
                 }
             }
 

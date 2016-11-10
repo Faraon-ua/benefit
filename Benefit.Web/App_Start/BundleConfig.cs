@@ -40,6 +40,7 @@ namespace Benefit.Web
                       "~/Content/css/main.css",
                       "~/Content/css/media.css",
                       "~/Content/css/common.css",
+                      "~/Content/css/validation-errors.css",
                       "~/Content/css/autocomplete.css"));
         }
     }

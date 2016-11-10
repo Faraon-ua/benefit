@@ -7,6 +7,7 @@
 <div class="enter_wrap">
     @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
     {
+        @Html.ValidationSummary()
         @Html.AntiForgeryToken()
         <p class="enter_title">Вхід в особистий кабінет</p>
         @Html.TextBoxFor(m => m.UserName, new { @class = "enter_email", placeholder = "E-mail" })
