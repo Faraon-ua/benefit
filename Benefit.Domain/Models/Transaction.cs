@@ -10,6 +10,7 @@ namespace Benefit.Domain.Models
         MentorBonus,
         Transfer,
         VIPBonus,
+        VIPSellerBonus,
         DirectorBonus,
         SilverBonus,
         GoldBonus,

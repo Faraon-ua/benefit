@@ -504,7 +504,7 @@ header {
 
         .menu ul li {
             display: inline-block;
-            margin: 0 20px;
+            margin: 0 16px;
         }
 
         .menu ul > li:first-child {

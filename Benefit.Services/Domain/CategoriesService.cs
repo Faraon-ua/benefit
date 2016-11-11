@@ -71,8 +71,8 @@ namespace Benefit.Services.Domain
                 Category = category
             };
             //add all sellers categories except default
-            sellerIds.AddRange(category.SellerCategories.Where(entry=>!entry.IsDefault).Select(entry => entry.SellerId));
-            sellerIds.AddRange(category.GetAllChildrenRecursively().SelectMany(entry => entry.SellerCategories).Where(entry => !entry.IsDefault).Select(entry => entry.SellerId));
+            sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
+            sellerIds.AddRange(category.GetAllChildrenRecursively().SelectMany(entry => entry.SellerCategories).Select(entry => entry.SellerId));
 
             //filter by region and shippings
             var regionId = RegionService.GetRegionId();

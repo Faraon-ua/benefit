@@ -49,6 +49,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(new ProductOptionsViewModel
             {
                 Product = product,
+                ProductId =  productId,
                 CategoryId = categoryId,
                 SellerId = sellerId,
                 ProductOptions = productOptions

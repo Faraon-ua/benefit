@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models;
@@ -18,7 +19,7 @@ namespace Benefit.Web.Controllers
         }
         public ActionResult Index(string productUrl, string categoryUrl, string sellerUrl)
         {
-            var product = ProductsService.GetProductWithProductOptions(productUrl);
+            var product = ProductsService.GetProduct(productUrl);
             if (product == null) return HttpNotFound();
             var categoriesService = new CategoriesService();
 
@@ -26,6 +27,7 @@ namespace Benefit.Web.Controllers
             {
                 Product = product,
                 CategoryUrl = categoryUrl,
+                ProductOptions = ProductsService.GetProductOptions(product.Id),
                 Breadcrumbs = new BreadCrumbsViewModel()
                 {
                     Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrl),
@@ -34,9 +36,5 @@ namespace Benefit.Web.Controllers
             };
             return View(result);
         }
-      /*  public ActionResult Index(string sellerUrl, string categoryUrl)
-        {
-            return View();
-        }*/
 	}
 }

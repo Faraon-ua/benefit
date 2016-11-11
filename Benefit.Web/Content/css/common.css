@@ -69,6 +69,9 @@
     margin-right: 10px;
 }
 
+.margin-left-0 {
+    margin-left: 0px !important;
+}
 .margin-left-10 {
     margin-left: 10px;
 }
@@ -161,4 +164,7 @@
 
 .product_photo_big img {
     width: 100%;
+}
+#sellerFilters fieldset {
+    padding: 0 0 0 19px;
 }

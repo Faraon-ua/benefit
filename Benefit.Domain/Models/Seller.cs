@@ -47,6 +47,8 @@ namespace Benefit.Domain.Models
         public string LastModifiedBy { get; set; }
         [MaxLength(128)]
         public string OwnerId { get; set; }
+        public double PointsAccount { get; set; }
+        public double HangingPointsAccount { get; set; }
         [ForeignKey("OwnerId")]
         public virtual ApplicationUser Owner { get; set; }
         [MaxLength(128)]

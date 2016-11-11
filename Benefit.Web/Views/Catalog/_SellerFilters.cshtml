@@ -1,6 +1,6 @@
 ﻿@model Benefit.DataTransfer.ViewModels.SellersViewModel
 
-<div id="sellerFilters" class="padding-left-19">
+<div id="sellerFilters">
     @if (Model.Category.ChildAsFilters)
     {
         var childCategories = Model.Category.ChildCategories.Where(entry => entry.IsActive).ToList();

@@ -26,6 +26,8 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
+        /*[MaxLength(128)]
+        public string KeyWords { get; set; }*/
         [Index]
         public int SKU { get; set; }
         [Required(AllowEmptyStrings = true)]

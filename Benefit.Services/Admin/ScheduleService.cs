@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Web.UI.WebControls.WebParts;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -33,6 +32,16 @@ namespace Benefit.Services.Admin
                             entry.HangingPointsAccount = entry.PointsAccount;
                             //обнулить баллы в обработке
                             entry.PointsAccount = 0;
+                            db.Entry(entry).State = EntityState.Modified;
+                        });
+
+                        db.Sellers.Where(entry => entry.PointsAccount > 0).ToList().ForEach(entry =>
+                        {
+                            //баллы поставщика за текущий период - в обработку
+                            entry.HangingPointsAccount = entry.PointsAccount;
+                            //обнулить баллы поставщика в обработке
+                            entry.PointsAccount = 0;
+                            db.Entry(entry).State = EntityState.Modified;
                         });
 
                         db.SaveChanges();
@@ -121,8 +130,11 @@ namespace Benefit.Services.Admin
                                             .Sum(entry => entry.Transaction.Bonuses),
                                 QualifiedPartnersNumber = partnerReckons.Count(entry => entry.PointsAmount >= SettingsService.RewardsPlan.PointsQualificationAmount && entry.Transaction.PayeeId == payee.Id)
                             };
+
                             payee.BonusAccount += partnerRecon.BonusesReckoned;
                             payee.TotalBonusAccount += partnerRecon.BonusesReckoned;
+
+                            //во вьюшку
                             result.Partners.Add(partnerRecon);
                             db.Entry(payee).State = EntityState.Modified;
                         }
@@ -133,17 +145,23 @@ namespace Benefit.Services.Admin
                         var vipBonusesStack = totalStructurePointsAmount * SettingsService.RewardsPlan.DistributionToPointsPercentageMap[DistributionType.VIP] / 100;
 
                         //вычислить випов
-                        var vipPartners =
+                        var vipPartnerIds =
                             result.Partners.Where(
                                 entry =>
                                     entry.User.HangingPointsAccount >= SettingsService.RewardsPlan.VIPPointsQualificationAmount &&
-                                    entry.QualifiedPartnersNumber >= SettingsService.RewardsPlan.VIPQualifiedPartnersNumber).Select(entry => entry.User).ToList();
+                                    entry.QualifiedPartnersNumber >= SettingsService.RewardsPlan.VIPQualifiedPartnersNumber).Select(entry => entry.User.Id).ToList();
+                        var vipPartners =
+                            db.Users.Include(entry => entry.ReferedBenefitCardSellers)
+                                .Include(entry => entry.ReferedWebSiteSellers)
+                                .Where(entry => vipPartnerIds.Contains(entry.Id))
+                                .ToList();
 
                         var vipPortions = new List<VipPortion>();
                         foreach (var vipPartner in vipPartners)
                         {
                             var vipPartnerTotalStructurePointAmount =
-                                vipPartner.GetAllStructurePartners().Sum(entry => entry.HangingPointsAccount);
+                                vipPartner.GetAllStructurePartners().Sum(entry => entry.HangingPointsAccount) + vipPartner.HangingPointsAccount; //вместе с ним
+
                             var vipPortion = new VipPortion()
                             {
                                 User = vipPartner,
@@ -160,13 +178,13 @@ namespace Benefit.Services.Admin
                                         ? SettingsService.RewardsPlan.VIPMaxPortions
                                         : entry.Portions));
 
-                        var vipPortionBonusRate = vipBonusesStack/totalVipPortions;
+                        var vipPortionBonusRate = vipBonusesStack / totalVipPortions;
 
                         foreach (var vipPortion in vipPortions)
                         {
                             var bonusesRecon = (vipPortion.Portions > SettingsService.RewardsPlan.VIPMaxPortions
                                 ? SettingsService.RewardsPlan.VIPMaxPortions
-                                : vipPortion.Portions)*vipPortionBonusRate;
+                                : vipPortion.Portions) * vipPortionBonusRate;
                             var totalBalansBeforeRecon = vipPortion.User.BonusAccount +
                                                      partnerReckons.Where(entry => entry.Transaction.PayeeId == vipPortion.User.Id)
                                                          .Sum(entry => entry.Transaction.Bonuses);
@@ -184,15 +202,70 @@ namespace Benefit.Services.Admin
                                 },
                                 PointsAmount = 0
                             };
+
+                            partnerReckons.Add(transaction);
+
+                            //1% от поставщиков випа
+                            double webSellerBonus = 0;
+                            foreach (var webSeller in vipPortion.User.ReferedWebSiteSellers)
+                            {
+                                webSellerBonus = webSeller.HangingPointsAccount * SettingsService.RewardsPlan.DistributionToPointsPercentageMap[DistributionType.SellerInvolvement] / 100;
+                                var bonusesBeforeSellerBonus = vipPortion.User.BonusAccount +
+                                                 partnerReckons.Where(entry => entry.Transaction.PayeeId == vipPortion.User.Id)
+                                                     .Sum(entry => entry.Transaction.Bonuses);
+                                var sellerTransaction = new TransactionServiceModel()
+                                {
+                                    Transaction = new Transaction()
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        Bonuses = webSellerBonus,
+                                        BonusesBalans = bonusesBeforeSellerBonus + webSellerBonus,
+                                        Time = DateTime.UtcNow,
+                                        Type = TransactionType.VIPSellerBonus,
+                                        PayeeId = vipPortion.User.Id,
+                                        Payee = vipPortion.User
+                                    },
+                                    PointsAmount = 0
+                                };
+                                partnerReckons.Add(sellerTransaction);
+                            }
+                            
+                            double benefirCardSellerBonus = 0;
+                            foreach (var webSeller in vipPortion.User.ReferedBenefitCardSellers)
+                            {
+                                benefirCardSellerBonus = webSeller.HangingPointsAccount * SettingsService.RewardsPlan.DistributionToPointsPercentageMap[DistributionType.SellerInvolvement] / 100;
+                                var bonusesBeforeSellerBonus = vipPortion.User.BonusAccount +
+                                                 partnerReckons.Where(entry => entry.Transaction.PayeeId == vipPortion.User.Id)
+                                                     .Sum(entry => entry.Transaction.Bonuses);
+                                var sellerTransaction = new TransactionServiceModel()
+                                {
+                                    Transaction = new Transaction()
+                                    {
+                                        Id = Guid.NewGuid().ToString(),
+                                        Bonuses = benefirCardSellerBonus,
+                                        BonusesBalans = bonusesBeforeSellerBonus + benefirCardSellerBonus,
+                                        Time = DateTime.UtcNow,
+                                        Type = TransactionType.VIPSellerBonus,
+                                        PayeeId = vipPortion.User.Id,
+                                        Payee = vipPortion.User
+                                    },
+                                    PointsAmount = 0
+                                };
+                                partnerReckons.Add(sellerTransaction);
+                            }
+
+                            vipPortion.User.BonusAccount += bonusesRecon + webSellerBonus + benefirCardSellerBonus;
+                            vipPortion.User.TotalBonusAccount += bonusesRecon + webSellerBonus + benefirCardSellerBonus;
+                            db.Entry(vipPortion.User).State = EntityState.Modified;
+
+                            //во вьюшку
                             result.VipPartners.Add(new PartnerReckon()
                             {
                                 User = vipPortion.User,
-                                BonusesReckoned = bonusesRecon,
+                                BonusesReckoned = bonusesRecon + webSellerBonus + benefirCardSellerBonus,
                                 QualifiedPartnersNumber = vipPortion.UserStructurePoints
                             });
-                            partnerReckons.Add(transaction);
                         }
-
 
                         //для всех пользователей, у кого есть баллы в обработке
                         allUsers.Where(entry => entry.HangingPointsAccount > 0).ToList().ForEach(entry =>

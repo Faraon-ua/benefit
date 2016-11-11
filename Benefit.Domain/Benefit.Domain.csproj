@@ -164,6 +164,10 @@
     <Compile Include="Migrations\201611080836535_UniqUrlNamesAndTransactions.Designer.cs">
       <DependentUpon>201611080836535_UniqUrlNamesAndTransactions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611101518428_AddPointsToSeller.cs" />
+    <Compile Include="Migrations\201611101518428_AddPointsToSeller.Designer.cs">
+      <DependentUpon>201611101518428_AddPointsToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -267,6 +271,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611080836535_UniqUrlNamesAndTransactions.resx">
       <DependentUpon>201611080836535_UniqUrlNamesAndTransactions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611101518428_AddPointsToSeller.resx">
+      <DependentUpon>201611101518428_AddPointsToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -12,7 +12,7 @@
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
     <script>
         function ProductOptionGroup(id) {
-            $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionGroup?categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.Product.Id&id=" + id, function (response, status, xhr) {
+            $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionGroup?categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.ProductId&id=" + id, function (response, status, xhr) {
                 $("#dialog").removeClass('hide').dialog({
                     buttons: [
                         {
@@ -28,7 +28,7 @@
         }
 
         function ProductOptionValue(parentId) {
-            $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionValue?parentId=" + parentId + "&categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.Product.Id", function (response, status, xhr) {
+            $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionValue?parentId=" + parentId + "&categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.ProductId", function (response, status, xhr) {
                 $("#dialog").removeClass('hide').dialog({
                     minWidth: 500,
                     buttons: [
@@ -63,7 +63,7 @@
             <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" target="_blank" title="Редагувати" onclick="ProductOptionGroup('@group.Id')">
                 <i class="icon-edit"></i>
             </a>
-            <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.Product.Id })" onclick=" return confirm('Ви впевненні?') ">
+            <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
                 <i class="icon-trash"></i>
             </a>
         }
@@ -76,7 +76,7 @@
             @child.Name (+@child.PriceGrowth)
             @if (group.Editable)
             {
-                <a href="@Url.Action("Delete", new { id = child.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.Product.Id })" onclick=" return confirm('Ви впевненні?') ">
+                <a href="@Url.Action("Delete", new { id = child.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
                     <i class="icon-remove red"></i>
                 </a>
             }

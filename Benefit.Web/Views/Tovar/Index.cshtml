@@ -10,9 +10,30 @@
 @section scripts
 {
     <script>
-        $('.carousel').carousel({
-            interval: 3000
-        })
+        $(function () {
+            $('.carousel').carousel({
+                interval: 3000
+            });
+
+            $(".product_modal_form input[type=checkbox], .product_modal_form input[type=radio], .product_modal_form div.product_modal_minus, .product_modal_form div.product_modal_plus").click(function () {
+                CalculateProductPrice();
+            });
+        });
+
+        function CalculateProductPrice() {
+            var checkOptions = $(".product_modal_form input[type=checkbox]:checked").map(function () {
+                var checkboxPriceGrowth = parseFloat($(this).attr("data-price-growth"));
+                var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                return checkboxPriceGrowth * amount;
+            }).get();
+            var radioOptions = $(".product_modal_form input[type=radio]:checked").map(function () {
+                return parseFloat($(this).attr("data-price-growth"));
+            }).get();
+            var checkPriceGrowth = checkOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
+            var radioPriceGrowth = radioOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
+            var originalPrice = parseFloat($("#product-price").attr("data-original-price"));
+            $("#product-price").text(originalPrice + checkPriceGrowth + radioPriceGrowth);
+        }
     </script>
 }
 <main class="full_content product_content">
@@ -93,17 +114,17 @@
                     {
                         <tr>
                             <td>@productParameter.ProductParameter.Name</td>
-                            <td>@productParameter.StartValue 
-                            @if (!string.IsNullOrEmpty(productParameter.EndValue))
-                            {
-                                <span>- @productParameter.EndValue</span>
-                            }
+                            <td>
+                                @productParameter.StartValue
+                                @if (!string.IsNullOrEmpty(productParameter.EndValue))
+                                {
+                                    <span>- @productParameter.EndValue</span>
+                                }
                             </td>
                         </tr>
                     }
                 </table>
             </div>
-
 
             <div id="prodact_recall" class="prodact_recall tab-pane fade">
                 <form>
@@ -168,5 +189,5 @@
 </main>
 @if (Model.ProductOptions.Any())
 {
-    @Html.Partial("_ProductOptions", Model.Product)
+    @Html.Partial("_ProductOptions", Model)
 }

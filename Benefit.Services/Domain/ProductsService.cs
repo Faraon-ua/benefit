@@ -15,18 +15,23 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public Product GetProductWithProductOptions(string urlName)
+        public Product GetProduct(string urlName)
         {
-            var product = db.Products.Include(entry=>entry.Images).FirstOrDefault(entry => entry.UrlName == urlName);
+            var product = db.Products.Include(entry => entry.Images).FirstOrDefault(entry => entry.UrlName == urlName);
             if (product == null) return null;
-           /* var productOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(entry => entry.ParentProductOptionId == null).ToList();
-                var categoryProductOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(
-                    entry =>
-                        entry.CategoryId == product.CategoryId && entry.SellerId == sellerId &&
-                        entry.ParentProductOptionId == null).ToList();
-                productOptions.InsertRange(0, categoryProductOptions);*/
-
             return product;
+        }
+
+        public List<ProductOption> GetProductOptions(string productId)
+        {
+            var product = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).FirstOrDefault(entry => entry.Id == productId);
+            var productOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(entry => entry.ParentProductOptionId == null && entry.ProductId == productId).ToList();
+            var categoryProductOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(
+                entry =>
+                    entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId &&
+                    entry.ParentProductOptionId == null).ToList();
+            productOptions.InsertRange(0, categoryProductOptions);
+            return productOptions;
         }
 
         public ProductImportResults ProcessImportedProducts(IEnumerable<XmlProduct> xmlProducts, IEnumerable<string> dbCategoryIds, string sellerId)

@@ -59,7 +59,7 @@ namespace Benefit.Web.Controllers
                             (entry.RegionLevel >= minLevel || entry.RegionLevel == 0) &&
                             (entry.Name_ru.ToLower().Contains(query) || entry.Name_ua.ToLower().Contains(query)))
                         .OrderBy(entry => entry.RegionLevel)
-                        .Take(10)
+                        .Take(15)
                         .ToList();
                 var result = new AutocompleteSearch
                 {
