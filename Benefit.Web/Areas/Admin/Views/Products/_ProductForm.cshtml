@@ -31,7 +31,7 @@
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Ціна</label>
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.Price, new { @class = "col-sm-1 pull-left" }) 
+            @Html.TextBox("Price", Model.Price.ToString("F"), new { @class = "col-sm-1 pull-left" })
             @Html.DropDownList("CurrencyId", null, new { @class = "col-sm-2" })
             @Html.ValidationMessageFor(model => model.Price)
         </div>
@@ -40,9 +40,16 @@
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Доступна кількість</label>
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.Amount) 
+            @{
+                var htmlAttributes = new Dictionary<string, object>();
+                if (Model.Amount == null)
+                {
+                    htmlAttributes.Add("disabled", "disabled");
+                }
+            }
+            @Html.EditorFor(entry=>entry.Amount, new { htmlAttributes })
             <label>
-                <input type="checkbox" class="ace" id="amountSwitcher">
+                <input type="checkbox" class="ace" id="amountSwitcher" @(Model.Amount == null ? "checked" : "")>
                 <span class="lbl"> Завжди в наявності</span>
             </label>
         </div>
@@ -55,13 +62,13 @@
             @Html.ValidationMessageFor(model => model.IsActive)
         </div>
     </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Категорія</label>
-            <div class="col-md-9">
-                @Html.DropDownListFor(m=>m.CategoryId, null, "Не обрано", new { @class = "chosen-select col-xs-10 col-sm-5" })
-                @Html.ValidationMessageFor(model => model.CategoryId)
-            </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Категорія</label>
+        <div class="col-md-9">
+            @Html.DropDownListFor(m => m.CategoryId, null, "Не обрано", new { @class = "chosen-select col-xs-10 col-sm-5" })
+            @Html.ValidationMessageFor(model => model.CategoryId)
         </div>
+    </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Постачальник</label>
         <div class="col-md-9">

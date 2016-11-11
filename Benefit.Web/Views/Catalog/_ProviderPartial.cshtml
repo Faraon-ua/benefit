@@ -4,7 +4,7 @@
 @model Seller
 @{
     var categoryIds = Model.SellerCategories.Select(entry => entry.CategoryId).Distinct().ToList();
-    categoryIds.AddRange(Model.SellerCategories.Select(entry => entry.Category.ParentCategory.Id).Distinct());
+    categoryIds.AddRange(Model.SellerCategories.Where(entry => entry.Category.ParentCategory != null).Select(entry => entry.Category.ParentCategory.Id).Distinct());
     var categoryIdsStr = string.Join(",", categoryIds);
     var sellerOptions = new StringBuilder();
     if (Model.IsBenefitCardActive)
@@ -38,7 +38,7 @@
             <p class="provider_name">@Model.Name</p>
             @{
                 var specifics = Model.SellerCategories.FirstOrDefault(entry => entry.IsDefault);
-                var specificsStr =  specifics == null ? "не доступно" : specifics.Category.Name;
+                var specificsStr = specifics == null ? "не доступно" : specifics.Category.Name;
             }
             <p class="provider_type">@specificsStr</p>
             <div class="rating_wrap">
@@ -59,12 +59,12 @@
                 <div class="provider_address">
                     <span>
                         @address.Region.Name_ua
-                    @if (!string.IsNullOrEmpty(address.AddressLine))
-                    {
-                        <span>, @address.AddressLine</span>
-                    }
-                </span>
-            </div>
+                        @if (!string.IsNullOrEmpty(address.AddressLine))
+                        {
+                            <span>, @address.AddressLine</span>
+                        }
+                    </span>
+                </div>
             }
             @if (Model.IsBenefitCardActive)
             {

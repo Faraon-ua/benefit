@@ -146,7 +146,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 else
                 {
-                    product.SKU = (db.Products.Max(entry => (int?)entry.SKU) ?? SettingsService.SkuMinValue) + 1;
+                    var maxSku = db.Products.Max(entry => (int?) entry.SKU);
+                    if (maxSku == null || maxSku < SettingsService.SkuMinValue)
+                    {
+                        maxSku = SettingsService.SkuMinValue;
+                    }
+                    product.SKU = (int) maxSku;
                     db.Products.Add(product);
                 }
                 db.ProductParameterProducts.RemoveRange(
