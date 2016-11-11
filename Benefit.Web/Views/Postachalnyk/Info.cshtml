@@ -96,6 +96,7 @@
 
     <ul class="tab_menu nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#about_org">Про нас</a></li>
+        <li><a data-toggle="tab" href="#map_org">На карті</a></li>
         <li><a data-toggle="tab" href="#addition_org">Додатково</a></li>
         <li><a data-toggle="tab" href="#delivery_org">Доставка</a></li>
         <li><a data-toggle="tab" href="#recall_org">Відгуки</a></li>
@@ -117,6 +118,17 @@
                 <li>Тераса</li>
             </ul>
         </div>
+        <div id="map_org" class="addition_org tab-pane fade">
+            @{
+                var mapAddress = Model.Seller.Addresses.FirstOrDefault();
+                var addressStr = string.Empty;
+                if (mapAddress != null)
+                {
+                    addressStr = mapAddress.Region.Name_ua + "," + mapAddress.AddressLine;
+                }
+            }
+            <iframe style="border:0" src="https://www.google.com/maps/embed/v1/place?q=@addressStr&amp;key=AIzaSyACynVfj28_Sng9qeoClqX8LygAonDC4LE " allowfullscreen="" width="1000" height="450" frameborder="0"></iframe>
+        </div>
 
         <div id="delivery_org" class="delivery_org tab-pane fade">
             <p>
@@ -136,10 +148,6 @@
                     }
                 </p>
                 }
-                @*Доставка здійснюється по місту Мукачево та Мукачівському району.<br>
-                    Мінімальна сумма замовлення має становити 200 грн.<br>
-                    Доставка по м. Мукачево від 300 грн - безкоштовна.<br>
-                    Доставка по Мукачівському району становить 30 грн, від 400 грн - безкоштовна.*@
                 </p>
                 <p>Середній час доставки 45 хвилин.</p>
             </div>
