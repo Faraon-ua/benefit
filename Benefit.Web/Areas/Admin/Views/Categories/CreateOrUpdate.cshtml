@@ -72,12 +72,12 @@
                 search_contains: true
             });
 
-           /* $(".switchNavigationType").click(function () {
-                $(".switchNavigationType").removeClass("btn-primary");
-                $(this).addClass("btn-primary");
-                var navType = $(this).attr("data-navtype");
-                $("#navType").val(navType);
-            });*/
+            /* $(".switchNavigationType").click(function () {
+                 $(".switchNavigationType").removeClass("btn-primary");
+                 $(this).addClass("btn-primary");
+                 var navType = $(this).attr("data-navtype");
+                 $("#navType").val(navType);
+             });*/
         })
     </script>
 }
@@ -100,19 +100,29 @@
                     Русский
                 </a>
             </li>
-
-         
+            <li>
+                <a href="#sellers" data-toggle="tab">
+                    <i class="blue icon-list bigger-110"></i>
+                    Список постачальників
+                </a>
+            </li>
+            <li>
+                <a href="#products" data-toggle="tab">
+                    <i class="blue icon-list bigger-110"></i>
+                    Список товарів
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
             <div class="tab-pane in active" id="home">
                 <div class="form-horizontal">
-                   @* <label>Тип навігації</label>
-                    <div>
-                        <a data-navtype="SellersOnly" class="btn switchNavigationType @(Model.NavigationType == "SellersOnly" ? "btn-primary" : "")">Тільки постачальники</a>
-                        <a data-navtype="SellersAndProducts" class="btn switchNavigationType @(Model.NavigationType == "SellersAndProducts" ? "btn-primary" : "")">Постачальники та товари</a>
-                    </div>
-                    <br />*@
+                    @* <label>Тип навігації</label>
+                        <div>
+                            <a data-navtype="SellersOnly" class="btn switchNavigationType @(Model.NavigationType == "SellersOnly" ? "btn-primary" : "")">Тільки постачальники</a>
+                            <a data-navtype="SellersAndProducts" class="btn switchNavigationType @(Model.NavigationType == "SellersAndProducts" ? "btn-primary" : "")">Постачальники та товари</a>
+                        </div>
+                        <br />*@
                     @Html.HiddenFor(entry => entry.NavigationType, new { id = "navType" })
 
                     @Html.ValidationSummary(true)
@@ -218,10 +228,32 @@
                     }
                 </div>
             </div>
+
+            <div id="sellers" class="tab-pane">
+                <ul>
+                    @foreach (var seller in @Model.SellerCategories.Select(entry => entry.Seller))
+                    {
+                        <li>
+                            @Html.ActionLink(seller.Name, "CreateOrUpdate", "Sellers", new { id = seller.Id }, new { target = "_blank" })
+                        </li>
+                    }
+                </ul>
+            </div>
+
+            <div id="products" class="tab-pane">
+                <ul>
+                    @foreach (var product in @Model.Products)
+                    {
+                        <li>
+                            @Html.ActionLink(product.Name, "CreateOrUpdate", "Products", new { id = product.Id }, new { target = "_blank" })
+                        </li>
+                    }
+                </ul>
+            </div>
         </div>
-    </div>
-    <div class="control-group">
-        <input type="submit" value="Зберегти" class="btn btn-success width-20" />
-        @Html.ActionLink("Cкасувати", "Index", "Categories", null, new { @class = "btn btn-danger width-20" })
+        <div class="control-group">
+            <input type="submit" value="Зберегти" class="btn btn-success width-20" />
+            @Html.ActionLink("Cкасувати", "Index", "Categories", null, new { @class = "btn btn-danger width-20" })
+        </div>
     </div>
 }

@@ -52,9 +52,11 @@
   <ItemGroup>
     <Compile Include="JSON\AutocompleteSearch.cs" />
     <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
+    <Compile Include="ViewModels\CategoriesListViewModel.cs" />
     <Compile Include="ViewModels\ProcessBonusesViewModel.cs" />
     <Compile Include="ViewModels\ProductDetailsViewModel.cs" />
     <Compile Include="ViewModels\ProductPartialViewModel.cs" />
+    <Compile Include="ViewModels\SellerCatalogViewModel.cs" />
     <Compile Include="ViewModels\SellerDetailsViewModel.cs" />
     <Compile Include="ViewModels\ProductsViewModel.cs" />
     <Compile Include="ViewModels\SellersViewModel.cs" />

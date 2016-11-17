@@ -65,7 +65,7 @@ namespace Benefit.Services.Domain
                     Description = entry.Description,
                     SKU = sku++,
                     Price = entry.Price.GetValueOrDefault(0),
-                    Amount = entry.Availability ? null : (int?)0,
+                    AvailableAmount = entry.Availability ? null : (int?)0,
                     IsActive = true,
                     LastModified = DateTime.UtcNow,
                     LastModifiedBy = "1CImport",
@@ -87,7 +87,7 @@ namespace Benefit.Services.Domain
                 dbProduct.UrlName = entry.Name.Translit();
                 dbProduct.Description = entry.Description;
                 dbProduct.Price = entry.Price.GetValueOrDefault(0);
-                dbProduct.Amount = entry.Availability ? null : (int?)0;
+                dbProduct.AvailableAmount = entry.Availability ? null : (int?)0;
 
                 dbProduct.LastModified = DateTime.UtcNow;
                 dbProduct.LastModifiedBy = "1CImport";
@@ -110,10 +110,7 @@ namespace Benefit.Services.Domain
                     .FirstOrDefault(entry => entry.Id == productId);
             if (product == null) return;
             var imagesService = new ImagesService();
-            foreach (var image in product.Images)
-            {
-                imagesService.Delete(image.Id, image.ImageType);
-            }
+           imagesService.DeleteAll(product.Images, productId, ImageType.ProductGallery);
 
             db.ProductOptions.RemoveRange(product.ProductOptions);
             db.ProductParameterProducts.RemoveRange(product.ProductParameterProducts);

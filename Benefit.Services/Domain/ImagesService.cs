@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Image = System.Drawing.Image;
@@ -59,7 +61,7 @@ namespace Benefit.Services
                 case ImageType.SellerLogo:
                     maxWidth = SettingsService.Images.SellerLogoMaxWidth;
                     maxHeight = SettingsService.Images.SellerLogoMaxHeight;
-                    break; 
+                    break;
                 case ImageType.NewsLogo:
                     maxWidth = SettingsService.Images.NewsLogoMaxWidth;
                     maxHeight = SettingsService.Images.NewsLogoMaxHeight;
@@ -102,19 +104,38 @@ namespace Benefit.Services
             }
         }
 
-        public void Delete(string imageId, ImageType type)
+        public void DeleteAll(IEnumerable<Benefit.Domain.Models.Image> images, string parentId, ImageType type)
         {
-            var image = db.Images.Find(imageId);
-            if(image ==null) return;
-            DeleteFile(image.ImageUrl, type);
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var pathString = Path.Combine(originalDirectory, "Images", type.ToString(), parentId);
+            var productImagesDir = new DirectoryInfo(pathString);
+            if (productImagesDir.Exists)
+            {
+                productImagesDir.Delete(true);
+            }
+            using (var db = new ApplicationDbContext())
+            {
+                var imgIds = images.Select(img => img.Id).ToList();
+                db.Images.RemoveRange(db.Images.Where(entry => imgIds.Contains(entry.Id)));
+            }
         }
 
-        private void DeleteFile(string fileName, ImageType type)
+        public void Delete(string imageId, string parentId, ImageType type)
+        {
+            var image = db.Images.Find(imageId);
+            if (image == null) return;
+            DeleteFile(image.ImageUrl, parentId, type);
+        }
+
+        private void DeleteFile(string fileName, string parentId, ImageType type)
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var pathString = Path.Combine(originalDirectory, "Images", type.ToString());
-            var file = new FileInfo(Path.Combine(pathString, fileName));
-            file.Delete();
+            var file = new FileInfo(Path.Combine(pathString, parentId, fileName));
+            if (file.Exists)
+            {
+                file.Delete();
+            }
             var dotIndex = fileName.IndexOf('.');
             var id = fileName.Substring(0, dotIndex);
             using (var db = new ApplicationDbContext())

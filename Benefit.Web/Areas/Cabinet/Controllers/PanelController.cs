@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
@@ -15,6 +16,22 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         public PanelController()
         {
             UserService = new UserService();
+        }
+
+        [HttpPost]
+        public ActionResult GetPartnersByReferalIds(string[] ids, int level)
+        {
+            if (ids == null)
+            {
+                return Json(new { });
+            }
+            var partners = UserService.GetPartnersByReferalIds(ids);
+            var result = partners.ToDictionary(entry => entry.Key,
+                entry => ControllerContext.RenderPartialToString("_PartnersPartial",
+                    new KeyValuePair<int, IEnumerable<ApplicationUser>>(level, entry.Value)));
+            var jsonResult = Json(result);
+            jsonResult.MaxJsonLength = int.MaxValue;
+            return jsonResult;
         }
 
         //
@@ -37,20 +54,19 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             return View(user);
         }
 
-        [HttpPost]
-        public ActionResult GetPartnersByReferalIds(string[] ids, int level)
+        public ActionResult planvunagorod()
         {
-            if (ids == null)
+            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
+            using (var db = new ApplicationDbContext())
             {
-                return Json(new {});
+                ViewBag.Page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "plan_vinagorod").Content;
+                return View(user);
             }
-            var partners = UserService.GetPartnersByReferalIds(ids);
-            var result = partners.ToDictionary(entry => entry.Key,
-                entry => ControllerContext.RenderPartialToString("_PartnersPartial",
-                    new KeyValuePair<int, IEnumerable<ApplicationUser>>(level, entry.Value)));
-            var jsonResult = Json(result);
-            jsonResult.MaxJsonLength = int.MaxValue;
-            return jsonResult;
+        }
+
+        public ActionResult Zakladu()
+        {
+            return View();
         }
     }
 }

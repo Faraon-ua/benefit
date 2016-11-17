@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Web;
+using System.Web.Caching;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
@@ -53,6 +56,53 @@ namespace Benefit.Services.Domain
                 }
             }
             return sellerVM;
+        }
+
+        public List<Category> GetAllSellerCategories(string sellerUrl)
+        {
+            var cacheCats =
+                HttpContext.Current.Cache[string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, sellerUrl)];
+            if (cacheCats == null)
+            {
+                var seller =
+                    db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                        .FirstOrDefault(entry => entry.UrlName == sellerUrl);
+                var all = new List<Category>();
+                var sellerCats = seller.SellerCategories.Select(entry => entry.Category);
+                all.AddRange(sellerCats);
+                foreach (var sellerCat in sellerCats)
+                {
+                    var parent = sellerCat.ParentCategory;
+                    while (parent != null)
+                    {
+                        all.Add(parent);
+                        parent = parent.ParentCategory;
+                    }
+                }
+                cacheCats = all.Distinct(new CategoryComparer()).ToList();
+                HttpContext.Current.Cache.Add(string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, seller.Id),
+                    cacheCats, null, Cache.NoAbsoluteExpiration,
+                    new TimeSpan(0, 0, CacheConstants.OutputCacheLength, 0),
+                    CacheItemPriority.Default, null);
+            }
+            return cacheCats as List<Category>;
+        }
+
+        public ProductsViewModel GetSellerCatalog(string sellerUrl, string categoryUrl)
+        {
+            var result = new ProductsViewModel();
+            var seller = db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.UrlName == sellerUrl);
+            if (seller == null) return null;
+            result.Seller = seller;
+            var category = db.Categories.FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            result.Category = category;
+            result.Items = new List<Product>();
+            result.Breadcrumbs = new BreadCrumbsViewModel()
+            {
+                Seller = seller,
+                Categories = new List<Category>() //{ seller.SellerCategories.FirstOrDefault(entry=>entry.IsDefault).Category }
+            };
+            return result;
         }
 
         public void ProcessCategories(List<SellerCategory> categories, string sellerId)

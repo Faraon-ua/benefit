@@ -12,12 +12,12 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
     [Authorize(Roles = "Admin,Seller")]
     public class AdminController : Controller
     {
-        public ActionResult DeleteUploadedFile(string fileName, ImageType type)
+        public ActionResult DeleteUploadedFile(string fileName, string parentId, ImageType type)
         {
             var imagesService = new ImagesService();
             var dotIndex = fileName.IndexOf('.');
             var id = fileName.Substring(0, dotIndex);
-            imagesService.Delete(id, type);
+            imagesService.Delete(id, parentId, type);
             return Json(true);
         }
 

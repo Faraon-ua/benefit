@@ -1,25 +1,33 @@
 ﻿@using Benefit.Common.Constants
-@model KeyValuePair<string, IEnumerable<Benefit.Domain.Models.Category>>
+@model Benefit.DataTransfer.ViewModels.CategoriesListViewModel
 
-<ul id="@(Model.Key == null ? "categories" : "")" class="@(ViewBag.IsDropDown ? "" : "nav navbar-nav")">
-    @if (Model.Key != null)
+<ul id="@(Model.ParentName == null ? "categories" : "")" class="@(ViewBag.IsDropDown ? "" : "nav navbar-nav")">
+    @if (Model.ParentName != null)
     {
         <li>
-            <span class="bold">@Model.Key</span>
+            <span class="bold">@Model.ParentName</span>
         </li>
     }
 
-    @foreach (var category in Model.Value)
+    @foreach (var category in Model.Items)
     {
         <li>
-            <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id = category.UrlName })" title="@category.Description">@category.Name</a>
-            @if (Model.Key == null && category.ChildCategories.Any())
+            @if (Model.SellerUrlName == null)
+            {
+                <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id = category.UrlName })" title="@category.Description">@category.Name</a>
+            }
+            else
+            {
+                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.SellerUrlName, categoryUrl = category.UrlName })" title="@category.Description">@category.Name</a>
+            }
+
+            @if (Model.ParentName == null && category.ChildCategories.Any())
             {
                 <ul>
-                    @foreach (var subCategory in category.ChildCategories)
+                    @foreach (var subCategory in category.ChildCategories.OrderBy(entry=>entry.Order))
                     {
                         <li>
-                            <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id = subCategory.UrlName })" title="@subCategory.Description">@subCategory.Name</a>
+                            <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = subCategory.UrlName})" title="@subCategory.Description">@subCategory.Name</a>
                         </li>
                     }
                 </ul>

@@ -88,6 +88,11 @@ $(function () {
         }
     });
 
+    if (getCookie("cartNumber")) {
+        $("#cart-items-number").text(getCookie("cartNumber"));
+        $("#cart-items-number").show();
+    }
+
     if (getCookie("regionName")) {
         $("#select_place .inside").text(getCookie("regionName"));
     } else {

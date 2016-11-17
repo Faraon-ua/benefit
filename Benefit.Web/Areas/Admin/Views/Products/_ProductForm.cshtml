@@ -42,14 +42,14 @@
         <div class="col-md-9">
             @{
                 var htmlAttributes = new Dictionary<string, object>();
-                if (Model.Amount == null)
+                if (Model.AvailableAmount == null)
                 {
                     htmlAttributes.Add("disabled", "disabled");
                 }
             }
-            @Html.EditorFor(entry=>entry.Amount, new { htmlAttributes })
+            @Html.EditorFor(entry => entry.AvailableAmount, new { htmlAttributes })
             <label>
-                <input type="checkbox" class="ace" id="amountSwitcher" @(Model.Amount == null ? "checked" : "")>
+                <input type="checkbox" class="ace" id="amountSwitcher" @(Model.AvailableAmount == null ? "checked" : "")>
                 <span class="lbl"> Завжди в наявності</span>
             </label>
         </div>
@@ -60,6 +60,21 @@
         <div class="col-md-9">
             @Html.EditorFor(model => model.IsActive)
             @Html.ValidationMessageFor(model => model.IsActive)
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="DoesCountForShipping">Враховується в сумму доставки</label>
+        <div class="col-md-9">
+            @Html.EditorFor(model => model.DoesCountForShipping)
+            @Html.ValidationMessageFor(model => model.DoesCountForShipping)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="IsWeightProduct">Ваговий продукт</label>
+        <div class="col-md-9">
+            @Html.EditorFor(model => model.IsWeightProduct)
+            @Html.ValidationMessageFor(model => model.IsWeightProduct)
         </div>
     </div>
     <div class="form-group">

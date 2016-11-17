@@ -1,11 +1,13 @@
 ﻿using System.Web.Mvc;
 using Benefit.Common.Constants;
+using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 
 namespace Benefit.Web.Controllers
 {
     public class PostachalnykController : Controller
     {
+        SellerService SellerService = new SellerService();
         //
         // GET: /Postachalnyk/
         public ActionResult Index()
@@ -15,7 +17,6 @@ namespace Benefit.Web.Controllers
 
         public ActionResult Info(string id)
         {
-            var sellerService = new SellerService();
             var referrer = Request.UrlReferrer;
             string categoryUrlName = null;
             if (referrer != null && referrer.PathAndQuery.Contains(RouteConstants.CategoriesRoutePrefix))
@@ -24,14 +25,15 @@ namespace Benefit.Web.Controllers
                     referrer.PathAndQuery.Substring(
                         referrer.PathAndQuery.IndexOf(RouteConstants.CategoriesRoutePrefix) + RouteConstants.CategoriesRoutePrefix.Length + 1);
             }
-            var sellerVm = sellerService.GetSellerDetails(id, categoryUrlName);
+            var sellerVm = SellerService.GetSellerDetails(id, categoryUrlName);
             if (sellerVm.Seller == null) return HttpNotFound();
             return View(sellerVm);
         }
 
-        public ActionResult Catalog(string sellerUrl, string categoryUrl)
+        public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null)
         {
-            return HttpNotFound();
+            var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl);
+            return View("../Catalog/ProductsCatalog", model);
         }
     }
 }

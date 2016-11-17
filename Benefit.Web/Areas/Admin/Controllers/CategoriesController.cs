@@ -62,9 +62,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
-            var category = db.Categories.Find(id) ?? new Category() { Id = Guid.NewGuid().ToString(), ParentCategoryId = parentCategoryId, NavigationType = CategoryNavigationType.SellersAndProducts.ToString()};
-            ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id), "Id", "ExpandedName", category.ParentCategoryId);
-            category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
+            var category = db.Categories.Include(entry=>entry.SellerCategories.Select(sc=>sc.Category)).Include(entry=>entry.Products).FirstOrDefault(entry=>entry.Id == id) ??
+                           new Category()
+                           {
+                               Id = Guid.NewGuid().ToString(),
+                               ParentCategoryId = parentCategoryId,
+                               NavigationType = CategoryNavigationType.SellersAndProducts.ToString()
+                           };
+            ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id), "Id",
+                "ExpandedName", category.ParentCategoryId);
+            category.Localizations = LocalizationService.Get(category, new[] {"Name", "Description"});
             return View(category);
         }
 
@@ -73,6 +80,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public ActionResult CreateOrUpdate(Category category, HttpPostedFileBase categoryImage)
         {
+            if (db.Categories.Any(entry => entry.UrlName == category.UrlName))
+            {
+                ModelState.AddModelError("UrlName", "Категорія з таким Url вже існує");
+            }
             if (categoryImage != null && categoryImage.ContentLength > 0)
             {
                 //todo: add image resizing

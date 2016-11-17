@@ -1676,7 +1676,7 @@ footer {
         .partner_menu ul li .partner_menu_chosen:hover:before {
             background: url(../img/cabinet_menu_sprite.png) -39px -238px no-repeat;
         }
-
+        
         .partner_menu ul li .partner_menu_write_us:before {
             background: url(../img/cabinet_menu_sprite.png) 0 -272px no-repeat;
         }
@@ -1684,6 +1684,15 @@ footer {
         .partner_menu ul li .partner_menu_write_us.active:before,
         .partner_menu ul li .partner_menu_write_us:hover:before {
             background: url(../img/cabinet_menu_sprite.png) -39px -272px no-repeat;
+        }
+        
+        .partner_menu ul li .partner_menu_zakladu:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -310px no-repeat;
+        }
+
+        .partner_menu ul li .partner_menu_zakladu.active:before,
+        .partner_menu ul li .partner_menu_zakladu:hover:before {
+            background: url(../img/cabinet_menu_sprite.png) -37px -310px no-repeat;
         }
 
 .partner_main {
@@ -4999,3 +5008,4 @@ basket_modal_table td:nth-child(4) {
     width: 147px;
     border-left: 1px solid #ffffff;
     float: right;
+}

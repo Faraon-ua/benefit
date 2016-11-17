@@ -18,6 +18,56 @@
             $(".product_modal_form input[type=checkbox], .product_modal_form input[type=radio], .product_modal_form div.product_modal_minus, .product_modal_form div.product_modal_plus").click(function () {
                 CalculateProductPrice();
             });
+
+            var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+            $("#buy-product, .goto_ahead").click(function () {
+                $("#buy-product, .goto_ahead").attr('disabled', 'disabled');
+                $(".product_info_wrap").css("opacity", 0.3);
+
+                var productAmount = $("#product_amount").val();
+
+                var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
+                    var id = $(this).attr("id");
+                    var name = $(this).attr("data-option-name");
+                    var priceGrowth = parseFloat($(this).attr("data-price-growth"));
+                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                    if (!amount) {
+                        amount = 1;
+                    }
+                    return {
+                        ProductOptionId: id,
+                        //                            Name: name,
+                        //                            PriceGrowth: priceGrowth
+                        Amount: amount
+                    };
+                }).get();
+
+                var product = {
+                    ProductId: '@Model.Product.Id',
+                    Amount: $(".product_description_amount").val(),
+                    //                    Name: '@Model.Product.Name',
+                    //                    SKU: '@Model.Product.SKU',
+                    OrderProductOptions: productOptions
+                };
+
+                var order = {
+                    product: product,
+                    amount: productAmount
+                };
+                $.post(addToCartUrl,
+                    order,
+                    function (data) {
+                        $('#product_modal').modal('hide');
+                        setTimeout(function f() {
+                            $("#buy-product, .goto_ahead").removeAttr('disabled');
+                            $(".product_info_wrap").css("opacity", 1);
+                            $("#cart-items-number").text(data);
+                            $("#cart-items-number").show();
+                            setCookie("cartNumber", data, { expires: 36000, path: "/" });
+                        }, 1000);
+                    });
+                console.log(order);
+            });
         });
 
         function CalculateProductPrice() {
@@ -31,8 +81,8 @@
             }).get();
             var checkPriceGrowth = checkOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
             var radioPriceGrowth = radioOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
-            var originalPrice = parseFloat($("#product-price").attr("data-original-price"));
-            $("#product-price").text(originalPrice + checkPriceGrowth + radioPriceGrowth);
+            var originalPrice = parseFloat($(".product-price").attr("data-original-price"));
+            $(".product-price").text((originalPrice + checkPriceGrowth + radioPriceGrowth).toFixed(2));
         }
     </script>
 }
@@ -66,14 +116,17 @@
                 </div>
             </div>
             <div class="product_description_wrap">
-                <p class="product_description_title">@Model.Product.Name</p>
-                <p class="product_description_code">Код  товару @Model.Product.SKU</p>
+                @Html.HiddenFor(m => m.Product.Id)
+                <p id="Product_Name" class="product_description_title">@Model.Product.Name</p>
+                <p id="Product_SKU" class="product_description_code">Код товару @Model.Product.SKU</p>
                 <div class="product_description_rating">
                     <span class="rating_star good"></span>
                     <span class="rating_all">2 відгука</span>
                 </div>
                 <p class="product_description_in_stock">В наявності</p>
-                <p class="product_description_price">@Model.Product.Price грн</p>
+                <p class="product_description_price">
+                    <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн
+                </p>
                 <div class="product_description">@Html.Raw(Model.Product.Description)</div>
                 <div class="product_description_amount_wrap">
                     <div class="product_description_amount_minus">-</div>
@@ -81,9 +134,16 @@
                     <div class="product_description_amount_plus">+</div>
                 </div>
                 <div class="product_description_control_wrap">
-                    <div class="product_description_like"></div>
-                    <div class="product_description_scale"></div>
-                    <a class="product_description_buy" href="" data-toggle="modal" data-target="#product_modal">Купити</a>
+                    @*<div class="product_description_like"></div>
+                    <div class="product_description_scale"></div>*@
+                    @if (Model.Product.ProductOptions.Any())
+                    {
+                        <a class="product_description_buy" href="" data-toggle="modal" data-target="#product_modal">Купити</a>
+                    }
+                    else
+                    {
+                        <a id="buy-product" href="#">Купити</a>
+                    }
                 </div>
                 <div class="product_description_share_title">
                     <div class="product_description_share_icon"></div>

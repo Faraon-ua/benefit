@@ -168,6 +168,10 @@
     <Compile Include="Migrations\201611101518428_AddPointsToSeller.Designer.cs">
       <DependentUpon>201611101518428_AddPointsToSeller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611170944203_AddProductWeightProduct.cs" />
+    <Compile Include="Migrations\201611170944203_AddProductWeightProduct.Designer.cs">
+      <DependentUpon>201611170944203_AddProductWeightProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -179,7 +183,9 @@
     <Compile Include="Models\Currency.cs" />
     <Compile Include="Models\Enums\Distribution.cs" />
     <Compile Include="Models\Enums\Level.cs" />
+    <Compile Include="Models\ModelExtensions\StringExt.cs" />
     <Compile Include="Models\ModelExtensions\UserExt.cs" />
+    <Compile Include="Models\OrderProductOption.cs" />
     <Compile Include="Models\OrderProduct.cs" />
     <Compile Include="Models\ProductOption.cs" />
     <Compile Include="Models\ProductParameter.cs" />
@@ -274,6 +280,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611101518428_AddPointsToSeller.resx">
       <DependentUpon>201611101518428_AddPointsToSeller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611170944203_AddProductWeightProduct.resx">
+      <DependentUpon>201611170944203_AddProductWeightProduct.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

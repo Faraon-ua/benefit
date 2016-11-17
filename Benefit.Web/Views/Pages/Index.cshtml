@@ -1,0 +1,11 @@
+﻿@model Benefit.Domain.Models.InfoPage
+
+@{
+    ViewBag.Title = Model.Name;
+}
+@section LeftAside{
+    <div class="vertical_menu" id="right-menu">
+    </div>
+}
+@*<iframe src="@Url.Action("Content", "Pages", new { id = Model.Id })" class="width-100" frameborder="0" scrolling="no" style="position: absolute; height: 100%; border: none"></iframe>*@
+@Html.Raw(Model.Content)

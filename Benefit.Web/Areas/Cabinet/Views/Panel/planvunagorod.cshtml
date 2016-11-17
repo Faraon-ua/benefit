@@ -1,0 +1,13 @@
+﻿@model Benefit.Domain.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "План винагород";
+    Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
+}
+
+@section PartnerHead
+{
+    @Html.Partial("_PartnerHead", Model)
+}
+<div class="clearfix visible-xs-block"></div>
+@Html.Raw(ViewBag.Page)

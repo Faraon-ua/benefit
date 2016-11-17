@@ -38,7 +38,6 @@
     @Html.Partial("_SellerFilters", Model)
 }
 
-@Html.HiddenFor(m => m.Category.Id)
 <main class="full_content full_content_provider">
     <div class="provider_row clearfix">
         @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
@@ -57,7 +56,10 @@
         }
         else
         {
-            <div>У вибраному вами населеному пункті не знайдено жодного постачальника в категорії @Model.Category.Name</div>
+            <div>
+                Для категорії @Model.Category.Name ми чекаємо пропозиції від постачальників з вашого населеного пункту.
+                <a href="#">Заявку можна подати тут.</a>
+            </div>
         }
 
     </div>

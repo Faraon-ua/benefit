@@ -184,7 +184,7 @@
                                 rmvFile = file.name;
                             }
                             $.ajax({
-                                url: routePrefix + "/Admin/Sellers/DeleteUploadedFile?fileName=" + rmvFile + "&type=SellerGallery",
+                                url: routePrefix + "/Admin/Sellers/DeleteUploadedFile?fileName=" + rmvFile + "&parentId=@Model.Seller.Id" + "&type=SellerGallery",
                                 type: "POST",
                             });
                         });

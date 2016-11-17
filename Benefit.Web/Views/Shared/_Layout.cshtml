@@ -34,10 +34,19 @@
     <script>
         $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
         var categoriesUrl = '@Url.Action("CategoriesPartial", "Home")';
-        var categoryId = $("#Category_Id").val();
-        if (categoryId) {
-            categoriesUrl = categoriesUrl + "?parentCategoryId=" + categoryId;
+
+        var categoryId = $('#right-menu').attr("data-category-id");
+        if (!categoryId) {
+            categoryId = "";
         }
+        categoriesUrl = categoriesUrl + "?parentCategoryId=" + categoryId;
+
+        var sellerUrl = $('#right-menu').attr("data-seller-url");
+        if (!sellerUrl) {
+            sellerUrl = "";
+        }
+        categoriesUrl = categoriesUrl + "&sellerUrl=" + sellerUrl;
+
         $('#right-menu').load(categoriesUrl);
 
         if ($(".categories_drop").length > 0) {

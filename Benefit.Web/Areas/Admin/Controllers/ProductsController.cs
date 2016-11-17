@@ -8,6 +8,7 @@ using Benefit.Common.Helpers;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
+using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
 using WebGrease.Css.Extensions;
@@ -45,7 +46,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (filters.IsAvailable)
                 {
-                    products = products.Where(entry => entry.Amount == null || entry.Amount > 0);
+                    products = products.Where(entry => entry.AvailableAmount == null || entry.AvailableAmount > 0);
                 }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {
@@ -106,14 +107,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return PartialView(productsViewModel);
         }
 
-
         public ActionResult CreateOrUpdate(string id)
         {
             //todo: add check for seller role
             var product = db.Products.Include("Category").Include(entry => entry.Category.ProductParameters).FirstOrDefault(entry => entry.Id == id) ??
                           new Product()
                           {
-                              Id = Guid.NewGuid().ToString()
+                              Id = Guid.NewGuid().ToString(),
+                              IsActive = true,
+                              DoesCountForShipping = true
                           };
             ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName", product.CategoryId);
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name", product.SellerId);
@@ -185,9 +187,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(string id)
         {
-            var product = db.Products.Find(id);
-            db.Products.Remove(product);
-            db.SaveChanges();
+            var productService = new ProductsService();
+            productService.Delete(id);
             return Json(true);
         }
         protected override void Dispose(bool disposing)

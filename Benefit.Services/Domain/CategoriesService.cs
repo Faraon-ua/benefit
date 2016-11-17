@@ -163,25 +163,10 @@ namespace Benefit.Services.Domain
 
         public void Delete(string id)
         {
-            var category = db.Categories.Include(entry=>entry.SellerCategories).Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.Id == id);
+            var category = db.Categories.Include(entry=>entry.SellerCategories).Include(entry=>entry.Products).Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.Id == id);
             if (category == null) return;
-            foreach (var childCategory in category.ChildCategories)
-            {
-                Delete(childCategory.Id);
-            }
-
-            category.Products.ToList().ForEach(entry =>
-            {
-                entry.CategoryId = null;
-                db.Entry(entry).State = EntityState.Modified;
-            });
 
             db.SellerCategories.RemoveRange(category.SellerCategories);
-            category.SellerCategories.ToList().ForEach(entry =>
-            {
-                entry.CategoryId = null;
-                db.Entry(entry).State = EntityState.Modified;
-            });
             
             db.ProductParameters.RemoveRange(category.ProductParameters);
             db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
@@ -190,6 +175,11 @@ namespace Benefit.Services.Domain
                 var image = new FileInfo(Path.Combine(HttpContext.Current.Server.MapPath("~/Images/"), category.ImageUrl));
                 if (image.Exists)
                     image.Delete();
+            }
+
+            foreach (var childCategory in category.ChildCategories)
+            {
+                Delete(childCategory.Id);
             }
             db.Categories.Remove(category);
             db.SaveChanges();

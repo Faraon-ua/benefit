@@ -1,4 +1,4 @@
-﻿<div class="partner_menu ol-lg-1 col-md-1 col-sm-1 col-xs-1">
+﻿<div class="partner_menu col-lg-1 col-md-1 col-sm-1 col-xs-1">
     <ul>
         <li>
             <a class="partner_menu_main @(ViewContext.RouteData.GetRequiredString("action") == "Index" ? "active" : "")" href="@Url.Action("Index","Panel")">Головна</a>
@@ -10,7 +10,7 @@
             <a class="partner_menu_network @(ViewContext.RouteData.GetRequiredString("action") == "Structure" ? "active" : "")" href="@Url.Action("Structure", "Panel")">Структура</a>
         </li>
         <li>
-            <a class="partner_menu_reward" href="#">План винагород</a>
+            <a class="partner_menu_reward @(ViewContext.RouteData.GetRequiredString("action") == "planvunagorod" ? "active" : "")" href="@Url.Action("planvunagorod", "Panel")">План винагород</a>
         </li>
         <li>
             <a class="partner_menu_study" href="#">Бізнес навчання</a>
@@ -22,7 +22,7 @@
             <a class="partner_menu_history" href="#">Історія замовлень</a>
         </li>
         <li>
-            <a class="partner_menu_chosen" href="#">Обране</a>
+            <a class="partner_menu_zakladu @(ViewContext.RouteData.GetRequiredString("action") == "Zakladu" ? "active" : "")" href="@Url.Action("Zakladu", "Panel")">Заклади</a>
         </li>
         <li>
             <a class="partner_menu_write_us" href="#">Написати <br>нам</a>

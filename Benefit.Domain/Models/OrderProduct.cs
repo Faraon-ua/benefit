@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
@@ -12,7 +13,10 @@ namespace Benefit.Domain.Models
         [Key, Column(Order = 1)]
         [MaxLength(128)]
         public string ProductId { get; set; }
-        public virtual Product Product { get; set; }
-        public int? Amount { get; set; }
+        public string ProductName { get; set; }
+        public double ProductPrice { get; set; }
+        public double Amount { get; set; }
+        [NotMapped]
+        public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
     }
 }

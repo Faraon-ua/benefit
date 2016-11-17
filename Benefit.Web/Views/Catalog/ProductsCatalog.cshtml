@@ -1,33 +1,46 @@
-﻿@using Benefit.Common.Constants
+﻿@using System.Text
+@using Benefit.Common.Constants
 @using Benefit.DataTransfer.ViewModels
-@model Benefit.DataTransfer.ViewModels.ProductsViewModel
+@using Benefit.Domain.Models
+@model ProductsViewModel
 
 @{
-    ViewBag.Title = Model.Category.Name;
+    var title = new StringBuilder();
+    if (Model.Category != null)
+    {
+        title.Append(Model.Category.Name + " - ");
+    } 
+    if (Model.Seller != null)
+    {
+        title.Append(Model.Seller.Name);
+    }
+    ViewBag.Title = title.ToString();
 }
 
 @section scripts{
-    <script>
-        var skip = parseInt('@ListConstants.DefaultTakePerPage');
-        var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
-        $("#add-more-products").click(function (e) {
-            e.preventDefault();
-            $.get(getProductsUrl + "?categoryId=@Model.Category.Id&skip=" + skip, function (data) {
-                if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                    $("#more-products").hide();
-                }
-                $("#more-products").before(data.products);
-                skip += data.number;
+    @if (Model.Category != null)
+    {
+        <script>
+            var skip = parseInt('@ListConstants.DefaultTakePerPage');
+            var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
+            $("#add-more-products").click(function(e) {
+                e.preventDefault();
+                $.get(getProductsUrl + "?categoryId=@Model.Category.Id&skip=" + skip, function(data) {
+                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                        $("#more-products").hide();
+                    }
+                    $("#more-products").before(data.products);
+                    skip += data.number;
+                });
             });
-        });
 
-    </script>
+        </script>
+    }
 }
 @section LeftAside{
-
+    @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model)
 }
 
-@Html.HiddenFor(m => m.Category.Id)
 <main class="full_content full_content_product">
     <div class="product_row clearfix">
         @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
@@ -41,7 +54,7 @@
         {
             foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
             {
-                var partialModel = new ProductPartialViewModel {Product = product, CategoryUrl = Model.Category.UrlName};
+                var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category.UrlName };
                 @Html.Partial("_ProductPartial", partialModel)
             }
             if (Model.Items.Count > ListConstants.DefaultTakePerPage)

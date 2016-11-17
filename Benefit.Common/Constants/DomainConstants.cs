@@ -13,7 +13,8 @@
 
         public const string SellerSessionIdKey = "SellerId";
 
-        public const string RegionIdCookieKey = "regionId";        
+        public const string RegionIdCookieKey = "regionId";
 
+        public const string OrderPrefixKey = "Order";
     }
 }

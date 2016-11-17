@@ -26,15 +26,16 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
-        /*[MaxLength(128)]
-        public string KeyWords { get; set; }*/
         [Index]
         public int SKU { get; set; }
         [Required(AllowEmptyStrings = true)]
         public string Description { get; set; }
         public double Price { get; set; }
-        public int? Amount { get; set; }
+        public bool IsWeightProduct { get; set; }
+        public int? AvailableAmount { get; set; }
+        public int Order { get; set; }
         public bool IsActive { get; set; }
+        public bool DoesCountForShipping { get; set; }
         public DateTime LastModified { get; set; }
         [MaxLength(64)]
         public string LastModifiedBy { get; set; }

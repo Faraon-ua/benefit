@@ -1,15 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Benefit.Common.Constants;
 using Benefit.DataTransfer.JSON;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
-using Benefit.Domain.Models;
+using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Models;
 using WebGrease.Css.Extensions;
@@ -29,21 +28,44 @@ namespace Benefit.Web.Controllers
             return PartialView("_LoginPartial");
         }
 
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;isDropDown;")]
-        public ActionResult CategoriesPartial(string parentCategoryId = null, bool? isDropDown = null)
+//        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;isDropDown;")]
+        public ActionResult CategoriesPartial(string parentCategoryId, string sellerUrl, bool? isDropDown = null)
         {
+            if (string.IsNullOrEmpty(parentCategoryId))
+                parentCategoryId = null;
+            if (string.IsNullOrEmpty(sellerUrl))
+                sellerUrl = null;
             using (var db = new ApplicationDbContext())
             {
                 var parent = db.Categories.Find(parentCategoryId);
                 var parentName = parent == null ? null : parent.Name;
-                var categories = db.Categories.Include("ChildCategories").Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive).OrderBy(entry => entry.Order).ToList();
+                var categories = db.Categories.Include(entry => entry.ChildCategories).Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive).OrderBy(entry => entry.Order).ToList();
+                if (sellerUrl != null)
+                {
+                    var sellersService = new SellerService();
+                    var sellerCategoriesIds = sellersService.GetAllSellerCategories(sellerUrl).Select(entry=>entry.Id).ToList();
+                    categories = categories.Where(entry => sellerCategoriesIds.Contains(entry.Id)).ToList();
+                    while (categories.Count == 1)
+                    {
+                        var catId = categories.First().Id;
+                        parentName = categories.First().Name;
+                        var childCategories = db.Categories.Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == catId && entry.IsActive && sellerCategoriesIds.Contains(entry.Id)).OrderBy(entry => entry.Order).ToList();
+                        if(childCategories.Count == 0)break;
+                        categories = childCategories;
+                    }
+                }
                 if (parent != null)
                 {
-                    categories =
-                        categories.Where(entry => !entry.ParentCategory.ChildAsFilters).ToList();
+                    categories = categories.Where(entry => !entry.ParentCategory.ChildAsFilters).ToList();
                 }
                 ViewBag.IsDropDown = isDropDown ?? false;
-                return PartialView("_CategoriesPartial", new KeyValuePair<string, IEnumerable<Category>>(parentName, categories));
+                var model = new CategoriesListViewModel()
+                {
+                    ParentName = parentName,
+                    SellerUrlName = sellerUrl,
+                    Items = categories.ToList()
+                };
+                return PartialView("_CategoriesPartial", model);
             }
         }
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
@@ -7,30 +9,47 @@ namespace Benefit.Domain.Models
     {
         Created,
         Processed,
-        Finished
+        Finished,
+        Abandodned
     }
 
     public enum OrderType
     {
         BenefitSite,
-        BenefitCard,
-        Bonus
+        BenefitCard
     }
     public class Order
     {
+        public Order()
+        {
+            Id = Guid.NewGuid().ToString();
+            Status = OrderStatus.Created;
+            OrderProducts = new Collection<OrderProduct>();
+            OrderProductOptions = new Collection<OrderProductOption>();
+        }
         public string Id { get; set; }
         public double Sum { get; set; }
+        public string Description { get; set; }
         public double PersonalBonusesSum { get; set; }
         public double PointsSum { get; set; }
         public string CardNumber { get; set; }
+        [MaxLength(16)]
+        public string ShippingName { get; set; }
+        [MaxLength(256)]
+        public string ShippingAddress { get; set; }
+        public double ShippingCost { get; set; }
         public DateTime Time { get; set; }
         public OrderType OrderType { get; set; }
+        public PaymentType PaymentType { get; set; }
         public OrderStatus Status { get; set; }
-        public virtual Seller Seller { get; set; }
         [MaxLength(128)]
         public string SellerId { get; set; }
         [MaxLength(128)]
+        public string SellerName { get; set; }
+        [MaxLength(128)]
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
+        public virtual ICollection<OrderProduct> OrderProducts { get; set; } 
+        public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
     }
 }

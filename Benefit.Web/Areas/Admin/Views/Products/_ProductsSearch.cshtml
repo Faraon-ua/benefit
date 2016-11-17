@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Benefit.Domain.Models.Product>
+﻿@using Benefit.Domain.Models.ModelExtensions
+@model IEnumerable<Benefit.Domain.Models.Product>
 @if (!Model.Any())
 {
     <div>Пошук не дав жодних результатів</div>
@@ -49,17 +50,17 @@ else
                             @product.Seller.Name
                         </td>
                         <td>
-                            @if (product.Amount == 0)
+                            @if (product.AvailableAmount == 0)
                             {
                                 <div class="icon-ban-circle red"></div>
                             }
-                            else if (product.Amount == null)
+                            else if (product.AvailableAmount == null)
                             {
                                 <div class="icon-check-sign green"></div>
                             }
                             else
                             {
-                                @product.Amount
+                                @product.AvailableAmount
                             }
                         </td>
                         <td>
@@ -75,7 +76,7 @@ else
                                     <i class="lockUser-@product.Id icon-lock bigger-120"></i>
                                 </a>
 
-                                <a class="btn btn-xs btn-danger" onclick="DeleteProduct('@product.Id', '@product.Name');">
+                                <a class="btn btn-xs btn-danger" onclick="DeleteProduct('@product.Id', '@product.Name.Sanitize()');">
                                     <i class="icon-trash bigger-120"></i>
                                 </a>
                             </div>

@@ -25,7 +25,6 @@ namespace Benefit.Domain.Models
         public double? Bonuses { get; set; }
         public double? BonusesBalans { get; set; }
         public DateTime Time { get; set; }
-//        public Status? Qualification { get; set; }
         [MaxLength(128)]
         public string PayerId { get; set; }
         public ApplicationUser Payer { get; set; }
