@@ -20,6 +20,7 @@ namespace Benefit.Domain.Models
             ProductOptions = new Collection<ProductOption>();
             ProductParameters = new Collection<ProductParameter>();
             ChildCategories = new Collection<Category>();
+            SellerCategories = new Collection<SellerCategory>();
         }
 
         [Key]
