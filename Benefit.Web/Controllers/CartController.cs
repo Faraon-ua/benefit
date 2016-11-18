@@ -21,6 +21,12 @@ namespace Benefit.Web.Controllers
             return Json(productsNumber);
         }
 
+        public ActionResult GetCart()
+        {
+            var cart = Cart.CurrentInstance.Order;
+            return PartialView("_CartPartial", cart);
+        }
+
         public ActionResult Index()
         {
             var cart = Cart.CurrentInstance;

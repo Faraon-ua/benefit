@@ -14,7 +14,7 @@
                         Model.Items.Count(entry => 
                                 entry.SellerCategories.Select(sc => sc.CategoryId).Contains(child.Id)
                                 ||
-                                entry.SellerCategories.Select(sc=>sc.Category.ParentCategory.Id).Contains(child.Id)
+                                entry.SellerCategories.Select(sc => (sc.Category.ParentCategory == null ? null : sc.Category.ParentCategory.Id)).Contains(child.Id)
                             ));
                     <input class="hidden" type="checkbox" id="subcategory-@child.Id" name="category-ids" value="@child.Id" />
                     <label class="label_for_check" for="subcategory-@child.Id">@nameWithSellersCount</label>

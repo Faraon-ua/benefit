@@ -55,7 +55,16 @@
                     $(".categories_drop").after(data);
                 });
         }
+
+        $(".sh_btn").click(function () {
+            var cartUrl = '@Url.Action("GetCart","Cart")';
+            $("#cart-container").load(cartUrl, function() {
+                $("#basket_modal").modal('show');
+            });
+        });
+
     </script>
     @Html.Partial("_RegionModal")
+    <div id="cart-container"></div>
 </body>
 </html>
