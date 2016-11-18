@@ -1,7 +1,7 @@
 ﻿@model  KeyValuePair<int, Benefit.Domain.Models.SellerCategory>
 
 <div class="row belong-category">
-    <div class="col-sm-4">
+    <div class="col-sm-5">
         @Html.DropDownList(string.Format("Seller.SellerCategories[{0}].CategoryId", Model.Key), ViewBag.Categories as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select category-id", data_number = Model.Key })
     </div>
     <div class="col-sm-1">

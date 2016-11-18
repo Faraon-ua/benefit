@@ -1,0 +1,35 @@
+﻿@model Benefit.DataTransfer.ViewModels.SellerApplicationViewModel
+
+<div class="modal fade in" id="seller-application-modal" style="display: block;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal_close" data-dismiss="modal" aria-hidden="true"><span></span></div>
+            <div class="modal-body" style="text-align: center;">
+                <div id="application-form">
+                    <h2>
+                        Заявка на підключення закладу <br />
+                        до Benefit Company
+                    </h2>
+                    <br />
+                    @using (Ajax.BeginForm("SellerApplication", "Email", new AjaxOptions()
+                    {
+                        HttpMethod = "Post",
+                        OnSuccess = "$('#application-result').show();$('#application-form').hide();"
+                    }))
+                    {
+                        @Html.TextBoxFor(m => m.CompanyName, new {placeholder = " Назва компанії або ФОП", style = "width: 500px; height: 50px; font-size: 1.5em; margin-bottom: 15px;"})<br />
+                        @Html.TextBoxFor(m => m.FullName, new {placeholder = " ПІБ контактної особи", style = "width: 500px; height: 50px; font-size: 1.5em; margin-bottom: 15px;"})<br />
+                        @Html.TextBoxFor(m => m.Phone, new {placeholder = " Телефон", style = "width: 500px; height: 50px; font-size: 1.5em; margin-bottom: 15px;"})<br />
+                        @Html.TextBoxFor(m => m.Email, new {placeholder = " Email", style = "width: 500px; height: 50px; font-size: 1.5em; margin-bottom: 15px;"})<br />
+                        @Html.TextBoxFor(m => m.Link, new {placeholder = " Посилання на сайт компанії або сторінку у соц. мережах", style = "width: 500px; height: 50px; font-size: 1em; margin-bottom: 15px;"})<br />
+                        <br />
+                        <input type="submit" style="width: 500px; height: 60px; background-color: #66cc00; font-size: 1.5em; color: white; margin-bottom: 25px;" value="Подати заявку" />
+                    }
+                </div>
+                <div id="application-result" style="display: none;">
+                    <p style="font-size: 1em;">Дякуємо за вашу заявку, в найближчий час з вами зв'яжеться наш менеджер.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
