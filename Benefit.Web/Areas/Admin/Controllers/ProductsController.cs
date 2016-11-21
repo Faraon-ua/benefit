@@ -80,7 +80,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 else
                 {
-                    products = products.OrderBy(entry => entry.SKU);
+                    products = products.OrderBy(entry => entry.Name);
                 }
                 resultsCount = products.Count();
                 var skip = filters.Page > 0 ? ListConstants.DefaultTakePerPage*(filters.Page - 1) : 0;
@@ -101,7 +101,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     Sorting = (from ProductSortOption sortOption in Enum.GetValues(typeof(ProductSortOption))
                                select new SelectListItem() { Text = Enumerations.GetEnumDescription(sortOption), Value = sortOption.ToString(), Selected = sortOption == filters.Sorting }).ToList(),
                     Search = filters.Search,
-                    PagesCount = resultsCount/ListConstants.DefaultTakePerPage
+                    PagesCount = (resultsCount / ListConstants.DefaultTakePerPage) % ListConstants.DefaultTakePerPage == 0 ? (resultsCount / ListConstants.DefaultTakePerPage) : (resultsCount / ListConstants.DefaultTakePerPage) +1
                 }
             };
             return PartialView(productsViewModel);

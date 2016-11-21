@@ -80,7 +80,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public ActionResult CreateOrUpdate(Category category, HttpPostedFileBase categoryImage)
         {
-            if (db.Categories.Any(entry => entry.UrlName == category.UrlName))
+            if (db.Categories.Any(entry => entry.UrlName == category.UrlName && entry.Id != category.Id))
             {
                 ModelState.AddModelError("UrlName", "Категорія з таким Url вже існує");
             }
