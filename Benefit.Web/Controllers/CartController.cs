@@ -8,8 +8,6 @@ using Benefit.Domain.Models;
 using Benefit.Services.Cart;
 using Benefit.Services.Domain;
 using Microsoft.AspNet.Identity;
-using Newtonsoft.Json;
-using Telerik.Web.Data.Extensions;
 
 namespace Benefit.Web.Controllers
 {
