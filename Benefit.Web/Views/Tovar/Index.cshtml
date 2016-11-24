@@ -19,8 +19,9 @@
                 CalculateProductPrice();
             });
 
-            var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+            var addToCartUrl = '@Url.Action("AddProduct", "Cart", new { sellerId = Model.Product.SellerId })';
             $("#buy-product, .goto_ahead").click(function () {
+                $(this).attr("disabled", "disabled");
                 $("#buy-product, .goto_ahead").attr('disabled', 'disabled');
                 $(".product_info_wrap").css("opacity", 0.3);
 
@@ -28,16 +29,12 @@
 
                 var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
                     var id = $(this).attr("id");
-                    var name = $(this).attr("data-option-name");
-                    var priceGrowth = parseFloat($(this).attr("data-price-growth"));
                     var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
                     if (!amount) {
                         amount = 1;
                     }
                     return {
                         ProductOptionId: id,
-                        //                            Name: name,
-                        //                            PriceGrowth: priceGrowth
                         Amount: amount
                     };
                 }).get();
@@ -45,8 +42,6 @@
                 var product = {
                     ProductId: '@Model.Product.Id',
                     Amount: $(".product_description_amount").val(),
-                    //                    Name: '@Model.Product.Name',
-                    //                    SKU: '@Model.Product.SKU',
                     OrderProductOptions: productOptions
                 };
 
@@ -55,7 +50,7 @@
                     amount: productAmount
                 };
                 $.post(addToCartUrl,
-                    order,
+                    order, 
                     function (data) {
                         $('#product_modal').modal('hide');
                         setTimeout(function f() {
@@ -64,6 +59,7 @@
                             $("#cart-items-number").text(data);
                             $("#cart-items-number").show();
                             setCookie("cartNumber", data, { expires: 36000, path: "/" });
+                            $("#buy-product, .goto_ahead").removeAttr("disabled");
                         }, 1000);
                     });
                 console.log(order);
@@ -127,7 +123,10 @@
                 <p class="product_description_price">
                     <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн
                 </p>
-                <div class="product_description">@Html.Raw(Model.Product.Description)</div>
+                <div class="product_description">
+                    <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>
+                    <a href="#product_descr_tab">Детальніше</a>
+                </div>
                 <div class="product_description_amount_wrap">
                     <div class="product_description_amount_minus">-</div>
                     <input type="text" class="product_description_amount" value="1">
@@ -135,14 +134,14 @@
                 </div>
                 <div class="product_description_control_wrap">
                     @*<div class="product_description_like"></div>
-                    <div class="product_description_scale"></div>*@
+                        <div class="product_description_scale"></div>*@
                     @if (Model.Product.ProductOptions.Any())
                     {
                         <a class="product_description_buy" href="" data-toggle="modal" data-target="#product_modal">Купити</a>
                     }
                     else
                     {
-                        <a id="buy-product" href="#">Купити</a>
+                        <a id="buy-product" class="product_description_buy" href="#">Купити</a>
                     }
                 </div>
                 <div class="product_description_share_title">
@@ -164,11 +163,16 @@
         </div>
         <ul class="tab_menu nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#product_descr_tab">Опис</a></li>
+            <li><a data-toggle="tab" href="#product_charachters_tab">Характеристики</a></li>
             <li><a data-toggle="tab" href="#prodact_recall">Відгуки</a></li>
         </ul>
 
         <div class="tab-content">
             <div id="product_descr_tab" class="product_descr_tab tab-pane fade in active">
+                @Html.Raw(Model.Product.Description)
+            </div>
+
+            <div id="product_charachters_tab" class="product_descr_tab tab-pane fade in active">
                 <table>
                     @foreach (var productParameter in Model.Product.ProductParameterProducts)
                     {

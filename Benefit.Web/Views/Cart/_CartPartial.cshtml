@@ -1,6 +1,6 @@
 ﻿@model Benefit.Domain.Models.Order
 
-<div class="basket_modal modal fade in" id="basket_modal" style="display: block;">
+<div class="basket_modal modal fade in" id="basket_modal" style="display: block;" data-seller-id="@Model.SellerId">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal_close" data-dismiss="modal" aria-hidden="true"><span></span></div>
@@ -11,7 +11,7 @@
                 }
                 else
                 {
-                        <p class="basket_modal_title">Товари в кошику</p>
+                    <p class="basket_modal_title">Товари в кошику</p>
                     <table class="basket_modal_table">
                         <thead>
                             <tr class="basket_modal_table_row">
@@ -23,201 +23,107 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr class="basket_modal_table_row">
-                                <td class="basket_modal_td">
-                                    <ul>
-                                        <li>Середземноморська</li>
-                                        <li>яйце</li>
-                                        <li>пармезан</li>
-                                        <li>упаковка</li>
-                                    </ul>
-                                </td>
-                                <td class="basket_modal_td">
-                                    <ul>
-                                        <li>
-                                            <div class="modal_amount_wrap">
-                                                <div class="product_modal_minus">-</div>
-                                                <input class="product_modal_amount" value="1" type="text">
-                                                <div class="product_modal_plus">+</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="modal_amount_wrap">
-                                                <div class="product_modal_minus">-</div>
-                                                <input class="product_modal_amount" value="1" type="text">
-                                                <div class="product_modal_plus">+</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="modal_amount_wrap">
-                                                <div class="product_modal_minus">-</div>
-                                                <input class="product_modal_amount" value="1" type="text">
-                                                <div class="product_modal_plus">+</div>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div class="modal_amount_wrap">
-                                                <div class="product_modal_minus">-</div>
-                                                <input class="product_modal_amount" value="1" type="text">
-                                                <div class="product_modal_plus">+</div>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </td>
-                                <td class="basket_modal_td">
-                                    <ul>
-                                        <li>65,00</li>
-                                        <li>4,00</li>
-                                        <li>15,00</li>
-                                        <li>8,00</li>
-                                    </ul>
-                                </td>
-                                <td class="basket_modal_td">95,00</td>
-                                <td class="basket_modal_td">
-                                    <ul>
-                                        <li><div class="delete_product"></div></li>
-                                        <li><div class="delete_product"></div></li>
-                                        <li><div class="delete_product"></div></li>
-                                        <li><div class="delete_product"></div></li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr class="basket_modal_table_row">
-                                <td class="basket_modal_td">Філе куряче</td>
-                                <td class="basket_modal_td">
-                                    <div class="modal_amount_wrap">
-                                        <div class="product_modal_minus">-</div>
-                                        <input class="product_modal_amount" value="0,5" type="text">
-                                        <div class="product_modal_plus">+</div>
-                                    </div>
-                                </td>
-                                <td class="basket_modal_td">65,50</td>
-                                <td class="basket_modal_td">32,75</td>
-                                <td class="basket_modal_td"><div class="delete_product"></div></td>
-                            </tr>
-                            <tr class="basket_modal_table_row">
-                                <td class="basket_modal_td">Банани</td>
-                                <td class="basket_modal_td">
-                                    <div class="modal_amount_wrap">
-                                        <div class="product_modal_minus">-</div>
-                                        <input class="product_modal_amount" value="0,32" type="text">
-                                        <div class="product_modal_plus">+</div>
-                                    </div>
-                                </td>
-                                <td class="basket_modal_td">48,10</td>
-                                <td class="basket_modal_td">15,00</td>
-                                <td class="basket_modal_td"><div class="delete_product"></div></td>
-                            </tr>
-                            <tr class="basket_modal_table_row">
-                                <td class="basket_modal_td">Сир серпц. королівський 45%</td>
-                                <td class="basket_modal_td">
-                                    <div class="modal_amount_wrap">
-                                        <div class="product_modal_minus">-</div>
-                                        <input class="product_modal_amount" value="1" type="text">
-                                        <div class="product_modal_plus">+</div>
-                                    </div>
-                                </td>
-                                <td class="basket_modal_td">13,76</td>
-                                <td class="basket_modal_td">13,76</td>
-                                <td class="basket_modal_td"><div class="delete_product"></div></td>
-                            </tr>
-                            <tr class="basket_modal_table_row">
-                                <td class="basket_modal_td">Капуста брокколі ТМ Шеф Кухар 400 гр</td>
-                                <td class="basket_modal_td">
-                                    <div class="modal_amount_wrap">
-                                        <div class="product_modal_minus">-</div>
-                                        <input class="product_modal_amount" value="0,15" type="text">
-                                        <div class="product_modal_plus">+</div>
-                                    </div>
-                                </td>
-                                <td class="basket_modal_td">11,50</td>
-                                <td class="basket_modal_td">0,76</td>
-                                <td class="basket_modal_td"><div class="delete_product"></div></td>
-                            </tr>
-                            <tr class="basket_modal_table_row">
-                                <td class="basket_modal_td">Цукерка Konafetto крем-згущене молоко</td>
-                                <td class="basket_modal_td">
-                                    <div class="modal_amount_wrap">
-                                        <div class="product_modal_minus">-</div>
-                                        <input class="product_modal_amount" value="0,3" type="text">
-                                        <div class="product_modal_plus">+</div>
-                                    </div>
-                                </td>
-                                <td class="basket_modal_td">32,50</td>
-                                <td class="basket_modal_td">10,05</td>
-                                <td class="basket_modal_td"><div class="delete_product"></div></td>
-                            </tr>
-                            <tr class="basket_modal_table_row">
-                                <td class="basket_modal_td">Молоко</td>
-                                <td class="basket_modal_td">
-                                    <div class="modal_amount_wrap">
-                                        <div class="product_modal_minus">-</div>
-                                        <input class="product_modal_amount" value="1" type="text">
-                                        <div class="product_modal_plus">+</div>
-                                    </div>
-                                </td>
-                                <td class="basket_modal_td">14,00</td>
-                                <td class="basket_modal_td">14,00</td>
-                                <td class="basket_modal_td"><div class="delete_product"></div></td>
-                            </tr>
+                            @foreach (var product in Model.OrderProducts)
+                            {
+                                <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
+                                    <td class="basket_modal_td">@product.ProductName</td>
+                                    <td class="basket_modal_td">
+                                        <div class="modal_amount_wrap">
+                                            <div class="product_modal_minus">-</div>
+                                            <input class="product_modal_amount" value="@product.Amount" type="text">
+                                            <div class="product_modal_plus">+</div>
+                                        </div>
+                                    </td>
+                                    <td class="basket_modal_td">@product.ProductPrice.ToString("F")</td>
+                                    @{
+                                var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                                var productSum = product.ProductPrice * product.Amount;
+                                    }
+                                    <td class="basket_modal_td product-total-price">@((productSum + productOptionsSum).ToString("F"))</td>
+                                    <td class="basket_modal_td"><div class="delete_product"></div></td>
+                                </tr>
+                                if (product.OrderProductOptions.Any())
+                                {
+                                    foreach (var orderProductOption in product.OrderProductOptions)
+                                    {
+                                        <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
+                                            <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
+                                            <td class="basket_modal_td">
+                                                <div class="modal_amount_wrap">
+                                                    <div class="product_modal_minus">-</div>
+                                                    <input class="product_modal_amount" value="@orderProductOption.Amount" type="text">
+                                                    <div class="product_modal_plus">+</div>
+                                                </div>
+                                            </td>
+                                            <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F")</td>
+                                            <td class="basket_modal_td"></td>
+                                            <td class="basket_modal_td"><div class="delete_product"></div></td>
+                                        </tr>
+                                    }
+                                }
+                            }
                         </tbody>
                     </table>
-                    <p class="basket_modal_price">Всього:  282,36</p>
+
+                    var cartSum = Model.OrderProducts.Sum(entry => entry.ProductPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+                    <p class="basket_modal_price">Всього: <span>@cartSum.ToString("F")</span></p>
                     <div class="basket_modal_kontrols clearfix">
                         <a href="#" class="goto_back">Продовжити покупки</a>
-                        <a href="#" class="goto_ahead">Оформити замовлення</a>
+                        <a href="#" id="complete-order" class="goto_ahead">Оформити замовлення</a>
                     </div>
-                    <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>
-                    <p class="basket_recomendation_title">Рекомендовані товари</p>
-                    <div class="product_recomendation">
-                        <div class="product_recomendation_item">
-                            <div class="product_recomendation_img_wrap">
-                                <img src="assets/img/cola.jpg" alt="cola">
+@*                    <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@
+                    //todo: add рекомендовані продукти
+                    //todo: add weight product amount
+                    @*                    <p class="basket_recomendation_title">Рекомендовані товари</p>*@
+                    @*<div class="product_recomendation">
+                            <div class="product_recomendation_item">
+                                <div class="product_recomendation_img_wrap">
+                                    <img src="assets/img/cola.jpg" alt="cola">
+                                </div>
+                                <p class="product_recomendation_name">Coca-cola, 1л</p>
+                                <div class="product_recomendation_rating">
+                                    <span class="rating_star good"></span>
+                                    <span class="rating_all">35 відгуків</span>
+                                </div>
+                                <p class="product_recomendation_price">18,50 грн</p>
                             </div>
-                            <p class="product_recomendation_name">Coca-cola, 1л</p>
-                            <div class="product_recomendation_rating">
-                                <span class="rating_star good"></span>
-                                <span class="rating_all">35 відгуків</span>
-                            </div>
-                            <p class="product_recomendation_price">18,50 грн</p>
-                        </div>
 
-                        <div class="product_recomendation_item">
-                            <div class="product_recomendation_img_wrap">
-                                <img src="assets/img/nestea.jpg" alt="nestea">
+                            <div class="product_recomendation_item">
+                                <div class="product_recomendation_img_wrap">
+                                    <img src="assets/img/nestea.jpg" alt="nestea">
+                                </div>
+                                <p class="product_recomendation_name">Nestea, 1л</p>
+                                <div class="product_recomendation_rating">
+                                    <span class="rating_star good"></span>
+                                    <span class="rating_all">8 відгуків</span>
+                                </div>
+                                <p class="product_recomendation_price">28,50 грн</p>
                             </div>
-                            <p class="product_recomendation_name">Nestea, 1л</p>
-                            <div class="product_recomendation_rating">
-                                <span class="rating_star good"></span>
-                                <span class="rating_all">8 відгуків</span>
-                            </div>
-                            <p class="product_recomendation_price">28,50 грн</p>
-                        </div>
 
-                        <div class="product_recomendation_item">
-                            <div class="product_recomendation_img_wrap">
-                                <img src="assets/img/plate_01.jpg" alt="cezar">
+                            <div class="product_recomendation_item">
+                                <div class="product_recomendation_img_wrap">
+                                    <img src="assets/img/plate_01.jpg" alt="cezar">
+                                </div>
+                                <p class="product_recomendation_name">Салат Цезар, 350 гр.</p>
+                                <div class="product_recomendation_rating">
+                                    <span class="rating_star middle"></span>
+                                    <span class="rating_all">18 відгуків</span>
+                                </div>
+                                <p class="product_recomendation_price">94,00 грн</p>
                             </div>
-                            <p class="product_recomendation_name">Салат Цезар, 350 гр.</p>
-                            <div class="product_recomendation_rating">
-                                <span class="rating_star middle"></span>
-                                <span class="rating_all">18 відгуків</span>
-                            </div>
-                            <p class="product_recomendation_price">94,00 грн</p>
-                        </div>
 
-                        <div class="product_recomendation_item">
-                            <div class="product_recomendation_img_wrap">
-                                <img src="assets/img/plate_02.jpg" alt="spring_salad">
+                            <div class="product_recomendation_item">
+                                <div class="product_recomendation_img_wrap">
+                                    <img src="assets/img/plate_02.jpg" alt="spring_salad">
+                                </div>
+                                <p class="product_recomendation_name">Салат весняний, 220 гр</p>
+                                <div class="product_recomendation_rating">
+                                    <span class="rating_star good"></span>
+                                    <span class="rating_all">15 відгуків</span>
+                                </div>
+                                <p class="product_recomendation_price">69,00 грн</p>
                             </div>
-                            <p class="product_recomendation_name">Салат весняний, 220 гр</p>
-                            <div class="product_recomendation_rating">
-                                <span class="rating_star good"></span>
-                                <span class="rating_all">15 відгуків</span>
-                            </div>
-                            <p class="product_recomendation_price">69,00 грн</p>
-                        </div>
-                    </div>
+                        </div>*@
                 }
             </div>
         </div>

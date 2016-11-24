@@ -230,6 +230,7 @@
     <Compile Include="Controllers\Base\BaseController.cs" />
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\CatalogController.cs" />
     <Compile Include="Controllers\LayoutController.cs" />
@@ -1069,6 +1070,8 @@
     <Content Include="Areas\Admin\Views\AdminStuff\BonusesCalculationError.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\Zakladu.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\planvunagorod.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Panel\UserAddress.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Panel\_UserAddressForm.cshtml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />
@@ -1495,12 +1498,14 @@
     <Content Include="Views\Catalog\_ProductPartial.cshtml" />
     <Content Include="Views\Tovar\Index.cshtml" />
     <Content Include="Views\Tovar\_ProductOptions.cshtml" />
-    <Content Include="Views\Cart\Index.cshtml" />
     <Content Include="Views\Cart\_CartPartial.cshtml" />
     <Content Include="Views\Catalog\_ProductFilters.cshtml" />
     <Content Include="Views\Pages\Index.cshtml" />
     <Content Include="Views\Pages\Content.cshtml" />
     <Content Include="Views\Email\_SellerApplication.cshtml" />
+    <Content Include="Views\Cart\Order.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Cart\OrderCompleted.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

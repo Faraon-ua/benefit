@@ -1,4 +1,8 @@
-﻿.progressBarLoad {
+﻿.text-length-140 {
+    text-overflow: ellipsis;
+}
+
+.progressBarLoad {
     display: none;
     width: 50%;
     margin-left: auto;

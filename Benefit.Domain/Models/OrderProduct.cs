@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -6,6 +7,10 @@ namespace Benefit.Domain.Models
 {
     public class OrderProduct
     {
+        public OrderProduct()
+        {
+            OrderProductOptions = new Collection<OrderProductOption>();
+        }
         [Key, Column(Order = 0)]
         [MaxLength(128)]
         public string OrderId { get; set; }

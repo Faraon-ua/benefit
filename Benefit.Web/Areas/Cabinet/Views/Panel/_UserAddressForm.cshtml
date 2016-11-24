@@ -1,0 +1,21 @@
+﻿@model Benefit.Domain.Models.Address
+<div class="container">
+    <h3>Адреса доставки</h3>
+    <div class="form-group-sm">
+        @Html.HiddenFor(m => m.Id)
+        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control width-50", placeholder="ПІБ"})
+        <br />
+        <br />
+        <input type="text" placeholder="Місто, область" class="regionSearch form-control width-50" value="@(Model.Region == null ? string.Empty : Model.Region.ExpandedName)" />
+        @Html.HiddenFor(m => m.RegionId)
+        <br />
+        <br />
+        @Html.TextBoxFor(m => m.AddressLine, new { @class = "form-control width-50", placeholder="вулиця, номер будинку і квартири" })
+        <br />
+        <br />
+        @Html.TextBoxFor(m => m.Phone, new { @class = "form-control width-50 phone-mask", placeholder="номер телефону" })
+        <br />
+        <br />
+        <input type="submit" value="Зберегти" class="address_add" />
+    </div>
+</div>

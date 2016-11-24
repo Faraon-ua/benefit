@@ -193,7 +193,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult CreateOrUpdate(string id = null)
         {
             var existingSeller = db.Sellers.Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry=>entry.SellerCategories.Select(sc=>sc.Category)).FirstOrDefault(entry => entry.Id == id);
-            existingSeller.SellerCategories = existingSeller.SellerCategories.OrderBy(entry => entry.Category.Order).ToList();
             var seller = new SellerViewModel()
             {
                 Seller = existingSeller ?? new Seller() { Schedules = SetSellerSchedules().ToList() }
@@ -205,6 +204,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             seller.Seller.Schedules = seller.Seller.Schedules.OrderBy(entry => entry.Day).ToList();
             if (existingSeller != null)
             {
+                existingSeller.SellerCategories = existingSeller.SellerCategories.OrderBy(entry => entry.Category.Order).ToList();
                 seller.OwnerExternalId = existingSeller.Owner.ExternalNumber;
                 if (existingSeller.BenefitCardReferal != null)
                     seller.BenefitCardReferaExternalId = existingSeller.BenefitCardReferal.ExternalNumber;

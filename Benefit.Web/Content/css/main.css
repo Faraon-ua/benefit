@@ -1676,7 +1676,7 @@ footer {
         .partner_menu ul li .partner_menu_chosen:hover:before {
             background: url(../img/cabinet_menu_sprite.png) -39px -238px no-repeat;
         }
-        
+
         .partner_menu ul li .partner_menu_write_us:before {
             background: url(../img/cabinet_menu_sprite.png) 0 -272px no-repeat;
         }
@@ -1685,14 +1685,14 @@ footer {
         .partner_menu ul li .partner_menu_write_us:hover:before {
             background: url(../img/cabinet_menu_sprite.png) -39px -272px no-repeat;
         }
-        
+
         .partner_menu ul li .partner_menu_zakladu:before {
             background: url(../img/cabinet_menu_sprite.png) 0 -310px no-repeat;
         }
 
         .partner_menu ul li .partner_menu_zakladu.active:before,
         .partner_menu ul li .partner_menu_zakladu:hover:before {
-            background: url(../img/cabinet_menu_sprite.png) -37px -310px no-repeat;
+            background: url(../img/cabinet_menu_sprite.png) -39px -310px no-repeat;
         }
 
 .partner_main {
@@ -2009,6 +2009,8 @@ footer {
 
     .address_add:hover {
         background-color: #ba7000;
+        color: #ffffff;
+        text-decoration: none;
     }
 
 .security {
@@ -2933,7 +2935,9 @@ footer {
 }
 
 .structure_table_register_email input {
-    border: 0; outline: 0; background: transparent;
+    border: 0;
+    outline: 0;
+    background: transparent;
 }
 
 .structure_table_register_email {
@@ -4597,9 +4601,18 @@ li:last-child .expand {
         background-color: #cccccc;
     }
 
-    .basket_modal_table tr {
-        border: 1px solid #cccccc;
+    .basket_modal_table tr.product {
+        border-top: 1px solid #cccccc;
+        border-bottom: none;
     }
+
+    .basket_modal_table tr.option {
+        border: none;
+    }
+
+        .basket_modal_table tr.option td:first-child {
+            padding-left: 35px;
+        }
 
     .basket_modal_table th,
     .basket_modal_table td {
@@ -4754,6 +4767,12 @@ basket_modal_table td:nth-child(4) {
     padding: 20px 40px 30px;
     width: 100%;
     max-width: 284px;
+    border: 2px solid #cccccc;
+    float: left;
+    margin-right: 15px;
+}
+
+.delivery_address_item.active {
     border: 2px solid #6ab545;
 }
 
@@ -4861,24 +4880,28 @@ basket_modal_table td:nth-child(4) {
 .col-8.full_content.enter_main {
     padding-top: 33px;
 }
+
 .enter_wrap {
     margin: 0 auto;
     padding: 27px 20px 25px 20px;
     width: 690px;
     box-shadow: 2.5px 4.33px 13px 0px rgb( 204, 204, 204 );
 }
+
 .enter_left {
     display: inline-block;
     margin-right: 77px;
     max-width: 320px;
     vertical-align: top;
 }
+
 .enter_title {
     margin-bottom: 16px;
     font-size: 18px;
     text-align: center;
     color: #333333;
 }
+
 .enter_email,
 .enter_password {
     margin-bottom: 17px;
@@ -4889,12 +4912,15 @@ basket_modal_table td:nth-child(4) {
     border-left: none;
     border-bottom: 1px solid #cccccc;
 }
+
 .enter_email {
     background: url(../img/at.png) 97% center no-repeat;
 }
+
 .enter_password {
     background: url(../img/padlock.png) 97% center no-repeat;
 }
+
 .enter_forgot,
 .enter_forgot:hover,
 .enter_forgot:visited,
@@ -4906,6 +4932,7 @@ basket_modal_table td:nth-child(4) {
     color: #666666;
     text-decoration: underline;
 }
+
 .enter_button {
     display: block;
     margin-bottom: 17px;
@@ -4917,9 +4944,11 @@ basket_modal_table td:nth-child(4) {
     color: #ffffff;
     background-color: #33cc33;
 }
-.enter_button:hover {
-    background-color: #248d24;
-}
+
+    .enter_button:hover {
+        background-color: #248d24;
+    }
+
 .enter_left .label_for_check {
     margin-bottom: 30px;
     margin-right: 10px;
@@ -4930,6 +4959,7 @@ basket_modal_table td:nth-child(4) {
     font-size: 13px;
     font-weight: 500;
 }
+
 .enter_left input[type="checkbox"] + .label_for_check::before {
     position: absolute;
     display: block;
@@ -4940,12 +4970,15 @@ basket_modal_table td:nth-child(4) {
     height: 12px;
     border: 1px solid #9e9e9e;
 }
+
 .enter_left input[type="checkbox"]:checked + .label_for_check::before {
     background-color: #990000;
 }
+
 .enter_left input[type="checkbox"]:disabled + .label_for_check::before {
     background-color: #ffffff;
 }
+
 .enter_registration,
 .enter_registration:hover,
 .enter_registration:visited,
@@ -4959,12 +4992,14 @@ basket_modal_table td:nth-child(4) {
     text-align: center;
     text-decoration: underline;
 }
+
 .enter_right {
     display: inline-block;
     padding-top: 15px;
     width: 197px;
     vertical-align: top;
 }
+
 .enter_title_social {
     display: inline-block;
     margin: 0 auto 14px;
@@ -4974,6 +5009,7 @@ basket_modal_table td:nth-child(4) {
     text-align: center;
     text-decoration: underline;
 }
+
 .enter_soc,
 .enter_soc:hover,
 .enter_soc:visited,
@@ -4987,15 +5023,19 @@ basket_modal_table td:nth-child(4) {
     color: #ffffff;
     text-decoration: none;
 }
+
 .enter_fb {
     background-color: #4867aa;
 }
+
 .enter_vk {
     background-color: #4d75a3;
 }
+
 .enter_go {
     background-color: #de4b39;
 }
+
 .enter_soc_logo {
     display: block;
     width: 50px;
@@ -5003,6 +5043,7 @@ basket_modal_table td:nth-child(4) {
     float: left;
     font-size: 24px;
 }
+
 .enter_soc_text {
     display: block;
     width: 147px;

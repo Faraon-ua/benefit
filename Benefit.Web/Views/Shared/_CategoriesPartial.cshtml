@@ -1,7 +1,8 @@
 ﻿@using Benefit.Common.Constants
 @model Benefit.DataTransfer.ViewModels.CategoriesListViewModel
 
-<ul id="@(Model.ParentName == null ? "categories" : "")" class="@(ViewBag.IsDropDown ? "" : "nav navbar-nav")">
+
+<ul id="@((Model.ParentName == null && Model.SellerUrlName == null) ? "categories" : "")" class="@(ViewBag.IsDropDown ? "" : "nav navbar-nav")">
     @if (Model.ParentName != null)
     {
         <li>
@@ -21,7 +22,7 @@
                 <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.SellerUrlName, categoryUrl = category.UrlName })" title="@category.Description">@category.Name</a>
             }
 
-            @if (Model.ParentName == null && category.ChildCategories.Any())
+            @if (Model.ParentName == null && category.ChildCategories.Any() && Model.SellerUrlName == null)
             {
                 <ul>
                     @foreach (var subCategory in category.ChildCategories.OrderBy(entry=>entry.Order))

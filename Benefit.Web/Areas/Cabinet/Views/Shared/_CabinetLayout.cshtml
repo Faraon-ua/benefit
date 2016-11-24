@@ -25,14 +25,25 @@
     @Scripts.Render("~/bundles/master")
     @RenderSection("scripts", required: false)
     <script>
-        $('#loginPartial').load('@Url.Action("LoginPartial", "Home", new {area=string.Empty}, Request.Url.Scheme)');
-        if ($(".categories_drop").length > 0) {
-            $.get('@Url.Action("CategoriesPartial", "Home", new { area = string.Empty }, Request.Url.Scheme)?isDropDown=true',
-                function (data) {
-                    $(".categories_drop").after(data);
+        $(function () {
+
+            $('#loginPartial').load('@Url.Action("LoginPartial", "Home", new {area=string.Empty}, Request.Url.Scheme)');
+            if ($(".categories_drop").length > 0) {
+                $.get('@Url.Action("CategoriesPartial", "Home", new { area = string.Empty }, Request.Url.Scheme)?isDropDown=true',
+                    function (data) {
+                        $(".categories_drop").after(data);
+                    });
+            }
+
+            $(".sh_btn").click(function () {
+                var cartUrl = '@Url.Action("GetCart","Cart", new { area = "" })';
+                $("#cart-container").load(cartUrl, function () {
+                    $("#basket_modal").modal('show');
                 });
-        }
+            });
+        })
     </script>
     @Html.Partial("_RegionModal")
+    <div id="cart-container"></div>
 </body>
 </html>

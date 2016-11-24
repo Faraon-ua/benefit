@@ -1,0 +1,28 @@
+﻿@using Benefit.Domain.Models
+@model Address
+
+@{
+    ViewBag.Title = "Нова адреса доставки";
+    Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
+}
+@section PartnerHead
+{
+    @Html.Partial("_PartnerHead", ViewBag.User as ApplicationUser)
+}
+@section scripts
+{
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+    <script src="~/Scripts/address.js"></script>
+    <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
+    <script>
+        $(function () {
+            SetRegionsAutocomplete();
+            $(".phone-mask").mask("99(999)999-99-99");
+        })
+    </script>
+}
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    @Html.Partial("_UserAddressForm", Model)
+}

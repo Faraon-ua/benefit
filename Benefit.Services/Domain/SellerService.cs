@@ -96,7 +96,8 @@ namespace Benefit.Services.Domain
             result.Seller = seller;
             var category = db.Categories.FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
-            result.Items = new List<Product>();
+            result.Items =
+                db.Products.Where(entry => entry.CategoryId == category.Id && entry.SellerId == seller.Id).ToList();
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {
                 Seller = seller,

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
@@ -46,6 +48,51 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         {
             var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
             return View(user);
+        }
+
+        public ActionResult UserAddress(string id)
+        {
+            var userId = User.Identity.GetUserId();
+            var user = UserService.GetUserInfoWithRegions(userId);
+            ViewBag.User = user;
+            Address address;
+            using (var db = new ApplicationDbContext())
+            {
+                address = db.Addresses.FirstOrDefault(entry => entry.Id == id && entry.UserId == userId) ?? new Address();
+                if (address.Region != null)
+                {
+                    var expandedRegionName = address.Region.ExpandedName;
+                }
+            }
+            return View(address);
+        }
+
+        [HttpPost]
+        public ActionResult UserAddress(Address address)
+        {
+            var userId = User.Identity.GetUserId();
+            if (ModelState.IsValid)
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    address.UserId = userId;
+                    if (address.Id == null)
+                    {
+                        address.Id = Guid.NewGuid().ToString();
+                        db.Addresses.Add(address);
+                    }
+                    else
+                    {
+                        db.Entry(address).State = EntityState.Modified; ;
+                    }
+                    db.SaveChanges();
+                }
+                return RedirectToAction("Profile");
+            }
+            var user = UserService.GetUserInfoWithRegions(userId);
+            ViewBag.User = user;
+
+            return View(address);
         }
 
         public ActionResult Structure()

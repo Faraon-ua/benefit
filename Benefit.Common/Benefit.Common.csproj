@@ -55,6 +55,7 @@
     <Compile Include="Constants\RouteConstants.cs" />
     <Compile Include="Constants\UserConstants.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\EnumExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\UrlExtensions.cs" />
     <Compile Include="Helpers\Enumerations.cs" />

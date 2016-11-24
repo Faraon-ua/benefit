@@ -31,7 +31,7 @@ namespace Benefit.Domain.Migrations
                         Type = c.Int(nullable: false),
                         Bonuses = c.Double(),
                         BonusesBalans = c.Double(),
-                        Time = c.DateTime(nullable: false),
+                        Time = c.DateTime(nullable: false, storeType: "datetime2"),
                         PayerId = c.String(maxLength: 128),
                         PayeeId = c.String(maxLength: 128),
                     })

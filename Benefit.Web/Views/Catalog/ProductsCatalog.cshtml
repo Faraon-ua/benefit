@@ -1,7 +1,6 @@
 ﻿@using System.Text
 @using Benefit.Common.Constants
 @using Benefit.DataTransfer.ViewModels
-@using Benefit.Domain.Models
 @model ProductsViewModel
 
 @{
@@ -33,7 +32,6 @@
                     skip += data.number;
                 });
             });
-
         </script>
     }
 }
@@ -55,7 +53,7 @@
             foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
             {
                 var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category.UrlName };
-                @Html.Partial("_ProductPartial", partialModel)
+                @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
             }
             if (Model.Items.Count > ListConstants.DefaultTakePerPage)
             {

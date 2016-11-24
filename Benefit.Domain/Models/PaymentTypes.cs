@@ -1,11 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
 {
     public enum PaymentType
     {
+        [Description("Готівкою при отриманні")]
         Cash,
-        Emoney,
+        [Description("Карткою Visa/MasterCard")]
+        Acquiring,
+        [Description("Бонусами")]
         Bonuses
     }
     public class PaymentTypes

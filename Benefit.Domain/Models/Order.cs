@@ -33,7 +33,7 @@ namespace Benefit.Domain.Models
         public double PersonalBonusesSum { get; set; }
         public double PointsSum { get; set; }
         public string CardNumber { get; set; }
-        [MaxLength(16)]
+        [MaxLength(32)]
         public string ShippingName { get; set; }
         [MaxLength(256)]
         public string ShippingAddress { get; set; }

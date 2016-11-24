@@ -24,11 +24,15 @@ namespace Benefit.Domain.Models
         [MaxLength(120)]
         public string Url { get; set; }
 
+        private string _expandedName;
         [NotMapped]
         public string ExpandedName
         {
             get
             {
+                if (_expandedName != null)
+                    return _expandedName;
+
                 var containsBracket = false;
 
                 var current = this;
@@ -51,7 +55,8 @@ namespace Benefit.Domain.Models
                 {
                     sb.Append(")");
                 }
-                return sb.ToString().Trim();
+                _expandedName = sb.ToString().Trim();
+                return _expandedName;
             }
         }
     }

@@ -73,21 +73,17 @@
 
         <div id="address" class="address tab-pane fade">
             <p class="profile_adress_title">Адреси доставки</p>
-            @*   <div class="address_block">
-                    <p class="adress_name">Македонська Олександра</p>
-                    <p class="adress_main">Закарпатська, <br>м. Ужгород, <br>вул. Минайська, 87, 99</p>
-                    <p class="adress_phone">+38 091 123 45 67</p>
-                    <button class="address_adit">Редагувати</button>
-                    <button class="address_delete">Видалити</button>
-                </div>
+            @foreach (var address in Model.Addresses)
+            {
                 <div class="address_block">
-                    <p class="adress_name">Македонська Олександра</p>
-                    <p class="adress_main">Закарпатська, <br>м. Мукачево, <br>вул. Миру, 31</p>
-                    <p class="adress_phone">+38 091 123 45 67</p>
-                    <button class="address_adit">Редагувати</button>
-                    <button class="address_delete">Видалити</button>
-                </div>*@
-            <button class="address_add">Додати нову адресу</button>
+                    <p class="adress_name">@address.FullName</p>
+                    <p class="adress_main">@(address.Region.Name_ua + ", " + address.AddressLine)</p>
+                    <p class="adress_phone">@address.Phone</p>
+                    <a class="address_adit" href="@Url.Action("UserAddress", new { id = address.Id })">Редагувати</a>
+                    <a class="address_delete">Видалити</a>
+                </div>
+            }
+            <a class="address_add" href="@Url.Action("UserAddress")">Додати нову адресу</a>
         </div>
 
         <div id="security" class="security tab-pane fade">
@@ -106,4 +102,3 @@
         </div>
     </div>
 </div>
-

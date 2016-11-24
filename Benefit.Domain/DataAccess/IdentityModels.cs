@@ -32,7 +32,9 @@ namespace Benefit.Domain.DataAccess
         public DbSet<ProductParameterProduct> ProductParameterProducts { get; set; }
         public DbSet<InfoPage> InfoPages { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
-//        public DbSet<Order> Orders { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderProduct> OrderProducts { get; set; }
+        public DbSet<OrderProductOption> OrderProductOptions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
