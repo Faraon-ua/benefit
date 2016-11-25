@@ -1,6 +1,16 @@
 ﻿@using Benefit.Domain.Models
 @model Seller
+
+
 <div class="margin-left-10">
+    <div class="row">
+        <p>Опис доставки</p>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextArea("Seller.ShippingDescription", Model.ShippingDescription, new { cols = 70, rows = 5 })
+        </div>
+    </div>
+    <br />
     <div class="row">
         @Ajax.ActionLink(
             "Додати метод доставки",
@@ -13,10 +23,10 @@
                 InsertionMode = InsertionMode.InsertAfter,
                 OnComplete = "UpdateShippingMethodsNumber"
             },
-                     new { @class = "btn btn-info", id = "addNewShippingMethod" }
+            new { @class = "btn btn-info", id = "addNewShippingMethod" }
             )
     </div>
-    <br/>
+    <br />
     @for (var i = 0; i < Model.ShippingMethods.Count; i++)
     {
         Html.RenderPartial("_ShippingForm", new KeyValuePair<int, ShippingMethod>(i, Model.ShippingMethods.ElementAt(i)));

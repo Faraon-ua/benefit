@@ -1,15 +1,24 @@
 ﻿@model  Benefit.Web.Models.ProductOptionsViewModel
 
 @{
-    ViewBag.Title = "Опції продукта";
+    if (Model.CategoryName != null)
+    {
+        ViewBag.Title = "Опції товарів категорії " + Model.CategoryName;
+    }
+    if (Model.ProductId != null)
+    {
+        ViewBag.Title = "Опції товару " + Model.Product.Name;
+    }
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 @section styles{
     <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
 }
 
 @section scripts{
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
     <script>
         function ProductOptionGroup(id) {
             $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionGroup?categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.ProductId&id=" + id, function (response, status, xhr) {
@@ -43,11 +52,29 @@
                 });
             });
         }
+
+        var productOptionsUrl = '@Html.Raw(Url.Action("Index", new { categoryId = Model.CategoryId, productId = Model.ProductId, sellerId = Model.SellerId}))';
+
+        $(function () {
+            $(".chosen-select").chosen({
+                search_contains: true
+            });
+
+            $("#SellerId").change(function () {
+                var sellerId = this.value;
+                var sellerIdIndex = productOptionsUrl.indexOf("sellerId=") + "sellerId=".length;
+                var newUrl = productOptionsUrl.substr(0, sellerIdIndex) + sellerId;
+                window.location.href = newUrl;
+            });
+        });
     </script>
 }
 
 <a class="btn btn-purple btn-sm" onclick="ProductOptionGroup('')" href="#">Додати групу опцій</a>
 <br />
+@Html.DropDownList("SellerId", Model.Sellers as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select" })
+<br />
+
 <div id="groupEditContainer" class="margin-top-10">
 
 </div>

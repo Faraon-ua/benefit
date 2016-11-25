@@ -180,6 +180,10 @@
     <Compile Include="Migrations\201611241023094_AddOrder.Designer.cs">
       <DependentUpon>201611241023094_AddOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611251400419_AddShippingDescription.cs" />
+    <Compile Include="Migrations\201611251400419_AddShippingDescription.Designer.cs">
+      <DependentUpon>201611251400419_AddShippingDescription.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -294,6 +298,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611241023094_AddOrder.resx">
       <DependentUpon>201611241023094_AddOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611251400419_AddShippingDescription.resx">
+      <DependentUpon>201611251400419_AddShippingDescription.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -28,6 +28,7 @@ namespace Benefit.Domain.Models
         public string Name { get; set; }
         [Required]
         public string Description { get; set; }
+        public string ShippingDescription { get; set; }
         [Required]
         [MaxLength(128)]
         [Index(IsUnique = true)]

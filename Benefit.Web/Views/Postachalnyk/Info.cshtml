@@ -36,7 +36,7 @@
         {
             <div class="organization_adress">
                 @{
-                    var address = Model.Seller.Addresses.FirstOrDefault();
+            var address = Model.Seller.Addresses.FirstOrDefault();
                 }
                 @if (address != null)
                 {
@@ -131,59 +131,61 @@
         </div>
 
         <div id="delivery_org" class="delivery_org tab-pane fade">
-            <p>
-                @foreach (var shipping in Model.Seller.ShippingMethods)
-                {
-                <p>
-                    Доставка по <b>@shipping.Region.Name_ua</b> службою <b>@shipping.Name</b>
-                    @if (shipping.CostBeforeFree == 0)
-                    {
-                        <span>безкоштовна</span>
-                    }
-                    else
-                    {
-                        <span>
-                            становить @shipping.CostBeforeFree грн, від @shipping.FreeStartsFrom - безкоштовна
-                        </span>
-                    }
-                </p>
-                }
-                </p>
-                <p>Середній час доставки 45 хвилин.</p>
+            <div>
+                @Html.Raw(Model.Seller.ShippingDescription)
             </div>
+            @* <p>
+                    @foreach (var shipping in Model.Seller.ShippingMethods)
+                    {
+                        <p>
+                            Доставка по <b>@shipping.Region.Name_ua</b> службою <b>@shipping.Name</b>
+                            @if (shipping.CostBeforeFree == 0)
+                            {
+                                <span>безкоштовна</span>
+                            }
+                            else
+                            {
+                                <span>
+                                    становить @shipping.CostBeforeFree грн, від @shipping.FreeStartsFrom - безкоштовна
+                                </span>
+                            }
+                        </p>
+                    }
+                </p>*@
+        </div>
 
-            <div id="recall_org" class="recall_org tab-pane fade">
-                <form>
-                    <label class="recall_label" for="recall">Залишити відгук</label>
-                    <textarea class="recall_text" id="recall" placeholder="Залишити відгук може лише авторизований користувач"></textarea>
-                    <p class="recall_register_notice"><a href="">Увійдіть</a> або <a href="">зареєструйтесь,</a> щоб залишити коментар</p>
-                </form>
+        <div id="recall_org" class="recall_org tab-pane fade">
+            <form>
+                <label class="recall_label" for="recall">Залишити відгук</label>
+                <textarea class="recall_text" id="recall" placeholder="Залишити відгук може лише авторизований користувач"></textarea>
+                <p class="recall_register_notice"><a href="">Увійдіть</a> або <a href="">зареєструйтесь,</a> щоб залишити коментар</p>
+            </form>
 
-                @*<div class="recall_title_wrap clearfix">
-                        <div class="recall_title">Відгуки про «Greenwich Lounge Bar»</div>
-                        <div class="recall_rating">
-                            <span class="rating_star good"></span>
-                            <span class="rating_all">15 відгуків</span>
-                        </div>
-                    </div>
-
-                    <div class="recall_item">
-                        <div class="recall_item_head">
-                            <div class="recall_name">Евгеній</div>
-                            <div class="recall_time">12.04.16 в 13:00</div>
-                        </div>
+            @*<div class="recall_title_wrap clearfix">
+                    <div class="recall_title">Відгуки про «Greenwich Lounge Bar»</div>
+                    <div class="recall_rating">
                         <span class="rating_star good"></span>
-                        <p class="recall_main">Ресторан має вишукане оформлення та першокласну кухню.Персонал дуже ввічливий та тактовний. Цей заклад харчування мій улюблений,поміж усіх інших. Всім раджу завітати в цей ресторан.</p>
+                        <span class="rating_all">15 відгуків</span>
                     </div>
+                </div>
 
-                    <div class="recall_item">
-                        <div class="recall_item_head">
-                            <div class="recall_name">Михайло</div>
-                            <div class="recall_time">12.04.16 в 13:00</div>
-                        </div>
-                        <span class="rating_star top"></span>
-                        <p class="recall_main">Вчора були в "Greenwich Lounge Bar", інтер'єр спокійний , затишний, ненав'язлива музика, страви смачнющі, адміністратор дуже приємна і привітна дівчина. Я думаю, що у Мукачеві немає місць рівних цьому, завітайте, не пожалієте, ми з чоловіком залишились довольні!!! Дякуємо!!!</p>
-                    </div>*@
-            </div>
+                <div class="recall_item">
+                    <div class="recall_item_head">
+                        <div class="recall_name">Евгеній</div>
+                        <div class="recall_time">12.04.16 в 13:00</div>
+                    </div>
+                    <span class="rating_star good"></span>
+                    <p class="recall_main">Ресторан має вишукане оформлення та першокласну кухню.Персонал дуже ввічливий та тактовний. Цей заклад харчування мій улюблений,поміж усіх інших. Всім раджу завітати в цей ресторан.</p>
+                </div>
+
+                <div class="recall_item">
+                    <div class="recall_item_head">
+                        <div class="recall_name">Михайло</div>
+                        <div class="recall_time">12.04.16 в 13:00</div>
+                    </div>
+                    <span class="rating_star top"></span>
+                    <p class="recall_main">Вчора були в "Greenwich Lounge Bar", інтер'єр спокійний , затишний, ненав'язлива музика, страви смачнющі, адміністратор дуже приємна і привітна дівчина. Я думаю, що у Мукачеві немає місць рівних цьому, завітайте, не пожалієте, ми з чоловіком залишились довольні!!! Дякуємо!!!</p>
+                </div>*@
         </div>
     </div>
+</div>

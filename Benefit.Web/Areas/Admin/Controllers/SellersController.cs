@@ -201,6 +201,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 seller.Seller.Schedules = SetSellerSchedules().ToList();
             }
+            if (seller.Seller.ShippingDescription != null)
+            {
+                seller.Seller.ShippingDescription = seller.Seller.ShippingDescription.Replace("<br/>", Environment.NewLine);
+            }
             seller.Seller.Schedules = seller.Seller.Schedules.OrderBy(entry => entry.Day).ToList();
             if (existingSeller != null)
             {
@@ -265,7 +269,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     UserManager.AddToRole(owner.Id, "Seller");
                     seller.OwnerId = owner.Id;
                 }
-
+                if (seller.ShippingDescription != null)
+                {
+                    seller.ShippingDescription = seller.ShippingDescription.Replace(Environment.NewLine, "<br/>");
+                }
                 seller.WebSiteReferalId = websiteReferal == null ? null : websiteReferal.Id;
                 seller.BenefitCardReferalId = benefitCardReferal == null ? null : benefitCardReferal.Id;
                 seller.LastModified = DateTime.UtcNow;

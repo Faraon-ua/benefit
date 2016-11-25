@@ -2,7 +2,16 @@
 
 <div class="row belong-category">
     <div class="col-sm-5">
-        @Html.DropDownList(string.Format("Seller.SellerCategories[{0}].CategoryId", Model.Key), ViewBag.Categories as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select category-id", data_number = Model.Key })
+        @if (Model.Value.CategoryId == null)
+        {
+            @Html.DropDownList(string.Format("Seller.SellerCategories[{0}].CategoryId", Model.Key), ViewBag.Categories as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select category-id", data_number = Model.Key })
+        }
+        else
+        {
+            <span>@Model.Value.Category.ExpandedName</span>
+            @Html.Hidden(string.Format("Seller.SellerCategories[{0}].CategoryId", Model.Key), Model.Value.CategoryId, new { @class = "category-id", data_number = Model.Key })
+        }
+            
     </div>
     <div class="col-sm-1">
         @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomDiscount", Model.Key), Model.Value.CustomDiscount, new { @class = "number-input width-80", placeholder = "Загальний відсоток знижки" }) %

@@ -18,12 +18,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
         // GET: /Admin/ProductParameters/
         public ActionResult Index(string categoryId = null, string sellerId = null, string productId = null)
         {
-            if (User.IsInRole(DomainConstants.SellerRoleName))
+            if (sellerId == null && User.IsInRole(DomainConstants.SellerRoleName))
             {
                 sellerId = Session[DomainConstants.SellerSessionIdKey].ToString();
             }
             List<ProductOption> productOptions;
             Product product = null;
+            var category = db.Categories.FirstOrDefault(entry => entry.Id == categoryId);
             if (!string.IsNullOrEmpty(productId))
             {
                 product =
@@ -45,13 +46,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     entry.CategoryId == categoryId && entry.SellerId == sellerId && entry.ParentProductOptionId == null).ToList();
                 productOptions.ForEach(entry => entry.Editable = true);
             }
-
             return View(new ProductOptionsViewModel
             {
                 Product = product,
                 ProductId =  productId,
                 CategoryId = categoryId,
+                CategoryName = category == null ? null : category.Name,
                 SellerId = sellerId,
+                Sellers = db.Sellers.Select(entry => new SelectListItem() { Text = entry.Name, Value = entry.Id }).ToList(),
                 ProductOptions = productOptions
             });
         }
