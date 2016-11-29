@@ -10,7 +10,7 @@
 
     <h2 class="margin-bottom-5">@Model.Seller.Name</h2>
     @{
-        var specifics = @Model.Seller.SellerCategories.Select(entry => entry.Category.ParentCategory).Distinct();
+        var specifics = @Model.Seller.SellerCategories.Select(entry => entry.Category.ParentCategory).Distinct().Where(entry => entry != null).ToList();
         var result = (from specific in specifics where !specifics.Select(entry => entry.Id).Contains(specific.ParentCategoryId) select specific.Name).ToList();
         var specificsStr = string.Join(" / ", result);
     }

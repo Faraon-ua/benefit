@@ -212,6 +212,7 @@
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\InfoPagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductOptionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductParametersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
@@ -584,6 +585,7 @@
     <Content Include="Content\css\nouislider.css" />
     <Content Include="Content\css\nouislider.min.css" />
     <Content Include="Content\css\nouislider.tooltips.css" />
+    <Content Include="Content\css\order-details.css" />
     <Content Include="Content\css\owl.carousel.css" />
     <Content Include="Content\css\validation-errors.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
@@ -863,6 +865,7 @@
     <Content Include="Content\reg_lp_catalog\view\theme\megashop\stylesheet\style.css" />
     <Content Include="Content\reg_lp_catalog\view\theme\megashop\stylesheet\stylesheet.css" />
     <Content Include="Content\reg_lp_catalog\view\theme\megashop\stylesheet\swiper.min.css" />
+    <Content Include="Content\sounds\newOrder.mp3" />
     <Content Include="EmailTemplates\PasswordChanged.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -1068,6 +1071,15 @@
     <Content Include="Areas\Cabinet\Views\Panel\planvunagorod.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\UserAddress.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\_UserAddressForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\Delete.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\_OrdersListPartial.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Panel\_OrderDetailsPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\_OrderProductForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_TerminalForm.cshtml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />

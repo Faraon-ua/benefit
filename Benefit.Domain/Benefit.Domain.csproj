@@ -184,6 +184,10 @@
     <Compile Include="Migrations\201611251400419_AddShippingDescription.Designer.cs">
       <DependentUpon>201611251400419_AddShippingDescription.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201611281010059_AddOrderNumber.cs" />
+    <Compile Include="Migrations\201611281010059_AddOrderNumber.Designer.cs">
+      <DependentUpon>201611281010059_AddOrderNumber.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -199,6 +203,7 @@
     <Compile Include="Models\ModelExtensions\UserExt.cs" />
     <Compile Include="Models\OrderProductOption.cs" />
     <Compile Include="Models\OrderProduct.cs" />
+    <Compile Include="Models\Personnel.cs" />
     <Compile Include="Models\ProductOption.cs" />
     <Compile Include="Models\ProductParameter.cs" />
     <Compile Include="Models\Image.cs" />
@@ -301,6 +306,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611251400419_AddShippingDescription.resx">
       <DependentUpon>201611251400419_AddShippingDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201611281010059_AddOrderNumber.resx">
+      <DependentUpon>201611281010059_AddOrderNumber.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

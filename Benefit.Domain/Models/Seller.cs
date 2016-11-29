@@ -33,6 +33,10 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
+        [MaxLength(32)]
+        public string TerminalLogin { get; set; }
+        [MaxLength(16)]
+        public string TerminalPassword { get; set; }
         [Required]
         [MaxLength(16)]
         public string CatalogButtonName { get; set; }
@@ -65,5 +69,6 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Schedule> Schedules { get; set; }
         public virtual ICollection<ShippingMethod> ShippingMethods { get; set; }
         public ICollection<ProductOption> ProductOptions { get; set; }
+        public ICollection<Personnel> Personnels { get; set; }
     }
 }

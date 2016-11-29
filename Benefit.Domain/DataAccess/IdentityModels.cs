@@ -65,7 +65,7 @@ namespace Benefit.Domain.DataAccess
             modelBuilder.Entity<Seller>()
                   .HasOptional<ApplicationUser>(s => s.BenefitCardReferal)
                   .WithMany(s => s.ReferedBenefitCardSellers).WillCascadeOnDelete(false);
-            
+
             modelBuilder.Entity<ApplicationUser>()
                   .HasOptional<ApplicationUser>(s => s.Referal)
                   .WithMany(s => s.Partners).WillCascadeOnDelete(false);

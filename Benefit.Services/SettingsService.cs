@@ -21,6 +21,14 @@ namespace Benefit.Services
             {
                 return int.Parse(ConfigurationManager.AppSettings["SkuMinValue"]);
             }
+        } 
+        
+        public static int OrderMinValue
+        {
+            get
+            {
+                return int.Parse(ConfigurationManager.AppSettings["OrderMinValue"]);
+            }
         }
 
         public class Email

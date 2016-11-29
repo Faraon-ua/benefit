@@ -44,6 +44,18 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             return View(user);
         }
 
+        public ActionResult GetOrderDetails(string orderId)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var order =
+                    db.Orders.Include(entry => entry.OrderProducts)
+                        .Include(entry => entry.OrderProductOptions)
+                        .FirstOrDefault(entry => entry.Id == orderId);
+                return PartialView("_OrderDetailsPartial", order);
+            }
+        }
+
         public ActionResult Profile()
         {
             var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());

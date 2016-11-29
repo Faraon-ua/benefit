@@ -1,0 +1,28 @@
+﻿@model Benefit.Domain.Models.OrderProduct
+
+<div id="dialog" title="Додати товар" class="hide">
+    <div class="ui-dialog-content ui-widget-content" id="dialog-confirm" style="width: auto; min-height: 27px; max-height: none; height: auto;">
+        @using (Html.BeginForm("AddOrderProduct", "Orders"))
+        {
+            <div class="row">
+                @Html.TextBoxFor(m => m.ProductName, new { placeholder = "Назва товару", @class = "col-sm-12" })
+
+
+            </div>
+
+            <div class="row margin-top-10">
+                <div class="col-sm-3">
+                    Кількість:
+                </div>
+                @Html.TextBoxFor(m => m.Amount, new { placeholder = "Кількість", @class = "col-sm-2" })
+            </div>
+          <div class="row margin-top-10">
+                <div class="col-sm-3">
+                    Ціна:
+                </div>
+                @Html.TextBoxFor(m => m.ProductPrice, new { placeholder = "Ціна", @class = "col-sm-2" })
+            </div>
+            @Html.HiddenFor(m => m.OrderId)
+        }
+    </div>
+</div>

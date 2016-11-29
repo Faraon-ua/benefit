@@ -10,13 +10,13 @@ namespace Benefit.Domain.Models
         Created,
         Processed,
         Finished,
-        Abandodned
+        Abandoned
     }
 
     public enum OrderType
     {
         BenefitSite,
-        BenefitCard
+        BenefitCard 
     }
     public class Order
     {
@@ -28,6 +28,7 @@ namespace Benefit.Domain.Models
             OrderProductOptions = new Collection<OrderProductOption>();
         }
         public string Id { get; set; }
+        public int OrderNumber { get; set; }
         public double Sum { get; set; }
         public string Description { get; set; }
         public double PersonalBonusesSum { get; set; }
@@ -42,6 +43,8 @@ namespace Benefit.Domain.Models
         public OrderType OrderType { get; set; }
         public PaymentType PaymentType { get; set; }
         public OrderStatus Status { get; set; }
+        [MaxLength(64)]
+        public string StatusComment { get; set; }
         [MaxLength(128)]
         public string SellerId { get; set; }
         [MaxLength(128)]
@@ -49,6 +52,10 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
+        [MaxLength(128)]
+        public string PersonnelId { get; set; }
+        [MaxLength(64)]
+        public string PersonnelName { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } 
         public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
     }

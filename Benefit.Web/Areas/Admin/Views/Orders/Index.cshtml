@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Замовлення";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section scripts
+{
+    <script>
+        var ordersUrl = '@Url.Action("GetOrdersList")';
+        var soundPath = '@Url.Content("~/Content/sounds/newOrder.mp3")';
+        var audio = new Audio(soundPath);
+
+        $(function () {
+            GetOrderList();
+
+            setInterval(function () {
+                GetOrderList();
+            }, 60000);
+        });
+
+        function GetOrderList() {
+            $.get(ordersUrl, function (data) {
+                $("#ordersList").html(data.html);
+                if (data.hasNewOrder) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+            });
+        }
+    </script>
+}
+<div id="ordersList">
+</div>

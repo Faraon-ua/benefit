@@ -31,9 +31,14 @@
 <div class="provider_container" data-category-ids="@categoryIdsStr" data-seller-options="@sellerOptions">
     <div class="provider">
         <div class="provider_main_info">
-            <div class="provider_bonus_label">@Model.UserDiscount%<br>бонус</div>
+            <div class="provider_bonus_label">@(Model.UserDiscount)%<br>бонус</div>
+
             <div class="provider_img_wrap">
-                <img src="~/Images/SellerLogo/@Model.Images.FirstOrDefault(entry=>entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo).ImageUrl" alt="@Model.Name">
+                @{
+                    var logo = Model.Images.FirstOrDefault(entry => entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo);
+                    var logoUrl = logo == null ? "" : logo.ImageUrl;
+                }
+                <img src="~/Images/SellerLogo/@logoUrl" alt="@Model.Name">
             </div>
             <p class="provider_name">@Model.Name</p>
             @{

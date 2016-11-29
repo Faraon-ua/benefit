@@ -12,6 +12,8 @@ namespace Benefit.Domain.Models
         [Key, Column(Order = 1)]
         [MaxLength(128)]
         public string ProductOptionId { get; set; }
+        [MaxLength(128)]
+        public string ProductId { get; set; }
         public string ProductOptionName { get; set; }
         public double ProductOptionPriceGrowth { get; set; }
         public int Amount { get; set; }

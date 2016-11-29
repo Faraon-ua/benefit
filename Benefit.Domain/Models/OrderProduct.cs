@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using Benefit.Domain.DataAccess;
 
 namespace Benefit.Domain.Models
 {
@@ -22,6 +24,17 @@ namespace Benefit.Domain.Models
         public double ProductPrice { get; set; }
         public double Amount { get; set; }
         [NotMapped]
-        public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
+        public ICollection<OrderProductOption> OrderProductOptions { get; set; }
+        [NotMapped]
+        public ICollection<OrderProductOption> DbOrderProductOptions
+        {
+            get
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    return db.OrderProductOptions.Where(entr => entr.ProductId == ProductId).ToList();
+                }
+            }
+        }
     }
 }
