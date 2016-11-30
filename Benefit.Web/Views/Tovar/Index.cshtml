@@ -50,7 +50,7 @@
                     amount: productAmount
                 };
                 $.post(addToCartUrl,
-                    order, 
+                    order,
                     function (data) {
                         $('#product_modal').modal('hide');
                         setTimeout(function f() {
@@ -127,7 +127,7 @@
                     <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>
                     <a href="#product_descr_tab">Детальніше</a>
                 </div>
-                <div class="product_description_amount_wrap">
+                <div class="product_description_amount_wrap pull-left">
                     <div class="product_description_amount_minus">-</div>
                     <input type="text" class="product_description_amount" value="1">
                     <div class="product_description_amount_plus">+</div>
