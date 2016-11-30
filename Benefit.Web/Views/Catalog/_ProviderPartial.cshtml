@@ -78,7 +78,7 @@
             @if (Model.ShippingMethods.Any())
             {
                 var shipping = Model.ShippingMethods.First();
-                <div class="provider_delivery"><span>Доставка по @shipping.Region.Name_ua</span></div>
+                <div class="provider_delivery"><span>Регіон доставки: @shipping.Region.Name_ua</span></div>
             }
             @{
                 var schedule = Model.Schedules.FirstOrDefault(entry => entry.Day == DateTime.UtcNow.DayOfWeek);

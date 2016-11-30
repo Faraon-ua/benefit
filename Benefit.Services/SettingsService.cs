@@ -15,6 +15,13 @@ namespace Benefit.Services
             }
         }
 
+        public static int MinUserExternalNumber
+        {
+            get
+            {
+                return int.Parse(ConfigurationManager.AppSettings["MinUserExternalNumber"]);
+            }
+        } 
         public static int SkuMinValue
         {
             get

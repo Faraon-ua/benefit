@@ -7,14 +7,52 @@ namespace Benefit.Web.Models
         [Required]
         public int? ReferalNumber { get; set; }
         [Required]
+        [MaxLength(64)]
+        public string FullName { get; set; }
+        public int? RegionId { get; set; }
+        [Required]
+        [MaxLength(16)]
+        public string PhoneNumber { get; set; }
+        [Required]
+        [MaxLength(64)]
         public string UserName { get; set; }
         [Required]
         [MaxLength(64)]
-        public string FullName { get; set; }
-        [Required]
-        [MaxLength(32)]
-        public string PhoneNumber { get; set; }
+        public string Email { get; set; }
         public string CardNumber { get; set; }
+    }
+    
+    public class RegisterViewModel
+    {
+        [Required(ErrorMessage = "Реферальний код є обов'язковим для заповнення")]
+        public int? ReferalNumber { get; set; }
+        [MaxLength(32)]
+        [Required(ErrorMessage = "Ім'я є обов'язковим для заповнення")]
+        public string FirstName { get; set; }
+        [MaxLength(32)]
+        [Required(ErrorMessage = "Прізвище є обов'язковим для заповнення")]
+        public string LastName { get; set; }
+        [Required(ErrorMessage = "Місто є обов'язковим для заповнення")]
+        public string RegionName { get; set; }
+        public int? RegionId { get; set; }
+        [Required(ErrorMessage = "Номер телефону є обов'язковим для заповнення")]
+        [MaxLength(16)]
+        public string PhoneNumber { get; set; }
+        [Required(ErrorMessage = "Email є обов'язковим для заповнення")]
+        [MaxLength(64)]
+        public string Email { get; set; }
+        public string CardNumber { get; set; }
+
+        [Required(ErrorMessage = "Пароль є обов'язковим для заповнення")]
+        [StringLength(100, ErrorMessage = "Пароль має бути не менший за 4 символи", MinimumLength = 4)]
+        [DataType(DataType.Password)]
+        [Display(Name = "Пароль")]
+        public string Password { get; set; }
+
+        [DataType(DataType.Password)]
+        [Display(Name = "Confirm password")]
+        [Compare("Password", ErrorMessage = "Пароль і підтвердження паролю не співпадають")]
+        public string ConfirmPassword { get; set; }
     }
 
     public class ManageUserViewModel
@@ -51,23 +89,7 @@ namespace Benefit.Web.Models
         public bool RememberMe { get; set; }
     }
 
-    public class RegisterViewModel
-    {
-        [Required]
-        [Display(Name = "User name")]
-        public string UserName { get; set; }
-
-        [Required]
-        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
-        [DataType(DataType.Password)]
-        [Display(Name = "Password")]
-        public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
-        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-        public string ConfirmPassword { get; set; }
-    }
+   
 
     public class ForgotPasswordViewModel
     {

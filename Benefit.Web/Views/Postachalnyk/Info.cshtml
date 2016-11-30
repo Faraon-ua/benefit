@@ -1,4 +1,5 @@
-﻿@using Benefit.Domain.Models
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
 @model Benefit.DataTransfer.ViewModels.SellerDetailsViewModel
 @{
     ViewBag.Title = Model.Seller.Name;
@@ -10,11 +11,9 @@
 
     <h2 class="margin-bottom-5">@Model.Seller.Name</h2>
     @{
-        var specifics = @Model.Seller.SellerCategories.Select(entry => entry.Category.ParentCategory).Distinct().Where(entry => entry != null).ToList();
-        var result = (from specific in specifics where !specifics.Select(entry => entry.Id).Contains(specific.ParentCategoryId) select specific.Name).ToList();
-        var specificsStr = string.Join(" / ", result);
+        var specific = (Model.Seller.SellerCategories.FirstOrDefault(entry => entry.IsDefault) ?? Model.Seller.SellerCategories.FirstOrDefault(entry => entry.IsDefault)).Category.Name;
     }
-    <p class="organization_type">@specificsStr</p>
+    <p class="organization_type">@specific</p>
     <div class="organization_slider_wrap">
         <div id="organization_slider" class="organization_slider">
             @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery))
@@ -91,7 +90,7 @@
                 <span>@sunSchedule.StartHour:00 - @sunSchedule.EndHour:00</span>
             }
         </div>
-        <a class="goto_menu" href="#">@Model.Seller.CatalogButtonName</a>
+        <a class="goto_menu" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.Seller.UrlName, categoryUrl = "" })">@Model.Seller.CatalogButtonName</a>
     </div>
 
     <ul class="tab_menu nav nav-tabs">

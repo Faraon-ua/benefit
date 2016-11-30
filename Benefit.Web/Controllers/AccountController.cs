@@ -3,12 +3,14 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Management;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
 using Facebook;
+using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -79,9 +81,10 @@ namespace Benefit.Web.Controllers
         //
         // GET: /Account/Register
         [AllowAnonymous]
-        public ActionResult Register()
+        public ActionResult Register(string id = null)
         {
-            return View();
+            int? ReferalNumber = (id != null) ? int.Parse(id) : (int?) null;
+            return View(new RegisterViewModel {ReferalNumber = ReferalNumber });
         }
 
         //
@@ -91,9 +94,41 @@ namespace Benefit.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
+            ApplicationUser referal = null;
+            int externalNumber = SettingsService.MinUserExternalNumber;
+            using (var db = new ApplicationDbContext())
+            {
+                externalNumber = db.Users.Max(entry => entry.ExternalNumber);
+                referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber == model.ReferalNumber);
+                if (referal == null)
+                {
+                    ModelState.AddModelError("ReferalNumber", "Користувача з таким реферальним кодом не знайдено");
+                }
+                if (db.Users.Any(entry => entry.Email == model.Email))
+                {
+                    ModelState.AddModelError("Email", "Цей Email вже зареєстрований");
+                }
+                if (db.Users.Any(entry => entry.PhoneNumber == model.PhoneNumber))
+                {
+                    ModelState.AddModelError("Email", "Цей телефон вже зареєстрований");
+                }
+            }
+
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.UserName };
+                var user = new ApplicationUser()
+                {
+                    UserName = model.Email,
+                    ReferalId = referal.Id,
+                    FullName = string.Format("{0} {1}", model.FirstName, model.LastName),
+                    RegionId = model.RegionId.Value,
+                    Email = model.Email,
+                    IsActive = true,
+                    ExternalNumber = ++externalNumber,
+                    CardNumber = model.CardNumber,
+                    PhoneNumber = model.PhoneNumber,
+                    RegisteredOn = DateTime.UtcNow
+                };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -103,8 +138,8 @@ namespace Benefit.Web.Controllers
                     var callbackUrl = Url.Action("ConfirmEmail", "Account",
                        new { userId = user.Id, code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id,
-                       "Confirm your account", "Please confirm your account by clicking <a href=\""
-                       + callbackUrl + "\">here</a>");
+                       "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтсвердіть реєстрацію, натиснувши на <a href=\""
+                       + callbackUrl + "\">це посилання</a>");
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -553,5 +588,18 @@ namespace Benefit.Web.Controllers
             }
         }
         #endregion
+
+        public ActionResult GetReferalName(string id)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber.ToString() == id);
+                if (referal != null)
+                {
+                    return Content(referal.FullName);
+                }
+                return null;
+            }
+        }
     }
 }
