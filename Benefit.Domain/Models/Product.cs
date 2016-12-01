@@ -39,6 +39,8 @@ namespace Benefit.Domain.Models
         public DateTime LastModified { get; set; }
         [MaxLength(64)]
         public string LastModifiedBy { get; set; }
+        [MaxLength(256)]
+        public string SearchTags { get; set; }
         [Required]
         [MaxLength(128)]
         public string CategoryId { get; set; }

@@ -13,9 +13,24 @@
     <script src="~/Scripts/ckeditor/ckeditor.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
     <script src="~/Areas/Admin/assets/js/dropzone.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/bootstrap-tag.min.js"></script>
 
     <script>
         $(function () {
+
+            var tag_input = $('#SearchTags');
+            if (!(/msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase()))) {
+                tag_input.tag(
+                  {
+                      placeholder: tag_input.attr('placeholder'),
+                      source: ace.variable_US_STATES,//defined in ace.js >> ace.enable_search_ahead
+                  }
+                );
+            }
+            else {
+                tag_input.after('<textarea id="' + tag_input.attr('id') + '" name="' + tag_input.attr('name') + '" rows="3">' + tag_input.val() + '</textarea>').remove();
+            }
+
             $('form').submit(function () {
                 $(".product-option-value").each(function (index) {
                     $(this).attr("name", $(this).attr("name").replace("{n}", index));
@@ -168,7 +183,7 @@
                     Зображення
                 </a>
             </li>
-             <li>
+            <li>
                 <a href="#recommendations" data-toggle="tab">
                     <i class="purple icon-dropbox bigger-110"></i>
                     Рекомендовані товари

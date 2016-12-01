@@ -26,7 +26,7 @@ namespace Benefit.Services.Domain
             return orders.Skip(skip).Take(take).ToList();
         } 
 
-        public void AddOrder(CompleteOrderViewModel model)
+        public string AddOrder(CompleteOrderViewModel model)
         {
             var seller = db.Sellers.FirstOrDefault(entry => entry.Id == model.Order.SellerId);
             var order = model.Order;
@@ -94,6 +94,7 @@ namespace Benefit.Services.Domain
             {
                 cartMumberCookie.Expires = DateTime.UtcNow.AddDays(-1);
             }
+            return order.Id;
         }
 
         public void DeleteOrder(string orderId)

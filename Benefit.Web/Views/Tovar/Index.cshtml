@@ -15,10 +15,6 @@
                 interval: 3000
             });
 
-            $(".product_modal_form input[type=checkbox], .product_modal_form input[type=radio], .product_modal_form div.product_modal_minus, .product_modal_form div.product_modal_plus").click(function () {
-                CalculateProductPrice();
-            });
-
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new { sellerId = Model.Product.SellerId })';
             $("#buy-product, .goto_ahead").click(function () {
                 $(this).attr("disabled", "disabled");
@@ -59,27 +55,13 @@
                             $("#cart-items-number").text(data);
                             $("#cart-items-number").show();
                             setCookie("cartNumber", data, { expires: 36000, path: "/" });
-                            $("#buy-product, .goto_ahead").removeAttr("disabled");
                         }, 1000);
                     });
                 console.log(order);
             });
         });
 
-        function CalculateProductPrice() {
-            var checkOptions = $(".product_modal_form input[type=checkbox]:checked").map(function () {
-                var checkboxPriceGrowth = parseFloat($(this).attr("data-price-growth"));
-                var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
-                return checkboxPriceGrowth * amount;
-            }).get();
-            var radioOptions = $(".product_modal_form input[type=radio]:checked").map(function () {
-                return parseFloat($(this).attr("data-price-growth"));
-            }).get();
-            var checkPriceGrowth = checkOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
-            var radioPriceGrowth = radioOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
-            var originalPrice = parseFloat($(".product-price").attr("data-original-price"));
-            $(".product-price").text((originalPrice + checkPriceGrowth + radioPriceGrowth).toFixed(2));
-        }
+        
     </script>
 }
 <main class="full_content product_content">
@@ -135,7 +117,7 @@
                 <div class="product_description_control_wrap">
                     @*<div class="product_description_like"></div>
                         <div class="product_description_scale"></div>*@
-                    @if (Model.Product.ProductOptions.Any())
+                    @if (Model.ProductOptions.Any())
                     {
                         <a class="product_description_buy" href="" data-toggle="modal" data-target="#product_modal">Купити</a>
                     }

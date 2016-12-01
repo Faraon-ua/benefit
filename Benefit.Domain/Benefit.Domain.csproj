@@ -188,6 +188,10 @@
     <Compile Include="Migrations\201611281010059_AddOrderNumber.Designer.cs">
       <DependentUpon>201611281010059_AddOrderNumber.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612011300078_AddProductSearchTags.cs" />
+    <Compile Include="Migrations\201612011300078_AddProductSearchTags.Designer.cs">
+      <DependentUpon>201612011300078_AddProductSearchTags.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -309,6 +313,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201611281010059_AddOrderNumber.resx">
       <DependentUpon>201611281010059_AddOrderNumber.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612011300078_AddProductSearchTags.resx">
+      <DependentUpon>201612011300078_AddProductSearchTags.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

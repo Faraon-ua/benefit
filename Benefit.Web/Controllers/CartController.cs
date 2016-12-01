@@ -66,8 +66,8 @@ namespace Benefit.Web.Controllers
             if (ModelState.IsValid)
             {
                 completeOrder.Order.UserId = User.Identity.GetUserId();
-                OrderService.AddOrder(completeOrder);
-                return View("OrderCompleted");
+                var orderNumber = OrderService.AddOrder(completeOrder);
+                return View("OrderCompleted", orderNumber);
             }
             using (var db = new ApplicationDbContext())
             {
@@ -85,7 +85,6 @@ namespace Benefit.Web.Controllers
             }
             return View(completeOrder);
         }
-
 
         public ActionResult GetCart()
         {

@@ -23,7 +23,7 @@
         <div class="form-group">
             <label class="col-sm-3 control-label no-padding-right">Код товару</label>
             <div class="col-md-9">
-                @Html.TextBoxFor(model => model.SKU, new { @class = "col-xs-10 col-sm-5", @readonly = "readonly"})
+                @Html.TextBoxFor(model => model.SKU, new { @class = "col-xs-10 col-sm-5", @readonly = "readonly" })
                 @Html.ValidationMessageFor(model => model.SKU)
             </div>
         </div>
@@ -62,7 +62,7 @@
             @Html.ValidationMessageFor(model => model.IsActive)
         </div>
     </div>
-    
+
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right" for="DoesCountForShipping">Враховується в сумму доставки</label>
         <div class="col-md-9">
@@ -89,6 +89,13 @@
         <div class="col-md-9">
             @Html.DropDownList("SellerId", null, new { @class = "chosen-select col-xs-10 col-sm-5" })
             @Html.ValidationMessageFor(model => model.SellerId)
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Пошукові теги</label>
+        <div class="col-xs-10 col-sm-5">
+            <input type="text" name="SearchTags" id="SearchTags" value="@Model.SearchTags" placeholder="Введіть пошукові теги" />
         </div>
     </div>
 

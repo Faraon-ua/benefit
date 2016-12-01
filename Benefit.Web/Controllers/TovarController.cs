@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 
@@ -36,5 +37,26 @@ namespace Benefit.Web.Controllers
             };
             return View(result);
         }
-	}
+
+        public ActionResult GetProductOptions(string productId)
+        {
+            Product product;
+            using (var db = new ApplicationDbContext())
+            {
+                product = db.Products.Find(productId);
+            }
+            if (product == null) return HttpNotFound();
+
+            var result = new ProductDetailsViewModel()
+            {
+                Product = product,
+                ProductOptions = ProductsService.GetProductOptions(product.Id),
+            };
+            if (result.ProductOptions.Any())
+            {
+                return PartialView("_ProductOptions", result);
+            }
+            return Content(string.Empty);
+        }
+    }
 }

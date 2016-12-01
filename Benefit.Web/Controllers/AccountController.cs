@@ -589,6 +589,7 @@ namespace Benefit.Web.Controllers
         }
         #endregion
 
+        [AllowAnonymous]
         public ActionResult GetReferalName(string id)
         {
             using (var db = new ApplicationDbContext())

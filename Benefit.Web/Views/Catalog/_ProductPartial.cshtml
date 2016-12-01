@@ -1,12 +1,12 @@
 ﻿@using Benefit.Common.Constants
 @model Benefit.DataTransfer.ViewModels.ProductPartialViewModel
 
-<div class="product_container">
+<div class="product_container" id="@Model.Product.Id">
     <div class="product">
         <div class="product_img_wrap">
             @{
                 var image = Model.Product.Images.FirstOrDefault();
-                var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new {categoryUrl = Model.CategoryUrl, sellerUrl = Model.SellerUrl, productUrl = Model.Product.UrlName});
+                var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = Model.CategoryUrl, sellerUrl = Model.SellerUrl, productUrl = Model.Product.UrlName });
             }
 
             <a href="@productDetailsUrl" title="@Model.Product.Name">
@@ -38,8 +38,9 @@
         <div class="product_control_wrap">
             <div class="product_like product_like_red"></div>
             <div class="product_scale"></div>
-            <a class="product_buy" href="">Купити</a>
+            <a class="product_buy" href="#" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId">Купити</a>
         </div>
-        <div class="product_stock">Акція</div>
+        @*        todo: add seller label and promotion*@
+        @*        <div class="product_stock">Акція</div>*@
     </div>
 </div>
