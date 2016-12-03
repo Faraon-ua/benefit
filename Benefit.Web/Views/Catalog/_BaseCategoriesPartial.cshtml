@@ -1,0 +1,6 @@
+﻿@model List<Benefit.Domain.Models.Category>
+
+@foreach (var category in Model)
+{
+     <li><a href="#" data-category-id="@category.Id">@category.Name</a></li>
+}

@@ -15,6 +15,12 @@ namespace Benefit.Web.Controllers
         {
             CategoriesService = new CategoriesService();
         }
+        [OutputCache(Duration = CacheConstants.OutputCacheLength)]
+        public ActionResult GetBaseCategories()
+        {
+            var categories = CategoriesService.GetBaseCategories();
+            return PartialView("_BaseCategoriesPartial", categories);
+        }
 
         public ActionResult Index(string id)
         {
@@ -32,7 +38,7 @@ namespace Benefit.Web.Controllers
         {
             var products = CategoriesService.GetCategoryProductsOnly(categoryId, skip, take);
             var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("_ProductPartial", entry)));
-            return Json(new { number = products.Count, products = productsHtml}, JsonRequestBehavior.AllowGet);
+            return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
         }
     }
 }

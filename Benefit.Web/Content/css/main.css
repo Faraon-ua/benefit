@@ -965,7 +965,7 @@ header {
 
 .vertical_menu ul li {
     background: rgba(255, 255, 255, 1);
-    height: 27px;
+    /*height: 27px;*/
 }
 
 li {
@@ -973,7 +973,7 @@ li {
 
 .vertical_menu ul li a {
     color: #000;
-    height: 31px;
+    /*height: 31px;*/
     box-sizing: border-box;
     padding: 0 0 0 19px;
     line-height: 27px;
@@ -2999,10 +2999,6 @@ li:last-child .expand {
     box-sizing: border-box;
 }
 
-    .reviews_menu_wrap a:first-child {
-        margin-right: 20px;
-    }
-
     .reviews_menu_wrap a:hover {
         color: #ffffff;
         background-color: #990000;
@@ -3054,6 +3050,22 @@ li:last-child .expand {
     width: 20px;
     height: 27px;
     background: url(../img/provider_sprite.png) -2px -4px no-repeat;
+}
+
+.provider_coins span:before {
+    top: 3px;
+    left: 12px;
+    width: 26px;
+    height: 24px;
+    background: url(../img/coins_zaklad.png) no-repeat;
+}
+
+.provider_icon span:before {
+    top: 3px;
+    left: 12px;
+    width: 24px;
+    height: 23px;
+    background: url(../img/coins_zaklad.png) -28px no-repeat;
 }
 
 .provider_benefit_card span:before {

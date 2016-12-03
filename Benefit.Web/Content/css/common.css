@@ -109,6 +109,9 @@
 .width-100 {
     width: 100% !important;
 }
+.width-100-px {
+    width: 100px !important;
+}
 
 .width-50 {
     width: 50% !important;
@@ -132,6 +135,10 @@
 
 .width-3 {
     width: 3% !important;
+}
+
+.height-220 {
+    height: 228px !important;
 }
 
 .bold {

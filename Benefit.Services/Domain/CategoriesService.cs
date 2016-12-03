@@ -18,6 +18,11 @@ namespace Benefit.Services.Domain
     public class CategoriesService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        public List<Category> GetBaseCategories()
+        {
+            return db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order).ToList();
+        } 
         public List<Category> GetBreadcrumbs(string categoryId = null, string urlName = null)
         {
             var cacheKey = string.Format("{0}{1}{2}", CacheConstants.BreadCrumbsKey, categoryId, urlName);

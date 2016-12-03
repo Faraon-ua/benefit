@@ -16,6 +16,22 @@ namespace Benefit.Services.Domain
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
+        public SellersViewModel GetAllSellers()
+        {
+            var regionId = RegionService.GetRegionId();
+
+            var sellers =
+                db.Sellers
+                 .Include(entry => entry.Images)
+                    .Include(entry => entry.Addresses)
+                    .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                .OrderByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ToList();
+            return new SellersViewModel()
+            {
+                Items = sellers
+            };
+        }
         public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName)
         {
             var sellerVM = new SellerDetailsViewModel();
@@ -99,6 +115,11 @@ namespace Benefit.Services.Domain
             var categoryId = category == null ? null : category.Id;
             result.Items =
                 db.Products.Where(entry => entry.CategoryId == categoryId && entry.SellerId == seller.Id).ToList();
+            //todo: remove all products workaround
+            if (!result.Items.Any())
+            {
+                result.Items = db.Products.Where(entry => entry.SellerId == seller.Id).ToList();
+            }
             //todo: add breadcrumbs
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {

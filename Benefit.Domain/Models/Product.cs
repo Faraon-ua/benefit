@@ -40,6 +40,7 @@ namespace Benefit.Domain.Models
         [MaxLength(64)]
         public string LastModifiedBy { get; set; }
         [MaxLength(256)]
+        [Index]
         public string SearchTags { get; set; }
         [Required]
         [MaxLength(128)]

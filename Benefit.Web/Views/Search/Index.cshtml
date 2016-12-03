@@ -1,0 +1,9 @@
+﻿@model Benefit.Domain.Models.Search.SearchResult
+
+@{
+    ViewBag.Title = string.Format("Результати пошуку '{0}'", Model.Term);
+}
+
+<p>Результати пошуку</p>
+<h3>"@Model.Term"</h3>
+@Html.Partial("~/Views/Catalog/_ProductsListPartial.cshtml", Model.Products)

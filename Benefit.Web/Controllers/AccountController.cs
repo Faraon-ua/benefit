@@ -138,7 +138,7 @@ namespace Benefit.Web.Controllers
                     var callbackUrl = Url.Action("ConfirmEmail", "Account",
                        new { userId = user.Id, code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id,
-                       "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтсвердіть реєстрацію, натиснувши на <a href=\""
+                       "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\""
                        + callbackUrl + "\">це посилання</a>");
 
                     return RedirectToAction("Index", "Home");

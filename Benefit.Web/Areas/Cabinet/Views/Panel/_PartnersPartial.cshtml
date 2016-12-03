@@ -15,7 +15,11 @@
                         <div class="structure_table_balls">@partner.PointsAccount.ToString("F")</div>
                         <div class="structure_table_bonuses">@partner.BonusAccount.ToString("F")</div>
                         <div class="structure_table_register_date">@partner.RegisteredOn.ToLocalTimeWithDateFormat()</div>
-                        <div class="structure_table_register_location">@partner.Region.Name_ua</div>
+                        @{
+                            var region = partner.Region;
+                            var regionName = region == null ? string.Empty : region.Name_ua;
+                        }
+                        <div class="structure_table_register_location">@regionName</div>
                         <div class="structure_table_register_email">
                             <input type="text" value="@partner.Email" />
                         </div>

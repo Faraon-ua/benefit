@@ -51,7 +51,7 @@
     <link rel="stylesheet" href="~/Content/reg_lp_catalog/view/javascript/ekko-lightbox.css">
     <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/ekko-lightbox.js"></script>
     <script src="~/Content/reg_lp_catalog/view/javascript/jquery/jquery.geoip-module.js" type="text/javascript"></script>
-    
+
     <link href="~/Content/css/validation-errors.css" rel="stylesheet" />
     <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
     <link href="~/Content/css/address.css" rel="stylesheet" />
@@ -84,29 +84,38 @@
                 @*                <video style="width: 518px; height: 291px; left: 0px; top: 4.3125px;" tabindex="-1" class="video-stream html5-main-video" src="mediasource:https://www.youtube.com/e7777328-1577-4ce8-a57b-1c5c9e4f074a"></video>*@
                 <iframe src="https://www.youtube.com/embed/Fsi1rA8e-z4" frameborder="0" allowfullscreen></iframe>
             </div>
-        </div><!-- end lr_header_bg -->
+
+        </div>
         <div class="lr_header_content">
-            <h2>
-                <span>Тільки зараз!</span>
-                Реєструйся та отримай абсолютно безкоштовно:
-            </h2>
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6">
-                        <i class="lr_sprite sprite_avatar"></i>
-                        <p class="lr_upper_p">
-                            Акаунт в системі Benefit Company без плати за реєстрацію, активацію і підтримання його в системі
-                        </p>
-                    </div>
-                    <div class="col-md-6">
-                        <i class="lr_sprite sprite_hat"></i>
-                        <p class="lr_upper_p">
-                            5 спеціальних відео-уроків унікальної освітньої програми<br /> «Ліквідація фінансової безграмотності»
-                        </p>
-                    </div>
+            <div style="margin-top: 20px; text-align: center;">
+                <h3>Якщо ви не можете зараз подивитись відео, пропонуємо</h3>
+                <div class="reg-form-agreement" style="margin-top: 10px; margin-bottom: 15px;">
+                    <button type="submit" id="rSubmitButton" onclick="window.location.href = '@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })';">Прочитати</button>
                 </div>
             </div>
-        </div><!-- end lr_header_content -->
+        </div>
+        <!-- end lr_header_bg -   ->    <div class="lr_header_content">
+                <h2>
+                    <span>Тільки зараз!</span>
+                    Реєструйся та отримай абсолютно безкоштовно:
+                </h2>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <i class="lr_sprite sprite_avatar"></i>
+                            <p class="lr_upper_p">
+                                Акаунт в системі Benefit Company без плати за реєстрацію, активацію і підтримання його в системі
+                            </p>
+                        </div>
+                        <div class="col-md-6">
+                            <i class="lr_sprite sprite_hat"></i>
+                            <p class="lr_upper_p">
+                                5 спеціальних відео-уроків унікальної освітньої програми<br /> «Ліквідація фінансової безграмотності»
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- end lr_header_content -->
         @*<div class="lr_header_white">
                 <div class="lrhw_text">
                     Для получения подарка у вас

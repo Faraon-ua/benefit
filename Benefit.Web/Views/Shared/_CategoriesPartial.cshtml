@@ -35,4 +35,10 @@
             }
         </li>
     }
+    @if (Model.ParentName == null && Model.SellerUrlName == null)
+    {
+        <li>
+            <a href="@Url.RouteUrl("AllSellers")" title="Всі постачальники">Всі постачальники</a>
+        </li>
+    }
 </ul>

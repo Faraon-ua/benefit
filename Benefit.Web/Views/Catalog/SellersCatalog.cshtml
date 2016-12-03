@@ -35,7 +35,7 @@
     </script>
 }
 @section LeftAside{
-    @Html.Partial("_SellerFilters", Model)
+    @Html.Partial("~/Views/Catalog/_SellerFilters.cshtml", Model)
 }
 
 <main class="full_content full_content_provider">
@@ -51,12 +51,12 @@
         {
             foreach (var seller in Model.Items)
             {
-                @Html.Partial("_ProviderPartial", seller)
+                @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
             }
         }
         else
         {
-            <div>
+            <div style="text-align-last: left;">
                 Для категорії @Model.Category.Name ми чекаємо пропозиції від постачальників з вашого населеного пункту.
                 <a href="#">Заявку можна подати тут.</a>
             </div>

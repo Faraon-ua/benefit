@@ -1,5 +1,7 @@
-﻿using System.Web.Mvc;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 using Benefit.Common.Constants;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 
@@ -13,6 +15,18 @@ namespace Benefit.Web.Controllers
         public ActionResult Index()
         {
             return View();
+        }
+
+        public ActionResult Vsi()
+        {
+            var model = SellerService.GetAllSellers();
+            model.Category = new Category();
+            model.Category.Name = "Всі постачальники";
+            model.Breadcrumbs = new BreadCrumbsViewModel()
+            {
+                Categories = new List<Category>() {new Category() {Name = "Всі постачальники"}}
+            };
+            return View("~/Views/Catalog/SellersCatalog.cshtml", model);
         }
 
         public ActionResult Info(string id)

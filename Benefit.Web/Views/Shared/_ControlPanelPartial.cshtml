@@ -12,24 +12,25 @@
             <div class="col-8">
                 <div class="row sub_header_row">
                     <div class="col-sm-8">
-                        <div class="search_block">
-                            <div class="input-group">
-                                <input class="form-control" aria-label="Пошук" placeholder="Пошук">
-                                <div class="input-group-btn">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        Всі категорії <span class="caret"></span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">1</a></li>
-                                        <li><a href="#">2</a></li>
-                                        <li><a href="#">3</a></li>
-                                        <li><a href="#">4</a></li>
-                                    </ul>
-                                    <button type="button" class="btn btn-default"><i class="icn search"></i></button>
-                                </div>
-                            </div>
-                        </div>
+                        @using (Html.BeginForm("Index", "Search", FormMethod.Get))
+                                {
+                                    <div class="search_block">
+                                        <div class="input-group">
+                                            <input id="search" name="term" class="form-control" aria-label="Пошук" placeholder="Пошук">
+                                            <div class="input-group-btn">
+                                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                    Всі категорії <span class="caret"></span>
+                                                    <span class="sr-only"></span>
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                   @Html.Action("GetBaseCategories", "Catalog", new { area = "" })
+                                                </ul>
+                                                <button type="button" class="btn btn-default"><i class="icn search"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            
                         <div class="position_block show_on_tablet">
                             <p>Оберіть місто</p>
                             <div class="input-group select_place min">

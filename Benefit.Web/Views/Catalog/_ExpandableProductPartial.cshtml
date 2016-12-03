@@ -1,0 +1,58 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.ProductPartialViewModel
+
+<div class="provider_container height-220" id="@Model.Product.Id">
+    <div class="provider">
+        <div class="provider_main_info  height-220">
+            <div class="product_img_wrap">
+                @{
+                    var image = Model.Product.Images.FirstOrDefault();
+                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = Model.CategoryUrl, sellerUrl = Model.SellerUrl, productUrl = Model.Product.UrlName });
+                }
+
+                <a href="@productDetailsUrl" title="@Model.Product.Name">
+                    @if (image == null)
+                    {
+                        <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Name">
+                    }
+                    else
+                    {
+                        <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
+                    }
+                </a>
+            </div>
+
+            <p class="product_name">
+                <a href="@productDetailsUrl" title="@Model.Product.Name">
+                    <span>@Model.Product.Name</span>
+                </a>
+            </p>
+
+            <div class="rating_wrap">
+                <div class="perelik_rating top"></div>
+                <p class="rating_reviews">0 відгуків</p>
+            </div>
+            <div class="product_price">
+                @*            <span class="old_price">80,40</span>*@
+                @Model.Product.Price грн
+            </div>
+            <div class="product_control_wrap">
+                <div class="product_like product_like_red"></div>
+                <div class="product_scale"></div>
+                <a class="product_buy" href="#" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId">Купити</a>
+            </div>
+            @*        todo: add seller label and promotion*@
+            @*        <div class="product_stock">Акція</div>*@
+        </div>
+        <div class="provider_additional_info">
+            <div class="provider_coins">
+                <span>-@Model.Product.Seller.UserDiscount %</span>
+            </div>
+            <div class="provider_icon">
+                <span>
+                    <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.Product.Seller.UrlName, action = string.Empty })" target="_blank">@Model.Product.Seller.Name</a>
+                </span>
+            </div>
+        </div>
+    </div>
+</div>

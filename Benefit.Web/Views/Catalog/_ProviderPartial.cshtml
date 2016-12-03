@@ -51,8 +51,15 @@
                 <p class="rating_reviews">15 відгуків</p>
             </div>
             <div class="reviews_menu_wrap">
-                <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.UrlName })" class="reviews_info">Інфо</a>
-                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.UrlName, categoryUrl = "" })" class="reviews_menu">@Model.CatalogButtonName</a>
+                @if (Model.HasEcommerce)
+                {
+                    <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new {id = Model.UrlName})" class="reviews_info margin-right-20">Інфо</a>
+                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = Model.UrlName, categoryUrl = ""})" class="reviews_menu">@Model.CatalogButtonName</a>
+                }
+                else
+                {
+                    <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.UrlName })" class="reviews_info width-100-px">Інфо</a>
+                }
             </div>
         </div>
         <div class="provider_additional_info">
