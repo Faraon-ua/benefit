@@ -20,8 +20,6 @@
     @if (Model.Category != null)
     {
         <script>
-            var skip = parseInt('@ListConstants.DefaultTakePerPage');
-            var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
             var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
 
             $(function() {

@@ -131,9 +131,11 @@ namespace Benefit.Services
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var pathString = Path.Combine(originalDirectory, "Images", type.ToString());
-            var file = new FileInfo(Path.Combine(pathString, parentId, fileName));
+            var fullPath = Path.Combine(pathString, parentId, fileName);
+            var file = new FileInfo(fullPath);
             if (file.Exists)
             {
+                File.SetAttributes(fullPath, FileAttributes.Normal);
                 file.Delete();
             }
             var dotIndex = fileName.IndexOf('.');

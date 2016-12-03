@@ -233,6 +233,7 @@
     <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\PagesController.cs" />
     <Compile Include="Controllers\PostachalnykController.cs" />
+    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\TovarController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
@@ -1514,6 +1515,10 @@
     <Content Include="Views\Cart\Order.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
     <Content Include="Views\Cart\OrderCompleted.cshtml" />
+    <Content Include="Views\Search\Index.cshtml" />
+    <Content Include="Views\Catalog\_ProductsListPartial.cshtml" />
+    <Content Include="Views\Catalog\_BaseCategoriesPartial.cshtml" />
+    <Content Include="Views\Catalog\_ExpandableProductPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

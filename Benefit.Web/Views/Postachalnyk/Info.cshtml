@@ -90,14 +90,20 @@
                 <span>@sunSchedule.StartHour:00 - @sunSchedule.EndHour:00</span>
             }
         </div>
-        <a class="goto_menu" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.Seller.UrlName, categoryUrl = "" })">@Model.Seller.CatalogButtonName</a>
+        @if (Model.Seller.HasEcommerce) { 
+            <a class="goto_menu" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.Seller.UrlName, categoryUrl = "" })">@Model.Seller.CatalogButtonName</a>
+        }
     </div>
 
     <ul class="tab_menu nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#about_org">Про нас</a></li>
         <li><a data-toggle="tab" href="#map_org">На карті</a></li>
-        <li><a data-toggle="tab" href="#addition_org">Додатково</a></li>
-        <li><a data-toggle="tab" href="#delivery_org">Доставка</a></li>
+@*        todo: add Додатково*@
+        @*        <li><a data-toggle="tab" href="#addition_org">Додатково</a></li>*@
+        @if (!string.IsNullOrEmpty(Model.Seller.ShippingDescription))
+        {
+            <li><a data-toggle="tab" href="#delivery_org">Доставка</a></li>
+        }
         <li><a data-toggle="tab" href="#recall_org">Відгуки</a></li>
     </ul>
 

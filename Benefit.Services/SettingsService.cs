@@ -129,13 +129,13 @@ namespace Benefit.Services
             }
         }
 
-        public static Dictionary<int, int> DiscountPercentToPointRatio
+        public static Dictionary<int, double> DiscountPercentToPointRatio
         {
             get
             {
-                return new Dictionary<int, int>()
+                return new Dictionary<int, double>()
                 {
-                    {0, 0},
+                    {0, 0.5},
                     {2, 20},
                     {3, 10},
                     {4, 8},

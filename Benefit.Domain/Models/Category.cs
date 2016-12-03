@@ -27,6 +27,7 @@ namespace Benefit.Domain.Models
         public string Id { get; set; }
         [Required]
         [MaxLength(64)]
+        [Index]
         public string Name { get; set; }
         [Required]
         [MaxLength(128)]

@@ -1,0 +1,34 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@model List<Benefit.Domain.Models.Product>
+@foreach (var product in Model.Take(Benefit.Common.Constants.ListConstants.DefaultTakePerPage))
+{
+    var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = product.Category.UrlName };
+    @Html.Partial("~/Views/Catalog/_ExpandableProductPartial.cshtml", partialModel)
+}
+@if (Model.Count > Benefit.Common.Constants.ListConstants.DefaultTakePerPage)
+{
+    <div class="product_container" id="more-products">
+        <div class="product">
+            @*<div class="more-items"></div>*@
+            <div>
+                <a class="more-items" href="#" id="add-more-products">Показати ще</a>
+            </div>
+        </div>
+    </div>
+}
+@*<script>
+    var skip = parseInt('@Benefit.Common.Constants.ListConstants.DefaultTakePerPage');
+    var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
+    $(function() {
+        $("#add-more-products").click(function(e) {
+            e.preventDefault();
+            $.get(getProductsUrl + "?categoryId=@produ.Category.Id&skip=" + skip, function(data) {
+                if (data.number <= parseInt('@Benefit.Common.Constants.ListConstants.DefaultTakePerPage')) {
+                    $("#more-products").hide();
+                }
+                $("#more-products").before(data.products);
+                skip += data.number;
+            });
+        });
+    });
+</script>*@

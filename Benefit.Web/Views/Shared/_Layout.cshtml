@@ -27,11 +27,22 @@
         </div>
     </div>
     <footer>
-        @Html.Partial("_FooterPartial")
+        @Html.Partial("_FooterPartial") 
     </footer>
     @Scripts.Render("~/bundles/master")
     @RenderSection("scripts", required: false)
     <script>
+        var searchWordsUrl = '@Url.Action("SearchWords", "Search")';
+        var searchUrl = '@Url.Action("Index", "Search")';
+        $("#search").devbridgeAutocomplete({
+            width: 660,
+            minChars: 3,
+            serviceUrl: searchWordsUrl,
+            onSelect: function (suggestion) {
+                window.location.href = searchUrl + "?term=" + suggestion.data;
+            }
+        });
+
         $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
         var categoriesUrl = '@Url.Action("CategoriesPartial", "Home")';
 
