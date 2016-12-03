@@ -1,4 +1,7 @@
-﻿@{
+﻿@model Tuple<List<Benefit.Domain.Models.Product>, List<Benefit.Domain.Models.Product>>
+@using Benefit.Common.Constants
+
+@{
     ViewBag.Title = "Головна";
 }
 @section LeftAside{
@@ -15,102 +18,21 @@
 <!-- product carousel -->
 <p class="center_p">Хіти продажу</p>
 <div class="product_carousel">
-    
-    <!-- product item -->
-    <a class="item product_item" href="#">
-        <div class="product_special">
-            <div class="special red">-45%</div>
-            <div class="special orange">бонус 15%</div>
-        </div>
-        <div class="img" style="background-image: url('http://www.mercedes-benz.ru/content/media_library/hq/hq_mpc_reference_site/passenger_cars_ng/new_cars/models/slc/r172/pad_10-2015/model_navigation_library/mercedes-benz-slc-r172_model_navigation_960x298_10-2015_jpg.object-Single-MEDIA.tmp/mercedes-benz-slc_r172_model_navigation_960x298_10-2015.jpg');"></div>
-        <p>Тур у Європу  6 дн.</p>
-        <span class="price old">3999,00 грн</span>
-        <span class="price new">2345,00 грн</span>
-    </a>
-    <!-- .product item -->
-    <!-- product item -->
-    <a class="item product_item" href="#">
-        <div class="product_special">
-            <div class="special red">-35%</div>
-            <div class="special orange">бонус 3%</div>
-        </div>
-        <div class="img" style="background-image: url('http://gallery.ykt.ru/galleries/mobil/2015/12/04/1973552_0.png');"></div>
-        <p>Гавайська</p>
-        <span class="price old">53,00 грн</span>
-        <span class="price new">39,00 грн</span>
-    </a>
-    <!-- .product item -->
-    <!-- product item -->
-    <a class="item product_item" href="#">
-        <div class="product_special">
-            <div class="special red">-10%</div>
-            <div class="special orange">бонус 5%</div>
-        </div>
-        <div class="img" style="background-image: url('assets/img/product_3.jpg');"></div>
-        <p>iPhone SE</p>
-        <span class="price old">11800,00 грн</span>
-        <span class="price new">10400,00 грн</span>
-    </a>
-    <!-- .product item -->
-    <!-- product item -->
-    <a class="item product_item" href="#">
-        <div class="product_special">
-            <div class="special red">-30%</div>
-            <div class="special orange">бонус 10%</div>
-        </div>
-        <div class="img" style="background-image: url('assets/img/product_4.jpg');"></div>
-        <p>Шкіряний диван</p>
-        <span class="price old">229000,00 грн</span>
-        <span class="price new">153450,00 грн</span>
-    </a>
-    <!-- .product item -->
-    <!-- product item -->
-    <a class="item product_item" href="#">
-        <div class="product_special">
-            <div class="special red">-45%</div>
-            <div class="special orange">бонус 15%</div>
-        </div>
-        <div class="img" style="background-image: url('assets/img/product_1.jpg');"></div>			    		<p>Тур у Європу  6 дн.</p>
-        <span class="price old">3999,00 грн</span>
-        <span class="price new">2345,00 грн</span>
-    </a>
-    <!-- .product item -->
-    <!-- product item -->
-    <a class="item product_item" href="#">
-        <div class="product_special">
-            <div class="special red">-35%</div>
-            <div class="special orange">бонус 3%</div>
-        </div>
-        <div class="img" style="background-image: url('assets/img/product_2.jpg');"></div>
-        <p>Гавайська</p>
-        <span class="price old">53,00 грн</span>
-        <span class="price new">39,00 грн</span>
-    </a>
-    <!-- .product item -->
-    <!-- product item -->
-    <a class="item product_item" href="#">
-        <div class="product_special">
-            <div class="special red">-10%</div>
-            <div class="special orange">бонус 5%</div>
-        </div>
-        <div class="img" style="background-image: url('assets/img/product_3.jpg');"></div>
-        <p>iPhone SE</p>
-        <span class="price old">11800,00 грн</span>
-        <span class="price new">10400,00 грн</span>
-    </a>
-    <!-- .product item -->
-    <!-- product item -->
-    <a class="item product_item" href="#">
-        <div class="product_special">
-            <div class="special red">-30%</div>
-            <div class="special orange">бонус 10%</div>
-        </div>
-        <div class="img" style="background-image: url('assets/img/product_4.jpg');"></div>
-        <p>Шкіряний диван</p>
-        <span class="price old">229000,00 грн</span>
-        <span class="price new">153450,00 грн</span>
-    </a>
-    <!-- .product item -->
+    @foreach (var hit in Model.Item1)
+    {
+        var image = hit.Images.FirstOrDefault();
+        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = hit.Category.UrlName, sellerUrl = hit.Seller.UrlName, productUrl = hit.UrlName });
+        <a class="item product_item" href="@productDetailsUrl">
+            @* <div class="product_special">
+                    <div class="special red">-45%</div>
+                    <div class="special orange">бонус 15%</div>
+                </div>*@
+            <div class="img" style="background-image: url('~/Images/ProductGallery/@hit.Id/@image.ImageUrl');"></div>
+            <p>@hit.Name</p>
+@*            <span class="price old">3999,00 грн</span>*@
+            <span class="price new">@hit.Price грн</span>
+        </a>
+    }
 </div>
 <!-- .product carousel -->
 <!-- product carousel -->

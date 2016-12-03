@@ -1185,7 +1185,7 @@ footer {
         margin: 5px 0 0 0;
         font-weight: 600;
         overflow: hidden;
-        max-height: 28px;
+        height: 40px;
     }
 
         .product_item p a, .product_item p a:hover {

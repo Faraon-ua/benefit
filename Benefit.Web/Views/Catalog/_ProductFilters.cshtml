@@ -1,13 +1,13 @@
 ﻿@model Benefit.DataTransfer.ViewModels.ProductsViewModel
 
 <div id="productFilters">
-  @*  @if (Model.Items.Any())
-    {
-        
-    }
-    else
-    {*@
-        <div class="vertical_menu" id="right-menu" data-seller-url="@Model.Seller.UrlName" data-category-id="@(Model.Category == null? "":Model.Category.Id)">
-        </div>
-@*    }*@
+    @*  @if (Model.Items.Any())
+        {
+
+        }
+        else
+        {*@
+    <div class="vertical_menu" id="right-menu" data-seller-url="@(Model.Seller == null ? "" : Model.Seller.UrlName)" data-category-id="@(Model.Category == null? "":Model.Category.Id)">
+    </div>
+    @*    }*@
 </div>

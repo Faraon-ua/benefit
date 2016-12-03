@@ -53,12 +53,12 @@
             <div class="reviews_menu_wrap">
                 @if (Model.HasEcommerce)
                 {
-                    <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new {id = Model.UrlName})" class="reviews_info margin-right-20">Інфо</a>
+                    <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.UrlName, action = string.Empty })" class="reviews_info margin-right-20">Інфо</a>
                     <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = Model.UrlName, categoryUrl = ""})" class="reviews_menu">@Model.CatalogButtonName</a>
                 }
                 else
                 {
-                    <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.UrlName })" class="reviews_info width-100-px">Інфо</a>
+                    <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.UrlName, action=string.Empty })" class="reviews_info width-100-px">Інфо</a>
                 }
             </div>
         </div>

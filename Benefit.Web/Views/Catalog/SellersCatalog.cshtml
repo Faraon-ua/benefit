@@ -57,8 +57,26 @@
         else
         {
             <div style="text-align-last: left;">
-                Для категорії @Model.Category.Name ми чекаємо пропозиції від постачальників з вашого населеного пункту.
-                <a href="#">Заявку можна подати тут.</a>
+                @{
+                    var regionName = HttpContext.Current.Request.Cookies["regionName"];
+                }
+                <b style="font-size: 1em;">
+                    В категорії <span style="color: #cb2728; ">@Model.Category.Name</span>
+                    @if (regionName != null)
+                    {
+                        <span>
+                            для населеного пункту
+                            <span style="color: #cb2728; ">@HttpUtility.UrlDecode(regionName.Value)</span>
+                        </span>
+                    }
+                    постачальників поки що немає. 
+                    <br/>
+                    Якщо ви хочете зробити нам ділову пропозицію, чекаємо на вашу заявку.
+                    <br/>
+                    <a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })">
+                        <img style="width: 100%;" src="~/Content/img/spivpracia.jpg" />
+                    </a>
+                </b>
             </div>
         }
 

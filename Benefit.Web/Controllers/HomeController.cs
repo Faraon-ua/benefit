@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Models;
@@ -20,7 +22,44 @@ namespace Benefit.Web.Controllers
         //        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
-            return View();
+            var hitIds = new[]
+            {
+                "7580c148-d55f-4009-b361-a5a99fb0a767",
+                "d8874ed3-930a-4743-ac7b-af0efce31db1",
+                "f48fcde5-69f2-4124-9d8c-7375ee67cc9d",
+                "1b290794-eb6c-4a55-bb3e-48980acc29a3",
+                "bc72aded-ec50-4bc8-8013-56a7265ceb32",
+                "952c73fb-0631-4653-af22-86509e40d13f",
+                "0e5ec520-fd64-456b-a99a-9aa111838dfa",
+                "bcfe482a-0c08-4be7-95c3-db42e668aa48"
+            };
+            var newIds = new[]
+            {
+                "787dc9ef-9252-45a7-a195-a3d10d68ac07",
+                "6f13f7b3-096e-4e9a-8fd6-85d4ab5d88ee",
+                "35a35f57-a281-4f66-a7ef-dd1e68ae05c0",
+                "b63df8bf-fcaa-4ca6-adbd-ba71893ec205",
+                "dd964b86-b5df-48ef-b257-b913079ba1cc",
+                "997dca01-8b64-4278-bcfc-9e0bf750b63f"
+            };
+
+            List<Product> hits;
+            List<Product> newProducts;
+            using (var db = new ApplicationDbContext())
+            {
+                hits = db.Products
+                    .Include(entry=>entry.Images)
+                    .Include(entry=>entry.Category)
+                    .Include(entry=>entry.Seller)
+                    .Where(entry => hitIds.Contains(entry.Id)).ToList();
+                newProducts = db.Products
+                    .Include(entry=>entry.Images)
+                    .Include(entry=>entry.Category)
+                    .Include(entry=>entry.Seller)
+                    .Where(entry => newIds.Contains(entry.Id)).ToList();
+            }
+            var model = new Tuple<List<Product>, List<Product>>(hits, newProducts); 
+            return View(model);
         }
 
         public ActionResult LoginPartial()
