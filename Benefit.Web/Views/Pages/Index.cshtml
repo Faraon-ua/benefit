@@ -18,6 +18,13 @@
                     $("#seller-application-modal").modal("show");
                 });
             });
+
+            $("#faq a").parents("p").next().hide();
+
+            $("#faq a").click(function (e) {
+                e.preventDefault();
+                $(this).parents("p").next().slideToggle("medium");
+            });
         });
     </script>
 }
