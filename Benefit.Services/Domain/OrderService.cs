@@ -94,7 +94,7 @@ namespace Benefit.Services.Domain
             {
                 cartMumberCookie.Expires = DateTime.UtcNow.AddDays(-1);
             }
-            return order.Id;
+            return order.OrderNumber.ToString();
         }
 
         public void DeleteOrder(string orderId)

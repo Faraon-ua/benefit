@@ -38,6 +38,11 @@ namespace Benefit.Web.Controllers
                 categoryUrlName =
                     referrer.PathAndQuery.Substring(
                         referrer.PathAndQuery.IndexOf(RouteConstants.CategoriesRoutePrefix) + RouteConstants.CategoriesRoutePrefix.Length + 1);
+                var tovarIndexOf = categoryUrlName.IndexOf(RouteConstants.ProductRoutePrefix);
+                if (tovarIndexOf > 0)
+                {
+                    categoryUrlName = categoryUrlName.Substring(0, tovarIndexOf - 1);
+                }
             }
             var sellerVm = SellerService.GetSellerDetails(id, categoryUrlName);
             if (sellerVm.Seller == null) return HttpNotFound();

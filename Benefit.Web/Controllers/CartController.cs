@@ -59,6 +59,11 @@ namespace Benefit.Web.Controllers
             return View(model);
         }
 
+        public ActionResult OrderCompleted(string number)
+        {
+            return View(model: number);
+        }
+
         [HttpPost]
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
@@ -67,7 +72,7 @@ namespace Benefit.Web.Controllers
             {
                 completeOrder.Order.UserId = User.Identity.GetUserId();
                 var orderNumber = OrderService.AddOrder(completeOrder);
-                return View("OrderCompleted", orderNumber);
+                return RedirectToAction("OrderCompleted", new {number = orderNumber});
             }
             using (var db = new ApplicationDbContext())
             {
