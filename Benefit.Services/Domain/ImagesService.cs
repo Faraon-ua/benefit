@@ -69,6 +69,10 @@ namespace Benefit.Services
                 case ImageType.SellerGallery:
                     maxHeight = SettingsService.Images.SellerGalleryImageMaxHeight;
                     maxWidth = SettingsService.Images.SellerGalleryImageMaxWidth;
+                    break; 
+                case ImageType.UserAvatar:
+                    maxHeight = SettingsService.Images.SellerGalleryImageMaxHeight;
+                    maxWidth = SettingsService.Images.SellerGalleryImageMaxWidth;
                     break;
             }
             if (img.Height <= maxHeight &&

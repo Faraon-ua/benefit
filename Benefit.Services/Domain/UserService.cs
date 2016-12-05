@@ -11,6 +11,16 @@ namespace Benefit.Services.Domain
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
+        public void SetUserPic(string id, string fileExt)
+        {
+            var user = db.Users.Find(id);
+            if (user != null)
+            {
+                user.Avatar = user.Id + fileExt;
+                db.Entry(user).State = EntityState.Modified;
+            }
+            db.SaveChanges();
+        } 
         public ApplicationUser GetUserInfoWithPartners(string id)
         {
             var user = db.Users.Include(entry=>entry.Region).Include(entry => entry.Partners).Include(entry => entry.Referal).FirstOrDefault(entry => entry.Id == id);

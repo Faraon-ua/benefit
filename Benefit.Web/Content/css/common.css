@@ -1,5 +1,4 @@
 ﻿.text-length-140 p:first-child, .text-length-140 div:first-child {
-    width: 320px;
     overflow-y: hidden;
     text-overflow: ellipsis;
     height: 85px;

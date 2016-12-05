@@ -2,10 +2,17 @@
 <div class="partner_head col-lg-2 col-md-2 col-sm-2 col-xs-2">
     <div class="userpic">
         <div class="userpic_wrap">
-            <img src="~/Images/UserPictures/avatar.jpg" alt="userpic" class="userpic">
+            @{
+                var avaUrl = string.IsNullOrEmpty(Model.Avatar) ? "avatar.jpg" : Model.Avatar;
+            }
+            <img src="~/Images/UserAvatar/@avaUrl" alt="userpic" class="userpic" />
         </div>
     </div>
 
+    @using (Html.BeginForm("SetAvatar", "Panel", FormMethod.Post, new { id = "set_ava_picture", enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="avatar" id="ava_select" class="hide" accept="image/*" />
+    }
     <p class="user_name">@Model.FullName</p>
     <p class="user_statuse">@Model.Status.ToString()</p>
     <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
@@ -39,4 +46,3 @@
     }
     <div class="battery @batteryStatus" data-toggle="tooltip" data-placement="top" title="@qualificationEpsilonStr"></div>
 </div>
-

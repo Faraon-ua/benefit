@@ -1081,6 +1081,8 @@
     <Content Include="Areas\Cabinet\Views\Panel\_OrderDetailsPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\_OrderProductForm.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_TerminalForm.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Panel\finansovui_oblik.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Panel\history.cshtml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />

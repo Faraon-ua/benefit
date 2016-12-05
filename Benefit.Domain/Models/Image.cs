@@ -7,7 +7,8 @@ namespace Benefit.Domain.Models
         SellerLogo,
         SellerGallery,
         ProductGallery,
-        NewsLogo
+        NewsLogo,
+        UserAvatar
     }
     public class Image
     {

@@ -42,8 +42,10 @@ namespace Benefit.Services
                     entry => entry.Category.Name
                 ).Containing(term.Split(new[] { ' ' }))
                 .ToRanked()
-                .OrderByDescending(entry => entry.Item.Seller.Addresses.Any(addr => addr.RegionId == regionId))
-                .ThenByDescending(entry => entry.Hits)
+                .Where(entry => entry.Item.Seller.Addresses.Any(addr => addr.RegionId == regionId) ||
+                             entry.Item.Seller.ShippingMethods.Select(sm => sm.Region.Id)
+                                 .Contains(RegionConstants.AllUkraineRegionId))
+                .OrderByDescending(entry => entry.Hits)
                 .Skip(skip)
                 .Take(take + 1)
                 .ToList();

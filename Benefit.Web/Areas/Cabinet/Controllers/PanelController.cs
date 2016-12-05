@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
@@ -123,9 +126,42 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             }
         }
 
+        public ActionResult finansovui_oblik()
+        {
+            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
+            return View(user);
+        }
+        
+        public ActionResult history()
+        {
+            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
+            return View(user);
+        }
+
         public ActionResult Zakladu()
         {
             return View();
+        }
+
+        public ActionResult SetAvatar()
+        {
+            var avatar = Request.Files[0];
+            var userId = User.Identity.GetUserId();
+            if (avatar != null && avatar.ContentLength != 0)
+            {
+                var fileName = Path.GetFileName(avatar.FileName);
+                var dotIndex = fileName.IndexOf('.');
+                var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
+                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                var pathString = Path.Combine(originalDirectory, "Images", ImageType.UserAvatar.ToString());
+                var fullPath = Path.Combine(pathString, userId + fileExt);
+                avatar.SaveAs(fullPath);
+
+                UserService.SetUserPic(userId, fileExt);
+                var imagesService = new ImagesService();
+                imagesService.ResizeToSiteRatio(Path.Combine(pathString, fullPath), ImageType.UserAvatar);
+            }
+            return RedirectToAction("Index");
         }
     }
 }

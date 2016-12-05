@@ -58,6 +58,20 @@ namespace Benefit.Services
 
         public class Images
         {
+            public static int UserAvatarMaxWidth
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["UserAvatarMaxWidth"]);
+                }
+            }
+            public static int UserAvatarMaxHeight
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["UserAvatarMaxHeight"]);
+                }
+            }
             public static int SellerGalleryImageMaxWidth
             {
                 get

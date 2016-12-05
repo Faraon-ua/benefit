@@ -1472,6 +1472,7 @@ footer {
     height: 120px;
     border-radius: 50%;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .userpic:before {
@@ -3210,10 +3211,12 @@ li:last-child .expand {
 
     .product_name span {
         display: table-cell;
-        height: 40px;
+        height: 42px;
         line-height: 15px;
         font-size: 13px;
         vertical-align: middle;
+        display: block;
+        overflow: hidden;
     }
 
 .product_price {
@@ -3632,7 +3635,8 @@ li:last-child .expand {
 
 .product_description_wrap {
     float: left;
-    width: 320px;
+    max-width: 57%;
+    min-width: 30%;
 }
 
 .product_description_title {
@@ -3702,6 +3706,7 @@ li:last-child .expand {
 .product_description_control_wrap {
     margin-bottom: 10px;
     text-align: right;
+    margin-left: 20px;
 }
 
 .product_description_like {

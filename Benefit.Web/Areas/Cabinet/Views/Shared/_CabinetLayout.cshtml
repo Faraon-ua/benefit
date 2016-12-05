@@ -3,6 +3,7 @@
 <head>
     <title>@ViewBag.Title - Кабінет партнера Benefit Company</title>
     @Html.Partial("_head")
+    <link href="~/Content/css/order-details.css" rel="stylesheet" />
     @RenderSection("styles", required: false)
 </head>
 <body>
@@ -41,6 +42,19 @@
                     $("#basket_modal").modal('show');
                 });
             });
+
+            $(".userpic_wrap").click(function () {
+                $("#ava_select").click();
+            });
+
+            $("#ava_select").change(function () {
+                debugger;
+                var fileName = $(this).val();
+                if (fileName) {
+                    $("#set_ava_picture").submit();
+                }
+            });
+            
         })
     </script>
     @Html.Partial("_RegionModal")

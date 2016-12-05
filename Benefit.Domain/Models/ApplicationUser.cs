@@ -46,6 +46,8 @@ namespace Benefit.Domain.Models
         public double HangingBonusAccount { get; set; }
         public double PointsAccount { get; set; }
         public double HangingPointsAccount { get; set; }
+        [MaxLength(64)]
+        public string Avatar { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<Seller> OwnedSellers { get; set; }
         public virtual ICollection<Seller> ReferedWebSiteSellers { get; set; }

@@ -26,7 +26,7 @@ namespace Benefit.Web.Controllers
         public AccountController()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
-
+            UserManager.PasswordValidator = new MinimumLengthValidator (3);
         }
 
         public AccountController(UserManager<ApplicationUser> userManager)
@@ -121,7 +121,7 @@ namespace Benefit.Web.Controllers
                     UserName = model.Email,
                     ReferalId = referal.Id,
                     FullName = string.Format("{0} {1}", model.FirstName, model.LastName),
-                    RegionId = model.RegionId.Value,
+                    RegionId = model.RegionId.GetValueOrDefault(40000),
                     Email = model.Email,
                     IsActive = true,
                     ExternalNumber = ++externalNumber,
@@ -149,7 +149,6 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return View(model);
         }
 

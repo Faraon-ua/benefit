@@ -1,0 +1,466 @@
+﻿@model Benefit.Domain.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Фінансовий облік";
+    Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
+}
+
+@section PartnerHead
+{
+    @Html.Partial("_PartnerHead", Model)
+}
+<div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
+    <ul class="profile_menu nav nav-tabs">
+        <li class="active"><a data-toggle="tab" href="#bonus_account">Облік <br>бонусів</a></li>
+        <li><a data-toggle="tab" href="#personal_charges">Особисті <br>нарахування</a></li>
+        <li><a data-toggle="tab" href="#bonuses_invitation">Бонус за <br>запрошення</a></li>
+        <li><a data-toggle="tab" href="#bonuses_sum">Загальна <br>сума бонусів</a></li>
+        <li><a data-toggle="tab" href="#bonuses_used">Використати <br>бонуси</a></li>
+    </ul>
+
+    <div class="finance_fixed_block">
+        <div class="bonuses_available">Доступні бонуси: <span>230,63</span></div>
+        <div class="bonuses_processing">Бонуси в обробці:  <span>55,85</span></div>
+        <div class="products_full">Баловий товарообіг партнерів за поточний період: <span>650,97</span></div>
+    </div>
+
+    <div class="tab-content">
+        <div id="bonus_account" class="bonus_account tab-pane fade in active">
+            <p class="controls_block_title orders_title">Пошук по даті нарахувань</p>
+            <div class="controls_block order_controls clearfix">
+                <form class="controls_block_form">
+                    <div class="calendar"></div>
+                    <input class="controls_block_search" type="text" onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" placeholder="Оберіть дату">
+                    <button class="controls_block_search_btn"><i></i>Знайти</button>
+                </form>
+            </div>
+
+            <table class="bonus_account_table">
+                <tr>
+                    <th>Дата</th>
+                    <th>Час</th>
+                    <th>Вид операції</th>
+                    <th colspan="2">Бонуси</th>
+                </tr>
+                <tr>
+                    <td>15 09 2016</td>
+                    <td>18:30</td>
+                    <td>Бонуси по Benefit Card (серпень 2016)</td>
+                    <td class="bonusLevel">+ 15,02</td>
+                    <td>15,02</td>
+                </tr>
+                <tr>
+                    <td>10 03 2016</td>
+                    <td>14:00</td>
+                    <td>Винагорода за підключення  “Greenwich Lounge Bar”</td>
+                    <td class="bonusLevel">+ 34,61</td>
+                    <td>34,61</td>
+                </tr>
+                <tr>
+                    <td>02 03 2016</td>
+                    <td>22:09</td>
+                    <td>Оплата за замовлення №214878</td>
+                    <td class="bonusLevel">- 13,01</td>
+                    <td>13,01</td>
+                </tr>
+                <tr>
+                    <td>15 09 2016</td>
+                    <td>15:20</td>
+                    <td>Бонус за запрошення (серпень 2016)</td>
+                    <td class="bonusLevel">+ 320,00</td>
+                    <td>320,00</td>
+                </tr>
+                <tr>
+                    <td>01 03 2016</td>
+                    <td>18:30</td>
+                    <td>Перерахунок партнеру Ковач Світлана</td>
+                    <td class="bonusLevel">- 265,00</td>
+                    <td>265,00</td>
+                </tr>
+                <tr>
+                    <td>01 03 2016</td>
+                    <td>14:00</td>
+                    <td>Оплата за замовлення №1122</td>
+                    <td class="bonusLevel">- 200,00</td>
+                    <td>200,00</td>
+                </tr>
+                <tr>
+                    <td>29 02 2016</td>
+                    <td>22:09</td>
+                    <td>Оплата за замовлення №5466</td>
+                    <td class="bonusLevel">- 43,20</td>
+                    <td>43,20</td>
+                </tr>
+                <tr>
+                    <td>15 09 2016</td>
+                    <td>15:20</td>
+                    <td>Дивіденди за статус “Директор” (серпень 2016)</td>
+                    <td class="bonusLevel">+ 100,00</td>
+                    <td>100,00</td>
+                </tr>
+                <tr>
+                    <td>03 01 2016</td>
+                    <td>22:09</td>
+                    <td>Оплата за замовлення №9633</td>
+                    <td class="bonusLevel">- 8,98</td>
+                    <td>8,98</td>
+                </tr>
+                <tr>
+                    <td>28 12 2015</td>
+                    <td>15:20</td>
+                    <td>Оплата за замовлення №5466</td>
+                    <td class="bonusLevel">- 3,26</td>
+                    <td>3,26</td>
+                </tr>
+
+            </table>
+            <div class="bottom_control clearfix">
+                <div class="pagination_wrap">
+                    <div class="pagination_prew">&lt;</div>
+                    <ul class="pagination">
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li class="active">4</li>
+                        <li>5</li>
+                        <li>6</li>
+                        <li>...</li>
+                        <li>54</li>
+                    </ul>
+                    <div class="pagination_next">&gt;</div>
+                </div>
+                <div class="show_more">
+                    <label for="more_bonuses">Показати</label>
+                    <select id="more_bonuses" class="orders_org_choice">
+                        <option>10</option>
+                        <option>20</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="personal_charges" class="personal_charges tab-pane fade">
+            <p class="controls_block_title">Пошук по даті нарахувань</p>
+            <div class="controls_block clearfix">
+                <form class="controls_block_form">
+                    <fieldset class="formgrup_search">
+                        <div class="calendar"></div>
+                        <input class="controls_block_search" type="text" onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" placeholder="Оберіть дату">
+                        <button class="controls_block_search_btn"><i></i>Знайти</button>
+                    </fieldset>
+                    <fieldset class="formgrup_check">
+                        <input class="hidden" type="checkbox" id="check01" name="check01">
+                        <label class="label_for_check" for="check01">Показати всю структуру</label>
+
+                        <input class="hidden" type="checkbox" id="check02" name="check02" checked>
+                        <label class="label_for_check" for="check02">Не мають бонусної картки</label>
+                    </fieldset>
+                </form>
+            </div>
+
+            <table class="personal_charges_table main_table">
+                <tr>
+                    <th>Дата</th>
+                    <th>Вид операції</th>
+                    <th>Бали</th>
+                    <th>Бонуси</th>
+                </tr>
+                <tr class="bg_grey">
+                    <td>11 03 2016</td>
+                    <td>Онлайн-замовлення № 57899</td>
+                    <td>300,00</td>
+                    <td>30,00</td>
+                </tr>
+                <tr class="bg_pink">
+                    <td>10 03 2016</td>
+                    <td>Benefit Card MiCalle</td>
+                    <td>50,00</td>
+                    <td>0,5</td>
+                </tr>
+                <tr class="bg_grey">
+                    <td>02 03 2016</td>
+                    <td>Онлайн-замовлення № 6400 </td>
+                    <td>13,01</td>
+                    <td>13,01</td>
+                </tr>
+                <tr class="bg_pink">
+                    <td>15 09 2016</td>
+                    <td>Benefit Card “Koshik24”</td>
+                    <td>3200,00</td>
+                    <td>3200,00</td>
+                </tr>
+                <tr class="bg_grey">
+                    <td>01 03 2016</td>
+                    <td>Онлайн-замовлення № 6400 </td>
+                    <td>265,00</td>
+                    <td>265,00</td>
+                </tr>
+                <tr class="bg_pink">
+                    <td>01 03 2016</td>
+                    <td>Benefit Card Cento Percento</td>
+                    <td>200,00</td>
+                    <td>200,00</td>
+                </tr>
+                <tr class="bg_grey">
+                    <td>29 02 2016</td>
+                    <td>Онлайн-замовлення № 625899</td>
+                    <td>43,20</td>
+                    <td>43,20</td>
+                </tr>
+                <tr class="bg_pink">
+                    <td>29 02 2016</td>
+                    <td>Benefit Card Greenwich Lounge Bar</td>
+                    <td>1000,00</td>
+                    <td>1000,00</td>
+                </tr>
+                <tr class="bg_grey">
+                    <td>03 01 2016</td>
+                    <td>Онлайн-замовлення № 4255</td>
+                    <td>8,98</td>
+                    <td>8,98</td>
+                </tr>
+                <tr class="bg_grey">
+                    <td>28 12 2015</td>
+                    <td>Онлайн-замовлення № 825199</td>
+                    <td>3,26</td>
+                    <td>3,26</td>
+                </tr>
+            </table>
+
+            <div class="bottom_control clearfix">
+                <div class="pagination_wrap">
+                    <div class="pagination_prew">&lt;</div>
+                    <ul class="pagination">
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li class="active">4</li>
+                        <li>5</li>
+                        <li>6</li>
+                        <li>...</li>
+                        <li>54</li>
+                    </ul>
+                    <div class="pagination_next">&gt;</div>
+                </div>
+                <div class="show_more">
+                    <label for="more_charges">Показати</label>
+                    <select id="more_charges">
+                        <option>10</option>
+                        <option>20</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="bonuses_invitation" class="bonuses_invitation tab-pane fade">
+            <div class="controls_block clearfix">
+                <p class="structure_menu_date_title">Період нарахувань структури:</p>
+                <form>
+                    <select id="bonuses_invitation_month" class="bonuses_invitation_month">
+                        <option>Січень</option>
+                        <option>Лютий</option>
+                        <option>Березень</option>
+                        <option>Квітень</option>
+                        <option>Травень</option>
+                        <option>Червень</option>
+                        <option>Липень</option>
+                        <option>Серпень</option>
+                        <option selected>Вересень</option>
+                        <option>Жовтень</option>
+                        <option>Листопад</option>
+                        <option>Грудень</option>
+                    </select>
+                    <select id="bonuses_invitation_year" class="bonuses_invitation_year"></select>
+                </form>
+            </div>
+
+            <table class="bonuses_invitation_table main_table">
+                <tr>
+                    <th>Дата</th>
+                    <th>Запрошений партнер</th>
+                    <th>Лінія <br>структури</th>
+                    <th>Бонуси</th>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Коломий Наталя </td>
+                    <td class="structureLine">1</td>
+                    <td>30,00</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Жук Руслана Еміліанівна </td>
+                    <td class="structureLine">2</td>
+                    <td>0,5</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Боднар Жужанна Тиберівна</td>
+                    <td class="structureLine">2</td>
+                    <td>13,01</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Керечан Маріанна Іванівна </td>
+                    <td class="structureLine">3</td>
+                    <td>14,00</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Куликовський Дмитро Олександрович</td>
+                    <td class="structureLine">1</td>
+                    <td>65,00</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Лучко Павло Павлович </td>
+                    <td class="structureLine">2</td>
+                    <td>20,00</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Вишневський Остап Семенович </td>
+                    <td class="structureLine">3</td>
+                    <td>43,20</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Савенко Валерія Валеріївна </td>
+                    <td class="structureLine">1</td>
+                    <td>20,00</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Вишневська Христина Павлівна </td>
+                    <td class="structureLine">2</td>
+                    <td>8,98</td>
+                </tr>
+                <tr>
+                    <td>15 10 2016 </td>
+                    <td>Руденко Ольга Павлівна</td>
+                    <td class="structureLine">3</td>
+                    <td>3,26</td>
+                </tr>
+                <tr class="bonuses_invitation_sum_row">
+                    <td></td>
+                    <td></td>
+                    <td>Всього</td>
+                    <td class="bonuses_invitation_sum">406,00</td>
+                </tr>
+            </table>
+
+            <div class="bottom_control clearfix">
+                <div class="pagination_wrap">
+                    <div class="pagination_prew">&lt;</div>
+                    <ul class="pagination">
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                        <li class="active">4</li>
+                        <li>5</li>
+                        <li>6</li>
+                        <li>...</li>
+                        <li>54</li>
+                    </ul>
+                    <div class="pagination_next">&gt;</div>
+                </div>
+                <div class="show_more">
+                    <label for="more_bonuses_invitation">Показати</label>
+                    <select id="more_bonuses_invitation">
+                        <option>10</option>
+                        <option>20</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div id="bonuses_sum" class="bonuses_sum tab-pane fade">
+            <table class="bonuses_sum_table main_table">
+                <tr>
+                    <th>Період</th>
+                    <th>Сума нарахувань</th>
+                </tr>
+                <tr>
+                    <td>вересень 2016</td>
+                    <td>3250,00</td>
+                </tr>
+                <tr>
+                    <td>серпень 2016</td>
+                    <td>8965,5</td>
+                </tr>
+                <tr>
+                    <td>липень  2016 </td>
+                    <td>13,01</td>
+                </tr>
+                <tr>
+                    <td>червень  2016 </td>
+                    <td>14,00</td>
+                </tr>
+                <tr>
+                    <td>травень 2016 </td>
+                    <td>6565,00</td>
+                </tr>
+                <tr>
+                    <td>квітень 2016 </td>
+                    <td>2270,00</td>
+                </tr>
+                <tr>
+                    <td>березень 2016 </td>
+                    <td>4143,20</td>
+                </tr>
+                <tr>
+                    <td>лютий 2016 </td>
+                    <td>250,00</td>
+                </tr>
+                <tr>
+                    <td>січень 2016 </td>
+                    <td>65,98</td>
+                </tr>
+                <tr>
+                    <td>грудень 2015 </td>
+                    <td>300,26</td>
+                </tr>
+                <tr class="bonuses_sum_total_row">
+                    <td>Всього</td>
+                    <td class="bonuses_sum_total">356089,90</td>
+                </tr>
+            </table>
+
+            <div class="bottom_control clearfix">
+                <div class="pagination_wrap">
+                    <div class="pagination_prew">&lt;</div>
+                    <ul class="pagination">
+                        <li class="active">1</li>
+                        <li>2</li>
+                    </ul>
+                    <div class="pagination_next">&gt;</div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="bonuses_used" class="bonuses_used tab-pane fade">
+            <p class="bonuses_used_title">Оплата бонусами за товари та послуги</p>
+            <p class="bonuses_used_decription">
+                Використати бонуси ви можете для замовлення продуктів харчування, господарських та дитячих товарів, побутової
+                хімії, ваучерів для поповнення мобільного телефону, паливних карток для АЗС, піци, суші та інших страв і напоїв у закладах харчування, а також бонусних карток та терміналів Benefit Card.<br>
+                Перелік пропозицій для обміну бонусів постійно зростає. Комісія при оплаті бонусами становить 4%.
+            </p>
+            <a href="#" class="bonuses_used_btn">Перейти до закладів</a>
+
+            <p class="bonuses_used_title">Переведення бонусів іншому партнеру</p>
+            <p class="bonuses_used_decription">Перерахунок іншому партнеру доступний від 1000 бонусів. Комісія при перерахунку становить 1%. <br>Введіть реферальний код партнера, якому буде проводитись переказ.</p>
+            <a href="#" class="bonuses_used_btn">Перевести іншому  партнеру</a>
+
+            <p class="bonuses_used_title">Виведення коштів у готівку</p>
+            <p class="bonuses_used_decription">
+                У вас є можливість вивести готівку із рахунку в системі Benefit.<br>
+                Для цього ваш акаунт має бути верифікований. Для цього заповніть форму,
+                яка відкриється  після натиснення кнопки.
+            </p>
+            <a href="#" class="bonuses_used_btn">Верифікація акаунту</a>
+        </div>
+
+    </div>
+</div>

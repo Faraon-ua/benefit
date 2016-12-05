@@ -122,7 +122,7 @@
         {
             foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
             {
-                var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? "" : Model.Category.UrlName };
+                var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName };
                 @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
             }
             if (Model.Items.Count > ListConstants.DefaultTakePerPage)
