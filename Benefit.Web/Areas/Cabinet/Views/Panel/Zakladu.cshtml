@@ -1,6 +1,11 @@
-﻿@{
+﻿@model Benefit.Domain.Models.ApplicationUser
+@{
     ViewBag.Title = "Заклади";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
+@section PartnerHead
+{
+    @Html.Partial("_PartnerHead", Model)
+}
 
-
+<div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9"></div>

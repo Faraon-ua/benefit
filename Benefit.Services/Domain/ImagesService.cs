@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -131,24 +132,34 @@ namespace Benefit.Services
             DeleteFile(image.ImageUrl, parentId, type);
         }
 
-        private void DeleteFile(string fileName, string parentId, ImageType type)
+        public void DeleteFile(string fileName, string parentId, ImageType type)
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var pathString = Path.Combine(originalDirectory, "Images", type.ToString());
             var fullPath = Path.Combine(pathString, parentId, fileName);
-            var file = new FileInfo(fullPath);
-            if (file.Exists)
+            try
             {
-                File.SetAttributes(fullPath, FileAttributes.Normal);
-                file.Delete();
+                var file = new FileInfo(fullPath);
+                if (file.Exists)
+                {
+                    File.SetAttributes(fullPath, FileAttributes.Normal);
+                    file.Delete();
+                }
+            }
+            catch(Exception e)
+            {
+                Debug.Write(e.Message);
             }
             var dotIndex = fileName.IndexOf('.');
             var id = fileName.Substring(0, dotIndex);
             using (var db = new ApplicationDbContext())
             {
                 var image = db.Images.Find(id);
-                db.Images.Remove(image);
-                db.SaveChanges();
+                if (image != null)
+                {
+                    db.Images.Remove(image);
+                    db.SaveChanges();
+                }
             }
         }
     }

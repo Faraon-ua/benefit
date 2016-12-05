@@ -6,7 +6,7 @@
         @Html.TextBoxFor(m => m.FullName, new { @class = "form-control width-50", placeholder="ПІБ"})
         <br />
         <br />
-        <input type="text" placeholder="Місто, область" class="regionSearch form-control width-50" value="@(Model.Region == null ? string.Empty : Model.Region.ExpandedName)" />
+        <input type="text" placeholder="Місто" class="regionSearch form-control width-50" value="@(Model.Region == null ? string.Empty : Model.Region.ExpandedName)" />
         @Html.HiddenFor(m => m.RegionId)
         <br />
         <br />

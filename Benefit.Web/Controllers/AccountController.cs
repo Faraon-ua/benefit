@@ -121,7 +121,7 @@ namespace Benefit.Web.Controllers
                     UserName = model.Email,
                     ReferalId = referal.Id,
                     FullName = string.Format("{0} {1}", model.FirstName, model.LastName),
-                    RegionId = model.RegionId.GetValueOrDefault(40000),
+                    RegionId = model.RegionId.GetValueOrDefault(400000),
                     Email = model.Email,
                     IsActive = true,
                     ExternalNumber = ++externalNumber,

@@ -140,7 +140,8 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult Zakladu()
         {
-            return View();
+            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
+            return View(user);
         }
 
         public ActionResult SetAvatar()
@@ -154,10 +155,10 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                 var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
                 var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                 var pathString = Path.Combine(originalDirectory, "Images", ImageType.UserAvatar.ToString());
-                var fullPath = Path.Combine(pathString, userId + fileExt);
-                avatar.SaveAs(fullPath);
+                var imageName = UserService.SetUserPic(userId, fileExt);
+                var fullPath = Path.Combine(pathString, imageName);
 
-                UserService.SetUserPic(userId, fileExt);
+                avatar.SaveAs(fullPath);
                 var imagesService = new ImagesService();
                 imagesService.ResizeToSiteRatio(Path.Combine(pathString, fullPath), ImageType.UserAvatar);
             }

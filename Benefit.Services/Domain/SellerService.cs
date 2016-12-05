@@ -114,13 +114,13 @@ namespace Benefit.Services.Domain
             var category = db.Categories.FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
-            result.Items =
-                db.Products.Where(entry => entry.CategoryId == categoryId && entry.SellerId == seller.Id).ToList();
+            var items = (IOrderedQueryable<Product>) db.Products.Where(entry => entry.CategoryId == categoryId && entry.SellerId == seller.Id);
             //todo: remove all products workaround
-            if (!result.Items.Any())
+            if (!items.Any())
             {
-                result.Items = db.Products.Where(entry => entry.SellerId == seller.Id).ToList();
+                items = db.Products.Where(entry => entry.SellerId == seller.Id).OrderBy(entry => entry.Category.Order);
             }
+            result.Items = items.ThenByDescending(entry => entry.Images.Any()).ToList();
             //todo: add breadcrumbs
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {

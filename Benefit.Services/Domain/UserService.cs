@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using Benefit.Common.Constants;
@@ -11,19 +12,25 @@ namespace Benefit.Services.Domain
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
-        public void SetUserPic(string id, string fileExt)
+        public string SetUserPic(string id, string fileExt)
         {
             var user = db.Users.Find(id);
+            if (!string.IsNullOrEmpty(user.Avatar))
+            {
+                var ImagesService = new ImagesService();
+                ImagesService.DeleteFile(user.Avatar, "", ImageType.UserAvatar);
+            }
             if (user != null)
             {
-                user.Avatar = user.Id + fileExt;
+                user.Avatar = user.Id + DateTime.Now.ToShortTimeString().Replace(" ", "").Replace(":", "") + fileExt;
                 db.Entry(user).State = EntityState.Modified;
             }
             db.SaveChanges();
+            return user.Avatar;
         } 
         public ApplicationUser GetUserInfoWithPartners(string id)
         {
-            var user = db.Users.Include(entry=>entry.Region).Include(entry => entry.Partners).Include(entry => entry.Referal).FirstOrDefault(entry => entry.Id == id);
+            var user = db.Users.Include(entry=>entry.Region).Include(entry => entry.Partners.Select(part=>part.Region)).Include(entry => entry.Referal).FirstOrDefault(entry => entry.Id == id);
             user.Partners = user.Partners.OrderByDescending(entry => entry.RegisteredOn).ToList();
             return user;
         }
