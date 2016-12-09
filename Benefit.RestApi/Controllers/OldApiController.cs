@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Http;
 using Benefit.Common.Helpers;
 using Benefit.DataTransfer.ApiDto.OldApi;
@@ -185,7 +186,7 @@ namespace Benefit.RestApi.Controllers
         }
 
         [Route("ProgUserPayment.php")]
-        public PaymentDto ProcessPayment(PaymentIngest payment)
+        public async Task<PaymentDto> ProcessPayment(PaymentIngest payment)
         {
             var seller = GetSellerByUsernameAndPassword(payment.username, payment.password);
             if (seller == null)
@@ -250,7 +251,7 @@ namespace Benefit.RestApi.Controllers
                 user.CurrentBonusAccount += bonuses;
                 user.TotalBonusAccount += bonuses;
                 db.Entry(user).State = EntityState.Modified;
-                db.SaveChanges();
+                await db.SaveChangesAsync();
 
                 return new PaymentDto()
                 {

@@ -21,20 +21,45 @@ namespace Benefit.Services
             {
                 return int.Parse(ConfigurationManager.AppSettings["MinUserExternalNumber"]);
             }
-        } 
+        }
         public static int SkuMinValue
         {
             get
             {
                 return int.Parse(ConfigurationManager.AppSettings["SkuMinValue"]);
             }
-        } 
-        
+        }
+
         public static int OrderMinValue
         {
             get
             {
                 return int.Parse(ConfigurationManager.AppSettings["OrderMinValue"]);
+            }
+        }
+
+        public class SendPulse
+        {
+            public static string SendPulseAuthUrl
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["SendPulseAuthUrl"];
+                }
+            }
+            public static string SendPulseAddEmailUrl
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["SendPulseAddEmailUrl"];
+                }
+            }
+            public static string SendPulseFinLikbezAddressBookId
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["SendPulseFinLikbezAddressBookId"];
+                }
             }
         }
 
@@ -99,7 +124,7 @@ namespace Benefit.Services
                 {
                     return int.Parse(ConfigurationManager.AppSettings["SellerLogoMaxHeight"]);
                 }
-            }    
+            }
             public static int NewsLogoMaxWidth
             {
                 get
@@ -113,7 +138,7 @@ namespace Benefit.Services
                 {
                     return int.Parse(ConfigurationManager.AppSettings["NewsLogoMaxHeight"]);
                 }
-            }     
+            }
         }
 
         public class RewardsPlan

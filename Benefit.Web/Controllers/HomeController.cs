@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
@@ -19,9 +20,11 @@ namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        //        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
+//            var userService = new UserService();
+//            await userService.SubscribeSendPulse("test@test.com");
             var hitIds = new[]
             {
                 "7580c148-d55f-4009-b361-a5a99fb0a767",
@@ -48,18 +51,23 @@ namespace Benefit.Web.Controllers
             using (var db = new ApplicationDbContext())
             {
                 hits = db.Products
-                    .Include(entry=>entry.Images)
-                    .Include(entry=>entry.Category)
-                    .Include(entry=>entry.Seller)
+                    .Include(entry => entry.Images)
+                    .Include(entry => entry.Category)
+                    .Include(entry => entry.Seller)
                     .Where(entry => hitIds.Contains(entry.Id)).ToList();
                 newProducts = db.Products
-                    .Include(entry=>entry.Images)
-                    .Include(entry=>entry.Category)
-                    .Include(entry=>entry.Seller)
+                    .Include(entry => entry.Images)
+                    .Include(entry => entry.Category)
+                    .Include(entry => entry.Seller)
                     .Where(entry => newIds.Contains(entry.Id)).ToList();
             }
-            var model = new Tuple<List<Product>, List<Product>>(hits, newProducts); 
+            var model = new Tuple<List<Product>, List<Product>>(hits, newProducts);
             return View(model);
+        }
+
+        public ActionResult GettingBetter()
+        {
+            return View();
         }
 
         public ActionResult LoginPartial()
@@ -67,7 +75,7 @@ namespace Benefit.Web.Controllers
             return PartialView("_LoginPartial");
         }
 
-//        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;isDropDown;")]
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;isDropDown;")]
         public ActionResult CategoriesPartial(string parentCategoryId, string sellerUrl, bool? isDropDown = null)
         {
             if (string.IsNullOrEmpty(parentCategoryId))
@@ -82,14 +90,14 @@ namespace Benefit.Web.Controllers
                 if (sellerUrl != null)
                 {
                     var sellersService = new SellerService();
-                    var sellerCategoriesIds = sellersService.GetAllSellerCategories(sellerUrl).Select(entry=>entry.Id).ToList();
+                    var sellerCategoriesIds = sellersService.GetAllSellerCategories(sellerUrl).Select(entry => entry.Id).ToList();
                     categories = categories.Where(entry => sellerCategoriesIds.Contains(entry.Id)).ToList();
                     while (categories.Count == 1)
                     {
                         var catId = categories.First().Id;
                         parentName = categories.First().Name;
                         var childCategories = db.Categories.Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == catId && entry.IsActive && sellerCategoriesIds.Contains(entry.Id)).OrderBy(entry => entry.Order).ToList();
-                        if(childCategories.Count == 0)break;
+                        if (childCategories.Count == 0) break;
                         categories = childCategories;
                     }
                 }

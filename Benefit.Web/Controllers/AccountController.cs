@@ -9,6 +9,7 @@ using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
+using Benefit.Services.Domain;
 using Facebook;
 using Microsoft.Ajax.Utilities;
 using Microsoft.AspNet.Identity;
@@ -87,6 +88,21 @@ namespace Benefit.Web.Controllers
             return View(new RegisterViewModel {ReferalNumber = ReferalNumber });
         }
 
+        [AllowAnonymous]
+        public ActionResult PostRegister()
+        {
+            return View();
+        }
+
+        [AllowAnonymous]
+        [HttpPost]
+        public ActionResult PostRegister(string email)
+        {
+            var userService = new UserService();
+            userService.SubscribeSendPulse(email);
+            return RedirectToAction("Index", "Home");
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]
@@ -130,6 +146,9 @@ namespace Benefit.Web.Controllers
                     RegisteredOn = DateTime.UtcNow
                 };
                 var result = await UserManager.CreateAsync(user, model.Password);
+                var userService = new UserService();
+                userService.SubscribeSendPulse(user.Email);
+
                 if (result.Succeeded)
                 {
                     await SignInAsync(user, isPersistent: false);
@@ -141,7 +160,7 @@ namespace Benefit.Web.Controllers
                        "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\""
                        + callbackUrl + "\">це посилання</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("PostRegister", "Account");
                 }
                 else
                 {
