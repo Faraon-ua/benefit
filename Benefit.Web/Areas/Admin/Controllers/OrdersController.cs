@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -24,12 +23,48 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(orders.ToList());
         }
 
+        public ActionResult Print(string id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var order = db.Orders.Include(entry=>entry.User).Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == id);
+            if (order == null)
+            {
+                return HttpNotFound();
+            }
+            return View(order);
+        }
+
         [HttpPost]
         public void UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId)
         {
             var order = db.Orders.Find(orderId);
             order.Status = orderStatus;
             order.StatusComment = statusComment;
+
+            //add points and bonuses if order finished
+            if (orderStatus == OrderStatus.Finished)
+            {
+                var user = db.Users.FirstOrDefault(entry => entry.Id == order.UserId);
+                user.CurrentBonusAccount += order.PersonalBonusesSum;
+                user.PointsAccount += order.PointsSum;
+                db.Entry(user).State = EntityState.Modified;
+
+                //add transaction for personal purchase
+                var transaction = new Transaction()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Bonuses = order.PersonalBonusesSum,
+                    BonusesBalans = user.CurrentBonusAccount + order.PersonalBonusesSum,
+                    OrderId = order.Id,
+                    PayeeId = user.Id,
+                    Time = DateTime.UtcNow
+                };
+
+                db.Transactions.Add(transaction);
+            }
             db.Entry(order).State = EntityState.Modified;
             db.SaveChanges();
         }

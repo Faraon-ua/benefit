@@ -7,7 +7,7 @@ namespace Benefit.Domain.Models.XmlModels
     {
         public XmlProduct(XElement xmlProduct)
         {
-            var priceValue =
+           /* var priceValue =
                 xmlProduct.Element("ЗначенияСвойств")
                     .Elements("ЗначенияСвойства")
                     .First(entry => entry.Element("Наименование").Value == "Цена")
@@ -16,14 +16,15 @@ namespace Benefit.Domain.Models.XmlModels
             var availabilityValue = xmlProduct.Element("ЗначенияСвойств")
                     .Elements("ЗначенияСвойства")
                     .First(entry => entry.Element("Наименование").Value == "Наличие")
-                    .Element("Значение");
+                    .Element("Значение");*/
           
             Id = xmlProduct.Element("Ид").Value;
             Name = xmlProduct.Element("Наименование").Value;
             Description = xmlProduct.Element("Описание") == null ? string.Empty : xmlProduct.Element("Описание").Value;
             CategoryId = xmlProduct.Element("Группы").Element("Ид").Value;
-            Price = priceValue == null ? null : (double?)double.Parse(priceValue.Value);
-            Availability = availabilityValue != null && bool.Parse(availabilityValue.Value);
+//            Price = priceValue == null ? null : (double?)double.Parse(priceValue.Value);
+            Availability = true;//availabilityValue != null && bool.Parse(availabilityValue.Value);
+            Image = xmlProduct.Element("Картинка").Value;
         }
 
         public string Id { get; set; }
@@ -32,5 +33,6 @@ namespace Benefit.Domain.Models.XmlModels
         public string CategoryId { get; set; }
         public double? Price { get; set; }
         public bool Availability  { get; set; }
+        public string Image { get; set; }
     }
 }

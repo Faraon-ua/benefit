@@ -26,12 +26,12 @@
         </tr>
         <tr>
             <td>Статус</td>
-            <td  style="text-align: left;">
+            <td style="text-align: left;">
                 @Html.DropDownList("OrderStatus", EnumHelper.GetSelectList(typeof(OrderStatus), Model.Status))
             </td>
             <td>Коментар статусу</td>
             <td colspan="5">
-                @Html.TextBox("StatusComment", Model.StatusComment, new {@class="width-100"})
+                @Html.TextBox("StatusComment", Model.StatusComment, new { @class = "width-100" })
             </td>
         </tr>
     </tbody>
@@ -39,7 +39,6 @@
 <p>
     <a class="btn btn-primary margin-right-10  btn-sm" href="#" title="Зберегти статус" id="updateStatus">Зберегти статус</a>
 </p>
-
 
 <p class="history_modal_title">Товари в кошику</p>
 <table class="order_in_table">
@@ -75,4 +74,8 @@
         }
     </tbody>
 </table>
+<button class="btn btn-light" onclick="window.open('@Url.Action("Print", new { id = Model.Id })')">
+    <i class="icon-print bigger-160"></i>
+    Розрдрукувати
+</button>
 

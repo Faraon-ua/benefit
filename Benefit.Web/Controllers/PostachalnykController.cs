@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
@@ -24,7 +25,7 @@ namespace Benefit.Web.Controllers
             model.Category.Name = "Всі постачальники";
             model.Breadcrumbs = new BreadCrumbsViewModel()
             {
-                Categories = new List<Category>() {new Category() {Name = "Всі постачальники"}}
+                Categories = new List<Category>() { new Category() { Name = "Всі постачальники" } }
             };
             return View("~/Views/Catalog/SellersCatalog.cshtml", model);
         }
@@ -35,13 +36,16 @@ namespace Benefit.Web.Controllers
             string categoryUrlName = null;
             if (referrer != null && referrer.PathAndQuery.Contains(RouteConstants.CategoriesRoutePrefix))
             {
-                categoryUrlName =
-                    referrer.PathAndQuery.Substring(
-                        referrer.PathAndQuery.IndexOf(RouteConstants.CategoriesRoutePrefix) + RouteConstants.CategoriesRoutePrefix.Length + 1);
-                var tovarIndexOf = categoryUrlName.IndexOf(RouteConstants.ProductRoutePrefix);
-                if (tovarIndexOf > 0)
+                var catalogIndexOf = referrer.PathAndQuery.IndexOf(RouteConstants.CategoriesRoutePrefix);
+                var afterCatalogIndexOf = catalogIndexOf + RouteConstants.CategoriesRoutePrefix.Length + 1;
+                if (afterCatalogIndexOf < referrer.PathAndQuery.Length)
                 {
-                    categoryUrlName = categoryUrlName.Substring(0, tovarIndexOf - 1);
+                    categoryUrlName = referrer.PathAndQuery.Substring(afterCatalogIndexOf);
+                    var tovarIndexOf = categoryUrlName.IndexOf(RouteConstants.ProductRoutePrefix);
+                    if (tovarIndexOf > 0)
+                    {
+                        categoryUrlName = categoryUrlName.Substring(0, tovarIndexOf - 1);
+                    }
                 }
             }
             var sellerVm = SellerService.GetSellerDetails(id, categoryUrlName);

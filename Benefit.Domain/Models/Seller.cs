@@ -17,6 +17,7 @@ namespace Benefit.Domain.Models
             ShippingMethods = new Collection<ShippingMethod>();
             SellerCategories = new Collection<SellerCategory>();
             ProductOptions = new Collection<ProductOption>();
+            Personnels = new Collection<Personnel>();
         }
 
         [Key]
@@ -33,6 +34,8 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
+        public bool TerminalOrderNotification { get; set; }
+
         [MaxLength(32)]
         public string TerminalLogin { get; set; }
         [MaxLength(16)]
@@ -43,6 +46,7 @@ namespace Benefit.Domain.Models
         public bool IsActive { get; set; }
         public bool IsBenefitCardActive { get; set; }
         public bool IsBonusesPaymentActive { get; set; }
+        public bool IsCashPaymentActive { get; set; }
         public bool IsAcquiringActive { get; set; }
         public bool HasEcommerce { get; set; }
         public int TotalDiscount { get; set; }
@@ -52,6 +56,7 @@ namespace Benefit.Domain.Models
         public string LastModifiedBy { get; set; }
         [MaxLength(128)]
         public string OwnerId { get; set; }
+        //для рассчета процента тому, кто подключил заведение
         public double PointsAccount { get; set; }
         public double HangingPointsAccount { get; set; }
         [ForeignKey("OwnerId")]

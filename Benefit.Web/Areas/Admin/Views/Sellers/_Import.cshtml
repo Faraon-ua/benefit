@@ -1,7 +1,15 @@
-﻿<h2 class="underlined">
-    1C
-</h2>
-<div>
-    Завантажити 1с файл
-    <input type="file" name="UploadFile" id="txtUploadFile" />
+﻿<div id="importFiles">
+    <span class="red">Імпорт з файлу зробить неактивними всі товари з бази, яких не має у файлі імпорту.</span>
+    <h2 class="underlined">
+        1C Commerce ML
+    </h2>
+    <div>
+        Завантажити Import файл
+        <input type="file" name="ImportFile" id="UploadImportFile" />
+    </div>
+    <div>
+        Завантажити Prices файл
+        <input type="file" name="PricesFile" id="txtUploadFile" />
+    </div>
+    <button type="button" class="btn btn-success" id="UploadFiles">Завантажити</button>
 </div>

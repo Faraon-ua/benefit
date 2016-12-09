@@ -1,3 +1,5 @@
+using Benefit.Common.Constants;
+
 namespace Benefit.Domain.Migrations
 {
     using System;
@@ -9,7 +11,7 @@ namespace Benefit.Domain.Migrations
         {
             AddColumn("dbo.ApplicationUsers", "NFCCardNumber", c => c.String(maxLength: 10));
             AddColumn("dbo.ApplicationUsers", "FinancialPassword", c => c.String(maxLength: 8));
-            AddColumn("dbo.ApplicationUsers", "RegionId", c => c.Int(nullable: false, defaultValue: 400000));            
+            AddColumn("dbo.ApplicationUsers", "RegionId", c => c.Int(nullable: false, defaultValue: RegionConstants.AllUkraineRegionId));            
             AddColumn("dbo.ApplicationUsers", "Address", c => c.String(maxLength: 128));
             AddColumn("dbo.ApplicationUsers", "CurrentHandlingBonusAccount", c => c.Double(nullable: false));
             CreateIndex("dbo.ApplicationUsers", "NFCCardNumber");

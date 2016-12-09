@@ -61,7 +61,7 @@ namespace Benefit.Domain.Migrations
                     ExternalNumber = 1007,
                     ReferalId = null,
                     FullName = "Адмін Адмінич",
-                    RegionId = 400000,
+                    RegionId = RegionConstants.AllUkraineRegionId,
                     Email = "benefit.admin@gmail.com",
                     CardNumber = "000000",
                     PhoneNumber = "0630000000",

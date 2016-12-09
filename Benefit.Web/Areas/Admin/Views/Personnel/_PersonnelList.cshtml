@@ -1,0 +1,26 @@
+﻿@model ICollection<Benefit.Domain.Models.Personnel>
+
+<a class="btn btn-info" data-toggle="modal" data-target="#personnel_modal">Додати співробітника</a>
+<br />
+<br />
+<div class="row bold">
+    <div class="col-sm-2">Повне Імя</div>
+    <div class="col-sm-2">Телефон</div>
+    <div class="col-sm-1">Номер картки</div>
+    <div class="col-sm-1">NFC код картки</div>
+</div>
+
+@foreach (var personnel in Model)
+{
+    <div class="row">
+        <div class="col-sm-2">@personnel.Name</div>
+        <div class="col-sm-2">@personnel.Phone</div>
+        <div class="col-sm-1">@personnel.CardNumber</div>
+        <div class="col-sm-1">@personnel.NFCCardNumber</div>
+        <div class="col-sm-1">
+            <a href="@Url.Action("Delete", "Personnel", new { id = personnel.Id })" class="remove-personnel">
+                <i class="icon-remove red"></i>
+            </a>
+        </div>
+    </div>
+}

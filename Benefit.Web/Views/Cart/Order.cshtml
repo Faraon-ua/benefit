@@ -71,8 +71,8 @@
             }
             <div class="clearfix"></div>
             <div class="address_choice_wrap">
-                <a href="@Url.Action("UserAddress", "Panel", new {area = "Cabinet"})" class="add_new_address">+ Додати нову адресу</a>
                 <a href="#" class="chose_new_address">+ Обрати іншу адресу</a>
+                <a href="@Url.Action("UserAddress", "Panel", new {area = "Cabinet"})" class="add_new_address margin-left-10">+ Додати нову адресу</a>
             </div>
             @Html.Hidden("AddressId", Model.AddressId ?? defaultAddressId)
         </div>

@@ -52,11 +52,6 @@ namespace Benefit.Services.Domain
             var address = db.Addresses.FirstOrDefault(entry => entry.Id == model.AddressId);
             order.ShippingAddress = string.Format("{0}; {1}; {2}, {3}", address.FullName, address.Phone, address.Region.Name_ua, address.AddressLine);
 
-            var user = db.Users.FirstOrDefault(entry => entry.Id == order.UserId);
-            user.CurrentBonusAccount += order.PersonalBonusesSum;
-            user.PointsAccount += order.PointsSum;
-            db.Entry(user).State = EntityState.Modified;
-
             order.Time = DateTime.UtcNow;
             order.OrderType = OrderType.BenefitSite;
             order.PaymentType = model.PaymentType.Value;
@@ -75,18 +70,6 @@ namespace Benefit.Services.Domain
                 }
             }
 
-            //add transaction for personal purchase
-            var transaction = new Transaction()
-            {
-                Id = Guid.NewGuid().ToString(),
-                Bonuses = order.PersonalBonusesSum,
-                BonusesBalans = user.CurrentBonusAccount + order.PersonalBonusesSum,
-                OrderId = order.Id,
-                PayeeId = user.Id,
-                Time = DateTime.UtcNow
-            };
-
-            db.Transactions.Add(transaction);
             db.SaveChanges();
             Cart.Cart.CurrentInstance.Clear();
             var cartMumberCookie = HttpContext.Current.Response.Cookies["cartNumber"];

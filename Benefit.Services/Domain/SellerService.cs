@@ -26,7 +26,7 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.Addresses)
                     .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
                     .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                    .Where(entry=>entry.IsActive)
+                    .Where(entry => entry.IsActive)
                 .OrderByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ToList();
             return new SellersViewModel()
             {
@@ -105,6 +105,27 @@ namespace Benefit.Services.Domain
             return cacheCats as List<Category>;
         }
 
+        public List<Product> GetSellerCatalogProducts(string sellerId, string categoryId, int skip = 0, int take = ListConstants.DefaultTakePerPage)
+        {
+            var items = db.Products.Where(entry => entry.IsActive);
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                items = items.Where(entry => entry.CategoryId == categoryId);
+            }
+            if (!string.IsNullOrEmpty(sellerId))
+            {
+                items = items.Where(entry => entry.SellerId == sellerId);
+            }
+            //todo: instead all products show recomendations
+            items = items.OrderBy(entry => entry.Category.Order).ThenByDescending(entry => entry.Images.Any());
+
+            var result = items.ToList();
+            result = result.Skip(skip).Take(take + 1).ToList();
+            result.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
+
+            return result;
+        }
+
         public ProductsViewModel GetSellerCatalog(string sellerUrl, string categoryUrl)
         {
             var result = new ProductsViewModel();
@@ -114,13 +135,7 @@ namespace Benefit.Services.Domain
             var category = db.Categories.FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
-            var items = (IOrderedQueryable<Product>) db.Products.Where(entry => entry.CategoryId == categoryId && entry.SellerId == seller.Id);
-            //todo: remove all products workaround
-            if (!items.Any())
-            {
-                items = db.Products.Where(entry => entry.SellerId == seller.Id).OrderBy(entry => entry.Category.Order);
-            }
-            result.Items = items.ThenByDescending(entry => entry.Images.Any()).ToList();
+            result.Items = GetSellerCatalogProducts(seller.Id, categoryId).ToList();
             //todo: add breadcrumbs
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {

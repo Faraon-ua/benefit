@@ -1,0 +1,93 @@
+﻿@using Benefit.Common.Extensions
+@model Benefit.Domain.Models.Order
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>title</title>
+</head>
+<body>
+    <div>
+        
+        <table>
+            <tr>
+                <td>
+                    <h1>Замовлення №@Model.OrderNumber</h1> 
+                    <p class="history_modal_title">Товари в кошику</p>
+                    <table class="order_in_table" border="1">
+                        <thead>
+                            <tr>
+                                <th>Назва</th>
+                                <th>Кількість</th>
+                                <th>Ціна</th>
+                                <th>Сума</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model.OrderProducts)
+                            {
+                                var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                                var productSum = product.ProductPrice * product.Amount;
+                                <tr>
+                                    <td>@product.ProductName</td>
+                                    <td>@product.Amount</td>
+                                    <td>@product.ProductPrice</td>
+                                    <td>@((productSum + productOptionsSum).ToString("F"))</td>
+                                </tr>
+                                foreach (var productOption in product.DbOrderProductOptions)
+                                {
+                                    <tr>
+                                        <td>@productOption.ProductOptionName</td>
+                                        <td>@productOption.Amount</td>
+                                        <td>@productOption.ProductOptionPriceGrowth</td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </td>
+                <td>
+                    <div style="margin-left: 20px;">
+                        <h2 style="margin-bottom: 5px;">Дані замовлення</h2>
+                        <p>
+                            <b>Дата:</b>
+                            <span>@Model.Time.ToLocalTimeWithFormat()</span>
+                        </p>
+                        <p>
+                            <b>Метод Оплати:</b>
+                            <span>@Model.PaymentType</span>
+                        </p>
+                        <p>
+                            <b>Метод доставки:</b>
+                            <span>@Model.ShippingName</span>
+                        </p>
+                        <p>
+                            <b>Коментарій:</b>
+                            <span>@Model.Description</span>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <h2 style="margin-bottom: 5px;">Дані покупця</h2>
+        <p>
+            <b>Імя:</b>
+            <span>@Model.User.FullName</span>
+        </p>
+        <p>
+            <b>Телефон:</b>
+            <span>@Model.User.PhoneNumber</span>
+        </p>
+        <p>
+            <b>Адреса:</b>
+            <span>@Model.ShippingAddress</span>
+        </p>
+    </div>
+</body>
+</html>

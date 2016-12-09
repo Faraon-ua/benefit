@@ -5,6 +5,8 @@ namespace Benefit.Domain.Models
 {
     public enum PaymentType
     {
+        [Description("По домовленності")]
+        Agreement,
         [Description("Готівкою при отриманні")]
         Cash,
         [Description("Карткою Visa/MasterCard")]

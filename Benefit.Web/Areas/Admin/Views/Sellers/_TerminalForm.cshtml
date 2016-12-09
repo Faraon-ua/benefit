@@ -1,6 +1,13 @@
 ﻿@model Benefit.Web.Models.Admin.SellerViewModel
 
+
 <div class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="Seller_TerminalOrderNotification">Сповіщення про замовлення</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.Seller.TerminalOrderNotification)
+        </div>
+    </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Логін для терміналу</label>
 

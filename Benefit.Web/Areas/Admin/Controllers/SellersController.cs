@@ -37,7 +37,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Import1C(string id)
+        public async Task<JsonResult> Import1CCommerceML(string id)
         {
             ProductImportResults results = null;
 
@@ -53,19 +53,26 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             try
             {
-                foreach (string file in Request.Files)
-                {
-                    var fileContent = Request.Files[file];
-                    if (fileContent != null && fileContent.ContentLength > 0)
+                var importFile = Request.Files[0];
+//                var pricesFile = Request.Files.Count[1];
+                if (importFile != null && importFile.ContentLength > 0)
                     {
-                        // get a stream
-                        var xml = XDocument.Load(fileContent.InputStream);
-                        xmlCategories = xml.Descendants("Группы").First().Elements().Select(entry => new XmlCategory(entry)).ToList();
+                        //get a stream
+                        var xml = XDocument.Load(importFile.InputStream);
+                        var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
+                        var resultXmlCategories = new List<XElement>();
+                        foreach (var rawXmlCategory in rawXmlCategories)
+                        {
+                            if (rawXmlCategory.Element("Группы") != null)
+                            {
+                                resultXmlCategories.AddRange(rawXmlCategory.Element("Группы").Elements());
+                            }
+                        }
+                        xmlCategories = resultXmlCategories.Select(entry => new XmlCategory(entry)).ToList();
 
-                        var defaultCategories = seller.SellerCategories.Where(entry => entry.IsDefault).Select(entry => entry.Category).ToList();
-                        var allDbCategories = defaultCategories.SelectMany(entry => entry.GetAllChildrenRecursively()).Distinct().ToList();
+                        var sellerDbCategories = seller.SellerCategories.Where(entry => !entry.IsDefault).Select(entry => entry.Category).ToList();
 
-                        foreach (var dbCategory in allDbCategories)
+                        foreach (var dbCategory in sellerDbCategories)
                         {
                             var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Name == dbCategory.Name);
                             if (xmlCategory != null)
@@ -78,12 +85,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         xmlProducts =
                             xmlProducts.Where(
                                 entry =>
-                                    entry.Price.HasValue && xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
+                                    xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
                         xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
                         results = ProductService.ProcessImportedProducts(xmlProducts, xmlToDbCategoriesMapping.Values, seller.Id);
                         EmailService.SendImportResults(seller.Owner.Email, results);
                     }
-                }
             }
             catch (XmlException)
             {
@@ -192,7 +198,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult CreateOrUpdate(string id = null)
         {
-            var existingSeller = db.Sellers.Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry=>entry.SellerCategories.Select(sc=>sc.Category)).FirstOrDefault(entry => entry.Id == id);
+            var existingSeller = db.Sellers.Include(entry=>entry.Personnels).Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry=>entry.SellerCategories.Select(sc=>sc.Category)).FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {
                 Seller = existingSeller ?? new Seller() { Schedules = SetSellerSchedules().ToList() }
@@ -345,6 +351,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.SaveChanges();
                 return RedirectToAction("CreateOrUpdate", new { id = seller.Id });
             }
+            sellervm.Seller.Personnels = db.Personnels.Where(entry => entry.SellerId == sellervm.Seller.Id).ToList();
             return View(sellervm);
         }
 

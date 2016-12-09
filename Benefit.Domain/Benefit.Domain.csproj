@@ -200,6 +200,10 @@
     <Compile Include="Migrations\201612051321083_UserAvatar.Designer.cs">
       <DependentUpon>201612051321083_UserAvatar.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612061525259_TerminalNotificationFlag.cs" />
+    <Compile Include="Migrations\201612061525259_TerminalNotificationFlag.Designer.cs">
+      <DependentUpon>201612061525259_TerminalNotificationFlag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -331,6 +335,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612051321083_UserAvatar.resx">
       <DependentUpon>201612051321083_UserAvatar.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612061525259_TerminalNotificationFlag.resx">
+      <DependentUpon>201612061525259_TerminalNotificationFlag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

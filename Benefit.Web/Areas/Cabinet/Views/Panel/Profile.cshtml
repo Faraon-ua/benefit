@@ -8,6 +8,15 @@
 {
     @Html.Partial("_PartnerHead", Model)
 }
+@section scripts
+{
+    <script>
+        $("body").on("click", "#partner-referal", function () {
+            $(this).select();
+        });
+        
+    </script>
+}
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
     <ul class="profile_menu nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#base">Основна</a></li>
@@ -26,16 +35,23 @@
             <p class="profile_title">Телефон</p>
             <p class="profile_title_description">@Model.PhoneNumber</p>
             <p class="profile_title">Номер картки</p>
-            <p class="profile_title_description">@Model.CardNumber</p> 
+            <p class="profile_title_description">@Model.CardNumber</p>
             <p class="profile_title">Реферальний код</p>
             <p class="profile_title_description">@Model.ExternalNumber</p>
-
+            <p class="profile_title">Реферальне посилання</p>
             <form class="profile_base_form">
-                <label for="profile_name">Місто / Населений пункт</label>
-                <input id="profile_name" type="text" value="@Model.Region.Name_ua">
 
-                <label for="profile_address">Адреса</label>
-                <input id="profile_address" type="text" value="@Model.Address">
+                <p class="profile_title">
+                    <input id="partner-referal" type="text" value="@Url.RouteUrl("OldRegister", new { id = Model.ExternalNumber }, Request.Url.Scheme)" readonly />
+                </p>
+
+                <p class="profile_title">
+
+                    <label for="profile_name">Місто / Населений пункт</label>
+                    <input id="profile_name" type="text" value="@Model.Region.Name_ua">
+                    <label for="profile_address">Адреса</label>
+                    <input id="profile_address" type="text" value="@Model.Address">
+                </p>
 
                 <p class="verification_data">Для отримання можливості взяти участь у плані винагород<br> необхідно пройти процедуру верифікації бонусної картки</p>
 

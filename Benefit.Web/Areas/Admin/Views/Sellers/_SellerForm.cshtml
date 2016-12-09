@@ -124,6 +124,15 @@
     </div> 
     
     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Оплата Готівкою</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.Seller.IsCashPaymentActive)
+        </div>
+    </div>
+
+
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Оплата Бонусами</label>
 
         <div class="col-xs-10 col-sm-5">

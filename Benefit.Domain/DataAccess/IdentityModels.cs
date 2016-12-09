@@ -35,6 +35,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderProduct> OrderProducts { get; set; }
         public DbSet<OrderProductOption> OrderProductOptions { get; set; }
+        public DbSet<Personnel> Personnels { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

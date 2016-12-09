@@ -18,6 +18,7 @@ namespace Benefit.Services.Domain
     public class CategoriesService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private SellerService SellerService = new SellerService();
 
         public List<Category> GetBaseCategories()
         {
@@ -42,18 +43,32 @@ namespace Benefit.Services.Domain
             return resultList;
         }
 
-        public List<Product> GetCategoryProductsOnly(string categoryId, int skip, int take = ListConstants.DefaultTakePerPage)
+        //todo: remove comment think about product list
+       /* public List<Product> GetCategoryProductsOnly(string categoryId, string sellerId, int skip, int take = ListConstants.DefaultTakePerPage)
         {
-            var products = db.Products.Include(entry => entry.Images).Include(entry=>entry.Currency).Where(entry => entry.CategoryId == categoryId).OrderByDescending(entry=>entry.LastModified).Skip(skip).Take(take + 1).ToList();
-            products.ForEach(entry=>entry.Price = (double) (entry.Price * entry.Currency.Rate));
-            return products;
-        }
+            var products = db.Products.Include(entry => entry.Images).Include(entry=>entry.Currency);
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                products = products.Where(entry => entry.CategoryId == categoryId);
+            }
+            if (!string.IsNullOrEmpty(sellerId))
+            {
+                products = products.Where(entry => entry.SellerId == sellerId);
+            }
+            products = products.OrderBy(entry => entry.Category.Order).ThenByDescending(entry => entry.Images.Any());
+            var result = products.Skip(skip).Take(take + 1).ToList();
+            result.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
+            return result;
+        }*/
 
-        public ProductsViewModel GetCategoryProducts(string urlName, int skip, int take = ListConstants.DefaultTakePerPage)
+        public ProductsViewModel GetCategoryProducts(string urlName, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
             var category = db.Categories.Include(entry => entry.Products).Include(entry => entry.Products.Select(pr => pr.Images)).Include(entry => entry.Products.Select(pr => pr.Currency)).FirstOrDefault(entry => entry.UrlName == urlName);
-            var products = category.Products.Where(entry => entry.IsActive).OrderByDescending(entry=>entry.LastModified).Skip(skip).Take(take + 1).ToList();
-            products.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
+            if (category.Products.Count == 0)
+            {
+                return null;
+            }
+            var products = SellerService.GetSellerCatalogProducts(null, category.Id, skip, take);
             if (!products.Any()) return null;
             var result = new ProductsViewModel()
             {

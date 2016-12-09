@@ -52,8 +52,6 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
-        [MaxLength(128)]
-        public string PersonnelId { get; set; }
         [MaxLength(64)]
         public string PersonnelName { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } 

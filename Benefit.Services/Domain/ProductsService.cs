@@ -68,7 +68,7 @@ namespace Benefit.Services.Domain
                     AvailableAmount = entry.Availability ? null : (int?)0,
                     IsActive = true,
                     LastModified = DateTime.UtcNow,
-                    LastModifiedBy = "1CImport",
+                    LastModifiedBy = "1CCommerceMLImport",
                     CategoryId = entry.CategoryId,
                     SellerId = sellerId,
                     CurrencyId =
@@ -97,7 +97,7 @@ namespace Benefit.Services.Domain
                 db.Entry(dbProduct).State = EntityState.Modified;
             });
 
-            db.SaveChanges();
+//            db.SaveChanges();
             return result;
         }
 
