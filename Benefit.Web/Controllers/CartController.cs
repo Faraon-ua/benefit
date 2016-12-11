@@ -18,7 +18,7 @@ namespace Benefit.Web.Controllers
         [HttpGet]
         public ActionResult CheckSeller(string sellerId)
         {
-            return Json(Cart.CurrentInstance.Order.SellerId != sellerId, JsonRequestBehavior.AllowGet);
+            return Json(Cart.CurrentInstance.Order.SellerId != null && Cart.CurrentInstance.Order.SellerId != sellerId, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult AddProduct(OrderProduct product, string sellerId)

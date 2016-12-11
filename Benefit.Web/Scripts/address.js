@@ -4,7 +4,7 @@
     if (regionSearch.hasClass("includeRegions")) {
         regionSearchUrl = regionSearchUrl + "?minLevel=1";
     }
-        
+
     $(".regionSearch").devbridgeAutocomplete({
         minChars: 3,
         serviceUrl: routePrefix + regionSearchUrl,

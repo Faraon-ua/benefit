@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
@@ -63,6 +64,24 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         {
             var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
             return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult Profile(UpdateProfileViewModel profile)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var userId = User.Identity.GetUserId();
+                var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == userId);
+                user.CardNumber = profile.CardNumber;
+                user.RegionId = profile.RegionId;
+                user.Address = profile.Address;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+                user.Region = db.Regions.FirstOrDefault(entry => entry.Id == user.RegionId);
+                TempData["SuccessMessage"] = "Ваші дані збережено";
+                return View(user);
+            }
         }
 
         public ActionResult UserAddress(string id)
