@@ -16,13 +16,12 @@
             });
 
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new { sellerId = Model.Product.SellerId })';
-            $("#buy-product, .goto_ahead").click(function () {
+            $("#buy-product, #buy-product-with-options").click(function () {
                 $(this).attr("disabled", "disabled");
-                $("#buy-product, .goto_ahead").attr('disabled', 'disabled');
+                $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
                 $(".product_info_wrap").css("opacity", 0.3);
 
                 var productAmount = $("#product_amount").val();
-
                 var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
                     var id = $(this).attr("id");
                     var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
@@ -50,7 +49,7 @@
                     function (data) {
                         $('#product_modal').modal('hide');
                         setTimeout(function f() {
-                            $("#buy-product, .goto_ahead").removeAttr('disabled');
+                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
                             $(".product_info_wrap").css("opacity", 1);
                             $("#cart-items-number").text(data);
                             $("#cart-items-number").show();

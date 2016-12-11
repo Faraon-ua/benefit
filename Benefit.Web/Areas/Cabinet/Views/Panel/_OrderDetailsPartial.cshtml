@@ -8,6 +8,8 @@
             <th>Номер</th>
             <th>Дата</th>
             <th>Сума (грн)</th>
+            <th>Бали</th>
+            <th>Бонуси</th>
             <th>Спосіб оплати</th>
             <th>Спосіб доставки</th>
             <th>Адреса доставки</th>
@@ -18,6 +20,8 @@
             <td>@Model.OrderNumber</td>
             <td>@Model.Time.ToLocalTimeWithFormat()</td>
             <td>@Model.Sum.ToString("F")</td>
+            <td>@Model.PointsSum.ToString("F")</td>
+            <td>@Model.PersonalBonusesSum.ToString("F")</td>
             <td>@Model.PaymentType</td>
             <td>@Model.ShippingName</td>
             <td>@Model.ShippingAddress</td>

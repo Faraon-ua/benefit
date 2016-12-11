@@ -14,8 +14,9 @@ namespace Benefit.RestApi.Controllers
     public class OldApiController : ApiController
     {
         ApplicationDbContext db = new ApplicationDbContext();
+        private const string ApiVersion = "V2";
 
-        [Route("ProgFetchUserData.php")]
+        [Route(ApiVersion + "/ProgFetchUserData" + ApiVersion + ".php")]
         public SellerAuthDto SellerLogin(SellerAuthIngest auth)
         {
             var seller = GetSellerByUsernameAndPassword(auth.username, auth.password);
@@ -53,7 +54,7 @@ namespace Benefit.RestApi.Controllers
             return response;
         }
 
-        [Route("ProgUserKassir.php")]
+        [Route(ApiVersion + "/ProgUserKassir" + ApiVersion + ".php")]
         public PartnerAuthDto KassirLogin(PartnerAuthIngest authIngest)
         {
             var dto = new PartnerAuthDto();
@@ -140,7 +141,7 @@ namespace Benefit.RestApi.Controllers
             return dto;
         }
 
-        [Route("ProgFetchUserInfo.php")]
+        [Route(ApiVersion + "/ProgFetchUserInfo" + ApiVersion + ".php")]
         public UserAuthDto UserInfo(UserAuthIngest userAuth)
         {
             var seller = GetSellerByUsernameAndPassword(userAuth.username, userAuth.password);
@@ -170,7 +171,7 @@ namespace Benefit.RestApi.Controllers
             return null;
         }
 
-        [Route("ProgGetOrders.php")]
+        [Route(ApiVersion + "/ProgGetOrders" + ApiVersion + ".php")]
         public GetOrdersDto CheckOrder(GetOrdersIngest ordersIngest)
         {
             var seller = GetSellerByUsernameAndPassword(ordersIngest.username, ordersIngest.password);
@@ -185,7 +186,7 @@ namespace Benefit.RestApi.Controllers
             return null;
         }
 
-        [Route("ProgUserPayment.php")]
+        [Route(ApiVersion + "/ProgUserPayment" + ApiVersion + ".php")]
         public async Task<PaymentDto> ProcessPayment(PaymentIngest payment)
         {
             var seller = GetSellerByUsernameAndPassword(payment.username, payment.password);
@@ -205,11 +206,12 @@ namespace Benefit.RestApi.Controllers
                 var points = payment.summachek / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
                 var bonuses = payment.summachek * seller.UserDiscount / 100;
                 //add finished order with benefit card type
+                var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
                 var order = new Order()
                 {
                     Id = Guid.NewGuid().ToString(),
                     CardNumber = user.CardNumber,
-                    OrderNumber = db.Orders.Max(entry => entry.OrderNumber) + 1,
+                    OrderNumber = orderNumber + 1,
                     OrderType = OrderType.BenefitCard,
                     PaymentType = PaymentType.Cash,
                     SellerId = seller.Id,

@@ -15,6 +15,6 @@
 
         public const string RegionIdCookieKey = "regionId";
 
-        public const string OrderPrefixKey = "Order";
+        public const string OrderPrefixKey = "Cart";
     }
 }
