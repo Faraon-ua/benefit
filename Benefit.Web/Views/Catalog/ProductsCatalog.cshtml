@@ -19,6 +19,7 @@
 @section scripts{
     <script>
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+        var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
         var skip = parseInt('@ListConstants.DefaultTakePerPage');
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
         @{
@@ -59,50 +60,57 @@
         });
 
         function AddOrderProduct(productId, sellerId, hasOptions) {
-            $(this).attr("disabled", "disabled");
-            $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
-            $("#" + productId).css("opacity", 0.3);
-
-            var productAmount = 1;//$("#product_amount").val();
-            var productOptions;
-            if (hasOptions) {
-                productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
-                    var id = $(this).attr("id");
-                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
-                    if (!amount) {
-                        amount = 1;
+            $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
+                if (isAnotherSeller) {
+                    if (!confirm("Увага! У кошику є товари від іншого постачальника. Вони будуть видалені, якщо Ви продовжите цю дію.")) {
+                        return;
                     }
-                    return {
-                        ProductOptionId: id,
-                        Amount: amount
-                    };
-                }).get();
-            } else {
-                productOptions = [];
-            }
+                }
+                $(this).attr("disabled", "disabled");
+                $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
+                $("#" + productId).css("opacity", 0.3);
 
-            var product = {
-                ProductId: productId,
-                Amount: productAmount,
-                OrderProductOptions: productOptions
-            };
+                var productAmount = 1; //$("#product_amount").val();
+                var productOptions;
+                if (hasOptions) {
+                    productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
+                        var id = $(this).attr("id");
+                        var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                        if (!amount) {
+                            amount = 1;
+                        }
+                        return {
+                            ProductOptionId: id,
+                            Amount: amount
+                        };
+                    }).get();
+                } else {
+                    productOptions = [];
+                }
 
-            var order = {
-                product: product,
-                amount: productAmount
-            };
-            $.post(addToCartUrl + "?sellerId=" + sellerId,
-                order,
-                function (data) {
-                    $('#product_modal').modal('hide');
-                    setTimeout(function f() {
-                        $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                        $("#" + productId).css("opacity", 1);
-                        $("#cart-items-number").text(data);
-                        $("#cart-items-number").show();
-                        setCookie("cartNumber", data, { expires: 36000, path: "/" });
-                    }, 1000);
-                });
+                var product = {
+                    ProductId: productId,
+                    Amount: productAmount,
+                    OrderProductOptions: productOptions
+                };
+
+                var order = {
+                    product: product,
+                    amount: productAmount
+                };
+                $.post(addToCartUrl + "?sellerId=" + sellerId,
+                    order,
+                    function (data) {
+                        $('#product_modal').modal('hide');
+                        setTimeout(function () {
+                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                            $("#" + productId).css("opacity", 1);
+                            $("#cart-items-number").text(data);
+                            $("#cart-items-number").show();
+                            setCookie("cartNumber", data, { expires: 36000, path: "/" });
+                        }, 1000);
+                    });
+            });
         }
     </script>
 }

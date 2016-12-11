@@ -14,6 +14,13 @@ namespace Benefit.Web.Controllers
     public class CartController : Controller
     {
         public OrderService OrderService = new OrderService();
+
+        [HttpGet]
+        public ActionResult CheckSeller(string sellerId)
+        {
+            return Json(Cart.CurrentInstance.Order.SellerId != sellerId, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult AddProduct(OrderProduct product, string sellerId)
         {
             var productsNumber = Cart.CurrentInstance.AddProduct(product, sellerId);

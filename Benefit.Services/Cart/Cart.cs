@@ -62,7 +62,7 @@ namespace Benefit.Services.Cart
                 Order.OrderProducts.Add(orderProduct);
             }
             HttpRuntime.Cache.Add(SessionKey, this, null, AbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
-            return Order.OrderProducts.Count;
+            return (int)Order.OrderProducts.Sum(entry=>entry.Amount);
         }
 
         public int RemoveProduct(string id)
