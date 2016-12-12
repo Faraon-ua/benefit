@@ -244,6 +244,12 @@
                         Основна інфо
                     </a>
                 </li>
+                <li>
+                    <a href="#paymentTypes" data-toggle="tab">
+                        <i class="grey icon-money bigger-110"></i>
+                        Види оплати
+                    </a>
+                </li> 
                 <li class="@displayClass">
                     <a href="#terminal" data-toggle="tab">
                         <i class="grey icon-tablet bigger-110"></i>
@@ -304,8 +310,11 @@
                 <div class="tab-pane in active @displayClass" id="home">
                     @Html.Partial("_SellerForm")
                 </div> 
-                <div class="tab-pane in active @displayClass" id="terminal">
+                <div class="tab-pane @displayClass" id="terminal">
                     @Html.Partial("_TerminalForm")
+                </div> 
+                <div class="tab-pane @displayClass" id="paymentTypes">
+                    @Html.Partial("_PaymentTypes")
                 </div>
                 <div class="tab-pane @displayClass" id="categories">
                     @Html.Partial("_Categories", Model.Seller)

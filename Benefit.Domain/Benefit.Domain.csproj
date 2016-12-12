@@ -204,6 +204,10 @@
     <Compile Include="Migrations\201612061525259_TerminalNotificationFlag.Designer.cs">
       <DependentUpon>201612061525259_TerminalNotificationFlag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612121520188_AddAgreementPaymentType.cs" />
+    <Compile Include="Migrations\201612121520188_AddAgreementPaymentType.Designer.cs">
+      <DependentUpon>201612121520188_AddAgreementPaymentType.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -338,6 +342,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612061525259_TerminalNotificationFlag.resx">
       <DependentUpon>201612061525259_TerminalNotificationFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612121520188_AddAgreementPaymentType.resx">
+      <DependentUpon>201612121520188_AddAgreementPaymentType.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

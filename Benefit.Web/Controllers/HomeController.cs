@@ -75,7 +75,7 @@ namespace Benefit.Web.Controllers
             return PartialView("_LoginPartial");
         }
 
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;isDropDown;")]
+        //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;isDropDown;")]
         public ActionResult CategoriesPartial(string parentCategoryId, string sellerUrl, bool? isDropDown = null)
         {
             if (string.IsNullOrEmpty(parentCategoryId))

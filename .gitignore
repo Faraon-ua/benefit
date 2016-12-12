@@ -23,6 +23,7 @@ _UpgradeReport_Files/
 # Directories #
 ###############
 bin/
+FTP/
 obj/
 TestResults/
 Images/

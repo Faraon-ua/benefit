@@ -42,7 +42,7 @@ namespace Benefit.Services.Domain
             order.Sum = orderSum;
             order.Description = model.Comment;
             order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
-            order.PointsSum = order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
+            order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
             order.SellerName = seller.Name;
 
             var shipping = db.ShippingMethods.FirstOrDefault(entry => entry.Id == model.ShippingMethodId);

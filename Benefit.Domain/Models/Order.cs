@@ -59,8 +59,8 @@ namespace Benefit.Domain.Models
         public virtual ApplicationUser User { get; set; }
         [MaxLength(64)]
         public string PersonnelName { get; set; }
-//        public DateTime LastModified { get; set; }
-//        public string LastModifiedBy { get; set; }
+        public DateTime LastModified { get; set; }
+        public string LastModifiedBy { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } 
         public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
     }

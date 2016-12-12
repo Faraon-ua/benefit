@@ -45,6 +45,8 @@ namespace Benefit.Domain.Models
         public string CatalogButtonName { get; set; }
         public bool IsActive { get; set; }
         public bool IsBenefitCardActive { get; set; }
+        //todo: move payment types to separate table
+        public bool IsAgreementPaymentActive { get; set; }
         public bool IsBonusesPaymentActive { get; set; }
         public bool IsCashPaymentActive { get; set; }
         public bool IsAcquiringActive { get; set; }

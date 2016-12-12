@@ -57,7 +57,8 @@ namespace Benefit.Web.Controllers
                 if (seller == null) return HttpNotFound();
                 model.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == sellerId).ToList();
                 model.Addresses = db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
-                model.PaymentTypes.Add(PaymentType.Agreement);
+                if (seller.IsAgreementPaymentActive)
+                    model.PaymentTypes.Add(PaymentType.Agreement);
                 if (seller.IsCashPaymentActive)
                     model.PaymentTypes.Add(PaymentType.Cash);
                 if (seller.IsAcquiringActive)
@@ -82,7 +83,7 @@ namespace Benefit.Web.Controllers
             {
                 completeOrder.Order.UserId = User.Identity.GetUserId();
                 var orderNumber = OrderService.AddOrder(completeOrder);
-                return RedirectToAction("OrderCompleted", new {number = orderNumber});
+                return RedirectToAction("OrderCompleted", new { number = orderNumber });
             }
             using (var db = new ApplicationDbContext())
             {
@@ -92,7 +93,8 @@ namespace Benefit.Web.Controllers
                 completeOrder.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == completeOrder.Order.SellerId).ToList();
                 completeOrder.Addresses =
                     db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
-                completeOrder.PaymentTypes.Add(PaymentType.Agreement);
+                if (seller.IsAgreementPaymentActive)
+                    completeOrder.PaymentTypes.Add(PaymentType.Agreement);
                 if (seller.IsCashPaymentActive)
                     completeOrder.PaymentTypes.Add(PaymentType.Cash);
                 if (seller.IsAcquiringActive)
