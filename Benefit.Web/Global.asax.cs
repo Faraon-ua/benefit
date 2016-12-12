@@ -27,5 +27,10 @@ namespace Benefit.Web
                 HttpContext.Current.Response.Cookies.Add(referalCookie);
             }
         }
+
+        protected void Session_Start(object sender, EventArgs e)
+        {
+            HttpContext.Current.Session.Add("__MyAppSession", string.Empty);
+        }
     }
 }

@@ -150,11 +150,16 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
             return View(user);
         }
-        
+
         public ActionResult history()
         {
-            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
-            return View(user);
+            var userId = User.Identity.GetUserId();
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Include(entry=>entry.Orders).FirstOrDefault(entry => entry.Id == userId);
+                user.Orders = user.Orders.OrderByDescending(entry => entry.Time).ToList();
+                return View(user);
+            }
         }
 
         public ActionResult Zakladu()

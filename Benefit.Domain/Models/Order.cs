@@ -1,15 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
 {
     public enum OrderStatus
     {
+        [Description("В очікуванні")]
         Created,
+        [Description("В обробці")]
         Processed,
+        [Description("Завершений")]
         Finished,
+        [Description("Скасований")]
         Abandoned
     }
 
@@ -54,6 +59,8 @@ namespace Benefit.Domain.Models
         public virtual ApplicationUser User { get; set; }
         [MaxLength(64)]
         public string PersonnelName { get; set; }
+//        public DateTime LastModified { get; set; }
+//        public string LastModifiedBy { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } 
         public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
     }

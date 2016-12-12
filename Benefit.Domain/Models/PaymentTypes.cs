@@ -7,7 +7,7 @@ namespace Benefit.Domain.Models
     {
         [Description("По домовленності")]
         Agreement,
-        [Description("Готівкою при отриманні")]
+        [Description("Готівкою")]
         Cash,
         [Description("Карткою Visa/MasterCard")]
         Acquiring,

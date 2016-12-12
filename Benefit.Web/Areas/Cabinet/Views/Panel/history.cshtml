@@ -1,13 +1,33 @@
-﻿@model Benefit.Domain.Models.ApplicationUser
+﻿@using Benefit.Common.Extensions
+@using Benefit.Common.Helpers
+@using Benefit.Domain.Models
+@model ApplicationUser
 
 @{
     ViewBag.Title = "Історія замовлень";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
-
 @section PartnerHead
 {
     @Html.Partial("_PartnerHead", Model)
+}
+@section scripts
+{
+    <script>
+        $(function () {
+            var orderDetailsUrl = '@Url.Action("GetOrderDetails","Panel")';
+
+            $(".details_button").click(function () {
+                var orderId = $(this).attr("data-order-id");
+                $.get(orderDetailsUrl + "?orderId=" + orderId, function (data) {
+                    if (data) {
+                        $("#order-details-wrap").html(data);
+                        $("#history_modal").modal('show');
+                    }
+                });
+            });
+        });
+    </script>
 }
 
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
@@ -44,131 +64,43 @@
                     <th>Статус</th>
                     <th>Деталі</th>
                 </tr>
-                <tr>
-                    <td>60457</td>
-                    <td>11 03 2016</td>
-                    <td>Міні-маркет “Кошик24”</td>
-                    <td>301,05</td>
-                    <td>15,02</td>
-                    <td>15,02</td>
-                    <td>В обробці</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>104578</td>
-                    <td>10 03 2016</td>
-                    <td>Ресторан “Greenwich Lounge Bar”</td>
-                    <td>340,88</td>
-                    <td>34,61</td>
-                    <td>34,61</td>
-                    <td>Скасовано</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>104578</td>
-                    <td>02 03 2016</td>
-                    <td>Піцерія “Patio”</td>
-                    <td>256,50</td>
-                    <td>13,01</td>
-                    <td>3,01</td>
-                    <td>Завершений</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>10457800</td>
-                    <td>02 03 2016</td>
-                    <td>Салон меблів “Gorenje”</td>
-                    <td>32000,00</td>
-                    <td>32000,00</td>
-                    <td>32000,00</td>
-                    <td>Скасовано</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>811</td>
-                    <td>01 03 2016</td>
-                    <td>Фаст-фуд “Vicont Burger”</td>
-                    <td>265,00</td>
-                    <td>265,00</td>
-                    <td>265,00</td>
-                    <td>Очікування</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>102557</td>
-                    <td>01 03 2016</td>
-                    <td>Піцерія “Greenwich Pizza Bar”</td>
-                    <td>431,80</td>
-                    <td>43,10</td>
-                    <td>43,10</td>
-                    <td>Завершений</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>589</td>
-                    <td>29 02 2016</td>
-                    <td>Квітковий салон “Романна”</td>
-                    <td>432,00</td>
-                    <td>43,20</td>
-                    <td>43,20</td>
-                    <td>Завершений</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>20478</td>
-                    <td>29 02 2016</td>
-                    <td>Магазин  “МКВ”</td>
-                    <td>14022,00</td>
-                    <td>201,39</td>
-                    <td>201,39</td>
-                    <td>Завершений</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>8966</td>
-                    <td>03 01 2016</td>
-                    <td>Магазин “Екокрамниця”</td>
-                    <td>120,90</td>
-                    <td>8,98</td>
-                    <td>8,98</td>
-                    <td>Очікування</td>
-                    <td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>
-                </tr>
-                <tr>
-                    <td>64</td>
-                    <td>28 12 2015</td>
-                    <td>Ланч-кафе “Каштанчик”</td>
-                    <td>94,50</td>
-                    <td>3,26</td>
-                    <td>3,26</td>
-                    <td>Очікування</td>
-                    <td><div class="details_button"></div></td>
-                </tr>
+                @foreach (var order in Model.Orders.Where(entry => entry.OrderType == OrderType.BenefitSite))
+                {
+                    <tr>
+                        <td>@order.OrderNumber</td>
+                        <td>@order.Time.ToLocalTimeWithDateFormat()</td>
+                        <td>@order.SellerName</td>
+                        <td>@order.Sum.ToString("F")</td>
+                        <td>@order.PersonalBonusesSum.ToString("F")</td>
+                        <td>@order.PointsSum.ToString("F")</td>
+                        <td>@Enumerations.GetEnumDescription(order.Status)</td>
+                        <td><div class="details_button" data-order-id="@order.Id"></div></td>
+                    </tr>
+                }
             </table>
-            <div class="bottom_control clearfix">
-                <div class="pagination_wrap">
-                    <div class="pagination_prew">&lt;</div>
-                    <ul class="pagination">
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li class="active">4</li>
-                        <li>5</li>
-                        <li>6</li>
-                        <li>...</li>
-                        <li>54</li>
-                    </ul>
-                    <div class="pagination_next">&gt;</div>
-                </div>
-                <div class="show_more_orders">
-                    <label for="more_orders">Показати</label>
-                    <select id="more_orders" class="orders_org_choice">
-                        <option>10</option>
-                        <option>20</option>
-                    </select>
-                </div>
-            </div>
-
+            @* <div class="bottom_control clearfix">
+                    <div class="pagination_wrap">
+                        <div class="pagination_prew">&lt;</div>
+                        <ul class="pagination">
+                            <li>1</li>
+                            <li>2</li>
+                            <li>3</li>
+                            <li class="active">4</li>
+                            <li>5</li>
+                            <li>6</li>
+                            <li>...</li>
+                            <li>54</li>
+                        </ul>
+                        <div class="pagination_next">&gt;</div>
+                    </div>
+                    <div class="show_more_orders">
+                        <label for="more_orders">Показати</label>
+                        <select id="more_orders" class="orders_org_choice">
+                            <option>10</option>
+                            <option>20</option>
+                        </select>
+                    </div>
+                </div>*@
         </div>
 
         <div id="benefit_cards" class="benefit_cards tab-pane fade">
@@ -195,102 +127,44 @@
                     <th>Бонуси</th>
                     <th>Бали</th>
                 </tr>
-                <tr>
-                    <td>11 03 2016</td>
-                    <td>Міні-маркет “Кошик24”</td>
-                    <td>301,05</td>
-                    <td>15,02</td>
-                    <td>15,02</td>
-                </tr>
-                <tr>
-                    <td>10 03 2016</td>
-                    <td>Ресторан “Greenwich Lounge Bar”</td>
-                    <td>340,88</td>
-                    <td>34,61</td>
-                    <td>34,61</td>
-                </tr>
-                <tr>
-                    <td>02 03 2016</td>
-                    <td>Піцерія “Patio”</td>
-                    <td>256,50</td>
-                    <td>13,01</td>
-                    <td>3,01</td>
-                </tr>
-                <tr>
-                    <td>02 03 2016</td>
-                    <td>Салон меблів “Gorenje”</td>
-                    <td>32000,00</td>
-                    <td>32000,00</td>
-                    <td>32000,00</td>
-                </tr>
-                <tr>
-                    <td>01 03 2016</td>
-                    <td>Фаст-фуд “Vicont Burger”</td>
-                    <td>265,00</td>
-                    <td>265,00</td>
-                    <td>265,00</td>
-                </tr>
-                <tr>
-                    <td>01 03 2016</td>
-                    <td>Піцерія “Greenwich Pizza Bar”</td>
-                    <td>431,80</td>
-                    <td>43,10</td>
-                    <td>43,10</td>
-                </tr>
-                <tr>
-                    <td>29 02 2016</td>
-                    <td>Квітковий салон “Романна”</td>
-                    <td>432,00</td>
-                    <td>43,20</td>
-                    <td>43,20</td>
-                </tr>
-                <tr>
-                    <td>29 02 2016</td>
-                    <td>Магазин  “МКВ”</td>
-                    <td>14022,00</td>
-                    <td>201,39</td>
-                    <td>201,39</td>
-                </tr>
-                <tr>
-                    <td>03 01 2016</td>
-                    <td>Магазин “Екокрамниця”</td>
-                    <td>120,90</td>
-                    <td>8,98</td>
-                    <td>8,98</td>
-                </tr>
-                <tr>
-                    <td>28 12 2015</td>
-                    <td>Ланч-кафе “Каштанчик”</td>
-                    <td>94,50</td>
-                    <td>3,26</td>
-                    <td>3,26</td>
-                </tr>
+                @foreach (var order in Model.Orders.Where(entry => entry.OrderType == OrderType.BenefitCard))
+                {
+                    <tr>
+                        <td>@order.OrderNumber</td>
+                        <td>@order.Time.ToLocalTimeWithDateFormat()</td>
+                        <td>@order.SellerName</td>
+                        <td>@order.Sum.ToString("F")</td>
+                        <td>@order.PersonalBonusesSum.ToString("F")</td>
+                        <td>@order.PointsSum.ToString("F")</td>
+                        <td>@Enumerations.GetEnumDescription(order.Status)</td>
+                        @*<td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>*@
+                    </tr>
+                }
             </table>
-            <div class="bottom_control clearfix">
-                <div class="pagination_wrap">
-                    <div class="pagination_prew">&lt;</div>
-                    <ul class="pagination">
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li class="active">4</li>
-                        <li>5</li>
-                        <li>6</li>
-                        <li>...</li>
-                        <li>54</li>
-                    </ul>
-                    <div class="pagination_next">&gt;</div>
-                </div>
-                <div class="show_more_orders">
-                    <label for="more_orders2">Показати</label>
-                    <select id="more_orders2" class="orders_org_choice">
-                        <option>10</option>
-                        <option>20</option>
-                    </select>
-                </div>
-            </div>
+            @* <div class="bottom_control clearfix">
+                    <div class="pagination_wrap">
+                        <div class="pagination_prew">&lt;</div>
+                        <ul class="pagination">
+                            <li>1</li>
+                            <li>2</li>
+                            <li>3</li>
+                            <li class="active">4</li>
+                            <li>5</li>
+                            <li>6</li>
+                            <li>...</li>
+                            <li>54</li>
+                        </ul>
+                        <div class="pagination_next">&gt;</div>
+                    </div>
+                    <div class="show_more_orders">
+                        <label for="more_orders2">Показати</label>
+                        <select id="more_orders2" class="orders_org_choice">
+                            <option>10</option>
+                            <option>20</option>
+                        </select>
+                    </div>
+                </div>*@
         </div>
-
-
     </div>
 </div>
+<div id="order-details-wrap"></div>

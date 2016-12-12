@@ -144,6 +144,10 @@
     font-weight: bold;
 }
 
+.font-white {
+    color: white !important;
+}
+
 .provider_img_wrap img {
     max-height: 105px;
 }

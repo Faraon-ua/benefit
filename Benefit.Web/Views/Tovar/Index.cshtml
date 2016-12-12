@@ -16,47 +16,69 @@
             });
 
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new { sellerId = Model.Product.SellerId })';
+            var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
+            var sellerId = '@Model.Product.SellerId';
+
             $("#buy-product, #buy-product-with-options").click(function () {
-                $(this).attr("disabled", "disabled");
-                $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
-                $(".product_info_wrap").css("opacity", 0.3);
+                var buttonId = $(this).attr("id");
+                $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
+                    //if купить баттон 
+                    if (buttonId == "buy-product") {
+                        if (isAnotherSeller) {
+                            if (!confirm("Увага! У кошику є товари від іншого постачальника. Вони будуть видалені, якщо Ви продовжите цю дію.")) {
+                                return;
+                            }
+                        }
 
-                var productAmount = $("#product_amount").val();
-                var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
-                    var id = $(this).attr("id");
-                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
-                    if (!amount) {
-                        amount = 1;
+                        //if there are options to show
+                        if ($("#product_modal").length > 0) {
+                            //show options
+                            $("#product_modal").modal("show");
+                            return;
+                        }
                     }
-                    return {
-                        ProductOptionId: id,
-                        Amount: amount
+
+                    $(this).attr("disabled", "disabled");
+                    $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
+                    $(".product_info_wrap").css("opacity", 0.3);
+
+                    var productAmount = $("#product_amount").val();
+                    var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
+                        var id = $(this).attr("id");
+                        var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                        if (!amount) {
+                            amount = 1;
+                        }
+                        return {
+                            ProductOptionId: id,
+                            Amount: amount
+                        };
+                    }).get();
+
+                    var product = {
+                        ProductId: '@Model.Product.Id',
+                        Amount: $(".product_description_amount").val(),
+                        OrderProductOptions: productOptions
                     };
-                }).get();
 
-                var product = {
-                    ProductId: '@Model.Product.Id',
-                    Amount: $(".product_description_amount").val(),
-                    OrderProductOptions: productOptions
-                };
-
-                var order = {
-                    product: product,
-                    amount: productAmount
-                };
-                $.post(addToCartUrl,
-                    order,
-                    function (data) {
-                        $('#product_modal').modal('hide');
-                        setTimeout(function f() {
-                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                            $(".product_info_wrap").css("opacity", 1);
-                            $("#cart-items-number").text(data);
-                            $("#cart-items-number").show();
-                            setCookie("cartNumber", data, { expires: 36000, path: "/" });
-                        }, 1000);
-                    });
-                console.log(order);
+                    var order = {
+                        product: product,
+                        amount: productAmount
+                    };
+                    $.post(addToCartUrl,
+                        order,
+                        function (data) {
+                            $('#product_modal').modal('hide');
+                            setTimeout(function f() {
+                                $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                                $(".product_info_wrap").css("opacity", 1);
+                                $("#cart-items-number").text(data);
+                                $("#cart-items-number").show();
+                                setCookie("cartNumber", data, { expires: 36000, path: "/" });
+                            }, 1000);
+                        });
+                    console.log(order);
+                });
             });
         });
 
@@ -116,14 +138,7 @@
                 <div class="product_description_control_wrap pull-right">
                     @*<div class="product_description_like"></div>
                         <div class="product_description_scale"></div>*@
-                    @if (Model.ProductOptions.Any())
-                    {
-                        <a class="product_description_buy" href="" data-toggle="modal" data-target="#product_modal">Купити</a>
-                    }
-                    else
-                    {
                         <a id="buy-product" class="product_description_buy" href="#">Купити</a>
-                    }
                 </div>
                 <div class="product_description_amount_wrap pull-right">
                     <div class="product_description_amount_minus">-</div>

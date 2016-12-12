@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Web.Mvc;
 using Benefit.Domain.Models.Enums;
@@ -13,6 +14,10 @@ namespace Benefit.Domain.Models
 
     public class ApplicationUser : IdentityUser
     {
+        public ApplicationUser()
+        {
+            Orders = new Collection<Order>();
+        }
         public bool IsActive { get; set; }
         [Required]
         [MaxLength(64)]
@@ -53,6 +58,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Seller> ReferedWebSiteSellers { get; set; }
         public virtual ICollection<Seller> ReferedBenefitCardSellers { get; set; }
         public virtual ICollection<ApplicationUser> Partners { get; set; }
+        public ICollection<Order> Orders { get; set; }
     }
 
     public class ApplicationUserComparer : IEqualityComparer<ApplicationUser>
