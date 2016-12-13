@@ -40,7 +40,9 @@
                                 var productSum = product.ProductPrice * product.Amount;
                                     }
                                     <td class="basket_modal_td product-total-price">@((productSum + productOptionsSum).ToString("F"))</td>
-                                    <td class="basket_modal_td"><div class="delete_product"></div></td>
+                                    <td class="basket_modal_td">
+                                        <div class="delete_product" data-product-id="@product.ProductId"></div>
+                                    </td>
                                 </tr>
                                 if (product.OrderProductOptions.Any())
                                 {

@@ -130,14 +130,11 @@
                 @foreach (var order in Model.Orders.Where(entry => entry.OrderType == OrderType.BenefitCard))
                 {
                     <tr>
-                        <td>@order.OrderNumber</td>
                         <td>@order.Time.ToLocalTimeWithDateFormat()</td>
                         <td>@order.SellerName</td>
                         <td>@order.Sum.ToString("F")</td>
                         <td>@order.PersonalBonusesSum.ToString("F")</td>
                         <td>@order.PointsSum.ToString("F")</td>
-                        <td>@Enumerations.GetEnumDescription(order.Status)</td>
-                        @*<td><div class="details_button" data-toggle="modal" data-target="#history_modal"></div></td>*@
                     </tr>
                 }
             </table>

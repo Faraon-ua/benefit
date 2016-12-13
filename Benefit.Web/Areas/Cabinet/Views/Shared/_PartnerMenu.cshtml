@@ -16,7 +16,8 @@
             <a class="partner_menu_study" href="#">Бізнес навчання</a>
         </li>
         <li>
-            <a class="partner_menu_finance @(ViewContext.RouteData.GetRequiredString("action") == "finansovui_oblik" ? "active" : "")" href="@Url.Action("finansovui_oblik", "Panel")">Фінансовий облік</a>
+            @*<a class="partner_menu_finance @(ViewContext.RouteData.GetRequiredString("action") == "finansovui_oblik" ? "active" : "")" href="@Url.Action("finansovui_oblik", "Panel")">Фінансовий облік</a>*@
+            <a class="partner_menu_finance @(ViewContext.RouteData.GetRequiredString("action") == "finansovui_oblik" ? "active" : "")" href="#">Фінансовий облік</a>
         </li>
         <li>
             <a class="partner_menu_history @(ViewContext.RouteData.GetRequiredString("action") == "history" ? "active" : "")" href="@Url.Action("history", "Panel")">Історія замовлень</a>

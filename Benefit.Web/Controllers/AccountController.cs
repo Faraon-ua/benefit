@@ -27,7 +27,7 @@ namespace Benefit.Web.Controllers
         public AccountController()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
-            UserManager.PasswordValidator = new MinimumLengthValidator (3);
+            UserManager.PasswordValidator = new MinimumLengthValidator(3);
         }
 
         public AccountController(UserManager<ApplicationUser> userManager)
@@ -84,8 +84,17 @@ namespace Benefit.Web.Controllers
         [AllowAnonymous]
         public ActionResult Register(string id = null)
         {
-            int? ReferalNumber = (id != null) ? int.Parse(id) : (int?) null;
-            return View(new RegisterViewModel {ReferalNumber = ReferalNumber });
+            int? ReferalNumber = (id != null) ? int.Parse(id) : (int?)null;
+            if (ReferalNumber == null)
+            {
+                ReferalNumber = CookiesService.Instance.GetCookieValue<int>(RouteConstants.ReferalCookieName);
+                if (ReferalNumber == 0) ReferalNumber = null;
+            }
+            else
+            {
+                CookiesService.Instance.AddCookie(RouteConstants.ReferalCookieName, ReferalNumber.ToString());
+            }
+            return View(new RegisterViewModel { ReferalNumber = ReferalNumber });
         }
 
         [AllowAnonymous]
