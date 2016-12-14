@@ -15,6 +15,7 @@ namespace Benefit.Services
     public class ImagesService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
         private ImageFormat GetImageFormatByExtension(string imagePath)
         {
             var extension = Path.GetExtension(imagePath);
@@ -50,6 +51,26 @@ namespace Benefit.Services
                 default:
                     throw new NotImplementedException();
             }
+        }
+
+        public void AddImage(string entityId, string fileName, ImageType type)
+        {
+            var image = new Benefit.Domain.Models.Image()
+            {
+                Id = Guid.NewGuid().ToString(),
+                ImageType = type,
+                ImageUrl = fileName
+            };
+            if (type == ImageType.SellerGallery || type == ImageType.SellerGallery)
+            {
+                image.SellerId = entityId;
+            }
+            if (type == ImageType.ProductGallery)
+            {
+                image.ProductId = entityId;
+            }
+            db.Images.Add(image);
+            db.SaveChanges();
         }
 
         public void ResizeToSiteRatio(string imagePath, ImageType imageType)

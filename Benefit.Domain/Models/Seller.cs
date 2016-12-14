@@ -35,7 +35,7 @@ namespace Benefit.Domain.Models
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
         public bool TerminalOrderNotification { get; set; }
-
+        public bool TerminalBillEnabled { get; set; }
         [MaxLength(32)]
         public string TerminalLogin { get; set; }
         [MaxLength(16)]

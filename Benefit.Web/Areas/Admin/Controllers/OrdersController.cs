@@ -19,8 +19,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Index()
         {
             //todo: add paging, remove take
-            var orders = db.Orders.Include(o => o.User).OrderByDescending(entry => entry.Time).Take(30);
-            return View(orders.ToList());
+            return View();
         }
 
         public ActionResult Print(string id)
@@ -48,6 +47,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (orderStatus == OrderStatus.Finished)
             {
                 var user = db.Users.FirstOrDefault(entry => entry.Id == order.UserId);
+                user.TotalBonusAccount += order.PersonalBonusesSum;
                 user.CurrentBonusAccount += order.PersonalBonusesSum;
                 user.PointsAccount += order.PointsSum;
                 db.Entry(user).State = EntityState.Modified;
@@ -69,9 +69,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.SaveChanges();
         }
 
-        public ActionResult GetOrdersList()
+        public ActionResult GetOrdersList(OrderType orderType)
         {
-            var orders = db.Orders.Include(o => o.User).OrderByDescending(entry => entry.Time).Take(30);
+            var orders = db.Orders.Include(o => o.User).Where(entry => entry.OrderType == orderType).OrderByDescending(entry => entry.Time).Take(50);
             var ordersHtml = ControllerContext.RenderPartialToString("_OrdersListPartial", orders.ToList());
             return Json(new
             {

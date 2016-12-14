@@ -21,7 +21,7 @@ namespace Benefit.DataTransfer.ApiDto.OldApi
         public string result { get; set; }
         public string name { get; set; }
         public string phone { get; set; }
-        public short number_check { get; set; }
+        public int number_check { get; set; }
         public string card { get; set; }
         public float paybals { get; set; }
         public float paybonus { get; set; }

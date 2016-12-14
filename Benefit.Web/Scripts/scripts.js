@@ -528,6 +528,9 @@ $('body').on('click', '.delete_product', function () {
     $.post(deleteProductFromCartUrl + productId, function (data) {
         setCookie("cartNumber", data, { expires: 36000, path: "/" });
         $("#cart-items-number").text(data);
+        if (data == 0) {
+            $("#cart-items-number").hide();
+        }
         parentRow.remove();
         CalculateCartSum();
     });

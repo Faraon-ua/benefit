@@ -106,7 +106,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (referalUser == null)
                     ModelState.AddModelError("ReferalNumber", "Користувача з таким ID не знайдено");
             }
-           
+            if (db.Users.Any(entry => entry.Email == user.Email))
+            {
+                ModelState.AddModelError("Email", "Такий Email вже існує");
+            }
+            if (db.Users.Any(entry => entry.PhoneNumber == user.PhoneNumber))
+            {
+                ModelState.AddModelError("PhoneNumber", "Такий телефон вже існує");
+            }
+
             if (ModelState.IsValid)
             {
                 var existingUser = db.Users.FirstOrDefault(entry => entry.Id == user.Id);
@@ -122,6 +130,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 existingUser.Status = user.Status;
                 existingUser.IsActive = user.IsActive;
                 existingUser.Email = user.Email;
+                existingUser.UserName = user.Email;
                 existingUser.PhoneNumber = user.PhoneNumber;
 
                 db.Entry(existingUser).State = EntityState.Modified;

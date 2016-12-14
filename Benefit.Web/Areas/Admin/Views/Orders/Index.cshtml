@@ -14,11 +14,19 @@
 
             setInterval(function () {
                 GetOrderList();
-            }, 60000);
+            }, 30000);
+
+            $(".switchNavigationType").click(function () {
+                $(".switchNavigationType").removeClass("btn-primary");
+                $(this).addClass("btn-primary");
+                var navType = $(this).attr("data-navtype");
+                $("#navType").val(navType);
+                GetOrderList();
+            });
         });
 
         function GetOrderList() {
-            $.get(ordersUrl, function (data) {
+            $.get(ordersUrl+"?orderType="+$("#navType").val(), function (data) {
                 $("#ordersList").html(data.html);
                 if (data.hasNewOrder) {
                     audio.play();
@@ -29,5 +37,11 @@
         }
     </script>
 }
+<label>Тип замовлення</label>
+<div>
+    <a data-navtype="BenefitSite" class="btn switchNavigationType btn-primary">Онлайн</a>
+    <a data-navtype="BenefitCard" class="btn switchNavigationType">Benefit Card</a>
+    @Html.Hidden("NavigationType", "BenefitSite", new { id = "navType" })
+</div>
 <div id="ordersList">
 </div>

@@ -8,6 +8,13 @@ namespace Benefit.Common.Extensions
         public static string Translit(this string value)
         {
             var words = new Dictionary<string, string>();
+            words.Add("%", "proc");
+            words.Add("/", "-");
+            words.Add("\\", "-proc");
+            words.Add(".", "");
+            words.Add("\"", "");
+            words.Add("'", "");
+            words.Add(",", "");
             words.Add("а", "a");
             words.Add("б", "b");
             words.Add("в", "v");

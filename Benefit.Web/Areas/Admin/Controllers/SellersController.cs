@@ -29,11 +29,35 @@ namespace Benefit.Web.Areas.Admin.Controllers
         ProductsService ProductService = new ProductsService();
         EmailService EmailService = new EmailService();
         SellerService SellerService = new SellerService();
+        ImagesService ImagesService = new ImagesService();
 
         public SellersController()
         {
             var userStore = new UserStore<ApplicationUser>(db);
             UserManager = new UserManager<ApplicationUser>(userStore);
+        }
+
+        private List<XElement> GetAllFiniteCategories(IEnumerable<XElement> xmlCategories)
+        {
+            var resultXmlCategories = new List<XElement>();
+            var hadChildren = false;
+            foreach (var rawXmlCategory in xmlCategories)
+            {
+                if (rawXmlCategory.Element("Группы") != null)
+                {
+                    resultXmlCategories.AddRange(rawXmlCategory.Element("Группы").Elements());
+                    hadChildren = true;
+                }
+                else
+                {
+                    resultXmlCategories.Add(rawXmlCategory);
+                }
+            }
+            if (hadChildren)
+            {
+                resultXmlCategories = GetAllFiniteCategories(resultXmlCategories);
+            }
+            return resultXmlCategories;
         }
 
         [HttpPost]
@@ -54,20 +78,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
             try
             {
                 var importFile = Request.Files[0];
-//                var pricesFile = Request.Files.Count[1];
-                if (importFile != null && importFile.ContentLength > 0)
+                if (!(importFile.FileName == "import.xml" || importFile.FileName == "offers.xml"))
+                {
+                    return Json("Завантажений файл має невірну назву");
+                }
+
+                if (importFile.FileName == "import.xml")
+                {
+                    //                var pricesFile = Request.Files.Count[1];
+                    if (importFile != null && importFile.ContentLength > 0)
                     {
                         //get a stream
                         var xml = XDocument.Load(importFile.InputStream);
+
                         var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
-                        var resultXmlCategories = new List<XElement>();
-                        foreach (var rawXmlCategory in rawXmlCategories)
-                        {
-                            if (rawXmlCategory.Element("Группы") != null)
-                            {
-                                resultXmlCategories.AddRange(rawXmlCategory.Element("Группы").Elements());
-                            }
-                        }
+                        var resultXmlCategories = GetAllFiniteCategories(rawXmlCategories);
+
                         xmlCategories = resultXmlCategories.Select(entry => new XmlCategory(entry)).ToList();
 
                         var sellerDbCategories = seller.SellerCategories.Where(entry => !entry.IsDefault).Select(entry => entry.Category).ToList();
@@ -88,8 +114,48 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                     xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
                         xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
                         results = ProductService.ProcessImportedProducts(xmlProducts, xmlToDbCategoriesMapping.Values, seller.Id);
+
                         EmailService.SendImportResults(seller.Owner.Email, results);
+
+                        //images
+                        var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                        var ftpDirectory = new DirectoryInfo(originalDirectory).Parent.FullName;
+                        var sellerPath = Path.Combine(ftpDirectory, "FTP", seller.UrlName);
+                        var filesPath = new DirectoryInfo(sellerPath).GetDirectories("import_files", SearchOption.AllDirectories).FirstOrDefault();
+                        if (filesPath == null)
+                        {
+                            return Json("Імпорт файлу import.xml успішно виконаний, але не було знайдено каталог зображень");
+                        }
+                        var ftpImagesPath = filesPath.Parent.FullName;
+
+                        var imageType = ImageType.ProductGallery;
+                        foreach (var xmlProduct in xmlProducts.Where(entry => !string.IsNullOrEmpty(entry.Image)))
+                        {
+                            var destPath = Path.Combine(originalDirectory, "Images", imageType.ToString(), xmlProduct.Id);
+                            var isExists = Directory.Exists(destPath);
+                            if (!isExists)
+                                Directory.CreateDirectory(destPath);
+
+                            var ftpImage = new FileInfo(Path.Combine(ftpImagesPath, xmlProduct.Image));
+                            ftpImage.CopyTo(Path.Combine(destPath, ftpImage.Name), true);
+                            ImagesService.AddImage(xmlProduct.Id, ftpImage.Name, imageType);
+                        }
+
+                        return Json(new
+                        {
+                            message = "Імпорт файлу import.xml успішно виконаний, тепер імпортуйте файл offers.xml"
+                        });
                     }
+                }
+                if (importFile.FileName == "offers.xml")
+                {
+                    var xml = XDocument.Load(importFile.InputStream);
+
+                    var xmlProductPrices = xml.Descendants("Предложение");
+                    var poductPrices = xmlProductPrices.Select(entry => new XmlProductPrice(entry)).ToList();
+                    var pricesResult = ProductService.ProcessImportedProductPrices(poductPrices);
+                    EmailService.SendPricesImportResults(seller.Owner.Email, pricesResult);
+                }
             }
             catch (XmlException)
             {
@@ -101,11 +167,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json("Помилка імпорту файлу");
             }
-
-            return Json(new
-            {
-                message = "Імпорт файлу успішно виконаний"
-            });
+            return Json("");
         }
 
         public ActionResult GetSellerGallery(string id)
@@ -198,7 +260,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult CreateOrUpdate(string id = null)
         {
-            var existingSeller = db.Sellers.Include(entry=>entry.Personnels).Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry=>entry.SellerCategories.Select(sc=>sc.Category)).FirstOrDefault(entry => entry.Id == id);
+            var existingSeller = db.Sellers.Include(entry => entry.Personnels).Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {
                 Seller = existingSeller ?? new Seller() { Schedules = SetSellerSchedules().ToList() }

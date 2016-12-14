@@ -868,6 +868,7 @@
     <Content Include="Content\reg_lp_catalog\view\theme\megashop\stylesheet\stylesheet.css" />
     <Content Include="Content\reg_lp_catalog\view\theme\megashop\stylesheet\swiper.min.css" />
     <Content Include="Content\sounds\newOrder.mp3" />
+    <Content Include="EmailTemplates\SendImportResults.html" />
     <Content Include="EmailTemplates\PasswordChanged.html" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />

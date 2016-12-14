@@ -14,6 +14,7 @@ namespace Benefit.Services.Domain
     public class ProductsService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private ImagesService ImagesService = new ImagesService();
 
         public Product GetProduct(string urlName)
         {
@@ -34,6 +35,25 @@ namespace Benefit.Services.Domain
             return productOptions;
         }
 
+        public int ProcessImportedProductPrices(IEnumerable<XmlProductPrice> xmlProductPrices)
+        {
+            int productPricesUpdated = 0;
+            var productIds = xmlProductPrices.Select(entry => entry.Id).ToList();
+            var products = db.Products.Where(entry => productIds.Contains(entry.Id));
+            foreach (var xmlProductPrice in xmlProductPrices)
+            {
+                var product = products.FirstOrDefault(entry => entry.Id == xmlProductPrice.Id);
+                if (product != null)
+                {
+                    product.Price = xmlProductPrice.Price;
+                    db.Entry(product).State = EntityState.Modified;
+                    productPricesUpdated++;
+                }
+            }
+            db.SaveChanges();
+            return productPricesUpdated;
+        }
+
         public ProductImportResults ProcessImportedProducts(IEnumerable<XmlProduct> xmlProducts, IEnumerable<string> dbCategoryIds, string sellerId)
         {
             var result = new ProductImportResults();
@@ -52,6 +72,7 @@ namespace Benefit.Services.Domain
                     db.Entry(entry).State = EntityState.Modified;
                 });
 
+            //add products which are in xml and not in db
             var productIdsToAdd = xmlProductIds.Except(dbProductsIds).ToList();
             result.ProductsAdded = productIdsToAdd.Count;
             var sku = (db.Products.Max(pr => (int?)pr.SKU) ?? SettingsService.SkuMinValue) + 1;
@@ -64,8 +85,6 @@ namespace Benefit.Services.Domain
                     UrlName = entry.Name.Translit(),
                     Description = entry.Description,
                     SKU = sku++,
-                    Price = entry.Price.GetValueOrDefault(0),
-                    AvailableAmount = entry.Availability ? null : (int?)0,
                     IsActive = true,
                     LastModified = DateTime.UtcNow,
                     LastModifiedBy = "1CCommerceMLImport",
@@ -78,26 +97,26 @@ namespace Benefit.Services.Domain
                 db.Products.Add(dbProduct);
             });
 
+            //update products which are in xml and in db
             var productIdsToUpdate = xmlProductIds.Intersect(dbProductsIds).ToList();
             result.ProductsUpdated = productIdsToUpdate.Count;
-            xmlProducts.Where(entry => productIdsToUpdate.Contains(entry.Id)).ToList().ForEach(entry =>
+            var xmlProductsToUpdate = xmlProducts.Where(entry => productIdsToUpdate.Contains(entry.Id)).ToList();
+            foreach (var xmlProductToUpdate in xmlProductsToUpdate)
             {
-                var dbProduct = db.Products.Find(entry.Id);
-                dbProduct.Name = entry.Name;
-                dbProduct.UrlName = entry.Name.Translit();
-                dbProduct.Description = entry.Description;
-                dbProduct.Price = entry.Price.GetValueOrDefault(0);
-                dbProduct.AvailableAmount = entry.Availability ? null : (int?)0;
-
+                var dbProduct = db.Products.Find(xmlProductToUpdate.Id);
+                dbProduct.Name = xmlProductToUpdate.Name;
+                dbProduct.UrlName = xmlProductToUpdate.Name.Translit();
+                dbProduct.Description = xmlProductToUpdate.Description;
                 dbProduct.LastModified = DateTime.UtcNow;
                 dbProduct.LastModifiedBy = "1CImport";
-                dbProduct.CategoryId = entry.CategoryId;
+                dbProduct.CategoryId = xmlProductToUpdate.CategoryId;
                 dbProduct.SellerId = sellerId;
+                dbProduct.IsActive = true;
 
                 db.Entry(dbProduct).State = EntityState.Modified;
-            });
+            }
 
-//            db.SaveChanges();
+            db.SaveChanges();
             return result;
         }
 
@@ -110,7 +129,7 @@ namespace Benefit.Services.Domain
                     .FirstOrDefault(entry => entry.Id == productId);
             if (product == null) return;
             var imagesService = new ImagesService();
-           imagesService.DeleteAll(product.Images, productId, ImageType.ProductGallery);
+            imagesService.DeleteAll(product.Images, productId, ImageType.ProductGallery);
 
             db.ProductOptions.RemoveRange(product.ProductOptions);
             db.ProductParameterProducts.RemoveRange(product.ProductParameterProducts);

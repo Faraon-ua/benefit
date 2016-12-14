@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net.Mail;
 using System.Text;
@@ -18,7 +19,9 @@ namespace Benefit.Services
         private void SendTemplatedEmail(string templateName, string toad, string subjectcontent, params string[] parameters)
         {
             string body;
-            using (var sr = new StreamReader(Path.Combine(HttpContext.Current.Server.MapPath("\\EmailTemplates") + templateName + ".html")))
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var filePath = Path.Combine(originalDirectory, "EmailTemplates", templateName + ".html");
+            using (var sr = new StreamReader(filePath))
             {
                 body = sr.ReadToEnd();
             }
@@ -66,14 +69,19 @@ namespace Benefit.Services
 
         public void PasswordChanged(string userEmail, string newPassword)
         {
-            SendTemplatedEmail(System.Reflection.MethodInfo.GetCurrentMethod().Name, userEmail, "Ваш пароль було змінено", new[] { newPassword });
+            SendTemplatedEmail("PasswordChanged", userEmail, "Ваш пароль було змінено", new[] { newPassword });
         }
 
+        public void SendPricesImportResults(string userEmail, int processedProductsCount)
+        {
+            SendEmail(userEmail, "Оновлено цін для товарів: " + processedProductsCount.ToString(),
+                "Результати імпорту цін товарів");
+        }
         public void SendImportResults(string userEmail, ProductImportResults importResults)
         {
-            SendTemplatedEmail(System.Reflection.MethodInfo.GetCurrentMethod().Name, userEmail,
+            SendTemplatedEmail("SendImportResults", userEmail,
                 "Результати імпорту",
-                new[] { string.Join("<br/>", importResults.ProcessedCategories), string.Join("<br/>", importResults.IgnoredCategories), importResults.ProductsAdded.ToString(), importResults.ProductsUpdated.ToString(), importResults.ProductsRemoved.ToString() });
+                new[] { importResults.ProductsAdded.ToString(), importResults.ProductsUpdated.ToString(), importResults.ProductsRemoved.ToString() });
         }
 
         public void SendLoginFailed(string email, string accontName)

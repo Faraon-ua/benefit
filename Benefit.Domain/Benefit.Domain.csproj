@@ -208,6 +208,10 @@
     <Compile Include="Migrations\201612121520188_AddAgreementPaymentType.Designer.cs">
       <DependentUpon>201612121520188_AddAgreementPaymentType.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612140947194_TerminalBillEnabledFlag.cs" />
+    <Compile Include="Migrations\201612140947194_TerminalBillEnabledFlag.Designer.cs">
+      <DependentUpon>201612140947194_TerminalBillEnabledFlag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -246,6 +250,7 @@
     <Compile Include="Models\Service\VipPortion.cs" />
     <Compile Include="Models\ShippingMethod.cs" />
     <Compile Include="Models\Transaction.cs" />
+    <Compile Include="Models\XmlModels\XmlProductPrice.cs" />
     <Compile Include="Models\XmlModels\XmlProduct.cs" />
     <Compile Include="Models\XmlModels\XmlCategory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -345,6 +350,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612121520188_AddAgreementPaymentType.resx">
       <DependentUpon>201612121520188_AddAgreementPaymentType.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612140947194_TerminalBillEnabledFlag.resx">
+      <DependentUpon>201612140947194_TerminalBillEnabledFlag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
