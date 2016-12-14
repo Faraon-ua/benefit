@@ -38,9 +38,9 @@ function ReAssignIndexesToChildren(id, itemSelector) {
             var name = $(this).attr("name");
             var id = $(this).attr("id");
             if (name) {
-                name = name.replace(/\d/, rowIndex);
+                name = name.replace(/\[.*\]/g, '['+ rowIndex+']');
                 if (id) {
-                    id = id.replace(/\d/, rowIndex);
+                    id = id.replace(/\[.*\]/g, '['+ rowIndex+']');
                 }
                 $(this).attr("name", name);
                 if (id) {

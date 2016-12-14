@@ -33,11 +33,14 @@ namespace Benefit.Services.Domain
             }
             var resultList = new List<Category>();
             var category = db.Categories.Include(entry => entry.ParentCategory).FirstOrDefault(entry => entry.Id == categoryId || entry.UrlName == urlName);
-            resultList.Add(category);
-            while (category.ParentCategory != null)
+            if (category != null)
             {
-                resultList.Add(category.ParentCategory);
-                category = category.ParentCategory;
+                resultList.Add(category);
+                while (category.ParentCategory != null)
+                {
+                    resultList.Add(category.ParentCategory);
+                    category = category.ParentCategory;
+                }
             }
             resultList.Reverse();
             return resultList;

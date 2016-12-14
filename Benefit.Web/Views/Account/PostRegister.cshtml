@@ -70,15 +70,12 @@
             Обязательно включите звук<br>
             Это важно, чтобы вы получили свой подарок!
         </div>
-        @using (Html.BeginForm("PostRegister", "Account"))
-        {
-            <div class="reg-form-step">
-                <input class="reg-check-email" name="email" type="text" placeholder="Подтвердите Ваш e-mail">
-            </div>
-            <div class="reg-form-agreement">
-                <button type="submit" id="comfirmButton" class="lrc_button">Обновить</button>
-            </div>
-        }
+        <div class="reg-form-step">
+            <input class="reg-check-email" name="email" type="text" placeholder="Подтвердите Ваш e-mail" value="@TempData["RegisteredEmail"]" />
+        </div>
+        <div class="reg-form-agreement">
+            <button type="button" id="comfirmButton" class="lrc_button">Обновить</button>
+        </div>
     </div>
     <div id="step_end">
         <div class="lrc_undervid">
@@ -143,7 +140,7 @@
                         $('#step_end').fadeIn('fast');
                     });
                 }
-            }, 1000);
+            }, 260000);
         }
         // when video ends
         function onPlayerStateChange(event) {
@@ -157,26 +154,13 @@
             $('#comfirmButton').click(function (event) {
                 event.preventDefault;
 
-                var remail = $('[name=email]');
+                var reMailUrl = '@Url.Action("PostRegister")';
+                var remail = $('[name=email]').val();
 
-                if (remail.val() == '') {
-                    remail.addClass('empty-input');
-                } else {
-                    var emval = remail.val();
-                    var mailformat = /^\w+([\.-]?\w+)*\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-                    if (emval.match(mailformat)) {
-                        remail.removeClass('empty-input');
-                        $('.modal').css({ 'display': 'block', 'background': 'rgba(0, 0, 0, 0.66)' });
-                    } else {
-                        remail.addClass('empty-input');
-                    }
-                }
-
+                $.post(reMailUrl, { email: remail }, function() {
+                    alert("Ваш Email оновлено");
+                });
             });
-            $('.modal-header .close').click(function () {
-                $('.modal').attr('style', '');
-            })
-
         });
     </script>
 </body>

@@ -169,6 +169,7 @@ namespace Benefit.Web.Controllers
                        "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\""
                        + callbackUrl + "\">це посилання</a>");
 
+                    TempData["RegisteredEmail"] = user.Email;
                     return RedirectToAction("PostRegister", "Account");
                 }
                 else
