@@ -9,6 +9,12 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="Seller_TerminalBillEnabled">Номер чеку</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.Seller.TerminalBillEnabled)
+        </div>
+    </div>
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Логін для терміналу</label>
 
         <div class="col-sm-9">

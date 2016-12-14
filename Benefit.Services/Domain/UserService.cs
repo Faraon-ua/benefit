@@ -33,17 +33,10 @@ namespace Benefit.Services.Domain
 
             var addEmailUrl = SettingsService.SendPulse.SendPulseAddEmailUrl.Replace("{id}",
                 SettingsService.SendPulse.SendPulseFinLikbezAddressBookId);
-            var values = @"[
-                  {
-                    'email': '{email}',
-                  }
-                ]";
-            values = values.Replace("{email}", email);
-            postBody = JsonConvert.SerializeObject(values);
-            content = new StringContent(postBody, Encoding.UTF8, "application/json");
 
-            var result =
-                await httpClientService.GetObectFromService<string>(addEmailUrl, content, authResult.access_token);
+            var strContent = "emails=[{\"email\": \""+email+"\"}]";
+            content = new StringContent(strContent, Encoding.UTF8, "application/x-www-form-urlencoded");
+            var result = await httpClientService.GetObectFromService<string>(addEmailUrl, content, authResult.access_token);
         }
 
         public string SetUserPic(string id, string fileExt)

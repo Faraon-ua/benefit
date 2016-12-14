@@ -23,8 +23,6 @@ namespace Benefit.Web.Controllers
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
-//            var userService = new UserService();
-//            await userService.SubscribeSendPulse("test@test.com");
             var hitIds = new[]
             {
                 "7580c148-d55f-4009-b361-a5a99fb0a767",
