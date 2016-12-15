@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Infrastructure.Annotations;
 using System.Data.Entity.Validation;
 using System.Linq;
@@ -13,6 +14,9 @@ namespace Benefit.Domain.DataAccess
         public ApplicationDbContext()
             : base("DefaultConnection")
         {
+            var adapter = (IObjectContextAdapter)this;
+            var objectContext = adapter.ObjectContext;
+            objectContext.CommandTimeout = 1200; // value in seconds 20 min
         }
 
         public DbSet<Seller> Sellers { get; set; }

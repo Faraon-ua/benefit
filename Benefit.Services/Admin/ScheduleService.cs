@@ -286,7 +286,7 @@ namespace Benefit.Services.Admin
                         db.SaveChanges();
                         dbTransaction.Commit();
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         dbTransaction.Rollback();
                         return null;

@@ -57,7 +57,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult GetOrdersList(OrderType orderType, int page = 0)
         {
-            var takePerPage = 100;
+            var takePerPage = 50;
             var ordersTotal =
                 db.Orders.Include(o => o.User)
                     .Where(entry => entry.OrderType == orderType)
