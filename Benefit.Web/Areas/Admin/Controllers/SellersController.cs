@@ -98,13 +98,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                         var sellerDbCategories = seller.SellerCategories.Where(entry => !entry.IsDefault).Select(entry => entry.Category).ToList();
 
-                        foreach (var dbCategory in sellerDbCategories)
+                        try
                         {
-                            var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Name == dbCategory.Name);
-                            if (xmlCategory != null)
+                            foreach (var dbCategory in sellerDbCategories)
                             {
-                                xmlToDbCategoriesMapping.Add(xmlCategory.Id, dbCategory.Id);
+                                var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Name == dbCategory.Name);
+                                if (xmlCategory != null)
+                                {
+                                    if (!xmlToDbCategoriesMapping.ContainsKey(xmlCategory.Id))
+                                    {
+                                        xmlToDbCategoriesMapping.Add(xmlCategory.Id, dbCategory.Id);
+                                    }
+                                }
                             }
+                        }
+                        catch (Exception ex)
+                        {
+                            return Json("Категорії постачалника на сайті мають повтори в назві");
                         }
 
                         xmlProducts = xml.Descendants("Товары").First().Elements().Select(entry => new XmlProduct(entry)).ToList();

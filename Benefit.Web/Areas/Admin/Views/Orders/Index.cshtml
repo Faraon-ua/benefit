@@ -8,6 +8,7 @@
         var ordersUrl = '@Url.Action("GetOrdersList")';
         var soundPath = '@Url.Content("~/Content/sounds/newOrder.mp3")';
         var audio = new Audio(soundPath);
+        var pageNumber = 0;
 
         $(function () {
             GetOrderList();
@@ -16,23 +17,36 @@
                 GetOrderList();
             }, 30000);
 
+            $("body").on("click", ".pagination li a", function () {
+                var pageNum = $(this).text();
+                insertUrlParam("page", pageNum);
+                $("#page-number").val(pageNum);
+                GetOrderList();
+            });
+
             $(".switchNavigationType").click(function () {
                 $(".switchNavigationType").removeClass("btn-primary");
                 $(this).addClass("btn-primary");
                 var navType = $(this).attr("data-navtype");
                 $("#navType").val(navType);
+                pageNumber = 0;
                 GetOrderList();
             });
         });
 
         function GetOrderList() {
-            $.get(ordersUrl+"?orderType="+$("#navType").val(), function (data) {
+            //            pageNumber = QueryString.page;
+            pageNumber = $("#page-number").val();
+            if (pageNumber == undefined || pageNumber == 'undefined') pageNumber = 0;
+            $.get(ordersUrl + "?orderType=" + $("#navType").val() + "&page=" + pageNumber, function (data) {
                 $("#ordersList").html(data.html);
                 if (data.hasNewOrder) {
                     audio.play();
                 } else {
                     audio.pause();
                 }
+                insertUrlParam("page", pageNumber);
+                $("#page-number").val(pageNumber);
             });
         }
     </script>
@@ -41,6 +55,7 @@
 <div>
     <a data-navtype="BenefitSite" class="btn switchNavigationType btn-primary">Онлайн</a>
     <a data-navtype="BenefitCard" class="btn switchNavigationType">Benefit Card</a>
+    <input type="hidden" id="page-number" />
     @Html.Hidden("NavigationType", "BenefitSite", new { id = "navType" })
 </div>
 <div id="ordersList">

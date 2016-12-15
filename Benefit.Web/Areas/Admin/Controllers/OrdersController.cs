@@ -3,6 +3,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services.Domain;
@@ -69,14 +70,25 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.SaveChanges();
         }
 
-        public ActionResult GetOrdersList(OrderType orderType)
+        public ActionResult GetOrdersList(OrderType orderType, int page = 0)
         {
-            var orders = db.Orders.Include(o => o.User).Where(entry => entry.OrderType == orderType).OrderByDescending(entry => entry.Time).Take(50);
-            var ordersHtml = ControllerContext.RenderPartialToString("_OrdersListPartial", orders.ToList());
+            var takePerPage = 100;
+            var ordersTotal =
+                db.Orders.Include(o => o.User)
+                    .Where(entry => entry.OrderType == orderType)
+                    .OrderByDescending(entry => entry.Time)
+                    .Count();
+            var orders = db.Orders.Include(o => o.User).Where(entry => entry.OrderType == orderType).OrderByDescending(entry => entry.Time).Skip(page * takePerPage).Take(takePerPage);
+            var ordersHtml = ControllerContext.RenderPartialToString("_OrdersListPartial", new PaginatedList<Order>
+            {
+                Items = orders.ToList(),
+                Pages = ordersTotal/takePerPage + 1,
+                ActivePage = page
+            });
             return Json(new
             {
                 html = ordersHtml,
-                hasNewOrder = orders.Any(entry => entry.Status == OrderStatus.Created)
+                hasNewOrder = db.Orders.Any(entry => entry.Status == OrderStatus.Created)
             }, JsonRequestBehavior.AllowGet);
         }
 

@@ -58,8 +58,8 @@ namespace Benefit.Services.Domain
         {
             var result = new ProductImportResults();
             //remove categories
-            var dbProductsIds = db.Categories.Where(entry => dbCategoryIds.Contains(entry.Id)).SelectMany(entry => entry.Products).Select(entry => entry.Id);
-            var xmlProductIds = xmlProducts.Select(entry => entry.Id);
+            var dbProductsIds = db.Categories.Where(entry => dbCategoryIds.Contains(entry.Id)).SelectMany(entry => entry.Products).Where(entry=>entry.SellerId == sellerId).Select(entry => entry.Id).ToList();
+            var xmlProductIds = xmlProducts.Select(entry => entry.Id).ToList();
 
             //delete products which are not in xml
             var productIdsToDelete = dbProductsIds.Except(xmlProductIds).ToList();
@@ -76,6 +76,7 @@ namespace Benefit.Services.Domain
             var productIdsToAdd = xmlProductIds.Except(dbProductsIds).ToList();
             result.ProductsAdded = productIdsToAdd.Count;
             var sku = (db.Products.Max(pr => (int?)pr.SKU) ?? SettingsService.SkuMinValue) + 1;
+            var productsToAdd = new List<Product>();
             xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Id)).ToList().ForEach(entry =>
             {
                 var dbProduct = new Product()
@@ -94,8 +95,20 @@ namespace Benefit.Services.Domain
                         db.Currencies.FirstOrDefault(
                             cur => cur.Name == "UAH" && cur.Provider == DomainConstants.DefaultUSDCurrencyProvider).Id
                 };
-                db.Products.Add(dbProduct);
+                productsToAdd.Add(dbProduct);
             });
+            foreach (var productToAdd in productsToAdd)
+            {
+                var copies =
+                    productsToAdd.Where(entry => entry.UrlName == productToAdd.UrlName && entry.Id != productToAdd.Id);
+                for (int i = 0; i < copies.Count(); i++)
+                {
+                    var pr = copies.ElementAt(i);
+                    pr.UrlName = pr.UrlName + "copy" + i;
+                    pr.Name = pr.Name + "[copy]" + i;
+                }
+            }
+            db.Products.AddRange(productsToAdd);
 
             //update products which are in xml and in db
             var productIdsToUpdate = xmlProductIds.Intersect(dbProductsIds).ToList();

@@ -1,6 +1,14 @@
 ﻿@using Benefit.Common.Extensions
-@model IEnumerable<Benefit.Domain.Models.Order>
+@model  Benefit.DataTransfer.ViewModels.PaginatedList<Benefit.Domain.Models.Order>
 
+<ul class="pagination">
+    @for (int i = 0; i < Model.Pages; i++)
+    {
+        <li class="@(i == Model.ActivePage ? "active" : "" )">
+            <a href="#">@i</a>
+        </li>
+    }
+</ul>
 <table class="table">
     <tr>
         <th>
@@ -8,6 +16,9 @@
         </th>
         <th>
             Постачальник
+        </th>
+        <th>
+            Касир
         </th>
         <th>
             Партнер
@@ -19,15 +30,12 @@
             Час
         </th>
         <th>
-            Тип
-        </th>
-        <th>
             Статус
         </th>
         <th></th>
     </tr>
 
-    @foreach (var item in Model)
+    @foreach (var item in Model.Items)
     {
         <tr>
             <td>
@@ -35,6 +43,9 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SellerName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PersonnelName)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.User.FullName)
@@ -46,9 +57,6 @@
                 @item.Time.ToLocalTimeWithFormat()
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OrderType)
-            </td>
-            <td>
                 @Html.DisplayFor(modelItem => item.Status)
             </td>
             <td>
@@ -58,3 +66,11 @@
         </tr>
     }
 </table>
+<ul class="pagination">
+    @for (int i = 0; i < Model.Pages; i++)
+    {
+        <li class="@(i == Model.ActivePage ? "active" : "" )">
+            <a href="#">@i</a>
+        </li>
+    }
+</ul>

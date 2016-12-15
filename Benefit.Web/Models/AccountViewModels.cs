@@ -41,6 +41,7 @@ namespace Benefit.Web.Models
         [Required(ErrorMessage = "Email є обов'язковим для заповнення")]
         [MaxLength(64)]
         public string Email { get; set; }
+        [MaxLength(10, ErrorMessage = "Задовгий номер картки")]        
         public string CardNumber { get; set; }
 
         [Required(ErrorMessage = "Пароль є обов'язковим для заповнення")]

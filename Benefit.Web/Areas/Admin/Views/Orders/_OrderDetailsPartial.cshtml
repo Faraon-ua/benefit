@@ -14,7 +14,14 @@
             <th>Спосіб доставки</th>
             <th>Адреса доставки</th>
             <th>Вартість доставки</th>
-            <th>Коментар</th>
+            @if (Model.OrderType == OrderType.BenefitSite)
+            {
+                <th>Коментар</th>
+            }
+            @if (Model.OrderType == OrderType.BenefitCard)
+            {
+                <th>Номер чеку</th>
+            }
         </tr>
         <tr>
             <td>@Model.OrderNumber</td>
