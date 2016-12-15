@@ -229,7 +229,7 @@ namespace Benefit.Services.Admin
                                 };
                                 partnerReckons.Add(sellerTransaction);
                             }
-                            
+
                             double benefirCardSellerBonus = 0;
                             foreach (var webSeller in vipPortion.User.ReferedBenefitCardSellers)
                             {
@@ -272,6 +272,8 @@ namespace Benefit.Services.Admin
                         {
                             //бонусы в обработке - в доступные
                             entry.BonusAccount += entry.HangingBonusAccount;
+                            //бонусы в обработке - в заработанные
+                            entry.TotalBonusAccount += entry.HangingBonusAccount;
                             //обнулить бонусы в обработке 
                             entry.HangingBonusAccount = 0;
                             //обнулить баллы в обработке
@@ -281,8 +283,8 @@ namespace Benefit.Services.Admin
                         });
 
                         db.Transactions.AddRange(partnerReckons.Select(entry => entry.Transaction));
-                        //                        db.SaveChanges();
-                        //                        dbTransaction.Commit();
+                        db.SaveChanges();
+                        dbTransaction.Commit();
                     }
                     catch (Exception)
                     {
