@@ -79,6 +79,7 @@
     <Compile Include="Domain\ProductsService.cs" />
     <Compile Include="Domain\RegionService.cs" />
     <Compile Include="Domain\SellerService.cs" />
+    <Compile Include="Domain\TransactionsService.cs" />
     <Compile Include="Domain\UserService.cs" />
     <Compile Include="EmailService.cs" />
     <Compile Include="Domain\ImagesService.cs" />

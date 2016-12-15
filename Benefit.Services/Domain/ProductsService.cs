@@ -14,7 +14,6 @@ namespace Benefit.Services.Domain
     public class ProductsService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        private ImagesService ImagesService = new ImagesService();
 
         public Product GetProduct(string urlName)
         {
@@ -39,16 +38,13 @@ namespace Benefit.Services.Domain
         {
             int productPricesUpdated = 0;
             var productIds = xmlProductPrices.Select(entry => entry.Id).ToList();
-            var products = db.Products.Where(entry => productIds.Contains(entry.Id));
-            foreach (var xmlProductPrice in xmlProductPrices)
+            var products = db.Products.Where(entry => productIds.Contains(entry.Id)).ToList();
+            foreach (var product in products)
             {
-                var product = products.FirstOrDefault(entry => entry.Id == xmlProductPrice.Id);
-                if (product != null)
-                {
-                    product.Price = xmlProductPrice.Price;
-                    db.Entry(product).State = EntityState.Modified;
-                    productPricesUpdated++;
-                }
+                var xmlProductPrice = xmlProductPrices.FirstOrDefault(entry => entry.Id == product.Id);
+                product.Price = xmlProductPrice.Price;
+                db.Entry(product).State = EntityState.Modified;
+                productPricesUpdated++;
             }
             db.SaveChanges();
             return productPricesUpdated;
@@ -58,7 +54,7 @@ namespace Benefit.Services.Domain
         {
             var result = new ProductImportResults();
             //remove categories
-            var dbProductsIds = db.Categories.Where(entry => dbCategoryIds.Contains(entry.Id)).SelectMany(entry => entry.Products).Where(entry=>entry.SellerId == sellerId).Select(entry => entry.Id).ToList();
+            var dbProductsIds = db.Categories.Where(entry => dbCategoryIds.Contains(entry.Id)).SelectMany(entry => entry.Products).Where(entry => entry.SellerId == sellerId).Select(entry => entry.Id).ToList();
             var xmlProductIds = xmlProducts.Select(entry => entry.Id).ToList();
 
             //delete products which are not in xml
@@ -100,7 +96,7 @@ namespace Benefit.Services.Domain
             foreach (var productToAdd in productsToAdd)
             {
                 var copies =
-                    productsToAdd.Where(entry => entry.UrlName == productToAdd.UrlName && entry.Id != productToAdd.Id);
+                    productsToAdd.Where(entry => entry.Name == productToAdd.Name && entry.Id != productToAdd.Id);
                 for (int i = 0; i < copies.Count(); i++)
                 {
                     var pr = copies.ElementAt(i);

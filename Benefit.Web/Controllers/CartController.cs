@@ -5,6 +5,7 @@ using System.Data.Entity;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services;
 using Benefit.Services.Cart;
 using Benefit.Services.Domain;
 using Microsoft.AspNet.Identity;
@@ -14,6 +15,25 @@ namespace Benefit.Web.Controllers
     public class CartController : Controller
     {
         public OrderService OrderService = new OrderService();
+        public UserService UserService = new UserService();
+
+        [HttpGet]
+        public ActionResult CheckEnaughBonuses(double sum)
+        {
+            var user = UserService.GetUser(User.Identity.GetUserId());
+            var comission = sum * SettingsService.BonusesComissionRate / 100;
+            var sumWithCommision = sum + comission;
+            var result = .0;
+            if (user.BonusAccount >= sumWithCommision)
+            {
+                result = sumWithCommision;
+            }
+            return Json(new
+            {
+                total = result,
+                comission
+            }, JsonRequestBehavior.AllowGet);
+        }
 
         [HttpGet]
         public ActionResult CheckSeller(string sellerId)
@@ -76,9 +96,23 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
             completeOrder.Order = Cart.CurrentInstance.Order;
+
+            if (completeOrder.PaymentType == PaymentType.Bonuses)
+            {
+                var sum = Cart.CurrentInstance.GetOrderSum();
+                var user = UserService.GetUser(User.Identity.GetUserId());
+                var sumWithCommision = sum + sum * SettingsService.BonusesComissionRate / 100;;
+                
+                if (user.BonusAccount < sumWithCommision)
+                {
+                    ModelState.AddModelError("PaymentType", "Недостатньо бонусів на рахунку");
+                }
+            }
+            
             if (ModelState.IsValid)
             {
                 completeOrder.Order.UserId = User.Identity.GetUserId();

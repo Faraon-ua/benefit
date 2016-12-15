@@ -165,6 +165,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     var poductPrices = xmlProductPrices.Select(entry => new XmlProductPrice(entry)).ToList();
                     var pricesResult = ProductService.ProcessImportedProductPrices(poductPrices);
                     EmailService.SendPricesImportResults(seller.Owner.Email, pricesResult);
+                    return Json(new
+                    {
+                        message = "Імпорт файлу offers.xml успішно виконаний"
+                    });
                 }
             }
             catch (XmlException)

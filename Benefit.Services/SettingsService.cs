@@ -22,6 +22,13 @@ namespace Benefit.Services
                 return int.Parse(ConfigurationManager.AppSettings["MinUserExternalNumber"]);
             }
         }
+        public static int BonusesComissionRate
+        {
+            get
+            {
+                return int.Parse(ConfigurationManager.AppSettings["BonusesComissionRate"]);
+            }
+        }
         public static int SkuMinValue
         {
             get

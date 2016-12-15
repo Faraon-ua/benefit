@@ -1,5 +1,6 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
 @using Benefit.Common.Helpers
+@using Benefit.Domain.Models
 @using Newtonsoft.Json
 @{
     ViewBag.Title = "Оформлення замовлення";
@@ -7,7 +8,7 @@
 @section scripts
 {
     <script>
-        var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods))
+    var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods))
         console.log(shippingMethodsJson);
         $(function () {
             $(".delivery_address_item").click(function () {
@@ -27,16 +28,43 @@
                 var selectedShippingId = this.value;
                 var orderSum = parseFloat($("#order-total").text());
                 var shippingCost = 0;
-                var selectedShipping = shippingMethodsJson.filter(function(shipping) {
+                var selectedShipping = shippingMethodsJson.filter(function (shipping) {
                     return shipping.Id == selectedShippingId;
                 })[0];
-                if(orderSum < selectedShipping.FreeStartsFrom) {
+                if (orderSum < selectedShipping.FreeStartsFrom) {
                     shippingCost = selectedShipping.CostBeforeFree;
                 }
                 $("#shipping-cost").text(shippingCost.toFixed(2));
                 $("#pay-total").text((shippingCost + orderSum).toFixed(2));
             });
-            //shipping-cost
+
+            $("input[name='PaymentType']").change(function () {
+                if ($(this).attr("id") == "@PaymentType.Bonuses.ToString()") {
+                    var bonusesRadio = this;
+                    var checkBonusesUrl = '@Url.Action("CheckEnaughBonuses", "Cart")';
+                    var sum = $("#order-total").text();
+                    $.get(checkBonusesUrl + "?sum=" + sum, function(data) {
+                        if (data.total) {
+                            $("#comission-cost").text(data.comission.toFixed(2));
+                            $("#pay-total").text(data.total.toFixed(2));
+                            $("#comission-row").show();
+                        } else {
+                            //todo: add pretty windows
+                            alert("Недостатньо бонусів на рахунку");
+                            bonusesRadio.checked = false;
+                        }
+                    });
+                } else {
+                    var comission = parseFloat($("#comission-cost").text());
+                    if (comission) {
+                        var paytotal = parseFloat($("#pay-total").text());
+                        $("#comission-row").hide();
+                        var totalMinusComission = paytotal - comission;
+                        $("#pay-total").text(totalMinusComission.toFixed(2));
+                    }
+                }
+            });
+
         })
     </script>
 }
@@ -135,16 +163,20 @@
                 <tr>
                     <td>Всього:</td>
                     @{
-                        var total = Model.Order.OrderProducts.Sum(
-                            entry =>
-                                entry.ProductPrice * entry.Amount +
-                                entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+    var total = Model.Order.OrderProducts.Sum(
+        entry =>
+            entry.ProductPrice * entry.Amount +
+            entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
                     }
                     <td id="order-total">@total.ToString("F")</td>
                 </tr>
                 <tr>
                     <td>Доставка:</td>
                     <td id="shipping-cost"></td>
+                </tr>
+                <tr id="comission-row" style="display: none;">
+                    <td>Комісія:</td>
+                    <td id="comission-cost"></td>
                 </tr>
                 <tr>
                     <td>До сплати:</td>
@@ -156,6 +188,6 @@
             <a href="#" class="deliveri_edit goto_back">Редагувати замовлення</a>
             <input type="submit" class="checkout goto_ahead" value="Оформити замовлення" />
         </div>
-@*        <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@
+        @*        <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@
     </div>
 }

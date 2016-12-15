@@ -9,6 +9,7 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
 using Benefit.Domain.Models;
+using Benefit.Domain.Models.ModelExtensions;
 
 namespace Benefit.Services.Domain
 {
@@ -110,7 +111,11 @@ namespace Benefit.Services.Domain
             var items = db.Products.Where(entry => entry.IsActive);
             if (!string.IsNullOrEmpty(categoryId))
             {
-                items = items.Where(entry => entry.CategoryId == categoryId);
+                var category = db.Categories.Find(categoryId);
+                var allDescendants = category.GetAllChildrenRecursively();
+                var allIds = allDescendants.ToList().Select(entry => entry.Id).ToList();
+                allIds.Add(categoryId);
+                items = items.Where(entry => allIds.Contains(entry.CategoryId));
             }
             if (!string.IsNullOrEmpty(sellerId))
             {

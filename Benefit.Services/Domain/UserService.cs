@@ -17,6 +17,10 @@ namespace Benefit.Services.Domain
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
+        public ApplicationUser GetUser(string id)
+        {
+            return db.Users.Find(id);
+        }
         public async Task SubscribeSendPulse(string email)
         {
             var httpClientService = new HttpClientService();

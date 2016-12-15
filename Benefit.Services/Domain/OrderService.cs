@@ -34,19 +34,18 @@ namespace Benefit.Services.Domain
             var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
             order.OrderNumber = orderNumber + 1;
 
-            var orderSum =
-                order.OrderProducts.Sum(
-                    entry =>
-                        entry.ProductPrice * entry.Amount +
-                        entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-            order.Sum = orderSum;
+            order.Sum = order.OrderProducts.Sum(
+                entry =>
+                    entry.ProductPrice*entry.Amount +
+                    entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth*option.Amount));
+            
             order.Description = model.Comment;
             order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
             order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
             order.SellerName = seller.Name;
 
             var shipping = db.ShippingMethods.FirstOrDefault(entry => entry.Id == model.ShippingMethodId);
-            order.ShippingCost = (double)(orderSum < shipping.FreeStartsFrom ? shipping.CostBeforeFree : 0);
+            order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? shipping.CostBeforeFree : 0);
             order.ShippingName = shipping.Name;
 
             var address = db.Addresses.FirstOrDefault(entry => entry.Id == model.AddressId);
@@ -55,6 +54,13 @@ namespace Benefit.Services.Domain
             order.Time = DateTime.UtcNow;
             order.OrderType = OrderType.BenefitSite;
             order.PaymentType = model.PaymentType.Value;
+
+            //add comission if payment with bonuses
+            if (model.Order.PaymentType == PaymentType.Bonuses)
+            {
+                var comission = order.Sum * SettingsService.BonusesComissionRate / 100;
+                order.Sum += comission;
+            }
 
             //add order to DB
             db.Orders.Add(order);
@@ -69,8 +75,15 @@ namespace Benefit.Services.Domain
                     db.OrderProductOptions.Add(orderProductOption);
                 }
             }
-
             db.SaveChanges();
+
+            //add transaction to reduce bonuses account
+            if (order.PaymentType == PaymentType.Bonuses)
+            {
+                var TransactionsService = new TransactionsService();
+                TransactionsService.AddOrderTransaction(order);
+            }
+
             Cart.Cart.CurrentInstance.Clear();
             var cartMumberCookie = HttpContext.Current.Response.Cookies["cartNumber"];
             if (cartMumberCookie != null)

@@ -8,6 +8,7 @@ using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
+using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -15,6 +16,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private OrderService OrderService = new OrderService();
+        private TransactionsService TransactionsService = new TransactionsService();
 
         // GET: /Admin/Orders/
         public ActionResult Index()
@@ -47,24 +49,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             //add points and bonuses if order finished
             if (orderStatus == OrderStatus.Finished)
             {
-                var user = db.Users.FirstOrDefault(entry => entry.Id == order.UserId);
-                user.TotalBonusAccount += order.PersonalBonusesSum;
-                user.CurrentBonusAccount += order.PersonalBonusesSum;
-                user.PointsAccount += order.PointsSum;
-                db.Entry(user).State = EntityState.Modified;
-
-                //add transaction for personal purchase
-                var transaction = new Transaction()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Bonuses = order.PersonalBonusesSum,
-                    BonusesBalans = user.CurrentBonusAccount + order.PersonalBonusesSum,
-                    OrderId = order.Id,
-                    PayeeId = user.Id,
-                    Time = DateTime.UtcNow
-                };
-
-                db.Transactions.Add(transaction);
+                TransactionsService.AddOrderTransaction(order);
             }
             db.Entry(order).State = EntityState.Modified;
             db.SaveChanges();
