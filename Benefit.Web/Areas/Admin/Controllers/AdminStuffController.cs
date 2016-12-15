@@ -1,5 +1,7 @@
 ﻿using System.Web.Mvc;
+using Benefit.Services;
 using Benefit.Services.Admin;
+using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -19,6 +21,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var service = new ScheduleService();
             var result = service.ProcessBonuses();
             if (result == null) return View("BonusesCalculationError");
+            var bonusesHtml = ControllerContext.RenderPartialToString("_BonusesCalculationPartial", result);
+            var emailService = new EmailService();
+            emailService.SendBonusesRozrahunokResults(bonusesHtml);
             return View(result);
         }
     }

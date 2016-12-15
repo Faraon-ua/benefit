@@ -1,0 +1,37 @@
+﻿@model Benefit.DataTransfer.ViewModels.ProcessBonusesViewModel
+
+<h2>Результати розрахунку</h2>
+
+<fieldset>
+    <legend>Бонуси наставника</legend>
+    <table>
+        <tr>
+            <th>Імя</th>
+            <th>Кількість бонусів</th>
+        </tr>
+        @foreach (var partner in Model.Partners)
+        {
+            <tr>
+                <td>@partner.User.FullName</td>
+                <td>@partner.BonusesReckoned</td>
+            </tr>
+        }
+    </table>
+</fieldset>
+<br/>
+<fieldset>
+    <legend>Бонуси VIP</legend>
+    <table>
+        <tr>
+            <th>Імя</th>
+            <th>Кількість бонусів</th>
+        </tr>
+        @foreach (var partner in Model.VipPartners)
+        {
+            <tr>
+                <td>@partner.User.FullName</td>
+                <td>@partner.BonusesReckoned</td>
+            </tr>
+        }
+    </table>
+</fieldset>

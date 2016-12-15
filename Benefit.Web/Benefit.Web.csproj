@@ -1090,6 +1090,7 @@
     <Content Include="Areas\Admin\Views\Orders\Print.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\_OrderDetailsPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_PaymentTypes.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminStuff\_BonusesCalculationPartial.cshtml" />
     <None Include="Properties\PublishProfiles\Test.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\ckeditor\ckeditor_source.js" />

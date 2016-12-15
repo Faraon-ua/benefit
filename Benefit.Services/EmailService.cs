@@ -15,6 +15,7 @@ namespace Benefit.Services
     {
         private const string DisplayName = "Benefit Company";
         private const string BenefitBusinessEmail = "benefitforbusiness@gmail.com";
+        private const string AdminEmail = "faraon.ua@gmail.com";
 
         private void SendTemplatedEmail(string templateName, string toad, string subjectcontent, params string[] parameters)
         {
@@ -76,6 +77,11 @@ namespace Benefit.Services
         {
             SendEmail(userEmail, "Оновлено цін для товарів: " + processedProductsCount.ToString(),
                 "Результати імпорту цін товарів");
+        }
+        
+        public void SendBonusesRozrahunokResults(string result)
+        {
+            SendEmail(AdminEmail, result, "Результати розрахунку бонусів");
         }
         public void SendImportResults(string userEmail, ProductImportResults importResults)
         {
