@@ -57,27 +57,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return PartialView("_UsersSearch", users);
         }
 
-        public ActionResult Edit(string id)
-        {
-            var user = db.Users.Include("Referal").FirstOrDefault(entry => entry.Id == id);
-            var userViewModel = new EditUserViewModel()
-            {
-                ExternalNumber = user.ExternalNumber,
-                FullName = user.FullName,
-                ReferalNumber = user.Referal == null ? 0 : user.Referal.ExternalNumber,
-                ReferalId = user.Referal == null ? null : user.Referal.Id,
-                CardNumber = user.CardNumber,
-                BusinessLevel = user.BusinessLevel,
-                Status = user.Status,
-                IsActive = user.IsActive,
-                Email = user.Email,
-                PhoneNumber = user.PhoneNumber,
-                RegisteredOn = user.RegisteredOn,
-                Addresses = user.Addresses
-            };
-            return View(userViewModel);
-        }
-
         [HttpPost]
         public ActionResult LockUnlock(string id)
         {
@@ -94,6 +73,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var user = UserManager.FindById(id);
             UserManager.Delete(user);
             return Json(true);
+        }
+        public ActionResult Edit(string id)
+        {
+            var user = db.Users.Include("Referal").FirstOrDefault(entry => entry.Id == id);
+            var userViewModel = new EditUserViewModel()
+            {
+                ExternalNumber = user.ExternalNumber,
+                FullName = user.FullName,
+                ReferalNumber = user.Referal == null ? 0 : user.Referal.ExternalNumber,
+                ReferalId = user.Referal == null ? null : user.Referal.Id,
+                CardNumber = user.CardNumber,
+                NFCNumber = user.NFCCardNumber,
+                BusinessLevel = user.BusinessLevel,
+                Status = user.Status,
+                IsActive = user.IsActive,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                RegisteredOn = user.RegisteredOn,
+                Addresses = user.Addresses
+            };
+            return View(userViewModel);
         }
 
         [HttpPost]
@@ -125,6 +125,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                 existingUser.FullName = user.FullName;
                 existingUser.Referal = referalUser;
+                existingUser.NFCCardNumber = user.NFCNumber;
                 existingUser.CardNumber = user.CardNumber;
                 existingUser.BusinessLevel = user.BusinessLevel;
                 existingUser.Status = user.Status;

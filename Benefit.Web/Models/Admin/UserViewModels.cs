@@ -23,6 +23,8 @@ namespace Benefit.Web.Models.Admin
         public string ReferalId { get; set; }
         [MaxLength(10)]
         public string CardNumber { get; set; }
+        [MaxLength(10)]
+        public string NFCNumber { get; set; }
         public BusinessLevel? BusinessLevel { get; set; }
         public Status? Status { get; set; }
         public bool IsActive { get; set; }
