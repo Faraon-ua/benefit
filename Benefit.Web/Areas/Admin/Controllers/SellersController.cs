@@ -123,7 +123,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                 entry =>
                                     xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
                         xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
-                        results = ProductService.ProcessImportedProducts(xmlProducts, xmlToDbCategoriesMapping.Values, seller.Id);
+                        results = ProductService.ProcessImportedProducts(xmlProducts, xmlToDbCategoriesMapping.Values, seller.Id, seller.UrlName);
 
                         EmailService.SendImportResults(seller.Owner.Email, results);
 
@@ -147,8 +147,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                 Directory.CreateDirectory(destPath);
 
                             var ftpImage = new FileInfo(Path.Combine(ftpImagesPath, xmlProduct.Image));
-                            ftpImage.CopyTo(Path.Combine(destPath, ftpImage.Name), true);
-                            ImagesService.AddImage(xmlProduct.Id, ftpImage.Name, imageType);
+                            if (ftpImage.Exists)
+                            {
+                                ftpImage.CopyTo(Path.Combine(destPath, ftpImage.Name), true);
+                                ImagesService.AddImage(xmlProduct.Id, ftpImage.Name, imageType);
+                            }
                         }
 
                         return Json(new

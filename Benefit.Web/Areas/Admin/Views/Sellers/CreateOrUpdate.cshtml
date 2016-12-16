@@ -112,6 +112,7 @@
                             data.append("file" + x, files[x]);
                         }
 
+                        $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
                         $.ajax({
                             type: "POST",
                             url: routePrefix + '/Admin/Sellers/Import1CCommerceML?id=@Model.Seller.Id',
@@ -119,10 +120,10 @@
                             processData: false,
                             data: data,
                             success: function(result) {
-                                flashMessage(result.message);
+                                flashMessage(result.message, false, true);
                             },
                             error: function(xhr) {
-                                flashMessage(xhr.responseJSON, true);
+                                flashMessage(xhr.responseJSON, true, true);
                             }
                         });
                     } else {

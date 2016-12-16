@@ -157,7 +157,7 @@ function CheckSearchLength() {
     }
 }
 
-function flashMessage(text, error) {
+function flashMessage(text, error, alwaysStayVisible) {
     var status = "alert-success";
     if (error) {
         status = "alert-danger";
@@ -165,9 +165,11 @@ function flashMessage(text, error) {
     $("#flashMessage").html(
         "<p class='alert " + status + "'>" + text + "</p>"
     );
-    setTimeout(function () {
-        $("#flashMessage").html("");
-    }, 7000);
+    if (!alwaysStayVisible) {
+        setTimeout(function() {
+            $("#flashMessage").html("");
+        }, 7000);
+    }
 }
 
 function SaveLocalization(id, resourceType, resourceId, resourceField, resourceValue, lang) {

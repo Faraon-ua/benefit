@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Threading.Tasks;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
@@ -50,7 +51,48 @@ namespace Benefit.Services.Domain
             return productPricesUpdated;
         }
 
-        public ProductImportResults ProcessImportedProducts(IEnumerable<XmlProduct> xmlProducts, IEnumerable<string> dbCategoryIds, string sellerId)
+        private void RemoveDuplicates(IEnumerable<Product> collection, string sellerId, string sellerUrlName, bool isIdding)
+        {
+            if (isIdding)
+            {
+                //remove repeatings from import comparing to db
+                var dbCopies =
+                    collection.Where(entry => db.Products.Any(pr => pr.UrlName == entry.UrlName))
+                        .Select(entry => entry.Id)
+                        .ToList();
+                foreach (var pr in collection.Where(entry => dbCopies.Contains(entry.Id)))
+                {
+                    pr.UrlName = sellerUrlName + "_" + pr.UrlName;
+                }
+            }
+            else
+            {
+                var dbCopies =
+                    collection.Where(entry => db.Products.Any(pr => pr.UrlName == entry.UrlName && pr.SellerId != sellerId))
+                        .Select(entry => entry.Id).Distinct()
+                        .ToList();
+                foreach (var pr in collection.Where(entry => dbCopies.Contains(entry.Id)))
+                {
+                    pr.UrlName = sellerUrlName + "_" + pr.UrlName;
+                }
+            }
+
+            var duplicateKeys = collection.GroupBy(x => x.UrlName)
+                        .Where(group => group.Count() > 1)
+                        .Select(group => group.Key).ToList();
+            foreach (var key in duplicateKeys)
+            {
+                var copies =
+                    collection.Where(entry => entry.UrlName == key);
+                foreach (var pr in copies)
+                {
+                    pr.UrlName = pr.UrlName + "|copy" + Guid.NewGuid();
+                    pr.Name = pr.Name + "|copy" + Guid.NewGuid();
+                }
+            }
+        }
+
+        public ProductImportResults ProcessImportedProducts(IEnumerable<XmlProduct> xmlProducts, IEnumerable<string> dbCategoryIds, string sellerId, string sellerUrlName)
         {
             var result = new ProductImportResults();
             //remove categories
@@ -70,59 +112,56 @@ namespace Benefit.Services.Domain
 
             //add products which are in xml and not in db
             var productIdsToAdd = xmlProductIds.Except(dbProductsIds).ToList();
-            result.ProductsAdded = productIdsToAdd.Count;
-            var sku = (db.Products.Max(pr => (int?)pr.SKU) ?? SettingsService.SkuMinValue) + 1;
-            var productsToAdd = new List<Product>();
-            xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Id)).ToList().ForEach(entry =>
+            if (productIdsToAdd.Any())
             {
-                var dbProduct = new Product()
+                result.ProductsAdded = productIdsToAdd.Count;
+                var sku = (db.Products.Max(pr => (int?)pr.SKU) ?? SettingsService.SkuMinValue) + 1;
+                var productsToAdd = new List<Product>();
+                xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Id)).ToList().ForEach(entry =>
                 {
-                    Id = entry.Id,
-                    Name = entry.Name,
-                    UrlName = entry.Name.Translit(),
-                    Description = entry.Description,
-                    SKU = sku++,
-                    IsActive = true,
-                    LastModified = DateTime.UtcNow,
-                    LastModifiedBy = "1CCommerceMLImport",
-                    CategoryId = entry.CategoryId,
-                    SellerId = sellerId,
-                    CurrencyId =
-                        db.Currencies.FirstOrDefault(
-                            cur => cur.Name == "UAH" && cur.Provider == DomainConstants.DefaultUSDCurrencyProvider).Id
-                };
-                productsToAdd.Add(dbProduct);
-            });
-            foreach (var productToAdd in productsToAdd)
-            {
-                var copies =
-                    productsToAdd.Where(entry => entry.Name == productToAdd.Name && entry.Id != productToAdd.Id);
-                for (int i = 0; i < copies.Count(); i++)
-                {
-                    var pr = copies.ElementAt(i);
-                    pr.UrlName = pr.UrlName + "copy" + i;
-                    pr.Name = pr.Name + "[copy]" + i;
-                }
+                    var dbProduct = new Product()
+                    {
+                        Id = entry.Id,
+                        Name = entry.Name,
+                        UrlName = entry.Name.Translit(),
+                        Description = entry.Description,
+                        SKU = sku++,
+                        IsActive = true,
+                        LastModified = DateTime.UtcNow,
+                        LastModifiedBy = "1CCommerceMLImport",
+                        CategoryId = entry.CategoryId,
+                        SellerId = sellerId,
+                        CurrencyId =
+                            db.Currencies.FirstOrDefault(
+                                cur => cur.Name == "UAH" && cur.Provider == DomainConstants.DefaultUSDCurrencyProvider).Id
+                    };
+                    productsToAdd.Add(dbProduct);
+                });
+
+                RemoveDuplicates(productsToAdd, sellerId, sellerUrlName, true);
+                db.Products.AddRange(productsToAdd);
             }
-            db.Products.AddRange(productsToAdd);
 
             //update products which are in xml and in db
             var productIdsToUpdate = xmlProductIds.Intersect(dbProductsIds).ToList();
-            result.ProductsUpdated = productIdsToUpdate.Count;
-            var xmlProductsToUpdate = xmlProducts.Where(entry => productIdsToUpdate.Contains(entry.Id)).ToList();
-            foreach (var xmlProductToUpdate in xmlProductsToUpdate)
+            if (productIdsToUpdate.Any())
             {
-                var dbProduct = db.Products.Find(xmlProductToUpdate.Id);
-                dbProduct.Name = xmlProductToUpdate.Name;
-                dbProduct.UrlName = xmlProductToUpdate.Name.Translit();
-                dbProduct.Description = xmlProductToUpdate.Description;
-                dbProduct.LastModified = DateTime.UtcNow;
-                dbProduct.LastModifiedBy = "1CImport";
-                dbProduct.CategoryId = xmlProductToUpdate.CategoryId;
-                dbProduct.SellerId = sellerId;
-                dbProduct.IsActive = true;
-
-                db.Entry(dbProduct).State = EntityState.Modified;
+                result.ProductsUpdated = productIdsToUpdate.Count;
+                var xmlProductsToUpdate = xmlProducts.Where(entry => productIdsToUpdate.Contains(entry.Id)).ToList();
+                var dbProductsToUpdate = db.Products.Where(entry => productIdsToUpdate.Contains(entry.Id));
+                Parallel.ForEach(dbProductsToUpdate, (dbProduct) =>
+                {
+                    var xmlProductToUpdate = xmlProductsToUpdate.First(entry => entry.Id == dbProduct.Id);
+                    dbProduct.Name = xmlProductToUpdate.Name;
+                    dbProduct.UrlName = xmlProductToUpdate.Name.Translit();
+                    dbProduct.Description = xmlProductToUpdate.Description;
+                    dbProduct.LastModified = DateTime.UtcNow;
+                    dbProduct.LastModifiedBy = "1CImport";
+                    dbProduct.CategoryId = xmlProductToUpdate.CategoryId;
+                    dbProduct.SellerId = sellerId;
+                    dbProduct.IsActive = true;
+                });
+                RemoveDuplicates(dbProductsToUpdate, sellerId, sellerUrlName, false);
             }
 
             db.SaveChanges();

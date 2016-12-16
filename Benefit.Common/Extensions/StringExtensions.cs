@@ -93,7 +93,7 @@ namespace Benefit.Common.Extensions
             words.Add("Ґ", "g");
             words.Add(" ", "_");
 
-            return words.Aggregate(value, (current, pair) => current.Replace(pair.Key, pair.Value));
+            return words.Aggregate(value, (current, pair) => current.Replace(pair.Key, pair.Value)).ToLower();
         }
     }
 }

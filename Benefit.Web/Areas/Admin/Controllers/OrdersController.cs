@@ -46,8 +46,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             order.Status = orderStatus;
             order.StatusComment = statusComment;
 
-            //add points and bonuses if order finished
-            if (orderStatus == OrderStatus.Finished)
+            //add points and bonuses if order finished and is not bonuses
+            if (orderStatus == OrderStatus.Finished && order.PaymentType != PaymentType.Bonuses)
             {
                 TransactionsService.AddOrderTransaction(order);
             }
