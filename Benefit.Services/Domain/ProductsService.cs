@@ -39,14 +39,14 @@ namespace Benefit.Services.Domain
         {
             int productPricesUpdated = 0;
             var productIds = xmlProductPrices.Select(entry => entry.Id).ToList();
-            var products = db.Products.Where(entry => productIds.Contains(entry.Id)).ToList();
-            foreach (var product in products)
+            var products = db.Products.Where(entry => productIds.Contains(entry.Id));
+            Parallel.ForEach(products, (product) =>
             {
-                var xmlProductPrice = xmlProductPrices.FirstOrDefault(entry => entry.Id == product.Id);
+                var xmlProductPrice = xmlProductPrices.First(entry => entry.Id == product.Id);
                 product.Price = xmlProductPrice.Price;
-                db.Entry(product).State = EntityState.Modified;
                 productPricesUpdated++;
-            }
+            });
+               
             db.SaveChanges();
             return productPricesUpdated;
         }
