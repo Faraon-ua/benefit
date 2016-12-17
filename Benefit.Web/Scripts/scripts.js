@@ -462,15 +462,7 @@ $('.grr').owlCarousel({
 });
 
 /*product_description_amount*/
-/*$('.product_description_amount_minus').on('click', function () {
-    productCurrentValue = parseFloat($('.product_description_amount').val());
-    var newValue = productCurrentValue - 1;
-    if (productCurrentValue <= 1) {
-        return;
-    } else {
-        $('.product_description_amount').val(newValue);
-    }
-});*/
+$('.product_description_amount, .product_modal_amount').mask("#0.0", { reverse: true });
 
 $('.product_description_amount_plus, .product_description_amount_minus').on('click', function () {
     var valueToAdd = 1;
@@ -514,7 +506,7 @@ $('body').on('click', '.product_modal_plus, .product_modal_minus', function () {
     productAmount.val(productCurrentValue);
     CalculateCartSum();
 });
-$('.product_modal_amount').blur(function () {
+$('body').on("blur", ".product_modal_amount", function () {
     CalculateCartSum();
 });
 

@@ -9,14 +9,11 @@
 }
 @section scripts
 {
-    <script src="~/Scripts/jquery.mask.min.js"></script>
     <script>
         $(function () {
             $('.carousel').carousel({
                 interval: 3000
             });
-
-            $('.product_description_amount').mask("#0.0", { reverse: true });
 
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new { sellerId = Model.Product.SellerId })';
             var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
@@ -85,8 +82,6 @@
                 });
             });
         });
-
-
     </script>
 }
 <main class="full_content product_content">

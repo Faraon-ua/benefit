@@ -12,6 +12,7 @@ namespace Benefit.Web
                         "~/Scripts/jquery-2.2.3.min.js",
                         "~/Scripts/jquery.autocomplete.min.js",
                         "~/Scripts/jquery-ui.js",
+                        "~/Scripts/jquery.mask.min.js",
                         "~/Scripts/bootstrap.min.js",
                         "~/Scripts/owl.carousel.min.js",
                         "~/Scripts/site.js",
