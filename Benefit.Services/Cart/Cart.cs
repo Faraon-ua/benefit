@@ -40,7 +40,7 @@ namespace Benefit.Services.Cart
             var existingProduct = Order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
             if (existingProduct != null)
             {
-                existingProduct.Amount++;
+                existingProduct.Amount+=orderProduct.Amount;
             }
             else
             {
@@ -62,7 +62,7 @@ namespace Benefit.Services.Cart
                 Order.OrderProducts.Add(orderProduct);
             }
             HttpRuntime.Cache.Add(SessionKey, this, null, AbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
-            return (int)Order.OrderProducts.Sum(entry=>entry.Amount);
+            return GetOrderProductsCount();            
         }
 
         public int RemoveProduct(string id)
@@ -70,7 +70,7 @@ namespace Benefit.Services.Cart
             var productToRemove = Order.OrderProducts.FirstOrDefault(entry => entry.ProductId == id);
             Order.OrderProducts.Remove(productToRemove);
             HttpRuntime.Cache.Add(SessionKey, this, null, AbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
-            return Order.OrderProducts.Count;
+            return GetOrderProductsCount();
         }
 
         public void Clear()
@@ -85,6 +85,20 @@ namespace Benefit.Services.Cart
                         entry.ProductPrice * entry.Amount +
                         entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
             return sum;
+        }
+
+        private int GetOrderProductsCount()
+        {
+            var number = 0;
+            foreach (var product in Order.OrderProducts)
+            {
+                if (product.IsWeightProduct) number++;
+                else
+                {
+                    number += (int)product.Amount;
+                }
+            }
+            return number;
         }
     }
 }

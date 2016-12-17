@@ -106,11 +106,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (referalUser == null)
                     ModelState.AddModelError("ReferalNumber", "Користувача з таким ID не знайдено");
             }
-            if (db.Users.Any(entry => entry.Email == user.Email))
+            if (db.Users.Any(entry => entry.Email == user.Email && entry.Id != user.Id))
             {
                 ModelState.AddModelError("Email", "Такий Email вже існує");
             }
-            if (db.Users.Any(entry => entry.PhoneNumber == user.PhoneNumber))
+            if (db.Users.Any(entry => entry.PhoneNumber == user.PhoneNumber && entry.Id != user.Id))
             {
                 ModelState.AddModelError("PhoneNumber", "Такий телефон вже існує");
             }

@@ -24,6 +24,8 @@ namespace Benefit.Domain.Models
         public double ProductPrice { get; set; }
         public double Amount { get; set; }
         [NotMapped]
+        public bool IsWeightProduct { get; set; }
+        [NotMapped]
         public ICollection<OrderProductOption> OrderProductOptions { get; set; }
         [NotMapped]
         public ICollection<OrderProductOption> DbOrderProductOptions

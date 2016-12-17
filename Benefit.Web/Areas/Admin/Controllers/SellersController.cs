@@ -125,7 +125,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
                         results = ProductService.ProcessImportedProducts(xmlProducts, xmlToDbCategoriesMapping.Values, seller.Id, seller.UrlName);
 
-                        EmailService.SendImportResults(seller.Owner.Email, results);
+                        Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
 
                         //images
                         var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);

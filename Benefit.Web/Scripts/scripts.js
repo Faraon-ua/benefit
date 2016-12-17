@@ -462,60 +462,62 @@ $('.grr').owlCarousel({
 });
 
 /*product_description_amount*/
-var productCurrentValue;
-
-$('.product_description_amount_minus').on('click', function () {
-    productCurrentValue = parseInt($('.product_description_amount').val());
+/*$('.product_description_amount_minus').on('click', function () {
+    productCurrentValue = parseFloat($('.product_description_amount').val());
     var newValue = productCurrentValue - 1;
     if (productCurrentValue <= 1) {
         return;
     } else {
         $('.product_description_amount').val(newValue);
     }
-});
+});*/
 
-$('.product_description_amount_plus').on('click', function () {
-    productCurrentValue = parseInt($('.product_description_amount').val());
-    var newValue = productCurrentValue + 1;
-    $('.product_description_amount').val(newValue);
-
+$('.product_description_amount_plus, .product_description_amount_minus').on('click', function () {
+    var valueToAdd = 1;
+    var isMinus = $(this).hasClass("product_description_amount_minus");
+    var isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+    if (isWeightProduct) {
+        valueToAdd = 0.1;
+    }
+    var productCurrentValue = parseFloat($('.product_description_amount').val());
+    if (isMinus && productCurrentValue > valueToAdd) {
+        productCurrentValue = (productCurrentValue - valueToAdd);
+    }
+    if (!isMinus) {
+        productCurrentValue = (productCurrentValue + valueToAdd);
+    }
+    if (isWeightProduct) {
+        productCurrentValue = productCurrentValue.toFixed(1);
+    }
+    $('.product_description_amount').val(productCurrentValue);
 });
 
 /*product_modal_amount*/
-$('body').on('click', '.product_modal_minus', function () {
-    var temp = $(this).parent().children('.product_modal_amount').val().split(',');
-    productCurrentValue = parseFloat(temp.join('.'));
-    if (productCurrentValue <= 1 && temp.length === 1) {
-        return;
-    } else if (temp.length > 1) {
-        var fixed = (productCurrentValue - 0.1).toFixed(2).split('.').join(',');
-        $(this).parent().children('.product_modal_amount').val(fixed);
-    } else {
-        $(this).parent().children('.product_modal_amount').val(productCurrentValue - 1);
+$('body').on('click', '.product_modal_plus, .product_modal_minus', function () {
+    var productAmount = $(this).parent().children('.product_modal_amount');
+    var valueToAdd = 1;
+    var isMinus = $(this).hasClass("product_modal_minus");
+    var isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+    if (isWeightProduct) {
+        valueToAdd = 0.1;
     }
+    var productCurrentValue = parseFloat(productAmount.val());
+    if (isMinus && productCurrentValue > valueToAdd) {
+        productCurrentValue = (productCurrentValue - valueToAdd);
+    }
+    if (!isMinus) {
+        productCurrentValue = (productCurrentValue + valueToAdd);
+    }
+    if (isWeightProduct) {
+        productCurrentValue = productCurrentValue.toFixed(1);
+    }
+    productAmount.val(productCurrentValue);
+    CalculateCartSum();
+});
+$('.product_modal_amount').blur(function () {
     CalculateCartSum();
 });
 
-$('body').on('click', '.product_modal_plus', function () {
-    var temp = $(this).parent().children('.product_modal_amount').val().split(',').join('.');
-    productCurrentValue = parseFloat(temp);
-    if (temp.length > 1) {
-        var fixed = (productCurrentValue + 0.1).toFixed(2).split('.').join(',');
-        $(this).parent().children('.product_modal_amount').val(fixed);
-    } else {
-        $(this).parent().children('.product_modal_amount').val(productCurrentValue + 1);
-    }
-    CalculateCartSum();
-});
-
-$('.product_modal_amount, .product_description_amount').blur(function () {
-    var value = $(this).val();
-    if (value !== '') {
-        if (!this.value.match(/^[0-9-]+$/)) {
-            $(this).val(1);
-        }
-    }
-});
 /*basket_modal_table delete product*/
 var deleteProductFromCartUrl = routePrefix + '/Cart/RemoveProduct?productId=';
 $('body').on('click', '.delete_product', function () {
@@ -534,7 +536,7 @@ $('body').on('click', '.delete_product', function () {
         parentRow.remove();
         CalculateCartSum();
     });
-    
+
 });
 
 /*categories darker background*/

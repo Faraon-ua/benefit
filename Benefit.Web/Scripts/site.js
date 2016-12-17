@@ -48,7 +48,7 @@ function deleteCookie(name) {
 }
 
 function CalculateCartSum() {
-    var products = $("tr.basket_modal_table_row.product").map(function () {
+    var products = $(".basket_modal tr.basket_modal_table_row.product").map(function () {
         //", tr.basket_modal_table_row.option product-total-price"
         var price = parseFloat($(this).attr("data-original-price"));
         var amount = parseFloat($(this).find(".product_modal_amount").val());

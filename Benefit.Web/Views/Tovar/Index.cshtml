@@ -9,11 +9,14 @@
 }
 @section scripts
 {
+    <script src="~/Scripts/jquery.mask.min.js"></script>
     <script>
         $(function () {
             $('.carousel').carousel({
                 interval: 3000
             });
+
+            $('.product_description_amount').mask("#0.0", { reverse: true });
 
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new { sellerId = Model.Product.SellerId })';
             var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
@@ -22,7 +25,7 @@
             $("#buy-product, #buy-product-with-options").click(function () {
                 var buttonId = $(this).attr("id");
                 $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
-                    //if купить баттон 
+                    //if купить баттон
                     if (buttonId == "buy-product") {
                         if (isAnotherSeller) {
                             if (!confirm("Увага! У кошику є товари від іншого постачальника. Вони будуть видалені, якщо Ви продовжите цю дію.")) {
@@ -57,6 +60,7 @@
 
                     var product = {
                         ProductId: '@Model.Product.Id',
+                        IsWeightProduct: '@Model.Product.IsWeightProduct',
                         Amount: $(".product_description_amount").val(),
                         OrderProductOptions: productOptions
                     };
@@ -131,18 +135,25 @@
                     <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн
                 </p>
                 <div class="product_description">
-@*                    <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>*@
+                    @*                    <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>*@
                     <a href="#product_descr_tab">Детальніше</a>
                 </div>
 
                 <div class="product_description_control_wrap pull-right">
                     @*<div class="product_description_like"></div>
                         <div class="product_description_scale"></div>*@
-                        <a id="buy-product" class="product_description_buy" href="#">Купити</a>
+                    <a id="buy-product" class="product_description_buy" href="#">Купити</a>
                 </div>
-                <div class="product_description_amount_wrap pull-right">
+                <div class="product_description_amount_wrap pull-right" data-weight-product="@Model.Product.IsWeightProduct">
                     <div class="product_description_amount_minus">-</div>
-                    <input type="text" class="product_description_amount" value="1">
+                    @if (Model.Product.IsWeightProduct)
+                    {
+                        <input type="text" class="product_description_amount" value="0.1">
+                    }
+                    else
+                    {
+                        <input type="text" class="product_description_amount" value="1">
+                    }
                     <div class="product_description_amount_plus">+</div>
                 </div>
                 <div class="clearfix"></div>

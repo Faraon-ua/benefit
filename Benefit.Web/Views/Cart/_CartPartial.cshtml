@@ -28,7 +28,7 @@
                                 <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
                                     <td class="basket_modal_td">@product.ProductName</td>
                                     <td class="basket_modal_td">
-                                        <div class="modal_amount_wrap">
+                                        <div class="modal_amount_wrap" data-weight-product="@product.IsWeightProduct">
                                             <div class="product_modal_minus">-</div>
                                             <input class="product_modal_amount" value="@product.Amount" type="text">
                                             <div class="product_modal_plus">+</div>

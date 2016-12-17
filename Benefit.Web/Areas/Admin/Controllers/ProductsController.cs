@@ -125,7 +125,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (User.IsInRole(DomainConstants.SellerRoleName))
             {
                 var seller = db.Sellers.FirstOrDefault(entry => User.Identity.Name == entry.Owner.UserName);
-                var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id);
+                var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id).ToList();
                 resultCurrencies.AddRange(sellerCurrencies);
             }
             ViewBag.CurrencyId = new SelectList(resultCurrencies, "Id", "ExpandedName", product.CurrencyId);

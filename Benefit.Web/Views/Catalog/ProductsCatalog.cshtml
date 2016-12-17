@@ -39,7 +39,8 @@
             });
 
             var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
-            $(".product_buy").click(function () {
+            $("body").on("click", ".product_buy", function (e) {
+                e.preventDefault();
                 var productId = $(this).attr("data-product-id");
                 var sellerId = $(this).attr("data-seller-id");
                 $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
