@@ -117,6 +117,10 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         public ActionResult UserAddress(Address address)
         {
             var userId = User.Identity.GetUserId();
+            if (address.RegionId == default(int))
+            {
+                ModelState.AddModelError("RegionName", "Виберіть місто із випадаючого списку");
+            }
             if (ModelState.IsValid)
             {
                 using (var db = new ApplicationDbContext())

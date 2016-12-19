@@ -22,7 +22,6 @@ namespace Benefit.Services.Domain
                 PayeeId = user.Id,
                 Time = DateTime.UtcNow
             };
-            user.TotalBonusAccount += order.PersonalBonusesSum;
             user.CurrentBonusAccount = transaction.BonusesBalans.Value;
             user.PointsAccount += order.PointsSum;
 
@@ -39,7 +38,6 @@ namespace Benefit.Services.Domain
                     Time = DateTime.UtcNow
                 };
                 user.BonusAccount = bonusesPaymentTransaction.BonusesBalans.Value;
-
                 db.Transactions.Add(bonusesPaymentTransaction);
             }
             db.Transactions.Add(transaction);

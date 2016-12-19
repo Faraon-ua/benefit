@@ -108,7 +108,7 @@ namespace Benefit.Services.Domain
 
         public List<Product> GetSellerCatalogProducts(string sellerId, string categoryId, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
-            var items = db.Products.Where(entry => entry.IsActive);
+            var items = db.Products.Include(entry => entry.Category.ParentCategory.ParentCategory).Where(entry => entry.IsActive);
             if (!string.IsNullOrEmpty(categoryId))
             {
                 var category = db.Categories.Find(categoryId);
@@ -122,7 +122,11 @@ namespace Benefit.Services.Domain
                 items = items.Where(entry => entry.SellerId == sellerId);
             }
             //todo: instead all products show recomendations
-            items = items.OrderBy(entry => entry.Category.Order).ThenByDescending(entry => entry.Images.Any());
+            items = items
+                .OrderBy(entry => entry.Category.ParentCategory == null ? 1000 : entry.Category.ParentCategory.ParentCategory == null ? 1000 : entry.Category.ParentCategory.ParentCategory.Order)
+                .ThenBy(entry => entry.Category.ParentCategory == null ? 1000 : entry.Category.ParentCategory.Order)
+                .ThenBy(entry => entry.Category.Order)
+                .ThenByDescending(entry => entry.Images.Any());
 
             var result = items.ToList();
             result = result.Skip(skip).Take(take + 1).ToList();

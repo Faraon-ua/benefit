@@ -251,7 +251,6 @@ namespace Benefit.RestApi.Controllers
                 //add points and bonuses to personal user account
                 user.PointsAccount += points;
                 user.CurrentBonusAccount += bonuses;
-                user.TotalBonusAccount += bonuses;
                 db.Entry(user).State = EntityState.Modified;
                 await db.SaveChangesAsync();
 
