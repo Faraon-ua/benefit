@@ -212,7 +212,12 @@
     <Compile Include="Migrations\201612140947194_TerminalBillEnabledFlag.Designer.cs">
       <DependentUpon>201612140947194_TerminalBillEnabledFlag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612181612068_BenefitCardBase.cs" />
+    <Compile Include="Migrations\201612181612068_BenefitCardBase.Designer.cs">
+      <DependentUpon>201612181612068_BenefitCardBase.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApplicationUser.cs">
@@ -353,6 +358,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612140947194_TerminalBillEnabledFlag.resx">
       <DependentUpon>201612140947194_TerminalBillEnabledFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612181612068_BenefitCardBase.resx">
+      <DependentUpon>201612181612068_BenefitCardBase.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

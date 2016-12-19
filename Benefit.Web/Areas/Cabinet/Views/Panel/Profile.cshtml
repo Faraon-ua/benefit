@@ -66,6 +66,7 @@
                 </p>
                 <hr />
 
+                @Html.ValidationSummary()
                 <p class="profile_title">Номер картки</p>
                 <p class="profile_title">
                     @if (string.IsNullOrEmpty(Model.CardNumber))

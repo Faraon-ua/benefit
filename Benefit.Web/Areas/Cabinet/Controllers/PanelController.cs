@@ -73,13 +73,25 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             {
                 var userId = User.Identity.GetUserId();
                 var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == userId);
-                user.CardNumber = profile.CardNumber;
-                user.RegionId = profile.RegionId;
-                user.Address = profile.Address;
-                db.Entry(user).State = EntityState.Modified;
-                db.SaveChanges();
                 user.Region = db.Regions.FirstOrDefault(entry => entry.Id == user.RegionId);
-                TempData["SuccessMessage"] = "Ваші дані збережено";
+
+                if (db.Users.Any(entry => entry.CardNumber == profile.CardNumber && entry.Id != user.Id) || !db.BenefitCards.Any(entry=>entry.Id == profile.CardNumber))
+                {
+                    ModelState.AddModelError("CardNumber", "Не можливо підвязати цей номер карти до вашого акаунту");
+                }
+                if (ModelState.IsValid)
+                {
+                    if (user.CardNumber == null)
+                    {
+                        user.NFCCardNumber = db.BenefitCards.Find(profile.CardNumber).NfcCode;
+                    }
+                    user.CardNumber = profile.CardNumber;
+                    user.RegionId = profile.RegionId;
+                    user.Address = profile.Address;
+                    db.Entry(user).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["SuccessMessage"] = "Ваші дані збережено";
+                }
                 return View(user);
             }
         }
@@ -156,7 +168,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             var userId = User.Identity.GetUserId();
             using (var db = new ApplicationDbContext())
             {
-                var user = db.Users.Include(entry=>entry.Orders).FirstOrDefault(entry => entry.Id == userId);
+                var user = db.Users.Include(entry => entry.Orders).FirstOrDefault(entry => entry.Id == userId);
                 user.Orders = user.Orders.OrderByDescending(entry => entry.Time).ToList();
                 return View(user);
             }

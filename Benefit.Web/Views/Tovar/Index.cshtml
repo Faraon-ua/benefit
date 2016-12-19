@@ -127,7 +127,7 @@
                 </div>
                 <p class="product_description_in_stock">В наявності</p>
                 <p class="product_description_price">
-                    <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн
+                    <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн/@(@Model.Product.IsWeightProduct? "кг" : "шт")
                 </p>
                 <div class="product_description">
                     @*                    <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>*@

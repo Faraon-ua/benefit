@@ -7,6 +7,25 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
     <script src="~/Scripts/address.js"></script>
+    <script>
+        var getNfcUrl = '@Url.Action("GetNfcCode")';
+        $("#NFCNumber").focus(function () {
+            var nfc = $(this);
+            if (nfc.val() == "") {
+                $.get(getNfcUrl + "?cardNumber=" + $("#CardNumber").val(), function (data) {
+                    if (data == "") {
+                        alert("Картку не знайдено");
+                        $("#CardNumber").focus();
+                    } else if (data == "occupied") {
+                        alert("Ця картка вже зайнята");
+                        $("#CardNumber").focus();
+                    } else {
+                        nfc.val(data);
+                    }
+                });
+            }
+        });
+    </script>
 }
 @section styles{
     <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />

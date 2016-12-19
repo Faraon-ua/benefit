@@ -33,7 +33,7 @@
         </div>
         <div class="product_price">
             @*            <span class="old_price">80,40</span>*@
-            @Model.Product.Price грн
+            @Model.Product.Price грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
         </div>
         <div class="product_control_wrap">
             <div class="product_like product_like_red"></div>

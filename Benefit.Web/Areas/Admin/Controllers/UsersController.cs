@@ -158,5 +158,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             return View(user);
         }
+
+        public ActionResult GetNfcCode(string cardNumber)
+        {
+            if (db.Users.Any(entry => entry.CardNumber == cardNumber))
+            {
+                return Json("occupied", JsonRequestBehavior.AllowGet);
+            }
+
+            var card = db.BenefitCards.Find(cardNumber);
+            return Json(card == null ? "" : card.NfcCode, JsonRequestBehavior.AllowGet);
+        }
     }
 }
