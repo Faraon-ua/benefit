@@ -79,6 +79,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var user = db.Users.Include("Referal").FirstOrDefault(entry => entry.Id == id);
             var userViewModel = new EditUserViewModel()
             {
+                Id = user.Id,
                 ExternalNumber = user.ExternalNumber,
                 FullName = user.FullName,
                 ReferalNumber = user.Referal == null ? 0 : user.Referal.ExternalNumber,
@@ -159,9 +160,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(user);
         }
 
-        public ActionResult GetNfcCode(string cardNumber)
+        public ActionResult GetNfcCode(string cardNumber, string userId)
         {
-            if (db.Users.Any(entry => entry.CardNumber == cardNumber))
+            if (db.Users.Any(entry => entry.CardNumber == cardNumber && entry.Id != userId))
             {
                 return Json("occupied", JsonRequestBehavior.AllowGet);
             }

@@ -160,7 +160,7 @@ namespace Benefit.Services.Admin
                         foreach (var vipPartner in vipPartners)
                         {
                             var vipPartnerTotalStructurePointAmount =
-                                vipPartner.GetAllStructurePartners().Sum(entry => entry.HangingPointsAccount) + vipPartner.HangingPointsAccount; //вместе с ним
+                                vipPartner.GetAllStructurePartners(db).Sum(entry => entry.HangingPointsAccount) + vipPartner.HangingPointsAccount; //вместе с ним
 
                             var vipPortion = new VipPortion()
                             {

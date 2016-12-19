@@ -9,10 +9,11 @@
     <script src="~/Scripts/address.js"></script>
     <script>
         var getNfcUrl = '@Url.Action("GetNfcCode")';
+        var userId = '@Model.Id';
         $("#NFCNumber").focus(function () {
             var nfc = $(this);
             if (nfc.val() == "") {
-                $.get(getNfcUrl + "?cardNumber=" + $("#CardNumber").val(), function (data) {
+                $.get(getNfcUrl + "?cardNumber=" + $("#CardNumber").val() + "&userId=" + userId, function (data) {
                     if (data == "") {
                         alert("Картку не знайдено");
                         $("#CardNumber").focus();

@@ -14,9 +14,9 @@ namespace Benefit.RestApi.Controllers
     public class OldApiController : ApiController
     {
         ApplicationDbContext db = new ApplicationDbContext();
-        private const string ApiVersion = "/V2";
+        private const string ApiVersion = "V2";
 
-        [Route(ApiVersion + "ProgFetchUserData" + ApiVersion + ".php")]
+        [Route(ApiVersion + "/ProgFetchUserData" + ApiVersion + ".php")]
         public SellerAuthDto SellerLogin(SellerAuthIngest auth)
         {
             var seller = GetSellerByUsernameAndPassword(auth.username, auth.password);
@@ -54,7 +54,7 @@ namespace Benefit.RestApi.Controllers
             return response;
         }
 
-        [Route(ApiVersion + "ProgUserKassir" + ApiVersion + ".php")]
+        [Route(ApiVersion + "/ProgUserKassir" + ApiVersion + ".php")]
         public PartnerAuthDto KassirLogin(PartnerAuthIngest authIngest)
         {
             var dto = new PartnerAuthDto();
@@ -141,7 +141,7 @@ namespace Benefit.RestApi.Controllers
             return dto;
         }
 
-        [Route(ApiVersion + "ProgFetchUserInfo" + ApiVersion + ".php")]
+        [Route(ApiVersion + "/ProgFetchUserInfo" + ApiVersion + ".php")]
         public UserAuthDto UserInfo(UserAuthIngest userAuth)
         {
             var seller = GetSellerByUsernameAndPassword(userAuth.username, userAuth.password);
@@ -171,7 +171,7 @@ namespace Benefit.RestApi.Controllers
             return null;
         }
 
-        [Route(ApiVersion + "ProgGetOrders" + ApiVersion + ".php")]
+        [Route(ApiVersion + "/ProgGetOrders" + ApiVersion + ".php")]
         public GetOrdersDto CheckOrder(GetOrdersIngest ordersIngest)
         {
             var seller = GetSellerByUsernameAndPassword(ordersIngest.username, ordersIngest.password);
@@ -186,7 +186,7 @@ namespace Benefit.RestApi.Controllers
             return null;
         }
 
-        [Route(ApiVersion + "ProgUserPayment" + ApiVersion + ".php")]
+        [Route(ApiVersion + "/ProgUserPayment" + ApiVersion + ".php")]
         public async Task<PaymentDto> ProcessPayment(PaymentIngest payment)
         {
             var seller = GetSellerByUsernameAndPassword(payment.username, payment.password);
