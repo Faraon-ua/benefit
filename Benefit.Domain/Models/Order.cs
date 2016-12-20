@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace Benefit.Domain.Models
 {
@@ -63,5 +65,14 @@ namespace Benefit.Domain.Models
         public string LastModifiedBy { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } 
         public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
+
+        public double GetOrderSum()
+        {
+            var sum = OrderProducts.Sum(
+                    entry =>
+                        entry.ProductPrice * entry.Amount +
+                        entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+            return sum;
+        }
     }
 }

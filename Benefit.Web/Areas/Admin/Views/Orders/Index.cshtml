@@ -6,8 +6,6 @@
 {
     <script>
         var ordersUrl = '@Url.Action("GetOrdersList")';
-        var soundPath = '@Url.Content("~/Content/sounds/newOrder.mp3")';
-        var audio = new Audio(soundPath);
         var pageNumber = 0;
 
         $(function () {
@@ -40,11 +38,6 @@
             if (pageNumber == undefined || pageNumber == 'undefined') pageNumber = 0;
             $.get(ordersUrl + "?orderType=" + $("#navType").val() + "&page=" + pageNumber, function (data) {
                 $("#ordersList").html(data.html);
-                if (data.hasNewOrder) {
-                    audio.play();
-                } else {
-                    audio.pause();
-                }
                 insertUrlParam("page", pageNumber);
                 $("#page-number").val(pageNumber);
             });

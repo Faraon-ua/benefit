@@ -80,11 +80,7 @@ namespace Benefit.Services.Cart
 
         public double GetOrderSum()
         {
-            var sum = Order.OrderProducts.Sum(
-                    entry =>
-                        entry.ProductPrice * entry.Amount +
-                        entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-            return sum;
+            return Order.GetOrderSum();
         }
 
         private int GetOrderProductsCount()

@@ -55,6 +55,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.SaveChanges();
         }
 
+        public ActionResult CheckNewOrder()
+        {
+            return Json(db.Orders.Any(entry => entry.OrderType == OrderType.BenefitSite), JsonRequestBehavior.AllowGet);
+        }
         public ActionResult GetOrdersList(OrderType orderType, int page = 0)
         {
             var takePerPage = 50;
@@ -77,21 +81,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult UpdateOrderProduct(string orderId, string productId, double amount, double price)
+        {
+            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == productId);
+            product.Amount = amount;
+            product.ProductPrice = price;
+            order.Sum = order.GetOrderSum();
+            db.Entry(product).State = EntityState.Modified;
+            db.Entry(order).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json(Url.Action("Details", new { id = orderId }));
+        }
+
         public ActionResult DeleteOrderProduct(string orderId, string productId)
         {
             var product =
                 db.OrderProducts.FirstOrDefault(entry => entry.OrderId == orderId && entry.ProductId == productId);
             db.OrderProductOptions.RemoveRange(product.DbOrderProductOptions);
             db.OrderProducts.Remove(product);
-            db.SaveChanges();
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
-            var orderSum =
-             order.OrderProducts.Sum(
-                 entry =>
-                     entry.ProductPrice * entry.Amount +
-                     entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+            var orderSum = order.GetOrderSum();
             order.Sum = orderSum;
-            db.SaveChangesAsync();
+            db.SaveChanges();
             return RedirectToAction("Details", new { id = orderId });
         }
 

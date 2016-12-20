@@ -412,5 +412,26 @@
     <!-- scripts related to this page -->
     @RenderSection("scripts", required: false)
     <script src="~/Scripts/common.js"></script>
+    <script>
+        var checkOrdersUrl = '@Url.Action("CheckNewOrder", "Orders")';
+        var soundPath = '@Url.Content("~/Content/sounds/newOrder.mp3")';
+        var audio = new Audio(soundPath);
+
+        setInterval(function () {
+            CheckNewOrder();
+        }, 30000);
+
+        function CheckNewOrder() {
+            $.get(checkOrdersUrl, function (data) {
+                if (data) {
+                    audio.play();
+                } else {
+                    audio.pause();
+                }
+            });
+        }
+
+        CheckNewOrder();
+    </script>
 </body>
 </html>

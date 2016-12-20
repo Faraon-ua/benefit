@@ -92,11 +92,11 @@ namespace Benefit.Services.Domain
             }
         }
 
-        public ProductImportResults ProcessImportedProducts(IEnumerable<XmlProduct> xmlProducts, IEnumerable<string> dbCategoryIds, string sellerId, string sellerUrlName)
+        public ProductImportResults ProcessImportedProducts(IEnumerable<XmlProduct> xmlProducts, string sellerId, string sellerUrlName)
         {
             var result = new ProductImportResults();
-            //remove categories
-            var dbProductsIds = db.Categories.Where(entry => dbCategoryIds.Contains(entry.Id)).SelectMany(entry => entry.Products).Where(entry => entry.SellerId == sellerId).Select(entry => entry.Id).ToList();
+            var dbProductsIds =
+                db.Products.Where(entry => entry.SellerId == sellerId).Select(entry => entry.Id).ToList();
             var xmlProductIds = xmlProducts.Select(entry => entry.Id).ToList();
 
             //delete products which are not in xml

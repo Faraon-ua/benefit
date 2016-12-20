@@ -123,7 +123,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                 entry =>
                                     xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
                         xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
-                        results = ProductService.ProcessImportedProducts(xmlProducts, xmlToDbCategoriesMapping.Values, seller.Id, seller.UrlName);
+                        results = ProductService.ProcessImportedProducts(xmlProducts, seller.Id, seller.UrlName);
 
                         Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
 

@@ -1,4 +1,5 @@
-﻿@model Benefit.Domain.Models.Order
+﻿@using Benefit.Domain.Models
+@model Benefit.Domain.Models.Order
 
 @{
     ViewBag.Title = "Замовлення №" + Model.OrderNumber;
@@ -16,6 +17,7 @@
     <script>
         var orderProductFromUrl = '@Url.Action("AddProductForm", new { orderId = Model.Id })';
         var updateOrderStatusUrl = '@Url.Action("UpdateStatus")';
+        var updateProductDetailsUrl = '@Url.Action("UpdateOrderProduct")';
 
         function LoadOrderProductForm() {
             $("#orderProductForm").load(orderProductFromUrl, function (data) {
@@ -33,16 +35,34 @@
             });
         };
 
-        $("#updateStatus").click(function() {
-            var status = $("#OrderStatus").val();
-            var statusComment = $("#StatusComment").val();
-            $.post(updateOrderStatusUrl,
-            {
-                orderStatus: status,
-                statusComment: statusComment,
-                orderId: '@Model.Id'
-            }, function(data) {
-                flashMessage("Статус замовлення було збережено");
+        $(function() {
+            $("#updateStatus").click(function() {
+                var status = $("#OrderStatus").val();
+                var statusComment = $("#StatusComment").val();
+                $.post(updateOrderStatusUrl,
+                {
+                    orderStatus: status,
+                    statusComment: statusComment,
+                    orderId: '@Model.Id'
+                }, function(data) {
+                    flashMessage("Статус замовлення було збережено");
+                });
+            });
+
+            $(".update-product").click(function() {
+                var orderId = '@Model.Id';
+                var productId = $(this).attr("data-product-id");
+                var tr = $(this).parents("tr");
+                var amount = tr.find(".product-amount").val();
+                var price = tr.find(".product-price").val();
+                $.post(updateProductDetailsUrl, {
+                    orderId: orderId,
+                    productId: productId,
+                    amount: amount,
+                    price: price
+                }, function(url) {
+                    window.location.href = url;
+                });
             });
         });
     </script>
@@ -50,6 +70,9 @@
 <div id="orderProductForm" class="margin-top-10">
 </div>
 @Html.Partial("_OrderDetailsPartial", Model)
-<p>
-    <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Додати товар" onclick="LoadOrderProductForm()">Додати товар</a>
-</p>
+@if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
+{
+    <p>
+        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Додати товар" onclick=" LoadOrderProductForm() ">Додати товар</a>
+    </p>
+}
