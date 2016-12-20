@@ -75,13 +75,44 @@
         padding-left: 5px; 
         font-size: 14px;
     }
-	.f_contact .col-sm-5 { padding: 0; }
-	.f_contact .col-sm-6 { padding: 0; }
+	.f_contact .col-sm-5 { 
+        padding: 0; 
+    }
+	.f_contact .col-sm-6 { 
+        padding: 0; 
+    }
+    
+    .banner img {
+        max-width: 100%;
+    }
+    
+    .banner_01,
+    .banner_04 {
+        height: auto;
+    }
+    
+    .banner_02,
+    .banner_03 {
+        max-width: 49%;
+        height: auto;
+    }
 }
 
 @media all and (max-width: 1218px) {
     .product_recomendation_item {
         width: 48.5%;
+    }
+    
+    .structure_menu > div {
+        width: 49.5%;
+    }
+    
+    .structure_search {
+        display: block;
+    }
+    
+    .registration_search_wrap {
+        padding: 0;
     }
 }
 
@@ -109,7 +140,30 @@
 	}
 }
 
+@media all and (min-width: 1001px) {
+    .dektop_hidden {
+        display: none;
+    }
+    
+    .partner_menu ul li .partner_menu_back, 
+    .partner_menu ul li .partner_menu_back:hover, 
+    .partner_menu ul li .partner_menu_back:visited, 
+    .partner_menu ul li .partner_menu_back:active, 
+    .partner_menu ul li .partner_menu_back:focus, 
+    .partner_menu ul li.active .partner_menu_back, 
+    .partner_menu ul li.active .partner_menu_back:hover, 
+    .partner_menu ul li.active .partner_menu_back:visited, 
+    .partner_menu ul li.active .partner_menu_back:active, 
+    .partner_menu ul li.active .partner_menu_back:focus {
+        display: none;
+    }
+}
+    
 @media all and (max-width: 1000px) {
+    .tablet_hidden {
+        display: none;
+    }
+    
 	.show_on_tablet { 
         display: block; 
     }
@@ -1082,6 +1136,544 @@
         margin-bottom: 5px;
     }
     
+    
+    /*kabinet partnera */
+    .container_cabinet .container_table {
+        display: block;
+    }
+    
+    .partner_head,
+    .partner_main,
+    .partner_menu {
+        display: block;
+        float: left;
+    }
+    .partner_head,
+    .partner_menu {
+        width: 50%;
+        min-height: 394px;
+    }
+    
+    .partner_main {
+        width: 100%;
+    }
+    
+    .partner_head {
+        padding: 15px 0 21px 46px;
+        text-align: left;
+        background-image: -moz-linear-gradient( 90deg, rgb(153,0,0) 0%, rgb(51,51,51) 100%);
+        background-image: -webkit-linear-gradient( 90deg, rgb(153,0,0) 0%, rgb(51,51,51) 100%);
+        background-image: -ms-linear-gradient( 90deg, rgb(153,0,0) 0%, rgb(51,51,51) 100%);
+    }
+    
+    .userpic,
+    .user_right {
+        margin-bottom: 23px;
+        display: inline-block;
+        vertical-align: top;
+    }
+    
+    .userpic {
+        margin-right: 30px;
+    }
+    
+    .userpic:before {
+        bottom: 2px;
+        right: -4px;
+        width: 34px;
+        height: 34px;
+        background-size: 34px 34px;
+    }
+    
+    .userpic_wrap {
+        margin-top: 6px;
+        width: 75px;
+        height: 75px;
+    }
+    
+    .user_right br,
+    .partner_head .bonus_count,
+    .battery,
+    .partner_menu ul .partner_menu_main,
+    .partner_menu ul li a br {
+        display: none;
+    }
+    
+    .partner_head p {
+        display: block;
+        width: 100%;
+        max-width: 180px;
+        
+    }
+    
+    .card_numb,
+    .bonus_available,
+    .bonus_personal,
+    .ball_personal {
+        font-size: 15px;
+        line-height: 17px;
+    }
+    
+    .user_name {
+        line-height: 17px;
+    }
+    
+    .user_statuse {
+        margin-bottom: 10px;
+    }
+    
+    .bonus_border {
+        border: none;
+    }
+    
+    .card_numb {
+        margin-bottom: 38px;
+    }
+    
+    .bonus_available {
+        margin-bottom: 9px;
+    }
+    
+    .partner_menu {
+        padding: 10px 0 15px 0;
+    }
+    
+    .partner_menu ul {
+        margin: 0;
+        max-width: 100%;
+        text-align: left;
+    }
+    
+    .partner_menu ul li a, 
+    .partner_menu ul li a:active, 
+    .partner_menu ul li a:visited {
+        padding-top: 0;
+        padding-left: 100px;
+        line-height: 41px;
+        text-align: left;
+        font-size: 18px;
+    }
+    .partner_menu ul li a:before {
+        left: 33px;
+        top: 5px;
+        margin-left: 0;  
+        width: 27px;
+        height: 23px;
+    }
+
+        .partner_menu ul .partner_menu_profile.active a:before,
+        .partner_menu ul .partner_menu_profile a:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -24px no-repeat;
+            background-size: 54px auto;
+        }
+
+        
+        .partner_menu ul .partner_menu_profile:hover a:before {
+            background: url(../img/cabinet_menu_sprite.png) -27px -24px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_network.active a:before,
+        .partner_menu ul .partner_menu_network a:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -47px no-repeat;
+            background-size: 54px auto;
+        }
+        
+        .partner_menu ul .partner_menu_network:hover a:before {
+            background: url(../img/cabinet_menu_sprite.png) -27px -47px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_reward.active a:before,
+        .partner_menu ul .partner_menu_reward a:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -72px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_reward:hover a:before {
+            background: url(../img/cabinet_menu_sprite.png) -27px -72px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_study.active a:before,
+        .partner_menu ul .partner_menu_study a:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -95px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_study:hover a:before {
+            background: url(../img/cabinet_menu_sprite.png) -27px -95px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_finance.active a:before,
+        .partner_menu ul .partner_menu_finance a:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -120px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_finance:hover a:before {
+            background: url(../img/cabinet_menu_sprite.png) -27px -120px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_history.active a:before,
+        .partner_menu ul .partner_menu_history a:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -144px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_history:hover a:before {
+            background: url(../img/cabinet_menu_sprite.png) -27px -144px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_chosen.active a:before,
+        .partner_menu ul .partner_menu_chosen a:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -167px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_chosen:hover a:before {
+            background: url(../img/cabinet_menu_sprite.png) -27px -167px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_write_us.active a:before,
+        .partner_menu ul .partner_menu_write_us a:before {
+            background: url(../img/cabinet_menu_sprite.png) 0 -189px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .partner_menu ul .partner_menu_write_us:hover a:before {
+            background: url(../img/cabinet_menu_sprite.png) -27px -189px no-repeat;
+            background-size: 54px auto;
+        }
+    
+    .partner_menu_exit {
+        display: block;
+    }
+    
+    .partner_menu ul .partner_menu_exit a:before {
+        background: url(../img/logout_w.png) -3px 3px no-repeat;
+        background-size: auto 21px;
+    }
+    
+    .partner_menu ul .partner_menu_exit:hover a:before {
+        background: url(../img/logout_w.png) -33px 2px no-repeat;
+        background-size: auto 21px;
+    }
+    
+    .banner_02, 
+    .banner_03 {
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    /*kabinet partnera profile*/
+    .kabinet_profile .partner_head {
+        display: none;
+    }
+    
+    .kabinet_profile .partner_menu {
+        margin-bottom: 30px;
+        width: 100%;
+        min-height: auto;
+        padding: 0;
+    }
+    
+    .kabinet_profile .partner_menu ul li {
+        display: none;
+    }
+    
+    .kabinet_profile .partner_menu ul li.active {
+        display: block;
+        text-align: center;
+    }
+    
+    .kabinet_profile .partner_menu ul li.active a {
+        display: inline-block;
+        padding-left: 40px;
+        line-height: 62px;
+        color: #ffffff;
+    }
+    
+    .kabinet_profile .partner_menu ul li.active:hover a {
+        color: #ff3333;
+    }
+
+    .kabinet_profile .partner_menu ul .partner_menu_profile a:before,
+    .kabinet_profile .partner_menu ul .partner_menu_profile.active a:before {
+        left: 0;
+        top: 15px;
+        margin-left: 0;
+        width: 26px;
+        height: 31px;
+        
+        background: url(../img/cabinet_menu_sprite.png) -8px -39px no-repeat;
+        background-size: 80px auto;
+    }
+    
+    .kabinet_profile .partner_menu ul .partner_menu_profile:hover a:before {
+        background: url(../img/cabinet_menu_sprite.png) -48px -39px no-repeat;
+        background-size: 80px auto;
+    }
+    
+    .partner_menu ul li .partner_menu_back,
+    .partner_menu ul li .partner_menu_back:hover,
+    .partner_menu ul li .partner_menu_back:visited,
+    .partner_menu ul li .partner_menu_back:active,
+    .partner_menu ul li .partner_menu_back:focus {
+        display: block;
+    }
+    
+    .kabinet_profile .partner_main {
+        padding: 0 46px;
+    }
+    
+    .base, 
+    .addition,
+    .profile_title,
+    .base label,
+    .profile_title_description {
+        padding: 10px 0 0 0;
+    }
+    
+    .profile_menu > li > a, 
+    .profile_menu > li > a:visited, 
+    .profile_menu > li > a:focus, 
+    .tab_menu > li > a, 
+    .tab_menu > li > a:visited, 
+    .tab_menu > li > a:focus {
+        font-size: 15px;
+    }
+    
+    .profile_menu .tablet_hidden {
+        display: none;
+    }
+    
+    .base form, 
+    .addition form {
+        max-width: 100%;
+    }
+    
+    .profile_base_form {
+        padding-top: 10px;
+    }
+    
+    .base input, 
+    .addition input, 
+    .addition select {
+        margin-bottom: 13px;
+        max-width: 510px;
+    }
+    
+    #profile_address {
+        margin-bottom: 45px;
+    }
+    
+    .verification_data {
+        margin-bottom: 13px;
+    }
+    
+    .profile_verification:last-child {
+        margin-bottom: 10px;
+    }
+    
+    .address_block {
+        margin: 0 40px 27px 0;
+    }
+    
+    .address_add {
+        margin-top: 13px;
+    }
+    
+    .security {
+        padding: 25px 20px 150px;
+    }
+    
+    .change_data {
+        padding: 27px 0 95px;
+    }
+    
+    /*kabinet partnera history*/
+    .internet_orders, 
+    .benefit_cards {
+        padding: 15px 0 0;
+    }
+    
+    .kabinet_profile .partner_menu ul .partner_menu_history a:before,
+    .kabinet_profile .partner_menu ul .partner_menu_history.active a:before {
+        left: 0;
+        top: 17px;
+        margin-left: 0;
+        width: 34px;
+        height: 29px;
+        
+        background: url(../img/cabinet_menu_sprite.png) -5px -217px no-repeat;
+        background-size: 80px auto;
+    }
+    
+    .kabinet_profile .partner_menu ul .partner_menu_history:hover a:before {
+        background: url(../img/cabinet_menu_sprite.png) -45px -217px no-repeat;
+        background-size: 80px auto;
+    }
+    
+    .orders_table_wrap {
+        margin-right: -46px;
+        margin-left: -46px;
+    }
+    
+    .orders_table_wrap div {
+        max-width: 100%;
+        overflow: scroll;
+    }
+    
+    .orders_table {
+        margin-bottom: 0;
+        min-width: 855px;
+    }
+    
+    
+    /*kabinet partnera structure*/
+    .kabinet_profile .partner_menu ul .partner_menu_network a:before,
+    .kabinet_profile .partner_menu ul .partner_menu_network.active a:before {
+        left: 0;
+        top: 14px;
+        margin-left: 0;
+        width: 38px;
+        height: 34px;
+        
+        background: url(../img/cabinet_menu_sprite.png) 0 -66px no-repeat;
+        background-size: 76px auto;
+    }
+    
+    .kabinet_profile .partner_menu ul .partner_menu_network:hover a:before {
+        background: url(../img/cabinet_menu_sprite.png) -38px -66px no-repeat;
+        background-size: 76px auto;
+    }
+    
+    .structure_menu {
+        margin-top: -23px;
+        margin-bottom: 23px;
+    }
+    .structure_menu_mentor {
+        margin-bottom: 6px;
+    }
+    
+    .mentor_title,
+    .structure_menu_date_title {
+        margin-bottom: 1px;
+    }
+    
+    .structure_submenu {
+        display: none;
+    }
+    
+    .mentor_name {
+        text-decoration: underline;
+    }
+    
+    .structure_table_wrap {
+        margin-left: -46px;
+        margin-right: -46px;
+        width: auto;
+    }
+    
+    
+    /*kabinet partnera finace*/
+    .kabinet_profile .partner_menu ul .partner_menu_finance a:before,
+    .kabinet_profile .partner_menu ul .partner_menu_finance.active a:before {
+        left: 0;
+        top: 16px;
+        margin-left: 0;
+        width: 28px;
+        height: 30px;
+        
+        background: url(../img/cabinet_menu_sprite.png) -5px -169px no-repeat;
+        background-size: 76px auto;
+    }
+    
+    .kabinet_profile .partner_menu ul .partner_menu_finance:hover a:before {
+        background: url(../img/cabinet_menu_sprite.png) -43px -169px no-repeat;
+        background-size: 76px auto;
+    }
+    
+    .finance_fixed_block {
+        margin: -18px -46px 13px -46px;
+        padding: 0 46px;
+        height: 37px;
+    }
+    
+    .finance_fixed_block div {
+        line-height: 37px;
+        width: 32.5%;
+        vertical-align: top;
+    }
+    
+    .finance_fixed_block .products_full {
+        padding: 3px 0;
+        text-align: left;
+        line-height: 15px;
+    }
+    
+    .finance .profile_menu {
+        margin-bottom: 8px;
+        font-size: 13px;
+    }
+    
+    .controls_block_title, 
+    .controls_block {
+        padding-left: 0;
+    }
+    
+    .bonus_account_table {
+        margin-top: 9px;
+    }
+    
+    .controls_block_form {
+        width: 100%;
+        float: none;
+    }
+    
+    .personal_charges .formgrup_search,
+    .personal_charges .formgrup_check {
+        display: inline-block;
+    }
+    
+    .personal_charges .controls_block_title {
+        margin-bottom: 3px;
+    }
+    
+    .formgrup_check .label_for_check {
+        display: block;
+    }
+    
+    .bonus_account, 
+    .personal_charges, 
+    .bonuses_invitation, 
+    .bonuses_sum, 
+    .bonuses_used {
+        padding: 0;
+    }
+    
+    .main_table {
+        margin-bottom: 2px;
+    }
+
+    .structure_menu_date_title,
+    .bonuses_invitation_month {
+        margin-right: 5px;
+    }
+    
+    .bonuses_used_decription {
+        margin-bottom: 10px;
+    }
+    
+    .bonuses_invitation_table, 
+    .bonuses_sum_table {
+        border: none;
+    }
 }
 
 @media all and (max-width: 1000px) and (min-width: 620px) {
@@ -1092,8 +1684,14 @@
     }
 }
 
-
-
+@media all and (min-width: 768px) {
+    .partner_head .bonus_available.bonus_available_mobile,
+    .finance_tab_title,
+    .finance_bonuses_mobile {
+        display: none;
+    }
+}
+    
 @media all and (max-width: 767px) {
 	.hide_on_mobile { 
         display: none; 
@@ -1334,8 +1932,6 @@
     }
     
     /*zaklad*/
-    
-    
     .owl-carousel .owl-controls .owl-nav .owl-prev, 
     .owl-carousel .owl-controls .owl-nav .owl-next, 
     .owl-carousel .owl-controls .owl-dot {
@@ -1408,6 +2004,639 @@
         -webkit-column-count: 2;
         -moz-column-count: 2;
         column-count: 2;
+    }
+    
+    
+    /*kabinet partnera*/
+    .partner_head,
+    .partner_menu {
+        width: 100%;
+        min-height: auto;
+    }
+    
+    .partner_head .ref_code,
+    .partner_head .card_numb,
+    .partner_head .bonus_personal,
+    .partner_head .bonus_available,
+    .partner_head .ball_personal {
+        display: none;
+    }
+    
+    .partner_head .bonus_available.bonus_available_mobile {
+        display: block;
+    }
+    
+    .partner_head {
+        padding: 3px 0 10px 20px;
+    }
+    
+    .userpic, 
+    .user_right,
+    .bonus_available {
+        margin-bottom: 0;
+    }
+    
+    .partner_menu ul li a, 
+    .partner_menu ul li a:active, 
+    .partner_menu ul li a:visited {
+        padding-left: 60px;
+        font-size: 15px;
+        line-height: 39px;
+    }
+
+    .partner_menu {
+        padding: 5px 0;
+    }
+    
+    .partner_menu ul li a:before {
+        left: 16px;
+    }
+    
+    .partner_head p {
+        max-width: 180px;
+    }
+    
+    .user_statuse {
+        color: #ffffff;
+    }
+    
+    
+    /*kabinet partnera profile*/
+    .kabinet_profile .partner_menu {
+        margin-bottom: 8px;
+    }
+    
+    .kabinet_profile .partner_main {
+        padding: 0 17px;
+        min-height: 720px;
+    }
+    
+    .profile_menu > li > a, 
+    .profile_menu > li > a:visited, 
+    .profile_menu > li > a:focus, 
+    .tab_menu > li > a, 
+    .tab_menu > li > a:visited, 
+    .tab_menu > li > a:focus {
+        font-size: 13px;
+    }
+    
+        .finance_tab_title .partner_menu_back,
+        .partner_menu ul li .partner_menu_back,
+        .partner_menu ul li .partner_menu_back:hover,
+        .partner_menu ul li .partner_menu_back:visited,
+        .partner_menu ul li .partner_menu_back:active,
+        .partner_menu ul li .partner_menu_back:focus,
+        .partner_menu ul li.active .partner_menu_back,
+        .partner_menu ul li.active .partner_menu_back:hover,
+        .partner_menu ul li.active .partner_menu_back:visited,
+        .partner_menu ul li.active .partner_menu_back:active,
+        .partner_menu ul li.active .partner_menu_back:focus {
+            display: block;
+            position: absolute;
+            top: 13px;
+            left: 17px;
+            padding-left: 0;
+            margin: 0;
+            width: 20px;
+            height: 15px;
+            background-image: url(../img/arrow_r_small.png);
+        }
+    
+    .kabinet_profile .partner_menu ul li.active a {
+        padding-left: 28px;
+        line-height: 41px;
+    }
+
+        .kabinet_profile .partner_menu ul .partner_menu_profile.active a:before,
+        .kabinet_profile .partner_menu ul .partner_menu_profile a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) 0 -24px no-repeat;
+            background-size: 54px auto;
+        }
+
+        
+        .kabinet_profile .partner_menu ul .partner_menu_profile:hover a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) -27px -24px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_network.active a:before,
+        .kabinet_profile .partner_menu ul .partner_menu_network a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) 0 -47px no-repeat;
+            background-size: 54px auto;
+        }
+        
+        .kabinet_profile .partner_menu ul .partner_menu_network:hover a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) -27px -47px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_reward.active a:before,
+        .kabinet_profile .partner_menu ul .partner_menu_reward a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) 0 -72px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_reward:hover a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) -27px -72px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_study.active a:before,
+        .kabinet_profile .partner_menu ul .partner_menu_study a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) 0 -95px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_study:hover a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) -27px -95px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_finance.active a:before,
+        .kabinet_profile .partner_menu ul .partner_menu_finance a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) 0 -120px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_finance:hover a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) -27px -120px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_history.active a:before,
+        .kabinet_profile .partner_menu ul .partner_menu_history a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) 0 -144px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_history:hover a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) -27px -144px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_chosen.active a:before,
+        .kabinet_profile .partner_menu ul .partner_menu_chosen a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) 0 -167px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_chosen:hover a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) -27px -167px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_write_us.active a:before,
+        .kabinet_profile .partner_menu ul .partner_menu_write_us a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) 0 -189px no-repeat;
+            background-size: 54px auto;
+        }
+
+        .kabinet_profile .partner_menu ul .partner_menu_write_us:hover a:before {
+            left: 0;
+            top: 9px;
+            margin-left: 0;  
+            width: 27px;
+            height: 23px;
+            
+            background: url(../img/cabinet_menu_sprite.png) -27px -189px no-repeat;
+            background-size: 54px auto;
+        }
+    
+    .base, .addition, 
+    .profile_title, 
+    .base label, 
+    .profile_title_description {
+        padding: 0;
+    }
+    
+    .profile_menu {
+        margin-bottom: 7px;
+    }
+    
+    .verification_data {
+        padding: 0;
+        text-align: left;
+    }
+    
+    #profile_address {
+        margin-bottom: 20px;
+    }
+    
+    .profile_verification {
+        margin: 0 0 25px 0;
+    }
+    
+    .address,
+    .security {
+        padding: 0;
+    }
+    
+    .address {
+        font-size: 13px;
+    }
+    
+    .address_block {
+        display: block;
+        margin: 0 0 22px 0;
+        padding: 19px 37px;
+        width: 100%;
+        max-width: 286px;
+    }
+    
+    .adress_name:before, 
+    .adress_main:before, 
+    .adress_phone:before {
+        left: -22px;
+        top: 2px;
+        width: 11px;
+        height: 14px;
+        background: url(../img/address_sprite.png) 0 1px no-repeat;
+        background-size: 11px auto;
+    }
+    
+    .adress_main:before {
+        background: url(../img/address_sprite.png) 0 -13px no-repeat;
+        background-size: 11px auto;
+    }
+    
+    .adress_phone:before {
+        background: url(../img/address_sprite.png) 0 -27px no-repeat;
+        background-size: 11px auto;
+    }
+    
+    .adress_name {
+        margin-bottom: 11px;
+    }
+    
+    .adress_main, 
+    .adress_phone {
+        margin-bottom: 14px;
+    }
+    
+    .address_add {
+        margin: 3px auto 25px;
+    }
+    
+    .security {
+        text-align: justify;
+        text-align-last: justify;
+    }
+    
+    .change_password, 
+    .change_pin {
+        margin: 0 0 15px 0;
+    }
+    
+    .security_description {
+        text-align: left;
+        text-align-last: left;
+    }
+    
+    .change_data textarea {
+        font-size: 13px;
+    }
+    
+    .change_data textarea::-webkit-input-placeholder {
+        font-size: 13px;
+    }
+
+    .change_data textarea::-moz-placeholder {
+        font-size: 13px;
+    }
+
+    .change_data textarea:-moz-placeholder {
+        font-size: 13px;
+    }
+
+    .change_data textarea:-ms-input-placeholder {
+        font-size: 13px;
+    }
+
+    .change_data textarea input[placeholder] {
+        font-size: 13px;
+    }
+    
+    .request_change_data {
+        max-width: 195px;
+        height: 43px;
+        line-height: 15px;
+    }
+    
+    /*kabinet partnera history*/
+    
+    .kabinet_profile.history .partner_main {
+        min-height: auto;
+    }
+    
+    .orders_title,
+    .order_controls {
+        display: none;
+    }
+    
+    .orders_table_wrap {
+        margin-right: -17px;
+        margin-left: -17px;
+    }
+    
+    .history_modal .modal-dialog {
+        margin-top: 28px;
+        width: 100%;
+    }
+    
+    .history_modal_table_wrap {
+        overflow: scroll;
+    }
+    
+    .history_modal_table_wrap_02 {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+    
+    .history_modal table {
+        width: 718px;
+    }
+    
+    .order_info_table th {
+        border-bottom: 1px solid #999999;
+    }
+    
+    .order_info_table td {
+        background-color: #ffffff;
+    }
+    
+    .history_modal .order_status_table {
+        width: 100%;
+    }
+    
+    .order_status_left,
+    .order_status_right {
+        display: block;
+        width: 100%;
+    }
+    
+    .order_status_left {
+        margin: 0;
+        padding: 0 35px;
+    }
+    
+    .order_status_right {
+        padding: 0 65px;
+    }
+    
+    .order_status_table {
+        margin-bottom: 13px;
+    }
+    
+    .order_repeat_wrap {
+        margin-bottom: 5px;
+    }
+
+    
+    
+    /*kabinet partnera structure*/
+    .structure_menu {
+        margin-top: 0;
+        margin-bottom: 11px;
+    }
+    
+    .structure_menu > div {
+        width: 100%;
+    }
+    
+    .registration_search_wrap {
+        display: none;
+    }
+    
+    .structure_table_wrap {
+        margin-left: -17px;
+        margin-right: -17px;
+    }
+    
+    .structure_menu_date {
+        margin-bottom: 10px;
+    }
+    
+    .structure_search_wrap {
+        margin-bottom: 13px;
+    }
+    
+    .registration_partner,
+    .registration_partner:hover,
+    .registration_partner:visited,
+    .registration_partner:active,
+    .registration_partner:focus {
+        display: block;
+    }
+    
+    .mentor_modal .modal-dialog {
+        width: auto;
+        max-width: 282px;
+    }
+    .modal-dialog {
+        margin: 170px auto;
+    }
+    
+    /*kabinet profile finance*/
+    .finance {
+        margin-bottom: -13px;
+    }
+    
+    .finance_fixed_block,
+    .finance_mobile_hidden {
+        display: none;
+    }
+    
+    .kabinet_profile.finance .partner_main {
+        min-height: auto;
+    }
+    
+    .finance_bonuses_mobile {
+        padding: 0 0 5px 31px;
+        font-size: 13px;
+    }
+    
+    .finance_bonuses_mobile_title {
+        margin-bottom: 0;
+        width: 200px;
+    }
+    
+    .finance_bonuses_mobile_description {
+        margin-bottom: 5px;
+        color: #999999;
+    }
+    
+    .finance .profile_menu {
+        margin: 0 -17px;
+        width: auto;
+        border: none;
+    }
+    
+    .finance .profile_menu li {
+        display: block;
+        width: 100%;
+        min-height: auto;
+        border-top: 1px solid #999999;
+    }
+    
+    .finance .profile_menu li a,
+    .finance .profile_menu li a:hover,
+    .finance .profile_menu li a:visited,
+    .finance .profile_menu li a:active,
+    .finance .profile_menu li a:focus {
+        display: block;
+        padding: 0 48px;
+        width: 100%;
+        height: 37px;
+        line-height: 37px;
+        background-color: #ffffff;
+        color: #999999;
+        text-align: left;
+        cursor: pointer;
+    }
+    
+    .finance .profile_menu li a br {
+        display: none;
+    }
+    
+    .finance_tab_title {
+        position: relative;
+        margin: 0 -17px;
+        line-height: 41px;
+        color: #ffffff;
+        text-align: center;
+        background-color: #333333;
+    }
+    
+    .finance_tab_title span {
+        cursor: pointer;
+    }
+    
+    .bonuses_used .finance_tab_title {
+        margin-bottom: 8px;
+    }
+    
+    .finance_table_wrap {
+        margin: 0 -17px;
+        overflow: scroll;
+    }
+    
+    .bonus_account_table,
+    .personal_charges_table,
+    .bonuses_invitation_table {
+        min-width: 680px;
+    }
+    
+    .finance .controls_block_form {
+        margin: 0 -17px;
+        padding: 10px 17px;
+        width: auto;
+        border-bottom: 1px solid #cccccc;
+    }
+    
+    .finance .formgrup_search {
+        display: none;
+    }
+    
+    .finance .controls_block {
+        padding: 10px 0;
+    }
+    
+    .bonuses_used_decription {
+        margin-bottom: 15px;
+    }
+    
+    .bonuses_used_btn {
+        margin-bottom: 11px;
     }
 }
 
@@ -2162,11 +3391,11 @@
     
     .profile_menu > li > a, 
     .profile_menu > li > a:visited, 
-    .profile_menu > li > a:focus, 
+    .profile_menu > li > a:focus,
     .tab_menu > li > a, 
     .tab_menu > li > a:visited, 
     .tab_menu > li > a:focus {
-        height: 25px;
+        min-height: 32px;
         line-height: 15px;
         padding: 5px;
     }
