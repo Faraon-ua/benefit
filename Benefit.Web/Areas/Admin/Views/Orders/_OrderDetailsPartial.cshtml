@@ -9,6 +9,10 @@
             <th>Номер</th>
             <th>Дата</th>
             <th>Сума (грн)</th>
+            @if (Model.PaymentType == PaymentType.Bonuses)
+            {
+                <th>Комісія (грн)</th>
+            }
             <th>Бали</th>
             <th>Бонуси</th>
             <th>Спосіб оплати</th>
@@ -28,6 +32,10 @@
             <td>@Model.OrderNumber</td>
             <td>@Model.Time.ToLocalTimeWithFormat()</td>
             <td>@Model.Sum.ToString("F")</td>
+            @if (Model.PaymentType == PaymentType.Bonuses)
+            {
+                <td>@Model.Commission.ToString("F")</td>
+            }
             <td>@Model.PointsSum.ToString("F")</td>
             <td>@Model.PersonalBonusesSum.ToString("F")</td>
             <td>@Model.PaymentType</td>
@@ -50,14 +58,7 @@
             </td>
             <td>Коментар статусу</td>
             <td colspan="5">
-                @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
-                {
-                    @Html.TextBox("StatusComment", Model.StatusComment, new { @class = "width-100" })
-                }
-                else
-                {
-                    @Model.StatusComment
-                }
+                @Html.TextBox("StatusComment", Model.StatusComment, new { @class = "width-100" })
             </td>
         </tr>
     </tbody>
@@ -90,7 +91,7 @@
                     @product.ProductName
                 </td>
                 <td>
-                    @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
+                    @if (Model.Status == OrderStatus.Processed)
                     {
                         <input type="text" class="number-input product-amount col-sm-12" value="@product.Amount" />
                     }
@@ -100,7 +101,7 @@
                     }
                 </td>
                 <td>
-                    @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
+                    @if (Model.Status == OrderStatus.Processed)
                     {
                         <input type="text" class="number-input product-price col-md-12" value="@product.ProductPrice" />
                     }
@@ -111,7 +112,7 @@
                 </td>
                 <td>@((productSum + productOptionsSum).ToString("F"))</td>
                 <td>
-                    @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
+                    @if (Model.Status == OrderStatus.Processed)
                     {
                         <a class="btn btn-success update-product" href="#" data-product-id="@product.ProductId">
                             <i class="icon-refresh"></i>

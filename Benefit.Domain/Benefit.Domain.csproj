@@ -216,6 +216,10 @@
     <Compile Include="Migrations\201612181612068_BenefitCardBase.Designer.cs">
       <DependentUpon>201612181612068_BenefitCardBase.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612211526305_TransactionComission.cs" />
+    <Compile Include="Migrations\201612211526305_TransactionComission.Designer.cs">
+      <DependentUpon>201612211526305_TransactionComission.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
@@ -361,6 +365,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612181612068_BenefitCardBase.resx">
       <DependentUpon>201612181612068_BenefitCardBase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612211526305_TransactionComission.resx">
+      <DependentUpon>201612211526305_TransactionComission.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

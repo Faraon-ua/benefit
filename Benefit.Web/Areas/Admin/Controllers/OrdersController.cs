@@ -8,7 +8,6 @@ using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
-using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -47,17 +46,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
             order.StatusComment = statusComment;
 
             //add points and bonuses if order finished and is not bonuses
-            if (orderStatus == OrderStatus.Finished && order.PaymentType != PaymentType.Bonuses)
+            if (orderStatus == OrderStatus.Finished)
             {
-                TransactionsService.AddOrderTransaction(order);
+                TransactionsService.AddOrderFinishedTransaction(order);
             }
+            if (orderStatus == OrderStatus.Abandoned && order.PaymentType == PaymentType.Bonuses)
+            {
+                TransactionsService.AddBonusesOrderAbandonedTransaction(order);
+            }
+
             db.Entry(order).State = EntityState.Modified;
             db.SaveChanges();
         }
 
         public ActionResult CheckNewOrder()
         {
-            return Json(db.Orders.Any(entry => entry.OrderType == OrderType.BenefitSite), JsonRequestBehavior.AllowGet);
+            return Json(db.Orders.Any(entry => entry.OrderType == OrderType.BenefitSite && entry.Status == OrderStatus.Created), JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetOrdersList(OrderType orderType, int page = 0)
         {

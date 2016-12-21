@@ -14,7 +14,10 @@ namespace Benefit.Domain.Models
         DirectorBonus,
         SilverBonus,
         GoldBonus,
-        SellerInvolvementBonus
+        SellerInvolvementBonus,
+        OrderRefund,
+        BonusesOrderPayment,
+        BonusesOrderAbandonedPayment
     }
     public class Transaction
     {
@@ -22,8 +25,9 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string Id { get; set; }
         public TransactionType Type { get; set; }
-        public double? Bonuses { get; set; }
-        public double? BonusesBalans { get; set; }
+        public double Bonuses { get; set; }
+        public double Commission { get; set; }
+        public double BonusesBalans { get; set; }
         public DateTime Time { get; set; }
 
         [MaxLength(128)]

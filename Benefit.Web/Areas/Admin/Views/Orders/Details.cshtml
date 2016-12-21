@@ -70,9 +70,9 @@
 <div id="orderProductForm" class="margin-top-10">
 </div>
 @Html.Partial("_OrderDetailsPartial", Model)
-@if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
+@if (Model.Status == OrderStatus.Processed)
 {
     <p>
-        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Додати товар" onclick=" LoadOrderProductForm() ">Додати товар</a>
+        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Додати товар" onclick=" LoadOrderProductForm()">Додати товар</a>
     </p>
 }
