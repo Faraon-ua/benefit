@@ -220,6 +220,10 @@
     <Compile Include="Migrations\201612211526305_TransactionComission.Designer.cs">
       <DependentUpon>201612211526305_TransactionComission.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612221001233_OrderProductOptionAddPrimaryKey.cs" />
+    <Compile Include="Migrations\201612221001233_OrderProductOptionAddPrimaryKey.Designer.cs">
+      <DependentUpon>201612221001233_OrderProductOptionAddPrimaryKey.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
@@ -368,6 +372,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612211526305_TransactionComission.resx">
       <DependentUpon>201612211526305_TransactionComission.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612221001233_OrderProductOptionAddPrimaryKey.resx">
+      <DependentUpon>201612221001233_OrderProductOptionAddPrimaryKey.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
