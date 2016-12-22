@@ -489,7 +489,10 @@ $('body').on('click', '.product_modal_plus, .product_modal_minus', function () {
     var productAmount = $(this).parent().children('.product_modal_amount');
     var valueToAdd = 1;
     var isMinus = $(this).hasClass("product_modal_minus");
-    var isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+    var isWeightProduct = false;
+    if ($(this).parent().attr("data-weight-product")) {
+        isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+    }
     if (isWeightProduct) {
         valueToAdd = 0.1;
     }

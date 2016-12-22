@@ -34,7 +34,7 @@ namespace Benefit.Domain.Models
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    return db.OrderProductOptions.Where(entr => entr.ProductId == ProductId).ToList();
+                    return db.OrderProductOptions.Where(entr => entr.ProductId == ProductId && entr.OrderId == OrderId).ToList();
                 }
             }
         }
