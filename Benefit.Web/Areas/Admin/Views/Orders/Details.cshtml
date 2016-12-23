@@ -18,6 +18,7 @@
         var orderProductFromUrl = '@Url.Action("AddProductForm", new { orderId = Model.Id })';
         var updateOrderStatusUrl = '@Url.Action("UpdateStatus")';
         var updateProductDetailsUrl = '@Url.Action("UpdateOrderProduct")';
+        var updateProductOptionDetailsUrl = '@Url.Action("UpdateOrderProductOption")';
 
         function LoadOrderProductForm() {
             $("#orderProductForm").load(orderProductFromUrl, function (data) {
@@ -58,6 +59,24 @@
                 $.post(updateProductDetailsUrl, {
                     orderId: orderId,
                     productId: productId,
+                    amount: amount,
+                    price: price
+                }, function(url) {
+                    window.location.href = url;
+                });
+            });
+
+            $(".update-product-option").click(function () {
+                var orderId = '@Model.Id';
+                var productId = $(this).attr("data-product-id");
+                var productOptionId = $(this).attr("data-product-option-id");
+                var tr = $(this).parents("tr");
+                var amount = tr.find(".product-amount").val();
+                var price = tr.find(".product-price").val();
+                $.post(updateProductOptionDetailsUrl, {
+                    orderId: orderId,
+                    productId: productId,
+                    productOptionId: productOptionId,
                     amount: amount,
                     price: price
                 }, function(url) {

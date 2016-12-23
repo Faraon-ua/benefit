@@ -9,10 +9,6 @@
             <th>Номер</th>
             <th>Дата</th>
             <th>Сума (грн)</th>
-            @if (Model.PaymentType == PaymentType.Bonuses)
-            {
-                <th>Комісія (грн)</th>
-            }
             <th>Бали</th>
             <th>Бонуси</th>
             <th>Спосіб оплати</th>
@@ -77,7 +73,7 @@
             <th></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody style="max-height:none; overflow-y: auto;">
         @foreach (var product in Model.OrderProducts)
         {
             var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
@@ -123,8 +119,39 @@
             {
                 <tr>
                     <td>@productOption.ProductOptionName</td>
-                    <td>@productOption.Amount</td>
-                    <td>@productOption.ProductOptionPriceGrowth</td>
+                    <td>
+                        @if (Model.Status == OrderStatus.Processed)
+                        {
+                            <input type="text" class="number-input product-amount col-sm-12" value="@productOption.Amount" />
+                        }
+                        else
+                        {
+                            @productOption.Amount
+                        }
+                    </td>
+
+                    <td>
+                        @if (Model.Status == OrderStatus.Processed)
+                        {
+                            <input type="text" class="number-input product-price col-md-12" value="@productOption.ProductOptionPriceGrowth" />
+                        }
+                        else
+                        {
+                            @productOption.ProductOptionPriceGrowth
+                        }
+                    </td>
+                    @if (Model.Status == OrderStatus.Processed)
+                    {
+                        <td></td>
+                        <td>
+                            <a class="btn btn-success update-product-option" href="#" data-product-option-id="@productOption.ProductOptionId" data-product-id="@product.ProductId">
+                                <i class="icon-refresh"></i>
+                            </a>
+                            <a class="btn btn-danger" href="@Url.Action("DeleteOrderProductOption", new { orderId = Model.Id, productId = product.ProductId, productOptionId = productOption.ProductOptionId })" onclick=" return confirm('Ви впевненні?') ">
+                                <i class="icon-trash"></i>
+                            </a>
+                        </td>
+                    }
                 </tr>
             }
         }

@@ -23,11 +23,12 @@ namespace Benefit.Services.Domain
             }
 
             //add transaction for personal purchase
+            var bonuses = Math.Abs(transaction.Bonuses);
             var bonusesPaymentTransaction = new Transaction()
             {
                 Id = Guid.NewGuid().ToString(),
-                Bonuses = (transaction.Bonuses + transaction.Commission),
-                BonusesBalans = user.BonusAccount + (transaction.Bonuses + transaction.Commission),
+                Bonuses = bonuses + transaction.Commission,
+                BonusesBalans = user.BonusAccount + (bonuses + transaction.Commission),
                 OrderId = order.Id,
                 PayeeId = user.Id,
                 Time = DateTime.UtcNow,

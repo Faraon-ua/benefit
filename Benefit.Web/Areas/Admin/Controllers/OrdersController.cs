@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
 
@@ -16,6 +17,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private OrderService OrderService = new OrderService();
         private TransactionsService TransactionsService = new TransactionsService();
+
+        private void UpdateOrderDetails(Order order)
+        {
+            //update bonuses and points
+            var seller = db.Sellers.Find(order.SellerId);
+            order.Sum = order.GetOrderSum();
+            order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
+            order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
+        }
 
         // GET: /Admin/Orders/
         public ActionResult Index()
@@ -91,8 +101,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == productId);
             product.Amount = amount;
             product.ProductPrice = price;
-            order.Sum = order.GetOrderSum();
+            UpdateOrderDetails(order);
             db.Entry(product).State = EntityState.Modified;
+            db.Entry(order).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json(Url.Action("Details", new { id = orderId }));
+        }
+
+        public ActionResult UpdateOrderProductOption(string orderId, string productId, string productOptionId, int amount, double price)
+        {
+            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            var productOption = order.OrderProductOptions.FirstOrDefault(entry => entry.ProductId == productId && entry.ProductOptionId == productOptionId);
+            productOption.Amount = amount;
+            productOption.ProductOptionPriceGrowth = price;
+            db.Entry(productOption).State = EntityState.Modified;
+            db.SaveChanges();
+
+            UpdateOrderDetails(order);
             db.Entry(order).State = EntityState.Modified;
             db.SaveChanges();
             return Json(Url.Action("Details", new { id = orderId }));
@@ -105,8 +130,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.OrderProductOptions.RemoveRange(product.DbOrderProductOptions);
             db.OrderProducts.Remove(product);
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
-            var orderSum = order.GetOrderSum();
-            order.Sum = orderSum;
+            UpdateOrderDetails(order);            
+            db.SaveChanges();
+            return RedirectToAction("Details", new { id = orderId });
+        }
+
+        public ActionResult DeleteOrderProductOption(string orderId, string productId, string productOptionId)
+        {
+            var productOption =
+                db.OrderProductOptions.FirstOrDefault(entry => entry.OrderId == orderId && entry.ProductId == productId && entry.ProductOptionId == productOptionId);
+            db.OrderProductOptions.Remove(productOption);
+            db.SaveChanges();
+            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            UpdateOrderDetails(order);            
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderId });
         }
@@ -125,13 +161,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             orderProduct.ProductId = Guid.NewGuid().ToString();
             db.OrderProducts.Add(orderProduct);
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);
-            var orderSum =
-             order.OrderProducts.Sum(
-                 entry =>
-                     entry.ProductPrice * entry.Amount +
-                     entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-            order.Sum = orderSum;
-
+            UpdateOrderDetails(order);
+            db.Entry(order).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderProduct.OrderId });
         }
