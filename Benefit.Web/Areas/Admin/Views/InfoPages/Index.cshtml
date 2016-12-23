@@ -42,30 +42,74 @@
 <p>
     @Html.ActionLink("Створити сторінку", "CreateOrUpdate", "InfoPages", null, new { @class = "btn btn-info" })
 </p>
-<ol class="dd-list width-30" id="infoPages">
-    @foreach (var page in Model)
-    {
-        <li class="dd-item cursor-move" data-pageId="@page.Id">
-            <div class="dd-handle">
-                @page.Name
 
-                <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = page.Id })" onclick="return confirm('Видалити сторінку @page.Name?');">
-                    <i class="icon-trash"></i>
-                </a>
-                <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = page.Id })">
-                    <i class="icon-edit"></i>
-                </a>
-                <div style="clear: both;"></div>
-            </div>
+<div class="tabbable">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active">
+            <a data-toggle="tab" href="#news">
+                <i class="green icon-book bigger-110"></i>
+                Новини
+            </a>
         </li>
-    }
-</ol>
 
-@if (Model.Count() > 2)
-{
-    <hr />
-    <div class="control-group">
-        <button id="savePagesOrder" class="btn btn-success width-20" onclick="SaveCatOrder();">Зберегти сортування</button>
-        @Html.ActionLink("Cкасувати", "Index", "InfoPages", null, new { @class = "btn btn-danger width-20" })
+        <li>
+            <a data-toggle="tab" href="#pages">
+                <i class="green icon-desktop bigger-110"></i>
+                Сторінки
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="news" class="tab-pane in active">
+            <ol class="dd-list width-30" id="infoPages">
+                @foreach (var page in Model.Where(entry=>entry.IsNews))
+                {
+                    <li class="dd-item cursor-move" data-pageid="@page.Id">
+                        <div class="dd-handle">
+                            @page.Name
+
+                            <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = page.Id })" onclick="return confirm('Видалити сторінку @page.Name?');">
+                                <i class="icon-trash"></i>
+                            </a>
+                            <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = page.Id })">
+                                <i class="icon-edit"></i>
+                            </a>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </li>
+                }
+            </ol>
+           @* @if (Model.Count() > 2)
+            {
+                <hr />
+                <div class="control-group">
+                    <button id="savePagesOrder" class="btn btn-success width-20" onclick="SaveCatOrder();">Зберегти сортування</button>
+                    @Html.ActionLink("Cкасувати", "Index", "InfoPages", null, new { @class = "btn btn-danger width-20" })
+                </div>
+            }*@
+        </div>
+
+        <div id="pages" class="tab-pane">
+            <ol class="dd-list width-30" id="infoPages">
+                @foreach (var page in Model.Where(entry => !entry.IsNews))
+                {
+                    <li class="dd-item cursor-move" data-pageid="@page.Id">
+                        <div class="dd-handle">
+                            @page.Name
+
+                            <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = page.Id })" onclick="return confirm('Видалити сторінку @page.Name?');">
+                                <i class="icon-trash"></i>
+                            </a>
+                            <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = page.Id })">
+                                <i class="icon-edit"></i>
+                            </a>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </li>
+                }
+            </ol>
+        </div>
     </div>
-}
+</div>
+

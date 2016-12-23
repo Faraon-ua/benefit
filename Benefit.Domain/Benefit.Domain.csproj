@@ -224,6 +224,10 @@
     <Compile Include="Migrations\201612221001233_OrderProductOptionAddPrimaryKey.Designer.cs">
       <DependentUpon>201612221001233_OrderProductOptionAddPrimaryKey.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612231547235_AddShortNewsContent.cs" />
+    <Compile Include="Migrations\201612231547235_AddShortNewsContent.Designer.cs">
+      <DependentUpon>201612231547235_AddShortNewsContent.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
@@ -375,6 +379,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612221001233_OrderProductOptionAddPrimaryKey.resx">
       <DependentUpon>201612221001233_OrderProductOptionAddPrimaryKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612231547235_AddShortNewsContent.resx">
+      <DependentUpon>201612231547235_AddShortNewsContent.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

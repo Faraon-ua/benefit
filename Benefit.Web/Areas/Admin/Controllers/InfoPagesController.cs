@@ -37,7 +37,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                infopage.CreatedOn = DateTime.UtcNow;
                 infopage.LastModified = DateTime.UtcNow;
                 infopage.LastModifiedBy = User.Identity.Name;
                 var logo = Request.Files[0];
@@ -61,6 +60,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 else
                 {
+                    infopage.CreatedOn = DateTime.UtcNow;
                     db.InfoPages.Add(infopage);
                 }
                 LocalizationService.Save(infopage.Localizations);

@@ -14,6 +14,8 @@ namespace Benefit.Domain.Models
         [MaxLength(250)]
         [Required]
         public string UrlName { get; set; }
+        [MaxLength(512)]
+        public string ShortContent { get; set; }
         public string Content { get; set; }
         [MaxLength(128)]
         public string ImageUrl { get; set; }

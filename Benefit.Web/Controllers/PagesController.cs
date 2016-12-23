@@ -23,5 +23,10 @@ namespace Benefit.Web.Controllers
             return View(page);
         }
 
+        public ActionResult News()
+        {
+            var news = db.InfoPages.Where(entry => entry.IsNews).OrderByDescending(entry => entry.CreatedOn).ToList();
+            return View(news);
+        }
 	}
 }

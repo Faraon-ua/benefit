@@ -1532,6 +1532,7 @@
     <Content Include="Views\Catalog\_ExpandableProductPartial.cshtml" />
     <Content Include="Views\Home\GettingBetter.cshtml" />
     <Content Include="Views\Account\PostRegister.cshtml" />
+    <Content Include="Views\Pages\News.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
