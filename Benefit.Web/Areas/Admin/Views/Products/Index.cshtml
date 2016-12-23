@@ -9,6 +9,8 @@
     @*    <script src="~/Scripts/sorting-filtering.js"></script>*@
 
     <script>
+        var updateWeightProductUrl = '@Url.Action("UpdateWeightProduct")';
+        
         $(function () {
             $(".chosen-select").chosen({
                 search_contains: true
@@ -21,6 +23,20 @@
 
             $("button[type=submit]").click(function () {
                 $("#Page").val(1);
+            });
+
+            $("body").on("click", ".weight-product", function () {
+                var product = $(this);
+                product.attr("disabled", true);
+                var id = product.attr("data-product-id");
+                var checked = this.checked;
+                $.post(updateWeightProductUrl,
+                {
+                    id: id,
+                    isWeight: checked
+                }, function() {
+                    product.removeAttr("disabled");
+                });
             });
         });
 

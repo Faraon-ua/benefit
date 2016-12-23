@@ -26,6 +26,9 @@ else
                         Наявність
                     </th>
                     <th>
+                        Ваговий
+                    </th>
+                    <th>
                         Ціна
                     </th>
                     <th>
@@ -62,6 +65,9 @@ else
                             {
                                 @product.AvailableAmount
                             }
+                        </td>
+                        <td>
+                            <input type="checkbox" class="weight-product" @(product.IsWeightProduct ? "checked" : "") data-product-id="@product.Id" />
                         </td>
                         <td>
                             @product.Price

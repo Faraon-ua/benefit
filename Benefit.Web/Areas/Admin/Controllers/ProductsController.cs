@@ -199,5 +199,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult UpdateWeightProduct(string id, bool isWeight)
+        {
+            var product = db.Products.Find(id);
+            product.IsWeightProduct = isWeight;
+            db.Entry(product).State = EntityState.Modified;
+            db.SaveChanges();
+            return Json("success");
+        }
     }
 }

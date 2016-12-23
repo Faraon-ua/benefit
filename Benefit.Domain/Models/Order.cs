@@ -31,6 +31,7 @@ namespace Benefit.Domain.Models
         {
             Id = Guid.NewGuid().ToString();
             Status = OrderStatus.Created;
+            Transactions = new Collection<Transaction>();
             OrderProducts = new Collection<OrderProduct>();
             OrderProductOptions = new Collection<OrderProductOption>();
         }
@@ -63,8 +64,15 @@ namespace Benefit.Domain.Models
         public string PersonnelName { get; set; }
         public DateTime LastModified { get; set; }
         public string LastModifiedBy { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } 
         public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
+
+        [NotMapped]
+        public Transaction BonusPaymentTransaction
+        {
+            get { return Transactions.FirstOrDefault(entry => entry.Type == TransactionType.BonusesOrderPayment); }
+        }
 
         public double GetOrderSum()
         {

@@ -9,6 +9,10 @@
             <th>Номер</th>
             <th>Дата</th>
             <th>Сума (грн)</th>
+            @if (Model.PaymentType == PaymentType.Bonuses)
+            {
+                <th>Сплачено бонусами</th>
+            }
             <th>Бали</th>
             <th>Бонуси</th>
             <th>Спосіб оплати</th>
@@ -28,6 +32,10 @@
             <td>@Model.OrderNumber</td>
             <td>@Model.Time.ToLocalTimeWithFormat()</td>
             <td>@Model.Sum.ToString("F")</td>
+            @if (Model.PaymentType == PaymentType.Bonuses)
+            {
+                <td>@Math.Abs(Model.BonusPaymentTransaction.Bonuses).ToString("F")</td>
+            }
             <td>@Model.PointsSum.ToString("F")</td>
             <td>@Model.PersonalBonusesSum.ToString("F")</td>
             <td>@Model.PaymentType</td>
