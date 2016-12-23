@@ -1,4 +1,5 @@
-﻿@model List<Benefit.Domain.Models.InfoPage>
+﻿@using Benefit.Common.Extensions
+@model List<Benefit.Domain.Models.InfoPage>
 
 @{
     ViewBag.Title = "Новини";
@@ -7,7 +8,7 @@
 <h2>Новини</h2>
 @foreach (var page in Model)
 {
-    <div class="content">
+    <div class="content margin-top-10">
         <div class="row">
             <div class="col-md-3">
                 <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })">
@@ -23,6 +24,9 @@
                     </h3>
                     <p>
                         @page.ShortContent
+                    </p>
+                    <p>
+                        @page.CreatedOn.ToLocalTimeWithDateFormat()
                     </p>
                 </div>
             </div>
