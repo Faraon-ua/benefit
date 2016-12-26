@@ -1,4 +1,8 @@
 ﻿@model IEnumerable<Benefit.Domain.Models.Message>
+@if (!User.Identity.IsAuthenticated)
+{
+    <span>Для користування чатом авторизуйтесь на сайті</span>
+}
 <div class="container">
     <div class="row">
         <div class="col-md-12">

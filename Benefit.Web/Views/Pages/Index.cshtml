@@ -41,6 +41,13 @@
                 $(".chat").load(messagesUrl);
             }, 5000);
 
+            $("body").on('keydown', '#btn-input', function (e) {
+                if (e.which == 13) {
+                    e.preventDefault();
+                    $("#btn-chat").click();
+                }
+            });
+
             $("body").on("click", "#btn-chat", function () {
                 var message = $("#btn-input").val();
                 $.post(addChatMessageUrl, { message: message }, function (data) {
