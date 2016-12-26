@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Web.Areas.Admin.Controllers.Base;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class PersonnelController : Controller
+    public class PersonnelController : AdminController
     {
         ApplicationDbContext db = new ApplicationDbContext();
 

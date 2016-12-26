@@ -4,10 +4,11 @@ using System.Net;
 using System.Web.Mvc;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Web.Areas.Admin.Controllers.Base;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class RegionsController : Controller
+    public class RegionsController : AdminController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 

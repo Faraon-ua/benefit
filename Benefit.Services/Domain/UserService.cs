@@ -71,6 +71,17 @@ namespace Benefit.Services.Domain
             return user;
         }
 
+        public ApplicationUser GetUserInfoWithRegionsAndOwnedSellers(string id)
+        {
+            var user =
+                db.Users.Include(entry => entry.Region)
+                    .Include(entry => entry.Addresses)
+                    .Include(entry => entry.Addresses.Select(addr => addr.Region))
+                    .Include(entry => entry.OwnedSellers)
+                    .FirstOrDefault(entry => entry.Id == id);
+            return user;
+        }
+
         public Dictionary<string, List<ApplicationUser>> GetPartnersByReferalIds(string[] userIds)
         {
             var allPartners = db.Users.Include(entry => entry.Region).Where(entry => userIds.Contains(entry.ReferalId)).ToList();

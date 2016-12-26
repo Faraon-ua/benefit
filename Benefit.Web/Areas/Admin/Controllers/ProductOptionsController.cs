@@ -20,7 +20,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (sellerId == null && User.IsInRole(DomainConstants.SellerRoleName))
             {
-                sellerId = Session[DomainConstants.SellerSessionIdKey].ToString();
+                sellerId = Seller.CurrentAuthorizedSellerId;
             }
             List<ProductOption> productOptions;
             Product product = null;

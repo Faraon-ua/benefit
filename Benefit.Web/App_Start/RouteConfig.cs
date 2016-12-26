@@ -44,7 +44,7 @@ namespace Benefit.Web
                 );
 
             routes.MapRoute(
-                name: RouteConstants.ProductRouteName + "WithSeller",
+                name: RouteConstants.ProductRouteWithSellerName,
                 url:
                     RouteConstants.SellersRoutePrefix + "/{sellerUrl}/" + RouteConstants.CategoriesRoutePrefix +
                     "/{categoryUrl}/" + RouteConstants.ProductRoutePrefix + "/{productUrl}",

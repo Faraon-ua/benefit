@@ -8,11 +8,12 @@ using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Services.Domain;
+using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class OrdersController : Controller
+    public class OrdersController : AdminController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private OrderService OrderService = new OrderService();

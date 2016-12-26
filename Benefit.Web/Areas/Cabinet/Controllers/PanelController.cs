@@ -180,7 +180,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult Zakladu()
         {
-            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
+            var user = UserService.GetUserInfoWithRegionsAndOwnedSellers(User.Identity.GetUserId());
             return View(user);
         }
 

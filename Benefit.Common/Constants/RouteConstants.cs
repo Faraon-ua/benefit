@@ -8,6 +8,7 @@
         public const string SellersRouteName = "SellersRoute";
         public const string SellersRoutePrefix = "postachalnyk";
         
+        public const string ProductRouteWithSellerName = "ProductRouteWithSeller";
         public const string ProductRouteName = "ProductRoute";
         public const string ProductRoutePrefix = "tovar";
 

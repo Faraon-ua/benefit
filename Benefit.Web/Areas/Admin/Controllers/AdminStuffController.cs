@@ -1,11 +1,12 @@
 ﻿using System.Web.Mvc;
 using Benefit.Services;
 using Benefit.Services.Admin;
+using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class AdminStuffController : Controller
+    public class AdminStuffController : AdminController
     {
 
         //todo: change controller name

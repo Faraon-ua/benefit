@@ -41,6 +41,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<OrderProductOption> OrderProductOptions { get; set; }
         public DbSet<Personnel> Personnels { get; set; }
         public DbSet<BenefitCard> BenefitCards { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Web;
+using Benefit.Common.Constants;
 
 namespace Benefit.Domain.Models
 {
@@ -77,5 +79,16 @@ namespace Benefit.Domain.Models
         public virtual ICollection<ShippingMethod> ShippingMethods { get; set; }
         public ICollection<ProductOption> ProductOptions { get; set; }
         public ICollection<Personnel> Personnels { get; set; }
+
+        [NotMapped]
+        public static string CurrentAuthorizedSellerId
+        {
+            get
+            {
+                return HttpContext.Current.Session[DomainConstants.SellerSessionIdKey] == null
+                    ? null
+                    : HttpContext.Current.Session[DomainConstants.SellerSessionIdKey].ToString();
+            }
+        }
     }
 }

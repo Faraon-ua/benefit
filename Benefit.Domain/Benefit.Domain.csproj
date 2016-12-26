@@ -56,6 +56,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
       <Private>True</Private>
@@ -228,8 +229,13 @@
     <Compile Include="Migrations\201612231547235_AddShortNewsContent.Designer.cs">
       <DependentUpon>201612231547235_AddShortNewsContent.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612261058141_Messages.cs" />
+    <Compile Include="Migrations\201612261058141_Messages.Designer.cs">
+      <DependentUpon>201612261058141_Messages.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BenefitCard.cs" />
+    <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\ApplicationUser.cs">
@@ -382,6 +388,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612231547235_AddShortNewsContent.resx">
       <DependentUpon>201612231547235_AddShortNewsContent.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612261058141_Messages.resx">
+      <DependentUpon>201612261058141_Messages.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

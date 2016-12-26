@@ -7,10 +7,19 @@
     <div class="vertical_menu" id="right-menu">
     </div>
 }
+@section styles
+{
+    <link href="~/Content/css/chat.css" rel="stylesheet" />
+}
 @section scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 
     <script>
+        var chatUrl = '@Url.Action("Chat", "Helper")';
+        var messagesUrl = '@Url.Action("Comments", "Helper")';
+        var addChatMessageUrl = '@Url.Action("AddChatMessage", "Helper")';
+        var deleteChatMessageUrl = '@Url.Action("DeleteComment", "Helper")';
+
         $(function () {
             $(".seller-application").click(function () {
                 var sellerApplicationUrl = '@Url.Action("SellerApplication", "Email")';
@@ -24,6 +33,28 @@
             $("#faq a").click(function (e) {
                 e.preventDefault();
                 $(this).parents("p").next().slideToggle("medium");
+            });
+
+            $("#chat-root").load(chatUrl);
+
+            setInterval(function () {
+                $(".chat").load(messagesUrl);
+            }, 5000);
+
+            $("body").on("click", "#btn-chat", function () {
+                var message = $("#btn-input").val();
+                $.post(addChatMessageUrl, { message: message }, function (data) {
+                    $(".chat").html(data);
+                    $("#btn-input").val("");
+                });
+            });
+
+            $("body").on("click", ".delete-message", function () {
+                var message = $(this);
+                var messageId = message.attr("data-message-id");
+                $.post(deleteChatMessageUrl, { messageId: messageId }, function (data) {
+                    message.parents("li").remove();
+                });
             });
         });
     </script>
