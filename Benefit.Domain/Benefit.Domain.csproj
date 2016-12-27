@@ -233,6 +233,10 @@
     <Compile Include="Migrations\201612261058141_Messages.Designer.cs">
       <DependentUpon>201612261058141_Messages.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612271516532_OrderProductIndex.cs" />
+    <Compile Include="Migrations\201612271516532_OrderProductIndex.Designer.cs">
+      <DependentUpon>201612271516532_OrderProductIndex.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\Message.cs" />
@@ -391,6 +395,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612261058141_Messages.resx">
       <DependentUpon>201612261058141_Messages.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612271516532_OrderProductIndex.resx">
+      <DependentUpon>201612271516532_OrderProductIndex.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -53,9 +53,11 @@ namespace Benefit.Services.Domain
 
             //add order to DB
             db.Orders.Add(order);
+            var i = 0;
             foreach (var product in order.OrderProducts)
             {
                 product.OrderId = order.Id;
+                product.Index = i++;
                 db.OrderProducts.Add(product);
                 foreach (var orderProductOption in product.OrderProductOptions)
                 {

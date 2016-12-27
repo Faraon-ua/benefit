@@ -23,6 +23,7 @@ namespace Benefit.Domain.Models
         public string ProductName { get; set; }
         public double ProductPrice { get; set; }
         public double Amount { get; set; }
+        public int Index { get; set; }
         [NotMapped]
         public bool IsWeightProduct { get; set; }
         [NotMapped]

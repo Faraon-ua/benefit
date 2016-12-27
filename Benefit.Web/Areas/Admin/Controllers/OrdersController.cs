@@ -47,6 +47,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+            order.OrderProducts = order.OrderProducts.OrderBy(entry => entry.Index).ToList();
             return View(order);
         }
 
@@ -164,6 +165,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.OrderProducts.Add(orderProduct);
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);
             UpdateOrderDetails(order);
+            orderProduct.Index = order.OrderProducts.Max(entry => entry.Index) + 1;
             db.Entry(order).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderProduct.OrderId });
@@ -181,6 +183,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return HttpNotFound();
             }
+            order.OrderProducts = order.OrderProducts.OrderBy(entry => entry.Index).ToList();
             return View(order);
         }
 

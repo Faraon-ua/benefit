@@ -12,6 +12,7 @@
             @if (Model.PaymentType == PaymentType.Bonuses)
             {
                 <th>Сплачено бонусами</th>
+                <th>Доплата</th>
             }
             <th>Бали</th>
             <th>Бонуси</th>
@@ -35,6 +36,7 @@
             @if (Model.PaymentType == PaymentType.Bonuses)
             {
                 <td>@Math.Abs(Model.BonusPaymentTransaction.Bonuses).ToString("F")</td>
+                <td>@((Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses)).ToString("F"))</td>
             }
             <td>@Model.PointsSum.ToString("F")</td>
             <td>@Model.PersonalBonusesSum.ToString("F")</td>
