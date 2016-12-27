@@ -81,8 +81,8 @@
 
     <div class="form-group">
         <label>
-            <input type="checkbox" class="ace" name="IsActive" @(Model.IsActive ? "checked=checked" : "") value="@Model.IsActive">
-            <span class="lbl"> Активний</span>
+            @Html.CheckBoxFor(m => m.IsActive)
+            <span class="lbl" for="IsActive"> Активний</span>
         </label>
 
         <label class="col-sm-3 control-label no-padding-right" style="margin-left: 10px;"></label>

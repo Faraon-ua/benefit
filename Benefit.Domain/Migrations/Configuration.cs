@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.Validation;
 using System.IO;
 using System.Text;
 using Benefit.Common.Constants;
@@ -29,6 +28,8 @@ namespace Benefit.Domain.Migrations
             {
                 System.Diagnostics.Debugger.Launch();
             }*/
+            var store = new RoleStore<IdentityRole>(context);
+            var rolesManager = new RoleManager<IdentityRole>(store);
             if (!context.Regions.Any())
             {
                 var regionsSql = File.ReadAllText(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty) + "Migrations/SqlFiles/UkraineRegions.sql", Encoding.UTF8);
@@ -36,19 +37,21 @@ namespace Benefit.Domain.Migrations
             }
             if (!context.Roles.Any(r => r.Name == DomainConstants.AdminRoleName))
             {
-                var store = new RoleStore<IdentityRole>(context);
-                var manager = new RoleManager<IdentityRole>(store);
-
                 var superAdminRole = new IdentityRole { Name = DomainConstants.SuperAdminRoleName };
                 var adminRole = new IdentityRole { Name = DomainConstants.AdminRoleName };
                 var contentManagerRole = new IdentityRole { Name = DomainConstants.ContentManagerName };
                 var sellerRole = new IdentityRole { Name = DomainConstants.SellerRoleName };
 
-                manager.Create(superAdminRole);
-                manager.Create(adminRole);
-                manager.Create(contentManagerRole);
-                manager.Create(sellerRole);
+                rolesManager.Create(superAdminRole);
+                rolesManager.Create(adminRole);
+                rolesManager.Create(contentManagerRole);
+                rolesManager.Create(sellerRole);
             }
+            if (!context.Roles.Any(r => r.Name == DomainConstants.OrdersManagerRoleName))
+            {
+                var ordersManagerRole = new IdentityRole { Name = DomainConstants.OrdersManagerRoleName };
+                rolesManager.Create(ordersManagerRole);
+            }            
 
             if (!(context.Users.Any(u => u.UserName == DomainConstants.DefaultAdminUserName)))
             {
@@ -68,7 +71,6 @@ namespace Benefit.Domain.Migrations
                     RegisteredOn = DateTime.UtcNow
                 };
                 userManager.Create(userToInsert, DomainConstants.DefaultAdminPassword);
-
                 userManager.AddToRole(userToInsert.Id, DomainConstants.AdminRoleName);
             }
 

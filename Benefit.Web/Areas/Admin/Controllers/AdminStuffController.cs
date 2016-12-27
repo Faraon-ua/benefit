@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Services.Admin;
 using Benefit.Web.Areas.Admin.Controllers.Base;
@@ -8,7 +9,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 {
     public class AdminStuffController : AdminController
     {
-
+        ApplicationDbContext db = new ApplicationDbContext();
         //todo: change controller name
         //
         // GET: /Admin/AdminStuff/
@@ -26,6 +27,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var emailService = new EmailService();
             emailService.SendBonusesRozrahunokResults(bonusesHtml);
             return View(result);
+        }
+
+        public ActionResult ClearChat()
+        {
+            db.Messages.RemoveRange(db.Messages);
+            db.SaveChanges();
+            TempData["SuccessMessage"] = "Чат було очищено";
+            return View("Index");
         }
     }
 }

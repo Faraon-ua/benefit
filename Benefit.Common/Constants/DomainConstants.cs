@@ -9,6 +9,8 @@
         public const string SuperAdminRoleName = "SuperAdmin";
         public const string AdminRoleName = "Admin";
         public const string SellerRoleName = "Seller";
+        public const string OrdersManagerRoleName = "OrdersManager";
+
         public const string ContentManagerName = "ContentManager";
 
         public const string SellerSessionIdKey = "SellerId";

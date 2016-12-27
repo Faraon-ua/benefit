@@ -3,17 +3,18 @@ using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Services.Domain;
-using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class OrdersController : AdminController
+    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName)]
+    public class OrdersController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private OrderService OrderService = new OrderService();

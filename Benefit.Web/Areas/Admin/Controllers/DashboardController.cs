@@ -1,9 +1,10 @@
 ﻿using System.Web.Mvc;
-using Benefit.Web.Areas.Admin.Controllers.Base;
+using Benefit.Common.Constants;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    public class DashboardController : AdminController
+    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName)]
+    public class DashboardController : Controller
     {
         //
         // GET: /Admin/Dashboard/
