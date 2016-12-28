@@ -71,7 +71,7 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public Transaction BonusPaymentTransaction
         {
-            get { return Transactions.FirstOrDefault(entry => entry.Type == TransactionType.BonusesOrderPayment) ?? Transactions.FirstOrDefault(); }
+            get { return Transactions.FirstOrDefault(entry => entry.Type == TransactionType.BonusesOrderPayment); }
         }
 
         public double GetOrderSum()

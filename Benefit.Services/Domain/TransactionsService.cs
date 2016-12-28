@@ -90,9 +90,9 @@ namespace Benefit.Services.Domain
                 {
                     throw new ServiceException("No transaction for order " + order.Id);
                 }
-                if (order.Sum < Math.Abs(transaction.Bonuses))
+                if (order.Sum < Math.Abs(orderTransaction.Bonuses))
                 {
-                    var difference = (Math.Abs(transaction.Bonuses) - order.Sum);
+                    var difference = (Math.Abs(orderTransaction.Bonuses) - order.Sum);
                     difference = difference + difference * SettingsService.BonusesComissionRate / 100;
                     var refundTransaction = new Transaction()
                     {

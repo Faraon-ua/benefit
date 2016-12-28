@@ -269,6 +269,10 @@ namespace Benefit.RestApi.Controllers
 
         private Seller GetSellerByUsernameAndPassword(string userName, string password)
         {
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+            {
+                return null;
+            }
             return db.Sellers.FirstOrDefault(
                     entry => entry.TerminalLogin == userName && entry.TerminalPassword == password);
         }
