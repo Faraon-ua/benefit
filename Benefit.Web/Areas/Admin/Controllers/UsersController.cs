@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Web.Mvc;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Linq;
 using Benefit.Domain.Models;
@@ -92,7 +93,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 RegisteredOn = user.RegisteredOn,
-                Addresses = user.Addresses
+                Addresses = user.Addresses,
+                BenefitCardOrders = new PaginatedList<Order>
+                {
+                    Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitCard).OrderByDescending(entry=>entry.Time).ToList()
+                }
             };
             return View(userViewModel);
         }
@@ -101,7 +106,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Edit(EditUserViewModel user, string newPassword)
         {
             ApplicationUser referalUser = null;
-            if ( user.ReferalNumber != null && user.ReferalNumber != 0)
+            if (user.ReferalNumber != null && user.ReferalNumber != 0)
             {
                 referalUser = db.Users.FirstOrDefault(entry => entry.ExternalNumber == user.ReferalNumber);
                 if (referalUser == null)

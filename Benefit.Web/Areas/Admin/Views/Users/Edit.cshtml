@@ -49,6 +49,12 @@
                     Адреси
                 </a>
             </li>
+            <li>
+                <a href="#transactions" data-toggle="tab">
+                    <i class="green icon-money bigger-110"></i>
+                    Benefit Card Транзакції
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -58,6 +64,9 @@
 
             <div class="tab-pane" id="addresses">
                 @Html.Partial("_Addresses", Model)
+            </div>
+            <div class="tab-pane" id="transactions">
+                @Html.Partial("~/Areas/Admin/Views/Orders/_OrdersListPartial.cshtml", Model.BenefitCardOrders)
             </div>
         </div>
     </div>

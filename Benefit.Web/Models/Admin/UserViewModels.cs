@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 
@@ -33,6 +34,7 @@ namespace Benefit.Web.Models.Admin
         [Required]
         public string PhoneNumber { get; set; }
         public DateTime RegisteredOn { get; set; }
-        public ICollection<Address> Addresses { get; set; } 
+        public ICollection<Address> Addresses { get; set; }
+        public PaginatedList<Order> BenefitCardOrders { get; set; } 
     }
 }
