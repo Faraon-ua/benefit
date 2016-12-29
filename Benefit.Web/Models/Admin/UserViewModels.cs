@@ -29,6 +29,7 @@ namespace Benefit.Web.Models.Admin
         public BusinessLevel? BusinessLevel { get; set; }
         public Status? Status { get; set; }
         public bool IsActive { get; set; }
+        public bool IsCardVerified { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]

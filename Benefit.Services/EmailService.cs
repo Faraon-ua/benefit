@@ -42,6 +42,17 @@ namespace Benefit.Services
             client.Send(usermail);
             return true;
         }
+
+        private bool SendEmail(string toad, string body, string subjectcontent, HttpPostedFileBase attachment)
+        {
+            var usermail = Mailbodplain(new List<string> { toad }, body, DisplayName, subjectcontent);
+            var attachmentFile = new Attachment(attachment.InputStream, attachment.FileName);
+            usermail.Attachments.Add(attachmentFile);
+            var client = new SmtpClient() { EnableSsl = true, DeliveryMethod = SmtpDeliveryMethod.Network };
+
+            client.Send(usermail);
+            return true;
+        }
         private bool SendEmail(IEnumerable<string> toad, string body, string subjectcontent)
         {
             var usermail = Mailbodplain(toad, body, DisplayName, subjectcontent);
@@ -78,7 +89,13 @@ namespace Benefit.Services
             SendEmail(userEmail, "Оновлено цін для товарів: " + processedProductsCount.ToString(),
                 "Результати імпорту цін товарів");
         }
-        
+
+        public void SendCardVerification(string userUrl, HttpPostedFileBase file)
+        {
+            var body = string.Format("Підтвердити верифікацію користувача можна за посиланням <a href='{0}'>ТИЦЬ!</a>", userUrl);
+            SendEmail(BenefitBusinessEmail, body, "Верифікація карти", file);
+        }
+
         public void SendBonusesRozrahunokResults(string result)
         {
             SendEmail(AdminEmail, result, "Результати розрахунку бонусів");

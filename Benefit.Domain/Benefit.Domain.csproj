@@ -237,6 +237,10 @@
     <Compile Include="Migrations\201612271516532_OrderProductIndex.Designer.cs">
       <DependentUpon>201612271516532_OrderProductIndex.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201612291054394_CardVerified.cs" />
+    <Compile Include="Migrations\201612291054394_CardVerified.Designer.cs">
+      <DependentUpon>201612291054394_CardVerified.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\Message.cs" />
@@ -398,6 +402,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612271516532_OrderProductIndex.resx">
       <DependentUpon>201612271516532_OrderProductIndex.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201612291054394_CardVerified.resx">
+      <DependentUpon>201612291054394_CardVerified.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

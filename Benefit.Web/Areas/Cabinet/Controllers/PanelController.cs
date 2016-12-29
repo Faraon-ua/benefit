@@ -75,7 +75,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                 var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == userId);
                 user.Region = db.Regions.FirstOrDefault(entry => entry.Id == user.RegionId);
 
-                if (db.Users.Any(entry => entry.CardNumber == profile.CardNumber && entry.Id != user.Id) || !db.BenefitCards.Any(entry=>entry.Id == profile.CardNumber))
+                if (db.Users.Any(entry => entry.CardNumber == profile.CardNumber && entry.Id != user.Id) || !db.BenefitCards.Any(entry => entry.Id == profile.CardNumber))
                 {
                     ModelState.AddModelError("CardNumber", "Не можливо підвязати цей номер карти до вашого акаунту");
                 }
@@ -94,6 +94,31 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                 }
                 return View(user);
             }
+        }
+
+        public ActionResult VerifyCard()
+        {
+            var userId = User.Identity.GetUserId();
+            var user = UserService.GetUserInfoWithRegions(userId);
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult VerifyCard(HttpPostedFileBase postedFile)
+        {
+            if (Request.Files.Count > 0 && Request.Files[0] != null && Request.Files[0].ContentLength != 0)
+            {
+                var file = Request.Files[0];
+                var userUrl = Url.Action("Edit", "Users", new {area = "Admin", id = User.Identity.GetUserId()}, Request.Url.Scheme);
+                var EmailService = new EmailService();
+                EmailService.SendCardVerification(userUrl, file);
+                TempData["SuccessMessage"] = "Запит на верифікацію карти було відправлено";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Не вибрано зображення";
+            }
+            return RedirectToAction("Profile");
         }
 
         public ActionResult UserAddress(string id)

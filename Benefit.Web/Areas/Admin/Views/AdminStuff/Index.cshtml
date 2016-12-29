@@ -7,6 +7,11 @@
             $("#start-bonuses-calculations").attr('disabled', 'disabled');
             $("#start-bonuses-calculations").after("<h1>НЕ ЗАКРИВАЙТЕ ЦЕ ВІКНО БРАЗУРА ДО ЗАВЕРШЕННЯ РОЗРАХУНКУ!</h1>");
         });
+
+        $("#start-close-period").click(function () {
+            $("#start-close-period").attr('disabled', 'disabled');
+            $("#start-close-period").after("<h1>НЕ ЗАКРИВАЙТЕ ЦЕ ВІКНО БРАЗУРА ДО ЗАВЕРШЕННЯ ЗАКРИТТЯ ПЕРІОДУ!</h1>");
+        });
     </script>
 }
 <fieldset>
@@ -21,4 +26,11 @@
         Чат
     </legend>
     <a class="btn btn-info" href="@Url.Action("ClearChat", "AdminStuff")">Очистити чат</a>
+</fieldset>
+
+<fieldset>
+    <legend>
+        Закриття періоду
+    </legend>
+    <a class="btn btn-info" id="start-close-period" href="@Url.Action("ClosePeriod", "AdminStuff")">Закрити період</a>
 </fieldset>

@@ -18,6 +18,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View();
         }
 
+        public ActionResult ClosePeriod()
+        {
+            var service = new ScheduleService();
+            service.CloseQualificationPeriod();
+            TempData["SuccessMessage"] = "Період було закрито";
+            return View("Index");
+        }
+
         public ActionResult BonusesCalculation()
         {
             var service = new ScheduleService();

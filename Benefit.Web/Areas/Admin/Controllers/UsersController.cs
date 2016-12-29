@@ -90,6 +90,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 BusinessLevel = user.BusinessLevel,
                 Status = user.Status,
                 IsActive = user.IsActive,
+                IsCardVerified = user.IsCardVerified,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 RegisteredOn = user.RegisteredOn,
@@ -136,6 +137,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 existingUser.BusinessLevel = user.BusinessLevel;
                 existingUser.Status = user.Status;
                 existingUser.IsActive = user.IsActive;
+                existingUser.IsCardVerified = user.IsCardVerified;
                 existingUser.Email = user.Email;
                 existingUser.UserName = user.Email;
                 existingUser.PhoneNumber = user.PhoneNumber;

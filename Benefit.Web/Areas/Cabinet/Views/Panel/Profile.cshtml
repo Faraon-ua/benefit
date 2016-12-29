@@ -38,6 +38,15 @@
                 @message
             </p>
         }
+        @if (ViewBag.ErrorMessage != null || TempData["ErrorMessage"] != null)
+        {
+            <p class="alert alert-danger">
+                @{
+            var message = ViewBag.ErrorMessage ?? TempData["ErrorMessage"];
+                }
+                @message
+            </p>
+        }
     </div>
 
     <ul class="profile_menu nav nav-tabs">
@@ -89,9 +98,15 @@
 
                 <input type="submit" class="btn btn-success font-white" value="Зберегти дані" />
 
-                <p class="verification_data">Для отримання можливості взяти участь у плані винагород<br> необхідно пройти процедуру верифікації бонусної картки</p>
-
-                <button type="button" class="profile_verification">Верифікація картки</button>
+                if (Model.IsCardVerified)
+                {
+                    <img src="~/Content/img/kartka_verifikovana.png" />
+                }
+                else
+                {
+                    <p class="verification_data">Для отримання можливості взяти участь у плані винагород<br> необхідно пройти процедуру верифікації бонусної картки</p>
+                    <a class="profile_verification" href="@Url.Action("VerifyCard")">Верифікація картки</a>
+                }
 
                 <p class="verification_data">Для операцій по перерахунку бонусів чи виведення їх в готівку<br> в цілях безпеки та згідно чинного законодавства України<br> вам потрібно пройти верифікацію акаунту</p>
 

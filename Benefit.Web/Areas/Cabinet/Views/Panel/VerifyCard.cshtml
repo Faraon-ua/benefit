@@ -1,0 +1,31 @@
+﻿@model Benefit.Domain.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Верифікація карти";
+    Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
+}
+@section PartnerHead
+{
+    @Html.Partial("_PartnerHead", Model)
+}
+@section scripts
+{
+    <script>
+        $("#verify-card").click(function (e) {
+            e.run();
+            $("#verify-card").attr('disabled', 'disabled');
+        });
+    </script>
+}
+<div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
+
+    <h2>Верифікація карти</h2>
+
+    @using (Html.BeginForm("VerifyCard", "Panel", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <p>Будь ласка завантажте вашу фотографію разом із карткою на ній. Номер картки повинно бути чітко видно.</p>
+        <input type="file" accept="image/*" name="cardImage" />
+        <br />
+        <input type="submit" class="btn btn-success" id="verify-card" value="Відіслати запит на верифікацію" />
+    }
+</div>

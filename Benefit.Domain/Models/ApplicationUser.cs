@@ -19,6 +19,7 @@ namespace Benefit.Domain.Models
             Orders = new Collection<Order>();
         }
         public bool IsActive { get; set; }
+        public bool IsCardVerified { get; set; }
         [Required]
         [MaxLength(64)]
         [Index]

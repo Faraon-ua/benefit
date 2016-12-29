@@ -13,7 +13,7 @@ namespace Benefit.Services.Admin
 {
     public class ScheduleService
     {
-        public ProcessBonusesViewModel CloseQualificationPeriod()
+        public void CloseQualificationPeriod()
         {
             using (var db = new ApplicationDbContext())
             {
@@ -53,7 +53,6 @@ namespace Benefit.Services.Admin
                     }
                 }
             }
-            return null;
         }
         public ProcessBonusesViewModel ProcessBonuses()
         {

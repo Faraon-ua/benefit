@@ -1876,6 +1876,7 @@ footer {
 }
 
 .profile_verification {
+    width: 160px;
     display: block;
     margin: 0 auto 25px;
     height: 30px;
@@ -1889,6 +1890,7 @@ footer {
 
     .profile_verification:hover {
         background-color: #5b0101;
+        color: #ffffff;
     }
 
 .addition label {
@@ -4309,9 +4311,9 @@ basket_modal_table td:nth-child(4) {
     margin-right: 15px;
 }
 
-.delivery_address_item.active {
-    border: 2px solid #6ab545;
-}
+    .delivery_address_item.active {
+        border: 2px solid #6ab545;
+    }
 
     .delivery_address_item .adress_phone {
         margin-bottom: 0;
