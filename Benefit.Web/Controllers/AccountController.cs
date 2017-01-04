@@ -117,12 +117,22 @@ namespace Benefit.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model)
         {
-            ApplicationUser referal = null;
-            int externalNumber = SettingsService.MinUserExternalNumber;
+            ApplicationUser referal;
+            var externalNumber = SettingsService.MinUserExternalNumber;
+            BenefitCard card;
             using (var db = new ApplicationDbContext())
             {
+                card = db.BenefitCards.Find(model.CardNumber);
                 externalNumber = db.Users.Max(entry => entry.ExternalNumber);
                 referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber == model.ReferalNumber);
+                if (model.CardNumber != null && card == null)
+                {
+                    ModelState.AddModelError("CardNumber", "Такої картки не існує");
+                }
+                if (db.Users.Any(entry => entry.CardNumber == model.CardNumber))
+                {
+                    ModelState.AddModelError("CardNumber", "Ця картка зайнята");                    
+                }
                 if (referal == null)
                 {
                     ModelState.AddModelError("ReferalNumber", "Користувача з таким реферальним кодом не знайдено");
@@ -149,6 +159,7 @@ namespace Benefit.Web.Controllers
                     IsActive = true,
                     ExternalNumber = ++externalNumber,
                     CardNumber = model.CardNumber,
+                    NFCCardNumber = card == null ? null: card.NfcCode,
                     PhoneNumber = model.PhoneNumber,
                     RegisteredOn = DateTime.UtcNow
                 };

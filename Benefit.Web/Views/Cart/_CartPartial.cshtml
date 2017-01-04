@@ -70,7 +70,7 @@
                     var cartSum = Model.OrderProducts.Sum(entry => entry.ProductPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
                     <p class="basket_modal_price">Всього: <span>@cartSum.ToString("F")</span></p>
                     <div class="basket_modal_kontrols clearfix">
-                        <a href="#" class="goto_back">Продовжити покупки</a>
+                        <a href="#" class="goto_back" id="continue-purchase">Продовжити покупки</a>
                         <a href="#" id="complete-order" class="goto_ahead">Оформити замовлення</a>
                     </div>
 @*                    <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@

@@ -166,7 +166,8 @@
                             <input name="PhoneNumber" type="tel" placeholder="Телефон" value="@Model.PhoneNumber">
                         </div>
                         <div class="reg-form-step">
-                            <input name="CardNumber" type="text" placeholder="Номер карти (при наявності)" value="@Model.CardNumber">
+                            @Html.TextBoxFor(m => m.CardNumber, new { type = "text", placeholder = "Номер карти (при наявності)" })
+@*                            <input name="CardNumber" type="text" placeholder="Номер карти (при наявності)" value="@Model.CardNumber">*@
                         </div>
                         <div class="reg-form-step">
                             @Html.PasswordFor(m => m.Password, new { placeholder = "Пароль" })

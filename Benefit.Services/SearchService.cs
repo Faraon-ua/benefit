@@ -45,6 +45,7 @@ namespace Benefit.Services
                 .Where(entry => entry.Item.Seller.Addresses.Any(addr => addr.RegionId == regionId) ||
                              entry.Item.Seller.ShippingMethods.Select(sm => sm.Region.Id)
                                  .Contains(RegionConstants.AllUkraineRegionId))
+                .Where(entry=>entry.Item.IsActive)
                 .OrderByDescending(entry => entry.Hits)
                 .Skip(skip)
                 .Take(take + 1)

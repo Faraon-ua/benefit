@@ -136,6 +136,31 @@ $(function () {
             });
     });
 
+    $("body").on("click", "#continue-purchase", function() {
+        var products = $("#cart-container tr.basket_modal_table_row.product").map(function() {
+            var id = $(this).attr("data-product-id");
+            var amount = $(this).find(".product_modal_amount").val();
+            var productOptions = $(this).nextUntil(".product").map(function() {
+                var optionId = $(this).attr("data-option-id");
+                var optionAmount = $(this).find(".product_modal_amount").val();
+                return {
+                    ProductOptionId: optionId,
+                    Amount: optionAmount
+                };
+            }).get();
+            return {
+                ProductId: id,
+                Amount: amount,
+                OrderProductOptions: productOptions
+            };
+        }).get();
+
+        var sellerId = $("#basket_modal").attr("data-seller-id");
+        $.post(routePrefix + "/Cart/CompleteOrder?sellerId=" + sellerId,
+            { 'orderProducts': products }
+        );
+    });
+
     if (!getCookie("regionName")) {
         $(".region_modal").modal();
     }
