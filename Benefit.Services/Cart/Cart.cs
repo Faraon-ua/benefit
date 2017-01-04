@@ -3,7 +3,6 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
-using System.Web.UI;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -70,7 +69,7 @@ namespace Benefit.Services.Cart
                 Order.SellerId = sellerId;
                 Order.OrderProducts.Add(orderProduct);
             }
-            _logger.Info("Cart.AddProduct.SessionKey:{0}, Cart.AddProduct.OrderProduct.Name:{1}", SessionKey, orderProduct.ProductName);
+            _logger.Info("Cart.AddProduct.SessionKey:{0}, Cart.AddProduct.OrderProduct.Id:{1}, Cart.AddProduct.OrderProduct.Name:{2}", SessionKey, orderProduct.ProductId, orderProduct.ProductName);
             HttpRuntime.Cache.Add(SessionKey, this, null, AbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
             return GetOrderProductsCount();
         }
@@ -93,7 +92,7 @@ namespace Benefit.Services.Cart
             return Order.GetOrderSum();
         }
 
-        private int GetOrderProductsCount()
+        public int GetOrderProductsCount()
         {
             var number = 0;
             foreach (var product in Order.OrderProducts)

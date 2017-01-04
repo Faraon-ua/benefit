@@ -157,7 +157,12 @@ $(function () {
 
         var sellerId = $("#basket_modal").attr("data-seller-id");
         $.post(routePrefix + "/Cart/CompleteOrder?sellerId=" + sellerId,
-            { 'orderProducts': products }
+            { 'orderProducts': products },
+            function (data) {
+                $("#cart-items-number").text(data.productsNumber);
+                $("#cart-items-number").show();
+                setCookie("cartNumber", data.productsNumber, { expires: 36000, path: "/" });
+            }
         );
     });
 
