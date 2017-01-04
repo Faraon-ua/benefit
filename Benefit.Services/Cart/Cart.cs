@@ -3,9 +3,11 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
+using System.Web.UI;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using NLog;
 
 namespace Benefit.Services.Cart
 {
@@ -13,6 +15,7 @@ namespace Benefit.Services.Cart
     {
         private string SessionKey;
         private static readonly DateTime AbsoluteExpiration = DateTime.Now.AddHours(6);
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public Order Order { get; set; }
         public static Cart CurrentInstance
@@ -20,12 +23,18 @@ namespace Benefit.Services.Cart
             get
             {
                 var sessionKey = string.Format("{0}-{1}", DomainConstants.OrderPrefixKey, HttpContext.Current.Session.SessionID);
-                var cart = HttpRuntime.Cache[sessionKey] as Cart ?? new Cart()
+                _logger.Info("Cart.CurrentInstance.SessionKey:{0}", sessionKey);
+                var cart = HttpRuntime.Cache[sessionKey] as Cart;
+                if (HttpRuntime.Cache[sessionKey] == null)
                 {
-                    SessionKey = sessionKey,
-                    Order = new Order()
-                };
-                HttpRuntime.Cache.Add(sessionKey, cart, null, AbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+                    cart = new Cart()
+                    {
+                        SessionKey = sessionKey,
+                        Order = new Order()
+                    };
+                    HttpRuntime.Cache.Add(sessionKey, cart, null, AbsoluteExpiration, Cache.NoSlidingExpiration,
+                        CacheItemPriority.Normal, null);
+                }
                 return cart;
             }
         }
@@ -40,7 +49,7 @@ namespace Benefit.Services.Cart
             var existingProduct = Order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
             if (existingProduct != null)
             {
-                existingProduct.Amount+=orderProduct.Amount;
+                existingProduct.Amount += orderProduct.Amount;
             }
             else
             {
@@ -61,8 +70,9 @@ namespace Benefit.Services.Cart
                 Order.SellerId = sellerId;
                 Order.OrderProducts.Add(orderProduct);
             }
+            _logger.Info("Cart.AddProduct.SessionKey:{0}, Cart.AddProduct.OrderProduct.Name:{1}", SessionKey, orderProduct.ProductName);
             HttpRuntime.Cache.Add(SessionKey, this, null, AbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
-            return GetOrderProductsCount();            
+            return GetOrderProductsCount();
         }
 
         public int RemoveProduct(string id)
