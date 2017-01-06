@@ -12,7 +12,7 @@ namespace Benefit.Services.Cart
 {
     public class Cart
     {
-        private static readonly DateTime AbsoluteExpiration = DateTime.Now.AddHours(6);
+        private static readonly TimeSpan SlidingExpiration = new TimeSpan(6, 0, 0);
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         public string SessionKey;
 
@@ -22,17 +22,15 @@ namespace Benefit.Services.Cart
             get
             {
                 var sessionKey = string.Format("{0}-{1}", DomainConstants.OrderPrefixKey, HttpContext.Current.Session.SessionID);
-//                _logger.Info("Cart.CurrentInstance.SessionKey:{0}", sessionKey);
                 var cart = HttpRuntime.Cache[sessionKey] as Cart;
-                if (HttpRuntime.Cache[sessionKey] == null)
+                if (cart == null)
                 {
                     cart = new Cart()
                     {
                         SessionKey = sessionKey,
                         Order = new Order()
                     };
-                    HttpRuntime.Cache.Add(sessionKey, cart, null, AbsoluteExpiration, Cache.NoSlidingExpiration,
-                        CacheItemPriority.Normal, null);
+                    HttpRuntime.Cache.Insert(sessionKey, cart, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
                 }
                 return cart;
             }
@@ -70,7 +68,7 @@ namespace Benefit.Services.Cart
                 Order.OrderProducts.Add(orderProduct);
             }
             _logger.Info("Cart.AddProduct.SessionKey:{0}, Cart.AddProduct.OrderProduct.Id:{1}, Cart.AddProduct.OrderProduct.Name:{2}", SessionKey, orderProduct.ProductId, orderProduct.ProductName);
-            HttpRuntime.Cache.Add(SessionKey, this, null, AbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+            HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
             return GetOrderProductsCount();
         }
 
@@ -78,7 +76,7 @@ namespace Benefit.Services.Cart
         {
             var productToRemove = Order.OrderProducts.FirstOrDefault(entry => entry.ProductId == id);
             Order.OrderProducts.Remove(productToRemove);
-            HttpRuntime.Cache.Add(SessionKey, this, null, AbsoluteExpiration, Cache.NoSlidingExpiration, CacheItemPriority.Normal, null);
+            HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);            
             return GetOrderProductsCount();
         }
 
