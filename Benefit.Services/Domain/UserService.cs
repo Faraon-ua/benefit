@@ -71,13 +71,15 @@ namespace Benefit.Services.Domain
             return user;
         }
 
-        public ApplicationUser GetUserInfoWithRegionsAndOwnedSellers(string id)
+        public ApplicationUser GetUserInfoWithRegionsAndSellers(string id)
         {
             var user =
                 db.Users.Include(entry => entry.Region)
                     .Include(entry => entry.Addresses)
                     .Include(entry => entry.Addresses.Select(addr => addr.Region))
                     .Include(entry => entry.OwnedSellers)
+                    .Include(entry => entry.ReferedBenefitCardSellers)
+                    .Include(entry => entry.ReferedWebSiteSellers)
                     .FirstOrDefault(entry => entry.Id == id);
             return user;
         }

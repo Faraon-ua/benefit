@@ -7,7 +7,7 @@
             <span class="menu-text">Головна</span>
         </a>
     </li>
-    @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName))
+    @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName))
     {
         <li>
             <a href="@Url.Action("Index", "Orders")">

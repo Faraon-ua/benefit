@@ -90,5 +90,15 @@ namespace Benefit.Domain.Models
                     : HttpContext.Current.Session[DomainConstants.SellerSessionIdKey].ToString();
             }
         }
+        [NotMapped]
+        public static string CurrentAuthorizedSellerName
+        {
+            get
+            {
+                return HttpContext.Current.Session[DomainConstants.SellerSessionNameKey] == null
+                    ? null
+                    : HttpContext.Current.Session[DomainConstants.SellerSessionNameKey].ToString();
+            }
+        }
     }
 }

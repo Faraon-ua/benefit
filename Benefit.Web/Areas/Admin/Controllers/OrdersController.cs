@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -13,7 +14,7 @@ using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName)]
+    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName)]
     public class OrdersController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -42,7 +43,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry=>entry.User).Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -79,16 +80,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult GetOrdersList(OrderType orderType, int page = 0)
         {
             var takePerPage = 50;
-            var ordersTotal =
+            
+            var orders =
                 db.Orders.Include(o => o.User)
-                    .Where(entry => entry.OrderType == orderType)
                     .OrderByDescending(entry => entry.Time)
-                    .Count();
-            var orders = db.Orders.Include(o => o.User).Where(entry => entry.OrderType == orderType).OrderByDescending(entry => entry.Time).Skip(page * takePerPage).Take(takePerPage);
+                    .Where(entry => entry.OrderType == orderType);
+
+            if (Seller.CurrentAuthorizedSellerId != null)
+            {
+                orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+            }
+            var ordersTotal = orders.Count();
+            orders = orders.Skip(page * takePerPage).Take(takePerPage);
             var ordersHtml = ControllerContext.RenderPartialToString("_OrdersListPartial", new PaginatedList<Order>
             {
                 Items = orders.ToList(),
-                Pages = ordersTotal/takePerPage + 1,
+                Pages = ordersTotal / takePerPage + 1,
                 ActivePage = page
             });
             return Json(new
@@ -133,7 +140,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.OrderProductOptions.RemoveRange(product.DbOrderProductOptions);
             db.OrderProducts.Remove(product);
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
-            UpdateOrderDetails(order);            
+            UpdateOrderDetails(order);
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderId });
         }
@@ -145,7 +152,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.OrderProductOptions.Remove(productOption);
             db.SaveChanges();
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
-            UpdateOrderDetails(order);            
+            UpdateOrderDetails(order);
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderId });
         }

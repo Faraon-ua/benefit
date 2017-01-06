@@ -14,6 +14,7 @@
         public const string ContentManagerName = "ContentManager";
 
         public const string SellerSessionIdKey = "SellerId";
+        public const string SellerSessionNameKey = "SellerName";
 
         public const string RegionIdCookieKey = "regionId";
 

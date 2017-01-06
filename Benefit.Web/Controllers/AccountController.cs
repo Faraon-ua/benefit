@@ -129,9 +129,9 @@ namespace Benefit.Web.Controllers
                 {
                     ModelState.AddModelError("CardNumber", "Такої картки не існує");
                 }
-                if (db.Users.Any(entry => entry.CardNumber == model.CardNumber))
+                if (db.Users.Any(entry => entry.CardNumber != null && entry.CardNumber == model.CardNumber))
                 {
-                    ModelState.AddModelError("CardNumber", "Ця картка зайнята");                    
+                    ModelState.AddModelError("CardNumber", "Ця картка зайнята");
                 }
                 if (referal == null)
                 {
@@ -159,7 +159,7 @@ namespace Benefit.Web.Controllers
                     IsActive = true,
                     ExternalNumber = ++externalNumber,
                     CardNumber = model.CardNumber,
-                    NFCCardNumber = card == null ? null: card.NfcCode,
+                    NFCCardNumber = card == null ? null : card.NfcCode,
                     PhoneNumber = model.PhoneNumber,
                     RegisteredOn = DateTime.UtcNow
                 };
@@ -507,6 +507,10 @@ namespace Benefit.Web.Controllers
             if (Request.Cookies[RouteConstants.FullNameCookieName] != null)
             {
                 Response.Cookies[RouteConstants.FullNameCookieName].Expires = DateTime.UtcNow.AddDays(-1);
+            }
+            if (Session[DomainConstants.SellerSessionIdKey] != null)
+            {
+                Session[DomainConstants.SellerSessionIdKey] = null;
             }
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");

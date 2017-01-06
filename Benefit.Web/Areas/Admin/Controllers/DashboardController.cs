@@ -3,7 +3,7 @@ using Benefit.Common.Constants;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName)]
+    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName)]
     public class DashboardController : Controller
     {
         //
@@ -12,5 +12,5 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             return View();
         }
-	}
+    }
 }

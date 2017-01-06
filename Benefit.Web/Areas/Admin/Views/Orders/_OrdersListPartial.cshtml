@@ -31,13 +31,16 @@
         <th>
             Час
         </th>
-        <th>
-            Метод оплати
-        </th> 
-        <th>
-            Статус
-        </th>
-        <th></th>
+        @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitSite)
+        {
+            <th>
+                Метод оплати
+            </th>
+            <th>
+                Статус
+            </th>
+            <th></th>
+        }
     </tr>
 
     @foreach (var item in Model.Items)
@@ -61,19 +64,23 @@
             <td>
                 @item.Time.ToLocalTimeWithFormat()
             </td>
-            <td>
-                @Enumerations.GetEnumDescription(item.PaymentType)
-            </td> 
-            <td>
-                @Enumerations.GetEnumDescription(item.Status)
-            </td>
-            <td>
-                @Html.ActionLink("Детальніше", "Details", new { id = item.Id }, new { target = "_blank" })
-                @if (item.OrderType == OrderType.BenefitCard)
-                {
-                    @Html.ActionLink("Видалити", "Delete", new { id = item.Id }, new { onclick = "return confirm('Ви впевненні?')" })
-                }
-            </td>
+            @if (item.OrderType == OrderType.BenefitSite)
+            {
+                <td>
+                    @Enumerations.GetEnumDescription(item.PaymentType)
+                </td>
+                <td>
+                    @Enumerations.GetEnumDescription(item.Status)
+                </td>
+
+                <td>
+                    @Html.ActionLink("Детальніше", "Details", new { id = item.Id }, new { target = "_blank" })
+                    @*@if (item.OrderType == OrderType.BenefitCard)
+                        {
+                            @Html.ActionLink("Видалити", "Delete", new { id = item.Id }, new { onclick = "return confirm('Ви впевненні?')" })
+                        }*@
+                </td>
+            }
         </tr>
     }
 </table>

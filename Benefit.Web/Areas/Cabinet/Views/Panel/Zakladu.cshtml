@@ -1,4 +1,5 @@
-﻿@model Benefit.Domain.Models.ApplicationUser
+﻿@using Benefit.Common.Constants
+@model Benefit.Domain.Models.ApplicationUser
 @{
     ViewBag.Title = "Заклади";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
@@ -9,13 +10,41 @@
 }
 
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
-    <h3>Мої заклади</h3>
-    <ul>
-        @foreach (var seller in Model.OwnedSellers)
-        {
-            <li>
-                @Html.ActionLink(seller.Name, "Index", "Orders", new { area = "Admin" }, null)
-            </li>
-        }
-    </ul>
+    @if (Model.OwnedSellers.Any())
+    {
+        <h3>Мої заклади</h3>
+        <ul>
+            @foreach (var seller in Model.OwnedSellers)
+            {
+                <li>
+                    @Html.ActionLink(seller.Name, "Index", "Orders", new { area = "Admin", SellerId = seller.Id }, null)
+                </li>
+            }
+        </ul>
+    }
+
+    @if (Model.ReferedWebSiteSellers.Any())
+    {
+        <h3>Заклади, що підключені мною до сайту</h3>
+        <ul>
+            @foreach (var seller in Model.ReferedWebSiteSellers)
+            {
+                <li>
+                    @Html.Label(seller.Name)
+                </li>
+            }
+        </ul>
+    }
+    @if (Model.ReferedBenefitCardSellers.Any())
+    {
+        <h3>Заклади, що підключені мною до Benefit Card</h3>
+        <ul>
+            @foreach (var seller in Model.ReferedBenefitCardSellers)
+            {
+                <li>
+                    @Html.Label(seller.Name)
+                </li>
+            }
+        </ul>
+    }
 </div>

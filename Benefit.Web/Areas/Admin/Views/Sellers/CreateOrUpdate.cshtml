@@ -238,6 +238,7 @@
             <ul class="nav nav-tabs">
                 @{
                     var displayClass = User.IsInRole(DomainConstants.AdminRoleName) ? "" : "hidden";
+                    var activeClass = User.IsInRole(DomainConstants.AdminRoleName) ? "" : "active";
                 }
                 <li class="active @displayClass">
                     <a href="#home" data-toggle="tab">
@@ -245,7 +246,7 @@
                         Основна інфо
                     </a>
                 </li>
-                <li>
+                <li class="@displayClass">
                     <a href="#paymentTypes" data-toggle="tab">
                         <i class="grey icon-money bigger-110"></i>
                         Види оплати
@@ -263,7 +264,7 @@
                         Категорії
                     </a>
                 </li>
-                <li>
+                <li class="@activeClass">
                     <a href="#images" data-toggle="tab">
                         <i class="red icon-camera bigger-110"></i>
                         Зображення
@@ -320,7 +321,7 @@
                 <div class="tab-pane @displayClass" id="categories">
                     @Html.Partial("_Categories", Model.Seller)
                 </div>
-                <div class="tab-pane" id="images">
+                <div class="tab-pane @activeClass" id="images">
                     @Html.Partial("_Images", Model.Seller)
                 </div>
                 <div class="tab-pane" id="addresses">

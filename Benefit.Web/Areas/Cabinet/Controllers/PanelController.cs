@@ -205,7 +205,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult Zakladu()
         {
-            var user = UserService.GetUserInfoWithRegionsAndOwnedSellers(User.Identity.GetUserId());
+            var user = UserService.GetUserInfoWithRegionsAndSellers(User.Identity.GetUserId());
             return View(user);
         }
 

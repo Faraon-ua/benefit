@@ -12,9 +12,9 @@ namespace Benefit.Services.Cart
 {
     public class Cart
     {
-        private string SessionKey;
         private static readonly DateTime AbsoluteExpiration = DateTime.Now.AddHours(6);
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        public string SessionKey;
 
         public Order Order { get; set; }
         public static Cart CurrentInstance
@@ -22,7 +22,7 @@ namespace Benefit.Services.Cart
             get
             {
                 var sessionKey = string.Format("{0}-{1}", DomainConstants.OrderPrefixKey, HttpContext.Current.Session.SessionID);
-                _logger.Info("Cart.CurrentInstance.SessionKey:{0}", sessionKey);
+//                _logger.Info("Cart.CurrentInstance.SessionKey:{0}", sessionKey);
                 var cart = HttpRuntime.Cache[sessionKey] as Cart;
                 if (HttpRuntime.Cache[sessionKey] == null)
                 {

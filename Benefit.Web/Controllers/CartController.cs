@@ -9,6 +9,7 @@ using Benefit.Services;
 using Benefit.Services.Cart;
 using Benefit.Services.Domain;
 using Microsoft.AspNet.Identity;
+using NLog;
 
 namespace Benefit.Web.Controllers
 {
@@ -16,6 +17,7 @@ namespace Benefit.Web.Controllers
     {
         public OrderService OrderService = new OrderService();
         public UserService UserService = new UserService();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         [HttpGet]
         public ActionResult CheckEnaughBonuses(double sum)
@@ -43,6 +45,7 @@ namespace Benefit.Web.Controllers
 
         public ActionResult AddProduct(OrderProduct product, string sellerId)
         {
+            _logger.Info("Cart.AddProduct.SessionKey:{0}, Cart.AddProduct.OrderProduct.Id:{1}, Cart.AddProduct.OrderProduct.Name:{2}", Cart.CurrentInstance.SessionKey, product.ProductId, product.ProductName);
             var productsNumber = Cart.CurrentInstance.AddProduct(product, sellerId);
             return Json(productsNumber);
         }
@@ -142,6 +145,8 @@ namespace Benefit.Web.Controllers
         public ActionResult GetCart()
         {
             var cart = Cart.CurrentInstance.Order;
+            _logger.Info("Cart.GetCart.SessionKey:{0}", Cart.CurrentInstance.SessionKey);
+
             return PartialView("_CartPartial", cart);
         }
 
