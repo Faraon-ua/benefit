@@ -1,4 +1,5 @@
-﻿@model Benefit.Domain.Models.Product
+﻿@using Benefit.Common.Constants
+@model Benefit.Domain.Models.Product
 
 @{
     ViewBag.Title = "Товар " + Model.Name;
@@ -166,29 +167,33 @@
                 </a>
             </li>
             <li>
-                <a href="#options" data-toggle="tab">
-                    <i class="purple icon-plus bigger-110"></i>
-                    Додаткові опції
-                </a>
-            </li>
-            <li>
-                <a href="#parameters" data-toggle="tab">
-                    <i class="orange icon-check bigger-110"></i>
-                    Характеристики
-                </a>
-            </li>
-            <li>
                 <a href="#images" data-toggle="tab">
                     <i class="red icon-camera bigger-110"></i>
                     Зображення
                 </a>
             </li>
-            <li>
-                <a href="#recommendations" data-toggle="tab">
-                    <i class="purple icon-dropbox bigger-110"></i>
-                    Рекомендовані товари
-                </a>
-            </li>
+            @if (User.IsInRole(DomainConstants.AdminRoleName))
+            {
+                <li>
+                    <a href="#options" data-toggle="tab">
+                        <i class="purple icon-plus bigger-110"></i>
+                        Додаткові опції
+                    </a>
+                </li>
+                <li>
+                    <a href="#parameters" data-toggle="tab">
+                        <i class="orange icon-check bigger-110"></i>
+                        Характеристики
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#recommendations" data-toggle="tab">
+                        <i class="purple icon-dropbox bigger-110"></i>
+                        Рекомендовані товари
+                    </a>
+                </li>
+            }
         </ul>
 
         <div class="tab-content">

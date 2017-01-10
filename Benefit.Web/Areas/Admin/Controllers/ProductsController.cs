@@ -33,7 +33,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             var resultProducts = new List<Product>();
             int resultsCount = 0;
-            if (filters.HasValues)
+            if (filters.HasValues || Seller.CurrentAuthorizedSellerId != null)
             {
                 IQueryable<Product> products = db.Products.AsQueryable();
                 if (!string.IsNullOrEmpty(filters.CategoryId))
@@ -43,6 +43,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (!string.IsNullOrEmpty(filters.SellerId))
                 {
                     products = products.Where(entry => entry.SellerId == filters.SellerId);
+                }
+                if (Seller.CurrentAuthorizedSellerId != null)
+                {
+                    products = products.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
                 }
                 if (filters.IsAvailable)
                 {
@@ -92,18 +96,32 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Products = resultProducts,
                 ProductFilters = new ProductFilters
                 {
-                    Categories =
-                        db.Categories.OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
-                            .Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id }),
-                    Sellers =
-                        db.Sellers.OrderBy(entry => entry.Name)
-                            .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id }),
                     Sorting = (from ProductSortOption sortOption in Enum.GetValues(typeof(ProductSortOption))
                                select new SelectListItem() { Text = Enumerations.GetEnumDescription(sortOption), Value = sortOption.ToString(), Selected = sortOption == filters.Sorting }).ToList(),
                     Search = filters.Search,
                     PagesCount = (resultsCount / ListConstants.DefaultTakePerPage) % ListConstants.DefaultTakePerPage == 0 ? (resultsCount / ListConstants.DefaultTakePerPage) : (resultsCount / ListConstants.DefaultTakePerPage) +1
                 }
             };
+            if (Seller.CurrentAuthorizedSellerId != null)
+            {
+                productsViewModel.ProductFilters.Categories =
+                    db.Categories.Where(
+                        entry =>
+                            entry.SellerCategories.Where(sc=>!sc.IsDefault).Select(sc => sc.SellerId).Contains(Seller.CurrentAuthorizedSellerId))
+                        .OrderBy(entry => entry.ParentCategoryId)
+                        .ThenBy(entry => entry.Name)
+                        .ToList()
+                        .Select(entry => new SelectListItem {Text = entry.ExpandedName, Value = entry.Id});
+            }
+            else
+            {
+                productsViewModel.ProductFilters.Sellers =
+                   db.Sellers.OrderBy(entry => entry.Name)
+                       .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
+                productsViewModel.ProductFilters.Categories =
+                    db.Categories.OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
+                        .Select(entry => new SelectListItem {Text = entry.ExpandedName, Value = entry.Id});
+            }
             return PartialView(productsViewModel);
         }
 
@@ -117,7 +135,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
                               IsActive = true,
                               DoesCountForShipping = true
                           };
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName", product.CategoryId);
+            if (User.IsInRole(DomainConstants.AdminRoleName))
+            {
+                ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName", product.CategoryId);
+            }
+            else
+            {
+                ViewBag.CategoryId = new SelectList(db.Categories.Where(
+                    entry =>
+                        entry.SellerCategories.Where(sc => !sc.IsDefault)
+                            .Select(sc => sc.SellerId)
+                            .Contains(Seller.CurrentAuthorizedSellerId)), "Id", "ExpandedName", product.CategoryId);
+            }
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name", product.SellerId);
             var resultCurrencies =
                 db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider)
@@ -139,6 +168,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (Seller.CurrentAuthorizedSellerId != null)
+                {
+                    product.SellerId = Seller.CurrentAuthorizedSellerId;
+                }
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = User.Identity.Name;
                 product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
@@ -165,7 +198,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             //todo: add check for seller role
             var seller = db.Sellers.FirstOrDefault(entry => User.Identity.Name == entry.Owner.UserName);
-            ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName");
+            if (User.IsInRole(DomainConstants.AdminRoleName))
+            {
+                ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName", product.CategoryId);
+            }
+            else
+            {
+                ViewBag.CategoryId = new SelectList(db.Categories.Where(
+                    entry =>
+                        entry.SellerCategories.Where(sc => !sc.IsDefault)
+                            .Select(sc => sc.SellerId)
+                            .Contains(Seller.CurrentAuthorizedSellerId)), "Id", "ExpandedName", product.CategoryId);
+            }
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name");
             var resultCurrencies =
                 db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider)

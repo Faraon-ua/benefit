@@ -3,14 +3,17 @@
 @using Benefit.Domain.Models
 @model  Benefit.DataTransfer.ViewModels.PaginatedList<Order>
 
-<ul class="pagination">
-    @for (int i = 1; i < (Model.Pages + 1); i++)
-    {
-        <li class="@(i == Model.ActivePage ? "active" : "" )">
-            <a href="#">@i</a>
-        </li>
-    }
-</ul>
+@if (Model.Items.Any())
+{
+    <ul class="pagination">
+        @for (int i = 1; i < (Model.Pages + 1); i++)
+        {
+            <li class="@(i == Model.ActivePage ? "active" : "" )">
+                <a href="#">@i</a>
+            </li>
+        }
+    </ul>
+}
 <table class="table">
     <tr>
         <th>
@@ -84,11 +87,14 @@
         </tr>
     }
 </table>
-<ul class="pagination">
-    @for (var i = 1; i < (Model.Pages + 1); i++)
-    {
-        <li class="@(i == Model.ActivePage ? "active" : "" )">
-            <a href="#">@i</a>
-        </li>
-    }
-</ul>
+@if (Model.Items.Any())
+{
+    <ul class="pagination">
+        @for (int i = 1; i < (Model.Pages + 1); i++)
+        {
+            <li class="@(i == Model.ActivePage ? "active" : "" )">
+                <a href="#">@i</a>
+            </li>
+        }
+    </ul>
+}
