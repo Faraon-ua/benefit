@@ -54,7 +54,7 @@
                 @if (Model.HasEcommerce)
                 {
                     <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.UrlName, action = string.Empty })" class="reviews_info margin-right-20">Інфо</a>
-                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = Model.UrlName, categoryUrl = ""})" class="reviews_menu">@Model.CatalogButtonName</a>
+                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.UrlName, categoryUrl = ViewBag.SellerUrl ?? ""})" class="reviews_menu">@Model.CatalogButtonName</a>
                 }
                 else
                 {
