@@ -136,12 +136,19 @@
     width: 3% !important;
 }
 
+.height-30px {
+    height: 30px !important;
+}
 .height-250 {
     height: 250px !important;
 }
 
 .bold {
     font-weight: bold;
+}
+
+.bg-grey {
+    background-color: #cccccc;
 }
 
 .font-red {
@@ -170,6 +177,10 @@
 
 .pointer {
     cursor: pointer;
+}
+
+.centered {
+    margin: 0 auto;
 }
 
 .more-items {

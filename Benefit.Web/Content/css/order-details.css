@@ -312,10 +312,23 @@
 }
 
 .order_ifo_table {
-    margin-bottom: 15px;
+    border-collapse: collapse;
 }
 
-    .order_ifo_table th {
+    .order_ifo_table, .order_ifo_table th, .order_ifo_table td {
+        border: 1px solid black;
+    }
+
+        .order_ifo_table td {
+            padding: 5px 15px 5px 15px;
+        }
+
+        .order_ifo_table tr td:first-child {
+            width: 1%;
+            white-space: nowrap;
+        }
+
+/* .order_ifo_table th {
         background-color: #cccccc;
         padding: 0 10px;
         font-weight: 500;
@@ -325,13 +338,7 @@
         border-right: 1px solid #999999;
     }
 
-    .order_ifo_table td {
-        padding: 0 10px;
-        text-align: center;
-        border-left: 1px solid #999999;
-        border-bottom: 1px solid #999999;
-        border-right: 1px solid #999999;
-    }
+    !1!*/
 
 .order_in_table {
     margin-bottom: 7px;

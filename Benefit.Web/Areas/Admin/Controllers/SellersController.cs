@@ -149,6 +149,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             var ftpImage = new FileInfo(Path.Combine(ftpImagesPath, xmlProduct.Image));
                             if (ftpImage.Exists)
                             {
+                                ImagesService.DeleteAll(db.Images.Where(entry=>entry.ProductId == xmlProduct.Id).ToList(), xmlProduct.Id, imageType);
                                 ftpImage.CopyTo(Path.Combine(destPath, ftpImage.Name), true);
                                 ImagesService.AddImage(xmlProduct.Id, ftpImage.Name, imageType);
                             }
@@ -272,7 +273,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var owner = db.Users.Find(ownerId);
             if (owner == null) return HttpNotFound();
             if (!owner.OwnedSellers.Any()) return HttpNotFound();
-            return RedirectToAction("CreateOrUpdate", new { id = owner.OwnedSellers.First().Id });
+            return RedirectToAction("CreateOrUpdate", new { id = Seller.CurrentAuthorizedSellerId ?? owner.OwnedSellers.First().Id });
         }
 
         public ActionResult CreateOrUpdate(string id = null)
@@ -448,8 +449,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             var seller = db.Sellers.Find(id);
             var imagesService = new ImagesService();
-            imagesService.DeleteAll(seller.Images, id, ImageType.SellerGallery);
-            imagesService.DeleteAll(seller.Images, id, ImageType.SellerLogo);
+            imagesService.DeleteAll(seller.Images, id, ImageType.SellerGallery, true);
+            imagesService.DeleteAll(seller.Images, id, ImageType.SellerLogo, true);
             db.Sellers.Remove(seller);
             db.SaveChanges();
             return Json(true);

@@ -130,19 +130,30 @@ namespace Benefit.Services
             }
         }
 
-        public void DeleteAll(IEnumerable<Benefit.Domain.Models.Image> images, string parentId, ImageType type)
+        public void DeleteAll(IEnumerable<Benefit.Domain.Models.Image> images, string parentId, ImageType type, bool deleteFolder = false)
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var pathString = Path.Combine(originalDirectory, "Images", type.ToString(), parentId);
             var productImagesDir = new DirectoryInfo(pathString);
             if (productImagesDir.Exists)
             {
-                productImagesDir.Delete(true);
+                if (deleteFolder)
+                {
+                    productImagesDir.Delete(true);
+                }
+                else
+                {
+                    foreach (var file in productImagesDir.GetFiles())
+                    {
+                        file.Delete();
+                    }
+                }
             }
             using (var db = new ApplicationDbContext())
             {
                 var imgIds = images.Select(img => img.Id).ToList();
                 db.Images.RemoveRange(db.Images.Where(entry => imgIds.Contains(entry.Id)));
+                db.SaveChanges();
             }
         }
 

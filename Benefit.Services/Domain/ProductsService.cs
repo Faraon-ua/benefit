@@ -177,7 +177,7 @@ namespace Benefit.Services.Domain
                     .FirstOrDefault(entry => entry.Id == productId);
             if (product == null) return;
             var imagesService = new ImagesService();
-            imagesService.DeleteAll(product.Images, productId, ImageType.ProductGallery);
+            imagesService.DeleteAll(product.Images, productId, ImageType.ProductGallery, true);
 
             db.ProductOptions.RemoveRange(product.ProductOptions);
             db.ProductParameterProducts.RemoveRange(product.ProductParameterProducts);

@@ -3,68 +3,151 @@
 @using Benefit.Domain.Models
 @model Order
 <p class="history_modal_title">Інформація про замовлення</p>
-<table class="order_ifo_table">
-    <tbody>
+
+<table class="width-100 order_ifo_table">
+    <tr>
+        <td>
+            Імя покупця
+        </td>
+        <td>
+            @Model.User.FullName
+        </td>
+    </tr>
+    <tr>
+        <td>
+            № замовлення
+        </td>
+        <td>
+            @Model.OrderNumber
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Час
+        </td>
+        <td>
+            @Model.Time.ToLocalTimeWithFormat()
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Номер телефону
+        </td>
+        <td>
+            @Model.User.PhoneNumber
+        </td>
+    </tr>
+    <tr class="bg-grey height-30px"><td></td><td></td></tr>
+    <tr>
+        <td>
+            Спосіб оплати
+        </td>
+        <td>
+            @Enumerations.GetEnumDescription(Model.PaymentType)
+        </td>
+    </tr>
+    @if (Model.PaymentType == PaymentType.Bonuses)
+    {
         <tr>
-            <th>Номер</th>
-            <th>Дата</th>
-            <th>Сума (грн)</th>
-            @if (Model.PaymentType == PaymentType.Bonuses)
-            {
-                <th>Сплачено бонусами</th>
-                <th>Доплата</th>
-            }
-            <th>Бали</th>
-            <th>Бонуси</th>
-            <th>Спосіб оплати</th>
-            <th>Спосіб доставки</th>
-            <th>Адреса доставки</th>
-            <th>Вартість доставки</th>
-            @if (Model.OrderType == OrderType.BenefitSite)
-            {
-                <th>Коментар</th>
-            }
-            @if (Model.OrderType == OrderType.BenefitCard)
-            {
-                <th>Номер чеку</th>
-            }
-        </tr>
-        <tr>
-            <td>@Model.OrderNumber</td>
-            <td>@Model.Time.ToLocalTimeWithFormat()</td>
-            <td>@Model.Sum.ToString("F")</td>
-            @if (Model.PaymentType == PaymentType.Bonuses)
-            {
-                <td>@Math.Abs(Model.BonusPaymentTransaction.Bonuses).ToString("F")</td>
-                <td>@((Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses)).ToString("F"))</td>
-            }
-            <td>@Model.PointsSum.ToString("F")</td>
-            <td>@Model.PersonalBonusesSum.ToString("F")</td>
-            <td>@Model.PaymentType</td>
-            <td>@Model.ShippingName</td>
-            <td>@Model.ShippingAddress</td>
-            <td>@Model.ShippingCost</td>
-            <td>@Model.Description</td>
-        </tr>
-        <tr>
-            <td>Статус</td>
-            <td style="text-align: left;">
-                @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
-                {
-                    @Html.DropDownList("OrderStatus", EnumHelper.GetSelectList(typeof(OrderStatus), Model.Status))
-                }
-                else
-                {
-                    @Enumerations.GetEnumDescription(Model.Status)
-                }
+            <td>
+                Сплачено бонусами
             </td>
-            <td>Коментар статусу</td>
-            <td colspan="5">
-                @Html.TextBox("StatusComment", Model.StatusComment, new { @class = "width-100" })
+            <td>
+                @Math.Abs(Model.BonusPaymentTransaction.Bonuses).ToString("F")
             </td>
         </tr>
-    </tbody>
+        <tr>
+            <td>
+                Доплата
+            </td>
+            <td>
+                @((Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses)).ToString("F"))
+            </td>
+        </tr>
+    }
+    <tr>
+        <td>
+            Бали
+        </td>
+        <td>
+            @Model.PointsSum
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Бонуси
+        </td>
+        <td>
+            @Model.PersonalBonusesSum
+        </td>
+    </tr>
+    <tr class="bg-grey height-30px"><td></td><td></td></tr>
+    <tr>
+        <td>
+            Спосіб доставки
+        </td>
+        <td>
+            @Model.ShippingName
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Адреса доставки
+        </td>
+        <td>
+            @Model.ShippingAddress
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Вартість доставки
+        </td>
+        <td>
+            @Model.ShippingCost
+        </td>
+    </tr>
+    <tr class="bg-grey height-30px"><td></td><td></td></tr>
+    <tr>
+        <td>
+            Коментар
+        </td>
+        <td>
+            @Model.Description
+        </td>
+    </tr>
+    <tr class="bg-grey height-30px"><td></td><td></td></tr>
+    <tr>
+        <td>
+            Статус
+        </td>
+        <td>
+            @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
+            {
+                @Html.DropDownList("OrderStatus", EnumHelper.GetSelectList(typeof(OrderStatus), Model.Status))
+            }
+            else
+            {
+                @Enumerations.GetEnumDescription(Model.Status)
+            }
+        </td>
+    </tr> 
+    <tr>
+        <td>
+            Коментар статусу
+        </td>
+        <td>
+            @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
+            {
+                 @Html.TextBox("StatusComment", Model.StatusComment, new { @class = "width-100" })
+            }
+            else
+            {
+                @Model.StatusComment
+            }
+        </td>
+    </tr>
 </table>
+
 @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
 {
     <p>
@@ -167,8 +250,49 @@
         }
     </tbody>
 </table>
-<button class="btn btn-light" onclick="window.open('@Url.Action("Print", new { id = Model.Id })')">
+@if (Model.Status == OrderStatus.Processed)
+{
+    <p>
+        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Додати товар" onclick=" LoadOrderProductForm()">Додати товар</a>
+    </p>
+}
+
+<div class="width-100">
+    <div class="centered width-20 row">
+        <div class="col-md-8">
+            <b>
+                Загальна сума замовлення
+            </b>
+        </div>
+        <div class="col-md-4">@Model.Sum</div>
+    </div>
+    <div class="centered width-20 row">
+        <div class="col-md-8">
+            <b>
+                Доставка
+            </b>
+        </div>
+        <div class="col-md-4">@Model.ShippingCost</div>
+    </div>
+    <div class="centered width-20 row">
+        <div class="col-md-8">
+            <b>
+                Всього
+            </b>
+        </div>
+        <div class="col-md-4">@(Model.Sum + Model.ShippingCost)</div>
+    </div>
+</div>
+
+<button class="btn btn-warning" onclick="window.open('@Url.Action("Print", new { id = Model.Id })')">
     <i class="icon-print bigger-160"></i>
-    Розрдрукувати
+    Роздрукувати
 </button>
+
+@*
+    <button class="btn btn-success pull-right">
+        <i class="icon-save bigger-160"></i>
+        Зберегти зміни
+    </button>
+*@
 

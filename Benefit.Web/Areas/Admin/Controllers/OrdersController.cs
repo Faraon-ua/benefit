@@ -11,6 +11,7 @@ using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
+using Benefit.Web.Models.Admin;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -31,10 +32,40 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Orders/
-        public ActionResult Index()
+        public ActionResult Index(OrdersFilters ordersFilters, int page = 0)
         {
-            //todo: add paging, remove take
-            return View();
+            var takePerPage = 50;
+
+            var orders =
+                db.Orders.Include(o => o.User)
+                    .OrderByDescending(entry => entry.Time)
+                    .Where(entry => entry.OrderType == ordersFilters.NavigationType);
+
+            if (Seller.CurrentAuthorizedSellerId != null)
+            {
+                orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+            }
+            if (!string.IsNullOrEmpty(ordersFilters.ClientName))
+            {
+                orders = orders.Where(entry => entry.User.FullName.ToLower().Contains(ordersFilters.ClientName.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(ordersFilters.DateRange))
+            {
+                var dateRangeValues = ordersFilters.DateRange.Split('-');
+                var startDate = DateTime.Parse(dateRangeValues.First());
+                var endDate = DateTime.Parse(dateRangeValues.Last());
+                orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
+            }
+            var ordersTotal = orders.Count();
+            orders = orders.Skip(page * takePerPage).Take(takePerPage);
+
+            ordersFilters.Orders = new PaginatedList<Order>
+            {
+                Items = orders.ToList(),
+                Pages = ordersTotal/takePerPage + 1,
+                ActivePage = page == 0 ? 1 : page
+            };
+            return View(ordersFilters);
         }
 
         public ActionResult Print(string id)
@@ -80,7 +111,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult GetOrdersList(OrderType orderType, int page = 0)
         {
             var takePerPage = 50;
-            
+
             var orders =
                 db.Orders.Include(o => o.User)
                     .OrderByDescending(entry => entry.Time)
@@ -91,6 +122,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
             }
             var ordersTotal = orders.Count();
+            page = page - 1;
             orders = orders.Skip(page * takePerPage).Take(takePerPage);
             var ordersHtml = ControllerContext.RenderPartialToString("_OrdersListPartial", new PaginatedList<Order>
             {
