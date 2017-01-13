@@ -76,6 +76,10 @@ namespace Benefit.Domain.DataAccess
             modelBuilder.Entity<ApplicationUser>()
                   .HasOptional<ApplicationUser>(s => s.Referal)
                   .WithMany(s => s.Partners).WillCascadeOnDelete(false);
+            
+            modelBuilder.Entity<Transaction>()
+                  .HasOptional<ApplicationUser>(s => s.Payee)
+                  .WithMany(s => s.Transactions).WillCascadeOnDelete(false);
         }
 
         public override int SaveChanges()

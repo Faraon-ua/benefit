@@ -1,0 +1,99 @@
+﻿@using System.Globalization
+@using Benefit.Common.Extensions
+@using Benefit.Domain.Models
+@model Benefit.DataTransfer.ViewModels.PartnerTransactionsViewModel
+
+<div id="bonus_account" class="bonus_account tab-pane fade in active">
+    <p class="controls_block_title orders_title">Пошук по даті нарахувань</p>
+    <div class="controls_block order_controls clearfix">
+        <form class="controls_block_form">
+            <div class="calendar-icon"></div>
+            <input class="controls_block_search width-40 date-range-picker" type="text" placeholder="Оберіть дату" value="@Model.DateRange">
+            <button class="controls_block_search_btn"><i></i>Пошук</button>
+        </form>
+    </div>
+
+    <table class="bonus_account_table">
+        <tr>
+            <th>Дата</th>
+            <th>Час</th>
+            <th>Вид операції</th>
+            <th>Бонуси</th>
+            <th>Комісія</th>
+            <th>Залишок</th>
+        </tr>
+        @foreach (var transaction in Model.General)
+        {
+            var rowClassName = transaction.Bonuses < 0 ? "pink" : "";
+            string fullMonthName = transaction.Time.AddMonths(-1).ToString("MMMM", CultureInfo.CreateSpecificCulture("uk"));
+
+            <tr class="@rowClassName">
+                <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
+                <td>@transaction.Time.ToLocalTimeWithFormat()</td>
+                <td>
+                    @if (transaction.Type == TransactionType.BonusesOrderPayment)
+                    {
+                        <span>
+                            Оплата за замовлення №@transaction.Order.OrderNumber
+                        </span>
+                        <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                    }
+                    @if (transaction.Type == TransactionType.BonusesOrderAbandonedPayment)
+                    {
+                        <span>
+                            Повернення бонусів за скасування замовлення №@transaction.Order.OrderNumber
+                        </span>
+                        <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                    }
+                    @if (transaction.Type == TransactionType.OrderRefund)
+                    {
+                        <span>
+                            Повернення бонусів за редагування замовлення №@transaction.Order.OrderNumber
+                        </span>
+                        <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                    }
+                    @if (transaction.Type == TransactionType.PersonalMonthAggregate)
+                    {
+                        <span>
+                            Персональні бонуси за @fullMonthName @transaction.Time.Year
+                        </span>
+                    }
+                    @if (transaction.Type == TransactionType.MentorBonus)
+                    {
+                        <span>
+                            Бонуси за запрошення за @fullMonthName @transaction.Time.Year
+                        </span>
+                    }
+                    @if (transaction.Type == TransactionType.VIPBonus)
+                    {
+                        <span>
+                            Дивіденди за VIP статус за @fullMonthName @transaction.Time.Year
+                        </span>
+                    }
+                    @if (transaction.Type == TransactionType.VIPSellerBonus)
+                    {
+                        <span>
+                            Винагорода за підключення постачальника
+                        </span>
+                    }
+                </td>
+
+                <td class="bonusLevel">
+                    @if (transaction.Bonuses > 0)
+                    {
+                        <span>+</span>
+                    }
+
+                    @transaction.Bonuses.ToDoubleDigits()
+                </td>
+                <td>
+                    @transaction.Commission.ToDoubleDigits()
+                </td>
+                <td>
+                    @transaction.BonusesBalans.ToDoubleDigits()
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+

@@ -1,4 +1,7 @@
-﻿@model Benefit.Domain.Models.ApplicationUser
+﻿@using System.Globalization
+@using Benefit.Common.Extensions
+@using Benefit.Domain.Models
+@model Benefit.DataTransfer.ViewModels.PartnerTransactionsViewModel
 
 @{
     ViewBag.Title = "Фінансовий облік";
@@ -7,437 +10,195 @@
 
 @section PartnerHead
 {
-    @Html.Partial("_PartnerHead", Model)
+    @Html.Partial("_PartnerHead", Model.User)
+}
+@section styles {
+    <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
+
+    <script>
+        $(function () {
+            $('.date-range-picker').daterangepicker({
+                locale: {
+                    format: 'DD.MMM.YYYY',
+                    "applyLabel": "Ок",
+                    "cancelLabel": "Відміна",
+                    "customRangeLabel": "Обрати період",
+                    "firstDay": 1,
+                    "daysOfWeek": [
+                        "Нд",
+                        "Пн",
+                        "Вт",
+                        "Ср",
+                        "Чт",
+                        "Пт",
+                        "Сб"
+                    ],
+                    "monthNames": [
+                        "Січень",
+                        "Лютий",
+                        "Березень",
+                        "Квітень",
+                        "Травень",
+                        "Червень",
+                        "Липень",
+                        "Серпень",
+                        "Вересень",
+                        "Жовтень",
+                        "Листопад",
+                        "Грудень"
+                    ]
+                },
+                ranges: {
+                    'Сьогодні': [moment(), moment()],
+                    'Вчора': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Цей тиждень': [moment().startOf('week'), moment().endOf('week')],
+                    'Цей Місяць': [moment().startOf('month'), moment().endOf('month')],
+                    'Останній місяць': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                autoApply: true
+            });
+
+            var orderDetailsUrl = '@Url.Action("GetOrderDetails", "Panel")';
+
+            $(".details_button").click(function () {
+                var orderId = $(this).attr("data-order-id");
+                $.get(orderDetailsUrl + "?orderId=" + orderId, function (data) {
+                    if (data) {
+                        $("#order-details-wrap").html(data);
+                        $("#history_modal").modal('show');
+                    }
+                });
+            });
+
+            $(".controls_block_search_btn").click(function (e) {
+                e.preventDefault();
+                debugger;
+                var loc = location.href.toString();
+                var dateRange = $(this).prev(".date-range-picker").val().replace(/ /g, '');//.replace(new RegExp('/', 'g'), '.');
+                var startIndexOf = loc.indexOf("dateRange=");
+                if (startIndexOf > 0) {
+                    var endIndexOf = loc.indexOf('#');
+                    if (endIndexOf < 0) {
+                        endIndexOf = loc.length;
+                    }
+                    var oldDateRange = loc.substring(startIndexOf + 'dateRange='.length, endIndexOf);
+                    loc = loc.replace(oldDateRange, dateRange);
+                    location.href = loc;
+                    return;
+                } else {
+                    var startHash = loc.indexOf("#");
+                    var tab = "";
+                    if (startHash > 0) {
+                        tab = loc.substring(startHash, loc.length);
+                        loc = loc.substring(0, startHash);
+                    }
+                    loc = loc + "?dateRange=" + dateRange + tab;
+                    location.href = loc;
+                }
+
+            });
+        });
+    </script>
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
     <ul class="profile_menu nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#bonus_account">Облік <br>бонусів</a></li>
         <li><a data-toggle="tab" href="#personal_charges">Особисті <br>нарахування</a></li>
         <li><a data-toggle="tab" href="#bonuses_invitation">Бонус за <br>запрошення</a></li>
-        <li><a data-toggle="tab" href="#bonuses_sum">Загальна <br>сума бонусів</a></li>
+        @*        <li><a data-toggle="tab" href="#bonuses_sum">Загальна <br>сума бонусів</a></li>*@
         <li><a data-toggle="tab" href="#bonuses_used">Використати <br>бонуси</a></li>
     </ul>
 
     <div class="finance_fixed_block">
-        <div class="bonuses_available">Доступні бонуси: <span>230,63</span></div>
-        <div class="bonuses_processing">Бонуси в обробці:  <span>55,85</span></div>
-        <div class="products_full">Баловий товарообіг партнерів за поточний період: <span>650,97</span></div>
+        <div class="bonuses_available">
+            Доступні бонуси: <span>
+                @Model.User.BonusAccount.ToDoubleDigits()
+            </span>
+        </div>
+        <div class="bonuses_processing">
+            Бонуси в обробці:  <span>
+                @Model.User.HangingBonusAccount.ToDoubleDigits()
+            </span>
+        </div>
+        @*        <div class="products_full">Баловий товарообіг партнерів за поточний період: <span>650,97</span></div>*@
     </div>
 
     <div class="tab-content">
-        <div id="bonus_account" class="bonus_account tab-pane fade in active">
-            <p class="controls_block_title orders_title">Пошук по даті нарахувань</p>
-            <div class="controls_block order_controls clearfix">
-                <form class="controls_block_form">
-                    <div class="calendar"></div>
-                    <input class="controls_block_search" type="text" onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" placeholder="Оберіть дату">
-                    <button class="controls_block_search_btn"><i></i>Знайти</button>
-                </form>
-            </div>
+        @Html.Partial("_FinanceGeneralPrtial", Model)
 
-            <table class="bonus_account_table">
-                <tr>
-                    <th>Дата</th>
-                    <th>Час</th>
-                    <th>Вид операції</th>
-                    <th colspan="2">Бонуси</th>
-                </tr>
-                <tr>
-                    <td>15 09 2016</td>
-                    <td>18:30</td>
-                    <td>Бонуси по Benefit Card (серпень 2016)</td>
-                    <td class="bonusLevel">+ 15,02</td>
-                    <td>15,02</td>
-                </tr>
-                <tr>
-                    <td>10 03 2016</td>
-                    <td>14:00</td>
-                    <td>Винагорода за підключення  “Greenwich Lounge Bar”</td>
-                    <td class="bonusLevel">+ 34,61</td>
-                    <td>34,61</td>
-                </tr>
-                <tr>
-                    <td>02 03 2016</td>
-                    <td>22:09</td>
-                    <td>Оплата за замовлення №214878</td>
-                    <td class="bonusLevel">- 13,01</td>
-                    <td>13,01</td>
-                </tr>
-                <tr>
-                    <td>15 09 2016</td>
-                    <td>15:20</td>
-                    <td>Бонус за запрошення (серпень 2016)</td>
-                    <td class="bonusLevel">+ 320,00</td>
-                    <td>320,00</td>
-                </tr>
-                <tr>
-                    <td>01 03 2016</td>
-                    <td>18:30</td>
-                    <td>Перерахунок партнеру Ковач Світлана</td>
-                    <td class="bonusLevel">- 265,00</td>
-                    <td>265,00</td>
-                </tr>
-                <tr>
-                    <td>01 03 2016</td>
-                    <td>14:00</td>
-                    <td>Оплата за замовлення №1122</td>
-                    <td class="bonusLevel">- 200,00</td>
-                    <td>200,00</td>
-                </tr>
-                <tr>
-                    <td>29 02 2016</td>
-                    <td>22:09</td>
-                    <td>Оплата за замовлення №5466</td>
-                    <td class="bonusLevel">- 43,20</td>
-                    <td>43,20</td>
-                </tr>
-                <tr>
-                    <td>15 09 2016</td>
-                    <td>15:20</td>
-                    <td>Дивіденди за статус “Директор” (серпень 2016)</td>
-                    <td class="bonusLevel">+ 100,00</td>
-                    <td>100,00</td>
-                </tr>
-                <tr>
-                    <td>03 01 2016</td>
-                    <td>22:09</td>
-                    <td>Оплата за замовлення №9633</td>
-                    <td class="bonusLevel">- 8,98</td>
-                    <td>8,98</td>
-                </tr>
-                <tr>
-                    <td>28 12 2015</td>
-                    <td>15:20</td>
-                    <td>Оплата за замовлення №5466</td>
-                    <td class="bonusLevel">- 3,26</td>
-                    <td>3,26</td>
-                </tr>
+        @Html.Partial("_FinancePersonalPartial", Model)
 
-            </table>
-            <div class="bottom_control clearfix">
-                <div class="pagination_wrap">
-                    <div class="pagination_prew">&lt;</div>
-                    <ul class="pagination">
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li class="active">4</li>
-                        <li>5</li>
-                        <li>6</li>
-                        <li>...</li>
-                        <li>54</li>
-                    </ul>
-                    <div class="pagination_next">&gt;</div>
+        @Html.Partial("_FinanceMentorPartial", Model)
+
+
+        @*<div id="bonuses_sum" class="bonuses_sum tab-pane fade">
+                <table class="bonuses_sum_table main_table">
+                    <tr>
+                        <th>Період</th>
+                        <th>Сума нарахувань</th>
+                    </tr>
+                    <tr>
+                        <td>вересень 2016</td>
+                        <td>3250,00</td>
+                    </tr>
+                    <tr>
+                        <td>серпень 2016</td>
+                        <td>8965,5</td>
+                    </tr>
+                    <tr>
+                        <td>липень  2016 </td>
+                        <td>13,01</td>
+                    </tr>
+                    <tr>
+                        <td>червень  2016 </td>
+                        <td>14,00</td>
+                    </tr>
+                    <tr>
+                        <td>травень 2016 </td>
+                        <td>6565,00</td>
+                    </tr>
+                    <tr>
+                        <td>квітень 2016 </td>
+                        <td>2270,00</td>
+                    </tr>
+                    <tr>
+                        <td>березень 2016 </td>
+                        <td>4143,20</td>
+                    </tr>
+                    <tr>
+                        <td>лютий 2016 </td>
+                        <td>250,00</td>
+                    </tr>
+                    <tr>
+                        <td>січень 2016 </td>
+                        <td>65,98</td>
+                    </tr>
+                    <tr>
+                        <td>грудень 2015 </td>
+                        <td>300,26</td>
+                    </tr>
+                    <tr class="bonuses_sum_total_row">
+                        <td>Всього</td>
+                        <td class="bonuses_sum_total">356089,90</td>
+                    </tr>
+                </table>
+
+                <div class="bottom_control clearfix">
+                    <div class="pagination_wrap">
+                        <div class="pagination_prew">&lt;</div>
+                        <ul class="pagination">
+                            <li class="active">1</li>
+                            <li>2</li>
+                        </ul>
+                        <div class="pagination_next">&gt;</div>
+                    </div>
                 </div>
-                <div class="show_more">
-                    <label for="more_bonuses">Показати</label>
-                    <select id="more_bonuses" class="orders_org_choice">
-                        <option>10</option>
-                        <option>20</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-
-        <div id="personal_charges" class="personal_charges tab-pane fade">
-            <p class="controls_block_title">Пошук по даті нарахувань</p>
-            <div class="controls_block clearfix">
-                <form class="controls_block_form">
-                    <fieldset class="formgrup_search">
-                        <div class="calendar"></div>
-                        <input class="controls_block_search" type="text" onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" placeholder="Оберіть дату">
-                        <button class="controls_block_search_btn"><i></i>Знайти</button>
-                    </fieldset>
-                    <fieldset class="formgrup_check">
-                        <input class="hidden" type="checkbox" id="check01" name="check01">
-                        <label class="label_for_check" for="check01">Показати всю структуру</label>
-
-                        <input class="hidden" type="checkbox" id="check02" name="check02" checked>
-                        <label class="label_for_check" for="check02">Не мають бонусної картки</label>
-                    </fieldset>
-                </form>
-            </div>
-
-            <table class="personal_charges_table main_table">
-                <tr>
-                    <th>Дата</th>
-                    <th>Вид операції</th>
-                    <th>Бали</th>
-                    <th>Бонуси</th>
-                </tr>
-                <tr class="bg_grey">
-                    <td>11 03 2016</td>
-                    <td>Онлайн-замовлення № 57899</td>
-                    <td>300,00</td>
-                    <td>30,00</td>
-                </tr>
-                <tr class="bg_pink">
-                    <td>10 03 2016</td>
-                    <td>Benefit Card MiCalle</td>
-                    <td>50,00</td>
-                    <td>0,5</td>
-                </tr>
-                <tr class="bg_grey">
-                    <td>02 03 2016</td>
-                    <td>Онлайн-замовлення № 6400 </td>
-                    <td>13,01</td>
-                    <td>13,01</td>
-                </tr>
-                <tr class="bg_pink">
-                    <td>15 09 2016</td>
-                    <td>Benefit Card “Koshik24”</td>
-                    <td>3200,00</td>
-                    <td>3200,00</td>
-                </tr>
-                <tr class="bg_grey">
-                    <td>01 03 2016</td>
-                    <td>Онлайн-замовлення № 6400 </td>
-                    <td>265,00</td>
-                    <td>265,00</td>
-                </tr>
-                <tr class="bg_pink">
-                    <td>01 03 2016</td>
-                    <td>Benefit Card Cento Percento</td>
-                    <td>200,00</td>
-                    <td>200,00</td>
-                </tr>
-                <tr class="bg_grey">
-                    <td>29 02 2016</td>
-                    <td>Онлайн-замовлення № 625899</td>
-                    <td>43,20</td>
-                    <td>43,20</td>
-                </tr>
-                <tr class="bg_pink">
-                    <td>29 02 2016</td>
-                    <td>Benefit Card Greenwich Lounge Bar</td>
-                    <td>1000,00</td>
-                    <td>1000,00</td>
-                </tr>
-                <tr class="bg_grey">
-                    <td>03 01 2016</td>
-                    <td>Онлайн-замовлення № 4255</td>
-                    <td>8,98</td>
-                    <td>8,98</td>
-                </tr>
-                <tr class="bg_grey">
-                    <td>28 12 2015</td>
-                    <td>Онлайн-замовлення № 825199</td>
-                    <td>3,26</td>
-                    <td>3,26</td>
-                </tr>
-            </table>
-
-            <div class="bottom_control clearfix">
-                <div class="pagination_wrap">
-                    <div class="pagination_prew">&lt;</div>
-                    <ul class="pagination">
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li class="active">4</li>
-                        <li>5</li>
-                        <li>6</li>
-                        <li>...</li>
-                        <li>54</li>
-                    </ul>
-                    <div class="pagination_next">&gt;</div>
-                </div>
-                <div class="show_more">
-                    <label for="more_charges">Показати</label>
-                    <select id="more_charges">
-                        <option>10</option>
-                        <option>20</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div id="bonuses_invitation" class="bonuses_invitation tab-pane fade">
-            <div class="controls_block clearfix">
-                <p class="structure_menu_date_title">Період нарахувань структури:</p>
-                <form>
-                    <select id="bonuses_invitation_month" class="bonuses_invitation_month">
-                        <option>Січень</option>
-                        <option>Лютий</option>
-                        <option>Березень</option>
-                        <option>Квітень</option>
-                        <option>Травень</option>
-                        <option>Червень</option>
-                        <option>Липень</option>
-                        <option>Серпень</option>
-                        <option selected>Вересень</option>
-                        <option>Жовтень</option>
-                        <option>Листопад</option>
-                        <option>Грудень</option>
-                    </select>
-                    <select id="bonuses_invitation_year" class="bonuses_invitation_year"></select>
-                </form>
-            </div>
-
-            <table class="bonuses_invitation_table main_table">
-                <tr>
-                    <th>Дата</th>
-                    <th>Запрошений партнер</th>
-                    <th>Лінія <br>структури</th>
-                    <th>Бонуси</th>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Коломий Наталя </td>
-                    <td class="structureLine">1</td>
-                    <td>30,00</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Жук Руслана Еміліанівна </td>
-                    <td class="structureLine">2</td>
-                    <td>0,5</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Боднар Жужанна Тиберівна</td>
-                    <td class="structureLine">2</td>
-                    <td>13,01</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Керечан Маріанна Іванівна </td>
-                    <td class="structureLine">3</td>
-                    <td>14,00</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Куликовський Дмитро Олександрович</td>
-                    <td class="structureLine">1</td>
-                    <td>65,00</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Лучко Павло Павлович </td>
-                    <td class="structureLine">2</td>
-                    <td>20,00</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Вишневський Остап Семенович </td>
-                    <td class="structureLine">3</td>
-                    <td>43,20</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Савенко Валерія Валеріївна </td>
-                    <td class="structureLine">1</td>
-                    <td>20,00</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Вишневська Христина Павлівна </td>
-                    <td class="structureLine">2</td>
-                    <td>8,98</td>
-                </tr>
-                <tr>
-                    <td>15 10 2016 </td>
-                    <td>Руденко Ольга Павлівна</td>
-                    <td class="structureLine">3</td>
-                    <td>3,26</td>
-                </tr>
-                <tr class="bonuses_invitation_sum_row">
-                    <td></td>
-                    <td></td>
-                    <td>Всього</td>
-                    <td class="bonuses_invitation_sum">406,00</td>
-                </tr>
-            </table>
-
-            <div class="bottom_control clearfix">
-                <div class="pagination_wrap">
-                    <div class="pagination_prew">&lt;</div>
-                    <ul class="pagination">
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li class="active">4</li>
-                        <li>5</li>
-                        <li>6</li>
-                        <li>...</li>
-                        <li>54</li>
-                    </ul>
-                    <div class="pagination_next">&gt;</div>
-                </div>
-                <div class="show_more">
-                    <label for="more_bonuses_invitation">Показати</label>
-                    <select id="more_bonuses_invitation">
-                        <option>10</option>
-                        <option>20</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div id="bonuses_sum" class="bonuses_sum tab-pane fade">
-            <table class="bonuses_sum_table main_table">
-                <tr>
-                    <th>Період</th>
-                    <th>Сума нарахувань</th>
-                </tr>
-                <tr>
-                    <td>вересень 2016</td>
-                    <td>3250,00</td>
-                </tr>
-                <tr>
-                    <td>серпень 2016</td>
-                    <td>8965,5</td>
-                </tr>
-                <tr>
-                    <td>липень  2016 </td>
-                    <td>13,01</td>
-                </tr>
-                <tr>
-                    <td>червень  2016 </td>
-                    <td>14,00</td>
-                </tr>
-                <tr>
-                    <td>травень 2016 </td>
-                    <td>6565,00</td>
-                </tr>
-                <tr>
-                    <td>квітень 2016 </td>
-                    <td>2270,00</td>
-                </tr>
-                <tr>
-                    <td>березень 2016 </td>
-                    <td>4143,20</td>
-                </tr>
-                <tr>
-                    <td>лютий 2016 </td>
-                    <td>250,00</td>
-                </tr>
-                <tr>
-                    <td>січень 2016 </td>
-                    <td>65,98</td>
-                </tr>
-                <tr>
-                    <td>грудень 2015 </td>
-                    <td>300,26</td>
-                </tr>
-                <tr class="bonuses_sum_total_row">
-                    <td>Всього</td>
-                    <td class="bonuses_sum_total">356089,90</td>
-                </tr>
-            </table>
-
-            <div class="bottom_control clearfix">
-                <div class="pagination_wrap">
-                    <div class="pagination_prew">&lt;</div>
-                    <ul class="pagination">
-                        <li class="active">1</li>
-                        <li>2</li>
-                    </ul>
-                    <div class="pagination_next">&gt;</div>
-                </div>
-            </div>
-        </div>
+            </div>*@
 
 
         <div id="bonuses_used" class="bonuses_used tab-pane fade">
@@ -464,3 +225,4 @@
 
     </div>
 </div>
+<div id="order-details-wrap"></div>

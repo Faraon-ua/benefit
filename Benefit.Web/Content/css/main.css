@@ -2675,16 +2675,15 @@ li:last-child .expand {
         }
 
     .bonus_account_table th,
-    .main_table th,
+    .main_table th {
+        padding: 0 15px;
+        font-weight: bold;
+    }
     .main_table td,
     .bonus_account_table td {
         padding: 0 15px;
         font-weight: 500;
     }
-
-        .bonus_account_table th:last-child {
-            text-align: center;
-        }
 
 .controls_block_title,
 .controls_block {

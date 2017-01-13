@@ -16,7 +16,7 @@
                 <strong class="primary-font">@message.User.FullName</strong>
                 <small class="pull-right text-muted">
                     <span class="glyphicon glyphicon-time"></span>
-                    @message.TimeStamp.ToLocalTimeWithFormat()
+                    @message.TimeStamp.ToLocalDateTimeWithFormat()
                     @if (User.IsInRole(DomainConstants.AdminRoleName))
                     {
                         <a href="#" class="glyphicon glyphicon-remove text-danger delete-message" data-message-id="@message.Id"></a>

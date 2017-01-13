@@ -192,7 +192,7 @@
                         <div class="form-group">
                             <label class="col-md-1 control-label text-left">Коли останній раз редагувалось</label>
                             <div class="col-md-10">
-                                @Html.TextBox("LastModified", @Model.LastModified.ToLocalTimeWithFormat(), new { disabled = "true" })
+                                @Html.TextBox("LastModified", @Model.LastModified.ToLocalDateTimeWithFormat(), new { disabled = "true" })
                             </div>
                         </div>
 

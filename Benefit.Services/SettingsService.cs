@@ -155,6 +155,7 @@ namespace Benefit.Services
             public static int VIPQualifiedPartnersNumber = 5;
             public static int VIPPortionPointsAmount = 1000;
             public static int VIPMaxPortions = 1000;
+            public static int ProfitDay = 15;
 
             public static double[] UserDiscounts = { 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
 

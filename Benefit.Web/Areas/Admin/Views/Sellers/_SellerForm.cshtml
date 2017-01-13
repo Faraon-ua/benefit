@@ -143,7 +143,7 @@
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Коли останній раз редагувалось</label>
         <div class="col-xs-10 col-sm-5">
-            @Html.TextBox("Seller.LastModified", @Model.Seller.LastModified.ToLocalTimeWithFormat(), new { disabled = "true" })
+            @Html.TextBox("Seller.LastModified", @Model.Seller.LastModified.ToLocalDateTimeWithFormat(), new { disabled = "true" })
         </div>
     </div>
 

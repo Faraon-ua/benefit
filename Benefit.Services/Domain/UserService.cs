@@ -38,7 +38,7 @@ namespace Benefit.Services.Domain
             var addEmailUrl = SettingsService.SendPulse.SendPulseAddEmailUrl.Replace("{id}",
                 SettingsService.SendPulse.SendPulseFinLikbezAddressBookId);
 
-            var strContent = "emails=[{\"email\": \""+email+"\"}]";
+            var strContent = "emails=[{\"email\": \"" + email + "\"}]";
             content = new StringContent(strContent, Encoding.UTF8, "application/x-www-form-urlencoded");
             var result = await httpClientService.GetObectFromService<string>(addEmailUrl, content, authResult.access_token);
         }
@@ -70,7 +70,7 @@ namespace Benefit.Services.Domain
             var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == id);
             return user;
         }
-
+        
         public ApplicationUser GetUserInfoWithRegionsAndSellers(string id)
         {
             var user =

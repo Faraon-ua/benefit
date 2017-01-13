@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -109,7 +110,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             if (Request.Files.Count > 0 && Request.Files[0] != null && Request.Files[0].ContentLength != 0)
             {
                 var file = Request.Files[0];
-                var userUrl = Url.Action("Edit", "Users", new {area = "Admin", id = User.Identity.GetUserId()}, Request.Url.Scheme);
+                var userUrl = Url.Action("Edit", "Users", new { area = "Admin", id = User.Identity.GetUserId() }, Request.Url.Scheme);
                 var EmailService = new EmailService();
                 EmailService.SendCardVerification(userUrl, file);
                 TempData["SuccessMessage"] = "Запит на верифікацію карти було відправлено";
@@ -186,10 +187,20 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             }
         }
 
-        public ActionResult finansovui_oblik()
+        public ActionResult finansovui_oblik(string dateRange)
         {
-            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
-            return View(user);
+            var transactionsService = new TransactionsService();
+            if (dateRange == null)
+            {
+                dateRange = string.Format("{0} - {1}", new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToShortDateString(),
+                    DateTime.Today.ToShortDateString());
+            }
+            var dateRangeValues = dateRange.Split('-');
+            var startDate = DateTime.Parse(dateRangeValues.First());
+            var endDate = DateTime.Parse(dateRangeValues.Last());
+            var model = transactionsService.GetPartnerTransactions(User.Identity.GetUserId(), startDate, endDate);
+            model.DateRange = dateRange;
+            return View(model);
         }
 
         public ActionResult history()

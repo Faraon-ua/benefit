@@ -60,6 +60,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Seller> ReferedBenefitCardSellers { get; set; }
         public virtual ICollection<ApplicationUser> Partners { get; set; }
         public ICollection<Order> Orders { get; set; }
+        public ICollection<Transaction> Transactions { get; set; }
     }
 
     public class ApplicationUserComparer : IEqualityComparer<ApplicationUser>

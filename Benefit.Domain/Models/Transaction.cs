@@ -17,7 +17,8 @@ namespace Benefit.Domain.Models
         SellerInvolvementBonus,
         OrderRefund,
         BonusesOrderPayment,
-        BonusesOrderAbandonedPayment
+        BonusesOrderAbandonedPayment,
+        PersonalMonthAggregate,
     }
     public class Transaction
     {

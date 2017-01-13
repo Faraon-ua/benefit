@@ -62,7 +62,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             ordersFilters.Orders = new PaginatedList<Order>
             {
                 Items = orders.ToList(),
-                Pages = ordersTotal/takePerPage + 1,
+                Pages = ordersTotal / takePerPage + 1,
                 ActivePage = page == 0 ? 1 : page
             };
             return View(ordersFilters);
@@ -106,8 +106,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult CheckNewOrder()
         {
-            return Json(db.Orders.Any(entry => entry.OrderType == OrderType.BenefitSite && entry.Status == OrderStatus.Created), JsonRequestBehavior.AllowGet);
+            var newOrders =
+                db.Orders.Where(entry => entry.OrderType == OrderType.BenefitSite && entry.Status == OrderStatus.Created);
+            if (Seller.CurrentAuthorizedSellerId != null)
+            {
+                newOrders = newOrders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+            }
+            return Json(newOrders.Any(), JsonRequestBehavior.AllowGet);
         }
+
         public ActionResult GetOrdersList(OrderType orderType, int page = 0)
         {
             var takePerPage = 50;

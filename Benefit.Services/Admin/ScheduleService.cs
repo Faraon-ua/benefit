@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
@@ -269,6 +270,17 @@ namespace Benefit.Services.Admin
                         //для всех пользователей, у кого есть баллы в обработке
                         allUsers.Where(entry => entry.HangingPointsAccount > 0).ToList().ForEach(entry =>
                         {
+                            var hangingTransaction = new Transaction()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Bonuses = entry.HangingBonusAccount,
+                                BonusesBalans = entry.BonusAccount + entry.HangingBonusAccount,
+                                Time = DateTime.UtcNow,
+                                Type = TransactionType.PersonalMonthAggregate,
+                                PayeeId = entry.Id
+                            };
+                            db.Transactions.Add(hangingTransaction);
+
                             //бонусы в обработке - в доступные
                             entry.BonusAccount += entry.HangingBonusAccount;
                             //бонусы в обработке - в заработанные

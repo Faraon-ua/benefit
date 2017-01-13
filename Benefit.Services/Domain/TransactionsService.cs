@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Benefit.Common.Exceptions;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using System.Data.Entity;
@@ -9,7 +10,7 @@ namespace Benefit.Services.Domain
 {
     public class TransactionsService
     {
-        ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public void AddBonusesOrderAbandonedTransaction(Order order)
         {
@@ -38,8 +39,9 @@ namespace Benefit.Services.Domain
 
             db.Transactions.Add(bonusesPaymentTransaction);
             db.Entry(user).State = EntityState.Modified;
-            db.SaveChanges();   
+            db.SaveChanges();
         }
+
         public void AddBonusesOrderTransaction(Order order)
         {
             var user = db.Users.Find(order.UserId);
@@ -80,7 +82,7 @@ namespace Benefit.Services.Domain
             };
             user.CurrentBonusAccount = transaction.BonusesBalans;
             user.PointsAccount += order.PointsSum;
-            
+
             if (order.PaymentType == PaymentType.Bonuses)
             {
                 var orderTransaction =
@@ -112,6 +114,80 @@ namespace Benefit.Services.Domain
             db.Transactions.Add(transaction);
             db.Entry(user).State = EntityState.Modified;
             db.SaveChanges();
+        }
+
+        public PartnerTransactionsViewModel GetPartnerTransactions(string id, DateTime start, DateTime end)
+        {
+            var user =
+                db.Users.Include(entry => entry.Region)
+                    .Include(entry => entry.Transactions)
+                    .Include(entry => entry.Transactions.Select(tr => tr.Order))
+                    .Include(entry => entry.Transactions.Select(tr => tr.Payer))
+                    .FirstOrDefault(entry => entry.Id == id);
+            var model = new PartnerTransactionsViewModel
+            {
+                User = user
+            };
+            model.General.AddRange(
+                user.Transactions.Where(
+                    entry =>
+                        entry.Type == TransactionType.BonusesOrderPayment ||
+                        entry.Type == TransactionType.OrderRefund ||
+                        entry.Type == TransactionType.BonusesOrderAbandonedPayment ||
+                        entry.Type == TransactionType.PersonalMonthAggregate ||
+                        entry.Type == TransactionType.VIPBonus ||
+                        entry.Type == TransactionType.VIPSellerBonus));
+
+            foreach (
+                var date in
+                    user.Transactions.Where(entry => entry.Type == TransactionType.MentorBonus)
+                        .Select(entry => new DateTime(entry.Time.Year, entry.Time.Month, 1))
+                        .Distinct())
+            {
+                var personalTransaction =
+                    user.Transactions.FirstOrDefault(
+                        entry =>
+                            entry.Time.Year == date.Year && entry.Time.Month == date.Month &&
+                            entry.Type == TransactionType.PersonalMonthAggregate);
+
+                var mentorBonusesAgregate = user.Transactions.Where(entry => entry.Type == TransactionType.MentorBonus
+                                                                             &&
+                                                                             entry.Time >
+                                                                             new DateTime(date.Year, date.Month, 1)
+                                                                             &&
+                                                                             entry.Time <
+                                                                             new DateTime(date.Year, date.Month,
+                                                                                 DateTime.DaysInMonth(date.Year,
+                                                                                     date.Month), 23, 59, 59))
+                    .Sum(entry => entry.Bonuses);
+                model.General.Add(
+                    new Transaction()
+                    {
+                        Time = personalTransaction.Time.AddHours(1),
+                        Type = TransactionType.MentorBonus,
+                        Payee = user,
+                        Bonuses = mentorBonusesAgregate,
+                        BonusesBalans = personalTransaction.BonusesBalans + mentorBonusesAgregate
+                    });
+            }
+
+            model.General = model.General.Where(entry => entry.Time > start && entry.Time < end).OrderByDescending(entry => entry.Time).ToList();
+
+            model.Personal =
+                user.Transactions.Where(
+                    entry =>
+                        entry.Type == TransactionType.PersonalSiteBonus ||
+                        entry.Type == TransactionType.PersonalBenefitCardBonus)
+                    .Where(entry => entry.Time > start && entry.Time < end)
+                    .OrderByDescending(entry => entry.Time)
+                    .ToList();
+
+            model.Referals = user.Transactions.Where(entry => entry.Type == TransactionType.MentorBonus)
+                .Where(entry => entry.Time > start && entry.Time < end)
+                .OrderByDescending(entry => entry.Time)
+                .ToList();
+
+            return model;
         }
     }
 }

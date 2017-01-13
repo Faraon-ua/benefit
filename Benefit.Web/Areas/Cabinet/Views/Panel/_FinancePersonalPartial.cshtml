@@ -1,0 +1,47 @@
+﻿@using Benefit.Common.Extensions
+@using Benefit.Domain.Models
+@model Benefit.DataTransfer.ViewModels.PartnerTransactionsViewModel
+<div id="personal_charges" class="personal_charges tab-pane fade">
+    <div class="controls_block clearfix">
+        <form class="controls_block_form">
+            <p class="controls_block_title orders_title">Пошук по даті нарахувань</p>
+            <div class="controls_block order_controls clearfix">
+                <form class="controls_block_form">
+                    <div class="calendar-icon"></div>
+                    <input class="controls_block_search width-40 date-range-picker" type="text" placeholder="Оберіть дату" value="@Model.DateRange">
+                    <button class="controls_block_search_btn"><i></i>Пошук</button>
+                </form>
+            </div>
+        </form>
+    </div>
+
+    <table class="personal_charges_table main_table">
+        <tr>
+            <th>Дата</th>
+            <th>Вид операції</th>
+            <th>Бали</th>
+            <th>Бонуси</th>
+        </tr>
+        @foreach (var transaction in Model.Personal)
+        {
+            <tr>
+                <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
+                @if (transaction.Type == TransactionType.PersonalBenefitCardBonus)
+                {
+                    <td>@string.Format("Користування карткою в закладі \"{0}\"", transaction.Order.SellerName)</td>
+                }
+                @if (transaction.Type == TransactionType.PersonalSiteBonus)
+                {
+                    <td>
+                        <span>
+                            Онлайн замовлення №@transaction.Order.OrderNumber
+                        </span>
+                        <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                    </td>
+                }
+                <td>@transaction.Order.PointsSum.ToDoubleDigits()</td>
+                <td>@transaction.Order.PersonalBonusesSum.ToDoubleDigits()</td>
+            </tr>
+        }
+    </table>
+</div>
