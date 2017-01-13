@@ -38,9 +38,9 @@ namespace Benefit.Web.Controllers
             return View("SellersCatalog", sellers);
         }
 
-        public ActionResult GetProducts(string categoryId, string sellerId, int skip, int take = ListConstants.DefaultTakePerPage)
+        public ActionResult GetProducts(string categoryId, string sellerId, ProductSortOption sort, int skip, int take = ListConstants.DefaultTakePerPage)
         {
-            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, ProductSortOption.Default, skip, take);
+            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, sort, skip, take);
             var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("_ProductPartial",new ProductPartialViewModel
             {
                 Product = entry,

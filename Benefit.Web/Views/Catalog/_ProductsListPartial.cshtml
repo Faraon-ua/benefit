@@ -16,19 +16,3 @@
         </div>
     </div>
 }
-@*<script>
-    var skip = parseInt('@Benefit.Common.Constants.ListConstants.DefaultTakePerPage');
-    var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
-    $(function() {
-        $("#add-more-products").click(function(e) {
-            e.preventDefault();
-            $.get(getProductsUrl + "?categoryId=@produ.Category.Id&skip=" + skip, function(data) {
-                if (data.number <= parseInt('@Benefit.Common.Constants.ListConstants.DefaultTakePerPage')) {
-                    $("#more-products").hide();
-                }
-                $("#more-products").before(data.products);
-                skip += data.number;
-            });
-        });
-    });
-</script>*@
