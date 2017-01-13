@@ -4,7 +4,9 @@ using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models;
+using Benefit.Domain.Models.Enums;
 using Benefit.Services.Domain;
+using Benefit.Web.Models.Admin;
 
 namespace Benefit.Web.Controllers
 {
@@ -53,9 +55,10 @@ namespace Benefit.Web.Controllers
             return View(sellerVm);
         }
 
-        public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null)
+        [HttpGet]
+        public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null, ProductSortOption? sort = null)
         {
-            var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl);
+            var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl, sort.GetValueOrDefault(ProductSortOption.Default));
             return View("../Catalog/ProductsCatalog", model);
         }
     }

@@ -9,6 +9,7 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
 using Benefit.Domain.Models;
+using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
 
 namespace Benefit.Services.Domain
@@ -106,7 +107,7 @@ namespace Benefit.Services.Domain
             return cacheCats as List<Category>;
         }
 
-        public List<Product> GetSellerCatalogProducts(string sellerId, string categoryId, int skip = 0, int take = ListConstants.DefaultTakePerPage)
+        public List<Product> GetSellerCatalogProducts(string sellerId, string categoryId, ProductSortOption sort, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
             var items = db.Products.Include(entry => entry.Category.ParentCategory.ParentCategory).Where(entry => entry.IsActive);
             if (!string.IsNullOrEmpty(categoryId))
@@ -122,11 +123,35 @@ namespace Benefit.Services.Domain
                 items = items.Where(entry => entry.SellerId == sellerId);
             }
             //todo: instead all products show recomendations
-            items = items
-                .OrderBy(entry => entry.Category.ParentCategory == null ? 1000 : entry.Category.ParentCategory.ParentCategory == null ? 1000 : entry.Category.ParentCategory.ParentCategory.Order)
-                .ThenBy(entry => entry.Category.ParentCategory == null ? 1000 : entry.Category.ParentCategory.Order)
-                .ThenBy(entry => entry.Category.Order)
-                .ThenByDescending(entry => entry.Images.Any());
+            switch (sort)
+            {
+                case ProductSortOption.Default:
+                    items = items
+                        .OrderBy(
+                            entry =>
+                                entry.Category.ParentCategory == null
+                                    ? 1000
+                                    : entry.Category.ParentCategory.ParentCategory == null
+                                        ? 1000
+                                        : entry.Category.ParentCategory.ParentCategory.Order)
+                        .ThenBy(
+                            entry => entry.Category.ParentCategory == null ? 1000 : entry.Category.ParentCategory.Order)
+                        .ThenBy(entry => entry.Category.Order)
+                        .ThenByDescending(entry => entry.Images.Any());
+                    break;
+                case ProductSortOption.NameAsc:
+                    items = items.OrderBy(entry => entry.Name);
+                    break;
+                case ProductSortOption.NameDesc:
+                    items = items.OrderByDescending(entry => entry.Name);
+                    break;
+                case ProductSortOption.PriceAsc:
+                    items = items.OrderBy(entry => entry.Price);
+                    break;
+                case ProductSortOption.PriceDesc:
+                    items = items.OrderByDescending(entry => entry.Price);
+                    break;
+            }
 
             var result = items.ToList();
             result = result.Skip(skip).Take(take + 1).ToList();
@@ -135,7 +160,7 @@ namespace Benefit.Services.Domain
             return result;
         }
 
-        public ProductsViewModel GetSellerCatalog(string sellerUrl, string categoryUrl)
+        public ProductsViewModel GetSellerCatalog(string sellerUrl, string categoryUrl, ProductSortOption sort)
         {
             var result = new ProductsViewModel();
             var seller = db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.UrlName == sellerUrl);
@@ -144,7 +169,7 @@ namespace Benefit.Services.Domain
             var category = db.Categories.FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
-            result.Items = GetSellerCatalogProducts(seller.Id, categoryId).ToList();
+            result.Items = GetSellerCatalogProducts(seller.Id, categoryId, sort).ToList();
             //todo: add breadcrumbs
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {

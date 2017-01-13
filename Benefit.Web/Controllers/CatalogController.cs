@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.Domain.Models.Enums;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
 
@@ -39,7 +40,7 @@ namespace Benefit.Web.Controllers
 
         public ActionResult GetProducts(string categoryId, string sellerId, int skip, int take = ListConstants.DefaultTakePerPage)
         {
-            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, skip, take);
+            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, ProductSortOption.Default, skip, take);
             var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("_ProductPartial",new ProductPartialViewModel
             {
                 Product = entry,

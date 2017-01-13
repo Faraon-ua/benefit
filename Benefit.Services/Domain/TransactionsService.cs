@@ -149,26 +149,29 @@ namespace Benefit.Services.Domain
                         entry =>
                             entry.Time.Year == date.Year && entry.Time.Month == date.Month &&
                             entry.Type == TransactionType.PersonalMonthAggregate);
-
-                var mentorBonusesAgregate = user.Transactions.Where(entry => entry.Type == TransactionType.MentorBonus
-                                                                             &&
-                                                                             entry.Time >
-                                                                             new DateTime(date.Year, date.Month, 1)
-                                                                             &&
-                                                                             entry.Time <
-                                                                             new DateTime(date.Year, date.Month,
-                                                                                 DateTime.DaysInMonth(date.Year,
-                                                                                     date.Month), 23, 59, 59))
-                    .Sum(entry => entry.Bonuses);
-                model.General.Add(
-                    new Transaction()
-                    {
-                        Time = personalTransaction.Time.AddHours(1),
-                        Type = TransactionType.MentorBonus,
-                        Payee = user,
-                        Bonuses = mentorBonusesAgregate,
-                        BonusesBalans = personalTransaction.BonusesBalans + mentorBonusesAgregate
-                    });
+                if (personalTransaction != null)
+                {
+                    var mentorBonusesAgregate = user.Transactions.Where(
+                        entry => entry.Type == TransactionType.MentorBonus
+                                 &&
+                                 entry.Time >
+                                 new DateTime(date.Year, date.Month, 1)
+                                 &&
+                                 entry.Time <
+                                 new DateTime(date.Year, date.Month,
+                                     DateTime.DaysInMonth(date.Year,
+                                         date.Month), 23, 59, 59))
+                        .Sum(entry => entry.Bonuses);
+                    model.General.Add(
+                        new Transaction()
+                        {
+                            Time = personalTransaction.Time.AddHours(1),
+                            Type = TransactionType.MentorBonus,
+                            Payee = user,
+                            Bonuses = mentorBonusesAgregate,
+                            BonusesBalans = personalTransaction.BonusesBalans + mentorBonusesAgregate
+                        });
+                }
             }
 
             model.General = model.General.Where(entry => entry.Time > start && entry.Time < end).OrderByDescending(entry => entry.Time).ToList();

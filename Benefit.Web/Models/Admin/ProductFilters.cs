@@ -1,24 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.ComponentModel;
 using System.Web.Mvc;
+using Benefit.Domain.Models.Enums;
 
 namespace Benefit.Web.Models.Admin
 {
-    public enum ProductSortOption
-    {
-        [Description("Назва &#8593;")]
-        NameAsc,
-        [Description("Назва &#8595;")]
-        NameDesc,
-        [Description("Код товару &#8593;")]
-        SKUAsc,
-        [Description("Код товару &#8595;")]
-        SKUDesc,
-        [Description("Ціна &#8593;")]
-        PriceAsc,
-        [Description("Ціна &#8595;")]
-        PriceDesc
-    }
     public class ProductFilterValues
     {
         public string Search { get; set; }

@@ -77,7 +77,6 @@
 
             $(".controls_block_search_btn").click(function (e) {
                 e.preventDefault();
-                debugger;
                 var loc = location.href.toString();
                 var dateRange = $(this).prev(".date-range-picker").val().replace(/ /g, '');//.replace(new RegExp('/', 'g'), '.');
                 var startIndexOf = loc.indexOf("dateRange=");
