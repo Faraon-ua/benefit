@@ -96,10 +96,13 @@
                         tab = loc.substring(startHash, loc.length);
                         loc = loc.substring(0, startHash);
                     }
-                    loc = loc + "?dateRange=" + dateRange + tab;
+                    if (loc.indexOf("?") > 0) {
+                        loc = loc + "&dateRange=" + dateRange + tab;
+                    } else {
+                        loc = loc + "?dateRange=" + dateRange + tab;
+                    }
                     location.href = loc;
                 }
-
             });
         });
     </script>

@@ -5,21 +5,21 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Benefit.Common.Extensions;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Domain;
+using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
-using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Areas.Cabinet.Controllers
 {
+    [CabinetFilter]
     public class PanelController : BasePartnerController
     {
         private UserService UserService { get; set; }
-
         public PanelController()
         {
             UserService = new UserService();
@@ -45,7 +45,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         // GET: /Cabinet/Panel/
         public ActionResult Index()
         {
-            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
+            var user = UserService.GetUserInfoWithRegions(RouteData.Values[DomainConstants.UserIdKey].ToString());
             return View(user);
         }
 
@@ -63,7 +63,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult Profile()
         {
-            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
+            var user = UserService.GetUserInfoWithRegions(RouteData.Values[DomainConstants.UserIdKey].ToString());
             return View(user);
         }
 
@@ -72,7 +72,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                var userId = User.Identity.GetUserId();
+                var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
                 var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == userId);
                 user.Region = db.Regions.FirstOrDefault(entry => entry.Id == user.RegionId);
 
@@ -99,7 +99,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult VerifyCard()
         {
-            var userId = User.Identity.GetUserId();
+            var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
             var user = UserService.GetUserInfoWithRegions(userId);
             return View(user);
         }
@@ -110,7 +110,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             if (Request.Files.Count > 0 && Request.Files[0] != null && Request.Files[0].ContentLength != 0)
             {
                 var file = Request.Files[0];
-                var userUrl = Url.Action("Edit", "Users", new { area = "Admin", id = User.Identity.GetUserId() }, Request.Url.Scheme);
+                var userUrl = Url.Action("Edit", "Users", new { area = "Admin", id = RouteData.Values[DomainConstants.UserIdKey].ToString() }, Request.Url.Scheme);
                 var EmailService = new EmailService();
                 EmailService.SendCardVerification(userUrl, file);
                 TempData["SuccessMessage"] = "Запит на верифікацію карти було відправлено";
@@ -124,7 +124,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult UserAddress(string id)
         {
-            var userId = User.Identity.GetUserId();
+            var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
             var user = UserService.GetUserInfoWithRegions(userId);
             ViewBag.User = user;
             Address address;
@@ -142,7 +142,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         [HttpPost]
         public ActionResult UserAddress(Address address)
         {
-            var userId = User.Identity.GetUserId();
+            var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
             if (address.RegionId == default(int))
             {
                 ModelState.AddModelError("RegionName", "Виберіть місто із випадаючого списку");
@@ -173,13 +173,13 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult Structure()
         {
-            var user = UserService.GetUserInfoWithPartners(User.Identity.GetUserId());
+            var user = UserService.GetUserInfoWithPartners(RouteData.Values[DomainConstants.UserIdKey].ToString());
             return View(user);
         }
 
         public ActionResult planvunagorod()
         {
-            var user = UserService.GetUserInfoWithRegions(User.Identity.GetUserId());
+            var user = UserService.GetUserInfoWithRegions(RouteData.Values[DomainConstants.UserIdKey].ToString());
             using (var db = new ApplicationDbContext())
             {
                 ViewBag.Page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "plan_vinagorod").Content;
@@ -198,14 +198,14 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             var dateRangeValues = dateRange.Split('-');
             var startDate = DateTime.Parse(dateRangeValues.First());
             var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
-            var model = transactionsService.GetPartnerTransactions(User.Identity.GetUserId(), startDate, endDate);
+            var model = transactionsService.GetPartnerTransactions(RouteData.Values[DomainConstants.UserIdKey].ToString(), startDate, endDate);
             model.DateRange = dateRange;
             return View(model);
         }
 
         public ActionResult history()
         {
-            var userId = User.Identity.GetUserId();
+            var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
             using (var db = new ApplicationDbContext())
             {
                 var user = db.Users.Include(entry => entry.Orders).FirstOrDefault(entry => entry.Id == userId);
@@ -216,14 +216,14 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult Zakladu()
         {
-            var user = UserService.GetUserInfoWithRegionsAndSellers(User.Identity.GetUserId());
+            var user = UserService.GetUserInfoWithRegionsAndSellers(RouteData.Values[DomainConstants.UserIdKey].ToString());
             return View(user);
         }
 
         public ActionResult SetAvatar()
         {
             var avatar = Request.Files[0];
-            var userId = User.Identity.GetUserId();
+            var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
             if (avatar != null && avatar.ContentLength != 0)
             {
                 var fileName = Path.GetFileName(avatar.FileName);
