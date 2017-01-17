@@ -154,10 +154,10 @@ namespace Benefit.Services.Domain
                     var mentorBonusesAgregate = user.Transactions.Where(
                         entry => entry.Type == TransactionType.MentorBonus
                                  &&
-                                 entry.Time >
+                                 entry.Time >=
                                  new DateTime(date.Year, date.Month, 1)
                                  &&
-                                 entry.Time <
+                                 entry.Time <=
                                  new DateTime(date.Year, date.Month,
                                      DateTime.DaysInMonth(date.Year,
                                          date.Month), 23, 59, 59))
@@ -181,12 +181,12 @@ namespace Benefit.Services.Domain
                     entry =>
                         entry.Type == TransactionType.PersonalSiteBonus ||
                         entry.Type == TransactionType.PersonalBenefitCardBonus)
-                    .Where(entry => entry.Time > start && entry.Time < end)
+                    .Where(entry => entry.Time >= start && entry.Time <= end)
                     .OrderByDescending(entry => entry.Time)
                     .ToList();
 
             model.Referals = user.Transactions.Where(entry => entry.Type == TransactionType.MentorBonus)
-                .Where(entry => entry.Time > start && entry.Time < end)
+                .Where(entry => entry.Time >= start && entry.Time <= end)
                 .OrderByDescending(entry => entry.Time)
                 .ToList();
 

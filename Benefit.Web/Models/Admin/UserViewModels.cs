@@ -37,5 +37,6 @@ namespace Benefit.Web.Models.Admin
         public DateTime RegisteredOn { get; set; }
         public ICollection<Address> Addresses { get; set; }
         public PaginatedList<Order> BenefitCardOrders { get; set; } 
+        public PaginatedList<Order> OnlineOrders { get; set; } 
     }
 }

@@ -98,6 +98,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 BenefitCardOrders = new PaginatedList<Order>
                 {
                     Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitCard).OrderByDescending(entry=>entry.Time).ToList()
+                },
+                OnlineOrders = new PaginatedList<Order>
+                {
+                    Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitSite).OrderByDescending(entry=>entry.Time).ToList()
                 }
             };
             return View(userViewModel);

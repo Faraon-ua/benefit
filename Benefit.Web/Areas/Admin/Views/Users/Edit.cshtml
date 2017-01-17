@@ -55,6 +55,12 @@
                     Benefit Card Транзакції
                 </a>
             </li>
+             <li>
+                <a href="#onlineOrders" data-toggle="tab">
+                    <i class="green icon-money bigger-110"></i>
+                    Онлайн замовлення
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -67,6 +73,9 @@
             </div>
             <div class="tab-pane" id="transactions">
                 @Html.Partial("~/Areas/Admin/Views/Orders/_OrdersListPartial.cshtml", Model.BenefitCardOrders)
+            </div>
+            <div class="tab-pane" id="onlineOrders">
+                @Html.Partial("~/Areas/Admin/Views/Orders/_OrdersListPartial.cshtml", Model.OnlineOrders)
             </div>
         </div>
     </div>
