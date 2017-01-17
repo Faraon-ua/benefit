@@ -241,6 +241,10 @@
     <Compile Include="Migrations\201612291054394_CardVerified.Designer.cs">
       <DependentUpon>201612291054394_CardVerified.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701171514518_AddTransactionDescription.cs" />
+    <Compile Include="Migrations\201701171514518_AddTransactionDescription.Designer.cs">
+      <DependentUpon>201701171514518_AddTransactionDescription.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\Enums\ProductSortOption.cs" />
@@ -406,6 +410,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201612291054394_CardVerified.resx">
       <DependentUpon>201612291054394_CardVerified.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701171514518_AddTransactionDescription.resx">
+      <DependentUpon>201701171514518_AddTransactionDescription.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

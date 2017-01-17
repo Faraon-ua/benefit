@@ -19,6 +19,7 @@ namespace Benefit.Domain.Models
         BonusesOrderPayment,
         BonusesOrderAbandonedPayment,
         PersonalMonthAggregate,
+        Custom
     }
     public class Transaction
     {
@@ -30,6 +31,7 @@ namespace Benefit.Domain.Models
         public double Commission { get; set; }
         public double BonusesBalans { get; set; }
         public DateTime Time { get; set; }
+        public string Description { get; set; }
 
         [MaxLength(128)]
         public string OrderId { get; set; }

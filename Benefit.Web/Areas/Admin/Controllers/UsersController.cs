@@ -5,6 +5,7 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Linq;
 using Benefit.Domain.Models;
+using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
@@ -169,6 +170,20 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return RedirectToAction("Edit", new { id = existingUser.Id });
             }
             return View(user);
+        }
+
+        public ActionResult AddCustomBonusesPayment(string id, double sum, string comment)
+        {
+            var TransactionService = new TransactionsService();
+            try
+            {
+                TransactionService.AddCustomBonusesPayment(id, sum, comment);
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+            return Content(string.Empty);
         }
 
         public ActionResult GetNfcCode(string cardNumber, string userId)

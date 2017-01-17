@@ -26,7 +26,6 @@ namespace Benefit.Web.Filters
                     };
                     HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                 }
-
             }
 
             if (filterContext.RouteData.DataTokens["area"] != null &&

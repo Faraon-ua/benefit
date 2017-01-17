@@ -76,6 +76,12 @@
                             Винагорода за підключення постачальника
                         </span>
                     }
+                    @if (transaction.Type == TransactionType.Custom)
+                    {
+                         <span>
+                            @transaction.Description
+                        </span>
+                    }
                 </td>
 
                 <td class="bonusLevel">
@@ -96,4 +102,3 @@
         }
     </table>
 </div>
-

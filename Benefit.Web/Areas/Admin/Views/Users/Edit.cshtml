@@ -7,24 +7,53 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
     <script src="~/Scripts/address.js"></script>
+    <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
+    <script src="~/Scripts/common.js"></script>
     <script>
         var getNfcUrl = '@Url.Action("GetNfcCode")';
         var userId = '@Model.Id';
-        $("#NFCNumber").focus(function () {
-            var nfc = $(this);
-            if (nfc.val() == "") {
-                $.get(getNfcUrl + "?cardNumber=" + $("#CardNumber").val() + "&userId=" + userId, function (data) {
-                    if (data == "") {
-                        alert("Картку не знайдено");
-                        $("#CardNumber").focus();
-                    } else if (data == "occupied") {
-                        alert("Ця картка вже зайнята");
-                        $("#CardNumber").focus();
+        var customBonusesPaymentUrl = '@Url.Action("AddCustomBonusesPayment", new { id=Model.Id })';
+
+        $(function () {
+            $('.number-float-input').mask("#0.00", { reverse: true });
+
+            $("#NFCNumber").focus(function () {
+                var nfc = $(this);
+                if (nfc.val() == "") {
+                    $.get(getNfcUrl + "?cardNumber=" + $("#CardNumber").val() + "&userId=" + userId, function (data) {
+                        if (data == "") {
+                            alert("Картку не знайдено");
+                            $("#CardNumber").focus();
+                        } else if (data == "occupied") {
+                            alert("Ця картка вже зайнята");
+                            $("#CardNumber").focus();
+                        } else {
+                            nfc.val(data);
+                        }
+                    });
+                }
+            });
+
+            $("#add-bonuses-payment").click(function (e) {
+                e.preventDefault();
+                $("#add-bonuses-payment").attr('disabled', 'disabled');
+                var sum = $("#bonuses-sum").val();
+                var comment = $("#bonuses-comment").val();
+                var model = {
+                    sum: sum,
+                    comment: comment
+                };
+                $.post(customBonusesPaymentUrl, model, function (data) {
+                    $("#add-bonuses-payment").removeAttr('disabled');
+                    if (data.length == 0) {
+                        flashMessage("Бонуси успішно зараховані");
+                        $("#bonuses-sum").val("");
+                        $("#bonuses-comment").val("");
                     } else {
-                        nfc.val(data);
+                        flashMessage(data, true);
                     }
                 });
-            }
+            });
         });
     </script>
 }
@@ -55,10 +84,16 @@
                     Benefit Card Транзакції
                 </a>
             </li>
-             <li>
+            <li>
                 <a href="#onlineOrders" data-toggle="tab">
                     <i class="green icon-money bigger-110"></i>
                     Онлайн замовлення
+                </a>
+            </li>
+            <li>
+                <a href="#additionalPayments" data-toggle="tab">
+                    <i class="green icon-money bigger-110"></i>
+                    Додаткові нарахування
                 </a>
             </li>
         </ul>
@@ -76,6 +111,9 @@
             </div>
             <div class="tab-pane" id="onlineOrders">
                 @Html.Partial("~/Areas/Admin/Views/Orders/_OrdersListPartial.cshtml", Model.OnlineOrders)
+            </div>
+            <div class="tab-pane" id="additionalPayments">
+                @Html.Partial("_AdditionalPaymentsPartial", Model)
             </div>
         </div>
     </div>

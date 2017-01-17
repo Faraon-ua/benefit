@@ -197,7 +197,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             }
             var dateRangeValues = dateRange.Split('-');
             var startDate = DateTime.Parse(dateRangeValues.First());
-            var endDate = DateTime.Parse(dateRangeValues.Last());
+            var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
             var model = transactionsService.GetPartnerTransactions(User.Identity.GetUserId(), startDate, endDate);
             model.DateRange = dateRange;
             return View(model);

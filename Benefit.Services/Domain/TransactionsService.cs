@@ -12,6 +12,26 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        public void AddCustomBonusesPayment(string userId, double sum, string comment)
+        {
+            var user = db.Users.Find(userId);
+            var transaction = new Transaction()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Bonuses = sum,
+                BonusesBalans = user.BonusAccount + sum,
+                Description = comment,
+                PayeeId = userId,
+                Time = DateTime.UtcNow,
+                Type = TransactionType.Custom
+            };
+            db.Transactions.Add(transaction);
+            user.BonusAccount = transaction.BonusesBalans;
+            user.TotalBonusAccount += sum;
+            db.Entry(user).State = EntityState.Modified;
+            db.SaveChanges();
+        }
+
         public void AddBonusesOrderAbandonedTransaction(Order order)
         {
             var user = db.Users.Find(order.UserId);
@@ -131,6 +151,7 @@ namespace Benefit.Services.Domain
             model.General.AddRange(
                 user.Transactions.Where(
                     entry =>
+                        entry.Type == TransactionType.Custom ||
                         entry.Type == TransactionType.BonusesOrderPayment ||
                         entry.Type == TransactionType.OrderRefund ||
                         entry.Type == TransactionType.BonusesOrderAbandonedPayment ||
