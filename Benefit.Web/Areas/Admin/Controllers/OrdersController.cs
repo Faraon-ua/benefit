@@ -56,6 +56,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var endDate = DateTime.Parse(dateRangeValues.Last());
                 orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
             }
+            if (ordersFilters.SellerId != null)
+            {
+                orders = orders.Where(entry => entry.SellerId == ordersFilters.SellerId);
+            }
             var ordersTotal = orders.Count();
             orders = orders.Skip(page * takePerPage).Take(takePerPage);
 
@@ -65,6 +69,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Pages = ordersTotal / takePerPage + 1,
                 ActivePage = page == 0 ? 1 : page
             };
+            ordersFilters.Sellers =
+                db.Sellers.OrderBy(entry => entry.Name)
+                    .Select(entry => new SelectListItem {Text = entry.Name, Value = entry.Id});
             return View(ordersFilters);
         }
 

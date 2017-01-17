@@ -23,7 +23,7 @@ namespace Benefit.Services.Admin
                     try
                     {
                         //для всех пользователей, у кого есть бонусы за текущий период
-                        db.Users.Where(entry => entry.CurrentBonusAccount > 0).ToList().ForEach(entry =>
+                        db.Users.Where(entry => entry.PointsAccount > 0).ToList().ForEach(entry =>
                         {
                             //бонусы за текущий период - в обработку
                             entry.HangingBonusAccount = entry.CurrentBonusAccount;

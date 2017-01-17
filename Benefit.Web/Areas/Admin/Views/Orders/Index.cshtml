@@ -6,14 +6,20 @@
 }
 @section styles {
     <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
 }
 @section scripts
 {
     <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
 
     <script>
         $(function () {
+            $(".chosen-select").chosen({
+                search_contains: true
+            });
+
             $('#date-range-picker').daterangepicker({
                 locale: {
                     format: 'DD.MM.YYYY',
@@ -55,8 +61,11 @@
             <a data-navtype="BenefitCard" class="btn switchNavigationType @(Model.NavigationType == OrderType.BenefitCard ? "btn-primary":"")">Benefit Card</a>
             @Html.Hidden("NavigationType", Model.NavigationType.ToString(), new { id = "navType" })
         </div>
-        <div class="col-md-7">
+        <div class="col-md-4">
             <input type="text" class="width-100 form-control" name="ClientName" placeholder="Введіть імя клієнта" value="@Model.ClientName" />
+        </div>
+        <div class="col-md-3">
+            @Html.DropDownList("SellerId", Model.Sellers, "Вибрати постачальника", new { @class = "width-90 chosen-select" })
         </div>
         <div class="col-md-2">
             <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange">
