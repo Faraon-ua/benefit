@@ -3,45 +3,45 @@
 
 <div class="form-horizontal">
     <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Бонуси за поточний період</label>
+        <label class="col-sm-3 control-label no-padding-right">Загальна сума зароблених бонусів</label>
 
         <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.CurrentBonusAccount, new { @class = "col-xs-10 col-sm-5 number-float-input" })
+            @Html.TextBox("TotalBonusAccount", Model.TotalBonusAccount.ToDoubleDigits(), new { @class = "col-xs-10 col-sm-5 number-float-input" })
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Доступні бонуси</label>
 
         <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.BonusAccount, new { @class = "col-xs-10 col-sm-5 number-float-input" })
+            @Html.TextBox("BonusAccount", Model.BonusAccount.ToDoubleDigits(), new { @class = "col-xs-10 col-sm-5 number-float-input" })
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Бонуси в обробці</label>
 
         <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.HangingBonusAccount, new { @class = "col-xs-10 col-sm-5 number-float-input" })
+            @Html.TextBox("HangingBonusAccount", Model.HangingBonusAccount.ToDoubleDigits(), new { @class = "col-xs-10 col-sm-5 number-float-input" })
         </div>
     </div>
     <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Загальна сума зароблених бонусів</label>
+        <label class="col-sm-3 control-label no-padding-right">Бонуси за поточний період</label>
 
         <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.TotalBonusAccount, new { @class = "col-xs-10 col-sm-5 number-float-input" })
+            @Html.TextBox("CurrentBonusAccount", Model.CurrentBonusAccount.ToDoubleDigits(), new { @class = "col-xs-10 col-sm-5 number-float-input" })
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Бали за поточний період</label>
 
         <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.PointsAccount, new { @class = "col-xs-10 col-sm-5 number-float-input" })
+            @Html.TextBox("PointsAccount", Model.PointsAccount.ToDoubleDigits(), new { @class = "col-xs-10 col-sm-5 number-float-input" })
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Бали в обробці</label>
 
         <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.HangingPointsAccount, new { @class = "col-xs-10 col-sm-5 number-float-input" })
+            @Html.TextBox("HangingPointsAccount", Model.HangingPointsAccount.ToDoubleDigits(), new { @class = "col-xs-10 col-sm-5 number-float-input" })
         </div>
     </div>
 </div>

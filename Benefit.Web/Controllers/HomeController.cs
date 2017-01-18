@@ -41,7 +41,6 @@ namespace Benefit.Web.Controllers
                 "35a35f57-a281-4f66-a7ef-dd1e68ae05c0",
                 "b63df8bf-fcaa-4ca6-adbd-ba71893ec205",
                 "dd964b86-b5df-48ef-b257-b913079ba1cc",
-                "997dca01-8b64-4278-bcfc-9e0bf750b63f"
             };
             var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())
