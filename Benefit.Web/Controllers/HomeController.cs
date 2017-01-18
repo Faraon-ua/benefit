@@ -43,24 +43,25 @@ namespace Benefit.Web.Controllers
                 "dd964b86-b5df-48ef-b257-b913079ba1cc",
                 "997dca01-8b64-4278-bcfc-9e0bf750b63f"
             };
-
-            List<Product> hits;
-            List<Product> newProducts;
+            var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())
             {
-                hits = db.Products
+                mainPageViewModel.BestSellers = db.Products
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
                     .Where(entry => hitIds.Contains(entry.Id)).ToList();
-                newProducts = db.Products
+                mainPageViewModel.NewProducts = db.Products
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
                     .Where(entry => newIds.Contains(entry.Id)).ToList();
+                mainPageViewModel.Banners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.MainPageBanners)
+                        .OrderBy(entry => entry.Order)
+                        .ToList();
             }
-            var model = new Tuple<List<Product>, List<Product>>(hits, newProducts);
-            return View(model);
+            return View(mainPageViewModel);
         }
 
         public ActionResult GettingBetter()

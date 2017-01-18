@@ -2679,6 +2679,7 @@ li:last-child .expand {
         padding: 0 15px;
         font-weight: bold;
     }
+
     .main_table td,
     .bonus_account_table td {
         padding: 0 15px;
@@ -4400,11 +4401,11 @@ basket_modal_table td:nth-child(4) {
         .dlivery_price table td {
             padding: 0 20px;
             font-size: 15px;
-            text-align: left;
         }
 
             .dlivery_price table td:first-child {
                 padding: 0 60px 0 20px;
+                text-align: left;
             }
 
 .arrange_content .get_bonus {

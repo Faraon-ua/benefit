@@ -245,7 +245,12 @@
     <Compile Include="Migrations\201701171514518_AddTransactionDescription.Designer.cs">
       <DependentUpon>201701171514518_AddTransactionDescription.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701181035463_AddBanners.cs" />
+    <Compile Include="Migrations\201701181035463_AddBanners.Designer.cs">
+      <DependentUpon>201701181035463_AddBanners.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\Enums\ProductSortOption.cs" />
     <Compile Include="Models\Message.cs" />
@@ -413,6 +418,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701171514518_AddTransactionDescription.resx">
       <DependentUpon>201701171514518_AddTransactionDescription.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701181035463_AddBanners.resx">
+      <DependentUpon>201701181035463_AddBanners.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -35,6 +35,12 @@ namespace Benefit.Web.Models.Admin
         [Required]
         public string PhoneNumber { get; set; }
         public DateTime RegisteredOn { get; set; }
+        public double BonusAccount { get; set; }
+        public double TotalBonusAccount { get; set; }
+        public double CurrentBonusAccount { get; set; }
+        public double HangingBonusAccount { get; set; }
+        public double PointsAccount { get; set; }
+        public double HangingPointsAccount { get; set; }
         public ICollection<Address> Addresses { get; set; }
         public PaginatedList<Order> BenefitCardOrders { get; set; } 
         public PaginatedList<Order> OnlineOrders { get; set; } 

@@ -1,0 +1,68 @@
+﻿@using Benefit.Domain.Models
+@model IEnumerable<Banner>
+
+@{
+    ViewBag.Title = "Банери";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles
+{
+    <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script>
+        var saveSortUrl = '@Url.Action("Index")';
+        $("#banners").sortable();
+        $("#banners").disableSelection();
+
+        function SaveOrder() {
+            $("#saveOrder").prop("disabled", true);
+            var sortedPages = [];
+            $("#banners li").each(function () {
+                var bannerId = $(this).attr("data-banner-id");
+                sortedPages.push(bannerId);
+            });
+            $.ajax({
+                type: 'Post',
+                dataType: 'json',
+                url: saveSortUrl,
+                data: JSON.stringify({ sortedBanners: sortedPages }),
+                contentType: 'application/json; charset=utf-8',
+                async: true,
+                complete: function (data) {
+                    debugger;
+                    flashMessage("Сортування збережено");
+                    $("#saveOrder").removeAttr("disabled");
+                }
+            });
+        }
+    </script>
+}
+
+
+<p>
+    @Html.ActionLink("Додати банер", "CreateOrUpdate", null, new { @class = "btn btn-success" })
+    <button id="saveOrder" class="btn btn-info width-20" onclick="SaveOrder();">Зберегти сортування</button>
+</p>
+
+<h2>Головна сторінка</h2>
+
+<ol id="banners">
+    @foreach (var banner in Model.Where(entry => entry.BannerType == BannerType.MainPageBanners))
+    {
+        <li class="dd-item cursor-move" data-banner-id="@banner.Id">
+            <div class="dd-handle">
+                <img src="~/Images/@banner.BannerType.ToString()/@banner.ImageUrl" height="100"/>
+
+                <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = banner.Id })" onclick="return confirm('Видалити банер?');">
+                    <i class="icon-trash"></i>
+                </a>
+                <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = banner.Id })">
+                    <i class="icon-edit"></i>
+                </a>
+                <div style="clear: both;"></div>
+            </div>
+        </li>
+    }
+</ol>

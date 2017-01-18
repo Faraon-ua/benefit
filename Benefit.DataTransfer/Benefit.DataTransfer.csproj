@@ -61,6 +61,7 @@
     <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
     <Compile Include="ViewModels\CategoriesListViewModel.cs" />
     <Compile Include="ViewModels\CompleteOrderViewModel.cs" />
+    <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\PaginatedList.cs" />
     <Compile Include="ViewModels\ProcessBonusesViewModel.cs" />
     <Compile Include="ViewModels\ProductDetailsViewModel.cs" />

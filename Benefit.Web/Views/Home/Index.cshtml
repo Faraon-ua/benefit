@@ -1,4 +1,4 @@
-﻿@model Tuple<List<Benefit.Domain.Models.Product>, List<Benefit.Domain.Models.Product>>
+﻿@model Benefit.DataTransfer.ViewModels.MainPageViewModel
 @using Benefit.Common.Constants
 
 @{
@@ -9,17 +9,17 @@
     </div>
 }
 <div class="top_slider">
-    <img class="item" src="~/Images/MainPageBanners/000001.jpg">
-    <img class="item" src="~/Images/MainPageBanners/002.jpg">
-    <img class="item" src="~/Images/MainPageBanners/000.jpg">
-    <img class="item" src="~/Images/MainPageBanners/2.jpg">
-    <img class="item" src="~/Images/MainPageBanners/4.jpg">
-    <img class="item" src="~/Images/MainPageBanners/5.jpg">
+    @foreach (var banner in Model.Banners)
+    {
+        <a href="@banner.NavigationUrl">
+            <img class="item" src="~/Images/@banner.BannerType/@banner.ImageUrl">
+        </a>
+    }
 </div>
 <!-- product carousel -->
 <p class="center_p">Хіти продажу</p>
 <div class="product_carousel">
-    @foreach (var hit in Model.Item1)
+    @foreach (var hit in Model.BestSellers)
     {
         var image = hit.Images.FirstOrDefault();
         var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = hit.Category.UrlName, sellerUrl = hit.Seller.UrlName, productUrl = hit.UrlName });
@@ -30,7 +30,7 @@
                 </div>*@
             <div class="img" style="background-image: url('../../Images/ProductGallery/@hit.Id/@image.ImageUrl');"></div>
             <p>@hit.Name</p>
-@*            <span class="price old">3999,00 грн</span>*@
+            @*            <span class="price old">3999,00 грн</span>*@
             <span class="price new">@hit.Price грн</span>
         </a>
     }
@@ -40,7 +40,7 @@
 <p class="center_p center_p_s">Новинки</p>
 <div class="product_carousel recomend_slider">
     <!-- product item -->
-    @foreach (var newProd in Model.Item2)
+    @foreach (var newProd in Model.NewProducts)
     {
         var image = newProd.Images.FirstOrDefault();
         var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = newProd.Category.UrlName, sellerUrl = newProd.Seller.UrlName, productUrl = newProd.UrlName });
@@ -51,7 +51,7 @@
                 </div>*@
             <div class="img" style="background-image: url('../../Images/ProductGallery/@newProd.Id/@image.ImageUrl');"></div>
             <p>@newProd.Name</p>
-@*            <span class="price old">3999,00 грн</span>*@
+            @*            <span class="price old">3999,00 грн</span>*@
             <span class="price new">@newProd.Price грн</span>
         </a>
     }

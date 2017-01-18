@@ -216,6 +216,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminStuffController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BannersController.cs" />
     <Compile Include="Areas\Admin\Controllers\Base\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
@@ -1111,6 +1112,10 @@
     <Content Include="Areas\Cabinet\Views\Panel\_FinancePersonalPartial.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\_FinanceMentorPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Users\_AdditionalPaymentsPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_FinanceUserForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Banners\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Banners\CreateOrUpdate.cshtml" />
+    <Content Include="Areas\Admin\Views\Banners\Index.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

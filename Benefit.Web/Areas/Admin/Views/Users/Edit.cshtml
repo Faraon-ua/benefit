@@ -72,6 +72,12 @@
                     Основна інфо
                 </a>
             </li>
+             <li>
+                <a href="#finance" data-toggle="tab">
+                    <i class="blue icon-info bigger-110"></i>
+                    Фінансова інформація
+                </a>
+            </li>
             <li>
                 <a href="#addresses" data-toggle="tab">
                     <i class="green icon-home bigger-110"></i>
@@ -102,7 +108,9 @@
             <div class="tab-pane in active" id="home">
                 @Html.Partial("_UserForm", Model)
             </div>
-
+            <div class="tab-pane" id="finance">
+                @Html.Partial("_FinanceUserForm", Model)
+            </div>
             <div class="tab-pane" id="addresses">
                 @Html.Partial("_Addresses", Model)
             </div>

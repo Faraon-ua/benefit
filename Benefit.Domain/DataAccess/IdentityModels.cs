@@ -42,6 +42,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<Personnel> Personnels { get; set; }
         public DbSet<BenefitCard> BenefitCards { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<Banner> Banners { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

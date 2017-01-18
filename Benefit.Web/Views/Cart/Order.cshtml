@@ -9,8 +9,7 @@
 @section scripts
 {
     <script>
-    var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods))
-        console.log(shippingMethodsJson);
+        var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods))
         $(function () {
             $(".delivery_address_item").click(function () {
                 var addressId = $(this).attr("data-address-id");
@@ -33,9 +32,13 @@
                     return shipping.Id == selectedShippingId;
                 })[0];
                 if (orderSum < selectedShipping.FreeStartsFrom) {
+                    if (selectedShipping.CostBeforeFree == null) {
+                        $("#shipping-cost").text("По тарифам кур'єрської служби");
+                    } else {
+                        $("#shipping-cost").text(selectedShipping.CostBeforeFree.toFixed(2));
+                    }
                     shippingCost = selectedShipping.CostBeforeFree;
                 }
-                $("#shipping-cost").text(shippingCost.toFixed(2));
                 $("#pay-total").text((shippingCost + orderSum).toFixed(2));
             });
 

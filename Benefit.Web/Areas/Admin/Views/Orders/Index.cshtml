@@ -1,4 +1,5 @@
-﻿@using Benefit.Domain.Models
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
 @model Benefit.Web.Models.Admin.OrdersFilters
 @{
     ViewBag.Title = "Замовлення";
@@ -65,7 +66,10 @@
             <input type="text" class="width-100 form-control" name="ClientName" placeholder="Введіть імя клієнта" value="@Model.ClientName" />
         </div>
         <div class="col-md-3">
-            @Html.DropDownList("SellerId", Model.Sellers, "Вибрати постачальника", new { @class = "width-90 chosen-select" })
+            @if (User.IsInRole(DomainConstants.AdminRoleName))
+            {
+                @Html.DropDownList("SellerId", Model.Sellers, "Вибрати постачальника", new {@class = "width-90 chosen-select"})
+            }
         </div>
         <div class="col-md-2">
             <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange">

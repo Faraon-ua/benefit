@@ -53,7 +53,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var dateRangeValues = ordersFilters.DateRange.Split('-');
                 var startDate = DateTime.Parse(dateRangeValues.First());
-                var endDate = DateTime.Parse(dateRangeValues.Last());
+                var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
                 orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
             }
             if (ordersFilters.SellerId != null)

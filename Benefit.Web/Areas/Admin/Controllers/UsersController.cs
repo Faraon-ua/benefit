@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Web.Mvc;
+using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Linq;
@@ -96,13 +97,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 PhoneNumber = user.PhoneNumber,
                 RegisteredOn = user.RegisteredOn,
                 Addresses = user.Addresses,
+                BonusAccount = user.BonusAccount.ToDoubleDigitsNumber(),
+                TotalBonusAccount = user.TotalBonusAccount.ToDoubleDigitsNumber(),
+                CurrentBonusAccount = user.CurrentBonusAccount.ToDoubleDigitsNumber(),
+                HangingBonusAccount = user.HangingBonusAccount.ToDoubleDigitsNumber(),
+                PointsAccount = user.PointsAccount.ToDoubleDigitsNumber(),
+                HangingPointsAccount = user.HangingPointsAccount.ToDoubleDigitsNumber(),
                 BenefitCardOrders = new PaginatedList<Order>
                 {
-                    Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitCard).OrderByDescending(entry=>entry.Time).ToList()
+                    Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitCard).OrderByDescending(entry => entry.Time).ToList()
                 },
                 OnlineOrders = new PaginatedList<Order>
                 {
-                    Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitSite).OrderByDescending(entry=>entry.Time).ToList()
+                    Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitSite).OrderByDescending(entry => entry.Time).ToList()
                 }
             };
             return View(userViewModel);
@@ -146,6 +153,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 existingUser.Email = user.Email;
                 existingUser.UserName = user.Email;
                 existingUser.PhoneNumber = user.PhoneNumber;
+
+                existingUser.BonusAccount = user.BonusAccount;
+                existingUser.TotalBonusAccount = user.TotalBonusAccount;
+                existingUser.CurrentBonusAccount = user.CurrentBonusAccount;
+                existingUser.HangingBonusAccount = user.HangingBonusAccount;
+                existingUser.PointsAccount = user.PointsAccount;
+                existingUser.HangingPointsAccount = user.HangingPointsAccount;
 
                 db.Entry(existingUser).State = EntityState.Modified;
 
