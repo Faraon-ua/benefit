@@ -82,7 +82,6 @@
                     Name: $("#PersonnelForm_Name").val(),
                     Phone: $("#PersonnelForm_Phone").val(),
                     CardNumber: $("#PersonnelForm_CardNumber").val(),
-                    NFCCardNumber: $("#PersonnelForm_NFCCardNumber").val(),
                     SellerId: '@Model.Seller.Id'
                 };
                 $.post(createPersonnelUrl, model, function(data) {
@@ -91,7 +90,6 @@
                     $("#PersonnelForm_Name").val("");
                     $("#PersonnelForm_Phone").val("");
                     $("#PersonnelForm_CardNumber").val("");
-                    $("#PersonnelForm_NFCCardNumber").val("");
                 });
             });
 
@@ -103,33 +101,18 @@
                 }
             });
 
-            $('.uploadImportFile').on('change', function (e) {
-                var files = e.target.files;
-                if (files.length > 0) {
-                    if (window.FormData !== undefined) {
-                        var data = new FormData();
-                        for (var x = 0; x < files.length; x++) {
-                            data.append("file" + x, files[x]);
-                        }
-
-                        $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
-                        $.ajax({
-                            type: "POST",
-                            url: routePrefix + '/Admin/Sellers/Import1CCommerceML?id=@Model.Seller.Id',
-                            contentType: false,
-                            processData: false,
-                            data: data,
-                            success: function(result) {
-                                flashMessage(result.message, false, true);
-                            },
-                            error: function(xhr) {
-                                flashMessage(xhr.responseJSON, true, true);
-                            }
-                        });
-                    } else {
-                        alert("This browser doesn't support HTML5 file uploads!");
+            $("#1CCommerceML").click(function () {
+                $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
+                $.ajax({
+                    type: "POST",
+                    url: routePrefix + '/Admin/Sellers/OneCCommerceMLImport?id=@Model.Seller.Id',
+                    success: function (result) {
+                        flashMessage(result.message, false, true);
+                    },
+                    error: function (xhr) {
+                        flashMessage(xhr.responseJSON, true, true);
                     }
-                }
+                });
             });
 
             $('.mask-number').mask("#0.00", { reverse: true });

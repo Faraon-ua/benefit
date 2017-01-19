@@ -42,7 +42,5 @@ namespace Benefit.Web.Models.Admin
         public double PointsAccount { get; set; }
         public double HangingPointsAccount { get; set; }
         public ICollection<Address> Addresses { get; set; }
-        public PaginatedList<Order> BenefitCardOrders { get; set; } 
-        public PaginatedList<Order> OnlineOrders { get; set; } 
     }
 }

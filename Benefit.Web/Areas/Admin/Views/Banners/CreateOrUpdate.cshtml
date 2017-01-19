@@ -9,6 +9,7 @@
 {
     @Html.AntiForgeryToken()
     @Html.HiddenFor(m=>m.Id)
+    @Html.HiddenFor(m=>m.Order)
     <div class="form-horizontal">
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)

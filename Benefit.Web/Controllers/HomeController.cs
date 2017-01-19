@@ -36,11 +36,12 @@ namespace Benefit.Web.Controllers
             };
             var newIds = new[]
             {
-                "787dc9ef-9252-45a7-a195-a3d10d68ac07",
-                "6f13f7b3-096e-4e9a-8fd6-85d4ab5d88ee",
-                "35a35f57-a281-4f66-a7ef-dd1e68ae05c0",
-                "b63df8bf-fcaa-4ca6-adbd-ba71893ec205",
-                "dd964b86-b5df-48ef-b257-b913079ba1cc",
+                "5c24366d-1e20-440b-8637-cc6382f3d4f2",
+                "bb192c1c-9190-48e5-91e9-82f239dd29bc",
+                "683770ff-1d63-43de-9151-fc6f2560d03f",
+                "3bb7c047-a8d2-414d-9e79-a2a026a83dd1",
+                "0c2df8cb-906b-4eee-a477-cc0bf9f78e3b",
+                "86e91251-811d-4a9a-8dc4-d29ac1891bf7"
             };
             var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())

@@ -40,29 +40,93 @@
     </script>
 }
 
-
-<p>
-    @Html.ActionLink("Додати банер", "CreateOrUpdate", null, new { @class = "btn btn-success" })
-    <button id="saveOrder" class="btn btn-info width-20" onclick="SaveOrder();">Зберегти сортування</button>
-</p>
-
-<h2>Головна сторінка</h2>
-
-<ol id="banners">
-    @foreach (var banner in Model.Where(entry => entry.BannerType == BannerType.MainPageBanners))
-    {
-        <li class="dd-item cursor-move" data-banner-id="@banner.Id">
-            <div class="dd-handle">
-                <img src="~/Images/@banner.BannerType.ToString()/@banner.ImageUrl" height="100"/>
-
-                <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = banner.Id })" onclick="return confirm('Видалити банер?');">
-                    <i class="icon-trash"></i>
-                </a>
-                <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = banner.Id })">
-                    <i class="icon-edit"></i>
-                </a>
-                <div style="clear: both;"></div>
-            </div>
+<div class="tabbable">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active">
+            <a data-toggle="tab" href="#mainPage">
+                <i class="green icon-desktop bigger-110"></i>
+                Головна сторінка
+            </a>
         </li>
-    }
-</ol>
+
+        <li>
+            <a data-toggle="tab" href="#cabinet">
+                <i class="green icon-group bigger-110"></i>
+                Особистий кабінет
+            </a>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div id="mainPage" class="tab-pane in active">
+            <p>
+                @Html.ActionLink("Додати банер", "CreateOrUpdate", null, new { @class = "btn btn-success" })
+                <button id="saveOrder" class="btn btn-info width-20" onclick="SaveOrder();">Зберегти сортування</button>
+            </p>
+            <ol id="banners">
+                @foreach (var banner in Model.Where(entry => entry.BannerType == BannerType.MainPageBanners))
+                {
+                    <li class="dd-item cursor-move" data-banner-id="@banner.Id">
+                        <div class="dd-handle">
+                            <img src="~/Images/@banner.BannerType.ToString()/@banner.ImageUrl" height="100" />
+
+                            <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = banner.Id })" onclick="return confirm('Видалити банер?');">
+                                <i class="icon-trash"></i>
+                            </a>
+                            <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = banner.Id })">
+                                <i class="icon-edit"></i>
+                            </a>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </li>
+                }
+            </ol>
+        </div>
+
+        @{
+            var cabinetBanners = Model.Where(entry => entry.BannerType == BannerType.PartnerPageBanners).ToList();
+        }
+        <div id="cabinet" class="tab-pane">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12 bordered">
+                        @{
+                            var first = cabinetBanners.FirstOrDefault(entry => entry.Order == 0) ?? new Banner();
+                        }
+                        <a href="@Url.Action("CreateOrUpdate", new { id = first.Id, order = 0 })">
+                            <img src="~/Images/@BannerType.PartnerPageBanners.ToString()/@first.ImageUrl" class="width-100" style="min-height: 250px;" />
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 bordered">
+                        @{
+                            var second = cabinetBanners.FirstOrDefault(entry => entry.Order == 1) ?? new Banner();
+                        }
+                        <a href="@Url.Action("CreateOrUpdate", new { id = second.Id, order = 1 })">
+                            <img src="~/Images/@BannerType.PartnerPageBanners.ToString()/@second.ImageUrl" class="width-100" style="min-height: 230px;" />
+                        </a>
+                    </div>
+                    <div class="col-md-6 bordered">
+                        @{
+                            var third = cabinetBanners.FirstOrDefault(entry => entry.Order == 2) ?? new Banner();
+                        }
+                        <a href="@Url.Action("CreateOrUpdate", new { id = third.Id, order = 2 })">
+                            <img src="~/Images/@BannerType.PartnerPageBanners.ToString()/@third.ImageUrl" class="width-100" style="min-height: 230px;" />
+                        </a>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 bordered">
+                        @{
+                            var fourth = cabinetBanners.FirstOrDefault(entry => entry.Order == 3) ?? new Banner();
+                        }
+                        <a href="@Url.Action("CreateOrUpdate", new { id = fourth.Id, order = 3 })">
+                            <img src="~/Images/@BannerType.PartnerPageBanners.ToString()/@fourth.ImageUrl" class="width-100" style="min-height: 250px;" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

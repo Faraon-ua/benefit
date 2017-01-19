@@ -114,12 +114,6 @@
             <div class="tab-pane" id="addresses">
                 @Html.Partial("_Addresses", Model)
             </div>
-            <div class="tab-pane" id="transactions">
-                @Html.Partial("~/Areas/Admin/Views/Orders/_OrdersListPartial.cshtml", Model.BenefitCardOrders)
-            </div>
-            <div class="tab-pane" id="onlineOrders">
-                @Html.Partial("~/Areas/Admin/Views/Orders/_OrdersListPartial.cshtml", Model.OnlineOrders)
-            </div>
             <div class="tab-pane" id="additionalPayments">
                 @Html.Partial("_AdditionalPaymentsPartial", Model)
             </div>

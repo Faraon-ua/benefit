@@ -1,4 +1,5 @@
-﻿@model Benefit.Domain.Models.ApplicationUser
+﻿@using Benefit.Common.Helpers
+@model Benefit.Domain.Models.ApplicationUser
 <div class="partner_head col-lg-2 col-md-2 col-sm-2 col-xs-2">
     <div class="userpic">
         <div class="userpic_wrap">
@@ -14,13 +15,20 @@
         <input type="file" name="avatar" id="ava_select" class="hide" accept="image/*" />
     }
     <p class="user_name">@Model.FullName</p>
-    <p class="user_statuse">@Model.Status.ToString()</p>
+    @if (!Model.Status.HasValue)
+    {
+        <p class="user_statuse">CLIENT</p>
+    }
+    else
+    {
+        <p class="user_statuse">@Enumerations.GetEnumDescription(Model.Status)</p>
+    }
     <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
     <p class="card_numb">Номер бонусної картки:<br>@Model.CardNumber</p>
     <p class="bonus_count">Загальна сума зароблених бонусів:<br><span class="bonus_border">@Model.TotalBonusAccount.ToString("F")</span></p>
     <p class="bonus_available">
         Доступні бонуси:
-        <br/>
+        <br />
         <span class="bonus_border">
             @string.Format("{0:0.00}", Math.Truncate(Model.BonusAccount * 100) / 100)
         </span>

@@ -4,7 +4,8 @@ namespace Benefit.Domain.Models
 {
     public enum BannerType
     {
-        MainPageBanners
+        MainPageBanners,
+        PartnerPageBanners
     }
     public class Banner
     {

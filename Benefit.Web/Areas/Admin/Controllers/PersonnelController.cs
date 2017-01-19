@@ -15,6 +15,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Create(Personnel personnel)
         {
             personnel.Id = Guid.NewGuid().ToString();
+            var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == personnel.CardNumber);
+            personnel.NFCCardNumber = card == null ? null : card.NfcCode;
             if (ModelState.IsValid)
             {
                 db.Personnels.Add(personnel);

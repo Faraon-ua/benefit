@@ -6,6 +6,7 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Linq;
 using Benefit.Domain.Models;
+using Benefit.Domain.Models.Enums;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
@@ -103,14 +104,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 HangingBonusAccount = user.HangingBonusAccount.ToDoubleDigitsNumber(),
                 PointsAccount = user.PointsAccount.ToDoubleDigitsNumber(),
                 HangingPointsAccount = user.HangingPointsAccount.ToDoubleDigitsNumber(),
-                BenefitCardOrders = new PaginatedList<Order>
-                {
-                    Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitCard).OrderByDescending(entry => entry.Time).ToList()
-                },
-                OnlineOrders = new PaginatedList<Order>
-                {
-                    Items = db.Orders.Where(entry => entry.UserId == id && entry.OrderType == OrderType.BenefitSite).OrderByDescending(entry => entry.Time).ToList()
-                }
             };
             return View(userViewModel);
         }
@@ -133,6 +126,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("PhoneNumber", "Такий телефон вже існує");
             }
+            if (db.Users.Any(entry => entry.CardNumber == user.CardNumber&& entry.Id != user.Id))
+            {
+                ModelState.AddModelError("CardNumber", "Така картка зайнята");
+            }
 
             if (ModelState.IsValid)
             {
@@ -147,8 +144,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 existingUser.NFCCardNumber = user.NFCNumber;
                 existingUser.CardNumber = user.CardNumber;
                 existingUser.BusinessLevel = user.BusinessLevel;
-                existingUser.Status = user.Status;
                 existingUser.IsActive = user.IsActive;
+
+                //if card verivied - set partner status
+                if (user.IsCardVerified && !existingUser.IsCardVerified && existingUser.Status == null)
+                {
+                    existingUser.Status = Status.Partner;
+                }
+                else
+                {
+                    existingUser.Status = user.Status;
+                }
                 existingUser.IsCardVerified = user.IsCardVerified;
                 existingUser.Email = user.Email;
                 existingUser.UserName = user.Email;

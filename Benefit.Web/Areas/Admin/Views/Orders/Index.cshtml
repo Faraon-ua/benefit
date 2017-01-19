@@ -66,7 +66,7 @@
             <input type="text" class="width-100 form-control" name="ClientName" placeholder="Введіть імя клієнта" value="@Model.ClientName" />
         </div>
         <div class="col-md-3">
-            @if (User.IsInRole(DomainConstants.AdminRoleName))
+            @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName))
             {
                 @Html.DropDownList("SellerId", Model.Sellers, "Вибрати постачальника", new {@class = "width-90 chosen-select"})
             }

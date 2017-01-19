@@ -45,8 +45,12 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         // GET: /Cabinet/Panel/
         public ActionResult Index()
         {
-            var user = UserService.GetUserInfoWithRegions(RouteData.Values[DomainConstants.UserIdKey].ToString());
-            return View(user);
+            ViewBag.User = UserService.GetUserInfoWithRegions(RouteData.Values[DomainConstants.UserIdKey].ToString());
+            using (var db = new ApplicationDbContext())
+            {
+                var banners = db.Banners.Where(entry => entry.BannerType == BannerType.PartnerPageBanners).ToList();
+                return View(banners);
+            }            
         }
 
         public ActionResult GetOrderDetails(string orderId)
