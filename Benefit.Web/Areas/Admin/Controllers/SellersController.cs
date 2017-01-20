@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
+using Benefit.Common.Constants;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models.ModelExtensions;
@@ -190,134 +191,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<JsonResult> Import1CCommerceML(string id)
-        {
-            ProductImportResults results = null;
-
-            List<XmlCategory> xmlCategories = null;
-            List<XmlProduct> xmlProducts = null;
-            var xmlToDbCategoriesMapping = new Dictionary<string, string>();
-
-            var seller = db.Sellers.Find(id);
-            if (seller == null)
-            {
-                Response.StatusCode = (int)HttpStatusCode.NotFound;
-                return Json("Постачальника не знайдено");
-            }
-            try
-            {
-                var importFile = Request.Files[0];
-                if (!(importFile.FileName == "import.xml" || importFile.FileName == "offers.xml"))
-                {
-                    return Json("Завантажений файл має невірну назву");
-                }
-
-                if (importFile.FileName == "import.xml")
-                {
-                    //                var pricesFile = Request.Files.Count[1];
-                    if (importFile != null && importFile.ContentLength > 0)
-                    {
-                        //get a stream
-                        var xml = XDocument.Load(importFile.InputStream);
-
-                        var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
-                        var resultXmlCategories = GetAllFiniteCategories(rawXmlCategories);
-
-                        xmlCategories = resultXmlCategories.Select(entry => new XmlCategory(entry)).ToList();
-
-                        var sellerDbCategories = seller.SellerCategories.Where(entry => !entry.IsDefault).Select(entry => entry.Category).ToList();
-
-                        try
-                        {
-                            foreach (var dbCategory in sellerDbCategories)
-                            {
-                                var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Name == dbCategory.Name);
-                                if (xmlCategory != null)
-                                {
-                                    if (!xmlToDbCategoriesMapping.ContainsKey(xmlCategory.Id))
-                                    {
-                                        xmlToDbCategoriesMapping.Add(xmlCategory.Id, dbCategory.Id);
-                                    }
-                                }
-                            }
-                        }
-                        catch (Exception ex)
-                        {
-                            return Json("Категорії постачалника на сайті мають повтори в назві");
-                        }
-
-                        xmlProducts = xml.Descendants("Товары").First().Elements().Select(entry => new XmlProduct(entry)).ToList();
-                        xmlProducts =
-                            xmlProducts.Where(
-                                entry =>
-                                    xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
-                        xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
-                        results = ProductService.ProcessImportedProducts(xmlProducts, seller.Id, seller.UrlName);
-
-                        Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
-
-                        //images
-                        var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                        var ftpDirectory = new DirectoryInfo(originalDirectory).Parent.FullName;
-                        var sellerPath = Path.Combine(ftpDirectory, "FTP", seller.UrlName);
-                        var filesPath = new DirectoryInfo(sellerPath).GetDirectories("import_files", SearchOption.AllDirectories).FirstOrDefault();
-                        if (filesPath == null)
-                        {
-                            return Json("Імпорт файлу import.xml успішно виконаний, але не було знайдено каталог зображень");
-                        }
-                        var ftpImagesPath = filesPath.Parent.FullName;
-
-                        var imageType = ImageType.ProductGallery;
-                        foreach (var xmlProduct in xmlProducts.Where(entry => !string.IsNullOrEmpty(entry.Image)))
-                        {
-                            var destPath = Path.Combine(originalDirectory, "Images", imageType.ToString(), xmlProduct.Id);
-                            var isExists = Directory.Exists(destPath);
-                            if (!isExists)
-                                Directory.CreateDirectory(destPath);
-
-                            var ftpImage = new FileInfo(Path.Combine(ftpImagesPath, xmlProduct.Image));
-                            if (ftpImage.Exists)
-                            {
-                                ImagesService.DeleteAll(db.Images.Where(entry => entry.ProductId == xmlProduct.Id).ToList(), xmlProduct.Id, imageType);
-                                ftpImage.CopyTo(Path.Combine(destPath, ftpImage.Name), true);
-                                ImagesService.AddImage(xmlProduct.Id, ftpImage.Name, imageType);
-                            }
-                        }
-
-                        return Json(new
-                        {
-                            message = "Імпорт файлу import.xml успішно виконаний, тепер імпортуйте файл offers.xml"
-                        });
-                    }
-                }
-                if (importFile.FileName == "offers.xml")
-                {
-                    var xml = XDocument.Load(importFile.InputStream);
-
-                    var xmlProductPrices = xml.Descendants("Предложение");
-                    var poductPrices = xmlProductPrices.Select(entry => new XmlProductPrice(entry)).ToList();
-                    var pricesResult = ProductService.ProcessImportedProductPrices(poductPrices);
-                    EmailService.SendPricesImportResults(seller.Owner.Email, pricesResult);
-                    return Json(new
-                    {
-                        message = "Імпорт файлу offers.xml успішно виконаний"
-                    });
-                }
-            }
-            catch (XmlException)
-            {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json("Завантажений файл має невірну структуру");
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json("Помилка імпорту файлу");
-            }
-            return Json("");
-        }
-
         public ActionResult GetSellerGallery(string id)
         {
             var seller = db.Sellers.Find(id);
@@ -477,9 +350,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (seller.OwnerId != owner.Id)
                 {
                     //remove old owner a seller role if it was his only seller
-                    if (owner.OwnedSellers.Count == 1)
+                    var oldOwner = db.Users.AsNoTracking().Include(entry=>entry.OwnedSellers).FirstOrDefault(entry => entry.Id == seller.OwnerId);
+                    if (oldOwner.OwnedSellers.Count == 1)
                     {
-                        UserManager.RemoveFromRole(seller.OwnerId, "Seller");
+                        UserManager.RemoveFromRole(seller.OwnerId, DomainConstants.SellerRoleName);
                     }
                     //add new owner a seller role
                     UserManager.AddToRole(owner.Id, "Seller");

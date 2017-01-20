@@ -66,6 +66,7 @@ namespace Benefit.RestApi.Controllers
                 return dto;
             }
 
+            //if cardKassir is emty - then it's kassir auth request
             if (string.IsNullOrEmpty(authIngest.cardKassir))
             {
                 var kassir = db.Personnels.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == authIngest.cardId.ToLower());
@@ -77,15 +78,19 @@ namespace Benefit.RestApi.Controllers
                 else
                 {
                     //if kassir is not in seller
-                    if (kassir.SellerId != seller.Id)
+                    if (kassir.SellerId == seller.Id)
+                    {
+                        dto.result = "success";
+                        dto.cardKassir = kassir.NFCCardNumber;
+                        dto.fioKassir = kassir.Name;
+                    }
+                    else
                     {
                         dto.result = "block kassir";
                     }
-                    dto.result = "success";
-                    dto.cardKassir = kassir.NFCCardNumber;
-                    dto.fioKassir = kassir.Name;
                 }
             }
+            //if cardkassir is not empty - it's user auth request
             else
             {
                 //if the same kassir - log off him
@@ -99,18 +104,24 @@ namespace Benefit.RestApi.Controllers
                     var kassir = db.Personnels.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == authIngest.cardId.ToLower());
                     if (kassir != null)
                     {
-                        if (kassir.SellerId != seller.Id)
+                        if (kassir.SellerId == seller.Id)
+                        {
+                            dto.result = "success";
+                            dto.cardKassir = kassir.NFCCardNumber;
+                            dto.fioKassir = kassir.Name;
+                        }
+                        else
                         {
                             dto.result = "block kassir";
                         }
-                        dto.result = "success";
-                        dto.cardKassir = kassir.NFCCardNumber;
-                        dto.fioKassir = kassir.Name;
                     }
                     //if old kassir - send user
                     else
                     {
                         var user = db.Users.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == authIngest.cardId.ToLower());
+                        kassir =
+                            db.Personnels.FirstOrDefault(
+                                entry => entry.NFCCardNumber.ToLower() == authIngest.cardKassir.ToLower());
                         if (user != null)
                         {
                             //если пользователь заблокирован
@@ -120,9 +131,6 @@ namespace Benefit.RestApi.Controllers
                             }
                             else
                             {
-                                kassir =
-                                    db.Personnels.FirstOrDefault(
-                                        entry => entry.NFCCardNumber.ToLower() == authIngest.cardKassir.ToLower());
                                 dto.result = "success client";
                                 dto.cardKassir = kassir.NFCCardNumber;
                                 dto.fioKassir = kassir.Name;
@@ -133,6 +141,8 @@ namespace Benefit.RestApi.Controllers
                         else
                         {
                             //не найден партнер
+                            dto.cardKassir = kassir.NFCCardNumber;
+                            dto.fioKassir = kassir.Name;
                             dto.result = "no active";
                         }
                     }
@@ -192,13 +202,13 @@ namespace Benefit.RestApi.Controllers
             var seller = GetSellerByUsernameAndPassword(payment.username, payment.password);
             if (seller == null)
             {
-                return new PaymentDto { result = "error"};
+                return new PaymentDto { result = "error" };
             }
             else
             {
                 var kassir =
                     db.Personnels.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == payment.cardKassir.ToLower());
-                if(kassir == null)
+                if (kassir == null)
                     return new PaymentDto { result = "no active" };
                 var user = db.Users.FirstOrDefault(entry => entry.CardNumber.ToLower() == payment.paymentcard.ToLower());
                 if (user == null)
@@ -247,7 +257,7 @@ namespace Benefit.RestApi.Controllers
                 //add points to seller account
                 seller.PointsAccount += points;
                 db.Entry(seller).State = EntityState.Modified;
-                
+
                 //add points and bonuses to personal user account
                 user.PointsAccount += points;
                 user.CurrentBonusAccount += bonuses;
@@ -258,11 +268,11 @@ namespace Benefit.RestApi.Controllers
                 {
                     result = "success",
                     //скільки нараховано
-                    charged = (float) bonuses,
+                    charged = (float)bonuses,
                     //в обробці
-                    balance = (float) user.HangingBonusAccount,
+                    balance = (float)user.HangingBonusAccount,
                     //доступно
-                    hold = (float) user.BonusAccount
+                    hold = (float)user.BonusAccount
                 };
             }
         }
