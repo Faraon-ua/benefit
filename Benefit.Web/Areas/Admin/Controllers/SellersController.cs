@@ -187,7 +187,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json("Помилка імпорту файлу");
+                return Json("Помилка імпорту файлу: "+ex.InnerException.Message);
             }
         }
 
@@ -453,8 +453,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             var seller = db.Sellers.Find(id);
             var imagesService = new ImagesService();
-            imagesService.DeleteAll(seller.Images, id, ImageType.SellerGallery, true);
-            imagesService.DeleteAll(seller.Images, id, ImageType.SellerLogo, true);
+            imagesService.DeleteAll(seller.Images, id, ImageType.SellerGallery, true, false);
+            imagesService.DeleteAll(seller.Images, id, ImageType.SellerLogo, true, false);
             db.Sellers.Remove(seller);
             db.SaveChanges();
             return Json(true);

@@ -91,7 +91,7 @@ namespace Benefit.Services
                 case ImageType.SellerGallery:
                     maxHeight = SettingsService.Images.SellerGalleryImageMaxHeight;
                     maxWidth = SettingsService.Images.SellerGalleryImageMaxWidth;
-                    break; 
+                    break;
                 case ImageType.UserAvatar:
                     maxHeight = SettingsService.Images.SellerGalleryImageMaxHeight;
                     maxWidth = SettingsService.Images.SellerGalleryImageMaxWidth;
@@ -130,7 +130,7 @@ namespace Benefit.Services
             }
         }
 
-        public void DeleteAll(IEnumerable<Benefit.Domain.Models.Image> images, string parentId, ImageType type, bool deleteFolder = false)
+        public void DeleteAll(IEnumerable<Benefit.Domain.Models.Image> images, string parentId, ImageType type, bool deleteFolder = false, bool deleteFromDb = true)
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var pathString = Path.Combine(originalDirectory, "Images", type.ToString(), parentId);
@@ -149,7 +149,7 @@ namespace Benefit.Services
                     }
                 }
             }
-            using (var db = new ApplicationDbContext())
+            if (deleteFromDb)
             {
                 var imgIds = images.Select(img => img.Id).ToList();
                 db.Images.RemoveRange(db.Images.Where(entry => imgIds.Contains(entry.Id)));
@@ -178,7 +178,7 @@ namespace Benefit.Services
                     file.Delete();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Debug.Write(e.Message);
             }

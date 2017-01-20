@@ -17,6 +17,7 @@ namespace Benefit.RestApi.Controllers
         private const string ApiVersion = "V2";
 
         [Route(ApiVersion + "/ProgFetchUserData" + ApiVersion + ".php")]
+//        [Route("ProgFetchUserData.php")]
         public SellerAuthDto SellerLogin(SellerAuthIngest auth)
         {
             var seller = GetSellerByUsernameAndPassword(auth.username, auth.password);
@@ -55,6 +56,7 @@ namespace Benefit.RestApi.Controllers
         }
 
         [Route(ApiVersion + "/ProgUserKassir" + ApiVersion + ".php")]
+//        [Route("ProgUserKassir.php")]
         public PartnerAuthDto KassirLogin(PartnerAuthIngest authIngest)
         {
             var dto = new PartnerAuthDto();
@@ -152,6 +154,7 @@ namespace Benefit.RestApi.Controllers
         }
 
         [Route(ApiVersion + "/ProgFetchUserInfo" + ApiVersion + ".php")]
+//        [Route("ProgFetchUserInfo.php")]
         public UserAuthDto UserInfo(UserAuthIngest userAuth)
         {
             var seller = GetSellerByUsernameAndPassword(userAuth.username, userAuth.password);
@@ -182,6 +185,7 @@ namespace Benefit.RestApi.Controllers
         }
 
         [Route(ApiVersion + "/ProgGetOrders" + ApiVersion + ".php")]
+//        [Route("ProgGetOrders.php")]
         public GetOrdersDto CheckOrder(GetOrdersIngest ordersIngest)
         {
             var seller = GetSellerByUsernameAndPassword(ordersIngest.username, ordersIngest.password);
@@ -197,6 +201,7 @@ namespace Benefit.RestApi.Controllers
         }
 
         [Route(ApiVersion + "/ProgUserPayment" + ApiVersion + ".php")]
+//        [Route("ProgUserPayment.php")]
         public async Task<PaymentDto> ProcessPayment(PaymentIngest payment)
         {
             var seller = GetSellerByUsernameAndPassword(payment.username, payment.password);

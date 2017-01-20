@@ -126,7 +126,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("PhoneNumber", "Такий телефон вже існує");
             }
-            if (db.Users.Any(entry => entry.CardNumber == user.CardNumber&& entry.Id != user.Id))
+            if (db.Users.Any(entry => entry.CardNumber != null && entry.CardNumber == user.CardNumber && entry.Id != user.Id))
             {
                 ModelState.AddModelError("CardNumber", "Така картка зайнята");
             }
