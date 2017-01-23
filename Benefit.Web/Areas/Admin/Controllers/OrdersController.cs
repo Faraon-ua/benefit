@@ -64,8 +64,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 orders = orders.Where(entry => ordersFilters.PaymentType.Contains(entry.PaymentType.ToString()));
             }
+            else
+            {
+                ordersFilters.PaymentType = string.Empty;
+            }
             var ordersTotal = orders.Count();
-            ordersFilters.Sum = orders.Sum(entry => entry.Sum);
+            ordersFilters.Sum = orders.Select(l => l.Sum).DefaultIfEmpty(0).Sum();
             orders = orders.Skip(page * takePerPage).Take(takePerPage);
 
             ordersFilters.Orders = new PaginatedList<Order>

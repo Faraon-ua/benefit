@@ -27,6 +27,11 @@
         sellerOptions.Append(",");
         sellerOptions.Append("Acquiring");
     }
+    if (Model.Addresses.Select(entry => entry.RegionId.ToString()).Contains(Request.Cookies[DomainConstants.RegionIdCookieKey].Value))
+    {
+        sellerOptions.Append(",");
+        sellerOptions.Append("MyCityOnly");
+    }
 }
 <div class="provider_container" data-category-ids="@categoryIdsStr" data-seller-options="@sellerOptions">
     <div class="provider">

@@ -89,27 +89,30 @@
             </button>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-3">
-            @Html.HiddenFor(m => m.PaymentType)
-            <div class="page-header no-padding-bottom">
-                <h1 class="no-padding-bottom">Метод оплати</h1>
-            </div>
-            <ul style="list-style-type: none; margin: 0;">
-                @foreach (Enum paymentMethod in Enum.GetValues(typeof(PaymentType)))
-                {
-                    <li>
-                        @{
-                            var paymentName = Enumerations.GetEnumDescription(paymentMethod);
-                        }
-                        <input type="checkbox" name="PaymentTypeChk" value="@paymentMethod" @(Model.PaymentType.Contains(paymentMethod.ToString()) ? "checked" : "") />
-                        <label for="@paymentMethod">@paymentName</label>
-                    </li>
-                }
+    if(Model.NavigationType == OrderType.BenefitSite)
+    {
+        <div class="row">
+            <div class="col-md-3">
+                @Html.HiddenFor(m => m.PaymentType)
+                <div class="page-header no-padding-bottom">
+                    <h1 class="no-padding-bottom">Метод оплати</h1>
+                </div>
+                <ul style="list-style-type: none; margin: 0;">
+                    @foreach (Enum paymentMethod in Enum.GetValues(typeof(PaymentType)))
+                    {
+                        <li>
+                            @{
+                        var paymentName = Enumerations.GetEnumDescription(paymentMethod);
+                            }
+                            <input type="checkbox" name="PaymentTypeChk" value="@paymentMethod" @(Model.PaymentType.Contains(paymentMethod.ToString()) ? "checked" : "") />
+                            <label for="@paymentMethod">@paymentName</label>
+                        </li>
+                    }
 
-            </ul>
+                </ul>
+            </div>
         </div>
-    </div>
+    }
 }
 
 <div id="ordersList">
