@@ -10,7 +10,10 @@ namespace Benefit.Web.Models.Admin
         public OrdersFilters()
         {
             NavigationType = OrderType.BenefitSite;
+            PaymentType = string.Empty;
         }
+        public string PaymentType { get; set; }
+        public double Sum { get; set; }
         public string ClientName { get; set; }
         public string DateRange { get; set; }
         public string SellerId { get; set; }

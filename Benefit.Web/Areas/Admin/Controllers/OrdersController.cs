@@ -60,7 +60,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 orders = orders.Where(entry => entry.SellerId == ordersFilters.SellerId);
             }
+            if (!string.IsNullOrEmpty(ordersFilters.PaymentType))
+            {
+                orders = orders.Where(entry => ordersFilters.PaymentType.Contains(entry.PaymentType.ToString()));
+            }
             var ordersTotal = orders.Count();
+            ordersFilters.Sum = orders.Sum(entry => entry.Sum);
             orders = orders.Skip(page * takePerPage).Take(takePerPage);
 
             ordersFilters.Orders = new PaginatedList<Order>
@@ -71,7 +76,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             };
             ordersFilters.Sellers =
                 db.Sellers.OrderBy(entry => entry.Name)
-                    .Select(entry => new SelectListItem {Text = entry.Name, Value = entry.Id});
+                    .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
             return View(ordersFilters);
         }
 

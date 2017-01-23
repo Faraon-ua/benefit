@@ -19,6 +19,12 @@
         <th>
             Номер
         </th>
+        @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitCard)
+        {
+            <th>
+                Номер чеку
+            </th>
+        }
         <th>
             Постачальник
         </th>
@@ -52,6 +58,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.OrderNumber)
             </td>
+            @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitCard)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+            }
             <td>
                 @Html.DisplayFor(modelItem => item.SellerName)
             </td>
