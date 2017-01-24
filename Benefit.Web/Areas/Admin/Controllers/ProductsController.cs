@@ -8,6 +8,7 @@ using Benefit.Common.Helpers;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models.Enums;
+using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
@@ -39,7 +40,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 IQueryable<Product> products = db.Products.AsQueryable();
                 if (!string.IsNullOrEmpty(filters.CategoryId))
                 {
-                    products = products.Where(entry => entry.CategoryId == filters.CategoryId);
+                    var category = db.Categories.FirstOrDefault(entry => entry.Id == filters.CategoryId);
+                    var children = category.GetAllChildrenRecursively().ToList();
+                    children.Add(category);
+                    var categoryIds = children.Select(cat => cat.Id).ToList();
+                    products = products.Where(entry => categoryIds.Contains(entry.CategoryId));
                 }
                 if (!string.IsNullOrEmpty(filters.SellerId))
                 {

@@ -1,6 +1,7 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Common.Helpers
 @using Benefit.Domain.Models
+@using Benefit.Domain.Models.Enums
 @model Benefit.Web.Models.Admin.OrdersFilters
 @{
     ViewBag.Title = "Замовлення";
@@ -55,6 +56,10 @@
                 var paymentTypes = $("input[name=PaymentTypeChk]:checked").map(function () { return $(this).val() }).get().toString();
                 $("#PaymentType").val(paymentTypes);
             });
+            $("input[name=StatusChk]").change(function () {
+                var statuses = $("input[name=StatusChk]:checked").map(function () { return $(this).val() }).get().toString();
+                $("#Status").val(statuses);
+            });
         });
     </script>
 }
@@ -89,7 +94,7 @@
             </button>
         </div>
     </div>
-    if(Model.NavigationType == OrderType.BenefitSite)
+    if (Model.NavigationType == OrderType.BenefitSite)
     {
         <div class="row">
             <div class="col-md-3">
@@ -108,7 +113,24 @@
                             <label for="@paymentMethod">@paymentName</label>
                         </li>
                     }
-
+                </ul>
+            </div>
+            <div class="col-md-3">
+                @Html.HiddenFor(m => m.Status)
+                <div class="page-header no-padding-bottom">
+                    <h1 class="no-padding-bottom">Статус</h1>
+                </div>
+                <ul style="list-style-type: none; margin: 0;">
+                    @foreach (Enum status in Enum.GetValues(typeof(OrderStatus)))
+                    {
+                        <li>
+                            @{
+                        var statusName = Enumerations.GetEnumDescription(status);
+                            }
+                            <input type="checkbox" name="StatusChk" value="@status" @(Model.Status.Contains(status.ToString()) ? "checked" : "") />
+                            <label for="@status">@statusName</label>
+                        </li>
+                    }
                 </ul>
             </div>
         </div>
@@ -121,4 +143,5 @@
 
 <div class="page-header no-padding-bottom">
     <h1 class="no-padding-bottom pull-left">Загальна сума обраних замовлень:</h1> <h1 class="orange">@Model.Sum.ToString("F") грн</h1>
+    <h1 class="no-padding-bottom pull-left">Кількість обраних замовлень:</h1> <h1 class="orange">@Model.Number.ToString("F")</h1>
 </div>

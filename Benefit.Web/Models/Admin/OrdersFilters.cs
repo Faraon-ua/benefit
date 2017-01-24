@@ -11,9 +11,12 @@ namespace Benefit.Web.Models.Admin
         {
             NavigationType = OrderType.BenefitSite;
             PaymentType = string.Empty;
+            Status = string.Empty;
         }
         public string PaymentType { get; set; }
+        public string Status { get; set; }
         public double Sum { get; set; }
+        public int Number { get; set; }
         public string ClientName { get; set; }
         public string DateRange { get; set; }
         public string SellerId { get; set; }

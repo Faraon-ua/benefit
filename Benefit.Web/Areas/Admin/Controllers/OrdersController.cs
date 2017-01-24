@@ -25,8 +25,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         private void UpdateOrderDetails(Order order)
         {
             //update bonuses and points
-            var seller = db.Sellers.Find(order.SellerId);
+            var seller = db.Sellers.Include(entry=>entry.ShippingMethods).FirstOrDefault(entry=>entry.Id == order.SellerId);
+            var shipping = seller.ShippingMethods.FirstOrDefault(entry => entry.Name == order.ShippingName);
             order.Sum = order.GetOrderSum();
+            order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? shipping.CostBeforeFree : 0);
             order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
             order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
         }
@@ -60,16 +62,28 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 orders = orders.Where(entry => entry.SellerId == ordersFilters.SellerId);
             }
-            if (!string.IsNullOrEmpty(ordersFilters.PaymentType))
+            if (ordersFilters.NavigationType == OrderType.BenefitSite)
             {
-                orders = orders.Where(entry => ordersFilters.PaymentType.Contains(entry.PaymentType.ToString()));
-            }
-            else
-            {
-                ordersFilters.PaymentType = string.Empty;
+                if (!string.IsNullOrEmpty(ordersFilters.PaymentType))
+                {
+                    orders = orders.Where(entry => ordersFilters.PaymentType.Contains(entry.PaymentType.ToString()));
+                }
+                else
+                {
+                    ordersFilters.PaymentType = string.Empty;
+                }
+                if (!string.IsNullOrEmpty(ordersFilters.Status))
+                {
+                    orders = orders.Where(entry => ordersFilters.Status.Contains(entry.Status.ToString()));
+                }
+                else
+                {
+                    ordersFilters.Status = string.Empty;
+                }
             }
             var ordersTotal = orders.Count();
             ordersFilters.Sum = orders.Select(l => l.Sum).DefaultIfEmpty(0).Sum();
+            ordersFilters.Number = orders.Count();
             orders = orders.Skip(page * takePerPage).Take(takePerPage);
 
             ordersFilters.Orders = new PaginatedList<Order>
