@@ -81,6 +81,12 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.ReferedBenefitCardSellers)
                     .Include(entry => entry.ReferedWebSiteSellers)
                     .FirstOrDefault(entry => entry.Id == id);
+            var moderatedSellers = db.Sellers.Include(entry => entry.Personnels)
+                                    .Where(entry => entry.Personnels.Select(pers => pers.UserId).Contains(id)).ToList();
+            foreach (var moderatedSeller in moderatedSellers)
+            {
+                user.OwnedSellers.Add(moderatedSeller);
+            }
             return user;
         }
 

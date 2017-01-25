@@ -17,6 +17,7 @@ namespace Benefit.Web.Models.Admin
         public string Status { get; set; }
         public double Sum { get; set; }
         public int Number { get; set; }
+        public int? OrderNumber { get; set; }
         public string ClientName { get; set; }
         public string DateRange { get; set; }
         public string SellerId { get; set; }

@@ -23,6 +23,8 @@
                     var keys = Object.keys(data);
                     if (keys.length == 0) {
                         $("#showAllStructureLbl").removeClass("hidden");
+                        var totalPartners = $(".structure_table_row").length;
+                        $("#totalPartners").text(totalPartners);
                     }
                     $(keys).each(function (index, key) {
                         var li = $("#" + key);
@@ -52,40 +54,6 @@
             }
             <a class="mentor_name" data-toggle="modal" data-target="#mentor_modal">@referal</a>
         </div>
-        <div class="structure_menu_date">
-            <p class="structure_menu_date_title">Період нарахувань структури:</p>
-            <form>
-                <select id="structre_month" class="structre_month">
-                    <option>Січень</option>
-                    <option>Лютий</option>
-                    <option>Березень</option>
-                    <option>Квітень</option>
-                    <option>Травень</option>
-                    <option>Червень</option>
-                    <option>Липень</option>
-                    <option>Серпень</option>
-                    <option selected>Вересень</option>
-                    <option>Жовтень</option>
-                    <option>Листопад</option>
-                    <option>Грудень</option>
-                </select>
-                <select id="structre_year" class="structre_year"></select>
-            </form>
-        </div>
-        <div class="structure_search_wrap">
-            <form>
-                <label for="structure_search">Пошук по структурі</label>
-                <input class="structure_search" id="structure_search" type="search" placeholder="Введіть ім’я партнера">
-            </form>
-        </div>
-        <div class="registration_search_wrap">
-            <p class="registration_search_title">Пошук по даті реєстрації</p>
-            <div>
-                <div class="calendar"></div>
-                <input class="orders_search" type="text" onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" placeholder="Оберіть дату">
-                <button class="orders_search_btn"><i></i>Знайти</button>
-            </div>
-        </div>
     </div>
     <div class="structure_submenu clearfix">
         <form class="structure_submenu_filters">
@@ -97,13 +65,11 @@
                 <label class="label_for_check" for="hasNoCard">Не мають бонусної картки</label>
 
             </fieldset>
-            <label for="status_select" class="status_select_label">Статус:</label>
-            <select id="status_select">
-                <option>Всі </option>
-            </select>
         </form>
         <div class="structure_registration">
-            <a href="#">Зареєструвати нового партнера в свою структуру</a>
+            @*            <a href="#">Зареєструвати нового партнера в свою структуру</a>*@
+            <span>Всього партнерів у структурі: </span>
+            <a href="#" id="totalPartners">завантаження...</a>
         </div>
     </div>
 

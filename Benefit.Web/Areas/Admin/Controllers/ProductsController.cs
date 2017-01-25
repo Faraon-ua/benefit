@@ -17,6 +17,7 @@ using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName)]
     public class ProductsController : AdminController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -28,7 +29,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return Json(product.Images.Select(entry => new { entry.ImageUrl }), JsonRequestBehavior.AllowGet);
             return Json(null);
         }
-
 
         [HttpGet]
         public ActionResult Index(ProductFilterValues filters)
@@ -157,9 +157,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var resultCurrencies =
                 db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider)
                     .OrderBy(entry => entry.Id).ToList();
-            if (User.IsInRole(DomainConstants.SellerRoleName))
+            if (User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
             {
-                var seller = db.Sellers.FirstOrDefault(entry => User.Identity.Name == entry.Owner.UserName);
+                var seller = db.Sellers.FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
                 var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id).ToList();
                 resultCurrencies.AddRange(sellerCurrencies);
             }

@@ -37,6 +37,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(usersCount);
         }
 
+        public ActionResult GetUserByExternalNumber(int externalNumber)
+        {
+            var user = db.Users.FirstOrDefault(entry => entry.ExternalNumber == externalNumber);
+            if (user == null) return null;
+            return Json(new { user.Id, user.FullName, user.PhoneNumber }, JsonRequestBehavior.AllowGet);
+        }
+
         public ActionResult UsersSearch(string search, string dateRange = null)
         {
             IQueryable<ApplicationUser> users = db.Users.AsQueryable();

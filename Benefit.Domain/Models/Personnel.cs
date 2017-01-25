@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Benefit.Domain.Models
 {
@@ -17,5 +19,10 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string SellerId { get; set; }
         public Seller Seller { get; set; }
+        [MaxLength(128)]
+        public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
+        [MaxLength(20)]
+        public string RoleName { get; set; }
     }
 }

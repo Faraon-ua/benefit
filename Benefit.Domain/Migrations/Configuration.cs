@@ -24,10 +24,10 @@ namespace Benefit.Domain.Migrations
 
         protected override void Seed(ApplicationDbContext context)
         {
-           /* if (System.Diagnostics.Debugger.IsAttached == false)
-            {
-                System.Diagnostics.Debugger.Launch();
-            }*/
+            /* if (System.Diagnostics.Debugger.IsAttached == false)
+             {
+                 System.Diagnostics.Debugger.Launch();
+             }*/
             var store = new RoleStore<IdentityRole>(context);
             var rolesManager = new RoleManager<IdentityRole>(store);
             if (!context.Regions.Any())
@@ -51,7 +51,17 @@ namespace Benefit.Domain.Migrations
             {
                 var ordersManagerRole = new IdentityRole { Name = DomainConstants.OrdersManagerRoleName };
                 rolesManager.Create(ordersManagerRole);
-            }            
+            }
+            if (!context.Roles.Any(r => r.Name == DomainConstants.SellerModeratorRoleName))
+            {
+                var SellerModeratorRole= new IdentityRole { Name = DomainConstants.SellerModeratorRoleName };
+                rolesManager.Create(SellerModeratorRole);
+            }
+            if (!context.Roles.Any(r => r.Name == DomainConstants.SellerOperatorRoleName))
+            {
+                var SellerOperatorRole = new IdentityRole { Name = DomainConstants.SellerOperatorRoleName };
+                rolesManager.Create(SellerOperatorRole);
+            }
 
             if (!(context.Users.Any(u => u.UserName == DomainConstants.DefaultAdminUserName)))
             {

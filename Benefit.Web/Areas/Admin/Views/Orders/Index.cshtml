@@ -1,18 +1,20 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Common.Helpers
 @using Benefit.Domain.Models
-@using Benefit.Domain.Models.Enums
 @model Benefit.Web.Models.Admin.OrdersFilters
 @{
     ViewBag.Title = "Замовлення";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 @section styles {
+
     <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
 }
 @section scripts
 {
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+    <script src="~/Scripts/common.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
@@ -75,13 +77,17 @@
             <a data-navtype="BenefitCard" class="btn switchNavigationType @(Model.NavigationType == OrderType.BenefitCard ? "btn-primary":"")">Benefit Card</a>
             @Html.Hidden("NavigationType", Model.NavigationType.ToString(), new { id = "navType" })
         </div>
-        <div class="col-md-3">
-            <input type="text" class="width-100 form-control" name="ClientName" placeholder="Введіть імя клієнта" value="@Model.ClientName" />
+        <div class="col-md-2">
+            <input type="text" class="width-100 form-control number-input" name="OrderNumber" placeholder="Номер замовлення" value="@Model.OrderNumber" />
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <input type="text" class="width-100 form-control" name="ClientName" placeholder="Імя клієнта" value="@Model.ClientName" />
+        </div>
+
+        <div class="col-md-2">
             @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName))
             {
-                @Html.DropDownList("SellerId", Model.Sellers, "Вибрати постачальника", new { @class = "width-90 chosen-select" })
+                @Html.DropDownList("SellerId", Model.Sellers, "Вибрати постачальника", new { @class = "width-70 chosen-select" })
             }
         </div>
         <div class="col-md-2">

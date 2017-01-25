@@ -62,9 +62,7 @@
 
             $("#SellerId").change(function () {
                 var sellerId = this.value;
-                var sellerIdIndex = productOptionsUrl.indexOf("sellerId=") + "sellerId=".length;
-                var newUrl = productOptionsUrl.substr(0, sellerIdIndex) + sellerId;
-                window.location.href = newUrl;
+                location.href = insertUrlParam("sellerId", sellerId);
             });
         });
     </script>

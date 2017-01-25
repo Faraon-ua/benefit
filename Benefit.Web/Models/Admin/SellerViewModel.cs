@@ -1,5 +1,7 @@
-﻿using Benefit.Domain.Models;
+﻿using System.Collections.Generic;
+using Benefit.Domain.Models;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Benefit.Web.Models.Admin
 {

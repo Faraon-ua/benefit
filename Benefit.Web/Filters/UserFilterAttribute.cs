@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Data.Entity;
 using System.Web;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
@@ -38,18 +39,30 @@ namespace Benefit.Web.Filters
                 {
                     currentSellerId = null;
                 }
-                // if not admin AND if seller AND if seller belongst to currentUser
+                // if not admin AND if seller AND if seller belongs to currentUser
                 if (!filterContext.HttpContext.User.IsInRole(DomainConstants.AdminRoleName) &&
-                    filterContext.HttpContext.User.IsInRole(DomainConstants.SellerRoleName) &&
+                    (filterContext.HttpContext.User.IsInRole(DomainConstants.SellerRoleName) || filterContext.HttpContext.User.IsInRole(DomainConstants.SellerOperatorRoleName) || filterContext.HttpContext.User.IsInRole(DomainConstants.SellerModeratorRoleName)) &&
                     currentSellerId == null)
                 {
                     using (var db = new ApplicationDbContext())
                     {
                         var userId = filterContext.HttpContext.User.Identity.GetUserId();
                         Seller seller = null;
-                        seller = urlSellerId != null
-                            ? db.Sellers.FirstOrDefault(entry => entry.OwnerId == userId && entry.Id == urlSellerId)
-                            : db.Sellers.FirstOrDefault(entry => entry.OwnerId == userId);
+                        if (urlSellerId != null)
+                        {
+                            seller =
+                                db.Sellers.FirstOrDefault(entry => entry.OwnerId == userId && entry.Id == urlSellerId) ??
+                                db.Sellers.Include(entry => entry.Personnels)
+                                    .FirstOrDefault(
+                                        entry => entry.Personnels.Select(pers => pers.UserId).Contains(userId) && entry.Id == urlSellerId);
+                        }
+                        else
+                        {
+                            seller = db.Sellers.FirstOrDefault(entry => entry.OwnerId == userId) ??
+                            db.Sellers.Include(entry => entry.Personnels)
+                                    .FirstOrDefault(
+                                        entry => entry.Personnels.Select(pers => pers.UserId).Contains(userId));
+                        }
 
                         filterContext.HttpContext.Session.Add(DomainConstants.SellerSessionIdKey, seller.Id);
                         filterContext.HttpContext.Session.Add(DomainConstants.SellerSessionNameKey, seller.Name);

@@ -270,7 +270,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(options);
         }
 
-        // GET: /Admin/Sellers/Create
+      /*  // GET: /Admin/Sellers/Create
         public ActionResult UpdateSellerByOwenrId(string ownerId)
         {
             var owner = db.Users.Find(ownerId);
@@ -278,7 +278,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (!owner.OwnedSellers.Any()) return HttpNotFound();
             return RedirectToAction("CreateOrUpdate", new { id = Seller.CurrentAuthorizedSellerId ?? owner.OwnedSellers.First().Id });
         }
-
+*/
         public ActionResult CreateOrUpdate(string id = null)
         {
             var existingSeller = db.Sellers.Include(entry => entry.Personnels).Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.Id == id);

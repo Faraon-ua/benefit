@@ -1,0 +1,33 @@
+﻿@using Benefit.Common.Constants
+<div class="modal fade" role="dialog" id="moderator_modal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal_close" data-dismiss="modal" aria-hidden="true">
+                <span></span>
+            </div>
+            <div class="modal-body" style="text-align: center">
+                <h2>Новий модератор</h2>
+                <p>
+                    <input type="hidden" id="ModeratorForm_UserId" />
+                    <input type="text" id="ModeratorForm_ExternalNumber" placeholder="Реферальний код" class="width-60 number-input" />
+                </p>
+                <p>
+                    <input type="text" id="ModeratorForm_Name" placeholder="Повне І'мя" class="width-60" readonly />
+                </p>
+                <p>
+                    <input type="text" id="ModeratorForm_Phone" placeholder="Телефон" class="width-60" readonly />
+                </p>
+                <p>
+                    <label>Права доступа</label>
+                    <select id="ModeratorForm_Role">
+                        <option value="@DomainConstants.SellerOperatorRoleName">Оператор</option>
+                        <option value="@DomainConstants.SellerModeratorRoleName">Модератор</option>
+                    </select>
+                </p>
+                <p>
+                    <button type="button" class="btn btn-success" id="create-moderator" disabled>Створити модератора</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -15,7 +14,7 @@ using Benefit.Web.Models.Admin;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName)]
+    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName + ", " + DomainConstants.SellerOperatorRoleName)]
     public class OrdersController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -79,6 +78,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 else
                 {
                     ordersFilters.Status = string.Empty;
+                }
+                if (ordersFilters.OrderNumber.HasValue)
+                {
+                    orders = orders.Where(entry => entry.OrderNumber == ordersFilters.OrderNumber);
                 }
             }
             var ordersTotal = orders.Count();
