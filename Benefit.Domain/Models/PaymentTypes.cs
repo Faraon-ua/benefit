@@ -11,7 +11,7 @@ namespace Benefit.Domain.Models
         Cash,
         [Description("Карткою Visa/MasterCard")]
         Acquiring,
-        [Description("Бонусами")]
+        [Description("Використати Бонуси")]
         Bonuses
     }
     public class PaymentTypes

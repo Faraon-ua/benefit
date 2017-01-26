@@ -172,6 +172,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [ValidateInput(false)]
         public ActionResult CreateOrUpdate(Product product)
         {
+            if (db.Products.Any(entry => entry.UrlName == product.UrlName))
+            {
+                ModelState.AddModelError("UrlName", "Товар з такою Url назвою вже існує");
+            }
             if (ModelState.IsValid)
             {
                 if (Seller.CurrentAuthorizedSellerId != null)

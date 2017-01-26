@@ -1,0 +1,16 @@
+﻿.print-container {
+    width: 1000px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table, td, th {
+    border: 1px solid black;
+}
+td, th {
+    padding: 3px 10px 3px 10px !important;
+}
+

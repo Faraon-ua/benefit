@@ -601,6 +601,7 @@
     <Content Include="Content\css\nouislider.min.css" />
     <Content Include="Content\css\nouislider.tooltips.css" />
     <Content Include="Content\css\order-details.css" />
+    <Content Include="Content\css\order-print.css" />
     <Content Include="Content\css\owl.carousel.css" />
     <Content Include="Content\css\validation-errors.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
@@ -1564,6 +1565,10 @@
     <Content Include="Views\Pages\News.cshtml" />
     <Content Include="Views\Helper\Chat.cshtml" />
     <Content Include="Views\Helper\Comments.cshtml" />
+    <Content Include="Views\Cart\_ShippingAddresses.cshtml" />
+    <Content Include="Views\Cart\_PaymentTypes.cshtml" />
+    <Content Include="Views\Cart\_OrderProducts.cshtml" />
+    <Content Include="Views\Cart\_PaymentSummary.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

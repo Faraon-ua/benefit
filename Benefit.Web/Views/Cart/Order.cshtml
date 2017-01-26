@@ -1,5 +1,4 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
-@using Benefit.Common.Constants
 @using Benefit.Common.Helpers
 @using Benefit.Domain.Models
 @using Newtonsoft.Json
@@ -38,6 +37,8 @@
                         $("#shipping-cost").text(selectedShipping.CostBeforeFree.toFixed(2));
                     }
                     shippingCost = selectedShipping.CostBeforeFree;
+                } else {
+                    $("#shipping-cost").text(shippingCost.toFixed(2));
                 }
                 $("#pay-total").text((shippingCost + orderSum).toFixed(2));
             });
@@ -47,11 +48,13 @@
                     var bonusesRadio = this;
                     var checkBonusesUrl = '@Url.Action("CheckEnaughBonuses", "Cart")';
                     var sum = $("#order-total").text();
-                    $.get(checkBonusesUrl + "?sum=" + sum, function(data) {
+                    $.get(checkBonusesUrl + "?sum=" + sum, function (data) {
                         if (data.total) {
                             $("#comission-cost").text(data.comission.toFixed(2));
-                            $("#pay-total").text(data.total.toFixed(2));
+                            $("#discount").text((sum - 0.01).toFixed(2));
+                            $("#pay-total").text("0.01");
                             $("#comission-row").show();
+                            $("#discount-row").show();
                         } else {
                             //todo: add pretty windows
                             alert("Недостатньо бонусів на рахунку");
@@ -63,12 +66,12 @@
                     if (comission) {
                         var paytotal = parseFloat($("#pay-total").text());
                         $("#comission-row").hide();
+                        $("#discount-row").hide();
                         var totalMinusComission = paytotal - comission;
                         $("#pay-total").text(totalMinusComission.toFixed(2));
                     }
                 }
             });
-
         })
     </script>
 }
@@ -85,109 +88,14 @@
                 <label class="label_for_radio" for="@shipping.Id">@shipping.Name</label>
             }
         </div>
-        <div class="delivery_address">
-            <p class="delivery_address_title">Адреса доставки</p>
-            @{
-            var defaultAddress = Model.Addresses.FirstOrDefault(entry => entry.IsDefault);
-            defaultAddress = defaultAddress ?? Model.Addresses.FirstOrDefault();
-            var defaultAddressId = defaultAddress == null ? "" : defaultAddress.Id;
-            }
-            @foreach (var address in Model.Addresses)
-            {
-                var className = (address.Id == defaultAddressId) ? "active" : "";
-                <div class="delivery_address_item @className" @(className != "active" ? "style=display:none;" : "") data-address-id="@address.Id">
-                    <p class="adress_name">@address.FullName</p>
-                    <p class="adress_main">@(address.Region.Name_ua + ", " + address.AddressLine)</p>
-                    <p class="adress_phone">@address.Phone</p>
-                </div>
-            }
-            <div class="clearfix"></div>
-            <div class="address_choice_wrap">
-                <a href="#" class="chose_new_address">+ Обрати іншу адресу</a>
-                <a href="@Url.Action("UserAddress", "Panel", new { area = DomainConstants.CabinetAreaName })" class="add_new_address margin-left-10">+ Додати нову адресу</a>
-            </div>
-            @Html.Hidden("AddressId", Model.AddressId ?? defaultAddressId)
-        </div>
-        <div class="delivery_facilities">
-            <p class="delivery_facilities_title">Вид оплати</p>
-            @foreach (var payment in Model.PaymentTypes)
-            {
-                <input class="hidden" type="radio" id="@payment.ToString()" name="PaymentType" value="@payment.ToString()">
-                <label class="label_for_radio" for="@payment.ToString()">@Enumerations.GetEnumDescription(payment)</label>
-            }
-        </div>
+        @Html.Partial("_ShippingAddresses", Model)
+        @Html.Partial("_PaymentTypes", Model)
         <div class="delivery_coment">
             <p class="delivery_coment_title">Коментар</p>
             @Html.TextAreaFor(m => m.Comment)
         </div>
-        <p class="delivery_basket_title">Товари в кошику</p>
-        <table class="basket_modal_table">
-            <thead>
-                <tr class="basket_modal_table_row">
-                    <th>Назва</th>
-                    <th>Кількість</th>
-                    <th>Ціна</th>
-                    <th>Сума</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var product in Model.Order.OrderProducts)
-                {
-                    <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
-                        <td class="basket_modal_td">@product.ProductName</td>
-                        <td class="basket_modal_td">
-                            @product.Amount
-                        </td>
-                        <td class="basket_modal_td">@product.ProductPrice.ToString("F")</td>
-                        @{
-                    var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
-                    var productSum = product.ProductPrice * product.Amount;
-                        }
-                        <td class="basket_modal_td product-total-price">@((productSum + productOptionsSum).ToString("F"))</td>
-                    </tr>
-                    if (product.OrderProductOptions.Any())
-                    {
-                        foreach (var orderProductOption in product.OrderProductOptions)
-                        {
-                            <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
-                                <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
-                                <td class="basket_modal_td">
-                                    @orderProductOption.Amount
-                                </td>
-                                <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F")</td>
-                                <td></td>
-                            </tr>
-                        }
-                    }
-                }
-            </tbody>
-        </table>
-        <div class="dlivery_price">
-            <table>
-                <tr>
-                    <td>Всього:</td>
-                    @{
-    var total = Model.Order.OrderProducts.Sum(
-        entry =>
-            entry.ProductPrice * entry.Amount +
-            entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-                    }
-                    <td id="order-total">@total.ToString("F")</td>
-                </tr>
-                <tr>
-                    <td>Доставка:</td>
-                    <td id="shipping-cost"></td>
-                </tr>
-                <tr id="comission-row" style="display: none;">
-                    <td>Комісія:</td>
-                    <td id="comission-cost"></td>
-                </tr>
-                <tr>
-                    <td>До сплати:</td>
-                    <td id="pay-total">@total.ToString("F")</td>
-                </tr>
-            </table>
-        </div>
+        @Html.Partial("_OrderProducts", Model)
+        @Html.Partial("_PaymentSummary", Model)
         <div class="delivery_kontrols clearfix">
             <a href="#" class="deliveri_edit goto_back">Редагувати замовлення</a>
             <input type="submit" class="checkout goto_ahead" value="Оформити замовлення" />

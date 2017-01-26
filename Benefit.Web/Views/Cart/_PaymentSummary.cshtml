@@ -1,0 +1,31 @@
+﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+<div class="dlivery_price">
+    <table>
+        <tr>
+            <td>Всього:</td>
+            @{
+                var total = Model.Order.OrderProducts.Sum(
+                    entry =>
+                        entry.ProductPrice * entry.Amount +
+                        entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+            }
+            <td id="order-total">@total.ToString("F")</td>
+        </tr>
+        <tr>
+            <td>Доставка:</td>
+            <td id="shipping-cost"></td>
+        </tr>
+        <tr id="comission-row" style="display: none;">
+            <td>Комісія:</td>
+            <td id="comission-cost"></td>
+        </tr>
+        <tr id="discount-row" style="display: none;">
+            <td>Знижка:</td>
+            <td id="discount"></td>
+        </tr>
+        <tr>
+            <td>До сплати:</td>
+            <td id="pay-total">@total.ToString("F")</td>
+        </tr>
+    </table>
+</div>

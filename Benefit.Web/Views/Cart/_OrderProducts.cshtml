@@ -1,0 +1,44 @@
+﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+<p class="delivery_basket_title">Товари в кошику</p>
+<table class="basket_modal_table">
+    <thead>
+        <tr class="basket_modal_table_row">
+            <th>Назва</th>
+            <th>Кількість</th>
+            <th>Ціна</th>
+            <th>Сума</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in Model.Order.OrderProducts)
+        {
+            <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
+                <td class="basket_modal_td">@product.ProductName</td>
+                <td class="basket_modal_td">
+                    @product.Amount
+                </td>
+                <td class="basket_modal_td">@product.ProductPrice.ToString("F")</td>
+                @{
+            var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+            var productSum = product.ProductPrice * product.Amount;
+                }
+                <td class="basket_modal_td product-total-price">@((productSum + productOptionsSum).ToString("F"))</td>
+            </tr>
+            if (product.OrderProductOptions.Any())
+            {
+                foreach (var orderProductOption in product.OrderProductOptions)
+                {
+                    <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
+                        <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
+                        <td class="basket_modal_td">
+                            @orderProductOption.Amount
+                        </td>
+                        <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F")</td>
+                        <td></td>
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+

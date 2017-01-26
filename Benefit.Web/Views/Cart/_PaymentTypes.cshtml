@@ -1,0 +1,24 @@
+﻿@using Benefit.Common.Helpers
+@using Benefit.Domain.Models
+@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+<div class="delivery_facilities">
+    <p class="delivery_facilities_title">Вид оплати</p>
+    @foreach (var payment in Model.PaymentTypes)
+    {
+        <div class="row">
+            <div class="pull-left">
+                <input class="hidden" type="radio" id="@payment.ToString()" name="PaymentType" value="@payment.ToString()">
+                <label class="label_for_radio" for="@payment.ToString()">@Enumerations.GetEnumDescription(payment)</label>
+            </div>
+            @if (payment == PaymentType.Bonuses)
+            {
+                <a href="@Url.RouteUrl("pagesRoute", new { id = "faq" })" target="_blank">
+                    <span class="label label-info label-as-badge" style="font-size: 1em;">
+                        <strong>?</strong>
+                    </span>
+                </a>
+            }
+        </div>
+    }
+</div>
+

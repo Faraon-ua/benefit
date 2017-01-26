@@ -1,5 +1,7 @@
 ﻿@using Benefit.Common.Extensions
-@model Benefit.Domain.Models.Order
+@using Benefit.Common.Helpers
+@using Benefit.Domain.Models
+@model Order
 
 @{
     Layout = null;
@@ -9,85 +11,167 @@
 
 <html>
 <head>
-    <title>title</title>
+    <title>Замовлення №@Model.OrderNumber</title>
+    <link href="~/Content/css/order-print.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
-    <div>
-        
+    <div class="print-container container">
+        <div class="row">
+            <h2 class="pull-left">Замовлення №@Model.OrderNumber</h2>
+            <h2 class="pull-right">@Model.Time.ToLocalDateTimeWithFormat()</h2>
+        </div>
+
         <table>
             <tr>
-                <td>
-                    <h1>Замовлення №@Model.OrderNumber</h1> 
-                    <p class="history_modal_title">Товари в кошику</p>
-                    <table class="order_in_table" border="1">
-                        <thead>
-                            <tr>
-                                <th>Назва</th>
-                                <th>Кількість</th>
-                                <th>Ціна</th>
-                                <th>Сума</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var product in Model.OrderProducts)
-                            {
-                                var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
-                                var productSum = product.ProductPrice * product.Amount;
-                                <tr>
-                                    <td>@product.ProductName</td>
-                                    <td>@product.Amount</td>
-                                    <td>@product.ProductPrice</td>
-                                    <td>@((productSum + productOptionsSum).ToString("F"))</td>
-                                </tr>
-                                foreach (var productOption in product.DbOrderProductOptions)
-                                {
-                                    <tr>
-                                        <td>@productOption.ProductOptionName</td>
-                                        <td>@productOption.Amount</td>
-                                        <td>@productOption.ProductOptionPriceGrowth</td>
-                                    </tr>
-                                }
-                            }
-                        </tbody>
-                    </table>
+                <td style="width: 30%;">ПІБ покупця</td>
+                <td style="width: 70%;">@Model.User.FullName</td>
+            </tr>
+            <tr>
+                <td style="width: 30%;">Номер Телефону</td>
+                <td style="width: 70%;">@Model.User.PhoneNumber</td>
+            </tr>
+            <tr>
+                <td style="width: 30%;">Адреса доставки</td>
+                <td style="width: 70%;">@Model.ShippingAddress</td>
+            </tr>
+            <tr>
+                <td style="width: 30%;">Метод доставки</td>
+                <td style="width: 70%;">@Model.ShippingName</td>
+            </tr>
+            <tr>
+                <td style="width: 30%;">Коментар</td>
+                <td style="width: 70%;">@Model.Description</td>
+            </tr>
+            <tr>
+                <td style="width: 30%;">
+                    Метод оплати
                 </td>
-                <td>
-                    <div style="margin-left: 20px;">
-                        <h2 style="margin-bottom: 5px;">Дані замовлення</h2>
-                        <p>
-                            <b>Дата:</b>
-                            <span>@Model.Time.ToLocalDateTimeWithFormat()</span>
-                        </p>
-                        <p>
-                            <b>Метод Оплати:</b>
-                            <span>@Model.PaymentType</span>
-                        </p>
-                        <p>
-                            <b>Метод доставки:</b>
-                            <span>@Model.ShippingName</span>
-                        </p>
-                        <p>
-                            <b>Коментарій:</b>
-                            <span>@Model.Description</span>
-                        </p>
-                    </div>
+                <td style="width: 70%;">
+                    @(Model.PaymentType == PaymentType.Bonuses ? Enumerations.GetEnumDescription(PaymentType.Cash) : Enumerations.GetEnumDescription(Model.PaymentType))
                 </td>
+            </tr>
+            @if (Model.PaymentType == PaymentType.Bonuses)
+            {
+                <tr>
+                    <td style="width: 30%;">Використано бонусів</td>
+                    <td style="width: 70%;">
+                        @Math.Abs(Model.BonusPaymentTransaction.Bonuses).ToString("F")
+                    </td>
+                </tr>
+                <tr>
+                    @{
+                var doplata = (Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses));
+                    }
+                    <td style="width: 30%;">
+                        @if (doplata < 0)
+                        {
+                            <span>
+                                Повернено бонусів
+                            </span>
+                        }
+                        else
+                        {
+                            <span>
+                                Доплата
+                            </span>
+                        }
+                    </td>
+                    <td style="width: 70%;">
+                        @Math.Abs(doplata).ToString("F")
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td style="width: 30%;">Вартість доставки</td>
+                <td style="width: 70%;">@Model.ShippingCost.ToString("F")</td>
+            </tr>
+            <tr>
+                <td style="width: 30%;">Загальна сума замовлення</td>
+                <td style="width: 70%;">@Model.Sum.ToString("F")</td>
+            </tr>
+            <tr>
+                <td style="width: 30%;">Нараховано балів</td>
+                <td style="width: 70%;">@Model.PointsSum</td>
+            </tr>
+            <tr>
+                <td style="width: 30%;">Нараховано бонусів</td>
+                <td style="width: 70%;">@Model.PersonalBonusesSum</td>
             </tr>
         </table>
 
-        <h2 style="margin-bottom: 5px;">Дані покупця</h2>
-        <p>
-            <b>Імя:</b>
-            <span>@Model.User.FullName</span>
-        </p>
-        <p>
-            <b>Телефон:</b>
-            <span>@Model.User.PhoneNumber</span>
-        </p>
-        <p>
-            <b>Адреса:</b>
-            <span>@Model.ShippingAddress</span>
-        </p>
+        <br />
+
+        <p>Товари в кошику</p>
+        <table class="order_in_table">
+            <thead>
+                <tr>
+                    <th>Назва</th>
+                    <th class="text-center">Кількість</th>
+                    <th class="text-center">Ціна</th>
+                    <th class="text-center">Сума</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in Model.OrderProducts)
+                {
+                    var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                    var productSum = product.ProductPrice * product.Amount;
+                    <tr>
+                        <td>@product.ProductName</td>
+                        <td class="text-center">@product.Amount</td>
+                        <td class="text-center">@product.ProductPrice</td>
+                        <td class="text-center">@((productSum + productOptionsSum).ToString("F"))</td>
+                    </tr>
+                    foreach (var productOption in product.DbOrderProductOptions)
+                    {
+                        <tr>
+                            <td class="text-center">@productOption.ProductOptionName</td>
+                            <td class="text-center">@productOption.Amount</td>
+                            <td class="text-center">@productOption.ProductOptionPriceGrowth</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+
+        <br />
+        <div class="row">
+
+            <h2 class="pull-right">
+                До сплати:
+                @if (Model.PaymentType == PaymentType.Bonuses)
+                {
+                    var doSplatu = Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses) + Model.ShippingCost;
+                    if (doSplatu <= 0.00)
+                    {
+                        doSplatu = 0.01;
+                    }
+                    <span>
+                        @(doSplatu.ToString("F"))
+                    </span>
+                }
+                else
+                {
+                    <span>@((Model.Sum + Model.ShippingCost).ToString("F"))</span>
+                }
+            </h2>
+        </div>
+        
+        <br/>
+        <div class="text-center row">
+            <i style="margin-top: 80px;">Я підтверджую, що претензій до отриманого замовлення не маю.</i>
+        </div>
+        <div class="row">
+            <div style="width: 15%; float: left;">
+                <div style="border-bottom: 1px solid black; height: 50px;"></div>
+                <div class="text-center small">Дата та час отримання</div>
+            </div>
+            <div style="width: 15%; float: right;">
+                <div style="border-bottom: 1px solid black; height: 50px;"></div>
+                <div class="text-center small">Підпис</div>
+            </div>
+            </div>
     </div>
 </body>
 </html>

@@ -107,7 +107,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
