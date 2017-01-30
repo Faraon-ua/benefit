@@ -93,7 +93,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     products = products.OrderBy(entry => entry.Name);
                 }
                 resultsCount = products.Count();
-                var skip = filters.Page > 0 ? ListConstants.DefaultTakePerPage*(filters.Page - 1) : 0;
+                var skip = filters.Page > 0 ? ListConstants.DefaultTakePerPage * (filters.Page - 1) : 0;
                 resultProducts = products.Skip(skip).Take(ListConstants.DefaultTakePerPage).ToList();
             }
 
@@ -105,7 +105,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     Sorting = (from ProductSortOption sortOption in Enum.GetValues(typeof(ProductSortOption))
                                select new SelectListItem() { Text = Enumerations.GetEnumDescription(sortOption), Value = sortOption.ToString(), Selected = sortOption == filters.Sorting }).ToList(),
                     Search = filters.Search,
-                    PagesCount = (resultsCount / ListConstants.DefaultTakePerPage) % ListConstants.DefaultTakePerPage == 0 ? (resultsCount / ListConstants.DefaultTakePerPage) : (resultsCount / ListConstants.DefaultTakePerPage) +1
+                    PagesCount = (resultsCount / ListConstants.DefaultTakePerPage) % ListConstants.DefaultTakePerPage == 0 ? (resultsCount / ListConstants.DefaultTakePerPage) : (resultsCount / ListConstants.DefaultTakePerPage) + 1
                 }
             };
             if (Seller.CurrentAuthorizedSellerId != null)
@@ -113,11 +113,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 productsViewModel.ProductFilters.Categories =
                     db.Categories.Where(
                         entry =>
-                            entry.SellerCategories.Where(sc=>!sc.IsDefault).Select(sc => sc.SellerId).Contains(Seller.CurrentAuthorizedSellerId))
+                            entry.SellerCategories.Where(sc => !sc.IsDefault).Select(sc => sc.SellerId).Contains(Seller.CurrentAuthorizedSellerId))
                         .OrderBy(entry => entry.ParentCategoryId)
                         .ThenBy(entry => entry.Name)
                         .ToList()
-                        .Select(entry => new SelectListItem {Text = entry.ExpandedName, Value = entry.Id});
+                        .Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
             }
             else
             {
@@ -126,7 +126,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                        .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
                 productsViewModel.ProductFilters.Categories =
                     db.Categories.OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
-                        .Select(entry => new SelectListItem {Text = entry.ExpandedName, Value = entry.Id});
+                        .Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
             }
             return PartialView(productsViewModel);
         }
@@ -172,7 +172,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [ValidateInput(false)]
         public ActionResult CreateOrUpdate(Product product)
         {
-            if (db.Products.Any(entry => entry.UrlName == product.UrlName))
+            if (db.Products.Any(entry => entry.UrlName == product.UrlName && entry.Id != product.Id))
             {
                 ModelState.AddModelError("UrlName", "Товар з такою Url назвою вже існує");
             }
@@ -191,12 +191,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 else
                 {
-                    var maxSku = db.Products.Max(entry => (int?) entry.SKU);
+                    var maxSku = db.Products.Max(entry => (int?)entry.SKU);
                     if (maxSku == null || maxSku < SettingsService.SkuMinValue)
                     {
                         maxSku = SettingsService.SkuMinValue;
                     }
-                    product.SKU = (int) maxSku;
+                    product.SKU = (int)maxSku;
                     db.Products.Add(product);
                 }
                 db.ProductParameterProducts.RemoveRange(

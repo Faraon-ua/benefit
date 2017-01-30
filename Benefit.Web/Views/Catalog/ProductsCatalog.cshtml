@@ -44,6 +44,7 @@
             $("body").on("click", ".product_buy", function (e) {
                 e.preventDefault();
                 var productId = $(this).attr("data-product-id");
+                var isWeightProduct = $(this).attr("data-is-weight-product").toLowerCase() === 'true';
                 var sellerId = $(this).attr("data-seller-id");
                 $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
                     if (isAnotherSeller) {
@@ -57,16 +58,16 @@
                             $("#product-options-wrap").html(data);
                             $("#product_modal").modal('show');
                         } else {
-                            AddOrderProduct(productId, sellerId, false);
+                            AddOrderProduct(productId, sellerId, false, isWeightProduct);
                         }
                     });
                 });
             });
 
-            $("body").on('click', "#buy-product, #buy-product-with-options", function () {
+            $("body").on('click', "#buy-product-with-options", function () {
                 var productId = $(this).attr("data-product-id");
                 var sellerId = $(this).attr("data-seller-id");
-                AddOrderProduct(productId, sellerId, true);
+                AddOrderProduct(productId, sellerId, true, false);
             });
 
             $("select[name=sort]").change(function () {
@@ -74,7 +75,7 @@
             });
         });
 
-        function AddOrderProduct(productId, sellerId, hasOptions) {
+        function AddOrderProduct(productId, sellerId, hasOptions, isWeightProduct) {
 
             $(this).attr("disabled", "disabled");
             $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
@@ -102,6 +103,7 @@
             var product = {
                 ProductId: productId,
                 Amount: productAmount,
+                IsWeightProduct: isWeightProduct,
                 OrderProductOptions: productOptions
             };
 

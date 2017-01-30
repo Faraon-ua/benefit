@@ -351,7 +351,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     //remove old owner a seller role if it was his only seller
                     var oldOwner = db.Users.AsNoTracking().Include(entry=>entry.OwnedSellers).FirstOrDefault(entry => entry.Id == seller.OwnerId);
-                    if (oldOwner.OwnedSellers.Count == 1)
+                    if (oldOwner != null && oldOwner.OwnedSellers.Count == 1)
                     {
                         UserManager.RemoveFromRole(seller.OwnerId, DomainConstants.SellerRoleName);
                     }
