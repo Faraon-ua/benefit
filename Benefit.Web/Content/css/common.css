@@ -90,7 +90,11 @@
     padding: 5px;
 }
 .padding-left-19 {
-    padding-left: 19px;
+    padding-left: 19px !important;
+}
+
+.padding-left-40 {
+    padding-left: 40px !important;
 }
 
 .bordered {

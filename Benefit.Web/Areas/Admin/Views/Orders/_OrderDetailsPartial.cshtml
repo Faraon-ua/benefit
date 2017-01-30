@@ -6,116 +6,80 @@
 
 <table class="width-100 order_ifo_table">
     <tr>
-        <td>
-            Імя покупця
-        </td>
-        <td>
-            @Model.User.FullName
-        </td>
+        <td style="width: 30%;">ПІБ покупця</td>
+        <td style="width: 70%;">@Model.User.FullName</td>
     </tr>
     <tr>
-        <td>
-            № замовлення
-        </td>
-        <td>
-            @Model.OrderNumber
-        </td>
+        <td style="width: 30%;">Номер Телефону</td>
+        <td style="width: 70%;">@Model.User.PhoneNumber</td>
     </tr>
     <tr>
-        <td>
-            Час
-        </td>
-        <td>
-            @Model.Time.ToLocalDateTimeWithFormat()
-        </td>
+        <td style="width: 30%;">Адреса доставки</td>
+        <td style="width: 70%;">@Model.ShippingAddress</td>
     </tr>
     <tr>
-        <td>
-            Номер телефону
-        </td>
-        <td>
-            @Model.User.PhoneNumber
-        </td>
+        <td style="width: 30%;">Метод доставки</td>
+        <td style="width: 70%;">@Model.ShippingName</td>
     </tr>
-    <tr class="bg-grey height-30px"><td></td><td></td></tr>
     <tr>
-        <td>
-            Спосіб оплати
+        <td style="width: 30%;">Коментар</td>
+        <td style="width: 70%;">@Model.Description</td>
+    </tr>
+    <tr>
+        <td style="width: 30%;">
+            Метод оплати
         </td>
-        <td>
-            @Enumerations.GetEnumDescription(Model.PaymentType)
+        <td style="width: 70%;">
+            @(Model.PaymentType == PaymentType.Bonuses ? Enumerations.GetEnumDescription(PaymentType.Cash) : Enumerations.GetEnumDescription(Model.PaymentType))
         </td>
     </tr>
     @if (Model.PaymentType == PaymentType.Bonuses)
     {
         <tr>
-            <td>
-                Сплачено бонусами
-            </td>
-            <td>
+            <td style="width: 30%;">Використано бонусів</td>
+            <td style="width: 70%;">
                 @Math.Abs(Model.BonusPaymentTransaction.Bonuses).ToString("F")
             </td>
         </tr>
         <tr>
-            <td>
-                Доплата
+            @{
+        var doplata = (Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses));
+            }
+            <td style="width: 30%;">
+                @if (doplata < 0)
+                {
+                    <span>
+                        Повернено бонусів
+                    </span>
+                }
+                else
+                {
+                    <span>
+                        Доплата
+                    </span>
+                }
             </td>
-            <td>
-                @((Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses)).ToString("F"))
+            <td style="width: 70%;">
+                @Math.Abs(doplata).ToString("F")
             </td>
         </tr>
     }
     <tr>
-        <td>
-            Бали
-        </td>
-        <td>
-            @Model.PointsSum
-        </td>
+        <td style="width: 30%;">Вартість доставки</td>
+        <td style="width: 70%;">@Model.ShippingCost.ToString("F")</td>
     </tr>
     <tr>
-        <td>
-            Бонуси
-        </td>
-        <td>
-            @Model.PersonalBonusesSum
-        </td>
-    </tr>
-    <tr class="bg-grey height-30px"><td></td><td></td></tr>
-    <tr>
-        <td>
-            Спосіб доставки
-        </td>
-        <td>
-            @Model.ShippingName
-        </td>
+        <td style="width: 30%;">Загальна сума замовлення</td>
+        <td style="width: 70%;">@Model.Sum.ToString("F")</td>
     </tr>
     <tr>
-        <td>
-            Адреса доставки
-        </td>
-        <td>
-            @Model.ShippingAddress
-        </td>
+        <td style="width: 30%;">Нараховано балів</td>
+        <td style="width: 70%;">@Model.PointsSum</td>
     </tr>
     <tr>
-        <td>
-            Вартість доставки
-        </td>
-        <td>
-            @Model.ShippingCost
-        </td>
+        <td style="width: 30%;">Нараховано бонусів</td>
+        <td style="width: 70%;">@Model.PersonalBonusesSum</td>
     </tr>
-    <tr class="bg-grey height-30px"><td></td><td></td></tr>
-    <tr>
-        <td>
-            Коментар
-        </td>
-        <td>
-            @Model.Description
-        </td>
-    </tr>
-    <tr class="bg-grey height-30px"><td></td><td></td></tr>
     <tr>
         <td>
             Статус
@@ -130,7 +94,7 @@
                 @Enumerations.GetEnumDescription(Model.Status)
             }
         </td>
-    </tr> 
+    </tr>
     <tr>
         <td>
             Коментар статусу
@@ -138,7 +102,7 @@
         <td>
             @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
             {
-                 @Html.TextBox("StatusComment", Model.StatusComment, new { @class = "width-100" })
+                @Html.TextBox("StatusComment", Model.StatusComment, new { @class = "width-100" })
             }
             else
             {
@@ -150,9 +114,16 @@
 
 @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
 {
-    <p>
-        <a class="btn btn-primary margin-right-10  btn-sm" href="#" title="Зберегти статус" id="updateStatus">Зберегти статус</a>
-    </p>
+    <div class="row">
+        <div class="col-md-1 margin-top-10">
+            <a class="btn btn-primary margin-right-10 btn-sm" href="#" title="Зберегти статус" id="updateStatus">
+                <i class="icon-save bigger-150"></i>
+                <span class="bigger-150">
+                    Зберегти статус
+                </span>
+            </a>
+        </div>
+    </div>
 }
 
 <p class="history_modal_title">Товари в кошику</p>
@@ -171,9 +142,16 @@
         {
             var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
             var productSum = product.ProductPrice * product.Amount;
-            <tr>
+            <tr data-product-id="@product.ProductId" class="order-product">
                 <td>
-                    @product.ProductName
+                    @if (Model.Status == OrderStatus.Processed)
+                    {
+                        <input type="text" class="number-input product-name col-sm-12" value="@product.ProductName" />
+                    }
+                    else
+                    {
+                        @product.ProductName
+                    }
                 </td>
                 <td>
                     @if (Model.Status == OrderStatus.Processed)
@@ -199,9 +177,6 @@
                 <td>
                     @if (Model.Status == OrderStatus.Processed)
                     {
-                        <a class="btn btn-success update-product" href="#" data-product-id="@product.ProductId">
-                            <i class="icon-refresh"></i>
-                        </a>
                         <a class="btn btn-danger" href="@Url.Action("DeleteOrderProduct", new {orderId = Model.Id, productId = product.ProductId})" onclick=" return confirm('Ви впевненні?') ">
                             <i class="icon-trash"></i>
                         </a>
@@ -210,12 +185,21 @@
             </tr>
             foreach (var productOption in product.DbOrderProductOptions)
             {
-                <tr>
-                    <td>@productOption.ProductOptionName</td>
+                <tr class="order-product-option" data-product-option-id="@productOption.ProductOptionId" data-product-id="@product.ProductId">
+                    <td class="padding-left-40">
+                        @if (Model.Status == OrderStatus.Processed)
+                        {
+                            <input type="text" class="number-input product-option-name col-sm-12" value="@productOption.ProductOptionName" />
+                        }
+                        else
+                        {
+                            @productOption.ProductOptionName
+                        }
+                    </td>
                     <td>
                         @if (Model.Status == OrderStatus.Processed)
                         {
-                            <input type="text" class="number-input product-amount col-sm-12" value="@productOption.Amount" />
+                            <input type="text" class="number-input product-option-amount col-sm-12" value="@productOption.Amount" />
                         }
                         else
                         {
@@ -226,7 +210,7 @@
                     <td>
                         @if (Model.Status == OrderStatus.Processed)
                         {
-                            <input type="text" class="number-input product-price col-md-12" value="@productOption.ProductOptionPriceGrowth" />
+                            <input type="text" class="number-input product-option-price col-md-12" value="@productOption.ProductOptionPriceGrowth" />
                         }
                         else
                         {
@@ -237,9 +221,6 @@
                     {
                         <td></td>
                         <td>
-                            <a class="btn btn-success update-product-option" href="#" data-product-option-id="@productOption.ProductOptionId" data-product-id="@product.ProductId">
-                                <i class="icon-refresh"></i>
-                            </a>
                             <a class="btn btn-danger" href="@Url.Action("DeleteOrderProductOption", new { orderId = Model.Id, productId = product.ProductId, productOptionId = productOption.ProductOptionId })" onclick=" return confirm('Ви впевненні?') ">
                                 <i class="icon-trash"></i>
                             </a>
@@ -252,9 +233,19 @@
 </table>
 @if (Model.Status == OrderStatus.Processed)
 {
-    <p>
-        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Додати товар" onclick=" LoadOrderProductForm()">Додати товар</a>
-    </p>
+    <div class="row">
+        <div class="col-md-1">
+            <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Додати товар" onclick="LoadOrderProductForm()">
+                <span class="bigger-150">Додати товар</span>
+            </a>
+        </div>
+        <div class="col-md-1">
+            <a class="btn btn-success margin-left-10 pull-left btn-sm" href="#" title="Додати товар" id="update-order-products">
+                <i class="icon-refresh bigger-150"></i>
+                <span class="bigger-150">Оновити</span>
+            </a>
+        </div>
+    </div>
 }
 
 <div class="width-100">

@@ -1089,7 +1089,6 @@
     <Content Include="Areas\Cabinet\Views\Panel\UserAddress.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\_UserAddressForm.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Create.cshtml" />
-    <Content Include="Areas\Admin\Views\Orders\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />

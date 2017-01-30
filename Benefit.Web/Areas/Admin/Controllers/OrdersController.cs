@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
@@ -24,7 +25,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         private void UpdateOrderDetails(Order order)
         {
             //update bonuses and points
-            var seller = db.Sellers.Include(entry=>entry.ShippingMethods).FirstOrDefault(entry=>entry.Id == order.SellerId);
+            var seller = db.Sellers.Include(entry => entry.ShippingMethods).FirstOrDefault(entry => entry.Id == order.SellerId);
             var shipping = seller.ShippingMethods.FirstOrDefault(entry => entry.Name == order.ShippingName);
             order.Sum = order.GetOrderSum();
             order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? shipping.CostBeforeFree : 0);
@@ -177,28 +178,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult UpdateOrderProduct(string orderId, string productId, double amount, double price)
+        public ActionResult BulkUpdateOrderProducts(string orderId, List<OrderProduct> orderProducts, List<OrderProductOption> orderProductOptions)
         {
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
-            var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == productId);
-            product.Amount = amount;
-            product.ProductPrice = price;
-            UpdateOrderDetails(order);
-            db.Entry(product).State = EntityState.Modified;
-            db.Entry(order).State = EntityState.Modified;
+            foreach (var orderProduct in orderProducts)
+            {
+                var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
+                product.ProductName = orderProduct.ProductName;
+                product.Amount = orderProduct.Amount;
+                product.ProductPrice = orderProduct.ProductPrice;
+                db.Entry(product).State = EntityState.Modified;
+            }
+            foreach (var orderProductOption in orderProductOptions)
+            {
+                var productOption = order.OrderProductOptions.FirstOrDefault(entry => entry.ProductOptionId == orderProductOption.ProductOptionId && entry.ProductId == orderProductOption.ProductId);
+                productOption.ProductOptionName = orderProductOption.ProductOptionName;
+                productOption.Amount = orderProductOption.Amount;
+                productOption.ProductOptionPriceGrowth = orderProductOption.ProductOptionPriceGrowth;
+                db.Entry(productOption).State = EntityState.Modified;
+            }
+            //save products and options
             db.SaveChanges();
-            return Json(Url.Action("Details", new { id = orderId }));
-        }
 
-        public ActionResult UpdateOrderProductOption(string orderId, string productId, string productOptionId, int amount, double price)
-        {
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
-            var productOption = order.OrderProductOptions.FirstOrDefault(entry => entry.ProductId == productId && entry.ProductOptionId == productOptionId);
-            productOption.Amount = amount;
-            productOption.ProductOptionPriceGrowth = price;
-            db.Entry(productOption).State = EntityState.Modified;
-            db.SaveChanges();
-
+            //update order itself
             UpdateOrderDetails(order);
             db.Entry(order).State = EntityState.Modified;
             db.SaveChanges();

@@ -11,22 +11,21 @@
 }
 
 @section scripts
-    {
+{
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
     <script>
-        var orderProductFromUrl = '@Url.Action("AddProductForm", new { orderId = Model.Id })';
+        var orderProductFromUrl = '@Url.Action("AddProductForm", new {orderId = Model.Id})';
         var updateOrderStatusUrl = '@Url.Action("UpdateStatus")';
-        var updateProductDetailsUrl = '@Url.Action("UpdateOrderProduct")';
-        var updateProductOptionDetailsUrl = '@Url.Action("UpdateOrderProductOption")';
+        var bulkUpdateProductDetailsUrl = '@Url.Action("BulkUpdateOrderProducts", new { orderId = @Model.Id })';
 
         function LoadOrderProductForm() {
-            $("#orderProductForm").load(orderProductFromUrl, function (data) {
+            $("#orderProductForm").load(orderProductFromUrl, function(data) {
                 $("#dialog").removeClass('hide').dialog({
                     buttons: [
                         {
                             text: "Зберегти",
                             "class": "btn btn-info",
-                            click: function () {
+                            click: function() {
                                 $("form").submit();
                             }
                         }
@@ -44,42 +43,55 @@
                     orderStatus: status,
                     statusComment: statusComment,
                     orderId: '@Model.Id'
-                }, function () {
+                }, function() {
                     location.reload();
                 });
             });
 
-            $(".update-product").click(function() {
-                var orderId = '@Model.Id';
-                var productId = $(this).attr("data-product-id");
-                var tr = $(this).parents("tr");
-                var amount = tr.find(".product-amount").val();
-                var price = tr.find(".product-price").val();
-                $.post(updateProductDetailsUrl, {
-                    orderId: orderId,
-                    productId: productId,
-                    amount: amount,
-                    price: price
-                }, function(url) {
-                    window.location.href = url;
+            $("#update-order-products").click(function () {
+                var orderProducts = new Array();
+                var orderProductOptions = new Array();
+                $(".order_in_table tbody tr.order-product").each(function () {
+                    var tr = $(this);
+                    var productId = tr.attr("data-product-id");
+                    var name = tr.find(".product-name").val();
+                    var amount = tr.find(".product-amount").val();
+                    var price = tr.find(".product-price").val();
+                    orderProducts.push({
+                        ProductId: productId,
+                        ProductName: name,
+                        Amount: amount,
+                        ProductPrice: price
+                    });
                 });
-            });
 
-            $(".update-product-option").click(function () {
-                var orderId = '@Model.Id';
-                var productId = $(this).attr("data-product-id");
-                var productOptionId = $(this).attr("data-product-option-id");
-                var tr = $(this).parents("tr");
-                var amount = tr.find(".product-amount").val();
-                var price = tr.find(".product-price").val();
-                $.post(updateProductOptionDetailsUrl, {
-                    orderId: orderId,
-                    productId: productId,
-                    productOptionId: productOptionId,
-                    amount: amount,
-                    price: price
-                }, function(url) {
-                    window.location.href = url;
+                $(".order_in_table tbody tr.order-product-option").each(function () {
+                    var tr = $(this);
+                    var productOptionId = tr.attr("data-product-option-id");
+                    var productId = tr.attr("data-product-id");
+                    var name = tr.find(".product-option-name").val();
+                    var amount = tr.find(".product-option-amount").val();
+                    var price = tr.find(".product-option-price").val();
+                    orderProductOptions.push({
+                        ProductId: productId,
+                        ProductOptionId: productOptionId,
+                        ProductOptionName: name,
+                        Amount: amount,
+                        ProductOptionPriceGrowth: price
+                    });
+                });
+
+                $.ajax({
+                    type: 'Post',
+                    dataType: 'json',
+                    url: bulkUpdateProductDetailsUrl,
+                    data: JSON.stringify({ orderProducts: orderProducts, orderProductOptions: orderProductOptions }),
+                    contentType: 'application/json; charset=utf-8',
+                    async: true,
+                    complete: function (url) {
+                        window.location.href = url.responseJSON;
+                        flashMessage("Замовлення оновленно");
+                    }
                 });
             });
         });
