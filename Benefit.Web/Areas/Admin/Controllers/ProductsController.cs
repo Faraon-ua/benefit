@@ -157,7 +157,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var resultCurrencies =
                 db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider)
                     .OrderBy(entry => entry.Id).ToList();
-            if (User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
+            if (!User.IsInRole(DomainConstants.AdminRoleName) && (User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName)))
             {
                 var seller = db.Sellers.FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
                 var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id).ToList();

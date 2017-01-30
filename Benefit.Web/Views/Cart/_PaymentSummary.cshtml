@@ -1,31 +1,53 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
-<div class="dlivery_price">
-    <table>
-        <tr>
-            <td>Всього:</td>
-            @{
-                var total = Model.Order.OrderProducts.Sum(
-                    entry =>
-                        entry.ProductPrice * entry.Amount +
-                        entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-            }
-            <td id="order-total">@total.ToString("F")</td>
-        </tr>
-        <tr>
-            <td>Доставка:</td>
-            <td id="shipping-cost"></td>
-        </tr>
-        <tr id="comission-row" style="display: none;">
-            <td>Комісія:</td>
-            <td id="comission-cost"></td>
-        </tr>
-        <tr id="discount-row" style="display: none;">
-            <td>Знижка:</td>
-            <td id="discount"></td>
-        </tr>
-        <tr>
-            <td>До сплати:</td>
-            <td id="pay-total">@total.ToString("F")</td>
-        </tr>
-    </table>
+<div class="row">
+    <div class="pull-left dlivery_price" id="bonuses-summary" style="display: none;">
+        <table>
+            <tr>
+                <td>Знижка бонусами:</td>
+                <td id="bonuses-discount"></td>
+            </tr>
+            <tr>
+                <td>
+                    Комісія:
+                    <a href="@Url.RouteUrl("pagesRoute", new { id = "faq" })" target="_blank">
+                        <span class="label label-info label-as-badge" >
+                            <strong>?</strong>
+                        </span>
+                    </a>
+                </td>
+                <td id="bonuses-comission"></td>
+            </tr>
+            <tr>
+                <td>Використано бонусів:</td>
+                <td id="bonuses-total"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="pull-right dlivery_price" id="payment-summary" style="display: none;">
+        <table>
+            <tr>
+                <td>Сума замовлення:</td>
+                @{
+                    var total = Model.Order.OrderProducts.Sum(
+                        entry =>
+                            entry.ProductPrice * entry.Amount +
+                            entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+                }
+                <td id="order-total">@total.ToString("F")</td>
+            </tr>
+            <tr id="discount-row" style="display: none;">
+                <td>Знижка:</td>
+                <td id="discount"></td>
+            </tr>
+            <tr>
+                <td>Доставка:</td>
+                <td id="shipping-cost"></td>
+            </tr>
+
+            <tr>
+                <td>До сплати:</td>
+                <td id="pay-total"></td>
+            </tr>
+        </table>
+    </div>
 </div>

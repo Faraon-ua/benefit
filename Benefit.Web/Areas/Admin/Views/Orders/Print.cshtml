@@ -143,11 +143,11 @@
                 @if (Model.PaymentType == PaymentType.Bonuses)
                 {
                     var doSplatu = Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses);
-                    if (doSplatu <= 0.00)
+                    if (doSplatu < 0.00)
                     {
-                        doSplatu = 0.01;
+                        doSplatu = 0.00;
                     }
-                    doSplatu += Model.ShippingCost;
+                    doSplatu += Model.ShippingCost + 0.01;
                     <span>
                         @(doSplatu.ToString("F"))
                     </span>

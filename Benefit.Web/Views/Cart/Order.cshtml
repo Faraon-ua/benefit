@@ -1,5 +1,4 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
-@using Benefit.Common.Helpers
 @using Benefit.Domain.Models
 @using Newtonsoft.Json
 @{
@@ -9,8 +8,10 @@
 {
     <script>
         var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods))
-        $(function () {
-            $(".delivery_address_item").click(function () {
+        $(function() {
+            CalculateSummary();
+
+            $(".delivery_address_item").click(function() {
                 var addressId = $(this).attr("data-address-id");
                 $("#AddressId").val(addressId);
                 $(".delivery_address_item").removeClass("active");
@@ -18,61 +19,75 @@
                 $(this).addClass("active");
                 $(this).show();
             });
-            $(".chose_new_address").click(function (e) {
+            $(".chose_new_address").click(function(e) {
                 e.preventDefault();
                 $(".delivery_address_item").show();
             });
 
-            $("input[name=ShippingMethodId]").change(function () {
-                var selectedShippingId = this.value;
-                var orderSum = parseFloat($("#order-total").text());
-                var shippingCost = 0;
-                var selectedShipping = shippingMethodsJson.filter(function (shipping) {
-                    return shipping.Id == selectedShippingId;
-                })[0];
-                if (orderSum < selectedShipping.FreeStartsFrom) {
-                    if (selectedShipping.CostBeforeFree == null) {
-                        $("#shipping-cost").text("По тарифам кур'єрської служби");
-                    } else {
-                        $("#shipping-cost").text(selectedShipping.CostBeforeFree.toFixed(2));
-                    }
-                    shippingCost = selectedShipping.CostBeforeFree;
-                } else {
-                    $("#shipping-cost").text(shippingCost.toFixed(2));
-                }
-                $("#pay-total").text((shippingCost + orderSum).toFixed(2));
+            $("input[name=ShippingMethodId], input[name=PaymentType]").change(function() {
+                CalculateSummary();
             });
 
-            $("input[name='PaymentType']").change(function () {
-                if ($(this).attr("id") == "@PaymentType.Bonuses.ToString()") {
-                    var bonusesRadio = this;
-                    var checkBonusesUrl = '@Url.Action("CheckEnaughBonuses", "Cart")';
-                    var sum = $("#order-total").text();
-                    $.get(checkBonusesUrl + "?sum=" + sum, function (data) {
-                        if (data.total) {
-                            $("#comission-cost").text(data.comission.toFixed(2));
-                            $("#discount").text((sum - 0.01).toFixed(2));
-                            $("#pay-total").text("0.01");
-                            $("#comission-row").show();
-                            $("#discount-row").show();
+            function CalculateSummary() {
+                var selectedShippingId = $("input[name=ShippingMethodId]:checked");
+                var selectedPaymentType = $("input[name=PaymentType]:checked");
+
+                if (selectedShippingId.length > 0 && selectedPaymentType.length > 0) {
+                    var selectedShipping = shippingMethodsJson.filter(function(shipping) {
+                        return shipping.Id == selectedShippingId.val();
+                    })[0];
+                    $("#payment-summary").show();
+                    $("#checkout").removeAttr("disabled");
+                    //shipping
+                    var selectedShippingId = selectedShipping.Id;
+                    var orderSum = parseFloat($("#order-total").text());
+                    var shippingCost = 0;
+                    var selectedShipping = shippingMethodsJson.filter(function(shipping) {
+                        return shipping.Id == selectedShippingId;
+                    })[0];
+                    if (orderSum < selectedShipping.FreeStartsFrom) {
+                        if (selectedShipping.CostBeforeFree == null) {
+                            $("#shipping-cost").text("По тарифам кур'єрської служби");
                         } else {
-                            //todo: add pretty windows
-                            alert("Недостатньо бонусів на рахунку");
-                            bonusesRadio.checked = false;
+                            $("#shipping-cost").text(selectedShipping.CostBeforeFree.toFixed(2));
+                            shippingCost = selectedShipping.CostBeforeFree;
                         }
-                    });
-                } else {
-                    var comission = parseFloat($("#comission-cost").text());
-                    if (comission) {
-                        var paytotal = parseFloat($("#pay-total").text());
-                        $("#comission-row").hide();
-                        $("#discount-row").hide();
-                        var totalMinusComission = paytotal - comission;
-                        $("#pay-total").text(totalMinusComission.toFixed(2));
+                    } else {
+                        $("#shipping-cost").text(shippingCost.toFixed(2));
                     }
+
+                    //paymentType
+                    var sum = parseFloat($("#order-total").text());
+                    if (selectedPaymentType.attr("id") == "@PaymentType.Bonuses.ToString()") {
+                        var checkBonusesUrl = '@Url.Action("CheckEnaughBonuses", "Cart")';
+                        $.get(checkBonusesUrl + "?sum=" + sum, function(data) {
+                            if (data.total) {
+                                $("#bonuses-summary").show();
+                                //bonuses section
+                                $("#bonuses-discount").text((sum - 0.01).toFixed(2));
+                                $("#bonuses-comission").text(data.comission.toFixed(2));
+                                $("#bonuses-total").text((sum + data.comission - 0.01).toFixed(2));
+
+                                //payment section
+                                $("#pay-total").text((shippingCost + 0.01).toFixed(2));
+                                $("#discount").text((sum - 0.01).toFixed(2));
+                                $("#discount-row").show();
+                            } else {
+                                //todo: add pretty windows
+                                alert("Недостатньо бонусів на рахунку");
+                                selectedPaymentType[0].checked = false;
+                                $("#checkout").attr("disabled", "disabled");
+                            }
+                        });
+                    } else {
+                        $("#bonuses-summary").hide();
+                        $("#discount-row").hide();
+                    }
+
+                    $("#pay-total").text((shippingCost + orderSum).toFixed(2));
                 }
-            });
-        })
+            }
+        });
     </script>
 }
 @using (Html.BeginForm())
@@ -97,8 +112,8 @@
         @Html.Partial("_OrderProducts", Model)
         @Html.Partial("_PaymentSummary", Model)
         <div class="delivery_kontrols clearfix">
-            <a href="#" class="deliveri_edit goto_back">Редагувати замовлення</a>
-            <input type="submit" class="checkout goto_ahead" value="Оформити замовлення" />
+            <a href="#" class="deliveri_edit goto_back btn">Редагувати замовлення</a>
+            <input type="submit" class="checkout goto_ahead btn" value="Оформити замовлення" id="checkout" disabled />
         </div>
         @*        <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@
     </div>

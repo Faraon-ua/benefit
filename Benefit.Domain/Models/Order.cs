@@ -10,12 +10,16 @@ namespace Benefit.Domain.Models
 {
     public enum OrderStatus
     {
+        [Display(Name = "В очікуванні")]
         [Description("В очікуванні")]
         Created,
+        [Display(Name = "В обробці")]
         [Description("В обробці")]
         Processed,
+        [Display(Name = "Завершений")]
         [Description("Завершений")]
         Finished,
+        [Display(Name = "Скасований")]
         [Description("Скасований")]
         Abandoned
     }
