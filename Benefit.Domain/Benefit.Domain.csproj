@@ -253,6 +253,10 @@
     <Compile Include="Migrations\201701241549279_SellerModerators.Designer.cs">
       <DependentUpon>201701241549279_SellerModerators.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201701311033420_OrderStatusStamp.cs" />
+    <Compile Include="Migrations\201701311033420_OrderStatusStamp.Designer.cs">
+      <DependentUpon>201701311033420_OrderStatusStamp.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -298,6 +302,7 @@
     <Compile Include="Models\XmlModels\XmlProductPrice.cs" />
     <Compile Include="Models\XmlModels\XmlProduct.cs" />
     <Compile Include="Models\XmlModels\XmlCategory.cs" />
+    <Compile Include="OrderStatusStamp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ValidationAttributes\UniqueCardNumber.cs" />
   </ItemGroup>
@@ -428,6 +433,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701241549279_SellerModerators.resx">
       <DependentUpon>201701241549279_SellerModerators.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201701311033420_OrderStatusStamp.resx">
+      <DependentUpon>201701311033420_OrderStatusStamp.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

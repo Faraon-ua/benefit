@@ -55,8 +55,6 @@ namespace Benefit.Domain.Models
         public OrderType OrderType { get; set; }
         public PaymentType PaymentType { get; set; }
         public OrderStatus Status { get; set; }
-        [MaxLength(64)]
-        public string StatusComment { get; set; }
         [MaxLength(128)]
         public string SellerId { get; set; }
         [MaxLength(128)]
@@ -71,6 +69,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } 
         public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
+        public virtual ICollection<OrderStatusStamp> OrderStatusStamps { get; set; }
 
         [NotMapped]
         public Transaction BonusPaymentTransaction

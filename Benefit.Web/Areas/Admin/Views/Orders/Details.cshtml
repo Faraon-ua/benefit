@@ -1,4 +1,5 @@
-﻿@model Benefit.Domain.Models.Order
+﻿@using Benefit.Domain.Models
+@model Benefit.Domain.Models.Order
 
 @{
     ViewBag.Title = "Замовлення №" + Model.OrderNumber;
@@ -35,8 +36,18 @@
         };
 
         $(function() {
-            $("#updateStatus").click(function() {
+            $("#updateStatus").click(function () {
                 var status = $("#OrderStatus").val();
+                var proceed = true;
+                if (status == '@((int)OrderStatus.Abandoned)') {
+                    proceed = confirm("Ви впевненні, що хочете СКАСУВАТИ це замовлення?");
+                }
+                if (status == '@((int)OrderStatus.Finished)') {
+                    proceed = confirm("Ви впевненні, що хочете ЗАВЕРШИТИ це замовлення?");
+                }
+                if (!proceed) {
+                    return false;
+                }
                 var statusComment = $("#StatusComment").val();
                 $.post(updateOrderStatusUrl,
                 {

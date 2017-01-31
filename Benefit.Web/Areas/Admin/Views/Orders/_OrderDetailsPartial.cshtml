@@ -10,6 +10,10 @@
         <td style="width: 70%;">@Model.User.FullName</td>
     </tr>
     <tr>
+        <td style="width: 30%;">Час замовлення</td>
+        <td style="width: 70%;">@Model.Time.ToLocalDateTimeWithFormat()</td>
+    </tr>
+     <tr>
         <td style="width: 30%;">Номер Телефону</td>
         <td style="width: 70%;">@Model.User.PhoneNumber</td>
     </tr>
@@ -85,14 +89,24 @@
             Статус
         </td>
         <td>
-            @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
-            {
-                @Html.DropDownList("OrderStatus", EnumHelper.GetSelectList(typeof(OrderStatus), Model.Status))
-            }
-            else
-            {
-                @Enumerations.GetEnumDescription(Model.Status)
-            }
+            <div class="row">
+                <div class="col-md-2">
+                    @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
+                    {
+                        @Html.DropDownList("OrderStatus", EnumHelper.GetSelectList(typeof(OrderStatus), Model.Status))
+                    }
+                    else
+                    {
+                        @Enumerations.GetEnumDescription(Model.Status)
+                    }
+                </div>
+                <div class="col-md-10">
+                    @foreach (var stamp in Model.OrderStatusStamps.OrderBy(entry=>entry.Time))
+                    {
+                        <div>@stamp.Time.ToLocalDateTimeWithFormat() @Enumerations.GetEnumDescription(stamp.OrderStatus) @stamp.UpdatedBy (@stamp.Comment)</div>
+                    }
+                </div>
+            </div>
         </td>
     </tr>
     <tr>
@@ -102,11 +116,7 @@
         <td>
             @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)
             {
-                @Html.TextBox("StatusComment", Model.StatusComment, new { @class = "width-100" })
-            }
-            else
-            {
-                @Model.StatusComment
+                @Html.TextBox("StatusComment", null, new { @class = "width-100" })
             }
         </td>
     </tr>

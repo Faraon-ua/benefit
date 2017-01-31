@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.Domain;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
@@ -122,7 +124,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             var order = db.Orders.Find(orderId);
             order.Status = orderStatus;
-            order.StatusComment = statusComment;
+
+            var statusStamp = new OrderStatusStamp()
+            {
+                Id = Guid.NewGuid().ToString(),
+                OrderId = orderId,
+                OrderStatus = orderStatus,
+                Time = DateTime.UtcNow,
+                Comment = statusComment,
+                UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+            };
+            db.OrderStatusStamps.Add(statusStamp);
 
             //add points and bonuses if order finished and is not bonuses
             if (orderStatus == OrderStatus.Finished)
@@ -269,7 +281,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).Include(entry=>entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
