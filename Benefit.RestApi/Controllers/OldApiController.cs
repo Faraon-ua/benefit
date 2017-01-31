@@ -236,7 +236,6 @@ namespace Benefit.RestApi.Controllers
                     Status = OrderStatus.Finished,
                     UserId = user.Id,
                     Description = payment.numberchek,
-                    StatusComment = null,
                     ShippingAddress = null,
                     ShippingCost = 0,
                     ShippingName = null,
