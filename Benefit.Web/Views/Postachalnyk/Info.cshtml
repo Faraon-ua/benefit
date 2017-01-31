@@ -1,11 +1,21 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Domain.Models
+@using Image = System.Drawing.Image
 @model Benefit.DataTransfer.ViewModels.SellerDetailsViewModel
 @{
     ViewBag.Title = Model.Seller.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+@section image_src
+{
+    @{
+        var image_src = Model.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerGallery);
+    }
+    @if (image_src!=null)
+    {
+        <link rel="image_src" href="~/Images/SellerGallery/@Model.Seller.Id/@image_src.ImageUrl" />
+    }
+}
 <div class="clearfix">
     @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
 
@@ -90,7 +100,8 @@
                 <span>@sunSchedule.StartHour:00 - @sunSchedule.EndHour:00</span>
             }
         </div>
-        @if (Model.Seller.HasEcommerce) { 
+        @if (Model.Seller.HasEcommerce)
+        {
             <a class="goto_menu" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.Seller.UrlName, categoryUrl = "" })">@Model.Seller.CatalogButtonName</a>
         }
     </div>
@@ -98,7 +109,7 @@
     <ul class="tab_menu nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#about_org">Про нас</a></li>
         <li><a data-toggle="tab" href="#map_org">На карті</a></li>
-@*        todo: add Додатково*@
+        @*        todo: add Додатково*@
         @*        <li><a data-toggle="tab" href="#addition_org">Додатково</a></li>*@
         @if (!string.IsNullOrEmpty(Model.Seller.ShippingDescription))
         {
