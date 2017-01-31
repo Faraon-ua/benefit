@@ -181,21 +181,31 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult BulkUpdateOrderProducts(string orderId, List<OrderProduct> orderProducts, List<OrderProductOption> orderProductOptions)
         {
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
-            foreach (var orderProduct in orderProducts)
+            if (orderProducts != null)
             {
-                var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
-                product.ProductName = orderProduct.ProductName;
-                product.Amount = orderProduct.Amount;
-                product.ProductPrice = orderProduct.ProductPrice;
-                db.Entry(product).State = EntityState.Modified;
+                foreach (var orderProduct in orderProducts)
+                {
+                    var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
+                    product.ProductName = orderProduct.ProductName;
+                    product.Amount = orderProduct.Amount;
+                    product.ProductPrice = orderProduct.ProductPrice;
+                    db.Entry(product).State = EntityState.Modified;
+                }
             }
-            foreach (var orderProductOption in orderProductOptions)
+            if (orderProductOptions != null)
             {
-                var productOption = order.OrderProductOptions.FirstOrDefault(entry => entry.ProductOptionId == orderProductOption.ProductOptionId && entry.ProductId == orderProductOption.ProductId);
-                productOption.ProductOptionName = orderProductOption.ProductOptionName;
-                productOption.Amount = orderProductOption.Amount;
-                productOption.ProductOptionPriceGrowth = orderProductOption.ProductOptionPriceGrowth;
-                db.Entry(productOption).State = EntityState.Modified;
+                foreach (var orderProductOption in orderProductOptions)
+                {
+                    var productOption =
+                        order.OrderProductOptions.FirstOrDefault(
+                            entry =>
+                                entry.ProductOptionId == orderProductOption.ProductOptionId &&
+                                entry.ProductId == orderProductOption.ProductId);
+                    productOption.ProductOptionName = orderProductOption.ProductOptionName;
+                    productOption.Amount = orderProductOption.Amount;
+                    productOption.ProductOptionPriceGrowth = orderProductOption.ProductOptionPriceGrowth;
+                    db.Entry(productOption).State = EntityState.Modified;
+                }
             }
             //save products and options
             db.SaveChanges();
