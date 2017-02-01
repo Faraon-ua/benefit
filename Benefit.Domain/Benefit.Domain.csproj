@@ -257,6 +257,10 @@
     <Compile Include="Migrations\201701311033420_OrderStatusStamp.Designer.cs">
       <DependentUpon>201701311033420_OrderStatusStamp.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702011411374_SellerDescriptionNotRequired.cs" />
+    <Compile Include="Migrations\201702011411374_SellerDescriptionNotRequired.Designer.cs">
+      <DependentUpon>201702011411374_SellerDescriptionNotRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -436,6 +440,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201701311033420_OrderStatusStamp.resx">
       <DependentUpon>201701311033420_OrderStatusStamp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702011411374_SellerDescriptionNotRequired.resx">
+      <DependentUpon>201702011411374_SellerDescriptionNotRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,7 @@ namespace Benefit.Services
     {
         private const string DisplayName = "Benefit Company";
         private const string BenefitBusinessEmail = "benefitforbusiness@gmail.com";
+        private const string BenefitInfoEmail = "info.benefitcompany@gmail.com";
         private const string AdminEmail = "faraon.ua@gmail.com";
 
         private void SendTemplatedEmail(string templateName, string toad, string subjectcontent, params string[] parameters)
@@ -94,6 +95,12 @@ namespace Benefit.Services
         {
             var body = string.Format("Підтвердити верифікацію користувача можна за посиланням <a href='{0}'>ТИЦЬ!</a>", userUrl);
             SendEmail(BenefitBusinessEmail, body, "Верифікація карти", file);
+        }
+        
+        public void SendProfileChangeRequest(string userUrl, string message)
+        {
+            var body = string.Format("{0}, <br/>Змінити дані користувача можна за посиланням <a href='{1}'>ТИЦЬ!</a>", message, userUrl);
+            SendEmail(BenefitInfoEmail, body, "Запит на зміну даних партнера");
         }
 
         public void SendBonusesRozrahunokResults(string result)

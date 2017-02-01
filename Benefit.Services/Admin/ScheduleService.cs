@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Data.Entity.Infrastructure;
 using System.Linq;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
@@ -70,9 +69,9 @@ namespace Benefit.Services.Admin
                     {
                         var allUsers = db.Users.Include(entry => entry.Referal).ToList();
 
-                        //берем всех партнеров, которые сделали хотя бы какой-то товарооборот за предыдущий период
+                        //берем всех партнеров, которые сделали хотя бы какой-то товарооборот за предыдущий период и карта верифицирована
                         var partners =
-                            allUsers.Where(entry => entry.HangingPointsAccount > 0 && entry.ReferalId != null).ToList();
+                            allUsers.Where(entry => entry.HangingPointsAccount > 0 && entry.ReferalId != null && entry.IsCardVerified).ToList();
                         //транзакции
                         var partnerReckons = new List<TransactionServiceModel>();
 

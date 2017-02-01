@@ -29,6 +29,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             infoPage.Localizations = LocalizationService.Get(infoPage, new[] { "Name", "Content" });
             return View(infoPage);
         }
+        
+        public ActionResult Content(string id)
+        {
+            var infoPage = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id);
+            return View(infoPage);
+        }
 
         [HttpPost]
         [ValidateInput(false)]

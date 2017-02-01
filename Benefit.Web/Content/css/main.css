@@ -1997,6 +1997,7 @@ footer {
     border: none;
     font-size: 13px;
     color: #999999;
+    cursor: pointer;
 }
 
 .address_add {
@@ -2130,6 +2131,7 @@ footer {
 
     .request_change_data:hover {
         background-color: #1a3300;
+        color: #fff !important;
     }
 
 

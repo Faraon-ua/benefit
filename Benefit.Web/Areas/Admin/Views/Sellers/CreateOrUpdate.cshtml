@@ -272,12 +272,6 @@
                 </a>
             </li>
             <li class="@displayClass">
-                <a href="#terminal" data-toggle="tab">
-                    <i class="grey icon-tablet bigger-110"></i>
-                    Термінал
-                </a>
-            </li>
-            <li class="@displayClass">
                 <a href="#categories" data-toggle="tab">
                     <i class="grey icon-list bigger-110"></i>
                     Категорії
@@ -286,7 +280,13 @@
             <li class="@activeClass">
                 <a href="#images" data-toggle="tab">
                     <i class="red icon-camera bigger-110"></i>
-                    Зображення
+                    Зображення та опис
+                </a>
+            </li>
+            <li>
+                <a href="#terminal" data-toggle="tab">
+                    <i class="grey icon-tablet bigger-110"></i>
+                    Термінал
                 </a>
             </li>
             <li>
@@ -331,7 +331,7 @@
             <div class="tab-pane in active @displayClass" id="home">
                 @Html.Partial("_SellerForm")
             </div>
-            <div class="tab-pane @displayClass" id="terminal">
+            <div class="tab-pane" id="terminal">
                 @Html.Partial("_TerminalForm")
             </div>
             <div class="tab-pane @displayClass" id="paymentTypes">
@@ -341,7 +341,7 @@
                 @Html.Partial("_Categories", Model.Seller)
             </div>
             <div class="tab-pane @activeClass" id="images">
-                @Html.Partial("_Images", Model.Seller)
+                @Html.Partial("_Images", Model)
             </div>
             <div class="tab-pane" id="addresses">
                 @Html.Partial("_Addresses", Model.Seller)

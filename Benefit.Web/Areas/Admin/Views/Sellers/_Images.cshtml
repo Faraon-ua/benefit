@@ -1,21 +1,28 @@
 ﻿@using Benefit.Domain.Models
-@model Seller
+@model Benefit.Web.Models.Admin.SellerViewModel
+
+<div class="form-group">
+    <label class="control-label no-padding-right">Опис</label>
+    <div>
+        @Html.TextAreaFor(entry => entry.Seller.Description, new { id = "sellerDescription", cols = 70, rows = 5 })
+    </div>
+</div> 
 <div>
     <h3>Логотип:</h3>
     <input type="file" name="sellerLogo" id="sellerLogo" />
     @{
-        var img = Model.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+        var img = Model.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
         var imgSrc = img == null ? "" : img.ImageUrl;
     }
     <img src="~/Images/SellerLogo/@imgSrc" class="sellerLogo" />
 </div>
-@if (Model.Id != null)
+@if (Model.Seller.Id != null)
 {
     <br />
     <p>
         <h3>Галерея</h3>
         <br />
-        Клікніть на полі галереї або перетягніть на нього зображення
+        Клікніть на полі галереї або перетягніть на нього зображення 
     </p>
     <div id="dZUpload" class="dropzone">
     </div>

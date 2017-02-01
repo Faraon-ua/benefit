@@ -14,6 +14,8 @@
     <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
     <script src="~/Scripts/address.js"></script>
     <script>
+        var deleteAddressUrl = '@Url.Action("DeleteUserAddress")';
+
         $(function () {
             $("body").on("click", "#partner-referal", function () {
                 $(this).select();
@@ -24,6 +26,16 @@
             }
 
             SetRegionsAutocomplete();
+
+            $(".address_delete").click(function () {
+                debugger;
+                var addressBlock = $(this).parents(".address_block");
+                var addressId = $(this).attr("data-address-id");
+                $.post(deleteAddressUrl + "?id=" + addressId, null, function () {
+                    debugger;
+                    addressBlock.remove();
+                });
+            });
         });
     </script>
 }
@@ -150,7 +162,7 @@
                     <p class="adress_main">@(address.Region.Name_ua + ", " + address.AddressLine)</p>
                     <p class="adress_phone">@address.Phone</p>
                     <a class="address_adit" href="@Url.Action("UserAddress", new { id = address.Id })">Редагувати</a>
-                    <a class="address_delete">Видалити</a>
+                    <a class="address_delete" data-address-id="@address.Id">Видалити</a>
                 </div>
             }
             <a class="address_add" href="@Url.Action("UserAddress")">Додати нову адресу</a>
@@ -164,10 +176,10 @@
         </div>
 
         <div id="change_data" class="change_data tab-pane fade">
-            <form class="profile_change_data_form">
+            <form class="profile_change_data_form" action="@Url.Action("SendProfileChangeRequest", "Panel")" method="POST">
                 <textarea placeholder="Введіть дані, які необхідно змінити.
-Та вкажіть причину зміни."></textarea>
-                <button class="request_change_data">Подати запит на зміну персональних даних</button>
+Та вкажіть причину зміни." name="message"></textarea>
+                <button class="request_change_data" type="submit">Подати запит на зміну персональних даних</button>
             </form>
         </div>
     </div>

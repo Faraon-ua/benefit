@@ -101,6 +101,16 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult SendProfileChangeRequest(string message)
+        {
+            var emailService = new EmailService();
+            var userUrl = Url.Action("Edit", "Users", new { area = "Admin", id = RouteData.Values[DomainConstants.UserIdKey].ToString() }, Request.Url.Scheme);
+            emailService.SendProfileChangeRequest(userUrl, message);
+            TempData["SuccessMessage"] = "Запит було надіслано";
+            return RedirectToAction("Profile");
+        }
+
         public ActionResult VerifyCard()
         {
             var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
@@ -173,6 +183,18 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             ViewBag.User = user;
 
             return View(address);
+        }
+
+        [HttpPost]
+        public ActionResult DeleteUserAddress(string id)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var userAddress = db.Addresses.FirstOrDefault(entry => entry.Id == id);
+                db.Addresses.Remove(userAddress);
+                db.SaveChanges();
+            }
+            return Content(string.Empty);
         }
 
         public ActionResult Structure()
