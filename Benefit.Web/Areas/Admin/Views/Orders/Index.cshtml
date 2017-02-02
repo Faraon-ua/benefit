@@ -50,7 +50,7 @@
             });
 
             $(".pagination a").click(function () {
-                $("#page").val($(this).text());
+                $("#page").val($(this).attr("data-page-number"));
                 $("form").submit();
             });
 

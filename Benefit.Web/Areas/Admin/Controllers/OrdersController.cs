@@ -96,7 +96,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 Items = orders.ToList(),
                 Pages = ordersTotal / takePerPage + 1,
-                ActivePage = page == 0 ? 1 : page
+                ActivePage = page
             };
             ordersFilters.Sellers =
                 db.Sellers.OrderBy(entry => entry.Name)
