@@ -69,9 +69,8 @@ namespace Benefit.Services.Admin
                     {
                         var allUsers = db.Users.Include(entry => entry.Referal).ToList();
 
-                        //берем всех партнеров, которые сделали хотя бы какой-то товарооборот за предыдущий период и карта верифицирована
                         var partners =
-                            allUsers.Where(entry => entry.HangingPointsAccount > 0 && entry.ReferalId != null && entry.IsCardVerified).ToList();
+                            allUsers.Where(entry => entry.HangingPointsAccount > 0 && entry.ReferalId != null).ToList();
                         //транзакции
                         var partnerReckons = new List<TransactionServiceModel>();
 
@@ -84,7 +83,8 @@ namespace Benefit.Services.Admin
                                                        DistributionType.Mentor] / 100;
                             do
                             {
-                                if (currentReferal.HangingPointsAccount >= SettingsService.RewardsPlan.PointsQualificationAmount)
+                                //берем реферала, который сделал 500 баллов за предыдущий период и карта верифицирована
+                                if (currentReferal.HangingPointsAccount >= SettingsService.RewardsPlan.PointsQualificationAmount && currentReferal.IsCardVerified)
                                 {
                                     //если добавили наставнику - прерываем цикл
                                     var totalBalansBeforeRecon = currentReferal.BonusAccount +

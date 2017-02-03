@@ -464,18 +464,21 @@ $('.grr').owlCarousel({
 /*product_description_amount*/
 if ($('.product_description_amount').length > 0) {
     if ($('.product_description_amount').attr("data-is-weight-product") == "true") {
-        $('.product_description_amount').mask("#0.0", { reverse: true });
+        $('.product_description_amount').mask("#9.99", { reverse: true });
     } else {
         $('.product_description_amount').mask("#00");
     }
 }
-if ($('.product_modal_amount').length > 0) {
-    if ($('.product_modal_amount').attr("data-is-weight-product").toLowerCase() == "true") {
-        $('.product_modal_amount').mask("#0.0", { reverse: true });
-    } else {
-        $('.product_modal_amount').mask("#00");
+
+$("body").on("focus", ".product_modal_amount", function () {
+    if ($('.product_modal_amount').length > 0) {
+        if ($('.product_modal_amount').attr("data-is-weight-product").toLowerCase() == "true") {
+            $('.product_modal_amount').mask("#9.99", { reverse: true });
+        } else {
+            $('.product_modal_amount').mask("#00");
+        }
     }
-}
+});
 
 $('.product_description_amount_plus, .product_description_amount_minus').on('click', function () {
     var valueToAdd = 1;

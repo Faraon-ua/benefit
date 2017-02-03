@@ -3702,6 +3702,7 @@ li:last-child .expand {
         font-size: 13px;
         line-height: 25px;
         cursor: auto;
+        width: 50px;
     }
 
 .product_description_control_wrap {

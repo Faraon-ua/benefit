@@ -2,6 +2,9 @@
 @model Benefit.DataTransfer.ViewModels.CategoriesListViewModel
 
 <ul class="nav navbar-nav padding-top-15">
+    <li>
+        <a class="bold">@Model.ParentName</a>
+    </li>
     @foreach (var category in Model.Items)
     {
         <li>
