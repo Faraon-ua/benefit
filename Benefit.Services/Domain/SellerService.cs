@@ -162,6 +162,7 @@ namespace Benefit.Services.Domain
 
         public ProductsViewModel GetSellerCatalog(string sellerUrl, string categoryUrl, ProductSortOption sort)
         {
+            var categoriesService = new CategoriesService();
             var result = new ProductsViewModel();
             var seller = db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.UrlName == sellerUrl);
             if (seller == null) return null;
@@ -174,7 +175,7 @@ namespace Benefit.Services.Domain
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {
                 Seller = seller,
-                Categories = new List<Category>() //{ seller.SellerCategories.FirstOrDefault(entry=>entry.IsDefault).Category }
+                Categories = categoriesService.GetBreadcrumbs(category.Id)
             };
             return result;
         }

@@ -1,0 +1,19 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.CategoriesListViewModel
+
+@foreach (var parentCategory in Model.Items)
+{
+    <div class="parent-category">
+        @parentCategory.Name
+    </div>
+
+    var style = parentCategory.Name == Model.ParentName ? "" : "display:none";
+    <ul class="nav navbar-nav padding-top-15" style="@style">
+        @foreach (var category in parentCategory.ChildCategories)
+        {
+            <li>
+                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.SellerUrlName, categoryUrl = category.UrlName })" title="@category.Description">@category.Name</a>
+            </li>
+        }
+    </ul>
+}

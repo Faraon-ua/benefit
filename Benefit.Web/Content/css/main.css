@@ -908,9 +908,6 @@ header {
 }
 
     .vertical_menu ul {
-        margin-top: -47px;
-        border-top: 47px solid transparent;
-        padding-top: 15px;
         padding-bottom: 15px;
         width: 100%;
     }

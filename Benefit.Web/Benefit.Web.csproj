@@ -1569,6 +1569,8 @@
     <Content Include="Views\Cart\_PaymentTypes.cshtml" />
     <Content Include="Views\Cart\_OrderProducts.cshtml" />
     <Content Include="Views\Cart\_PaymentSummary.cshtml" />
+    <Content Include="Views\Shared\_SellerCategoriesPartial.cshtml" />
+    <Content Include="Views\Shared\_SellerChildCategoriesPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

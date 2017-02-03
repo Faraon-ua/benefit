@@ -1,31 +1,22 @@
 ﻿@using Benefit.Common.Constants
 @model Benefit.DataTransfer.ViewModels.CategoriesListViewModel
 
-
-<ul id="@((Model.ParentName == null && Model.SellerUrlName == null) ? "categories" : "")" class="@(ViewBag.IsDropDown ? "" : "nav navbar-nav")">
+<ul id="@(Model.ParentName == null ? "categories":"")" class="@(ViewBag.IsDropDown ? "" : "nav navbar-nav") padding-top-15">
     @if (Model.ParentName != null)
     {
         <li>
-            <span class="bold">@Model.ParentName</span>
+            <a class="bold">@Model.ParentName</a>
         </li>
     }
-
     @foreach (var category in Model.Items)
     {
         <li>
-            @if (Model.SellerUrlName == null)
-            {
-                <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id = category.UrlName })" title="@category.Description">@category.Name</a>
-            }
-            else
-            {
-                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.SellerUrlName, categoryUrl = category.UrlName })" title="@category.Description">@category.Name</a>
-            }
+            <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id = category.UrlName })" title="@category.Description">@category.Name</a>
 
-            @if (Model.ParentName == null && category.ChildCategories.Any() && Model.SellerUrlName == null)
+            @if (Model.ParentName == null && category.ChildCategories.Any())
             {
                 <ul>
-                    @foreach (var subCategory in category.ChildCategories.OrderBy(entry=>entry.Order))
+                    @foreach (var subCategory in category.ChildCategories.OrderBy(entry => entry.Order))
                     {
                         <li>
                             <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = subCategory.UrlName})" title="@subCategory.Description">@subCategory.Name</a>
@@ -35,7 +26,8 @@
             }
         </li>
     }
-    @if (Model.ParentName == null && Model.SellerUrlName == null)
+
+    @if (Model.ParentName == null)
     {
         <li>
             <a href="@Url.RouteUrl("AllSellers")" title="Всі постачальники">Всі постачальники</a>

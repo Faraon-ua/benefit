@@ -81,6 +81,10 @@ function CalculateProductPrice() {
 }
 
 $(function () {
+    $("body").on("click", ".parent-category", function () {
+        $(this).next("ul").slideToggle();
+    });
+
     $("body").on("click", ".product_modal_form input[type=checkbox], .product_modal_form input[type=radio], .product_modal_form div.product_modal_minus, .product_modal_form div.product_modal_plus", function () {
         CalculateProductPrice();
     });

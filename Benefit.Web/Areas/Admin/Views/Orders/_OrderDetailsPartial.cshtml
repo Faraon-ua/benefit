@@ -34,7 +34,7 @@
             Метод оплати
         </td>
         <td style="width: 70%;">
-            @(Model.PaymentType == PaymentType.Bonuses ? Enumerations.GetEnumDescription(PaymentType.Cash) : Enumerations.GetEnumDescription(Model.PaymentType))
+            @Enumerations.GetEnumDescription(Model.PaymentType)
         </td>
     </tr>
     @if (Model.PaymentType == PaymentType.Bonuses)

@@ -19,6 +19,7 @@ using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using NLog;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -31,6 +32,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         EmailService EmailService = new EmailService();
         SellerService SellerService = new SellerService();
         ImagesService ImagesService = new ImagesService();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public SellersController()
         {
@@ -187,6 +189,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                _logger.Error(ex);
                 return Json("Помилка імпорту файлу: "+ex.InnerException.Message);
             }
         }

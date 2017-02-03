@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -89,28 +88,60 @@ namespace Benefit.Web.Controllers
                 if (sellerUrl != null)
                 {
                     var sellersService = new SellerService();
-                    var sellerCategoriesIds = sellersService.GetAllSellerCategories(sellerUrl).Select(entry => entry.Id).ToList();
-                    categories = categories.Where(entry => sellerCategoriesIds.Contains(entry.Id)).ToList();
-                    while (categories.Count == 1)
+                    var sellerCategories = sellersService.GetAllSellerCategories(sellerUrl).ToList();
+                    var sellerCategoriesIds =
+                        sellersService.GetAllSellerCategories(sellerUrl).Select(entry => entry.Id).ToList();
+                    if (parent == null || parent.ParentCategoryId == null)
                     {
-                        var catId = categories.First().Id;
-                        parentName = categories.First().Name;
-                        var childCategories = db.Categories.Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == catId && entry.IsActive && sellerCategoriesIds.Contains(entry.Id)).OrderBy(entry => entry.Order).ToList();
-                        if (childCategories.Count == 0) break;
-                        categories = childCategories;
+                        categories =
+                            sellerCategories.Where(entry => entry.ParentCategoryId == null)
+                                .OrderBy(entry => entry.Order)
+                                .ToList();
+                        if (parent == null)
+                        {
+                            parentName = categories.FirstOrDefault() == null ? null : categories.FirstOrDefault().Name;
+                        }
                     }
+                    else
+                    {
+                        categories = categories.Where(entry => sellerCategoriesIds.Contains(entry.Id)).ToList();
+                        while (categories.Count == 1)
+                        {
+                            var catId = categories.First().Id;
+                            parentName = categories.First().Name;
+                            var childCategories =
+                                db.Categories.Include(entry => entry.ParentCategory)
+                                    .Where(
+                                        entry =>
+                                            entry.ParentCategoryId == catId && entry.IsActive &&
+                                            sellerCategoriesIds.Contains(entry.Id))
+                                    .OrderBy(entry => entry.Order)
+                                    .ToList();
+                            if (childCategories.Count == 0) break;
+                            categories = childCategories;
+                        }
+
+                    }
+                    var sellerCatsModel = new CategoriesListViewModel()
+                    {
+                        ParentName = parentName,
+                        SellerUrlName = sellerUrl,
+                        Items = categories.ToList()
+                    };
+                    return PartialView((parent == null || parent.ParentCategoryId == null) ? "_SellerCategoriesPartial" : "_SellerChildCategoriesPartial", sellerCatsModel);
                 }
                 if (parent != null)
                 {
                     categories = categories.Where(entry => !entry.ParentCategory.ChildAsFilters).ToList();
                 }
+
                 ViewBag.IsDropDown = isDropDown ?? false;
                 var model = new CategoriesListViewModel()
                 {
                     ParentName = parentName,
-                    SellerUrlName = sellerUrl,
                     Items = categories.ToList()
                 };
+
                 return PartialView("_CategoriesPartial", model);
             }
         }

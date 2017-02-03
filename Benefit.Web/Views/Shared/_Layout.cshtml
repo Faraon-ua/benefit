@@ -59,10 +59,13 @@
         }
         categoriesUrl = categoriesUrl + "&sellerUrl=" + sellerUrl;
 
+        //load left menu
         $('#right-menu').load(categoriesUrl);
 
+        //load dropdown Категорії меню
         if ($(".categories_drop").length > 0) {
-            $.get('@Url.Action("CategoriesPartial", "Home")?isDropDown=true',
+            $.get('@Url.Action("CategoriesPartial"
+             , "Home")?isDropDown=true',
                 function (data) {
                     $(".categories_drop").after(data);
                 });

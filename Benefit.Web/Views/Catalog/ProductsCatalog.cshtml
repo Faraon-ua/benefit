@@ -2,7 +2,6 @@
 @using Benefit.Common.Constants
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models.Enums
-@using Microsoft.Owin
 @model ProductsViewModel
 
 @{
@@ -132,22 +131,24 @@
 
 <main class="full_content full_content_product">
     <div class="product_row clearfix">
-        <div class="col-md-9">
-            @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
-        </div>
-        <div class="provider_sort col-md-3">
-            @using (Html.BeginForm("Catalog", "Postachalnyk", FormMethod.Get))
-            {
-                var sort = Request.QueryString["sort"] == null ? ProductSortOption.Default : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
-                <label for="provider_sort_title">Сортувати</label>
-                <select id="provider_sort_select" name="sort" class="provider_sort_select">
-                    <option value="Default" @(sort == ProductSortOption.Default ? "selected" : "")>По замовчуванню</option>
-                    <option value="PriceAsc" @(sort == ProductSortOption.PriceAsc ? "selected" : "")>Ціна &#8593;</option>
-                    <option value="PriceDesc" @(sort == ProductSortOption.PriceDesc ? "selected" : "")>Ціна &#8595;</option>
-                    <option value="NameAsc" @(sort == ProductSortOption.NameAsc ? "selected" : "")>А-Я</option>
-                    <option value="NameDesc" @(sort == ProductSortOption.NameDesc ? "selected" : "")>Я-А</option>
-                </select>
-            }
+        <div class="padding-bottom-15 clearfix">
+            <div class="col-md-9">
+                @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+            </div>
+            <div class="provider_sort col-md-3">
+                @using (Html.BeginForm("Catalog", "Postachalnyk", FormMethod.Get))
+                {
+                    var sort = Request.QueryString["sort"] == null ? ProductSortOption.Default : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
+                    <label for="provider_sort_title">Сортувати</label>
+                    <select id="provider_sort_select" name="sort" class="provider_sort_select">
+                        <option value="Default" @(sort == ProductSortOption.Default ? "selected" : "")>По замовчуванню</option>
+                        <option value="PriceAsc" @(sort == ProductSortOption.PriceAsc ? "selected" : "")>Ціна &#8593;</option>
+                        <option value="PriceDesc" @(sort == ProductSortOption.PriceDesc ? "selected" : "")>Ціна &#8595;</option>
+                        <option value="NameAsc" @(sort == ProductSortOption.NameAsc ? "selected" : "")>А-Я</option>
+                        <option value="NameDesc" @(sort == ProductSortOption.NameDesc ? "selected" : "")>Я-А</option>
+                    </select>
+                }
+            </div>
         </div>
         @if (Model.Items.Any())
         {

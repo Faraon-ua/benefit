@@ -1,0 +1,11 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.CategoriesListViewModel
+
+<ul class="nav navbar-nav padding-top-15">
+    @foreach (var category in Model.Items)
+    {
+        <li>
+            <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.SellerUrlName, categoryUrl = category.UrlName })" title="@category.Description">@category.Name</a>
+        </li>
+    }
+</ul>
