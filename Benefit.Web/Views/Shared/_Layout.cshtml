@@ -71,7 +71,7 @@
                 });
         }
 
-        $(".sh_btn, .deliveri_edit").click(function () {
+        $("#order-cart, .deliveri_edit").click(function () {
             var cartUrl = '@Url.Action("GetCart","Cart")';
             $("#cart-container").load(cartUrl, function() {
                 $("#basket_modal").modal('show');
