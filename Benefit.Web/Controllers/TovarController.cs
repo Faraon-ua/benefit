@@ -11,14 +11,17 @@ namespace Benefit.Web.Controllers
     {
         //
         // GET: /Tovar/
-        ProductsService ProductsService { get; set; }
+        private ProductsService ProductsService { get; set; }
+        private SellerService SellerService{ get; set; }
 
         public TovarController()
         {
             ProductsService = new ProductsService();
+            SellerService = new SellerService();
         }
         public ActionResult Index(string productUrl, string categoryUrl, string sellerUrl)
         {
+            var seller = SellerService.GetSeller(sellerUrl);
             var product = ProductsService.GetProduct(productUrl);
             if (product == null) return HttpNotFound();
             var categoriesService = new CategoriesService();
@@ -29,7 +32,8 @@ namespace Benefit.Web.Controllers
                 CategoryUrl = categoryUrl,
                 ProductOptions = ProductsService.GetProductOptions(product.Id),
                 Breadcrumbs = new BreadCrumbsViewModel()
-                {
+                { 
+                    Seller = seller,
                     Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrl),
                     Product = product
                 }

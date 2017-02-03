@@ -35,6 +35,11 @@ namespace Benefit.Services.Domain
                 Items = sellers
             };
         }
+
+        public Seller GetSeller(string urlName)
+        {
+            return db.Sellers.FirstOrDefault(entry => entry.UrlName == urlName);
+        }
         public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName)
         {
             var sellerVM = new SellerDetailsViewModel();
@@ -175,7 +180,7 @@ namespace Benefit.Services.Domain
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {
                 Seller = seller,
-                Categories = categoriesService.GetBreadcrumbs(category.Id)
+                Categories = categoriesService.GetBreadcrumbs(category == null ? null : category.Id)
             };
             return result;
         }

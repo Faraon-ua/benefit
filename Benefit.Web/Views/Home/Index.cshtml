@@ -22,7 +22,7 @@
     @foreach (var hit in Model.BestSellers)
     {
         var image = hit.Images.FirstOrDefault();
-        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = hit.Category.UrlName, sellerUrl = hit.Seller.UrlName, productUrl = hit.UrlName });
+        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = hit.Category.UrlName, sellerUrl = hit.Seller.UrlName, productUrl = hit.UrlName });
         <a class="item product_item" href="@productDetailsUrl">
             @* <div class="product_special">
                     <div class="special red">-45%</div>
@@ -43,7 +43,7 @@
     @foreach (var newProd in Model.NewProducts)
     {
         var image = newProd.Images.FirstOrDefault();
-        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = newProd.Category.UrlName, sellerUrl = newProd.Seller.UrlName, productUrl = newProd.UrlName });
+        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = newProd.Category.UrlName, sellerUrl = newProd.Seller.UrlName, productUrl = newProd.UrlName });
         <a class="item product_item" href="@productDetailsUrl">
             @* <div class="product_special">
                     <div class="special red">-45%</div>
