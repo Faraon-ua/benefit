@@ -470,36 +470,6 @@ if ($('.product_description_amount').length > 0) {
     }
 }
 
-$("body").on("focus", ".product_modal_amount", function () {
-    if ($('.product_modal_amount').length > 0) {
-        if ($('.product_modal_amount').attr("data-is-weight-product").toLowerCase() == "true") {
-            $('.product_modal_amount').mask("#9.99", { reverse: true });
-        } else {
-            $('.product_modal_amount').mask("#00");
-        }
-    }
-});
-
-$('.product_description_amount_plus, .product_description_amount_minus').on('click', function () {
-    var valueToAdd = 1;
-    var isMinus = $(this).hasClass("product_description_amount_minus");
-    var isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
-    if (isWeightProduct) {
-        valueToAdd = 0.1;
-    }
-    var productCurrentValue = parseFloat($('.product_description_amount').val());
-    if (isMinus && productCurrentValue > valueToAdd) {
-        productCurrentValue = (productCurrentValue - valueToAdd);
-    }
-    if (!isMinus) {
-        productCurrentValue = (productCurrentValue + valueToAdd);
-    }
-    if (isWeightProduct) {
-        productCurrentValue = productCurrentValue.toFixed(1);
-    }
-    $('.product_description_amount').val(productCurrentValue);
-});
-
 /*product_modal_amount*/
 $('body').on('click', '.product_modal_plus, .product_modal_minus', function () {
     var productAmount = $(this).parent().children('.product_modal_amount');
@@ -525,6 +495,36 @@ $('body').on('click', '.product_modal_plus, .product_modal_minus', function () {
     productAmount.val(productCurrentValue);
     CalculateCartSum();
 });
+
+$("body").on("focus", ".product_modal_amount", function () {
+    if ($(this).attr("data-is-weight-product").toLowerCase() == "true") {
+        $(this).mask("#9.99", { reverse: true });
+    } else {
+        $(this).mask("#00");
+    }
+});
+
+$('.product_description_amount_plus, .product_description_amount_minus').on('click', function () {
+    var valueToAdd = 1;
+    var isMinus = $(this).hasClass("product_description_amount_minus");
+    var isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+    if (isWeightProduct) {
+        valueToAdd = 0.1;
+    }
+    var productCurrentValue = parseFloat($('.product_description_amount').val());
+    if (isMinus && productCurrentValue > valueToAdd) {
+        productCurrentValue = (productCurrentValue - valueToAdd);
+    }
+    if (!isMinus) {
+        productCurrentValue = (productCurrentValue + valueToAdd);
+    }
+    if (isWeightProduct) {
+        productCurrentValue = productCurrentValue.toFixed(1);
+    }
+    $('.product_description_amount').val(productCurrentValue);
+});
+
+
 $('body').on("blur", ".product_modal_amount", function () {
     CalculateCartSum();
 });
