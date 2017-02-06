@@ -4,7 +4,7 @@
 <div class="bread_crumbs">
     <ul>
         <li><a href="@Url.Action("Index", "Home")">Головна</a></li>
-        @if (Model.Seller != null)
+        @if (Model.Seller != null && Model.Product != null)
         {
             <li>
                 &gt; <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { action = "Info", id=Model.Seller.UrlName })">@Model.Seller.Name</a>
@@ -14,7 +14,8 @@
         {
             <li>
                 &gt;
-                @if (Model.Seller == null)
+@*                if seller info page do not include seller url*@
+                @if (Model.Seller == null || (Model.Seller != null && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "info"))
                 {
                     <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = breadCrumb.UrlName})">@breadCrumb.Name</a>
                 }
@@ -22,6 +23,12 @@
                 {
                     <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.Seller.UrlName, categoryUrl = breadCrumb.UrlName })">@breadCrumb.Name</a>
                 }
+            </li>
+        }
+        @if (Model.Seller != null && Model.Product == null)
+        {
+            <li>
+                &gt; <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { action = "Info", id=Model.Seller.UrlName })">@Model.Seller.Name</a>
             </li>
         }
         @if (Model.Product != null)

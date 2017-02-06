@@ -120,9 +120,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public void UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId)
+        public ActionResult UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId)
         {
             var order = db.Orders.Find(orderId);
+            if (order.Status == OrderStatus.Abandoned || order.Status == OrderStatus.Finished)
+            {
+                return Json(new { error = "Статус Замовлення не може бути змінено, будь ласка оновіть сторінку" });
+            }
             order.Status = orderStatus;
 
             var statusStamp = new OrderStatusStamp()
@@ -148,6 +152,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
             db.Entry(order).State = EntityState.Modified;
             db.SaveChanges();
+            return Content(string.Empty);
         }
 
         public ActionResult CheckNewOrder()
@@ -281,7 +286,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).Include(entry=>entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();

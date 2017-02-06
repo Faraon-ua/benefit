@@ -17,7 +17,7 @@
     <script>
         var orderProductFromUrl = '@Url.Action("AddProductForm", new {orderId = Model.Id})';
         var updateOrderStatusUrl = '@Url.Action("UpdateStatus")';
-        var bulkUpdateProductDetailsUrl = '@Url.Action("BulkUpdateOrderProducts", new { orderId = @Model.Id })';
+        var bulkUpdateProductDetailsUrl = '@Url.Action("BulkUpdateOrderProducts", new {orderId = @Model.Id})';
 
         function LoadOrderProductForm() {
             $("#orderProductForm").load(orderProductFromUrl, function(data) {
@@ -36,13 +36,13 @@
         };
 
         $(function() {
-            $("#updateStatus").click(function () {
+            $("#updateStatus").click(function() {
                 var status = $("#OrderStatus").val();
                 var proceed = true;
-                if (status == '@((int)OrderStatus.Abandoned)') {
+                if (status == '@((int) OrderStatus.Abandoned)') {
                     proceed = confirm("Ви впевненні, що хочете СКАСУВАТИ це замовлення?");
                 }
-                if (status == '@((int)OrderStatus.Finished)') {
+                if (status == '@((int) OrderStatus.Finished)') {
                     proceed = confirm("Ви впевненні, що хочете ЗАВЕРШИТИ це замовлення?");
                 }
                 if (!proceed) {
@@ -54,15 +54,20 @@
                     orderStatus: status,
                     statusComment: statusComment,
                     orderId: '@Model.Id'
-                }, function() {
-                    location.reload();
+                }, function (data) {
+                    debugger;
+                    if (!data.error) {
+                        location.reload();
+                    } else {
+                        flashMessage(data.error, true);
+                    }
                 });
             });
 
-            $("#update-order-products").click(function () {
+            $("#update-order-products").click(function() {
                 var orderProducts = new Array();
                 var orderProductOptions = new Array();
-                $(".order_in_table tbody tr.order-product").each(function () {
+                $(".order_in_table tbody tr.order-product").each(function() {
                     var tr = $(this);
                     var productId = tr.attr("data-product-id");
                     var name = tr.find(".product-name").val();
@@ -76,7 +81,7 @@
                     });
                 });
 
-                $(".order_in_table tbody tr.order-product-option").each(function () {
+                $(".order_in_table tbody tr.order-product-option").each(function() {
                     var tr = $(this);
                     var productOptionId = tr.attr("data-product-option-id");
                     var productId = tr.attr("data-product-id");
@@ -98,7 +103,7 @@
                     data: JSON.stringify({ orderProducts: orderProducts, orderProductOptions: orderProductOptions }),
                     contentType: 'application/json; charset=utf-8',
                     async: true,
-                    complete: function (url) {
+                    complete: function(url) {
                         window.location.href = url.responseJSON;
                         flashMessage("Замовлення оновленно");
                     }

@@ -18,14 +18,17 @@ namespace Benefit.Services
             term = term.ToLower();
             var result =
                 db.Products.Include(entry => entry.Category)
-                    .Select(entry => entry.Name.ToLower() + " " + entry.SearchTags.ToLower() + " " + entry.Category.Name.ToLower())
-                    .Where(entry => entry.Contains(term))
-                    .ToList();
+                    .Select(
+                        entry =>
+                            entry.Name.ToLower() + " " + entry.SearchTags.ToLower() + " " +
+                            entry.Category.Name.ToLower())
+                    .Where(entry => entry.Contains(term)).ToList();
             var words =
-                result.Select(entry => entry.Split(new[] { ',', ' ' })).ToList()
-                    .SelectMany(entry => entry).ToList()
-                    .Where(entry => entry.Contains(term)).ToList()
-                    .Distinct().ToList();
+                result.Select(entry => entry.Split(new[] { ',', ' ', '"', '(', ')', '-' }))
+                    .SelectMany(entry => entry)
+                    .Where(entry => entry.Contains(term))
+                    .GroupBy(entry => entry).Select(entry => new { entry.Key, Count = entry.Count() })
+                   .OrderByDescending(entry => entry.Count).Select(entry => entry.Key).ToList();
             return words;
         }
 
@@ -45,7 +48,7 @@ namespace Benefit.Services
                 .Where(entry => entry.Item.Seller.Addresses.Any(addr => addr.RegionId == regionId) ||
                              entry.Item.Seller.ShippingMethods.Select(sm => sm.Region.Id)
                                  .Contains(RegionConstants.AllUkraineRegionId))
-                .Where(entry=>entry.Item.IsActive)
+                .Where(entry => entry.Item.IsActive)
                 .OrderByDescending(entry => entry.Hits)
                 .Skip(skip)
                 .Take(take + 1)

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -22,7 +23,7 @@ namespace Benefit.Web.Controllers
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
-            var hitIds = new[]
+            var hitIds = new List<string>
             {
                 "e5461d6c-abce-11e5-bbba-e03f49eb1351",
                 "7334de7a-ad63-11e5-bbba-e03f49eb1351",
@@ -34,7 +35,7 @@ namespace Benefit.Web.Controllers
                 "f48fcde5-69f2-4124-9d8c-7375ee67cc9d",
                 "1b290794-eb6c-4a55-bb3e-48980acc29a3"
             };
-            var newIds = new[]
+            var newIds = new List<string>
             {
                 "64892da0-38b4-409e-bcd8-ee43285e2608",
                 "0a7dc739-2f59-41a2-8fef-aded77dadfd4",
@@ -53,12 +54,12 @@ namespace Benefit.Web.Controllers
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => hitIds.Contains(entry.Id)).ToList();
+                    .Where(entry => hitIds.Contains(entry.Id)).ToList().OrderBy(entry=>hitIds.IndexOf(entry.Id)).ToList();
                 mainPageViewModel.NewProducts = db.Products
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => newIds.Contains(entry.Id)).ToList();
+                    .Where(entry => newIds.Contains(entry.Id)).ToList().OrderBy(entry => newIds.IndexOf(entry.Id)).ToList();
                 mainPageViewModel.Banners =
                     db.Banners.Where(entry => entry.BannerType == BannerType.MainPageBanners)
                         .OrderBy(entry => entry.Order)
