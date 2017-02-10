@@ -2,8 +2,8 @@
 using System.Net;
 using Benefit.CardReader.DataTransfer.Dto;
 using Benefit.CardReader.DataTransfer.Ingest;
+using Benefit.Common.Helpers;
 using Benefit.HttpClient;
-using Newtonsoft.Json;
 
 namespace Benefit.CardReader.Services
 {
@@ -16,9 +16,9 @@ namespace Benefit.CardReader.Services
             {
                 username = licenseKey
             };
-            var tokenJson = JsonConvert.SerializeObject(token);
+            var tokenJson = ContentTypeConvert.SerializeToXwwwFormUrlencoded(token);
             var tokenUrl = Path.Combine(CardReaderSettingsService.ApiHost, CardReaderSettingsService.ApiTokenPrefix);
-            var tokenResult = _httpClient.Post<TokenDto>(tokenUrl, tokenJson);
+            var tokenResult = _httpClient.Post<TokenDto>(tokenUrl, tokenJson, "application/x-www-form-urlencoded");
             if (tokenResult.StatusCode == HttpStatusCode.OK)
                 return tokenResult.Data.access_token;
             return null;

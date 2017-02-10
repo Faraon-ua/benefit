@@ -53,6 +53,10 @@
       <Project>{0df88f7f-0819-4b37-a207-592381429c89}</Project>
       <Name>Benefit.CardReader.DataTransfer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Benefit.Common\Benefit.Common.csproj">
+      <Project>{3946539e-a45a-46cd-be25-4e420e468082}</Project>
+      <Name>Benefit.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Benefit.HttpClient\Benefit.HttpClient.csproj">
       <Project>{4bbb10f6-4a6f-4a89-9c29-30fac23d2c70}</Project>
       <Name>Benefit.HttpClient</Name>

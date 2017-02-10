@@ -54,13 +54,13 @@ namespace Benefit.HttpClient
             return result;
         }
 
-        public ResponseResult<T> Post<T>(string url, string ingestData)
+        public ResponseResult<T> Post<T>(string url, string ingestData, string contentType)
         {
             var result = new ResponseResult<T>();
             string response = null;
             try
             {
-                client.Headers[HttpRequestHeader.ContentType] = "application/json";
+                client.Headers[HttpRequestHeader.ContentType] = contentType;
                 response = client.UploadString(url, ingestData);
                 result.StatusCode = HttpStatusCode.OK;
             }
