@@ -137,9 +137,26 @@
                     <span class="rating_star good"></span>
                     <span class="rating_all">2 відгука</span>
                 </div>
-                <p class="product_description_in_stock">В наявності</p>
+                <p class="product_description_in_stock">
+                    @if (Model.Product.AvailableAmount == null)
+                    {
+                        <span>
+                            В наявності
+                        </span>
+                    }
+                    else if (Model.Product.AvailableAmount == 0)
+                    {
+                        <span>
+                            Немає в наявності
+                        </span>
+                    }
+                    else
+                    {
+                        <span>В наявності: @Model.Product.AvailableAmount @(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                    }
+                </p>
                 <p class="product_description_price">
-                    <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн/@(@Model.Product.IsWeightProduct? "кг" : "шт")
+                    <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
                 </p>
                 <div class="product_description">
                     @*                    <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>*@
@@ -149,7 +166,14 @@
                 <div class="product_description_control_wrap pull-right">
                     @*<div class="product_description_like"></div>
                         <div class="product_description_scale"></div>*@
-                    <a id="buy-product" class="product_description_buy" href="#">Купити</a>
+                    @if (Model.Product.AvailableAmount == 0)
+                    {
+                        <a class="product_description_buy bg-grey" href="#">Купити</a>
+                    }
+                    else
+                    {
+                        <a id="buy-product" class="product_description_buy" href="#">Купити</a>
+                    }
                 </div>
                 <div class="product_description_amount_wrap pull-right" data-weight-product="@Model.Product.IsWeightProduct">
                     <div class="product_description_amount_minus">-</div>

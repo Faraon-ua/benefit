@@ -170,7 +170,10 @@
 }
 
 .bg-grey {
-    background-color: #cccccc;
+    background-color: #cccccc !important;
+}
+.bg-grey:hover {
+    background-color: #cccccc !important;
 }
 
 .font-red {

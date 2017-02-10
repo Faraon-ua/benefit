@@ -34,7 +34,7 @@ namespace Benefit.Services
 
         public List<Product> SearchProducts(string term, int skip, int take = ListConstants.DefaultTakePerPage, string categoryId = null)
         {
-            var productsResult = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller);
+            var productsResult = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Where(entry=>entry.IsActive && entry.Seller.IsActive);
             if (categoryId != null)
             {
                 productsResult = productsResult.Where(entry => entry.CategoryId == categoryId);
