@@ -19,10 +19,18 @@
 @section LeftAside{
 
 }
+@section styles
+{
+    <link href="~/Content/css/jquery.fancybox.css" rel="stylesheet" />
+}
 @section scripts
 {
+    <script src="~/Scripts/jquery.fancybox.js"></script>
+
     <script>
         $(function () {
+            $(".fancybox").fancybox();
+
             $('.carousel').carousel({
                 interval: 3000
             });
@@ -100,31 +108,7 @@
     <div class="clearfix">
         @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
         <div class="product_info_wrap clearfix">
-            <div id="product_gallery" class="product_photo_wrap carousel slide" data-ride="carousel">
-                <div class="product_photo_smal">
-                    @for (var i = 0; i < Model.Product.Images.Take(4).Count(); i++)
-                    {
-                        <img class="@(i == 0 ? "active" : "")" src="~/Images/ProductGallery/@Model.Product.Id/@Model.Product.Images.ElementAt(i).ImageUrl" data-target="#product_gallery" data-slide-to="@i">
-                    }
-                </div>
-                <div class="product_photo_big carousel-inner">
-                    @if (Model.Product.Images.Any())
-                    {
-                        var hasActive = false;
-                        foreach (var image in Model.Product.Images)
-                        {
-                            <div class="item @(hasActive? "":"active")">
-                                <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
-                            </div>
-                            hasActive = true;
-                        }
-                    }
-                    else
-                    {
-                        <img src="~/Images/ProductGallery/default_product_picture.png" alt="@Model.Product.Name">
-                    }
-                </div>
-            </div>
+            @Html.Partial("_GalleryPartial", Model)
             <div class="product_description_wrap">
                 @Html.HiddenFor(m => m.Product.Id)
                 <p id="Product_Name" class="product_description_title">@Model.Product.Name</p>

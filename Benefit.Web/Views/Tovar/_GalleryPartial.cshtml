@@ -1,0 +1,30 @@
+﻿@model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
+
+<div id="product_gallery" class="product_photo_wrap carousel slide" data-ride="carousel">
+    <div class="product_photo_smal">
+        @for (var i = 0; i < Model.Product.Images.Take(4).Count(); i++)
+        {
+            <div class="photo-small-wrap">
+                <img class="@(i == 0 ? "active" : "")" src="~/Images/ProductGallery/@Model.Product.Id/@Model.Product.Images.ElementAt(i).ImageUrl" data-target="#product_gallery" data-slide-to="@i">
+            </div>
+        }
+    </div>
+    <div class="product_photo_big carousel-inner">
+        @if (Model.Product.Images.Any())
+        {
+            var hasActive = false;
+            foreach (var image in Model.Product.Images)
+            {
+                <a class="item @(hasActive? "":"active") fancybox" rel="group" href="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl">
+                    <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
+                </a>
+                hasActive = true;
+            }
+        }
+        else
+        {
+            <img src="~/Images/ProductGallery/default_product_picture.png" alt="@Model.Product.Name">
+        }
+    </div>
+</div>
+

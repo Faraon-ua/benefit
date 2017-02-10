@@ -597,6 +597,7 @@
     <Content Include="Content\css\common.css" />
     <Content Include="Content\css\font-awesome.min.css" />
     <Content Include="Content\css\jquery-ui.css" />
+    <Content Include="Content\css\jquery.fancybox.css" />
     <Content Include="Content\css\nouislider.css" />
     <Content Include="Content\css\nouislider.min.css" />
     <Content Include="Content\css\nouislider.tooltips.css" />
@@ -1479,6 +1480,7 @@
     <Content Include="Scripts\jquery-2.2.3.min.js" />
     <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.autocomplete.min.js" />
+    <Content Include="Scripts\jquery.fancybox.js" />
     <Content Include="Scripts\jquery.mask.min.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
@@ -1571,6 +1573,7 @@
     <Content Include="Views\Cart\_PaymentSummary.cshtml" />
     <Content Include="Views\Shared\_SellerCategoriesPartial.cshtml" />
     <Content Include="Views\Shared\_SellerChildCategoriesPartial.cshtml" />
+    <Content Include="Views\Tovar\_GalleryPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -3616,13 +3616,18 @@ li:last-child .expand {
     display: inline-block;
     margin-right: 7px;
 }
-
-    .product_photo_smal img {
-        margin-bottom: 17px;
-        display: block;
+    .product_photo_smal .photo-small-wrap {
         width: 70px;
         height: 70px;
         border: 1px solid #cccccc;
+        margin-bottom: 17px;
+    }
+    .product_photo_smal img {
+        display: block;
+        margin: auto;
+        max-width: 100%;
+        max-height: 100%;
+        cursor: pointer;
     }
 
 .product_photo_big {
@@ -3632,6 +3637,17 @@ li:last-child .expand {
     border: 1px solid #cccccc;
     overflow: hidden;
     vertical-align: top;
+}
+
+.product_photo_big .item {
+    width: 396px;
+    height: 372px;
+}
+.product_photo_big .item img {
+    max-width: 100%;
+    max-height: 100%;
+    display:block;
+    margin:auto;
 }
 
 .product_description_wrap {

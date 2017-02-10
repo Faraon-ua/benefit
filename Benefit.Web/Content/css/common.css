@@ -219,9 +219,6 @@
     display: block;
 }
 
-.product_photo_big img {
-    width: 100%;
-}
 #sellerFilters fieldset {
     padding: 0 0 0 19px;
 }
