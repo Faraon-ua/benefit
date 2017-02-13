@@ -193,6 +193,7 @@
             <li class="active"><a data-toggle="tab" href="#product_descr_tab">Опис</a></li>
             <li><a data-toggle="tab" href="#product_charachters_tab">Характеристики</a></li>
             <li><a data-toggle="tab" href="#prodact_recall">Відгуки</a></li>
+            <li><a data-toggle="tab" href="#product_shipping">Доставка</a></li>
         </ul>
 
         <div class="tab-content">
@@ -224,6 +225,12 @@
                     <textarea class="recall_text" id="recall" placeholder="Залишити відгук може лише авторизований користувач"></textarea>
                     <p class="recall_register_notice"><a href="">Увійдіть</a> або <a href="">зареєструйтесь,</a> щоб залишити коментар</p>
                 </form>
+            </div> 
+            <div id="product_shipping" class="tab-pane fade">
+                <h3>Умови доставки постачальника @Model.Product.Seller.Name</h3>
+                <div>
+                    @Html.Raw(Model.Product.Seller.ShippingDescription)
+                </div>
             </div>
         </div>
 
