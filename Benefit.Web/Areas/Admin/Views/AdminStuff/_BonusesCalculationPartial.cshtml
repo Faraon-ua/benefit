@@ -3,6 +3,21 @@
 <h2>Результати розрахунку</h2>
 
 <fieldset>
+    <legend>Загальні показники</legend>
+    <table>
+        <tr>
+            <td>
+                <strong>
+                    Кількість партнерів, які заробили бали
+                </strong>
+            </td>
+            <td>
+                @Model.ActiveBuyersCount
+            </td>
+        </tr>
+    </table>
+</fieldset>
+<fieldset>
     <legend>Бонуси наставника</legend>
     <table>
         <tr>
@@ -18,7 +33,7 @@
         }
     </table>
 </fieldset>
-<br/>
+<br />
 <fieldset>
     <legend>Бонуси VIP</legend>
     <table>

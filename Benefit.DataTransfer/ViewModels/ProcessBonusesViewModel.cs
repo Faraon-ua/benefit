@@ -6,6 +6,7 @@ namespace Benefit.DataTransfer.ViewModels
     public class ProcessBonusesViewModel
     {
         public List<PartnerReckon> Partners { get; set; }
-        public List<PartnerReckon> VipPartners { get; set; } 
+        public List<PartnerReckon> VipPartners { get; set; }
+        public int ActiveBuyersCount { get; set; }
     }
 }

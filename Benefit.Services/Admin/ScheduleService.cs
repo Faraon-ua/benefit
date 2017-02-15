@@ -71,6 +71,7 @@ namespace Benefit.Services.Admin
 
                         var partners =
                             allUsers.Where(entry => entry.HangingPointsAccount > 0 && entry.ReferalId != null).ToList();
+                        result.ActiveBuyersCount = partners.Count;
                         //транзакции
                         var partnerReckons = new List<TransactionServiceModel>();
 

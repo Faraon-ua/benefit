@@ -105,7 +105,7 @@ namespace Benefit.Services
 
         public void SendBonusesRozrahunokResults(string result)
         {
-            SendEmail(AdminEmail, result, "Результати розрахунку бонусів");
+            SendEmail(BenefitInfoEmail, result, "Результати розрахунку бонусів");
         }
         public void SendImportResults(string userEmail, ProductImportResults importResults)
         {
