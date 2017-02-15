@@ -1,5 +1,4 @@
-﻿@using Benefit.Common.Constants
-@model Benefit.Domain.Models.ApplicationUser
+﻿@model Benefit.Domain.Models.ApplicationUser
 @{
     ViewBag.Title = "Заклади";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
@@ -30,7 +29,7 @@
             @foreach (var seller in Model.ReferedWebSiteSellers)
             {
                 <li>
-                    @Html.Label(seller.Name)
+                    @Html.ActionLink(seller.Name, "Info", "Postachalnyk", new { id = seller.UrlName, area = "" }, null)
                 </li>
             }
         </ul>
@@ -42,7 +41,7 @@
             @foreach (var seller in Model.ReferedBenefitCardSellers)
             {
                 <li>
-                    @Html.Label(seller.Name)
+                    @Html.ActionLink(seller.Name, "Info", "Postachalnyk", new { id = seller.UrlName, area = "" }, null)
                 </li>
             }
         </ul>
