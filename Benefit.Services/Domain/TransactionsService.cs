@@ -65,7 +65,7 @@ namespace Benefit.Services.Domain
         public void AddBonusesOrderTransaction(Order order)
         {
             var user = db.Users.Find(order.UserId);
-            var commission = order.Sum * SettingsService.BonusesComissionRate / 100;
+            var commission = order.Sum*SettingsService.BonusesComissionRate/100;
             //add transaction for personal purchase
             var bonusesPaymentTransaction = new Transaction()
             {
@@ -115,7 +115,7 @@ namespace Benefit.Services.Domain
                 if (order.Sum < Math.Abs(orderTransaction.Bonuses))
                 {
                     var difference = (Math.Abs(orderTransaction.Bonuses) - order.Sum);
-                    difference = difference + difference * SettingsService.BonusesComissionRate / 100;
+                    difference = difference + difference*SettingsService.BonusesComissionRate/100;
                     var refundTransaction = new Transaction()
                     {
                         Id = Guid.NewGuid().ToString(),
@@ -165,12 +165,14 @@ namespace Benefit.Services.Domain
                         .Select(entry => new DateTime(entry.Time.Year, entry.Time.Month, 1))
                         .Distinct())
             {
-                var personalTransaction =
-                    user.Transactions.FirstOrDefault(
+                var lastMentorTransaction =
+                    user.Transactions.Where(
                         entry =>
                             entry.Time.Year == date.Year && entry.Time.Month == date.Month &&
-                            entry.Type == TransactionType.PersonalMonthAggregate);
-                if (personalTransaction != null)
+                            entry.Type == TransactionType.MentorBonus)
+                        .OrderByDescending(entry => entry.BonusesBalans)
+                        .FirstOrDefault();
+                if (lastMentorTransaction != null)
                 {
                     var mentorBonusesAgregate = user.Transactions.Where(
                         entry => entry.Type == TransactionType.MentorBonus
@@ -186,16 +188,19 @@ namespace Benefit.Services.Domain
                     model.General.Add(
                         new Transaction()
                         {
-                            Time = personalTransaction.Time.AddHours(1),
+                            Time = lastMentorTransaction.Time,
                             Type = TransactionType.MentorBonus,
                             Payee = user,
                             Bonuses = mentorBonusesAgregate,
-                            BonusesBalans = personalTransaction.BonusesBalans + mentorBonusesAgregate
+                            BonusesBalans = lastMentorTransaction.BonusesBalans
                         });
                 }
             }
 
-            model.General = model.General.Where(entry => entry.Time > start && entry.Time < end).OrderByDescending(entry => entry.Time).ToList();
+            model.General =
+                model.General.Where(entry => entry.Time > start && entry.Time < end)
+                    .OrderByDescending(entry => entry.Time)
+                    .ToList();
 
             model.Personal =
                 user.Transactions.Where(
