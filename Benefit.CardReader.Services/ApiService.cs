@@ -16,12 +16,18 @@ namespace Benefit.CardReader.Services
             {
                 username = licenseKey
             };
-            var tokenJson = ContentTypeConvert.SerializeToXwwwFormUrlencoded(token);
+            var tokenForm = ContentTypeConvert.SerializeToXwwwFormUrlencoded(token);
             var tokenUrl = Path.Combine(CardReaderSettingsService.ApiHost, CardReaderSettingsService.ApiTokenPrefix);
-            var tokenResult = _httpClient.Post<TokenDto>(tokenUrl, tokenJson, "application/x-www-form-urlencoded");
+            var tokenResult = _httpClient.Post<TokenDto>(tokenUrl, tokenForm, "application/x-www-form-urlencoded");
             if (tokenResult.StatusCode == HttpStatusCode.OK)
                 return tokenResult.Data.access_token;
             return null;
+        }
+
+        public void PingOnline(string authorizationToken)
+        {
+            var pingUrl = CardReaderSettingsService.ApiHost + CardReaderSettingsService.ApiPrefix + "PingOnline";
+            _httpClient.Get<string>(pingUrl, authorizationToken);
         }
     }
 }

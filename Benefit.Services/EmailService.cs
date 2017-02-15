@@ -72,9 +72,9 @@ namespace Benefit.Services
             }
             mail.From = new MailAddress(from, displayName, System.Text.Encoding.UTF8);
             mail.Subject = subjectcontent;
-            mail.SubjectEncoding = System.Text.Encoding.UTF8;
+            mail.SubjectEncoding = Encoding.UTF8;
             mail.Body = body;
-            mail.BodyEncoding = System.Text.Encoding.UTF8;
+            mail.BodyEncoding = Encoding.UTF8;
             mail.IsBodyHtml = true;
             mail.Priority = MailPriority.High;
             return mail;
@@ -105,7 +105,7 @@ namespace Benefit.Services
 
         public void SendBonusesRozrahunokResults(string result)
         {
-            SendEmail(AdminEmail, result, "Результати розрахунку бонусів");
+            SendEmail(BenefitInfoEmail, result, "Результати розрахунку бонусів");
         }
         public void SendImportResults(string userEmail, ProductImportResults importResults)
         {

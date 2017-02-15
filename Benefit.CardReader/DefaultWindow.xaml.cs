@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Windows.Threading;
 using Benefit.HttpClient;
@@ -18,23 +20,17 @@ namespace Benefit.CardReader
 
         private SerialPort _serialPort;
         private char[] _readSymbols;
+        private List<Control> _controls = new List<Control>();
         public DefaultWindow()
         {
             InitializeComponent();
             dispatcherTimer = new DispatcherTimer();
             httpClient = new BenefitHttpClient();
             Loaded += DefaultWindow_Loaded;
-
-            _readSymbols = new char[256];
-            var comPortList = SerialPort.GetPortNames();
-
-            _serialPort = new SerialPort {BaudRate = 38400, ReadTimeout = 500, WriteTimeout = 500, };
-            _serialPort.DataReceived += _serialPort_DataReceived;
-        }
-
-        void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
-        {
-            throw new NotImplementedException();
+            //add all views
+            _controls.Add(CashierPartial);
+            _controls.Add(UserAuthPartial);
+            _controls.Add(TransactionPartial);
         }
 
         void DefaultWindow_Loaded(object sender, RoutedEventArgs e)

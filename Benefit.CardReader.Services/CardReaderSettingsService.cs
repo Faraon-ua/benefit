@@ -25,5 +25,12 @@ namespace Benefit.CardReader.Services
                 return ConfigurationManager.AppSettings["ApiTokenPrefix"];
             }
         }
+        public static string ReaderHandShakePrefix
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ReaderHandShakePrefix"];
+            }
+        }
     }
 }

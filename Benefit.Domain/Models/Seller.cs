@@ -39,8 +39,9 @@ namespace Benefit.Domain.Models
         public bool TerminalBillEnabled { get; set; }
         [MaxLength(32)]
         public string TerminalLogin { get; set; }
-        [MaxLength(16)]
+        [MaxLength(32)]
         public string TerminalPassword { get; set; }
+        public DateTime TerminalLastOnline { get; set; }
         [Required]
         [MaxLength(16)]
         public string CatalogButtonName { get; set; }

@@ -103,10 +103,10 @@ namespace Benefit.RestApi.Controllers
                     _logger.Error("User not found, nfc: " + paymentIngest.UserNfc);
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, "User not found");
                 }
-                var points = paymentIngest.Sum/SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
-                var bonuses = paymentIngest.Sum*seller.UserDiscount/100;
+                var points = paymentIngest.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
+                var bonuses = paymentIngest.Sum * seller.UserDiscount / 100;
                 //add finished order with benefit card type
-                var orderNumber = db.Orders.Max(entry => (int?) entry.OrderNumber) ?? SettingsService.OrderMinValue;
+                var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
                 var order = new Order()
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -165,6 +165,19 @@ namespace Benefit.RestApi.Controllers
                 _logger.Error(ex, "BenefitCard Payment exception:");
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.ToString());
             }
+        }
+
+        [Route("PingOnline")]
+        [HttpGet]
+        public IHttpActionResult PingOnline()
+        {
+            var seller = db.Sellers.Find(User.Identity.Name);
+            if (seller == null)
+                return NotFound();
+            seller.TerminalLastOnline = DateTime.UtcNow;
+            db.Entry(seller).State = EntityState.Modified;
+            db.SaveChanges();
+            return Ok();
         }
     }
 }

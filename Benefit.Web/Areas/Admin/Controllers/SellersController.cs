@@ -63,6 +63,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return resultXmlCategories;
         }
 
+        public ActionResult DownloadIntelHexFile(string id)
+        {
+            var seller = db.Sellers.Find(id);
+            var fileContent = SellerService.GenerateIntelHexFile(seller.TerminalPassword);
+            return File(fileContent, System.Net.Mime.MediaTypeNames.Application.Octet, "IntelHexFile.hex");
+        }
+
         [HttpPost]
         public async Task<JsonResult> OneCCommerceMLImport(string id)
         {

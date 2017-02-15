@@ -33,10 +33,14 @@ namespace Benefit.HttpClient
             }
         }
 
-        public ResponseResult<T> Get<T>(string url)
+        public ResponseResult<T> Get<T>(string url, string authorizationToken = null)
         {
             var result = new ResponseResult<T>();
             string response = null;
+            if (authorizationToken != null)
+            {
+                client.Headers.Add("Authorization", string.Format("Bearer {0}", authorizationToken));
+            }
             try
             {
                 response = client.DownloadString(url);

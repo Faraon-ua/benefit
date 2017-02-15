@@ -63,6 +63,8 @@
     <Compile Include="Extensions\UrlExtensions.cs" />
     <Compile Include="Helpers\ContentTypeConvert.cs" />
     <Compile Include="Helpers\Enumerations.cs" />
+    <Compile Include="Helpers\HexHelper.cs" />
+    <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

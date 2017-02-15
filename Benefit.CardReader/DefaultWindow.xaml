@@ -37,12 +37,12 @@
                     </Grid>
                 </Border>
             </StackPanel>
-            <StackPanel Name="Container" Orientation="Horizontal" Height="745">
-                <controls:CashierPartial x:Name="CashierPartial" Visibility="Collapsed"></controls:CashierPartial>
-                <controls:UserAuthPartial x:Name="UserAuthPartial" Visibility="Collapsed"></controls:UserAuthPartial>
-                <controls:TransactionPartial x:Name="TransactionPartial"></controls:TransactionPartial>
+            <Grid Name="Container" Height="745">
+                <controls:CashierPartial x:Name="CashierPartial" Visibility="Visible"></controls:CashierPartial>
+                <controls:UserAuthPartial x:Name="UserAuthPartial" Visibility="Hidden"></controls:UserAuthPartial>
+                <controls:TransactionPartial x:Name="TransactionPartial" Visibility="Hidden"></controls:TransactionPartial>
                 <!---->
-            </StackPanel>
+            </Grid>
         </StackPanel>
 
         <Border Background="#333333" Width="800" Height="40" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">

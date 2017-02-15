@@ -13,8 +13,8 @@ namespace Benefit.CardReader
     {
         private DefaultWindow defaultWindow;
         private BenefitHttpClient httpClient;
-        private DispatcherTimer dispatcherTimer;
         private ApiService apiService;
+        private ReaderService readerService;
         private App app;
         
         public MainWindow()
@@ -23,25 +23,38 @@ namespace Benefit.CardReader
             Loaded += MainWindow_Loaded;
             defaultWindow = new DefaultWindow();
             httpClient = new BenefitHttpClient();
-            dispatcherTimer = new DispatcherTimer();
             apiService = new ApiService();
+            readerService = new ReaderService();
             app = (App) Application.Current;
         }
 
         void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            dispatcherTimer.Tick += HideLoadScreen;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, 3);
-            dispatcherTimer.Start();
-
             var isconnected = httpClient.CheckForInternetConnection();
             if (isconnected)
             {
                 defaultWindow.ConnectionEsteblished.Visibility = Visibility.Visible;
                 defaultWindow.NoConnection.Visibility = Visibility.Collapsed;
 
-                //get license key from device;
-                app.Token = apiService.GetAuthAToken("801596");
+                var handShake = readerService.HandShake();
+                if (handShake == null)
+                {
+                    //show no device connected
+                }
+                else
+                {
+                    //get license key from device;
+                    app.Token = apiService.GetAuthAToken(handShake.LicenseKey);
+                    if (app.Token == null)
+                    {
+                        //show device not authorized
+                    }
+                    else
+                    {
+                        defaultWindow.Show();
+                        Close();
+                    }
+                }
             }
             else
             {
@@ -49,13 +62,6 @@ namespace Benefit.CardReader
                 defaultWindow.NoConnection.Visibility = Visibility.Visible;
             }
             ((App) Application.Current).IsConnected = isconnected;
-        }
-
-        void HideLoadScreen(object sender, EventArgs e)
-        {
-            (sender as DispatcherTimer).Stop();
-            defaultWindow.Show();
-            Close();
         }
     }
 }

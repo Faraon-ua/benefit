@@ -28,6 +28,10 @@
         var createModeratorUrl = '@Url.Action("CreateModerator", "Personnel")';
         var getUserUrl = '@Url.Action("GetUserByExternalNumber", "Users")';
 
+        function GenerateLicenseKey() {
+            $("#Seller_TerminalPassword").val(guid());
+        }
+
         function UpdateCurrenciesNumber() {
             var maxNumber = parseInt(GetMaxAttributeValue('.currency-id', 'data-number'));
             var href = $("#addNewCurrency").attr("href");
