@@ -24,8 +24,12 @@ namespace Benefit.CardReader.Services
 
         private void _serialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
         {
-            var sp = (SerialPort)sender;
-            sp.Read(readSymbols, 0, readSymbols.Length);
+            try
+            {
+                var sp = (SerialPort) sender;
+                sp.Read(readSymbols, 0, readSymbols.Length);
+            }
+            catch { }
         }
 
         private string ParseResult()
@@ -66,7 +70,7 @@ namespace Benefit.CardReader.Services
                     _serialPort.Write(handShakeMessage);
                     do
                     {
-                        Thread.Sleep(200);
+                        Thread.Sleep(100);
                     } while (readSymbols[0] == 0); 
                     var data = readSymbols.ToList();
                     var saltedAuthCode = data.GetRange(10, 4);

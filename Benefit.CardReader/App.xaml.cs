@@ -26,13 +26,11 @@ namespace Benefit.CardReader
             timer.Tick += timer_Tick;
             timer.Interval = new TimeSpan(0, PingOnlinePeriod, 0);
             timer.Start();
-            var apiService = new ApiService();
-            apiService.PingOnline("uUQxiCQJyrqpA7lln8RvXB5dasw7-PTZDde0BRRaV-jNPSQyMPetqFFgGXM0mef6nNDfroHrpJWx4kr1AktvI8Rl_PseY8bGY1hpiRaHQImNb9uzp9vktapk4cL30upyDt0gRtSLlAN7KEQOUt--StjdlnQfJXsRIqQhvxIZjeh69y8Z36llK2GKRFv7kCTyYqphyslU6PUMBhUxwjoHn5vgAgJAiHm-Vz_OyeIGrzc");
         }
 
         void timer_Tick(object sender, EventArgs e)
         {
-            if(Token == null || !IsConnected) return;
+            if (Token == null || !IsConnected) return;
             var apiService = new ApiService();
             apiService.PingOnline(Token);
         }

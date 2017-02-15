@@ -58,12 +58,16 @@ namespace Benefit.HttpClient
             return result;
         }
 
-        public ResponseResult<T> Post<T>(string url, string ingestData, string contentType)
+        public ResponseResult<T> Post<T>(string url, string ingestData, string contentType, string authorizationToken = null)
         {
             var result = new ResponseResult<T>();
             string response = null;
             try
             {
+                if (authorizationToken != null)
+                {
+                    client.Headers.Add("Authorization", string.Format("Bearer {0}", authorizationToken));
+                }
                 client.Headers[HttpRequestHeader.ContentType] = contentType;
                 response = client.UploadString(url, ingestData);
                 result.StatusCode = HttpStatusCode.OK;
