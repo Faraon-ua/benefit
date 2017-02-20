@@ -34,7 +34,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult TabableContent(string pageUrls)
         {
             var pageUrlNames = pageUrls.Split(',');
-            var infoPages = db.InfoPages.Where(entry => pageUrlNames.Contains(entry.UrlName)).ToList();
+            var infoPages = db.InfoPages.Where(entry => pageUrlNames.Contains(entry.UrlName)).OrderBy(entry=>entry.Order).ToList();
             return View(infoPages);
         }
 

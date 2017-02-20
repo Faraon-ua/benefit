@@ -21,15 +21,22 @@
             <div class="form-group">
                 <label class="control-label col-md-1" for="Name">Назва</label>
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.Name, new {@class = "name"})
+                    @Html.TextBoxFor(model => model.Name, new { @class = "name" })
                     @Html.ValidationMessageFor(model => model.Name)
                 </div>
             </div>
-             <div class="form-group">
+            <div class="form-group">
                 <label class="control-label col-md-1" for="UrlName">Url назва</label>
                 <div class="col-md-10">
                     @Html.TextBoxFor(model => model.UrlName, new { @class = "urlName" })
                     @Html.ValidationMessageFor(model => model.UrlName)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-1" for="Order">Порядковий номер</label>
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Order)
+                    @Html.ValidationMessageFor(model => model.Order)
                 </div>
             </div>
 
@@ -45,7 +52,7 @@
                     @Html.EditorFor(model => model.IsNews)
                 </div>
             </div>
-            
+
             <div class="form-group">
                 <label class="control-label col-md-1" for="Name">Дата створення</label>
                 <div class="col-md-10">
@@ -72,11 +79,11 @@
             </div>
             <div class="form-group">
                 <label class="control-label col-md-1">Зображення</label>
-                @Html.HiddenFor(m=>m.ImageUrl)
+                @Html.HiddenFor(m => m.ImageUrl)
 
                 <div class="col-md-10">
                     <input type="file" name="newsLogo" id="newsLogo" />
-                    
+
                     <img src="~/Images/NewsLogo/@Model.ImageUrl" />
                 </div>
             </div>
@@ -98,13 +105,13 @@
                         @if (Model.Localizations[i].ResourceField == "Content")
                         {
                             @Html.TextAreaFor(m => m.Localizations[i].ResourceValue, new { cols = 45, rows = 5 })
-                          @*  <script type="text/javascript">
-                                CKEDITOR.replace("InfoPage.Localizations[" + i + "].ResourceValue", {
-                                    //                filebrowserImageBrowseUrl: '/home/uploadPartial',
-                                    //                filebrowserImageUploadUrl: '/home/uploadnow'
-                                    filebrowserImageUploadUrl: '/home/UploadImage'
-                                });
-                            </script>*@
+                            @*  <script type="text/javascript">
+                                    CKEDITOR.replace("InfoPage.Localizations[" + i + "].ResourceValue", {
+                                        //                filebrowserImageBrowseUrl: '/home/uploadPartial',
+                                        //                filebrowserImageUploadUrl: '/home/uploadnow'
+                                        filebrowserImageUploadUrl: '/home/UploadImage'
+                                    });
+                                </script>*@
                         }
                         else
                         {
