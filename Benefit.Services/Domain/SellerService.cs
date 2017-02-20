@@ -27,7 +27,7 @@ namespace Benefit.Services.Domain
             var result = new StringBuilder();
             var hexPassword = HexHelper.AsciiToHexString(password);
             var linesNumber = 32;
-            var allData = HexHelper.AddGarbage(linesNumber*bytesInLine, hexPassword, 16, 48, "FF");
+            var allData = HexHelper.AddGarbage(linesNumber * bytesInLine, hexPassword, 16, 48, "FF");
             var linePrefix = ":";
             var startAddress = 0x0000;
             var fileStart = ":020000040000FA";
@@ -40,13 +40,13 @@ namespace Benefit.Services.Domain
             {
                 var line = new StringBuilder();
                 var lineStart = string.Concat(bytesInLine.ToString("X"),
-                    (startAddress + (bytesInLine*i)).ToString("X4"), dataType);
+                    (startAddress + (bytesInLine * i)).ToString("X4"), dataType);
                 line.Append(lineStart);
 
                 line.Append(allData.Substring(i * bytesInLine * 2, bytesInLine * 2));
 
                 var bytesSum = HexHelper.SumHexBytesInString(line.ToString());
-                var checkSum = (byte) (0 - (bytesSum%256));
+                var checkSum = (byte)(0 - (bytesSum % 256));
                 line.Append(checkSum.ToString("X2"));
                 line.Insert(0, linePrefix);
                 result.Append(line);
@@ -153,7 +153,15 @@ namespace Benefit.Services.Domain
 
         public List<Product> GetSellerCatalogProducts(string sellerId, string categoryId, ProductSortOption sort, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
-            var items = db.Products.Include(entry => entry.Category.ParentCategory.ParentCategory).Where(entry => entry.IsActive);
+            var regionId = RegionService.GetRegionId();
+            var items = db.Products.Include(entry => entry.Category.ParentCategory.ParentCategory)
+                .Include(entry => entry.Seller)
+                .Include(entry => entry.Seller.ShippingMethods)
+                .Include(entry => entry.Seller.Addresses)
+                .Where(entry => entry.IsActive && entry.Seller.IsActive)
+                .Where(entry => entry.Seller.Addresses.Any(addr => addr.RegionId == regionId) ||
+                                entry.Seller.ShippingMethods.Select(sm => sm.Region.Id).Contains(RegionConstants.AllUkraineRegionId) ||
+                                entry.Seller.ShippingMethods.Select(sm => sm.Region.Id).Contains(regionId));
             if (!string.IsNullOrEmpty(categoryId))
             {
                 var category = db.Categories.Find(categoryId);
