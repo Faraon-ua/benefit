@@ -22,6 +22,10 @@
 
     <script>
         $(function () {
+            $(".calendar-icon").click(function() {
+                $('.date-range-picker').focus();
+            });
+
             $('.date-range-picker').daterangepicker({
                 locale: {
                     format: 'DD.MMM.YYYY',

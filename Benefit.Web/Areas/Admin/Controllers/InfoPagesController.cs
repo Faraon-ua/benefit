@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -29,7 +30,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             infoPage.Localizations = LocalizationService.Get(infoPage, new[] { "Name", "Content" });
             return View(infoPage);
         }
-        
+
+        public ActionResult TabableContent(string pageUrls)
+        {
+            var pageUrlNames = pageUrls.Split(',');
+            var infoPages = db.InfoPages.Where(entry => pageUrlNames.Contains(entry.UrlName)).ToList();
+            return View(infoPages);
+        }
+
         public ActionResult Content(string id)
         {
             var infoPage = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id);

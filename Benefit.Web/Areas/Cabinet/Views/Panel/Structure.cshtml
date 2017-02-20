@@ -23,7 +23,7 @@
                     var keys = Object.keys(data);
                     if (keys.length == 0) {
                         $("#showAllStructureLbl").removeClass("hidden");
-                        var totalPartners = $(".structure_table_row").length;
+                        var totalPartners = $(".structure_table_row").length - 1;
                         $("#totalPartners").text(totalPartners);
                     }
                     $(keys).each(function (index, key) {
