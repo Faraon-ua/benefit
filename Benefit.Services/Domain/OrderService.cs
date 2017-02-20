@@ -24,7 +24,7 @@ namespace Benefit.Services.Domain
             }
             orders = orders.OrderByDescending(entry => entry.Time);
             return orders.Skip(skip).Take(take).ToList();
-        } 
+        }
 
         public string AddOrder(CompleteOrderViewModel model)
         {

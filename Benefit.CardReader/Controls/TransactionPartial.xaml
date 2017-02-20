@@ -1,0 +1,117 @@
+﻿<UserControl x:Class="Benefit.CardReader.Controls.TransactionPartial"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+              d:DesignHeight="745" d:DesignWidth="800">
+    <UserControl.Resources>
+        <Style x:Key="PayBonuses" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#349800"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#47CC00"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="ChargeBonuses" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="#FFCC00"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="Black" BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFE066"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical" Name="UserAuth">
+        <Border Background="White" Margin="40, 25, 40, 0" Height="160" Width="720">
+            <Border.Effect>
+                <DropShadowEffect Opacity="0.2" ShadowDepth="3" />
+            </Border.Effect>
+            <StackPanel Orientation="Vertical" Margin="25,15">
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/seller.png" Width="38" Height="33" HorizontalAlignment="Left"></Image>
+                    <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                        <TextBlock Foreground="#333333" FontSize="20">заклад:</TextBlock>
+                        <TextBlock Name="SellerName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Бордель "У Анастасії"</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+                <Separator Foreground="#cccccc" Margin="0,10"></Separator>
+                <StackPanel Orientation="Horizontal">
+                    <Image Source="/Images/cashier.png" Margin="5,0,0,0" Width="29" Height="38" HorizontalAlignment="Left"></Image>
+                    <StackPanel Orientation="Vertical" Margin="20,0,0,0">
+                        <TextBlock Foreground="#333333" FontSize="20" LineStackingStrategy="BlockLineHeight" LineHeight="20">обслуговує:</TextBlock>
+                        <TextBlock Name="CashierName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Анастасія Точаєва</TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </StackPanel>
+        </Border>
+        <Border Background="White" Margin="40,25,40,0">
+            <Border.Effect>
+                <DropShadowEffect Opacity="0.2" ShadowDepth="3" />
+            </Border.Effect>
+            <StackPanel Orientation="Vertical">
+                <Grid Margin="25,10">
+                    <StackPanel Orientation="Vertical"  HorizontalAlignment="Left">
+                        <TextBlock Foreground="#333333" FontSize="20">клієнт:</TextBlock>
+                        <TextBlock Name="UserName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Дубровський Олександр</TextBlock>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Foreground="#333333" FontSize="20" LineStackingStrategy="BlockLineHeight" LineHeight="40">номер картки:</TextBlock>
+                            <TextBlock Name="UserCard" Foreground="#990100" FontSize="30" Margin="10,0">000001</TextBlock>
+                        </StackPanel>
+                    </StackPanel>
+                    <Image Name="btnUserInfo" Source="/Images/info.png" Width="61" Height="62" HorizontalAlignment="Right" Cursor="Hand" MouseLeftButtonDown="BtnUserInfo_OnMouseLeftButtonDown"></Image>
+                </Grid>
+            </StackPanel>
+        </Border>
+        <Border Background="White" Margin="40,25,40,0">
+            <Border.Effect>
+                <DropShadowEffect Opacity="0.2" ShadowDepth="3" />
+            </Border.Effect>
+            <Grid>
+                <StackPanel Orientation="Vertical" Name="TransactionPanel" Visibility="Visible">
+                    <TextBlock HorizontalAlignment="Center" Margin="5" FontSize="25">Нарахування</TextBlock>
+                    <Grid Margin="25,15,25,0">
+                        <TextBox Name="txtBillNumber" Width="300" Height="95" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="30" TextAlignment="Center" Padding="20" HorizontalAlignment="Left" Tag="Номер чеку">Номер чеку</TextBox>
+                        <TextBox Name="txtPaymentSum" FlowDirection="LeftToRight" PreviewTextInput="PaymentSum_OnPreviewTextInput" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Width="300" Height="95" Background="#F7F7F7" Foreground="#333333" FontSize="30" TextAlignment="Center" Padding="20" HorizontalAlignment="Right" Tag="Сума">Сума</TextBox>
+                    </Grid>
+                    <Grid Margin="25,15">
+                        <Button Name="btnPayBonuses" Click="BtnPayBonuses_OnClick" Cursor="Hand" Width="300" Height="95" HorizontalAlignment="Left" FontSize="26" Style="{StaticResource PayBonuses}">Нарахувати бонуси</Button>
+                        <Button Name="btnChargeBonuses" Click="BtnChargeBonuses_OnClick" Cursor="Hand" Width="300" Height="95" HorizontalAlignment="Right" FontSize="26" Style="{StaticResource ChargeBonuses}">Списати бонуси</Button>
+                    </Grid>
+                </StackPanel>
+                <StackPanel Orientation="Vertical" Name="TransactionResult" Visibility="Hidden">
+                    <Image Source="/Images/success-icon.png" Width="56" Height="43" Margin="0,10"></Image>
+                    <TextBlock HorizontalAlignment="Center" FontSize="30">Нарахування проведено!</TextBlock>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Center" FontSize="25" Foreground="#990100">Нарахуванно бонусів:</TextBlock>
+                        <TextBlock Name="BonusesAquired" HorizontalAlignment="Center" FontSize="25" Margin="5,0"></TextBlock>
+                    </StackPanel> 
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment="Center" FontSize="25" Foreground="#990100">Доступні бонуси:</TextBlock>
+                        <TextBlock Name="BonusesAccount" HorizontalAlignment="Center" FontSize="25" Margin="5,0"></TextBlock>
+                    </StackPanel>
+                    <Button Name="TransactionOk" Cursor="Hand" Style="{StaticResource PayBonuses}" Width="250" Height="80" Margin="0, 15" FontSize="30" Click="TransactionOk_OnClick">OK</Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+    </StackPanel>
+</UserControl>

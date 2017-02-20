@@ -1,0 +1,32 @@
+﻿<Application x:Class="Benefit.CardReader.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <Style x:Key="ToggleButtonWindowClose" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="SnapsToDevicePixels" Value="False" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <Grid>
+                                <ContentPresenter x:Name="MyContentPresenter" Content="{TemplateBinding Content}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                <Path x:Name="CloseWindow" SnapsToDevicePixels="False" ToolTip="Close window" Width="28" Height="27" HorizontalAlignment="Right" VerticalAlignment="Center" Stretch="Fill" Fill="#C10000" Data="F1 M 26.9166,22.1667L 37.9999,33.25L 49.0832,22.1668L 53.8332,26.9168L 42.7499,38L 53.8332,49.0834L 49.0833,53.8334L 37.9999,42.75L 26.9166,53.8334L 22.1666,49.0833L 33.25,38L 22.1667,26.9167L 26.9166,22.1667 Z " />
+                            </Grid>
+                        </Border>
+
+                        <!-- Trigger fires on the property -->
+                        <ControlTemplate.Triggers>
+                            <!-- Here change the color when the mouse cursor -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CloseWindow" Property="Fill" Value="#F50000" />
+                                <Setter TargetName="CloseWindow" Property="Cursor" Value="Hand" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Application.Resources>
+</Application>

@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Caching;
 using Benefit.Common.Constants;
+using Benefit.Common.Helpers;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
@@ -17,6 +19,43 @@ namespace Benefit.Services.Domain
     public class SellerService
     {
         ApplicationDbContext db = new ApplicationDbContext();
+
+        public byte[] GenerateIntelHexFile(string password)
+        {
+            const int bytesInLine = 0x10; //16 bytes
+
+            var result = new StringBuilder();
+            var hexPassword = HexHelper.AsciiToHexString(password);
+            var linesNumber = 32;
+            var allData = HexHelper.AddGarbage(linesNumber*bytesInLine, hexPassword, 16, 48, "FF");
+            var linePrefix = ":";
+            var startAddress = 0x0000;
+            var fileStart = ":020000040000FA";
+            var fileEnding = ":00000001FF";
+            var dataType = "00";
+
+            result.Append(fileStart);
+            result.Append(Environment.NewLine);
+            for (var i = 0; i < linesNumber; i++)
+            {
+                var line = new StringBuilder();
+                var lineStart = string.Concat(bytesInLine.ToString("X"),
+                    (startAddress + (bytesInLine*i)).ToString("X4"), dataType);
+                line.Append(lineStart);
+
+                line.Append(allData.Substring(i * bytesInLine * 2, bytesInLine * 2));
+
+                var bytesSum = HexHelper.SumHexBytesInString(line.ToString());
+                var checkSum = (byte) (0 - (bytesSum%256));
+                line.Append(checkSum.ToString("X2"));
+                line.Insert(0, linePrefix);
+                result.Append(line);
+                result.Append(Environment.NewLine);
+            }
+            result.Append(fileEnding);
+            result.Append(Environment.NewLine);
+            return HexHelper.GetBytes(result.ToString());
+        }
 
         public SellersViewModel GetAllSellers()
         {

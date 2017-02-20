@@ -261,6 +261,10 @@
     <Compile Include="Migrations\201702011411374_SellerDescriptionNotRequired.Designer.cs">
       <DependentUpon>201702011411374_SellerDescriptionNotRequired.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702141109576_TerminalLastOnline.cs" />
+    <Compile Include="Migrations\201702141109576_TerminalLastOnline.Designer.cs">
+      <DependentUpon>201702141109576_TerminalLastOnline.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -443,6 +447,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702011411374_SellerDescriptionNotRequired.resx">
       <DependentUpon>201702011411374_SellerDescriptionNotRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702141109576_TerminalLastOnline.resx">
+      <DependentUpon>201702141109576_TerminalLastOnline.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
