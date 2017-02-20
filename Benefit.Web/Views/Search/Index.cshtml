@@ -1,9 +1,30 @@
-﻿@model Benefit.Domain.Models.Search.SearchResult
+﻿@using Benefit.Common.Constants
+@model Benefit.Domain.Models.Search.SearchResult
 
 @{
     ViewBag.Title = string.Format("Результати пошуку '{0}'", Model.Term);
 }
+@section scripts
+{
+    <script>
+        var skip = parseInt('@ListConstants.DefaultTakePerPage');
+        var searchProductsUrl = '@Url.Action("GetProducts", "Search")';
+        var term = '@Model.Term';
 
+        $(function () {
+            $("#add-more-products").click(function (e) {
+                e.preventDefault();
+                $.get(searchProductsUrl + "?term=" + term + "&skip=" + skip, function (data) {
+                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                        $("#more-products").hide();
+                    }
+                    $("#more-products").before(data.products);
+                    skip += data.number;
+                });
+            });
+        });
+    </script>
+}
 <p>Результати пошуку</p>
 <h3>"@Model.Term"</h3>
 @Html.Partial("~/Views/Catalog/_ProductsListPartial.cshtml", Model.Products)

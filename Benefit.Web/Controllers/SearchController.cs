@@ -1,8 +1,11 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.JSON;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models.Search;
 using Benefit.Services;
+using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Controllers
 {
@@ -34,6 +37,18 @@ namespace Benefit.Web.Controllers
                 Products = products
             };
             return View(result);
+        }
+
+        public ActionResult GetProducts(string term, int skip, int take = ListConstants.DefaultTakePerPage)
+        {
+            var products = SearchService.SearchProducts(term, skip);
+            var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ExpandableProductPartial.cshtml", new ProductPartialViewModel
+            {
+                Product = entry,
+                CategoryUrl = entry.Category.UrlName,
+                SellerUrl = entry.Seller.UrlName
+            })));
+            return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
         }
     }
 }
