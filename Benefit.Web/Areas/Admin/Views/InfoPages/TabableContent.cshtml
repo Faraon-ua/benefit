@@ -1,0 +1,31 @@
+﻿@model List<Benefit.Domain.Models.InfoPage>
+
+@{
+    ViewBag.Title = "Інструкції";
+}
+
+<div class="content">
+    <div class="tabbable">
+        <ul class="nav nav-tabs" id="myTab">
+            @foreach (var page in Model)
+            {
+                var isActive = Model.IndexOf(page) == 0 ? "active" : "";
+                <li class="@isActive">
+                    <a data-toggle="tab" href="#@page.Id">
+                        <i class="green icon-book bigger-110"></i>
+                        @page.Name
+                    </a>
+                </li>
+            }
+        </ul>
+        <div class="tab-content">
+            @foreach (var page in Model)
+            {
+                var isActive = Model.IndexOf(page) == 0 ? "active" : "";
+                <div id="@page.Id" class="tab-pane in @isActive">
+                    @Html.Raw(page.Content)
+                </div>
+            }
+        </div>
+    </div>
+</div>
