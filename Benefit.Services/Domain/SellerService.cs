@@ -22,17 +22,20 @@ namespace Benefit.Services.Domain
 
         public byte[] GenerateIntelHexFile(string password)
         {
-            const int linesNumber = 32;
             const int bytesInLine = 0x10; //16 bytes
 
             var result = new StringBuilder();
             var hexPassword = HexHelper.AsciiToHexString(password);
+            var linesNumber = 32;
             var allData = HexHelper.AddGarbage(linesNumber*bytesInLine, hexPassword, 16, 48, "FF");
             var linePrefix = ":";
             var startAddress = 0x0000;
+            var fileStart = ":020000040000FA";
             var fileEnding = ":00000001FF";
             var dataType = "00";
 
+            result.Append(fileStart);
+            result.Append(Environment.NewLine);
             for (var i = 0; i < linesNumber; i++)
             {
                 var line = new StringBuilder();
@@ -40,7 +43,7 @@ namespace Benefit.Services.Domain
                     (startAddress + (bytesInLine*i)).ToString("X4"), dataType);
                 line.Append(lineStart);
 
-                line.Append(allData.Substring(i*bytesInLine*2, bytesInLine*2));
+                line.Append(allData.Substring(i * bytesInLine * 2, bytesInLine * 2));
 
                 var bytesSum = HexHelper.SumHexBytesInString(line.ToString());
                 var checkSum = (byte) (0 - (bytesSum%256));
@@ -50,6 +53,7 @@ namespace Benefit.Services.Domain
                 result.Append(Environment.NewLine);
             }
             result.Append(fileEnding);
+            result.Append(Environment.NewLine);
             return HexHelper.GetBytes(result.ToString());
         }
 

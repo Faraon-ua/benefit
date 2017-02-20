@@ -37,6 +37,9 @@
     <ApplicationIcon>favicon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CurrencyTextBoxControl">
+      <HintPath>..\..\..\TEMP\CurrencyTextBoxControl.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -60,11 +63,27 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\DeviceNotAuthorized.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DeviceNotConnected.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ErrorPartial.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\TransactionPartial.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\UserAuthPartial.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\UserInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -83,11 +102,23 @@
     <Compile Include="Controls\CashierPartial.xaml.cs">
       <DependentUpon>CashierPartial.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\DeviceNotAuthorized.xaml.cs">
+      <DependentUpon>DeviceNotAuthorized.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\DeviceNotConnected.xaml.cs">
+      <DependentUpon>DeviceNotConnected.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ErrorPartial.xaml.cs">
+      <DependentUpon>ErrorPartial.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TransactionPartial.xaml.cs">
       <DependentUpon>TransactionPartial.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\UserAuthPartial.xaml.cs">
       <DependentUpon>UserAuthPartial.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\UserInfo.xaml.cs">
+      <DependentUpon>UserInfo.xaml</DependentUpon>
     </Compile>
     <Compile Include="DefaultWindow.xaml.cs">
       <DependentUpon>DefaultWindow.xaml</DependentUpon>
@@ -143,6 +174,10 @@
       <Project>{e650d207-1422-45af-8660-7c29198dd974}</Project>
       <Name>Benefit.CardReader.Services</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Benefit.Common\Benefit.Common.csproj">
+      <Project>{3946539e-a45a-46cd-be25-4e420e468082}</Project>
+      <Name>Benefit.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Benefit.HttpClient\Benefit.HttpClient.csproj">
       <Project>{4bbb10f6-4a6f-4a89-9c29-30fac23d2c70}</Project>
       <Name>Benefit.HttpClient</Name>
@@ -155,11 +190,15 @@
     <Resource Include="Images\card.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\success-icon.png" />
     <Resource Include="favicon.ico" />
     <Resource Include="Images\seller.png" />
     <Resource Include="Images\cashier.png" />
     <Resource Include="Images\info.png" />
     <Content Include="Images\icon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Sounds\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

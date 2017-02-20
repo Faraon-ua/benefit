@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Threading;
+using Benefit.CardReader.DataTransfer.Reader;
 using Benefit.CardReader.Services;
 
 namespace Benefit.CardReader
@@ -13,10 +14,7 @@ namespace Benefit.CardReader
         private const int PingOnlinePeriod = 15;//minutes
 
         public bool IsConnected { get; set; }
-        public string UserNfc { get; set; }
-        public string CashierNfc { get; set; }
-        public string CashierName { get; set; }
-        public string SellerName { get; set; }
+        public BenefitAuthInfo AuthInfo { get; set; }
         public string Token { get; set; }
 
         private DispatcherTimer timer;
@@ -26,6 +24,7 @@ namespace Benefit.CardReader
             timer.Tick += timer_Tick;
             timer.Interval = new TimeSpan(0, PingOnlinePeriod, 0);
             timer.Start();
+            AuthInfo = new BenefitAuthInfo();
         }
 
         void timer_Tick(object sender, EventArgs e)
@@ -33,6 +32,15 @@ namespace Benefit.CardReader
             if (Token == null || !IsConnected) return;
             var apiService = new ApiService();
             apiService.PingOnline(Token);
+        }
+
+        public void ClearUserAndSellerInfo()
+        {
+            AuthInfo.UserNfc = null;
+            AuthInfo.UserName = null;
+            AuthInfo.UserCard = null;
+            AuthInfo.SellerName = null;
+            AuthInfo.SellerName = null;
         }
     }
 }

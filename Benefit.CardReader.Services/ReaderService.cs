@@ -3,17 +3,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using Benefit.CardReader.DataTransfer.Reader;
+using Benefit.Common.CustomEventArgs;
 using Benefit.Common.Helpers;
 
 namespace Benefit.CardReader.Services
 {
-    public class ReaderService
+    public class ReaderService : IDisposable
     {
         private SerialPort _serialPort;
         private byte[] readSymbols;
+
+        public  delegate void CardReadedEventHandler(object sender, NfcEventArgs e);
+
+        public event CardReadedEventHandler CardReaded;
 
         public ReaderService()
         {
@@ -26,31 +30,38 @@ namespace Benefit.CardReader.Services
         {
             try
             {
-                var sp = (SerialPort) sender;
+                var sp = (SerialPort)sender;
                 sp.Read(readSymbols, 0, readSymbols.Length);
+                if (readSymbols[8] == 0)
+                {
+                    ProcessCardRead(readSymbols.ToList().GetRange(0, 8));
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
         }
 
-        private string ParseResult()
+        public void CloseComPort()
         {
-            var output = new StringBuilder();
-            if (readSymbols[0] == 'T')
+            _serialPort.Close();
+        }
+        private void ProcessCardRead(List<byte> nfcBytes)
+        {
+            var saltedNfc = nfcBytes.GetRange(0, 4);
+            var salt = nfcBytes.GetRange(4, 4);
+            var decodedNfcBytes = HexHelper.XOR(saltedNfc, salt);
+            var decodedNfc = string.Join("", decodedNfcBytes.Select(entry => entry.ToString("X2")));
+            SendCardReaded(decodedNfc);
+        }
+
+        public void SendCardReaded(string nfc)
+        {
+            if (this.CardReaded != null)
             {
-                if (readSymbols[1] == (char)48) output.Append('+');
-                else
-                    if (readSymbols[1] == (char)255) output.Append('-');
-                output.Append(readSymbols[2]);
-                output.Append(readSymbols[3]);
-                output.Append('.');
-                output.Append(readSymbols[4]);
+                this.CardReaded(this, new NfcEventArgs(nfc));
             }
-            else if (readSymbols[0] == 't')
-            {
-                foreach (byte b in readSymbols.Skip(1))
-                    output.Append((char)b);
-            }
-            return output.ToString();
         }
 
         public HandShakeResult HandShake()
@@ -71,12 +82,12 @@ namespace Benefit.CardReader.Services
                     do
                     {
                         Thread.Sleep(100);
-                    } while (readSymbols[0] == 0); 
+                    } while (readSymbols[0] == 0);
                     var data = readSymbols.ToList();
                     var saltedAuthCode = data.GetRange(10, 4);
                     var authCodeSalt = data.GetRange(20, 4);
-                    var saltedLicenseKey = data.GetRange(30, 31);
-                    var licenseKeySalt = data.GetRange(70, 31);
+                    var saltedLicenseKey = data.GetRange(30, 32);
+                    var licenseKeySalt = data.GetRange(70, 32);
 
                     //check if was encoded correctly
                     var decodedAuthKeyBytes = HexHelper.XOR(saltedAuthCode, authCodeSalt);
@@ -87,18 +98,24 @@ namespace Benefit.CardReader.Services
                         var decodedLicenseBytes = HexHelper.XOR(saltedLicenseKey, licenseKeySalt);
                         result.LicenseKey = HexHelper.HexBytesToString(decodedLicenseBytes);
                         result.PortName = comPort;
-                        _serialPort.Close();
                         return result;
                     }
                 }
                 catch (Exception ex)
                 {
                     //skip if can not connect
-                    _serialPort.Close();
                     Debug.WriteLine(ex.Message);
                 }
             }
             return null;
+        }
+
+        public void Dispose()
+        {
+            if (_serialPort.IsOpen)
+            {
+                _serialPort.Close();
+            }
         }
     }
 }

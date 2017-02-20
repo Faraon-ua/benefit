@@ -15,7 +15,7 @@
                     <Image Source="/Images/seller.png" Width="38" Height="33" HorizontalAlignment="Left"></Image>
                     <StackPanel Orientation="Vertical" Margin="20,0,0,0">
                         <TextBlock Foreground="#333333" FontSize="20">заклад:</TextBlock>
-                        <TextBlock Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Кавярня Молочарня</TextBlock>
+                        <TextBlock Name="SellerName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Кавярня Молочарня</TextBlock>
                     </StackPanel>
                 </StackPanel>
                 <Separator Foreground="#cccccc" Margin="0,10"></Separator>
@@ -23,7 +23,7 @@
                     <Image Source="/Images/cashier.png" Margin="5,0,0,0" Width="29" Height="38" HorizontalAlignment="Left"></Image>
                     <StackPanel Orientation="Vertical" Margin="20,0,0,0">
                         <TextBlock Foreground="#333333" FontSize="20" LineStackingStrategy="BlockLineHeight" LineHeight="20">обслуговує:</TextBlock>
-                        <TextBlock Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Анастасія Точаєва</TextBlock>
+                        <TextBlock Name="CashierName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Анастасія Точаєва</TextBlock>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
@@ -33,8 +33,7 @@
                 <DropShadowEffect Opacity="0.2" ShadowDepth="3" />
             </Border.Effect>
             <StackPanel Orientation="Vertical">
-                <Image Source="/Images/exclamation.png" HorizontalAlignment="Center" Width="100" Margin="0,10"></Image>
-                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontSize="36" LineHeight="36" Margin="0,10" LineStackingStrategy="BlockLineHeight" Foreground="#990100">Для авторизації <LineBreak/> клієнта піднесіть картку</TextBlock>
+                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontSize="36" LineHeight="36" Margin="0,50" LineStackingStrategy="BlockLineHeight" Foreground="#990100">Для авторизації <LineBreak/> клієнта піднесіть картку</TextBlock>
                 <Image Source="/Images/card.png" Width="550" Margin="23"></Image>
             </StackPanel>
         </Border>

@@ -120,7 +120,7 @@ namespace Benefit.RestApi.Controllers
                     Time = DateTime.UtcNow,
                     Status = OrderStatus.Finished,
                     UserId = user.Id,
-                    Description = null,
+                    Description = paymentIngest.BillNumber,
                     ShippingAddress = null,
                     ShippingCost = 0,
                     ShippingName = null,

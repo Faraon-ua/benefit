@@ -18,10 +18,13 @@
                 VerticalAlignment="Top"
                 Width="800"
                 Height="75">
-                <StackPanel Orientation="Horizontal" Margin="50, 0">
-                    <Image Source="/Images/logo.png" HorizontalAlignment="Left"></Image>
-                    <TextBlock Foreground="White" Margin="15, 5" FontSize="24" LineHeight="28" LineStackingStrategy="BlockLineHeight">Benefit NFC <LineBreak/> Reader Software</TextBlock>
-                </StackPanel>
+                <Grid>
+                    <StackPanel Orientation="Horizontal" Margin="50, 0">
+                        <Image Source="/Images/logo.png" HorizontalAlignment="Left"></Image>
+                        <TextBlock Foreground="White" Margin="15, 5" FontSize="24" LineHeight="28" LineStackingStrategy="BlockLineHeight">Benefit NFC <LineBreak/> Reader Software</TextBlock>
+                    </StackPanel>
+                    <Button Name="CloseButton" Height="30" VerticalAlignment="Top" Margin="10" HorizontalAlignment="Right" Click="CloseButton_OnClick" Style="{StaticResource ToggleButtonWindowClose}" />
+                </Grid>
             </Border>
             <StackPanel Name="Header" Orientation="Horizontal">
                 <Border Width="800" Height="40" Background="#FF6600" Visibility="Collapsed" Name="NoConnection">
@@ -38,9 +41,13 @@
                 </Border>
             </StackPanel>
             <Grid Name="Container" Height="745">
-                <controls:CashierPartial x:Name="CashierPartial" Visibility="Visible"></controls:CashierPartial>
-                <controls:UserAuthPartial x:Name="UserAuthPartial" Visibility="Hidden"></controls:UserAuthPartial>
-                <controls:TransactionPartial x:Name="TransactionPartial" Visibility="Hidden"></controls:TransactionPartial>
+                <controls:UserInfo x:Name="UserInfo" Visibility="Hidden" Grid.ZIndex="1000"></controls:UserInfo>
+                <controls:ErrorPartial x:Name="ErrorMessage" Visibility="Hidden" Grid.ZIndex="1000"></controls:ErrorPartial>
+                <controls:CashierPartial x:Name="CashierPartial" Visibility="Visible" Grid.ZIndex="0"></controls:CashierPartial>
+                <controls:UserAuthPartial x:Name="UserAuthPartial" Visibility="Hidden" Grid.ZIndex="0"></controls:UserAuthPartial>
+                <controls:TransactionPartial x:Name="TransactionPartial" Visibility="Hidden" Grid.ZIndex="0"></controls:TransactionPartial>
+                <controls:DeviceNotConnected x:Name="DeviceNotConnected" Visibility="Hidden" Grid.ZIndex="0"></controls:DeviceNotConnected>
+                <controls:DeviceNotAuthorized x:Name="DeviceNotAuthorized" Visibility="Hidden" Grid.ZIndex="0"></controls:DeviceNotAuthorized>
                 <!---->
             </Grid>
         </StackPanel>
@@ -48,7 +55,7 @@
         <Border Background="#333333" Width="800" Height="40" DockPanel.Dock="Bottom" VerticalAlignment="Bottom">
             <Grid>
                 <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="40,0" HorizontalAlignment="Left">
-                    <Hyperlink NavigateUri="https://benefit-company.com" TextDecorations="None" Foreground="White" RequestNavigate="Hyperlink_OnRequestNavigate">www.benefit-company.com</Hyperlink>
+                    <Hyperlink Name="SiteHyperlink" NavigateUri="https://benefit-company.com" TextDecorations="None" Foreground="White" RequestNavigate="Hyperlink_OnRequestNavigate">www.benefit-company.com</Hyperlink>
                 </TextBlock>
                 <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="40,0" HorizontalAlignment="Right">Гаряча лінія: (066) 427 01 63</TextBlock>
             </Grid>

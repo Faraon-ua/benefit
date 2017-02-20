@@ -1,6 +1,5 @@
-﻿using System;
-using System.IO;
-using System.Net;
+﻿using System.Net;
+using System.Text;
 using Benefit.CardReader.DataTransfer.Dto.Base;
 using Newtonsoft.Json;
 
@@ -13,6 +12,7 @@ namespace Benefit.HttpClient
         public BenefitHttpClient()
         {
             client = new WebClient();
+            client.Encoding = Encoding.UTF8;
         }
 
         public bool CheckForInternetConnection()
@@ -37,7 +37,7 @@ namespace Benefit.HttpClient
         {
             var result = new ResponseResult<T>();
             string response = null;
-            if (authorizationToken != null)
+            if (authorizationToken != null && client.Headers["Authorization"] == null)
             {
                 client.Headers.Add("Authorization", string.Format("Bearer {0}", authorizationToken));
             }
@@ -64,7 +64,7 @@ namespace Benefit.HttpClient
             string response = null;
             try
             {
-                if (authorizationToken != null)
+                if (authorizationToken != null && client.Headers["Authorization"] == null)
                 {
                     client.Headers.Add("Authorization", string.Format("Bearer {0}", authorizationToken));
                 }
@@ -75,10 +75,6 @@ namespace Benefit.HttpClient
             catch (WebException ex)
             {
                 result.StatusCode = ((HttpWebResponse) ex.Response).StatusCode;
-            }
-            catch (Exception ex)
-            {
-                
             }
             if (result.StatusCode == HttpStatusCode.OK)
             {
