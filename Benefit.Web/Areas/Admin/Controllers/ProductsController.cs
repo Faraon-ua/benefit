@@ -196,7 +196,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         maxSku = SettingsService.SkuMinValue;
                     }
-                    product.SKU = (int)maxSku;
+                    product.SKU = (int) maxSku + 1;
                     db.Products.Add(product);
                 }
                 db.ProductParameterProducts.RemoveRange(

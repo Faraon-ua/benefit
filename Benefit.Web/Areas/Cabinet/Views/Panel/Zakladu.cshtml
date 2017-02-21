@@ -11,7 +11,7 @@
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
     @if (Model.OwnedSellers.Any())
     {
-        <h3>Мої заклади</h3>
+        <h3>Мої постачальники</h3>
         <ul>
             @foreach (var seller in Model.OwnedSellers)
             {
@@ -24,7 +24,7 @@
 
     @if (Model.ReferedWebSiteSellers.Any())
     {
-        <h3>Заклади, що підключені мною до сайту</h3>
+        <h3>Постачальники, що підключені мною до сайту</h3>
         <ul>
             @foreach (var seller in Model.ReferedWebSiteSellers)
             {
@@ -36,7 +36,7 @@
     }
     @if (Model.ReferedBenefitCardSellers.Any())
     {
-        <h3>Заклади, що підключені мною до Benefit Card</h3>
+        <h3>Постачальники, що підключені мною до Benefit Card</h3>
         <ul>
             @foreach (var seller in Model.ReferedBenefitCardSellers)
             {

@@ -265,6 +265,10 @@
     <Compile Include="Migrations\201702141109576_TerminalLastOnline.Designer.cs">
       <DependentUpon>201702141109576_TerminalLastOnline.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702211032200_SkuToUnique.cs" />
+    <Compile Include="Migrations\201702211032200_SkuToUnique.Designer.cs">
+      <DependentUpon>201702211032200_SkuToUnique.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -450,6 +454,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702141109576_TerminalLastOnline.resx">
       <DependentUpon>201702141109576_TerminalLastOnline.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702211032200_SkuToUnique.resx">
+      <DependentUpon>201702211032200_SkuToUnique.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
