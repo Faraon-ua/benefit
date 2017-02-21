@@ -176,6 +176,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("UrlName", "Товар з такою Url назвою вже існує");
             }
+            if (product.AvailableAmount < 0)
+            {
+                ModelState.AddModelError("AvailableAmount", "Доступна кількість не може бути негативного значення");
+            }
             if (ModelState.IsValid)
             {
                 if (Seller.CurrentAuthorizedSellerId != null)

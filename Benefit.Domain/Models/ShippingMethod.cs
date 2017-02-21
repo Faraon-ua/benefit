@@ -12,7 +12,8 @@ namespace Benefit.Domain.Models
         public string Name { get; set; }
         public int? FreeStartsFrom { get; set; }
         public int? CostBeforeFree { get; set; }
-        public int RegionId { get; set; }
+        [Required(ErrorMessage = "Регіон доставки не обрано")]
+        public int? RegionId { get; set; }
         [JsonIgnore]
         public Region Region { get; set; }
         [MaxLength(128)]

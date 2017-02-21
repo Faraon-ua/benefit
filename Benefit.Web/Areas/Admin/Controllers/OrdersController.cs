@@ -144,6 +144,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (orderStatus == OrderStatus.Finished)
             {
                 TransactionsService.AddOrderFinishedTransaction(order);
+                //update available amount
+                foreach (var orderProduct in order.OrderProducts)
+                {
+                    var product = db.Products.Find(orderProduct.ProductId);
+                    if (product.AvailableAmount != null && product.AvailableAmount > 0)
+                    {
+                        product.AvailableAmount = product.AvailableAmount - 1;
+                    }
+                    db.Entry(product).State = EntityState.Modified;
+                }
+                
             }
             if (orderStatus == OrderStatus.Abandoned && order.PaymentType == PaymentType.Bonuses)
             {

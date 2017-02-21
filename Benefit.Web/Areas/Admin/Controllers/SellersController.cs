@@ -11,7 +11,6 @@ using System.Xml.Linq;
 using Benefit.Common.Constants;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
-using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
 using Benefit.Services.Domain;
@@ -445,6 +444,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.SaveChanges();
                 return RedirectToAction("CreateOrUpdate", new { id = seller.Id });
             }
+            var scIds = sellervm.Seller.SellerCategories.Select(sc => sc.CategoryId).ToList();
+            sellervm.Seller.SellerCategories =
+                db.SellerCategories.Where(
+                    entry => scIds.Contains(entry.CategoryId) && entry.SellerId == sellervm.Seller.Id).ToList();
             sellervm.Seller.Personnels = db.Personnels.Where(entry => entry.SellerId == sellervm.Seller.Id).ToList();
             return View(sellervm);
         }
