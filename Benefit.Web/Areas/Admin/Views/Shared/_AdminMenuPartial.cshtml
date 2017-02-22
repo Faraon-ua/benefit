@@ -82,12 +82,15 @@
                 <span class="menu-text"> Регіони</span>
             </a>
         </li>
-        <li>
-            <a href="@Url.Action("Index", "AdminStuff")">
-                <i class="icon-key"></i>
-                <span class="menu-text">VIP функції</span>
-            </a>
-        </li>
+        if (User.IsInRole(DomainConstants.SuperAdminRoleName))
+        {
+            <li>
+                <a href="@Url.Action("Index", "AdminStuff")">
+                    <i class="icon-key"></i>
+                    <span class="menu-text">VIP функції</span>
+                </a>
+            </li>
+        }
     }
     <li>
         <a href="@Url.Action("TabableContent", "InfoPages", new { pageUrls = "instrukciya_dlya_postachalnika,instrukciya_vstanovlennya_ta_vikoristannya_komplektu_b2b"})">

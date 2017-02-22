@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Benefit.Web.Models.Admin
 {
@@ -42,5 +44,6 @@ namespace Benefit.Web.Models.Admin
         public double PointsAccount { get; set; }
         public double HangingPointsAccount { get; set; }
         public ICollection<Address> Addresses { get; set; }
+        public List<SelectListItem> Roles { get; set; }
     }
 }

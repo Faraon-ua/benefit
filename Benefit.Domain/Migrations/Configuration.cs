@@ -37,15 +37,18 @@ namespace Benefit.Domain.Migrations
             }
             if (!context.Roles.Any(r => r.Name == DomainConstants.AdminRoleName))
             {
-                var superAdminRole = new IdentityRole { Name = DomainConstants.SuperAdminRoleName };
                 var adminRole = new IdentityRole { Name = DomainConstants.AdminRoleName };
                 var contentManagerRole = new IdentityRole { Name = DomainConstants.ContentManagerName };
                 var sellerRole = new IdentityRole { Name = DomainConstants.SellerRoleName };
 
-                rolesManager.Create(superAdminRole);
                 rolesManager.Create(adminRole);
                 rolesManager.Create(contentManagerRole);
                 rolesManager.Create(sellerRole);
+            }
+            if (!context.Roles.Any(r => r.Name == DomainConstants.SuperAdminRoleName))
+            {
+                var superAdminRole = new IdentityRole { Name = DomainConstants.SuperAdminRoleName };
+                rolesManager.Create(superAdminRole);
             }
             if (!context.Roles.Any(r => r.Name == DomainConstants.OrdersManagerRoleName))
             {
@@ -82,6 +85,7 @@ namespace Benefit.Domain.Migrations
                 };
                 userManager.Create(userToInsert, DomainConstants.DefaultAdminPassword);
                 userManager.AddToRole(userToInsert.Id, DomainConstants.AdminRoleName);
+                userManager.AddToRole(userToInsert.Id, DomainConstants.SuperAdminRoleName);
             }
 
             if (!(context.Currencies.Any(u => u.Provider == DomainConstants.DefaultUSDCurrencyProvider)))

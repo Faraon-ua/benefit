@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
@@ -20,15 +21,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
     {
         public ApplicationDbContext db = new ApplicationDbContext();
         public UsersController()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())),
+            new RoleManager<IdentityRole>(new RoleStore<IdentityRole>(new ApplicationDbContext())))
         {
         }
-        public UsersController(UserManager<ApplicationUser> userManager)
+        public UsersController(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
         {
             UserManager = userManager;
+            RolesManager = roleManager;
         }
 
         public UserManager<ApplicationUser> UserManager { get; private set; }
+        public RoleManager<IdentityRole> RolesManager { get; private set; }
         //
         // GET: /Admin/Users/
         public ActionResult Index(string search)
@@ -112,6 +116,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 PointsAccount = user.PointsAccount.ToDoubleDigitsNumber(),
                 HangingPointsAccount = user.HangingPointsAccount.ToDoubleDigitsNumber(),
             };
+            var userRoles = UserManager.GetRoles(id);
+            userViewModel.Roles =
+                RolesManager.Roles.Select(
+                    entry => new SelectListItem() {Text = entry.Name, Selected = userRoles.Contains(entry.Name)})
+                    .OrderBy(entry => entry.Text).ToList();
             return View(userViewModel);
         }
 
@@ -193,9 +202,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                 db.SaveChanges();
 
+                if (UserManager.IsInRole(User.Identity.GetUserId(), DomainConstants.SuperAdminRoleName))
+                {
+                    foreach (var role in user.Roles)
+                    {
+                        if (role.Selected && !UserManager.IsInRole(user.Id, role.Text))
+                        {
+                            UserManager.AddToRole(user.Id, role.Text);
+                        }
+                        if (!role.Selected && UserManager.IsInRole(user.Id, role.Text))
+                        {
+                            UserManager.RemoveFromRole(user.Id, role.Text);
+                        }
+                    }
+                }
+
                 TempData["SuccessMessage"] = "Дані партнера збережено";
                 return RedirectToAction("Edit", new { id = existingUser.Id });
             }
+            var userRoles = UserManager.GetRoles(user.Id);
+            user.Roles =
+                RolesManager.Roles.Select(
+                    entry => new SelectListItem() { Text = entry.Name, Selected = userRoles.Contains(entry.Name) })
+                    .OrderBy(entry => entry.Text).ToList();
             return View(user);
         }
 

@@ -1,4 +1,5 @@
 ﻿using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Services.Admin;
@@ -7,6 +8,7 @@ using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = DomainConstants.SuperAdminRoleName)]
     public class AdminStuffController : AdminController
     {
         ApplicationDbContext db = new ApplicationDbContext();
