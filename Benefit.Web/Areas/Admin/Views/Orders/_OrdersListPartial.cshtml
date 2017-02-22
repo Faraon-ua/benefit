@@ -54,7 +54,8 @@
 
     @foreach (var item in Model.Items)
     {
-        <tr>
+        var className = (item.OrderType == OrderType.BenefitCard && item.IsRepeating) ? "bg-pink" : "";
+        <tr class="@className">
             <td>
                 @Html.DisplayFor(modelItem => item.OrderNumber)
             </td>

@@ -1,0 +1,10 @@
+﻿@model Benefit.Web.Models.Admin.SellerViewModel
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="Seller_RepeatingTransactionInterval">Інтервал підсвітки транзакцій, що повторюються (год)</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextBoxFor(m => m.Seller.RepeatingTransactionInterval, new { type="number" })
+        </div>
+    </div>
+</div>

@@ -269,6 +269,10 @@
     <Compile Include="Migrations\201702211032200_SkuToUnique.Designer.cs">
       <DependentUpon>201702211032200_SkuToUnique.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702211533282_RepeatingOrdersIndicator.cs" />
+    <Compile Include="Migrations\201702211533282_RepeatingOrdersIndicator.Designer.cs">
+      <DependentUpon>201702211533282_RepeatingOrdersIndicator.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -457,6 +461,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702211032200_SkuToUnique.resx">
       <DependentUpon>201702211032200_SkuToUnique.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702211533282_RepeatingOrdersIndicator.resx">
+      <DependentUpon>201702211533282_RepeatingOrdersIndicator.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

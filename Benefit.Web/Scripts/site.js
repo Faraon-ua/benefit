@@ -178,6 +178,7 @@ $(function () {
     });
 
     $(".region-search-txt, .region-modal-search-txt").devbridgeAutocomplete({
+        width: '500',
         minChars: 3,
         serviceUrl: routePrefix + '/Home/SearchRegion',
         onSelect: function (suggestion) {

@@ -42,6 +42,8 @@ namespace Benefit.Domain.Models
         [MaxLength(32)]
         public string TerminalPassword { get; set; }
         public DateTime TerminalLastOnline { get; set; }
+        //hours
+        public int? RepeatingTransactionInterval { get; set; }
         [Required]
         [MaxLength(16)]
         public string CatalogButtonName { get; set; }

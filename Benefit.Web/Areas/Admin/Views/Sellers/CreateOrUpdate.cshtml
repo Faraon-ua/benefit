@@ -288,6 +288,12 @@
                 </a>
             </li>
             <li>
+                <a href="#security" data-toggle="tab">
+                    <i class="red icon-lock bigger-110"></i>
+                    Безпека
+                </a>
+            </li>
+            <li>
                 <a href="#terminal" data-toggle="tab">
                     <i class="grey icon-tablet bigger-110"></i>
                     Термінал
@@ -337,6 +343,9 @@
             </div>
             <div class="tab-pane" id="terminal">
                 @Html.Partial("_TerminalForm")
+            </div> 
+            <div class="tab-pane" id="security">
+                @Html.Partial("_Security", Model)
             </div>
             <div class="tab-pane @displayClass" id="paymentTypes">
                 @Html.Partial("_PaymentTypes")

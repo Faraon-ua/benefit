@@ -1120,6 +1120,7 @@
     <Content Include="Areas\Admin\Views\Personnel\_ModeratorForm.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\Content.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\TabableContent.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Security.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

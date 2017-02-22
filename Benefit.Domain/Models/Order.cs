@@ -76,6 +76,8 @@ namespace Benefit.Domain.Models
         {
             get { return Transactions.FirstOrDefault(entry => entry.Type == TransactionType.BonusesOrderPayment); }
         }
+        [NotMapped]
+        public bool IsRepeating { get; set; }
 
         public double GetOrderSum()
         {

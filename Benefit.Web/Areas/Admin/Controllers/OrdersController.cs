@@ -15,6 +15,7 @@ using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
 using Benefit.Web.Models.Admin;
 
+
 namespace Benefit.Web.Areas.Admin.Controllers
 {
     [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName + ", " + DomainConstants.SellerOperatorRoleName)]
@@ -48,10 +49,21 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (Seller.CurrentAuthorizedSellerId != null)
             {
                 orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+                var seller = db.Sellers.Find(Seller.CurrentAuthorizedSellerId);
+                if (seller.RepeatingTransactionInterval != null)
+                {
+                    orders.Where(
+                        entry =>
+                            orders.Any(
+                                o => o.Id != entry.Id &&
+                                    o.UserId == entry.UserId &&
+                                     DbFunctions.DiffHours(o.Time, entry.Time) < seller.RepeatingTransactionInterval)).ToList().ForEach(entry => entry.IsRepeating = true);
+                }
             }
             if (!string.IsNullOrEmpty(ordersFilters.ClientName))
             {
                 orders = orders.Where(entry => entry.User.FullName.ToLower().Contains(ordersFilters.ClientName.ToLower()));
+
             }
             if (!string.IsNullOrEmpty(ordersFilters.DateRange))
             {
@@ -154,7 +166,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                     db.Entry(product).State = EntityState.Modified;
                 }
-                
+
             }
             if (orderStatus == OrderStatus.Abandoned && order.PaymentType == PaymentType.Bonuses)
             {

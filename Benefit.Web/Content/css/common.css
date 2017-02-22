@@ -172,6 +172,9 @@
 .bg-grey {
     background-color: #cccccc !important;
 }
+.bg-pink {
+    background-color: pink;
+}
 .bg-grey:hover {
     background-color: #cccccc !important;
 }
