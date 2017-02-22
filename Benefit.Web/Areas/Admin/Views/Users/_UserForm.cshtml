@@ -127,7 +127,7 @@
                     var role = Model.Roles[i].Text;
                     @Html.HiddenFor(model => model.Roles[i].Text)
                     @Html.CheckBoxFor(model => model.Roles[i].Selected)
-                    @Html.LabelFor(model => model.Roles[i].Text, role)
+                    @Html.LabelFor(model => model.Roles[i].Selected, role)
                     <br />
                 }
             </div>

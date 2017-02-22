@@ -35,6 +35,10 @@
                 $(this).parents("p").next().slideToggle("medium");
             });
 
+            if (location.hash) {
+                $(location.hash).click();
+            }
+
             $("#chat-root").load(chatUrl);
 
             setInterval(function () {
