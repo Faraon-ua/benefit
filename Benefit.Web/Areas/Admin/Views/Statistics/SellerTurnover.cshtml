@@ -1,0 +1,142 @@
+﻿@model Benefit.DataTransfer.ViewModels.SellerTurnoverViewModel
+
+@{
+    ViewBag.Title = "Статистика обороту постачальників";
+}
+@section styles
+{
+    <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+
+    <script>
+        $(function () {
+            $(".chosen-select").chosen({
+                search_contains: true
+            });
+
+            $('#date-range-picker').daterangepicker({
+                locale: {
+                    format: 'DD.MM.YYYY',
+                    "applyLabel": "Ок",
+                    "cancelLabel": "Відміна",
+                    "customRangeLabel": "Обрати період"
+                },
+                ranges: {
+                    'Сьогодні': [moment(), moment()],
+                    'Вчора': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Цей тиждень': [moment().startOf('week'), moment().endOf('week')],
+                    'Цей Місяць': [moment().startOf('month'), moment().endOf('month')],
+                    'Останній місяць': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                autoApply: true
+            });
+        });
+    </script>
+}
+<div class="row">
+    @using (Html.BeginForm())
+    {
+        <div class="col-md-2">
+            <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange">
+        </div>
+        <div class="col-md-1">
+            <button type="submit" class="btn btn-purple btn-sm">
+                Фільтрувати
+                <i class="icon-search icon-on-right bigger-110"></i>
+            </button>
+        </div>
+    }
+</div>
+<br />
+<br />
+<div class="row">
+    <table class="table table-striped table-bordered table-hover">
+        <tr>
+            <th>
+                Назва постачальника
+            </th>
+            <th>
+                %
+            </th>
+            <th>
+                Сайт
+            </th>
+            <th>
+                BenefitCard
+            </th>
+            <th>
+                Загальна сума
+            </th>
+            <th>
+                Комісія BC
+            </th>
+            <th>
+                Сплачено бонусами
+            </th>
+            <th>
+                До сплати
+            </th>
+        </tr>
+        @foreach (var turnover in Model.SellerTurnovers)
+        {
+            <tr>
+                <td>@turnover.SellerName</td>
+                <td>@turnover.SellerTotalDiscount</td>
+                <td>@turnover.SiteTurnover.ToString("F")</td>
+                <td>@turnover.CardsTurnover.ToString("F")</td>
+                <td>@((turnover.CardsTurnover + turnover.SiteTurnover).ToString("F"))</td>
+                <td>@turnover.BCcomission.ToString("F")</td>
+                <td>@turnover.BonusesTurnover.ToString("F")</td>
+                @{
+                    var toPay = turnover.BCcomission - turnover.BonusesTurnover;
+                }
+                <td>@toPay.ToString("F")</td>
+            </tr>
+        }
+        <tr>
+            <td>
+                <strong class="blue">
+                    Всього
+                </strong>
+            </td>
+            <td></td>
+            <td>
+                @Model.SellerTurnovers.Select(entry=>entry.SiteTurnover).Sum().ToString("F")
+            </td>
+            <td>
+                @Model.SellerTurnovers.Select(entry=>entry.CardsTurnover).Sum().ToString("F")
+            </td>
+            <td>
+                @{
+                    var totalTurnover = Model.SellerTurnovers.Select(entry => entry.CardsTurnover).Sum() + Model.SellerTurnovers.Select(entry => entry.SiteTurnover).Sum();
+                }
+                @totalTurnover.ToString("F")
+            </td>
+            <td>
+                @{
+                    var totalComission = Model.SellerTurnovers.Select(entry => entry.BCcomission).Sum();
+                }
+                @totalComission.ToString("F")
+            </td>
+            <td>
+                @{
+                    var totalBonuses = Model.SellerTurnovers.Select(entry => entry.BonusesTurnover).Sum();
+                }
+                @totalBonuses.ToString("F")
+            </td>
+            <td>
+                @{
+                    var totalToPay = totalComission - totalBonuses;
+                }
+                @totalToPay.ToString("F")
+            </td>
+        </tr>
+    </table>
+
+</div>

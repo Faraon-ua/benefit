@@ -1,7 +1,30 @@
-﻿@model dynamic
+﻿@model Benefit.DataTransfer.ViewModels.DashboardViewModel
 
 @{
     ViewBag.Title = "Головна";
 }
 
-<h2>title</h2>
+<div class="infobox infobox-green width-20 infobox-dark">
+    <i class="icon-money bigger-250"></i>
+
+    <div class="infobox-data">
+        <div class="infobox-content">Cума доступних бонусів сумарно</div>
+        <div class="infobox-content">@Model.BonusAcountsSum.ToString("F")</div>
+    </div>
+</div>
+<div class="infobox infobox-blue width-20 infobox-dark">
+    <i class="icon-money bigger-250"></i>
+
+    <div class="infobox-data">
+        <div class="infobox-content">Cума зароблених бонусів сумарно</div>
+        <div class="infobox-content">@Model.TotalBonusAcountsSum.ToString("F")</div>
+    </div>
+</div>
+<div class="infobox infobox-purple width-20 infobox-dark">
+    <i class="icon-money bigger-250"></i>
+
+    <div class="infobox-data">
+        <div class="infobox-content">Сума бонусів в обробці сумарно</div>
+        <div class="infobox-content">@Model.HangingBonusAcountsSum.ToString("F")</div>
+    </div>
+</div>

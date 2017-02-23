@@ -228,6 +228,7 @@
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Admin\Controllers\RegionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\SellersController.cs" />
+    <Compile Include="Areas\Admin\Controllers\StatisticsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
     <Compile Include="Areas\Cabinet\CabinetAreaRegistration.cs" />
     <Compile Include="Areas\Cabinet\Controllers\BasePartnerController.cs" />
@@ -1121,6 +1122,7 @@
     <Content Include="Areas\Admin\Views\InfoPages\Content.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\TabableContent.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Security.cshtml" />
+    <Content Include="Areas\Admin\Views\Statistics\SellerTurnover.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
