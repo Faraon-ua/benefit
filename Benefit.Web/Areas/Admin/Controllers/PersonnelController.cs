@@ -42,6 +42,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult CreateModerator(Personnel personnel)
         {
             personnel.Id = Guid.NewGuid().ToString();
+            if (db.Personnels.Any(entry => entry.CardNumber == personnel.CardNumber))
+            {
+                ModelState.AddModelError("CardNumber", "Така картка вже зайнята");
+            }
             if (ModelState.IsValid)
             {
                 _userManager.AddToRole(personnel.UserId, personnel.RoleName);

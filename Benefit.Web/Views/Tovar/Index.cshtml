@@ -15,7 +15,10 @@
         <link rel="image_src" href="~/Images/ProductGallery/@Model.Product.Id/@image_src.ImageUrl" />
     }
 }
-
+@section meta{
+    <meta name="description" content="@Model.Product.ShortDescription">
+    <meta name="keywords" content="@Model.Product.SearchTags">
+}
 @section LeftAside{
 
 }
@@ -111,7 +114,7 @@
             @Html.Partial("_GalleryPartial", Model)
             <div class="product_description_wrap">
                 @Html.HiddenFor(m => m.Product.Id)
-                <p id="Product_Name" class="product_description_title">@Model.Product.Name</p>
+                <h1 id="Product_Name" class="product_description_title margin-top-0">@Model.Product.Name</h1>
                 <p class="margin-bottom-5">
                     Перейти до
                     <a href="@Url.RouteUrl(Benefit.Common.Constants.RouteConstants.SellersRouteName, new { id = Model.Product.Seller.UrlName, action = string.Empty })" target="_blank">@Model.Product.Seller.Name</a>

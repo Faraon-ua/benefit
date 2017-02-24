@@ -26,10 +26,10 @@
                 }
             });
         });
-     
+
         function LockUnlock(id) {
             $.post(routePrefix + "/Admin/Users/LockUnlock?id=" + id,
-                function (data) {
+                function(data) {
                     flashMessage("Статус партнера змінено");
                     $(".lockUser-" + id).removeClass("icon-lock");
                     $(".lockUser-" + id).removeClass("icon-unlock");
@@ -42,13 +42,15 @@
         }
 
         function DeleteUser(id) {
-            $.post(routePrefix + "/Admin/Users/Delete?id=" + id,
-                function (data) {
-                    if (data) {
-                        flashMessage("Партнера видалено");
-                        $("#tr-" + id).remove();
-                    }
-                });
+            if (confirm("Видалити партнера?")) {
+                $.post(routePrefix + "/Admin/Users/Delete?id=" + id,
+                    function(data) {
+                        if (data) {
+                            flashMessage("Партнера видалено");
+                            $("#tr-" + id).remove();
+                        }
+                    });
+            }
         }
     </script>
 }

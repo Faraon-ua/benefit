@@ -68,7 +68,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                              entry.CardNumber.ToString().Contains(search) ||
                                              entry.ExternalNumber.ToString().Contains(search));
             }
-            var reusult = users.ToList();
             return PartialView("_UsersSearch", users);
         }
 

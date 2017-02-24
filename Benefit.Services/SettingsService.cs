@@ -7,6 +7,13 @@ namespace Benefit.Services
 {
     public class SettingsService
     {
+        public static string BaseHostName
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["BaseHostName"];
+            }
+        } 
         public static List<string> SupportedLocalizations
         {
             get

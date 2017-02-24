@@ -3,6 +3,7 @@
 <head>
     <title>@ViewBag.Title - Benefit</title>
     @Html.Partial("_head")
+    @RenderSection("meta", false)
     @RenderSection("image_src", required: false)
     @RenderSection("styles", required: false)
 </head>
@@ -28,7 +29,7 @@
         </div>
     </div>
     <footer>
-        @Html.Partial("_FooterPartial") 
+        @Html.Partial("_FooterPartial")
     </footer>
     @Scripts.Render("~/bundles/master")
     @RenderSection("scripts", required: false)
@@ -73,7 +74,7 @@
 
         $("#order-cart, .deliveri_edit").click(function () {
             var cartUrl = '@Url.Action("GetCart","Cart")';
-            $("#cart-container").load(cartUrl, function() {
+            $("#cart-container").load(cartUrl, function () {
                 $("#basket_modal").modal('show');
             });
         });

@@ -273,6 +273,10 @@
     <Compile Include="Migrations\201702211533282_RepeatingOrdersIndicator.Designer.cs">
       <DependentUpon>201702211533282_RepeatingOrdersIndicator.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201702241300555_SeoProperties.cs" />
+    <Compile Include="Migrations\201702241300555_SeoProperties.Designer.cs">
+      <DependentUpon>201702241300555_SeoProperties.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -464,6 +468,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201702211533282_RepeatingOrdersIndicator.resx">
       <DependentUpon>201702211533282_RepeatingOrdersIndicator.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201702241300555_SeoProperties.resx">
+      <DependentUpon>201702241300555_SeoProperties.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

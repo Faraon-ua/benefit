@@ -11,15 +11,19 @@
     @{
         var image_src = Model.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerGallery);
     }
-    @if (image_src!=null)
+    @if (image_src != null)
     {
         <link rel="image_src" href="~/Images/SellerGallery/@Model.Seller.Id/@image_src.ImageUrl" />
     }
 }
+@section meta{
+    <meta name="description" content="@Model.Seller.ShortSescription">
+    <meta name="keywords" content="@Model.Seller.KeyWords">
+}
 <div class="clearfix">
     @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
 
-    <h2 class="margin-bottom-5">@Model.Seller.Name</h2>
+    <h1 class="margin-bottom-5">@Model.Seller.Name</h1>
     @{
         var specific = (Model.Seller.SellerCategories.FirstOrDefault(entry => entry.IsDefault) ?? Model.Seller.SellerCategories.FirstOrDefault(entry => entry.IsDefault)).Category.Name;
     }

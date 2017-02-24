@@ -2,12 +2,15 @@
 @using Benefit.Domain.Models
 @using Microsoft.AspNet.Identity
 <ul class="nav nav-list">
-    <li>
-        <a href="@Url.Action("Index", "Dashboard")">
-            <i class="icon-home"></i>
-            <span class="menu-text">Головна</span>
-        </a>
-    </li>
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Index", "Dashboard")">
+                <i class="icon-home"></i>
+                <span class="menu-text">Головна</span>
+            </a>
+        </li>
+    }
     @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
     {
         <li>

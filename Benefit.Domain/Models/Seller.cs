@@ -30,6 +30,10 @@ namespace Benefit.Domain.Models
         [Index]
         public string Name { get; set; }
         public string Description { get; set; }
+        [MaxLength(160)]
+        public string ShortSescription { get; set; }
+        [MaxLength(160)]
+        public string KeyWords { get; set; }
         public string ShippingDescription { get; set; }
         [Required]
         [MaxLength(128)]
