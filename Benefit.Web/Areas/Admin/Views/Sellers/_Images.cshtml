@@ -5,13 +5,13 @@
 <div class="form-group">
     <label class="control-label no-padding-right">Ключові слова для пошуку (через кому)</label>
     <div>
-        @Html.TextBoxFor(entry => entry.Seller.KeyWords)
+        @Html.TextBoxFor(entry => entry.Seller.KeyWords, new { @class="width-50" })
     </div>
 </div> 
 <div class="form-group">
     <label class="control-label no-padding-right">Короткий опис для пошуку</label>
     <div>
-        @Html.TextAreaFor(entry => entry.Seller.ShortSescription, new { cols = 70, rows = 5 })
+        @Html.TextAreaFor(entry => entry.Seller.ShortSescription, new { cols = 70, rows = 5, @class="width-50" })
     </div>
 </div> 
 <div class="form-group">

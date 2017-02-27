@@ -63,14 +63,14 @@
                 <label class="control-label col-md-1" for="Keywords">Ключові слова для пошуку (через кому)</label>
 
                 <div class="col-md-10">
-                    @Html.TextAreaFor(m => m.Keywords)
+                    @Html.TextAreaFor(m => m.Keywords, new { @class = "width-50" })
                 </div>
             </div>
             <div class="form-group">
                 <label class="control-label col-md-1" for="ShortContent">Короткий опис (до 160 символів)</label>
 
                 <div class="col-md-10">
-                    @Html.TextAreaFor(m => m.ShortContent, new { cols = 45, rows = 5 })
+                    @Html.TextAreaFor(m => m.ShortContent, new { cols = 45, rows = 5, @class="width-50" })
                 </div>
             </div>
 
