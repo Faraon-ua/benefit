@@ -28,11 +28,9 @@
             SetRegionsAutocomplete();
 
             $(".address_delete").click(function () {
-                debugger;
                 var addressBlock = $(this).parents(".address_block");
                 var addressId = $(this).attr("data-address-id");
                 $.post(deleteAddressUrl + "?id=" + addressId, null, function () {
-                    debugger;
                     addressBlock.remove();
                 });
             });

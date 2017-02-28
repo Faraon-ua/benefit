@@ -55,11 +55,10 @@
                     statusComment: statusComment,
                     orderId: '@Model.Id'
                 }, function (data) {
-                    debugger;
                     if (!data.error) {
                         location.reload();
                     } else {
-                        flashMessage(data.error, true);
+                        flashMessage(data.error, true, true);
                     }
                 });
             });

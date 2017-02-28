@@ -14,6 +14,7 @@ using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
 using Benefit.Web.Models.Admin;
+using NLog;
 
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -24,6 +25,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private OrderService OrderService = new OrderService();
         private TransactionsService TransactionsService = new TransactionsService();
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         private void UpdateOrderDetails(Order order)
         {
@@ -134,48 +136,61 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId)
         {
-            var order = db.Orders.Find(orderId);
-            if (order.Status == OrderStatus.Abandoned || order.Status == OrderStatus.Finished)
+            using (var dbTransaction = db.Database.BeginTransaction())
             {
-                return Json(new { error = "Статус Замовлення не може бути змінено, будь ласка оновіть сторінку" });
-            }
-            order.Status = orderStatus;
-
-            var statusStamp = new OrderStatusStamp()
-            {
-                Id = Guid.NewGuid().ToString(),
-                OrderId = orderId,
-                OrderStatus = orderStatus,
-                Time = DateTime.UtcNow,
-                Comment = statusComment,
-                UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
-            };
-            db.OrderStatusStamps.Add(statusStamp);
-
-            //add points and bonuses if order finished and is not bonuses
-            if (orderStatus == OrderStatus.Finished)
-            {
-                TransactionsService.AddOrderFinishedTransaction(order);
-                //update available amount
-                foreach (var orderProduct in order.OrderProducts)
+                try
                 {
-                    var product = db.Products.Find(orderProduct.ProductId);
-                    if (product.AvailableAmount != null && product.AvailableAmount > 0)
+                    var order = db.Orders.Find(orderId);
+                    if (order.Status == OrderStatus.Abandoned || order.Status == OrderStatus.Finished)
                     {
-                        product.AvailableAmount = product.AvailableAmount - 1;
+                        return Json(new { error = "Статус Замовлення не може бути змінено, будь ласка оновіть сторінку" });
                     }
-                    db.Entry(product).State = EntityState.Modified;
+                    order.Status = orderStatus;
+
+                    var statusStamp = new OrderStatusStamp()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        OrderId = orderId,
+                        OrderStatus = orderStatus,
+                        Time = DateTime.UtcNow,
+                        Comment = statusComment,
+                        UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                    };
+                    db.OrderStatusStamps.Add(statusStamp);
+
+                    //add points and bonuses if order finished and is not bonuses
+                    if (orderStatus == OrderStatus.Finished)
+                    {
+                        TransactionsService.AddOrderFinishedTransaction(order, db);
+                        //update available amount
+                        foreach (var orderProduct in order.OrderProducts)
+                        {
+                            var product = db.Products.Find(orderProduct.ProductId);
+                            if (product == null) continue;
+                            if (product.AvailableAmount != null && product.AvailableAmount > 0)
+                            {
+                                product.AvailableAmount = product.AvailableAmount - 1;
+                            }
+                            db.Entry(product).State = EntityState.Modified;
+                        }
+                    }
+                    if (orderStatus == OrderStatus.Abandoned && order.PaymentType == PaymentType.Bonuses)
+                    {
+                        TransactionsService.AddBonusesOrderAbandonedTransaction(order, db);
+                    }
+
+                    db.Entry(order).State = EntityState.Modified;
+                    db.SaveChanges();
+                    dbTransaction.Commit();
+                    return Json(new { status = true });
                 }
-
+                catch (Exception ex)
+                {
+                    dbTransaction.Rollback();
+                    _logger.Fatal(ex);
+                    return Json(new { error = "Серверна помилка" });
+                }
             }
-            if (orderStatus == OrderStatus.Abandoned && order.PaymentType == PaymentType.Bonuses)
-            {
-                TransactionsService.AddBonusesOrderAbandonedTransaction(order);
-            }
-
-            db.Entry(order).State = EntityState.Modified;
-            db.SaveChanges();
-            return Content(string.Empty);
         }
 
         public ActionResult CheckNewOrder()

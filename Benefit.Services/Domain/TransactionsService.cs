@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Common;
 using System.Linq;
 using Benefit.Common.Exceptions;
 using Benefit.DataTransfer.ViewModels;
@@ -32,11 +33,11 @@ namespace Benefit.Services.Domain
             db.SaveChanges();
         }
 
-        public void AddBonusesOrderAbandonedTransaction(Order order)
+        public void AddBonusesOrderAbandonedTransaction(Order order, ApplicationDbContext transactionDb)
         {
-            var user = db.Users.Find(order.UserId);
+            var user = transactionDb.Users.Find(order.UserId);
             var transaction =
-                db.Transactions.FirstOrDefault(
+                transactionDb.Transactions.FirstOrDefault(
                     entry => entry.OrderId == order.Id && entry.Type == TransactionType.BonusesOrderPayment);
             if (transaction == null)
             {
@@ -57,9 +58,8 @@ namespace Benefit.Services.Domain
             };
             user.BonusAccount = bonusesPaymentTransaction.BonusesBalans;
 
-            db.Transactions.Add(bonusesPaymentTransaction);
-            db.Entry(user).State = EntityState.Modified;
-            db.SaveChanges();
+            transactionDb.Transactions.Add(bonusesPaymentTransaction);
+            transactionDb.Entry(user).State = EntityState.Modified;
         }
 
         public void AddBonusesOrderTransaction(Order order)
@@ -85,9 +85,9 @@ namespace Benefit.Services.Domain
             db.SaveChanges();
         }
 
-        public void AddOrderFinishedTransaction(Order order)
+        public void AddOrderFinishedTransaction(Order order, ApplicationDbContext transactionDb)
         {
-            var user = db.Users.Find(order.UserId);
+            var user = transactionDb.Users.Find(order.UserId);
 
             //add transaction for personal purchase
             var transaction = new Transaction()
@@ -106,7 +106,7 @@ namespace Benefit.Services.Domain
             if (order.PaymentType == PaymentType.Bonuses)
             {
                 var orderTransaction =
-                    db.Transactions.FirstOrDefault(
+                    transactionDb.Transactions.FirstOrDefault(
                         entry => entry.OrderId == order.Id && entry.Type == TransactionType.BonusesOrderPayment);
                 if (orderTransaction == null)
                 {
@@ -127,13 +127,12 @@ namespace Benefit.Services.Domain
                         Type = TransactionType.OrderRefund
                     };
                     user.BonusAccount = refundTransaction.BonusesBalans;
-                    db.Transactions.Add(refundTransaction);
+                    transactionDb.Transactions.Add(refundTransaction);
                 }
             }
 
-            db.Transactions.Add(transaction);
-            db.Entry(user).State = EntityState.Modified;
-            db.SaveChanges();
+            transactionDb.Transactions.Add(transaction);
+            transactionDb.Entry(user).State = EntityState.Modified;
         }
 
         public PartnerTransactionsViewModel GetPartnerTransactions(string id, DateTime start, DateTime end)
