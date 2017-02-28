@@ -18,7 +18,27 @@
     <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
-
+    @if (User.IsInRole(DomainConstants.SuperAdminRoleName))
+    {
+        <script>
+            $(function () {
+                var deleteOrderUrl = '@Url.Action("Delete")';
+                $("body").on("click", "#delete-order", function (e) {
+                    e.preventDefault();
+                    if (!confirm('Ви впевненні?'))
+                        return;
+                    var parent = $(this).parents("tr");
+                    var id = $(this).attr("data-order-id");
+                    $.post(deleteOrderUrl + "?id=" + id, null, function (data) {
+                        if (data.status) {
+                            parent.remove();
+                        }
+                    });
+                }
+                );
+            });
+        </script>
+    }
     <script>
         $(function () {
             $(".chosen-select").chosen({

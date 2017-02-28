@@ -86,10 +86,14 @@ namespace Benefit.Services.Domain
 
         public void DeleteOrder(string orderId)
         {
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.User).Include(entry => entry.Transactions).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            order.User.PointsAccount = order.User.PointsAccount - order.PointsSum;
+            order.User.CurrentBonusAccount = order.User.CurrentBonusAccount - order.PersonalBonusesSum;
+            db.Transactions.RemoveRange(order.Transactions);
             db.OrderProductOptions.RemoveRange(order.OrderProductOptions);
             db.OrderProducts.RemoveRange(order.OrderProducts);
             db.Transactions.RemoveRange(db.Transactions.Where(entry => entry.OrderId == orderId));
+            db.Entry(order.User).State = EntityState.Modified;
             db.Orders.Remove(order);
             db.SaveChanges();
         }

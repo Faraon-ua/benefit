@@ -1,4 +1,5 @@
-﻿@using Benefit.Common.Extensions
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
 @using Benefit.Common.Helpers
 @using Benefit.Domain.Models
 @model  Benefit.DataTransfer.ViewModels.PaginatedList<Order>
@@ -91,10 +92,13 @@
 
                 <td>
                     @Html.ActionLink("Детальніше", "Details", "Orders", new { id = item.Id }, new { target = "_blank" })
-                    @*@if (item.OrderType == OrderType.BenefitCard)
-                        {
-                            @Html.ActionLink("Видалити", "Delete", new { id = item.Id }, new { onclick = "return confirm('Ви впевненні?')" })
-                        }*@
+
+                </td>
+            }
+            @if (item.OrderType == OrderType.BenefitCard && User.IsInRole(DomainConstants.SuperAdminRoleName))
+            {
+                <td>
+                    <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>
                 </td>
             }
         </tr>

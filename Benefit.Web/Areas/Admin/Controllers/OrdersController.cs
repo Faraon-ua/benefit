@@ -376,11 +376,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(order);
         }
 
-        // GET: /Admin/Orders/Delete/5
+        [Authorize(Roles = DomainConstants.SuperAdminRoleName)]
         public ActionResult Delete(string id)
         {
             OrderService.DeleteOrder(id);
-            return RedirectToAction("Index");
+            return Json(new { status = true });
         }
 
         protected override void Dispose(bool disposing)

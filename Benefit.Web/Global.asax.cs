@@ -26,13 +26,14 @@ namespace Benefit.Web
                     HttpContext.Current.Request.QueryString[RouteConstants.ReferalUrlName]);
                 HttpContext.Current.Response.Cookies.Add(referalCookie);
             }
-            if (!Request.IsSecureConnection && !Request.Url.IsLoopback)
-                Response.Redirect(Context.Request.Url.ToString().Replace("http:", "https:"));
-            
-            if (Request.Url.Host.StartsWith("www") && !Request.Url.IsLoopback)
+            if ((Request.Url.Host.StartsWith("www") || !Request.IsSecureConnection) && !Request.Url.IsLoopback)
             {
                 var builder = new UriBuilder(Request.Url);
-                builder.Host = Request.Url.Host.Replace("www.", "");
+                if (Request.Url.Host.StartsWith("www"))
+                {
+                    builder.Host = Request.Url.Host.Replace("www.", "");
+                }
+                builder.Scheme = "https";
                 Response.StatusCode = 301;
                 Response.AddHeader("Location", builder.ToString());
                 Response.End();
