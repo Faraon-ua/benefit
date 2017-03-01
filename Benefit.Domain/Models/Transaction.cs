@@ -1,22 +1,31 @@
 ﻿using System;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
 {
     public enum TransactionType
     {
+        [Description("Персональні бонуси за замовлення")]
         PersonalSiteBonus,
+        [Description("Персональні бонуси за замовлення Benefit Card")]
         PersonalBenefitCardBonus,
+        [Description("Бонуси за запрошення")]
         MentorBonus,
+        [Description("Переказ бонусів на інший рахунок")]
         Transfer,
+        [Description("Бонуси за VIP")]
         VIPBonus,
         VIPSellerBonus,
         DirectorBonus,
         SilverBonus,
         GoldBonus,
         SellerInvolvementBonus,
+        [Description("Повернення бонусів за редагування замовлення")]
         OrderRefund,
+        [Description("Оплата за замовлення")]
         BonusesOrderPayment,
+        [Description("Персональні бонуси за скасування замовлення")]
         BonusesOrderAbandonedPayment,
         PersonalMonthAggregate,
         Custom

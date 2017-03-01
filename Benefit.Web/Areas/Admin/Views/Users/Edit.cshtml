@@ -85,13 +85,13 @@
                 </a>
             </li>
             <li>
-                <a href="#transactions" data-toggle="tab">
+                <a href="#card-orders" data-toggle="tab">
                     <i class="green icon-money bigger-110"></i>
                     Benefit Card Транзакції
                 </a>
             </li>
             <li>
-                <a href="#onlineOrders" data-toggle="tab">
+                <a href="#onlin-orders" data-toggle="tab">
                     <i class="green icon-money bigger-110"></i>
                     Онлайн замовлення
                 </a>
@@ -111,6 +111,12 @@
             <div class="tab-pane" id="finance">
                 @Html.Partial("_FinanceUserForm", Model)
             </div>
+           @* <div class="tab-pane" id="card-orders">
+                @Html.Partial("_FinanceUserForm", Model)
+            </div>
+            <div class="tab-pane" id="online-orders">
+                @Html.Partial("_FinanceUserForm", Model)
+            </div>*@
             <div class="tab-pane" id="addresses">
                 @Html.Partial("_Addresses", Model)
             </div>

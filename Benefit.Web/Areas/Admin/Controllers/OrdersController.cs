@@ -324,7 +324,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry=>entry.Transactions).Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -340,62 +340,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View();
         }
 
-        // POST: /Admin/Orders/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Sum,Description,PersonalBonusesSum,PointsSum,CardNumber,ShippingName,ShippingAddress,ShippingCost,Time,OrderType,PaymentType,Status,SellerId,SellerName,UserId")] Order order)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Orders.Add(order);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FullName", order.UserId);
-            return View(order);
-        }
-
-        // GET: /Admin/Orders/Edit/5
-        public ActionResult Edit(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Order order = db.Orders.Find(id);
-            if (order == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FullName", order.UserId);
-            return View(order);
-        }
-
-        // POST: /Admin/Orders/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Sum,Description,PersonalBonusesSum,PointsSum,CardNumber,ShippingName,ShippingAddress,ShippingCost,Time,OrderType,PaymentType,Status,SellerId,SellerName,UserId")] Order order)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(order).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FullName", order.UserId);
-            return View(order);
-        }
-
         [Authorize(Roles = DomainConstants.SuperAdminRoleName)]
         public ActionResult Delete(string id)
         {
             OrderService.DeleteOrder(id);
             return Json(new { status = true });
+        }
+        
+        [Authorize(Roles = DomainConstants.AdminRoleName)]
+        public ActionResult DeleteOrderTransaction(string orderId, string transactionId)
+        {
+            var tr = db.Transactions.Include(entry=>entry.Payee).FirstOrDefault(entry=>entry.Id == transactionId);
+            tr.Payee.CurrentBonusAccount = tr.Payee.CurrentBonusAccount - tr.Bonuses;
+            db.Entry(tr.Payee).State = EntityState.Modified;
+            db.Transactions.Remove(tr);
+            db.SaveChanges();
+            return RedirectToAction("Details", new { id = orderId });
         }
 
         protected override void Dispose(bool disposing)

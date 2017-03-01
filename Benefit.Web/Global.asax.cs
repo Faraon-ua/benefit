@@ -33,6 +33,7 @@ namespace Benefit.Web
                 {
                     builder.Host = Request.Url.Host.Replace("www.", "");
                 }
+                builder.Port = 443;
                 builder.Scheme = "https";
                 Response.StatusCode = 301;
                 Response.AddHeader("Location", builder.ToString());

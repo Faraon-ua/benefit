@@ -73,7 +73,7 @@
                 @Html.DisplayFor(modelItem => item.PersonnelName)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.User.FullName)
+                @Html.ActionLink(item.User.FullName, "Edit", "Users", new { id = item.User.Id }, new { target = "_blank" })
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Sum)

@@ -1,4 +1,5 @@
-﻿@using Benefit.Common.Extensions
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
 @using Benefit.Common.Helpers
 @using Benefit.Domain.Models
 @model Order
@@ -13,7 +14,7 @@
         <td style="width: 30%;">Час замовлення</td>
         <td style="width: 70%;">@Model.Time.ToLocalDateTimeWithFormat()</td>
     </tr>
-     <tr>
+    <tr>
         <td style="width: 30%;">Номер Телефону</td>
         <td style="width: 70%;">@Model.User.PhoneNumber</td>
     </tr>
@@ -101,15 +102,15 @@
                     }
                 </div>
                 <div class="col-md-10">
-                    @foreach (var stamp in Model.OrderStatusStamps.OrderBy(entry=>entry.Time))
+                    @foreach (var stamp in Model.OrderStatusStamps.OrderBy(entry => entry.Time))
                     {
                         <div>
-                            @stamp.Time.ToLocalDateTimeWithFormat() @Enumerations.GetEnumDescription(stamp.OrderStatus) @stamp.UpdatedBy 
+                            @stamp.Time.ToLocalDateTimeWithFormat() @Enumerations.GetEnumDescription(stamp.OrderStatus) @stamp.UpdatedBy
                             @if (!string.IsNullOrEmpty(stamp.Comment))
                             {
                                 <span>
                                     (@stamp.Comment)
-                                </span>  
+                                </span>
                             }
                         </div>
                     }
@@ -144,159 +145,219 @@
     </div>
 }
 
-<p class="history_modal_title">Товари в кошику</p>
-<table class="order_in_table">
-    <thead>
-        <tr>
-            <th>Назва</th>
-            <th>Кількість</th>
-            <th>Ціна</th>
-            <th>Сума</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody style="max-height:none; overflow-y: auto;">
-        @foreach (var product in Model.OrderProducts)
-        {
-            var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
-            var productSum = product.ProductPrice * product.Amount;
-            <tr data-product-id="@product.ProductId" class="order-product">
-                <td>
-                    @if (Model.Status == OrderStatus.Processed)
+<div class="row">
+    <div class="col-md-6">
+        <br />
+        <p class="bigger-150">Товари в кошику</p>
+        <table class="order_in_table">
+            <thead>
+                <tr>
+                    <th>Назва</th>
+                    <th>Кількість</th>
+                    <th>Ціна</th>
+                    <th>Сума</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody style="max-height:none; overflow-y: auto;">
+                @foreach (var product in Model.OrderProducts)
+                {
+                    var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                    var productSum = product.ProductPrice * product.Amount;
+                    <tr data-product-id="@product.ProductId" class="order-product">
+                        <td>
+                            @if (Model.Status == OrderStatus.Processed)
+                            {
+                                <input type="text" class="number-input product-name col-sm-12" value="@product.ProductName" />
+                            }
+                            else
+                            {
+                                @product.ProductName
+                            }
+                        </td>
+                        <td>
+                            @if (Model.Status == OrderStatus.Processed)
+                            {
+                                <input type="text" class="number-input product-amount col-sm-12" value="@product.Amount" />
+                            }
+                            else
+                            {
+                                @product.Amount
+                            }
+                        </td>
+                        <td>
+                            @if (Model.Status == OrderStatus.Processed)
+                            {
+                                <input type="text" class="number-input product-price col-md-12" value="@product.ProductPrice" />
+                            }
+                            else
+                            {
+                                @product.ProductPrice
+                            }
+                        </td>
+                        <td>@((productSum + productOptionsSum).ToString("F"))</td>
+                        <td>
+                            @if (Model.Status == OrderStatus.Processed)
+                            {
+                                <a class="btn btn-danger" href="@Url.Action("DeleteOrderProduct", new {orderId = Model.Id, productId = product.ProductId})" onclick=" return confirm('Ви впевненні?') ">
+                                    <i class="icon-trash"></i>
+                                </a>
+                            }
+                        </td>
+                    </tr>
+                    foreach (var productOption in product.DbOrderProductOptions)
                     {
-                        <input type="text" class="number-input product-name col-sm-12" value="@product.ProductName" />
+                        <tr class="order-product-option" data-product-option-id="@productOption.ProductOptionId" data-product-id="@product.ProductId">
+                            <td class="padding-left-40">
+                                @if (Model.Status == OrderStatus.Processed)
+                                {
+                                    <input type="text" class="number-input product-option-name col-sm-12" value="@productOption.ProductOptionName" />
+                                }
+                                else
+                                {
+                                    @productOption.ProductOptionName
+                                }
+                            </td>
+                            <td>
+                                @if (Model.Status == OrderStatus.Processed)
+                                {
+                                    <input type="text" class="number-input product-option-amount col-sm-12" value="@productOption.Amount" />
+                                }
+                                else
+                                {
+                                    @productOption.Amount
+                                }
+                            </td>
+
+                            <td>
+                                @if (Model.Status == OrderStatus.Processed)
+                                {
+                                    <input type="text" class="number-input product-option-price col-md-12" value="@productOption.ProductOptionPriceGrowth" />
+                                }
+                                else
+                                {
+                                    @productOption.ProductOptionPriceGrowth
+                                }
+                            </td>
+                            @if (Model.Status == OrderStatus.Processed)
+                            {
+                                <td></td>
+                                <td>
+                                    <a class="btn btn-danger" href="@Url.Action("DeleteOrderProductOption", new { orderId = Model.Id, productId = product.ProductId, productOptionId = productOption.ProductOptionId })" onclick=" return confirm('Ви впевненні?') ">
+                                        <i class="icon-trash"></i>
+                                    </a>
+                                </td>
+                            }
+                        </tr>
                     }
-                    else
-                    {
-                        @product.ProductName
-                    }
-                </td>
-                <td>
-                    @if (Model.Status == OrderStatus.Processed)
-                    {
-                        <input type="text" class="number-input product-amount col-sm-12" value="@product.Amount" />
-                    }
-                    else
-                    {
-                        @product.Amount
-                    }
-                </td>
-                <td>
-                    @if (Model.Status == OrderStatus.Processed)
-                    {
-                        <input type="text" class="number-input product-price col-md-12" value="@product.ProductPrice" />
-                    }
-                    else
-                    {
-                        @product.ProductPrice
-                    }
-                </td>
-                <td>@((productSum + productOptionsSum).ToString("F"))</td>
-                <td>
-                    @if (Model.Status == OrderStatus.Processed)
-                    {
-                        <a class="btn btn-danger" href="@Url.Action("DeleteOrderProduct", new {orderId = Model.Id, productId = product.ProductId})" onclick=" return confirm('Ви впевненні?') ">
-                            <i class="icon-trash"></i>
-                        </a>
-                    }
-                </td>
+                }
+            </tbody>
+        </table>
+        <div class="row clearfix">
+            <div class="pull-left margin-left-10">
+                @if (Model.Status == OrderStatus.Processed)
+                {
+                    <a class="btn btn-primary margin-right-10 btn-sm" href="#" title="Додати товар" onclick="LoadOrderProductForm()">
+                        <span class="bigger-150">Додати товар</span>
+                    </a>
+                    <a class="btn btn-success margin-left-10 btn-sm" href="#" title="Додати товар" id="update-order-products">
+                        <i class="icon-refresh bigger-150"></i>
+                        <span class="bigger-150">Оновити</span>
+                    </a>
+                }
+            </div>
+
+            <div class="pull-right clearfix width-50 margin-right-20">
+                <div class="row">
+                    <div class="col-md-8">
+                        <b>
+                            Загальна сума замовлення
+                        </b>
+                    </div>
+                    <div class="col-md-4 text-right">@Model.Sum</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <b>
+                            Доставка
+                        </b>
+                    </div>
+                    <div class="col-md-4 text-right">@Model.ShippingCost</div>
+                </div>
+                <div class="row">
+                    <div class="col-md-8">
+                        <b>
+                            Всього
+                        </b>
+                    </div>
+                    <div class="col-md-4 text-right">@(Model.Sum + Model.ShippingCost)</div>
+                </div>
+            </div>
+        </div>
+
+
+
+
+        <button class="btn btn-warning" onclick="window.open('@Url.Action("Print", new { id = Model.Id })')">
+            <i class="icon-print bigger-160"></i>
+            Роздрукувати
+        </button>
+
+    </div>
+    <div class="col-md-6">
+        <br />
+        <p class="bigger-150">Операції з бонусами по замовленню</p>
+
+        <table class="order_ifo_table">
+            <tr>
+                <td>Дата</td>
+                <td>Час</td>
+                <td>Вид операції</td>
+                <td>Бонуси</td>
+                <td>Комісія</td>
+                <td>Залишок</td>
+                @if (User.IsInRole(DomainConstants.AdminRoleName))
+                {
+                    <td></td>
+                }
             </tr>
-            foreach (var productOption in product.DbOrderProductOptions)
+            @foreach (var transaction in Model.Transactions.OrderByDescending(entry=>entry.Time))
             {
-                <tr class="order-product-option" data-product-option-id="@productOption.ProductOptionId" data-product-id="@product.ProductId">
-                    <td class="padding-left-40">
-                        @if (Model.Status == OrderStatus.Processed)
-                        {
-                            <input type="text" class="number-input product-option-name col-sm-12" value="@productOption.ProductOptionName" />
-                        }
-                        else
-                        {
-                            @productOption.ProductOptionName
-                        }
-                    </td>
+                <tr>
+                    <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
+                    <td>@transaction.Time.ToLocalTimeWithFormat()</td>
                     <td>
-                        @if (Model.Status == OrderStatus.Processed)
-                        {
-                            <input type="text" class="number-input product-option-amount col-sm-12" value="@productOption.Amount" />
-                        }
-                        else
-                        {
-                            @productOption.Amount
-                        }
+                        @Enumerations.GetEnumDescription(transaction.Type)
                     </td>
 
-                    <td>
-                        @if (Model.Status == OrderStatus.Processed)
+                    <td class="bonusLevel">
+                        @if (transaction.Bonuses > 0)
                         {
-                            <input type="text" class="number-input product-option-price col-md-12" value="@productOption.ProductOptionPriceGrowth" />
+                            <span>+</span>
                         }
-                        else
-                        {
-                            @productOption.ProductOptionPriceGrowth
-                        }
+
+                        @transaction.Bonuses.ToDoubleDigits()
                     </td>
-                    @if (Model.Status == OrderStatus.Processed)
+                    <td>
+                        @transaction.Commission.ToDoubleDigits()
+                    </td>
+                    <td>
+                        @transaction.BonusesBalans.ToDoubleDigits()
+                    </td>
+                    @if (User.IsInRole(DomainConstants.AdminRoleName) && transaction.Type != TransactionType.BonusesOrderPayment)
                     {
-                        <td></td>
                         <td>
-                            <a class="btn btn-danger" href="@Url.Action("DeleteOrderProductOption", new { orderId = Model.Id, productId = product.ProductId, productOptionId = productOption.ProductOptionId })" onclick=" return confirm('Ви впевненні?') ">
-                                <i class="icon-trash"></i>
+                            <a class="btn btn-danger" href="@Url.Action("DeleteOrderTransaction", new { orderId = Model.Id, transactionId = transaction.Id })" onclick="return confirm('Ви впевненні?') ">
+                            <i class="icon-trash"></i>
                             </a>
                         </td>
                     }
                 </tr>
             }
-        }
-    </tbody>
-</table>
-@if (Model.Status == OrderStatus.Processed)
-{
-    <div class="row">
-        <div class="col-md-1">
-            <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Додати товар" onclick="LoadOrderProductForm()">
-                <span class="bigger-150">Додати товар</span>
-            </a>
-        </div>
-        <div class="col-md-1">
-            <a class="btn btn-success margin-left-10 pull-left btn-sm" href="#" title="Додати товар" id="update-order-products">
-                <i class="icon-refresh bigger-150"></i>
-                <span class="bigger-150">Оновити</span>
-            </a>
-        </div>
-    </div>
-}
-
-<div class="width-100">
-    <div class="centered width-20 row">
-        <div class="col-md-8">
-            <b>
-                Загальна сума замовлення
-            </b>
-        </div>
-        <div class="col-md-4">@Model.Sum</div>
-    </div>
-    <div class="centered width-20 row">
-        <div class="col-md-8">
-            <b>
-                Доставка
-            </b>
-        </div>
-        <div class="col-md-4">@Model.ShippingCost</div>
-    </div>
-    <div class="centered width-20 row">
-        <div class="col-md-8">
-            <b>
-                Всього
-            </b>
-        </div>
-        <div class="col-md-4">@(Model.Sum + Model.ShippingCost)</div>
+        </table>
     </div>
 </div>
 
-<button class="btn btn-warning" onclick="window.open('@Url.Action("Print", new { id = Model.Id })')">
-    <i class="icon-print bigger-160"></i>
-    Роздрукувати
-</button>
 
 @*
     <button class="btn btn-success pull-right">
