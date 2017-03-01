@@ -323,7 +323,16 @@
             </tr>
             @foreach (var transaction in Model.Transactions.OrderByDescending(entry=>entry.Time))
             {
-                <tr>
+                    string className = string.Empty;
+                    if (transaction.Type == TransactionType.OrderRefund)
+                    {
+                        className = "bg-success";
+                    }
+                    if (transaction.Type == TransactionType.PersonalSiteBonus)
+                    {
+                        className = "bg-warning";
+                    }
+                <tr class="@className">
                     <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
                     <td>@transaction.Time.ToLocalTimeWithFormat()</td>
                     <td>

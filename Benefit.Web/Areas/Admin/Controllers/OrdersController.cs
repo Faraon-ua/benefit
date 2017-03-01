@@ -351,7 +351,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult DeleteOrderTransaction(string orderId, string transactionId)
         {
             var tr = db.Transactions.Include(entry=>entry.Payee).FirstOrDefault(entry=>entry.Id == transactionId);
-            tr.Payee.CurrentBonusAccount = tr.Payee.CurrentBonusAccount - tr.Bonuses;
+            if (tr.Type == TransactionType.PersonalSiteBonus)
+            {
+                tr.Payee.CurrentBonusAccount = tr.Payee.CurrentBonusAccount - tr.Bonuses;
+            }
+            if (tr.Type == TransactionType.OrderRefund)
+            {
+                tr.Payee.BonusAccount = tr.Payee.BonusAccount - tr.Bonuses;                
+            }
             db.Entry(tr.Payee).State = EntityState.Modified;
             db.Transactions.Remove(tr);
             db.SaveChanges();
