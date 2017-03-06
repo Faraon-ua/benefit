@@ -110,11 +110,11 @@ namespace Benefit.Services.Domain
                         entry =>
                             sellerIds.Contains(entry.Id) &&
                             entry.IsActive &&
-                            //todo: order by selected region
                             (entry.Addresses.Select(addr => addr.RegionId).Contains(regionId) ||
                              entry.ShippingMethods.Select(sm => sm.Region.Id)
                                  .Contains(RegionConstants.AllUkraineRegionId))
-                    ).ToList();
+                    )
+                    .OrderByDescending(entry=>entry.UserDiscount).ToList();
 
             sellersDto.Items.ForEach(entry =>
             {

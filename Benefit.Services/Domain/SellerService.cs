@@ -68,7 +68,7 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
                     .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
                     .Where(entry => entry.IsActive)
-                .OrderByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ToList();
+                .OrderByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry=>entry.UserDiscount).ToList();
             return new SellersViewModel()
             {
                 Items = sellers

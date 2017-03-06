@@ -23,43 +23,19 @@ namespace Benefit.Web.Controllers
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
-            var hitIds = new List<string>
-            {
-                "e5461d6c-abce-11e5-bbba-e03f49eb1351",
-                "7334de7a-ad63-11e5-bbba-e03f49eb1351",
-                "32fb0f8a-28c6-11e6-b8b4-e03f49eb1351",
-                "88efb80c-36e4-11e5-a8bf-10feed06278f",
-                "09049d8c-36de-11e5-a8bf-10feed06278f",
-                "7580c148-d55f-4009-b361-a5a99fb0a767",
-                "d8874ed3-930a-4743-ac7b-af0efce31db1",
-                "f48fcde5-69f2-4124-9d8c-7375ee67cc9d",
-                "1b290794-eb6c-4a55-bb3e-48980acc29a3"
-            };
-            var newIds = new List<string>
-            {
-                "64892da0-38b4-409e-bcd8-ee43285e2608",
-                "0a7dc739-2f59-41a2-8fef-aded77dadfd4",
-                "910fd782-75a3-43eb-b963-fc8880e3d40a",
-                "5c24366d-1e20-440b-8637-cc6382f3d4f2",
-                "bb192c1c-9190-48e5-91e9-82f239dd29bc",
-                "683770ff-1d63-43de-9151-fc6f2560d03f",
-                "3bb7c047-a8d2-414d-9e79-a2a026a83dd1",
-                "0c2df8cb-906b-4eee-a477-cc0bf9f78e3b",
-                "86e91251-811d-4a9a-8dc4-d29ac1891bf7"
-            };
             var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())
             {
-                mainPageViewModel.BestSellers = db.Products
+                mainPageViewModel.FeaturedProducts = db.Products
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => hitIds.Contains(entry.Id)).ToList().OrderBy(entry=>hitIds.IndexOf(entry.Id)).ToList();
+                    .Where(entry => entry.IsFeatured).OrderBy(entry=>entry.Order).ToList();
                 mainPageViewModel.NewProducts = db.Products
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => newIds.Contains(entry.Id)).ToList().OrderBy(entry => newIds.IndexOf(entry.Id)).ToList();
+                    .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList();
                 mainPageViewModel.Banners =
                     db.Banners.Where(entry => entry.BannerType == BannerType.MainPageBanners)
                         .OrderBy(entry => entry.Order)

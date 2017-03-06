@@ -1,0 +1,22 @@
+﻿@model Benefit.Domain.Models.Product
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="IsFeatured">Хіт</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.IsFeatured)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="IsNewProduct">Новинка</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.IsNewProduct)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="">Порядковий номер</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextBoxFor(m => m.Order, new { @class = "number-input" })
+        </div>
+    </div>
+</div>

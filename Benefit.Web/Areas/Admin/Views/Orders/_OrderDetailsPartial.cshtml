@@ -146,7 +146,7 @@
 }
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-7">
         <br />
         <p class="bigger-150">Товари в кошику</p>
         <table class="order_in_table">
@@ -294,35 +294,32 @@
                 </div>
             </div>
         </div>
-
-
-
-
         <button class="btn btn-warning" onclick="window.open('@Url.Action("Print", new { id = Model.Id })')">
             <i class="icon-print bigger-160"></i>
             Роздрукувати
         </button>
-
     </div>
-    <div class="col-md-6">
-        <br />
-        <p class="bigger-150">Операції з бонусами по замовленню</p>
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <div class="col-md-5">
+            <br />
+            <p class="bigger-150">Операції з бонусами по замовленню</p>
 
-        <table class="order_ifo_table">
-            <tr>
-                <td>Дата</td>
-                <td>Час</td>
-                <td>Вид операції</td>
-                <td>Бонуси</td>
-                <td>Комісія</td>
-                <td>Залишок</td>
-                @if (User.IsInRole(DomainConstants.AdminRoleName))
+            <table class="order_ifo_table">
+                <tr>
+                    <td>Дата</td>
+                    <td>Час</td>
+                    <td>Вид операції</td>
+                    <td>Бонуси</td>
+                    <td>Комісія</td>
+                    <td>Залишок</td>
+                    @if (User.IsInRole(DomainConstants.AdminRoleName))
+                    {
+                        <td></td>
+                    }
+                </tr>
+                @foreach (var transaction in Model.Transactions.OrderByDescending(entry => entry.Time))
                 {
-                    <td></td>
-                }
-            </tr>
-            @foreach (var transaction in Model.Transactions.OrderByDescending(entry=>entry.Time))
-            {
                     string className = string.Empty;
                     if (transaction.Type == TransactionType.OrderRefund)
                     {
@@ -332,39 +329,40 @@
                     {
                         className = "bg-warning";
                     }
-                <tr class="@className">
-                    <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
-                    <td>@transaction.Time.ToLocalTimeWithFormat()</td>
-                    <td>
-                        @Enumerations.GetEnumDescription(transaction.Type)
-                    </td>
-
-                    <td class="bonusLevel">
-                        @if (transaction.Bonuses > 0)
-                        {
-                            <span>+</span>
-                        }
-
-                        @transaction.Bonuses.ToDoubleDigits()
-                    </td>
-                    <td>
-                        @transaction.Commission.ToDoubleDigits()
-                    </td>
-                    <td>
-                        @transaction.BonusesBalans.ToDoubleDigits()
-                    </td>
-                    @if (User.IsInRole(DomainConstants.AdminRoleName) && transaction.Type != TransactionType.BonusesOrderPayment)
-                    {
+                    <tr class="@className">
+                        <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
+                        <td>@transaction.Time.ToLocalTimeWithFormat()</td>
                         <td>
-                            <a class="btn btn-danger" href="@Url.Action("DeleteOrderTransaction", new { orderId = Model.Id, transactionId = transaction.Id })" onclick="return confirm('Ви впевненні?') ">
-                            <i class="icon-trash"></i>
-                            </a>
+                            @Enumerations.GetEnumDescription(transaction.Type)
                         </td>
-                    }
-                </tr>
-            }
-        </table>
-    </div>
+
+                        <td class="bonusLevel">
+                            @if (transaction.Bonuses > 0)
+                            {
+                                <span>+</span>
+                            }
+
+                            @transaction.Bonuses.ToDoubleDigits()
+                        </td>
+                        <td>
+                            @transaction.Commission.ToDoubleDigits()
+                        </td>
+                        <td>
+                            @transaction.BonusesBalans.ToDoubleDigits()
+                        </td>
+                        @if (User.IsInRole(DomainConstants.AdminRoleName) && transaction.Type != TransactionType.BonusesOrderPayment)
+                        {
+                            <td>
+                                <a class="btn btn-danger" href="@Url.Action("DeleteOrderTransaction", new {orderId = Model.Id, transactionId = transaction.Id})" onclick=" return confirm('Ви впевненні?') ">
+                                    <i class="icon-trash"></i>
+                                </a>
+                            </td>
+                        }
+                    </tr>
+                }
+            </table>
+        </div>
+    }
 </div>
 
 

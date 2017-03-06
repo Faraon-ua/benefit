@@ -33,7 +33,11 @@ namespace Benefit.Domain.Models
         public double Price { get; set; }
         public bool IsWeightProduct { get; set; }
         public int? AvailableAmount { get; set; }
+        #region advertisement
+        public bool IsFeatured { get; set; }
+        public bool IsNewProduct { get; set; }
         public int Order { get; set; }
+        #endregion
         public bool IsActive { get; set; }
         public bool DoesCountForShipping { get; set; }
         public DateTime LastModified { get; set; }

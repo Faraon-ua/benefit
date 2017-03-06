@@ -18,7 +18,6 @@
 
     <script>
         $(function () {
-
             var tag_input = $('#SearchTags');
             if (!(/msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase()))) {
                 tag_input.tag(
@@ -175,24 +174,30 @@
             @if (User.IsInRole(DomainConstants.AdminRoleName))
             {
                 <li>
+                    <a href="#advertisement" data-toggle="tab">
+                        <i class="purple icon-bullhorn bigger-110"></i>
+                        Промоушен
+                    </a>
+                </li>
+                <li>
                     <a href="#options" data-toggle="tab">
                         <i class="purple icon-plus bigger-110"></i>
                         Додаткові опції
                     </a>
                 </li>
-                <li>
-                    <a href="#parameters" data-toggle="tab">
-                        <i class="orange icon-check bigger-110"></i>
-                        Характеристики
-                    </a>
-                </li>
+                @* <li>
+                        <a href="#parameters" data-toggle="tab">
+                            <i class="orange icon-check bigger-110"></i>
+                            Характеристики
+                        </a>
+                    </li>
 
-                <li>
-                    <a href="#recommendations" data-toggle="tab">
-                        <i class="purple icon-dropbox bigger-110"></i>
-                        Рекомендовані товари
-                    </a>
-                </li>
+                    <li>
+                        <a href="#recommendations" data-toggle="tab">
+                            <i class="purple icon-dropbox bigger-110"></i>
+                            Рекомендовані товари
+                        </a>
+                    </li>*@
             }
         </ul>
 
@@ -203,6 +208,12 @@
             <div class="tab-pane" id="options">
                 @Html.Partial("_ProductOptions")
             </div>
+            @if (User.IsInRole(DomainConstants.AdminRoleName))
+            {
+                <div class="tab-pane" id="advertisement">
+                    @Html.Partial("_ProductAdvertisement")
+                </div>
+            }
             <div class="tab-pane" id="parameters">
                 @Html.Partial("_ProductParameters")
             </div>
@@ -210,7 +221,6 @@
                 @Html.Partial("_Images", Model)
             </div>
             <div class="tab-pane" id="recommendations">
-                asd
             </div>
         </div>
     </div>

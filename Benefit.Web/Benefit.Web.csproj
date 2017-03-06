@@ -1092,7 +1092,6 @@
     <Content Include="Areas\Cabinet\Views\Panel\_UserAddressForm.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\Orders\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\_OrdersListPartial.cshtml" />
     <Content Include="Areas\Cabinet\Views\Panel\_OrderDetailsPartial.cshtml" />
@@ -1123,6 +1122,7 @@
     <Content Include="Areas\Admin\Views\InfoPages\TabableContent.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Security.cshtml" />
     <Content Include="Areas\Admin\Views\Statistics\SellerTurnover.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductAdvertisement.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

@@ -19,7 +19,7 @@
 <!-- product carousel -->
 <p class="center_p">Хіти продажу</p>
 <div class="product_carousel">
-    @foreach (var hit in Model.BestSellers)
+    @foreach (var hit in Model.FeaturedProducts)
     {
         var image = hit.Images.FirstOrDefault();
         var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = hit.Category.UrlName, sellerUrl = hit.Seller.UrlName, productUrl = hit.UrlName });
