@@ -13,6 +13,7 @@ using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
+using Microsoft.AspNet.Identity;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -200,7 +201,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         maxSku = SettingsService.SkuMinValue;
                     }
-                    product.SKU = (int) maxSku + 1;
+                    product.SKU = (int)maxSku + 1;
                     db.Products.Add(product);
                 }
                 db.ProductParameterProducts.RemoveRange(
@@ -211,7 +212,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return RedirectToAction("CreateOrUpdate", new { id = product.Id });
             }
             //todo: add check for seller role
-            var seller = db.Sellers.FirstOrDefault(entry => User.Identity.Name == entry.Owner.UserName);
+            var ownerId = User.Identity.GetUserId();
+            var seller = db.Sellers.FirstOrDefault(entry => ownerId == entry.Owner.Id) ?? db.Sellers.FirstOrDefault(entry=>entry.Id == product.SellerId);
             if (User.IsInRole(DomainConstants.AdminRoleName))
             {
                 ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName", product.CategoryId);

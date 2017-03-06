@@ -28,7 +28,7 @@ namespace Benefit.Domain.Models
         public string UrlName { get; set; }
         [Index(IsUnique = true)]
         public int SKU { get; set; }
-        [Required(AllowEmptyStrings = true)]
+        [Required(AllowEmptyStrings = true, ErrorMessage = "Опис обовязковий для заповнення")]
         public string Description { get; set; }
         public double Price { get; set; }
         public bool IsWeightProduct { get; set; }
