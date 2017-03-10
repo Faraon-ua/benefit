@@ -7,6 +7,7 @@ namespace Benefit.DataTransfer.ViewModels
         public string SellerName { get; set; }
         public double SellerTotalDiscount { get; set; }
         public double SiteTurnover { get; set; }
+        public double SiteTurnoverWithoutBonuses { get; set; }
         public double CardsTurnover { get; set; }
         public double BonusesTurnover { get; set; }
         public double BCcomission { get; set; }

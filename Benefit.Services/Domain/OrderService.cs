@@ -41,7 +41,7 @@ namespace Benefit.Services.Domain
             order.SellerName = seller.Name;
 
             var shipping = db.ShippingMethods.FirstOrDefault(entry => entry.Id == model.ShippingMethodId);
-            order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? shipping.CostBeforeFree : 0);
+            order.ShippingCost = order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree ?? default(double)) : 0;
             order.ShippingName = shipping.Name;
 
             var address = db.Addresses.FirstOrDefault(entry => entry.Id == model.AddressId);

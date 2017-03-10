@@ -4,7 +4,7 @@
 <div class="bread_crumbs">
     <ul>
         <li><a href="@Url.Action("Index", "Home")">Головна</a></li>
-        @if (Model.Seller != null && Model.Product != null)
+        @if (Model.Seller != null && !Model.IsInfoPage)
         {
             <li>
                 &gt; <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { action = "Info", id=Model.Seller.UrlName })">@Model.Seller.Name</a>
@@ -25,7 +25,7 @@
                 }
             </li>
         }
-        @if (Model.Seller != null && Model.Product == null)
+        @if (Model.Seller != null && Model.IsInfoPage)
         {
             <li>
                 &gt; <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { action = "Info", id=Model.Seller.UrlName })">@Model.Seller.Name</a>

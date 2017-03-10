@@ -117,6 +117,7 @@ namespace Benefit.Services.Domain
                 {
                     sellerVM.Breadcrumbs.Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrlName);
                 }
+                sellerVM.Breadcrumbs.IsInfoPage = true;
             }
             return sellerVM;
         }

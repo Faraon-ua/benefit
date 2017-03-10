@@ -65,7 +65,10 @@
                 %
             </th>
             <th>
-                Сайт
+                Онлайн
+            </th> 
+             <th>
+                 Онлайн без <br />використання бонусів
             </th>
             <th>
                 BenefitCard
@@ -89,6 +92,7 @@
                 <td>@turnover.SellerName</td>
                 <td>@turnover.SellerTotalDiscount</td>
                 <td>@turnover.SiteTurnover.ToString("F")</td>
+                <td>@turnover.SiteTurnoverWithoutBonuses.ToString("F")</td>
                 <td>@turnover.CardsTurnover.ToString("F")</td>
                 <td>@((turnover.CardsTurnover + turnover.SiteTurnover).ToString("F"))</td>
                 <td>@turnover.BCcomission.ToString("F")</td>
@@ -108,6 +112,9 @@
             <td></td>
             <td>
                 @Model.SellerTurnovers.Select(entry=>entry.SiteTurnover).Sum().ToString("F")
+            </td>
+            <td>
+                @Model.SellerTurnovers.Select(entry=>entry.SiteTurnoverWithoutBonuses).Sum().ToString("F")
             </td>
             <td>
                 @Model.SellerTurnovers.Select(entry=>entry.CardsTurnover).Sum().ToString("F")

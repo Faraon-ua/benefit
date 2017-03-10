@@ -8,5 +8,6 @@ namespace Benefit.DataTransfer.ViewModels
         public List<Category> Categories { get; set; }
         public Seller Seller { get; set; }
         public Product Product { get; set; }
+        public bool IsInfoPage { get; set; }
     }
 }

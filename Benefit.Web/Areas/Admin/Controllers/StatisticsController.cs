@@ -16,7 +16,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult SellerTurnover(SellerTurnoverViewModel sellerTurnover)
         {
             var model = new SellerTurnoverViewModel();
-            var orders = db.Orders.Where(entry => entry.Status == OrderStatus.Finished);
+            var orders = db.Orders.Include(entry => entry.OrderStatusStamps).Where(entry => entry.Status == OrderStatus.Finished);
 
             var startDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
             var endDate = DateTime.UtcNow;
@@ -29,8 +29,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             model.DateRange = string.Format("{0} - {1}", startDate.ToShortDateString(),
                 endDate.ToShortDateString());
-
-            orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
 
             var sellers = db.Sellers.Include(entry => entry.Addresses).Where(entry => entry.TotalDiscount <= 100);
             if (!string.IsNullOrEmpty(sellerTurnover.RegionId))
@@ -45,17 +43,44 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     SellerName = seller.Name,
                     SellerTotalDiscount = seller.TotalDiscount,
                     SiteTurnover =
-                        orders.Where(entry => entry.SellerId == seller.Id && entry.OrderType == OrderType.BenefitSite)
+                        orders.Where(
+                            entry =>
+                                entry.SellerId == seller.Id && entry.OrderType == OrderType.BenefitSite &&
+                                entry.OrderStatusStamps.FirstOrDefault(
+                                    stamp => stamp.OrderStatus == OrderStatus.Finished).Time >= startDate &&
+                                entry.OrderStatusStamps.FirstOrDefault(
+                                    stamp => stamp.OrderStatus == OrderStatus.Finished).Time <= endDate)
+                            .Select(entry => entry.Sum)
+                            .DefaultIfEmpty(0)
+                            .Sum(),
+                    SiteTurnoverWithoutBonuses =
+                        orders.Where(
+                            entry =>
+                                entry.SellerId == seller.Id && entry.OrderType == OrderType.BenefitSite &&
+                                entry.PaymentType != PaymentType.Bonuses &&
+                                entry.OrderStatusStamps.FirstOrDefault(
+                                    stamp => stamp.OrderStatus == OrderStatus.Finished).Time >= startDate &&
+                                entry.OrderStatusStamps.FirstOrDefault(
+                                    stamp => stamp.OrderStatus == OrderStatus.Finished).Time <= endDate)
                             .Select(entry => entry.Sum)
                             .DefaultIfEmpty(0)
                             .Sum(),
                     CardsTurnover =
-                        orders.Where(entry => entry.SellerId == seller.Id && entry.OrderType == OrderType.BenefitCard)
+                        orders.Where(
+                            entry =>
+                                entry.SellerId == seller.Id && entry.OrderType == OrderType.BenefitCard &&
+                                entry.Time > startDate && entry.Time < endDate)
                             .Select(entry => entry.Sum)
                             .DefaultIfEmpty(0)
                             .Sum(),
                     BonusesTurnover =
-                        orders.Where(entry => entry.SellerId == seller.Id && entry.PaymentType == PaymentType.Bonuses)
+                        orders.Where(
+                            entry =>
+                                entry.SellerId == seller.Id && entry.PaymentType == PaymentType.Bonuses &&
+                                entry.OrderStatusStamps.FirstOrDefault(
+                                    stamp => stamp.OrderStatus == OrderStatus.Finished).Time >= startDate &&
+                                entry.OrderStatusStamps.FirstOrDefault(
+                                    stamp => stamp.OrderStatus == OrderStatus.Finished).Time <= endDate)
                             .Select(entry => entry.Sum)
                             .DefaultIfEmpty(0)
                             .Sum()

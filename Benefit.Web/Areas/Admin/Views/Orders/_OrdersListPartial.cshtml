@@ -39,7 +39,10 @@
             Сума
         </th>
         <th>
-            Час
+            Час створення
+        </th>
+        <th>
+            Час завершення
         </th>
         @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitSite)
         {
@@ -80,6 +83,13 @@
             </td>
             <td>
                 @item.Time.ToLocalDateTimeWithFormat()
+            </td>
+            <td>
+                @{
+                    var finishedStamp = item.OrderStatusStamps.FirstOrDefault(entry => entry.OrderStatus == OrderStatus.Finished);
+                    var finishedTime = finishedStamp == null ? "-" : finishedStamp.Time.ToLocalDateTimeWithFormat();
+                }
+                @finishedTime
             </td>
             @if (item.OrderType == OrderType.BenefitSite)
             {
