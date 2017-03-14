@@ -66,7 +66,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             var seller = db.Sellers.Find(id);
             var fileContent = SellerService.GenerateIntelHexFile(seller.TerminalPassword);
-            return File(fileContent, System.Net.Mime.MediaTypeNames.Application.Octet, "IntelHexFile.hex");
+            return File(fileContent, System.Net.Mime.MediaTypeNames.Application.Octet, seller.UrlName + ".hex");
         }
 
         [HttpPost]
@@ -102,7 +102,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     Response.StatusCode = (int)HttpStatusCode.BadRequest;
                     return Json("Файл offers.xml не знайдено");
                 }
-                
+
                 var xml = XDocument.Load(importFile.FullName);
 
                 var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
@@ -131,7 +131,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return Json(new {message = "Категорії постачалника на сайті мають повтори в назві"});
+                    return Json(new { message = "Категорії постачалника на сайті мають повтори в назві" });
                 }
 
                 xmlProducts =
@@ -196,7 +196,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 _logger.Error(ex);
-                return Json("Помилка імпорту файлу: "+ex.InnerException.Message);
+                return Json("Помилка імпорту файлу: " + ex.InnerException.Message);
             }
         }
 
@@ -279,18 +279,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(options);
         }
 
-      /*  // GET: /Admin/Sellers/Create
-        public ActionResult UpdateSellerByOwenrId(string ownerId)
-        {
-            var owner = db.Users.Find(ownerId);
-            if (owner == null) return HttpNotFound();
-            if (!owner.OwnedSellers.Any()) return HttpNotFound();
-            return RedirectToAction("CreateOrUpdate", new { id = Seller.CurrentAuthorizedSellerId ?? owner.OwnedSellers.First().Id });
-        }
-*/
+        /*  // GET: /Admin/Sellers/Create
+          public ActionResult UpdateSellerByOwenrId(string ownerId)
+          {
+              var owner = db.Users.Find(ownerId);
+              if (owner == null) return HttpNotFound();
+              if (!owner.OwnedSellers.Any()) return HttpNotFound();
+              return RedirectToAction("CreateOrUpdate", new { id = Seller.CurrentAuthorizedSellerId ?? owner.OwnedSellers.First().Id });
+          }
+  */
         public ActionResult CreateOrUpdate(string id = null)
         {
-            var existingSeller = db.Sellers.Include(entry => entry.Personnels).Include("Schedules").Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.Id == id);
+            var existingSeller = db.Sellers.Include(entry => entry.BusinessLevelIndexes).Include(entry => entry.Personnels).Include(entry => entry.Schedules).Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {
                 Seller = existingSeller ?? new Seller() { Schedules = SetSellerSchedules().ToList() }
@@ -359,7 +359,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (seller.OwnerId != owner.Id)
                 {
                     //remove old owner a seller role if it was his only seller
-                    var oldOwner = db.Users.AsNoTracking().Include(entry=>entry.OwnedSellers).FirstOrDefault(entry => entry.Id == seller.OwnerId);
+                    var oldOwner = db.Users.AsNoTracking().Include(entry => entry.OwnedSellers).FirstOrDefault(entry => entry.Id == seller.OwnerId);
                     if (oldOwner != null && oldOwner.OwnedSellers.Count == 1)
                     {
                         UserManager.RemoveFromRole(seller.OwnerId, DomainConstants.SellerRoleName);

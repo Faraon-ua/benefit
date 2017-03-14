@@ -83,6 +83,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<Schedule> Schedules { get; set; }
         public virtual ICollection<ShippingMethod> ShippingMethods { get; set; }
+        public virtual ICollection<SellerBusinessLevelIndex> BusinessLevelIndexes { get; set; }
         public ICollection<ProductOption> ProductOptions { get; set; }
         public ICollection<Personnel> Personnels { get; set; }
 

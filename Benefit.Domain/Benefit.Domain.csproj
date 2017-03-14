@@ -281,6 +281,10 @@
     <Compile Include="Migrations\201703061052289_ProductPromotion.Designer.cs">
       <DependentUpon>201703061052289_ProductPromotion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703141004267_BusinessLevelIndexes.cs" />
+    <Compile Include="Migrations\201703141004267_BusinessLevelIndexes.Designer.cs">
+      <DependentUpon>201703141004267_BusinessLevelIndexes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -317,6 +321,7 @@
     <Compile Include="Models\Schedule.cs" />
     <Compile Include="Models\Search\SearchResult.cs" />
     <Compile Include="Models\Seller.cs" />
+    <Compile Include="Models\SellerBusinessLevelIndexes.cs" />
     <Compile Include="Models\SellerCategory.cs" />
     <Compile Include="Models\Service\PartnerRecon.cs" />
     <Compile Include="Models\Service\TransactionServiceModel.cs" />
@@ -478,6 +483,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703061052289_ProductPromotion.resx">
       <DependentUpon>201703061052289_ProductPromotion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703141004267_BusinessLevelIndexes.resx">
+      <DependentUpon>201703141004267_BusinessLevelIndexes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

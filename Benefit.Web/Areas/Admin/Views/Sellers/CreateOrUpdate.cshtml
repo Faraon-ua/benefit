@@ -73,6 +73,11 @@
                 width: "450px"
             });
 
+            $("#add-business-level-index").click(function () {
+//                var newIndexUrl = '@Url.Action("")';
+//                $.get()
+            });
+
             $("body").on("click", ".remove-personnel", function (e) {
                 if (confirm('Ви впевненні?')) {
                     e.preventDefault();
@@ -290,7 +295,7 @@
             <li>
                 <a href="#security" data-toggle="tab">
                     <i class="red icon-lock bigger-110"></i>
-                    Безпека
+                    Безпека та коефіцієнти
                 </a>
             </li>
             <li>
@@ -372,7 +377,7 @@
                 @Html.Partial("_Import", Model.Seller)
             </div>
             <div class="tab-pane" id="personell">
-                @Html.Partial("~/Areas/Admin//Views/Personnel/_PersonnelList.cshtml", Model.Seller.Personnels)
+                @Html.Partial("~/Areas/Admin/Views/Personnel/_PersonnelList.cshtml", Model.Seller.Personnels)
             </div>
         </div>
     </div>
