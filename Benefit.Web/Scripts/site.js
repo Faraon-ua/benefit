@@ -100,7 +100,7 @@ $(function () {
     $("#predefinedRegions a").click(function () {
         var regionName = $(this).text();
         var regionId = $(this).attr("data-region-id");
-        $("#select_place .inside").text(regionName);
+        $(".select_place_container .inside").text(regionName);
         $(".region-search-txt").val(regionName);
         $(".region_modal").modal("hide");
         setCookie("regionName", regionName, { expires: 31536000, path: "/" });//year
@@ -173,7 +173,7 @@ $(function () {
     if (!getCookie("regionName")) {
         $(".region_modal").modal();
     }
-    $("#select_place").click(function () {
+    $(".select_place_container").click(function () {
         $(".region_modal").modal();
     });
 
@@ -183,7 +183,7 @@ $(function () {
         serviceUrl: routePrefix + '/Home/SearchRegion',
         onSelect: function (suggestion) {
             var result = suggestion.value.substring(0, suggestion.value.indexOf(" ("));
-            $("#select_place .inside").text(result);
+            $(".select_place_container .inside").text(result);
             $(".region-search-txt").val(result);
             $(".region_modal").modal("hide");
             setCookie("regionName", result, { expires: 31536000, path: "/" });//year
@@ -198,9 +198,9 @@ $(function () {
     }
 
     if (getCookie("regionName")) {
-        $("#select_place .inside").text(getCookie("regionName"));
+        $(".select_place_container .inside").text(getCookie("regionName"));
     } else {
-        $("#select_place .inside").text("Оберіть місто");
+        $(".select_place_container .inside").text("Оберіть місто");
     }
 
     $("body").on("click", ".structure_table_register_email input", function () {

@@ -1,5 +1,22 @@
 ﻿<ul>
-    <li class="login_links show_on_tablet"><a href="#">Вхід</a> | <a href="#">Реєстрація</a></li>
+    <li class="login_links show_on_tablet">
+        @if (User.Identity.IsAuthenticated)
+        {
+            <a href="@Url.Action("Index", "Panel", new { area = Benefit.Common.Constants.DomainConstants.CabinetAreaName })">@HttpUtility.UrlDecode(Request.Cookies[Benefit.Common.Constants.RouteConstants.FullNameCookieName].Value)</a>
+            using (Html.BeginForm("LogOff", "Account", new { area = string.Empty }, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right pull-right" }))
+            {
+                @Html.AntiForgeryToken()
+                <a href="javascript:document.getElementById('logoutForm').submit()"><img src="~/Content/img/logout.png" /> </a>
+            }
+        }
+        else
+        {
+            <div>
+                <a href="@Url.Action("Login","Account")">Вхід</a> |
+                <a href="@Url.Action("Register","Account")">Реєстрація</a>
+            </div>
+        }
+    </li>
     <li class="margin-left-0">
         <a href="@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })">Партнерська програма</a>
     </li>

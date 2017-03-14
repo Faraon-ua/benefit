@@ -4,6 +4,10 @@
 @model Benefit.DataTransfer.ViewModels.PartnerTransactionsViewModel
 
 <div id="bonus_account" class="bonus_account tab-pane fade in active">
+    <div class="finance_tab_title">
+        <a href="" class="partner_menu_back"></a>
+        <span>Облік бонусів</span>
+    </div>
     <p class="controls_block_title orders_title">Пошук по даті нарахувань</p>
     <div class="controls_block order_controls clearfix">
         <form class="controls_block_form">
@@ -12,93 +16,95 @@
             <button class="controls_block_search_btn"><i></i>Пошук</button>
         </form>
     </div>
+    <div class="finance_table_wrap">
 
-    <table class="bonus_account_table">
-        <tr>
-            <th>Дата</th>
-            <th>Час</th>
-            <th>Вид операції</th>
-            <th>Бонуси</th>
-            <th>Комісія</th>
-            <th>Залишок</th>
-        </tr>
-        @foreach (var transaction in Model.General)
+        <table class="bonus_account_table">
+            <tr>
+                <th>Дата</th>
+                <th>Час</th>
+                <th>Вид операції</th>
+                <th>Бонуси</th>
+                <th>Комісія</th>
+                <th>Залишок</th>
+            </tr>
+            @foreach (var transaction in Model.General)
         {
             var rowClassName = transaction.Bonuses < 0 ? "pink" : "";
             string fullMonthName = transaction.Time.AddMonths(-1).ToString("MMMM", CultureInfo.CreateSpecificCulture("uk"));
 
-            <tr class="@rowClassName">
-                <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
-                <td>@transaction.Time.ToLocalTimeWithFormat()</td>
-                <td>
-                    @if (transaction.Type == TransactionType.BonusesOrderPayment)
+        <tr class="@rowClassName">
+            <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
+            <td>@transaction.Time.ToLocalTimeWithFormat()</td>
+            <td>
+                @if (transaction.Type == TransactionType.BonusesOrderPayment)
                     {
-                        <span>
-                            Оплата за замовлення №@transaction.Order.OrderNumber
-                        </span>
-                        <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                    <span>
+                        Оплата за замовлення №@transaction.Order.OrderNumber
+                    </span>
+                    <div class="details_button" data-order-id="@transaction.Order.Id"></div>
                     }
-                    @if (transaction.Type == TransactionType.BonusesOrderAbandonedPayment)
+                @if (transaction.Type == TransactionType.BonusesOrderAbandonedPayment)
                     {
-                        <span>
-                            Повернення бонусів за скасування замовлення №@transaction.Order.OrderNumber
-                        </span>
-                        <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                    <span>
+                        Повернення бонусів за скасування замовлення №@transaction.Order.OrderNumber
+                    </span>
+                    <div class="details_button" data-order-id="@transaction.Order.Id"></div>
                     }
-                    @if (transaction.Type == TransactionType.OrderRefund)
+                @if (transaction.Type == TransactionType.OrderRefund)
                     {
-                        <span>
-                            Повернення бонусів за редагування замовлення №@transaction.Order.OrderNumber
-                        </span>
-                        <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                    <span>
+                        Повернення бонусів за редагування замовлення №@transaction.Order.OrderNumber
+                    </span>
+                    <div class="details_button" data-order-id="@transaction.Order.Id"></div>
                     }
-                    @if (transaction.Type == TransactionType.PersonalMonthAggregate)
+                @if (transaction.Type == TransactionType.PersonalMonthAggregate)
                     {
-                        <span>
-                            Персональні бонуси за @fullMonthName @transaction.Time.Year
-                        </span>
+                    <span>
+                        Персональні бонуси за @fullMonthName @transaction.Time.Year
+                    </span>
                     }
-                    @if (transaction.Type == TransactionType.MentorBonus)
+                @if (transaction.Type == TransactionType.MentorBonus)
                     {
-                        <span>
-                            Бонуси за запрошення за @fullMonthName @transaction.Time.Year
-                        </span>
+                    <span>
+                        Бонуси за запрошення за @fullMonthName @transaction.Time.Year
+                    </span>
                     }
-                    @if (transaction.Type == TransactionType.VIPBonus)
+                @if (transaction.Type == TransactionType.VIPBonus)
                     {
-                        <span>
-                            Дивіденди за VIP статус за @fullMonthName @transaction.Time.Year
-                        </span>
+                    <span>
+                        Дивіденди за VIP статус за @fullMonthName @transaction.Time.Year
+                    </span>
                     }
-                    @if (transaction.Type == TransactionType.VIPSellerBonus)
+                @if (transaction.Type == TransactionType.VIPSellerBonus)
                     {
-                        <span>
-                            Винагорода за підключення постачальника
-                        </span>
+                    <span>
+                        Винагорода за підключення постачальника
+                    </span>
                     }
-                    @if (transaction.Type == TransactionType.Custom)
+                @if (transaction.Type == TransactionType.Custom)
                     {
-                         <span>
-                            @transaction.Description
-                        </span>
+                    <span>
+                        @transaction.Description
+                    </span>
                     }
-                </td>
+            </td>
 
-                <td class="bonusLevel">
-                    @if (transaction.Bonuses > 0)
+            <td class="bonusLevel">
+                @if (transaction.Bonuses > 0)
                     {
-                        <span>+</span>
+                    <span>+</span>
                     }
 
-                    @transaction.Bonuses.ToDoubleDigits()
-                </td>
-                <td>
-                    @transaction.Commission.ToDoubleDigits()
-                </td>
-                <td>
-                    @transaction.BonusesBalans.ToDoubleDigits()
-                </td>
-            </tr>
+                @transaction.Bonuses.ToDoubleDigits()
+            </td>
+            <td>
+                @transaction.Commission.ToDoubleDigits()
+            </td>
+            <td>
+                @transaction.BonusesBalans.ToDoubleDigits()
+            </td>
+        </tr>
         }
-    </table>
+        </table>
+    </div>
 </div>

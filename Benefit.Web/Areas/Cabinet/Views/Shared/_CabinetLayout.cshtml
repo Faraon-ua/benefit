@@ -13,7 +13,7 @@
     <!-- overlay -->
     <div class="login_box_over hidden"></div>
     <div class="empty_over hidden"></div>
-    <div class="container container_cabinet">
+    <div class="container container_cabinet @ViewBag.CabinetProfileClass">
         <div class="row container_table">
             @RenderSection("PartnerHead", true)
             @Html.Partial("_PartnerMenu")
@@ -36,8 +36,8 @@
                     });
             }
 
-            $(".sh_btn").click(function () {
-                var cartUrl = '@Url.Action("GetCart","Cart", new { area = "" })';
+            $("#order-cart, .deliveri_edit").click(function () {
+                var cartUrl = '@Url.Action("GetCart", "Cart", new { area = string.Empty })';
                 $("#cart-container").load(cartUrl, function () {
                     $("#basket_modal").modal('show');
                 });

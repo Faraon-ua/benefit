@@ -5,6 +5,7 @@
 
 @{
     ViewBag.Title = "Історія замовлень";
+    ViewBag.CabinetProfileClass = "kabinet_profile";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
 @section PartnerHead
@@ -53,31 +54,38 @@
                 </form>
             </div>
 
-            <table class="orders_table">
-                <tr>
-                    <th>№</th>
-                    <th>Дата</th>
-                    <th>Заклад</th>
-                    <th>Сума</th>
-                    <th>Бонуси</th>
-                    <th>Бали</th>
-                    <th>Статус</th>
-                    <th>Деталі</th>
-                </tr>
-                @foreach (var order in Model.Orders.Where(entry => entry.OrderType == OrderType.BenefitSite))
-                {
-                    <tr>
-                        <td>@order.OrderNumber</td>
-                        <td>@order.Time.ToLocalTimeWithDateFormat()</td>
-                        <td>@order.SellerName</td>
-                        <td>@order.Sum.ToString("F")</td>
-                        <td>@order.PersonalBonusesSum.ToString("F")</td>
-                        <td>@order.PointsSum.ToString("F")</td>
-                        <td>@Enumerations.GetEnumDescription(order.Status)</td>
-                        <td><div class="details_button" data-order-id="@order.Id"></div></td>
-                    </tr>
-                }
-            </table>
+            <div class="orders_table_wrap">
+                <div>
+                    <table class="orders_table">
+                        <tr>
+                            <th>№</th>
+                            <th>Дата</th>
+                            <th>Заклад</th>
+                            <th>Сума</th>
+                            <th>Бонуси</th>
+                            <th>Бали</th>
+                            <th>Статус</th>
+                            <th>Деталі</th>
+                        </tr>
+                        @foreach (var order in Model.Orders.Where(entry => entry.OrderType == OrderType.BenefitSite))
+                        {
+                            <tr>
+                                <td>@order.OrderNumber</td>
+                                <td>@order.Time.ToLocalTimeWithDateFormat()</td>
+                                <td>@order.SellerName</td>
+                                <td>@order.Sum.ToString("F")</td>
+                                <td>@order.PersonalBonusesSum.ToString("F")</td>
+                                <td>@order.PointsSum.ToString("F")</td>
+                                <td>@Enumerations.GetEnumDescription(order.Status)</td>
+                                <td><div class="details_button" data-order-id="@order.Id"></div></td>
+                            </tr>
+                        }
+                    </table>
+
+                </div>
+            </div>
+            <div class="bottom_control clearfix"></div>
+
             @* <div class="bottom_control clearfix">
                     <div class="pagination_wrap">
                         <div class="pagination_prew">&lt;</div>
@@ -119,25 +127,31 @@
                 </form>
             </div>
 
-            <table class="orders_table">
-                <tr>
-                    <th>Дата</th>
-                    <th>Заклад</th>
-                    <th>Сума (грн)</th>
-                    <th>Бонуси</th>
-                    <th>Бали</th>
-                </tr>
-                @foreach (var order in Model.Orders.Where(entry => entry.OrderType == OrderType.BenefitCard))
-                {
-                    <tr>
-                        <td>@order.Time.ToLocalTimeWithDateFormat()</td>
-                        <td>@order.SellerName</td>
-                        <td>@order.Sum.ToString("F")</td>
-                        <td>@order.PersonalBonusesSum.ToString("F")</td>
-                        <td>@order.PointsSum.ToString("F")</td>
-                    </tr>
-                }
-            </table>
+            <div class="orders_table_wrap">
+                <div>
+                    <table class="orders_table">
+                        <tr>
+                            <th>Дата</th>
+                            <th>Заклад</th>
+                            <th>Сума (грн)</th>
+                            <th>Бонуси</th>
+                            <th>Бали</th>
+                        </tr>
+                        @foreach (var order in Model.Orders.Where(entry => entry.OrderType == OrderType.BenefitCard))
+                        {
+                            <tr>
+                                <td>@order.Time.ToLocalTimeWithDateFormat()</td>
+                                <td>@order.SellerName</td>
+                                <td>@order.Sum.ToString("F")</td>
+                                <td>@order.PersonalBonusesSum.ToString("F")</td>
+                                <td>@order.PointsSum.ToString("F")</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+            <div class="bottom_control clearfix"></div>
+
             @* <div class="bottom_control clearfix">
                     <div class="pagination_wrap">
                         <div class="pagination_prew">&lt;</div>

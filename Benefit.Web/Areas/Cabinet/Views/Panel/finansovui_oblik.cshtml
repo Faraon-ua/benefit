@@ -5,6 +5,7 @@
 
 @{
     ViewBag.Title = "Фінансовий облік";
+    ViewBag.CabinetProfileClass = "kabinet_profile finance";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
 
@@ -112,6 +113,20 @@
     </script>
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
+    <div class="finance_bonuses_mobile">
+        <p class="finance_bonuses_mobile_title">Доступні бонуси:</p>
+        <p class="finance_bonuses_mobile_description">@Model.User.BonusAccount.ToDoubleDigits()</p>
+        <p class="finance_bonuses_mobile_title">Бонуси в обробці:</p>
+        <p class="finance_bonuses_mobile_description">@Model.User.HangingBonusAccount.ToDoubleDigits()</p>
+        <p class="finance_bonuses_mobile_title">Баловий товарообіг партнерів за поточний період:</p>
+        <p class="finance_bonuses_mobile_description">-</p>
+    </div>
+    <div class="finance_fixed_block show_on_tablet">
+        <div class="bonuses_available">Доступні бонуси: <span>@Model.User.BonusAccount.ToDoubleDigits()</span></div>
+        <div class="bonuses_processing">Бонуси в обробці:  <span>55,85</span></div>
+        <div class="products_full">Баловий товарообіг партнерів за поточний період: <span>@Model.User.HangingBonusAccount.ToDoubleDigits()</span></div>
+    </div>
+
     <ul class="profile_menu nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#bonus_account">Облік <br>бонусів</a></li>
         <li><a data-toggle="tab" href="#personal_charges">Особисті <br>нарахування</a></li>
@@ -120,7 +135,7 @@
         <li><a data-toggle="tab" href="#bonuses_used">Використати <br>бонуси</a></li>
     </ul>
 
-    <div class="finance_fixed_block">
+    <div class="finance_fixed_block tablet_hidden">
         <div class="bonuses_available">
             Доступні бонуси: <span>
                 @Model.User.BonusAccount.ToDoubleDigits()
@@ -134,7 +149,7 @@
         @*        <div class="products_full">Баловий товарообіг партнерів за поточний період: <span>650,97</span></div>*@
     </div>
 
-    <div class="tab-content">
+    <div class="tab-content finance_mobile_hidden">
         @Html.Partial("_FinanceGeneralPrtial", Model)
 
         @Html.Partial("_FinancePersonalPartial", Model)
@@ -208,6 +223,10 @@
 
 
         <div id="bonuses_used" class="bonuses_used tab-pane fade">
+            <div class="finance_tab_title">
+                <a href="" class="partner_menu_back"></a>
+                <span>Використати бонуси</span>
+            </div>
             <p class="bonuses_used_title">Оплата бонусами за товари та послуги</p>
             <p class="bonuses_used_decription">
                 Використати бонуси ви можете для замовлення продуктів харчування, господарських та дитячих товарів, побутової

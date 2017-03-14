@@ -7,19 +7,19 @@
     @RenderSection("image_src", required: false)
     @RenderSection("styles", required: false)
 </head>
-<body>
+<body class="@ViewBag.MainPageClass">
     <div class="darker hidden"></div>
     @Html.Partial("_header")
     @Html.Partial("_ControlPanelPartial")
     <!-- overlay -->
     <div class="login_box_over hidden"></div>
     <div class="empty_over hidden"></div>
-    <div class="container">
-        <div class="container_table main_content clearfix">
+    <div class="container container_provider container_padding">
+        <div class="container_table clearfix @ViewBag.MainContentClass">
             <aside class="left_sidebar left_sidebar_main">
                 @RenderSection("LeftAside", false)
             </aside>
-            <main class="col-8 full_content">
+            <main class="@(ViewBag.MainContainerClass ?? "col-8 full_content")">
                 @RenderBody()
             </main>
             <aside class="right_sidebar right_sidebar_main">

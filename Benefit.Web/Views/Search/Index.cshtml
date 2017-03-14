@@ -25,6 +25,5 @@
         });
     </script>
 }
-<p>Результати пошуку</p>
-<h3>"@Model.Term"</h3>
+<p>Результати пошуку по запиту <strong class="bigger-125">"@Model.Term"</strong></p>
 @Html.Partial("~/Views/Catalog/_ProductsListPartial.cshtml", Model.Products)

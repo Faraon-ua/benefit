@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = Model.Category.Name;
     ViewBag.SellerUrl = Model.Category.UrlName;
+    ViewBag.MainContainerClass = "full_content full_content_provider";
 }
 
 @section scripts{
@@ -39,15 +40,12 @@
     @Html.Partial("~/Views/Catalog/_SellerFilters.cshtml", Model)
 }
 
-<main class="full_content full_content_provider">
     <div class="provider_row clearfix">
         @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
-        @*  <div class="provider_sort">
-                <label for="provider_sort_title">Сортувати</label>
-                <select id="provider_sort_select" class="provider_sort_select">
-                    <option>по рейтингу</option>
-                </select>
-            </div>*@
+        <div class="list_filter_wrap show_on_tablet clearfix">
+            <div class="list_filter" data-toggle="modal" data-target="#filter_modal">Фільтрувати</div>
+            <div class="list_sort" data-toggle="modal" data-target="#sort_modal">Сортувати</div>
+        </div>
         @if (Model.Items.Any())
         {
             foreach (var seller in Model.Items)
@@ -59,7 +57,7 @@
         {
             <div style="text-align-last: left;">
                 @{
-                    var regionName = HttpContext.Current.Request.Cookies["regionName"];
+            var regionName = HttpContext.Current.Request.Cookies["regionName"];
                 }
                 <b style="font-size: 1em;">
                     В категорії <span style="color: #cb2728; ">@Model.Category.Name</span>
@@ -70,10 +68,10 @@
                             <span style="color: #cb2728; ">@HttpUtility.UrlDecode(regionName.Value)</span>
                         </span>
                     }
-                    постачальників поки що немає. 
-                    <br/>
+                    постачальників поки що немає.
+                    <br />
                     Якщо ви хочете зробити нам ділову пропозицію, чекаємо на вашу заявку.
-                    <br/>
+                    <br />
                     <a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })">
                         <img style="width: 100%;" src="~/Content/img/spivpracia.jpg" />
                     </a>
@@ -106,5 +104,3 @@
                 </select>
             </div>
         </div>*@
-</main>
-

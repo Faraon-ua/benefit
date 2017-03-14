@@ -8,30 +8,32 @@
             <div class="history_modal_close" data-dismiss="modal" aria-hidden="true"><span></span></div>
             <div class="modal-body">
                 <p class="history_modal_title">Інформація про замовлення</p>
-                <table class="order_ifo_table">
-                    <tbody>
-                        <tr>
-                            <th>Номер</th>
-                            <th>Дата</th>
-                            <th>Сума (грн)</th>
-                            <th>Бали</th>
-                            <th>Бонуси</th>
-                            <th>Спосіб оплати</th>
-                            <th>Спосіб доставки</th>
-                            <th>Адреса доставки</th>
-                        </tr>
-                        <tr>
-                            <td>@Model.OrderNumber</td>
-                            <td>@Model.Time.ToLocalTimeWithDateFormat()</td>
-                            <td>@Model.Sum.ToString("F")</td>
-                            <td>@Model.PointsSum.ToString("F")</td>
-                            <td>@Model.PersonalBonusesSum.ToString("F")</td>
-                            <td>@Enumerations.GetEnumDescription(Model.PaymentType)</td>
-                            <td>@Model.ShippingName</td>
-                            <td>@Model.ShippingAddress</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="history_modal_table_wrap">
+                    <table class="order_info_table">
+                        <tbody>
+                            <tr>
+                                <th>Номер</th>
+                                <th>Дата</th>
+                                <th>Сума (грн)</th>
+                                <th>Бали</th>
+                                <th>Бонуси</th>
+                                <th>Спосіб оплати</th>
+                                <th>Спосіб доставки</th>
+                                <th>Адреса доставки</th>
+                            </tr>
+                            <tr>
+                                <td>@Model.OrderNumber</td>
+                                <td>@Model.Time.ToLocalTimeWithDateFormat()</td>
+                                <td>@Model.Sum.ToString("F")</td>
+                                <td>@Model.PointsSum.ToString("F")</td>
+                                <td>@Model.PersonalBonusesSum.ToString("F")</td>
+                                <td>@Enumerations.GetEnumDescription(Model.PaymentType)</td>
+                                <td>@Model.ShippingName</td>
+                                <td>@Model.ShippingAddress</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
                 <p class="history_modal_title">Товари в кошику</p>
                 <table class="order_in_table">
                     <thead>

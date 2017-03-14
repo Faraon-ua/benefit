@@ -10,20 +10,25 @@
         </div>
     </div>
 
-    @using (Html.BeginForm("SetAvatar", "Panel", FormMethod.Post, new { id = "set_ava_picture", enctype = "multipart/form-data" }))
-    {
-        <input type="file" name="avatar" id="ava_select" class="hide" accept="image/*" />
-    }
-    <p class="user_name">@Model.FullName</p>
-    @if (!Model.Status.HasValue)
-    {
-        <p class="user_statuse">CLIENT</p>
-    }
-    else
-    {
-        <p class="user_statuse">@Enumerations.GetEnumDescription(Model.Status)</p>
-    }
-    <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
+    <div class="user_right">
+        @using (Html.BeginForm("SetAvatar", "Panel", FormMethod.Post, new { id = "set_ava_picture", enctype = "multipart/form-data" }))
+        {
+            <input type="file" name="avatar" id="ava_select" class="hide" accept="image/*" />
+        }
+        <p class="user_name">@Model.FullName</p>
+        @if (!Model.Status.HasValue)
+        {
+            <p class="user_statuse">CLIENT</p>
+        }
+        else
+        {
+            <p class="user_statuse">@Enumerations.GetEnumDescription(Model.Status)</p>
+        }    
+        <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
+
+        <p class="bonus_available bonus_available_mobile">Доступні бонуси: <span class="bonus_border">350,80</span></p>
+    </div>
+    
     <p class="card_numb">Номер бонусної картки:<br>@Model.CardNumber</p>
     <p class="bonus_count">Загальна сума зароблених бонусів:<br><span class="bonus_border">@Model.TotalBonusAccount.ToString("F")</span></p>
     <p class="bonus_available">

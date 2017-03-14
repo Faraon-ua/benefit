@@ -3,15 +3,19 @@
         <div class="container_table topheader_content">
             <div class="col-2">
                 <a class="logo" href='@Url.Action("Index", "Home", new { area = string.Empty }, Request.Url.Scheme)'></a>
+                <div class="show_on_tablet logo_region select_place_container">
+                    <i class="icn location"></i>
+                    <span class="inside"></span>
+                </div>
                 <div class="logo_slogan">Онлайн торговий центр</div>
             </div>
             <div class="col-8">
                 <div class="menu lmenu_block" id="left-menu">
                     @Html.Partial("_MenuPartial")
                     <div class="f_soc_p">
-                        <a href="#" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                        <a href="#" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="#" class="vk"><i class="fa fa-vk" aria-hidden="true"></i></a>
+                        <a href="https://www.youtube.com/channel/UC2YbFBSzjxW_ji2_mDBeWpw" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
+                        <a href="https://www.facebook.com/groups/benefitcompany" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                        <a href="https://vk.com/benefitclub" class="vk"><i class="fa fa-vk" aria-hidden="true"></i></a>
                         <a href="#" class="gp"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
                         <a href="#" class="tw"><i class="fa fa-twitter" aria-hidden="true"></i></a>
                         <a href="#" class="ig"><i class="fa fa-instagram" aria-hidden="true"></i></a>

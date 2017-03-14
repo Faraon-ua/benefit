@@ -2,7 +2,7 @@
 {
     public class CacheConstants
     {
-        public const int OutputCacheLength = 3600; //minutes
+        public const int OutputCacheLength = 3600; //seconds
 
         public const string BreadCrumbsKey = "BreadCrumbs";
         
