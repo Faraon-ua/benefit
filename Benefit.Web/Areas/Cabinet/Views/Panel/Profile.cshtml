@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Профіль";
+    ViewBag.CabinetProfileClass = "kabinet_profile";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
 @section PartnerHead
@@ -112,7 +113,7 @@
 
                 if (Model.IsCardVerified)
                 {
-                    <img src="~/Content/img/kartka_verifikovana.png" />
+                    <img src="~/Content/img/kartka_verifikovana.png" style="width: 100%;" />
                 }
                 else
                 {

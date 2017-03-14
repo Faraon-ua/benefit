@@ -5,6 +5,10 @@
 <div id="bonuses_invitation" class="bonuses_invitation tab-pane fade">
     <div class="controls_block clearfix">
         <form class="controls_block_form">
+            <div class="finance_tab_title">
+                <a href="" class="partner_menu_back"></a>
+                <span>Бонус за запрошення</span>
+            </div>
             <p class="controls_block_title orders_title">Пошук по даті нарахувань</p>
             <div class="controls_block order_controls clearfix">
                 <form class="controls_block_form">
@@ -15,26 +19,28 @@
             </div>
         </form>
     </div>
+    <div class="finance_table_wrap">
 
-    <table class="bonuses_invitation_table main_table">
-        <tr>
-            <th>Дата</th>
-            <th>Запрошений партнер</th>
-@*            <th>Лінія <br>структури</th>*@
-            <th>Бонуси</th>
-        </tr>
-        @foreach (var transaction in Model.Referals)
-        {
+        <table class="bonuses_invitation_table main_table">
             <tr>
-                <td>
-                    @transaction.Time.ToLocalTimeWithDateFormat()
-                </td>
-                <td>
-                    @transaction.Payer.FullName
-                </td>
-@*                <td class="structureLine">1</td>*@
-                <td>@transaction.Bonuses.ToDoubleDigits()</td>
+                <th>Дата</th>
+                <th>Запрошений партнер</th>
+                @*            <th>Лінія <br>структури</th>*@
+                <th>Бонуси</th>
             </tr>
+            @foreach (var transaction in Model.Referals)
+        {
+        <tr>
+            <td>
+                @transaction.Time.ToLocalTimeWithDateFormat()
+            </td>
+            <td>
+                @transaction.Payer.FullName
+            </td>
+            @*                <td class="structureLine">1</td>*@
+            <td>@transaction.Bonuses.ToDoubleDigits()</td>
+        </tr>
         }
-    </table>
+        </table>
+    </div>
 </div>

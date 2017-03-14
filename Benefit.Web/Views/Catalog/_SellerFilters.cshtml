@@ -29,7 +29,7 @@
         </div>
     }
 
-    <fieldset class="width-100">
+    <fieldset class="width-100 sidebar_hidden">
         <legend>Критерії</legend>
         <input class="hidden" type="checkbox" name="seller-options" value="MyCityOnly" id="MyCityOnly">
         <label class="label_for_check" for="MyCityOnly">Тільки моє місто (@Model.Items.Count(entry => entry.Addresses.Select(addr => addr.RegionId.ToString()).Contains(Request.Cookies[DomainConstants.RegionIdCookieKey].Value)))</label>

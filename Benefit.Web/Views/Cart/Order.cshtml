@@ -112,8 +112,8 @@
         @Html.Partial("_OrderProducts", Model)
         @Html.Partial("_PaymentSummary", Model)
         <div class="delivery_kontrols clearfix">
-            <a href="#" class="deliveri_edit goto_back btn">Редагувати замовлення</a>
-            <input type="submit" class="checkout goto_ahead btn" value="Оформити замовлення" id="checkout" disabled />
+            <a href="#" class="deliveri_edit goto_back btn"><span>Редагувати<br /> замовлення</span></a>
+            <button type="submit" class="checkout goto_ahead btn" id="checkout" disabled>Оформити<br /> замовлення</button>
         </div>
         @*        <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@
     </div>

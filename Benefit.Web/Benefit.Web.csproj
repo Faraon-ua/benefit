@@ -1486,6 +1486,7 @@
     <Content Include="Scripts\jquery.autocomplete.min.js" />
     <Content Include="Scripts\jquery.fancybox.js" />
     <Content Include="Scripts\jquery.mask.min.js" />
+    <Content Include="Scripts\jquery.touchSwipe.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
     <Content Include="Scripts\jquery.validate.js" />
