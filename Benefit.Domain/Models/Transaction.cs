@@ -28,7 +28,9 @@ namespace Benefit.Domain.Models
         [Description("Персональні бонуси за скасування замовлення")]
         BonusesOrderAbandonedPayment,
         PersonalMonthAggregate,
-        Custom
+        Custom,
+        [Description("Додаткове нарахування за бізнес рівень")]
+        BusinessLevel
     }
     public class Transaction
     {

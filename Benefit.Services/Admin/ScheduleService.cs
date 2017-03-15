@@ -56,6 +56,11 @@ namespace Benefit.Services.Admin
         }
         public ProcessBonusesViewModel ProcessBonuses()
         {
+            var today = DateTime.Today;
+            var month = new DateTime(today.Year, today.Month, 1);
+            var firstDayOfLastMonth = month.AddMonths(-1);
+            var lastDayOfLastMonth = month.AddTicks(-1);
+
             var result = new ProcessBonusesViewModel()
             {
                 Partners = new List<PartnerReckon>(),
@@ -67,6 +72,9 @@ namespace Benefit.Services.Admin
                 {
                     try
                     {
+                        var promotionSellerIndexes =
+                                db.SellerBusinessLevelIndexes.Where(entry => entry.Index > 1).ToList();
+
                         var allUsers = db.Users.Include(entry => entry.Referal).ToList();
 
                         var partners =
@@ -79,9 +87,7 @@ namespace Benefit.Services.Admin
                         foreach (var partner in partners)
                         {
                             var currentReferal = partner.Referal;
-                            var bonusesForMentor = partner.HangingPointsAccount *
-                                                   SettingsService.RewardsPlan.DistributionToPointsPercentageMap[
-                                                       DistributionType.Mentor] / 100;
+
                             do
                             {
                                 //берем реферала, который сделал 500 баллов за предыдущий период и карта верифицирована
@@ -91,13 +97,68 @@ namespace Benefit.Services.Admin
                                     var totalBalansBeforeRecon = currentReferal.BonusAccount +
                                                       partnerReckons.Where(entry => entry.Transaction.PayeeId == currentReferal.Id)
                                                           .Sum(entry => entry.Transaction.Bonuses);
+                                    var promotionPurchasesPoints = 0.0;
+                                    var businessLevelBonuses = 0.0;
+
+                                    //if referal has business level that has index more than 1
+                                    if (promotionSellerIndexes.Select(entry => entry.BusinessLevel)
+                                            .Contains(currentReferal.BusinessLevel))
+                                    {
+                                        var promotionSellersWithReferalBusinessLevel =
+                                            promotionSellerIndexes.Where(
+                                                entry => entry.BusinessLevel == currentReferal.BusinessLevel).Select(entry=>entry.SellerId).ToList();
+
+                                        promotionPurchasesPoints =
+                                            db.Orders.Include(entry=>entry.OrderStatusStamps).Where(
+                                                entry =>
+                                                    entry.UserId == partner.Id &&
+                                                    promotionSellersWithReferalBusinessLevel.Contains(entry.SellerId) &&
+                                                    entry.Status == OrderStatus.Finished &&
+                                                    entry.OrderStatusStamps.FirstOrDefault(stamp => stamp.OrderStatus == OrderStatus.Finished).Time > firstDayOfLastMonth &&
+                                                    entry.OrderStatusStamps.FirstOrDefault(stamp => stamp.OrderStatus == OrderStatus.Finished).Time < lastDayOfLastMonth)
+                                                .Select(entry => entry.PointsSum)
+                                                .DefaultIfEmpty(0)
+                                                .Sum();
+
+                                        if (promotionPurchasesPoints > 0)
+                                        {
+
+                                            businessLevelBonuses = promotionPurchasesPoints*
+                                                                   SettingsService.RewardsPlan
+                                                                       .DistributionToPointsPercentageMap[
+                                                                           DistributionType.Mentor]/100;
+
+                                            var businessLevelTransaction = new TransactionServiceModel()
+                                            {
+                                                Transaction = new Transaction()
+                                                {
+                                                    Id = Guid.NewGuid().ToString(),
+                                                    Bonuses = businessLevelBonuses,
+                                                    BonusesBalans = totalBalansBeforeRecon + businessLevelBonuses,
+                                                    Time = DateTime.UtcNow,
+                                                    Type = TransactionType.BusinessLevel,
+                                                    PayerId = partner.Id,
+                                                    Payer = partner,
+                                                    PayeeId = currentReferal.Id,
+                                                    Payee = currentReferal
+                                                },
+                                                PointsAmount = promotionPurchasesPoints
+                                            };
+                                            partnerReckons.Add(businessLevelTransaction);
+                                        }
+                                    }
+
+                                    var bonusesForMentor = (partner.HangingPointsAccount + promotionPurchasesPoints) *
+                                                   SettingsService.RewardsPlan.DistributionToPointsPercentageMap[
+                                                       DistributionType.Mentor] / 100;
+
                                     var transaction = new TransactionServiceModel()
                                     {
                                         Transaction = new Transaction()
                                         {
                                             Id = Guid.NewGuid().ToString(),
                                             Bonuses = bonusesForMentor,
-                                            BonusesBalans = totalBalansBeforeRecon + bonusesForMentor,
+                                            BonusesBalans = totalBalansBeforeRecon + businessLevelBonuses + bonusesForMentor,
                                             Time = DateTime.UtcNow,
                                             Type = TransactionType.MentorBonus,
                                             PayerId = partner.Id,

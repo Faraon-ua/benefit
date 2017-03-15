@@ -36,6 +36,10 @@
             </td>
             <td>
                 @transaction.Payer.FullName
+                @if (transaction.Type == TransactionType.BusinessLevel)
+                {
+                    <span>(Додаткове нарахування за ваш бізнес рівень)</span>
+                }
             </td>
             @*                <td class="structureLine">1</td>*@
             <td>@transaction.Bonuses.ToDoubleDigits()</td>

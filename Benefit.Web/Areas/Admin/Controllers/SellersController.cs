@@ -9,8 +9,10 @@ using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
 using Benefit.Common.Constants;
+using Benefit.Domain.Migrations;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
 using Benefit.Services.Domain;
@@ -217,6 +219,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 };
             }
         }
+        private IEnumerable<SellerBusinessLevelIndex> SetBusinessLevelIndexeses()
+        {
+            for (var i = 0; i < Enum.GetValues(typeof(BusinessLevel)).Length; i++)
+            {
+                yield return new SellerBusinessLevelIndex()
+                {
+                    Index = 1
+                };
+            }
+        }
         public ActionResult SellersSearch(SellerFilterValues filters)
         {
             IQueryable<Seller> sellers = db.Sellers.Include("Owner").AsQueryable();
@@ -293,11 +305,21 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var existingSeller = db.Sellers.Include(entry => entry.BusinessLevelIndexes).Include(entry => entry.Personnels).Include(entry => entry.Schedules).Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {
-                Seller = existingSeller ?? new Seller() { Schedules = SetSellerSchedules().ToList() }
+                Seller =
+                    existingSeller ??
+                    new Seller()
+                    {
+                        Schedules = SetSellerSchedules().ToList(),
+                        BusinessLevelIndexes = SetBusinessLevelIndexeses().ToList()
+                    }
             };
             if (!seller.Seller.Schedules.Any())
             {
                 seller.Seller.Schedules = SetSellerSchedules().ToList();
+            }
+            if (!seller.Seller.BusinessLevelIndexes.Any())
+            {
+                seller.Seller.BusinessLevelIndexes= SetBusinessLevelIndexeses().ToList();
             }
             if (seller.Seller.ShippingDescription != null)
             {
@@ -413,6 +435,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     foreach (var schedule in seller.Schedules)
                     {
                         db.Entry(schedule).State = EntityState.Modified;
+                    }
+                }
+                
+                if (!db.SellerBusinessLevelIndexes.Any(entry => entry.SellerId == sellerId))
+                {
+                    db.SellerBusinessLevelIndexes.AddRange(seller.BusinessLevelIndexes);
+                }
+                else
+                {
+                    foreach (var businessLevel in seller.BusinessLevelIndexes)
+                    {
+                        db.Entry(businessLevel).State = EntityState.Modified;
                     }
                 }
 

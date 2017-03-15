@@ -24,6 +24,11 @@
         {
             <p class="user_statuse">@Enumerations.GetEnumDescription(Model.Status)</p>
         }    
+        @if (Model.BusinessLevel != null)
+        {
+            <p class="user_statuse">Бізнес рівень: @Enumerations.GetEnumDescription(Model.BusinessLevel)</p>
+        }
+        
         <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
 
         <p class="bonus_available bonus_available_mobile">Доступні бонуси: <span class="bonus_border">350,80</span></p>
