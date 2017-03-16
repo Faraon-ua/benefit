@@ -1,6 +1,5 @@
 ﻿@using Benefit.Common.Constants
 <div class="sub_header_right_links">
-
     @if (Request.IsAuthenticated)
     {
         using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))

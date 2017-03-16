@@ -52,6 +52,11 @@ namespace Benefit.Web.Controllers
         {
             return PartialView("_LoginPartial");
         }
+        
+        public ActionResult MobileLoginPartial()
+        {
+            return PartialView("_MobileLoginPartial");
+        }
 
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;sellerUrl;isDropDown;")]
         public ActionResult CategoriesPartial(string parentCategoryId, string sellerUrl, bool? isDropDown = null)

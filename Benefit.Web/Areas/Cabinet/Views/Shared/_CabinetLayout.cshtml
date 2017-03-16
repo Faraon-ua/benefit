@@ -14,6 +14,9 @@
     <div class="login_box_over hidden"></div>
     <div class="empty_over hidden"></div>
     <div class="container container_cabinet @ViewBag.CabinetProfileClass">
+        <aside class="left_sidebar left_sidebar_main">
+            @RenderSection("LeftAside", false)
+        </aside>
         <div class="row container_table">
             @RenderSection("PartnerHead", true)
             @Html.Partial("_PartnerMenu")
@@ -27,8 +30,12 @@
     @RenderSection("scripts", required: false)
     <script>
         $(function () {
+            var categoriesUrl = '@Url.Action("CategoriesPartial", "Home", new { area=string.Empty })';
+            $('#right-menu').load(categoriesUrl);
 
             $('#loginPartial').load('@Url.Action("LoginPartial", "Home", new {area=string.Empty}, Request.Url.Scheme)');
+            $('.login_links').load('@Url.Action("MobileLoginPartial", "Home", new {area=string.Empty}, Request.Url.Scheme)');
+
             if ($(".categories_drop").length > 0) {
                 $.get('@Url.Action("CategoriesPartial", "Home", new { area = string.Empty }, Request.Url.Scheme)?isDropDown=true',
                     function (data) {
@@ -53,7 +60,7 @@
                     $("#set_ava_picture").submit();
                 }
             });
-            
+
         })
     </script>
     @Html.Partial("_RegionModal")

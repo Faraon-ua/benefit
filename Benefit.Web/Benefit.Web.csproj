@@ -1579,6 +1579,7 @@
     <Content Include="Views\Shared\_SellerCategoriesPartial.cshtml" />
     <Content Include="Views\Shared\_SellerChildCategoriesPartial.cshtml" />
     <Content Include="Views\Tovar\_GalleryPartial.cshtml" />
+    <Content Include="Views\Home\_MobileLoginPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

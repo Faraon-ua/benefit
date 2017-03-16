@@ -46,6 +46,7 @@
         });
 
         $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
+        $('.login_links').load('@Url.Action("MobileLoginPartial", "Home")');
         var categoriesUrl = '@Url.Action("CategoriesPartial", "Home")';
 
         var categoryId = $('#right-menu').attr("data-category-id");

@@ -1,35 +1,57 @@
-﻿@model Benefit.Web.Models.Admin.SellerViewModel
-<div class="form-horizontal">
+﻿@using Benefit.Common.Helpers
+@using Benefit.Domain.Models.Enums
+@model Benefit.Web.Models.Admin.SellerViewModel
+           
+<fieldset>
+    <legend>Види оплати</legend>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Оплата По домовленності</label>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Оплата По домовленності</label>
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.IsAgreementPaymentActive)
+            </div>
+        </div>
 
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.IsAgreementPaymentActive)
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Оплата Готівкою</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.IsCashPaymentActive)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Оплата Бонусами</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.IsBonusesPaymentActive)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Еквайринг</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.IsAcquiringActive)
+            </div>
         </div>
     </div>
+</fieldset>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Оплата Готівкою</label>
 
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.IsCashPaymentActive)
-        </div>
+<fieldset>
+    <legend>Коефіцієнт винагороди за запрошення</legend>
+    <div class="margin-left-10">
+        @for (var i = 0; i < Model.Seller.BusinessLevelIndexes.Count; i++)
+        {
+            <div class="row">
+                <div class="col-md-3">@Enumerations.GetEnumDescription((BusinessLevel)i)</div>
+                @Html.Hidden(string.Format("Seller.BusinessLevelIndexes[{0}].SellerId", i), Model.Seller.Id, new { @class = "col-sm-2" })
+                @Html.Hidden(string.Format("Seller.BusinessLevelIndexes[{0}].BusinessLevel", i), i, new { @class = "col-sm-2" })
+                @Html.TextBox(string.Format("Seller.BusinessLevelIndexes[{0}].Index", i), Model.Seller.BusinessLevelIndexes.ElementAt(i).Index, new { @class = "col-sm-1 number-input" })
+            </div>
+        }
+        <div id="belongCategories"></div>
     </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Оплата Бонусами</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.IsBonusesPaymentActive)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Еквайринг</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.IsAcquiringActive)
-        </div>
-    </div>
-</div>
+</fieldset>
