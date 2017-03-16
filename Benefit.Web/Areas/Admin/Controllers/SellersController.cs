@@ -302,7 +302,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
   */
         public ActionResult CreateOrUpdate(string id = null)
         {
-            var existingSeller = db.Sellers.Include(entry => entry.BusinessLevelIndexes).Include(entry => entry.Personnels).Include(entry => entry.Schedules).Include(entry => entry.ShippingMethods.Select(sp => sp.Region)).Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.Id == id);
+            var existingSeller =
+                db.Sellers.Include(entry => entry.BusinessLevelIndexes)
+                    .Include(entry => entry.Personnels)
+                    .Include(entry => entry.Schedules)
+                    .Include(entry => entry.ShippingMethods.Select(sp => sp.Region))
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                    .FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {
                 Seller =
@@ -483,6 +489,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.SellerCategories.Where(
                     entry => scIds.Contains(entry.CategoryId) && entry.SellerId == sellervm.Seller.Id).ToList();
             sellervm.Seller.Personnels = db.Personnels.Where(entry => entry.SellerId == sellervm.Seller.Id).ToList();
+            sellervm.Seller.ShippingMethods.ForEach(entry=>entry.Region = db.Regions.Find(entry.RegionId));
             return View(sellervm);
         }
 
