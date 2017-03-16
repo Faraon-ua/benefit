@@ -9,10 +9,6 @@
 {
     @Html.Partial("_PartnerHead", ViewBag.User as ApplicationUser)
 }
-@section LeftAside{
-    <div class="vertical_menu" id="right-menu">
-    </div>
-}
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
     @{
         var first = Model.FirstOrDefault(entry => entry.Order == 0) ?? new Banner();

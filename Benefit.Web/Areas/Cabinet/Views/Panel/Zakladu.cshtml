@@ -8,10 +8,6 @@
 {
     @Html.Partial("_PartnerHead", Model)
 }
-@section LeftAside{
-    <div class="vertical_menu" id="right-menu">
-    </div>
-}
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
     @if (Model.OwnedSellers.Any())
     {

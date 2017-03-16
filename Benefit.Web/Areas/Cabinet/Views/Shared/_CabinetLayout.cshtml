@@ -14,8 +14,9 @@
     <div class="login_box_over hidden"></div>
     <div class="empty_over hidden"></div>
     <div class="container container_cabinet @ViewBag.CabinetProfileClass">
-        <aside class="left_sidebar left_sidebar_main">
-            @RenderSection("LeftAside", false)
+        <aside class="left_sidebar left_sidebar_main show_on_mobile">
+            <div class="vertical_menu" id="right-menu">
+            </div>
         </aside>
         <div class="row container_table">
             @RenderSection("PartnerHead", true)
