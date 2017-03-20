@@ -25,5 +25,10 @@
         });
     </script>
 }
-<p>Результати пошуку по запиту <strong class="bigger-125">"@Model.Term"</strong></p>
+<p>Результати пошуку запиту <strong class="bigger-125">"@Model.Term"</strong> по постачальникам</p>
+@foreach (var seller in Model.Sellers)
+{
+    @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
+}
+<p>Результати пошуку по запиту <strong class="bigger-125">"@Model.Term"</strong> по товарам</p>
 @Html.Partial("~/Views/Catalog/_ProductsListPartial.cshtml", Model.Products)

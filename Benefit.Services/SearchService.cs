@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Benefit.Common.Constants;
+using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
-using Benefit.Domain.Models;
+using Benefit.Domain.Models.Search;
 using Benefit.Services.Domain;
 using NinjaNye.SearchExtensions;
 
@@ -16,7 +17,8 @@ namespace Benefit.Services
         public List<string> SearchKeyWords(string term, string categoryId = null)
         {
             term = term.ToLower();
-            var result =
+            var translitTerm = term.Translit();
+            var productResult =
                 db.Products.Include(entry => entry.Category).Include(entry => entry.Seller)
                 .Where(entry => entry.IsActive && entry.Seller.IsActive)
                     .Select(
@@ -24,24 +26,39 @@ namespace Benefit.Services
                             entry.Name.ToLower() + " " + entry.SearchTags.ToLower() + " " +
                             entry.Category.Name.ToLower())
                     .Where(entry => entry.Contains(term)).ToList();
+            var sellerResults =
+                db.Sellers.Where(entry => entry.Name.ToLower().Contains(term) || entry.Name.ToLower().Contains(translitTerm))
+                    .Select(entry => entry.Name)
+                    .ToList()
+                    .SelectMany(entry => entry.Split(new[] { ',', ' ', '"', '(', ')', '-' }))
+                    .Where(entry => entry.ToLower().Contains(term) || entry.ToLower().Contains(translitTerm))
+                    .Distinct()
+                    .ToList();
             var words =
-                result.Select(entry => entry.Split(new[] { ',', ' ', '"', '(', ')', '-' }))
+                productResult.Select(entry => entry.Split(new[] { ',', ' ', '"', '(', ')', '-' }))
                     .SelectMany(entry => entry)
                     .Where(entry => entry.Contains(term))
                     .GroupBy(entry => entry).Select(entry => new { entry.Key, Count = entry.Count() })
                    .OrderByDescending(entry => entry.Count).Select(entry => entry.Key).ToList();
+            words.InsertRange(0, sellerResults);
             return words;
         }
 
-        public List<Product> SearchProducts(string term, int skip, int take = ListConstants.DefaultTakePerPage, string categoryId = null)
+        public SearchResult SearchProducts(string term, int skip, int take = ListConstants.DefaultTakePerPage, string categoryId = null)
         {
+            var result = new SearchResult()
+            {
+                Term = term
+            };
+            term = term.ToLower();
+            var translitTerm = term.Translit();
             var productsResult = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Where(entry => entry.IsActive && entry.Seller.IsActive);
             if (categoryId != null)
             {
                 productsResult = productsResult.Where(entry => entry.CategoryId == categoryId);
             }
             var regionId = RegionService.GetRegionId();
-            var result = productsResult.Search(entry => entry.Name,
+            var productResult = productsResult.Search(entry => entry.Name,
                     entry => entry.SearchTags,
                     entry => entry.Category.Name
                 ).Containing(term.Split(new[] { ' ' }))
@@ -55,7 +72,22 @@ namespace Benefit.Services
                 .Take(take + 1)
                 .ToList();
 
-            return result.Select(entry => entry.Item).ToList();
+            result.Products = productResult.Select(entry => entry.Item).ToList();
+
+            var sellerResult =
+                db.Sellers
+                    .Include(entry => entry.Addresses)
+                    .Include(entry => entry.ShippingMethods)
+                    .Include(entry => entry.ShippingMethods.Select(sh=>sh.Region))
+                    .Where(entry => entry.IsActive &&
+                                    (entry.Name.ToLower().Contains(term) || entry.Name.ToLower().Contains(translitTerm)) &&
+                                    (entry.Addresses.Any(addr => addr.RegionId == regionId) ||
+                                     entry.ShippingMethods.Select(sm => sm.Region.Id)
+                                         .Contains(RegionConstants.AllUkraineRegionId))).ToList();
+
+
+            result.Sellers = sellerResult;
+            return result;
         }
     }
 }

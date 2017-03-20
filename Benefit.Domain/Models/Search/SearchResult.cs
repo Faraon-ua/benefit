@@ -6,5 +6,6 @@ namespace Benefit.Domain.Models.Search
     {
         public string Term { get; set; }
         public List<Product> Products { get; set; } 
+        public List<Seller> Sellers { get; set; } 
     }
 }

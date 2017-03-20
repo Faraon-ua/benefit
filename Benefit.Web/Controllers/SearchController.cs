@@ -30,25 +30,20 @@ namespace Benefit.Web.Controllers
 
         public ActionResult Index(string term)
         {
-            var products = SearchService.SearchProducts(term, 0);
-            var result = new SearchResult
-            {
-                Term = term,
-                Products = products
-            };
+            var result = SearchService.SearchProducts(term, 0);
             return View(result);
         }
 
         public ActionResult GetProducts(string term, int skip, int take = ListConstants.DefaultTakePerPage)
         {
-            var products = SearchService.SearchProducts(term, skip);
-            var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ExpandableProductPartial.cshtml", new ProductPartialViewModel
+            var result = SearchService.SearchProducts(term, skip);
+            var productsHtml = string.Join("", result.Products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ExpandableProductPartial.cshtml", new ProductPartialViewModel
             {
                 Product = entry,
                 CategoryUrl = entry.Category.UrlName,
                 SellerUrl = entry.Seller.UrlName
             })));
-            return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
+            return Json(new { number = result.Products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
         }
     }
 }
