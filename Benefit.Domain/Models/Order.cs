@@ -78,7 +78,8 @@ namespace Benefit.Domain.Models
         }
         [NotMapped]
         public bool IsRepeating { get; set; }
-
+        [NotMapped]
+        public string SellerPhone { get; set; }
         public double GetOrderSum()
         {
             var sum = OrderProducts.Sum(

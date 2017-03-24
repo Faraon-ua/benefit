@@ -1,8 +1,22 @@
 ﻿@using Benefit.Domain.Models
 @model Seller
-<div class="margin-left-10">
-    <div class="row">
-        @Ajax.ActionLink(
+           
+<fieldset class="margin-left-10">
+    <legend>Телефони</legend>
+    <div class="form-group">
+        <label class="col-sm-2 control-label no-padding-right">Онлайн замовлення</label>
+
+        <div class="col-sm-9">
+            @Html.TextBox("Seller.OnlineOrdersPhone", Model.OnlineOrdersPhone, new { @class = "col-xs-10 col-sm-5", style="border: solid 1px;" })
+        </div>
+    </div>
+</fieldset>
+
+<fieldset class="margin-left-10 margin-top-20">
+    <legend>Адреси</legend>
+    <div>
+        <div>
+            @Ajax.ActionLink(
             "Додати нову адресу",
             "NewAddressForm",
             new { number = Model.Addresses.Count },
@@ -15,16 +29,17 @@
             },
                      new { @class = "btn btn-info", id = "addNewAddress" }
             )
-    </div>
-    <br />
-    @for (var i = 0; i < Model.Addresses.Count; i++)
-    {
-        Html.RenderPartial("_AddressForm", new KeyValuePair<int, Address>(i, Model.Addresses.ElementAt(i)));
-    }
-    <div>
-        <div id="addressesList">
-
         </div>
-        <div class="clearfix"></div>
+        <br />
+        @for (var i = 0; i < Model.Addresses.Count; i++)
+        {
+            Html.RenderPartial("_AddressForm", new KeyValuePair<int, Address>(i, Model.Addresses.ElementAt(i)));
+        }
+        <div>
+            <div id="addressesList">
+
+            </div>
+            <div class="clearfix"></div>
+        </div>
     </div>
-</div>
+</fieldset>

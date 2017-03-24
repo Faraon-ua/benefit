@@ -285,6 +285,10 @@
     <Compile Include="Migrations\201703141004267_BusinessLevelIndexes.Designer.cs">
       <DependentUpon>201703141004267_BusinessLevelIndexes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703241024136_SellerOnlinePhone.cs" />
+    <Compile Include="Migrations\201703241024136_SellerOnlinePhone.Designer.cs">
+      <DependentUpon>201703241024136_SellerOnlinePhone.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -486,6 +490,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703141004267_BusinessLevelIndexes.resx">
       <DependentUpon>201703141004267_BusinessLevelIndexes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703241024136_SellerOnlinePhone.resx">
+      <DependentUpon>201703241024136_SellerOnlinePhone.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

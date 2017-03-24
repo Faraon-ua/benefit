@@ -129,6 +129,14 @@
             }
         </td>
     </tr>
+    <tr>
+        <td>
+            Контактний номер для замовлень
+        </td>
+        <td>
+            @Model.SellerPhone
+        </td>
+    </tr>
 </table>
 
 @if (Model.Status == OrderStatus.Created || Model.Status == OrderStatus.Processed)

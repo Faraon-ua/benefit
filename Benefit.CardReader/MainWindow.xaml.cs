@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Media;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Navigation;
+using System.Windows.Threading;
+using Benefit.CardReader.DataTransfer.Offline;
 using Benefit.CardReader.Services;
 using Benefit.HttpClient;
 
@@ -16,10 +16,15 @@ namespace Benefit.CardReader
     {
         private TimeSpan _minLoadTime = new TimeSpan(0, 0, 5);//sec
 
+        private const int CheckConnectionPeriod = 15; //seconds
+        private bool checkForDeviceConnection;
+        private DispatcherTimer dispatcherTimer;
+
         private DefaultWindow defaultWindow;
         private BenefitHttpClient httpClient;
         private ApiService apiService;
         public ReaderService readerService;
+        public DataService dataService;
         private App app;
 
         private DateTime startTime;
@@ -30,18 +35,70 @@ namespace Benefit.CardReader
             InitializeComponent();
             Loaded += MainWindow_Loaded;
             defaultWindow = new DefaultWindow();
-//            ((DefaultWindow)defaultWindow).SiteHyperlink.RequestNavigate += Hyperlink_OnRequestNavigate;
+            //            ((DefaultWindow)defaultWindow).SiteHyperlink.RequestNavigate += Hyperlink_OnRequestNavigate;
             httpClient = new BenefitHttpClient();
             apiService = new ApiService();
             readerService = new ReaderService();
+            dataService = new DataService();
             readerService.CardReaded += readerService_CardReaded;
             app = (App)Application.Current;
+            dispatcherTimer = new DispatcherTimer();
+            dispatcherTimer.Tick += CheckConnection;
+            dispatcherTimer.Interval = new TimeSpan(0, 0, CheckConnectionPeriod);
+            dispatcherTimer.Start();
         }
 
-/*        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+        void CheckConnection(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(e.Uri.ToString());
-        }*/
+            if (checkForDeviceConnection)
+            {
+                SetView();
+            }
+            var isconnected = httpClient.CheckForInternetConnection();
+            ((App)Application.Current).IsConnected = isconnected;
+            if (isconnected)
+            {
+                defaultWindow.ConnectionEsteblished.Visibility = Visibility.Visible;
+                defaultWindow.NoConnection.Visibility = Visibility.Collapsed;
+            }
+            else
+            {
+                defaultWindow.ConnectionEsteblished.Visibility = Visibility.Collapsed;
+                defaultWindow.NoConnection.Visibility = Visibility.Visible;
+            }
+        }
+
+        /*        private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
+                {
+                    System.Diagnostics.Process.Start(e.Uri.ToString());
+                }*/
+
+        private void SetView()
+        {
+            //view bar
+            var handShake = readerService.HandShake();
+            checkForDeviceConnection = handShake == null;
+            if (handShake == null)
+            {
+                //show no device connected
+                defaultWindow.ShowSingleControl(ViewType.DeviceNotConnected);
+            }
+            else
+            {
+                //get license key from device;
+                app.Token = apiService.GetAuthToken(handShake.LicenseKey);
+                apiService.AuthToken = app.Token;
+                if (app.Token == null)
+                {
+                    //show device not authorized
+                    defaultWindow.ShowSingleControl(ViewType.DeviceNotAuthorized);
+                }
+                else
+                {
+                    defaultWindow.ShowSingleControl(ViewType.CashierPartial);
+                }
+            }
+        }
 
         public void CloseComPort()
         {
@@ -49,8 +106,6 @@ namespace Benefit.CardReader
         }
         private void readerService_CardReaded(object sender, Common.CustomEventArgs.NfcEventArgs e)
         {
-            SystemSounds.Beep.Play();
-
             if (app.AuthInfo.CashierNfc != null)
             {
                 //if returning cashier - log off
@@ -62,7 +117,7 @@ namespace Benefit.CardReader
                         defaultWindow.ShowSingleControl(ViewType.CashierPartial);
                     }));
                 }
-                    //if new card - user auth
+                //if new card - user auth
                 else
                 {
                     var user = apiService.AuthUser(e.NfcCode);
@@ -87,12 +142,21 @@ namespace Benefit.CardReader
                     }
                 }
             }
-                //auth cashier
+            //auth cashier
             else if (app.Token != null)
             {
+                Dispatcher.Invoke(new Action(() => defaultWindow.Show()));
+
                 var cashierSeller = apiService.AuthCashier(e.NfcCode);
                 if (cashierSeller != null)
                 {
+                    //add to offline
+                    dataService.Add(new Cashier()
+                    {
+                        CardNfc = e.NfcCode,
+                        Name = cashierSeller.CashierName,
+                        SellerName = cashierSeller.SellerName
+                    });
                     app.AuthInfo.CashierNfc = e.NfcCode;
                     app.AuthInfo.CashierName = cashierSeller.CashierName;
                     app.AuthInfo.SellerName = cashierSeller.SellerName;
@@ -115,42 +179,10 @@ namespace Benefit.CardReader
         {
             startTime = DateTime.Now;
             //connection bar
-            var isconnected = httpClient.CheckForInternetConnection();
-            if (isconnected)
-            {
-                defaultWindow.ConnectionEsteblished.Visibility = Visibility.Visible;
-                defaultWindow.NoConnection.Visibility = Visibility.Collapsed;
-            }
-            else
-            {
-                defaultWindow.ConnectionEsteblished.Visibility = Visibility.Collapsed;
-                defaultWindow.NoConnection.Visibility = Visibility.Visible;
-            }
+            CheckConnection(null, null);
 
-            //view bar
-            var handShake = readerService.HandShake();
-            if (handShake == null)
-            {
-                //show no device connected
-                defaultWindow.ShowSingleControl(ViewType.DeviceNotConnected);
-            }
-            else
-            {
-                //get license key from device;
-                app.Token = apiService.GetAuthToken(handShake.LicenseKey);
-                apiService.AuthToken = app.Token;
-                if (app.Token == null)
-                {
-                    //show device not authorized
-                    defaultWindow.ShowSingleControl(ViewType.DeviceNotAuthorized);
-                }
-                else
-                {
-                    defaultWindow.ShowSingleControl(ViewType.CashierPartial);
-                }
-            }
+            SetView();
 
-            ((App)Application.Current).IsConnected = isconnected;
             endTime = DateTime.Now;
             var actualLoadTime = endTime - startTime;
             if (actualLoadTime < _minLoadTime)

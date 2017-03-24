@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using Benefit.CardReader.DataTransfer.Reader;
@@ -25,6 +26,19 @@ namespace Benefit.CardReader
             timer.Interval = new TimeSpan(0, PingOnlinePeriod, 0);
             timer.Start();
             AuthInfo = new BenefitAuthInfo();
+            InstallMeOnStartUp();
+        }
+        void InstallMeOnStartUp()
+        {
+            try
+            {
+                var key = Microsoft.Win32.Registry.CurrentUser.OpenSubKey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", true);
+                var curAssembly = Assembly.GetExecutingAssembly();
+                key.SetValue(curAssembly.GetName().Name, curAssembly.Location);
+            }
+            catch
+            {
+            }
         }
 
         void timer_Tick(object sender, EventArgs e)

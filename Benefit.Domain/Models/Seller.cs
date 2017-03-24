@@ -51,6 +51,8 @@ namespace Benefit.Domain.Models
         [Required]
         [MaxLength(16)]
         public string CatalogButtonName { get; set; }
+        [MaxLength(64)]
+        public string OnlineOrdersPhone { get; set; }
         public bool IsActive { get; set; }
         public bool IsBenefitCardActive { get; set; }
         //todo: move payment types to separate table

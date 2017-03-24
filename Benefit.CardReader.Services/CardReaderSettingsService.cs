@@ -32,5 +32,12 @@ namespace Benefit.CardReader.Services
                 return ConfigurationManager.AppSettings["ReaderHandShakePrefix"];
             }
         }
+        public static string OfflineFileSalt
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["OfflineFileSalt"];
+            }
+        }
     }
 }

@@ -330,6 +330,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return HttpNotFound();
             }
             order.OrderProducts = order.OrderProducts.OrderBy(entry => entry.Index).ToList();
+            var orderSeller = db.Sellers.Find(order.SellerId);
+            order.SellerPhone = orderSeller == null ? null : orderSeller.OnlineOrdersPhone;
             return View(order);
         }
 
