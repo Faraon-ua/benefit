@@ -402,13 +402,6 @@ $(document).ready(function() {
         $(this).parent().parent().children('ul').toggleClass('hidden');
     });
 
-    var balls = $(".structure_table_balls");
-    jQuery.each(balls, function () {
-        if (parseInt($(this).html()) >= 500) {
-            $(this).addClass('green_color');
-        }
-    });
-
     var bonusLevel = $('.bonusLevel');
     jQuery.each(bonusLevel, function () {
         var tmp = $(this).html().split(' ');
