@@ -289,6 +289,10 @@
     <Compile Include="Migrations\201703241024136_SellerOnlinePhone.Designer.cs">
       <DependentUpon>201703241024136_SellerOnlinePhone.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703241558531_ExtendNfcLength.cs" />
+    <Compile Include="Migrations\201703241558531_ExtendNfcLength.Designer.cs">
+      <DependentUpon>201703241558531_ExtendNfcLength.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -493,6 +497,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703241024136_SellerOnlinePhone.resx">
       <DependentUpon>201703241024136_SellerOnlinePhone.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703241558531_ExtendNfcLength.resx">
+      <DependentUpon>201703241558531_ExtendNfcLength.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

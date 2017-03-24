@@ -28,7 +28,7 @@ namespace Benefit.Domain.Models
         [MaxLength(10)]
         public string CardNumber { get; set; }
         [Index]
-        [MaxLength(10)]
+        [MaxLength(16)]
         public string NFCCardNumber { get; set; }
         //todo: add md5 with salt
         [MaxLength(8)]
