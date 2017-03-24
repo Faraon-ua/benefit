@@ -81,6 +81,13 @@ function CalculateProductPrice() {
 }
 
 $(function () {
+    $("#search-form").submit(function (e) {
+        if ($("#search").val().length < 3) {
+            alert("Для пошуку необхідно мінімум 3 символи");
+            e.preventDefault();
+        }
+    });
+
     $("body").on("click", ".parent-category", function () {
         $(this).next("ul").slideToggle();
     });
