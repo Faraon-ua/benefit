@@ -36,14 +36,14 @@
 
         function LockUnlock(id) {
             $.post(routePrefix + "/Admin/Sellers/LockUnlock?id=" + id,
-                function(data) {
+                function (data) {
                     flashMessage("Статус постачальника змінено");
                     $(".lockUser-" + id).removeClass("icon-lock");
                     $(".lockUser-" + id).removeClass("icon-unlock");
                     if (data) {
-                        $(".lockUser-" + id).addClass("icon-lock");
-                    } else {
                         $(".lockUser-" + id).addClass("icon-unlock");
+                    } else {
+                        $(".lockUser-" + id).addClass("icon-lock");
                     }
                 });
         }

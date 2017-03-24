@@ -87,9 +87,11 @@ else
                                 <a class="btn btn-xs btn-info" href="@Url.Action("CreateOrUpdate", new { id = seller.Id })" target="_blank">
                                     <i class="icon-edit bigger-120"></i>
                                 </a>
-
+                                @{
+                                    var lockClassName = seller.IsActive ? "unlock" : "lock";
+                                }
                                 <a class="btn btn-xs btn-warning" onclick="LockUnlock('@seller.Id');">
-                                    <i class="lockUser-@seller.Id icon-lock bigger-120"></i>
+                                    <i class="lockUser-@seller.Id icon-@lockClassName bigger-120"></i>
                                 </a>
 
                                 <a class="btn btn-xs btn-danger" onclick="DeleteSeller('@seller.Id','@seller.Name');">
