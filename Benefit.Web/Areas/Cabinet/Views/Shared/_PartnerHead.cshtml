@@ -1,4 +1,5 @@
-﻿@using Benefit.Common.Helpers
+﻿@using Benefit.Common.Extensions
+@using Benefit.Common.Helpers
 @using Benefit.Domain.Models.Enums
 @model Benefit.Domain.Models.ApplicationUser
 <div class="partner_head col-lg-2 col-md-2 col-sm-2 col-xs-2">
@@ -32,7 +33,7 @@
         
         <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
 
-        <p class="bonus_available bonus_available_mobile">Доступні бонуси: <span class="bonus_border">350,80</span></p>
+        <p class="bonus_available bonus_available_mobile">Доступні бонуси: <span class="bonus_border">@Model.BonusAccount.ToDoubleDigits()</span></p>
     </div>
     
     <p class="card_numb">Номер бонусної картки:<br>@Model.CardNumber</p>

@@ -70,7 +70,7 @@
             });
 
             $("select[name=sort]").change(function () {
-                $("form").submit();
+                $("#sort-form").submit();
             });
         });
 
@@ -136,7 +136,7 @@
                 @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
             </div>
             <div class="provider_sort col-md-3">
-                @using (Html.BeginForm("Catalog", "Postachalnyk", FormMethod.Get))
+                @using (Html.BeginForm("Catalog", "Postachalnyk", FormMethod.Get, new { id="sort-form" }))
                 {
                     var sort = Request.QueryString["sort"] == null ? ProductSortOption.Default : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
                     <label for="provider_sort_title">Сортувати</label>
