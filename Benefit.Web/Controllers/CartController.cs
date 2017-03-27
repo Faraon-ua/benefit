@@ -80,8 +80,10 @@ namespace Benefit.Web.Controllers
                 if (seller == null) return HttpNotFound();
                 model.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == sellerId).ToList();
                 model.Addresses = db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
-                if (seller.IsAgreementPaymentActive)
-                    model.PaymentTypes.Add(PaymentType.Agreement);
+                if (seller.IsPrePaidPaymentActive)
+                    model.PaymentTypes.Add(PaymentType.PrePaid);
+                if (seller.IsPostPaidPaymentActive)
+                    model.PaymentTypes.Add(PaymentType.PostPaid);
                 if (seller.IsCashPaymentActive)
                     model.PaymentTypes.Add(PaymentType.Cash);
                 if (seller.IsAcquiringActive)
@@ -130,8 +132,10 @@ namespace Benefit.Web.Controllers
                 completeOrder.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == completeOrder.Order.SellerId).ToList();
                 completeOrder.Addresses =
                     db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
-                if (seller.IsAgreementPaymentActive)
-                    completeOrder.PaymentTypes.Add(PaymentType.Agreement);
+                if (seller.IsPrePaidPaymentActive)
+                    completeOrder.PaymentTypes.Add(PaymentType.PrePaid); 
+                if (seller.IsPostPaidPaymentActive)
+                    completeOrder.PaymentTypes.Add(PaymentType.PostPaid);
                 if (seller.IsCashPaymentActive)
                     completeOrder.PaymentTypes.Add(PaymentType.Cash);
                 if (seller.IsAcquiringActive)

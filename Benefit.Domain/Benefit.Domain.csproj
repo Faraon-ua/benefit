@@ -293,6 +293,10 @@
     <Compile Include="Migrations\201703241558531_ExtendNfcLength.Designer.cs">
       <DependentUpon>201703241558531_ExtendNfcLength.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703271333032_PreAndPostPaidPaymentTypes.cs" />
+    <Compile Include="Migrations\201703271333032_PreAndPostPaidPaymentTypes.Designer.cs">
+      <DependentUpon>201703271333032_PreAndPostPaidPaymentTypes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -500,6 +504,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703241558531_ExtendNfcLength.resx">
       <DependentUpon>201703241558531_ExtendNfcLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703271333032_PreAndPostPaidPaymentTypes.resx">
+      <DependentUpon>201703271333032_PreAndPostPaidPaymentTypes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

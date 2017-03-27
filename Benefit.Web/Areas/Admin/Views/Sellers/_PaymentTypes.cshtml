@@ -6,33 +6,36 @@
     <legend>Види оплати</legend>
     <div class="form-horizontal">
         <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Оплата По домовленності</label>
-
-            <div class="col-xs-10 col-sm-5">
-                @Html.CheckBoxFor(m => m.Seller.IsAgreementPaymentActive)
+            @Html.LabelFor(m => m.Seller.IsPrePaidPaymentActive, new { @class = "col-sm-3 control-label no-padding-right" })
+            <div class="col-xs-10 col-sm-5 margin-top-5">
+                @Html.CheckBoxFor(m => m.Seller.IsPrePaidPaymentActive)
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @Html.LabelFor(m => m.Seller.IsPostPaidPaymentActive, new { @class = "col-sm-3 control-label no-padding-right" })
+            <div class="col-xs-10 col-sm-5 margin-top-5">
+                @Html.CheckBoxFor(m => m.Seller.IsPostPaidPaymentActive)
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Оплата Готівкою</label>
-
-            <div class="col-xs-10 col-sm-5">
+            @Html.LabelFor(m => m.Seller.IsCashPaymentActive, new { @class = "col-sm-3 control-label no-padding-right" })
+            <div class="col-xs-10 col-sm-5 margin-top-5">
                 @Html.CheckBoxFor(m => m.Seller.IsCashPaymentActive)
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Оплата Бонусами</label>
-
-            <div class="col-xs-10 col-sm-5">
+            @Html.LabelFor(m => m.Seller.IsBonusesPaymentActive, new { @class = "col-sm-3 control-label no-padding-right" })
+            <div class="col-xs-10 col-sm-5 margin-top-5">
                 @Html.CheckBoxFor(m => m.Seller.IsBonusesPaymentActive)
             </div>
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Еквайринг</label>
-
-            <div class="col-xs-10 col-sm-5">
+            @Html.LabelFor(m => m.Seller.IsAcquiringActive, new { @class = "col-sm-3 control-label no-padding-right" })
+            <div class="col-xs-10 col-sm-5 margin-top-5">
                 @Html.CheckBoxFor(m => m.Seller.IsAcquiringActive)
             </div>
         </div>

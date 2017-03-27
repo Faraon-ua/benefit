@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Web;
@@ -56,9 +57,15 @@ namespace Benefit.Domain.Models
         public bool IsActive { get; set; }
         public bool IsBenefitCardActive { get; set; }
         //todo: move payment types to separate table
-        public bool IsAgreementPaymentActive { get; set; }
+        [DisplayName("Передоплата")]
+        public bool IsPrePaidPaymentActive { get; set; }
+        [DisplayName("Післяплата")]
+        public bool IsPostPaidPaymentActive { get; set; }
+        [DisplayName("Оплата Бонусами")]
         public bool IsBonusesPaymentActive { get; set; }
+        [DisplayName("Оплата Готівкою")]
         public bool IsCashPaymentActive { get; set; }
+        [DisplayName("Еквайринг")]
         public bool IsAcquiringActive { get; set; }
         public bool HasEcommerce { get; set; }
         public int TotalDiscount { get; set; }
