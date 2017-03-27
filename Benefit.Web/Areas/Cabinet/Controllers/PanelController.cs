@@ -50,7 +50,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             {
                 var banners = db.Banners.Where(entry => entry.BannerType == BannerType.PartnerPageBanners).ToList();
                 return View(banners);
-            }            
+            }
         }
 
         public ActionResult GetOrderDetails(string orderId)
@@ -244,6 +244,21 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         {
             var user = UserService.GetUserInfoWithRegionsAndSellers(RouteData.Values[DomainConstants.UserIdKey].ToString());
             return View(user);
+        }
+
+        public ActionResult contact_us()
+        {
+            var user = UserService.GetUserInfoWithRegionsAndSellers(RouteData.Values[DomainConstants.UserIdKey].ToString());
+            return View(user);
+        }
+        [HttpPost]
+        public ActionResult contact_us(string Subject, string Message, string userId)
+        {
+            var emailService = new EmailService();
+            var userUrl = Url.Action("Edit", "Users", new { area = "Admin", id = RouteData.Values[DomainConstants.UserIdKey].ToString() }, Request.Url.Scheme);
+            emailService.SendUserFeedback(Subject, Message, userUrl);
+            TempData["SuccessMessage"] = "Ваш запит було надіслано";
+            return RedirectToAction("contact_us");
         }
 
         public ActionResult SetAvatar()

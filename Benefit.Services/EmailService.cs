@@ -5,6 +5,7 @@ using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
@@ -80,6 +81,19 @@ namespace Benefit.Services
             return mail;
         }
 
+        public void SendUserFeedback(string subject, string message, string userUrl)
+        {
+            var body =
+                string.Format(
+                    "<div>Від: <a href='{0}'>{1}</a></div>" +
+                    "<h2>{2}</h2>" +
+                    "<div>{3}</div>",
+                    userUrl,
+                    HttpUtility.UrlDecode(HttpContext.Current.Request.Cookies[RouteConstants.FullNameCookieName].Value),
+                    subject, message);
+            SendEmail(BenefitInfoEmail, body, "Звернення партнера");
+        }
+
         public void PasswordChanged(string userEmail, string newPassword)
         {
             SendTemplatedEmail("PasswordChanged", userEmail, "Ваш пароль було змінено", new[] { newPassword });
@@ -96,7 +110,7 @@ namespace Benefit.Services
             var body = string.Format("Підтвердити верифікацію користувача можна за посиланням <a href='{0}'>ТИЦЬ!</a>", userUrl);
             SendEmail(BenefitBusinessEmail, body, "Верифікація карти", file);
         }
-        
+
         public void SendProfileChangeRequest(string userUrl, string message)
         {
             var body = string.Format("{0}, <br/>Змінити дані користувача можна за посиланням <a href='{1}'>ТИЦЬ!</a>", message, userUrl);

@@ -373,17 +373,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <!-- PAGE CONTENT BEGINS -->
-                            <div id="flashMessage">
-                                @if (ViewBag.SuccessMessage != null || TempData["SuccessMessage"] != null)
-                                {
-                                    <p class="alert alert-success">
-                                        @{
-                                    var message = ViewBag.SuccessMessage ?? TempData["SuccessMessage"];
-                                        }
-                                        @message
-                                    </p>
-                                }
-                            </div>
+                            @Html.Partial("_FlashMessage")
                             @RenderBody()
                             <!-- PAGE CONTENT ENDS -->
                         </div><!-- /.col -->

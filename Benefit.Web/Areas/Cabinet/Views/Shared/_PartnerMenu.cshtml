@@ -80,14 +80,14 @@
                 <a href="@Url.Action("Zakladu", "Panel")">Заклади</a>
             </li>
             @{
-        active = ViewContext.RouteData.GetRequiredString("action") == "partner_menu_write_us";
+                active = ViewContext.RouteData.GetRequiredString("action") == "contact_us";
             }
-            <li class="partner_menu_write_us">
+            <li class="partner_menu_write_us @(active ? "active" : "")">
                 @if (active)
                 {
                     <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
                 }
-                <a href="#">Написати <br>нам</a>
+                <a href="@Url.Action("contact_us","Panel")">Написати <br>нам</a>
             </li>
         </ul>
     }
@@ -175,7 +175,7 @@
                 {
                     <a href="@Url.Action("Index", "Panel", new { userId = Request.QueryString[DomainConstants.UserIdKey] })" class="partner_menu_back"></a>
                 }
-                <a href="#">Написати <br>нам</a>
+                <a href="@Url.Action("contact_us","Panel")">Написати <br>нам</a>
             </li>
         </ul>
     }

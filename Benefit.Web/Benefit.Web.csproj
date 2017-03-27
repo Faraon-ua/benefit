@@ -1123,6 +1123,7 @@
     <Content Include="Areas\Admin\Views\Sellers\_Security.cshtml" />
     <Content Include="Areas\Admin\Views\Statistics\SellerTurnover.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ProductAdvertisement.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Panel\contact_us.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1580,6 +1581,7 @@
     <Content Include="Views\Shared\_SellerChildCategoriesPartial.cshtml" />
     <Content Include="Views\Tovar\_GalleryPartial.cshtml" />
     <Content Include="Views\Home\_MobileLoginPartial.cshtml" />
+    <Content Include="Views\Shared\_FlashMessage.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

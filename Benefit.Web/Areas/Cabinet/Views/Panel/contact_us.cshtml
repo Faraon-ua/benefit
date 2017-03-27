@@ -1,0 +1,29 @@
+﻿@model Benefit.Domain.Models.ApplicationUser
+
+@{
+    ViewBag.Title = "Написати нам";
+    ViewBag.CabinetProfileClass = "kabinet_profile";
+    Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
+}
+@section PartnerHead
+{
+    @Html.Partial("_PartnerHead", Model)
+}
+<div class="margin-left-10 change_data margin-top-0 padding-0">
+    @Html.Partial("_FlashMessage")
+    <h2 class="margin-top-0">Зворотній зв’язок</h2>
+    @using (Html.BeginForm())
+    {
+        <div class="container">
+            <div class="row">
+                <div>
+                    @Html.TextBox("Subject", null, new { placeholder = "Тема повідомлення", @class = "col-md-6" })
+                </div>
+            </div>
+            <div class="row margin-top-20">
+                @Html.TextArea("Message", null, new { placeholder = "Повідомлення", @class = "col-md-6 width-50" })
+            </div>
+            <button class="request_change_data margin-left-0" type="submit">Надіслати</button>
+        </div>
+    }
+</div>

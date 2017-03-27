@@ -39,26 +39,7 @@
     </script>
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
-    <div id="flashMessage">
-        @if (ViewBag.SuccessMessage != null || TempData["SuccessMessage"] != null)
-        {
-            <p class="alert alert-success">
-                @{
-            var message = ViewBag.SuccessMessage ?? TempData["SuccessMessage"];
-                }
-                @message
-            </p>
-        }
-        @if (ViewBag.ErrorMessage != null || TempData["ErrorMessage"] != null)
-        {
-            <p class="alert alert-danger">
-                @{
-            var message = ViewBag.ErrorMessage ?? TempData["ErrorMessage"];
-                }
-                @message
-            </p>
-        }
-    </div>
+    @Html.Partial("_FlashMessage")
 
     <ul class="profile_menu nav nav-tabs">
         <li class="active"><a data-toggle="tab" href="#base">Основна</a></li>
