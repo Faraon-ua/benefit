@@ -17,7 +17,9 @@ namespace Benefit.Domain.Models
         [Required]
         public DayOfWeek Day { get; set; }
         public int? StartHour { get; set; }
+        public int? StartMinutes { get; set; }
         public int? EndHour { get; set; }
+        public int? EndMinutes { get; set; }
         [MaxLength(128)]
         public string SellerId { get; set; }
         public Seller Seller { get; set; }

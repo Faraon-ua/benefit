@@ -140,7 +140,9 @@
 .width-100-px {
     width: 100px !important;
 }
-
+.width-30-px {
+    width: 30px !important;
+}
 .width-50 {
     width: 50% !important;
 }

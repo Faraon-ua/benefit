@@ -297,6 +297,10 @@
     <Compile Include="Migrations\201703271333032_PreAndPostPaidPaymentTypes.Designer.cs">
       <DependentUpon>201703271333032_PreAndPostPaidPaymentTypes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703281313305_AddScheduleMinutes.cs" />
+    <Compile Include="Migrations\201703281313305_AddScheduleMinutes.Designer.cs">
+      <DependentUpon>201703281313305_AddScheduleMinutes.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -507,6 +511,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703271333032_PreAndPostPaidPaymentTypes.resx">
       <DependentUpon>201703271333032_PreAndPostPaidPaymentTypes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703281313305_AddScheduleMinutes.resx">
+      <DependentUpon>201703281313305_AddScheduleMinutes.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
