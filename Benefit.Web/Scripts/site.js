@@ -81,6 +81,12 @@ function CalculateProductPrice() {
 }
 
 $(function () {
+    $(document).keyup(function(e) {
+        if (e.keyCode == 27) {
+            $(".modal").modal("hide");
+        }
+    });
+
     $("#search-form").submit(function (e) {
         if ($("#search").val().length < 3) {
             alert("Для пошуку необхідно мінімум 3 символи");
@@ -147,11 +153,11 @@ $(function () {
             });
     });
 
-    $("body").on("click", "#continue-purchase", function() {
-        var products = $("#cart-container tr.basket_modal_table_row.product").map(function() {
+    $("body").on("click", "#continue-purchase", function () {
+        var products = $("#cart-container tr.basket_modal_table_row.product").map(function () {
             var id = $(this).attr("data-product-id");
             var amount = $(this).find(".product_modal_amount").val();
-            var productOptions = $(this).nextUntil(".product").map(function() {
+            var productOptions = $(this).nextUntil(".product").map(function () {
                 var optionId = $(this).attr("data-option-id");
                 var optionAmount = $(this).find(".product_modal_amount").val();
                 return {
