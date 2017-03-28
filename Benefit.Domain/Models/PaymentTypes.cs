@@ -7,14 +7,14 @@ namespace Benefit.Domain.Models
     {
         [Description("Передоплата")]
         PrePaid,
-        [Description("Післяплата")]
-        PostPaid,
         [Description("Готівкою")]
         Cash,
         [Description("Карткою Visa/MasterCard")]
         Acquiring,
         [Description("Використати Бонуси")]
-        Bonuses
+        Bonuses,
+        [Description("Післяплата")]
+        PostPaid
     }
     public class PaymentTypes
     {
