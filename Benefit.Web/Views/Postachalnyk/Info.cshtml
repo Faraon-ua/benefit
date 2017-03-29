@@ -80,7 +80,7 @@
             }
             else
             {
-                <span>@monSchedule.StartHour:@monSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @monSchedule.EndHour:@monSchedule.StartMinutes.GetValueOrDefault(0).ToString("00")</span>
+                <span>@monSchedule.StartHour:@monSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @monSchedule.EndHour:@monSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
             }
             <br />
             Сб.
@@ -90,7 +90,7 @@
             }
             else
             {
-                <span>@satSchedule.StartHour:@satSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @satSchedule.EndHour:@satSchedule.StartMinutes.GetValueOrDefault(0).ToString("00")</span>
+                <span>@satSchedule.StartHour:@satSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @satSchedule.EndHour:@satSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
             }
             <br />
             Нд.
@@ -100,7 +100,7 @@
             }
             else
             {
-                <span>@sunSchedule.StartHour:@sunSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @sunSchedule.EndHour:@sunSchedule.StartMinutes.GetValueOrDefault(0).ToString("00")</span>
+                <span>@sunSchedule.StartHour:@sunSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @sunSchedule.EndHour:@sunSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
             }
         </div>
         @if (Model.Seller.HasEcommerce)
