@@ -1,6 +1,5 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Domain.Models
-@using Image = System.Drawing.Image
 @model Benefit.DataTransfer.ViewModels.SellerDetailsViewModel
 @{
     ViewBag.Title = Model.Seller.Name;
@@ -81,7 +80,7 @@
             }
             else
             {
-                <span>@monSchedule.StartHour:00 - @monSchedule.EndHour:00</span>
+                <span>@monSchedule.StartHour:@monSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @monSchedule.EndHour:@monSchedule.StartMinutes.GetValueOrDefault(0).ToString("00")</span>
             }
             <br />
             Сб.
@@ -91,7 +90,7 @@
             }
             else
             {
-                <span>@satSchedule.StartHour:00 - @satSchedule.EndHour:00</span>
+                <span>@satSchedule.StartHour:@satSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @satSchedule.EndHour:@satSchedule.StartMinutes.GetValueOrDefault(0).ToString("00")</span>
             }
             <br />
             Нд.
@@ -101,7 +100,7 @@
             }
             else
             {
-                <span>@sunSchedule.StartHour:00 - @sunSchedule.EndHour:00</span>
+                <span>@sunSchedule.StartHour:@sunSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @sunSchedule.EndHour:@sunSchedule.StartMinutes.GetValueOrDefault(0).ToString("00")</span>
             }
         </div>
         @if (Model.Seller.HasEcommerce)
