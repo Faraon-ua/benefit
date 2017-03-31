@@ -7,10 +7,6 @@
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
 
-@section PartnerHead
-{
-    @Html.Partial("_PartnerHead", Model)
-}
 @section scripts{
     <script>
         var loadPartnersUrl = '@Url.Action("GetPartnersByReferalIds", "Panel")';

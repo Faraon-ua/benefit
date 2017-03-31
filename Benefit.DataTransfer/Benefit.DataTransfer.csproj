@@ -57,6 +57,7 @@
     <Compile Include="ApiDto\OldApi\SellerAuth.cs" />
     <Compile Include="ApiDto\OldApi\UserAuth.cs" />
     <Compile Include="ApiDto\SendPulse\AuthDto.cs" />
+    <Compile Include="Enums.cs" />
     <Compile Include="JSON\AutocompleteSearch.cs" />
     <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
     <Compile Include="ViewModels\CategoriesListViewModel.cs" />

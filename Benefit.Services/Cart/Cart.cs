@@ -67,7 +67,6 @@ namespace Benefit.Services.Cart
                 Order.SellerId = sellerId;
                 Order.OrderProducts.Add(orderProduct);
             }
-            _logger.Info("Cart.AddProduct.SessionKey:{0}, Cart.AddProduct.OrderProduct.Id:{1}, Cart.AddProduct.OrderProduct.Name:{2}", SessionKey, orderProduct.ProductId, orderProduct.ProductName);
             HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
             return GetOrderProductsCount();
         }

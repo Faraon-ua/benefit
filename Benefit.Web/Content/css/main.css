@@ -1714,6 +1714,28 @@ footer {
     background: url(../img/cabinet_menu_sprite.png) -39px -272px no-repeat;
 }
 
+.partner_menu ul .partner_menu_zakladu a:before {
+    background: url(../img/cabinet_menu_sprite.png) 0 -311px no-repeat;
+}
+
+.partner_menu ul .partner_menu_zakladu.active a:before,
+.partner_menu ul .partner_menu_zakladu:hover a:before {
+    background: url(../img/cabinet_menu_sprite.png) -39px -311px no-repeat;
+}
+
+.partner_menu ul .partner_menu_family a:before {
+    background: url(../img/cabinet_menu_sprite.png) 0 -345px no-repeat;
+}
+
+.partner_menu ul .partner_menu_family.active a:before,
+.partner_menu ul .partner_menu_family:hover a:before {
+    background: url(../img/cabinet_menu_sprite.png) -40px -345px no-repeat;
+}
+
+.partner_menu ul .partner_menu_family.inactive a:before {
+    background: url(../img/cabinet_menu_sprite.png) -80px -345px no-repeat;
+}
+
 .partner_menu_exit {
     display: none;
 }
@@ -1834,8 +1856,7 @@ footer {
 .addition input,
 .addition select {
     margin-bottom: 16px;
-    display: block;
-    width: 100%;
+    width: 90%;
     height: 37px;
     color: #999999;
     border: 1px solid #cccccc;

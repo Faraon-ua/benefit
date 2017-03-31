@@ -1,4 +1,8 @@
-﻿.parent-category {
+﻿.inactive {
+    color: #666666;
+}
+
+.parent-category {
     margin-top: 10px;
     font-size: 1.2em;
     padding-left: 19px;
@@ -72,7 +76,7 @@
     margin-top: 0px;
 }
 .margin-top-5 {
-    margin-top: 5px;
+    margin-top: 5px !important;
 }
 .margin-top-10 {
     margin-top: 10px;
@@ -104,6 +108,10 @@
 }
 .padding_5 {
     padding: 5px;
+}
+.padding-vertical-5px {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
 }
 .padding-top-15 {
     padding-top: 15px !important;

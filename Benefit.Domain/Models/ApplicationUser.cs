@@ -17,6 +17,7 @@ namespace Benefit.Domain.Models
         public ApplicationUser()
         {
             Orders = new Collection<Order>();
+            BenefitCards = new Collection<BenefitCard>();
         }
         public bool IsActive { get; set; }
         public bool IsCardVerified { get; set; }
@@ -61,6 +62,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<ApplicationUser> Partners { get; set; }
         public ICollection<Order> Orders { get; set; }
         public ICollection<Transaction> Transactions { get; set; }
+        public ICollection<BenefitCard> BenefitCards { get; set; }
     }
 
     public class ApplicationUserComparer : IEqualityComparer<ApplicationUser>

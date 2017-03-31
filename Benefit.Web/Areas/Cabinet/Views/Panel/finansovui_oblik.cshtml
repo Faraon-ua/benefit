@@ -1,17 +1,10 @@
-﻿@using System.Globalization
-@using Benefit.Common.Extensions
-@using Benefit.Domain.Models
+﻿@using Benefit.Common.Extensions
 @model Benefit.DataTransfer.ViewModels.PartnerTransactionsViewModel
 
 @{
     ViewBag.Title = "Фінансовий облік";
     ViewBag.CabinetProfileClass = "kabinet_profile finance";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
-}
-
-@section PartnerHead
-{
-    @Html.Partial("_PartnerHead", Model.User)
 }
 @section styles {
     <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />

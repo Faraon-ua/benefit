@@ -301,6 +301,10 @@
     <Compile Include="Migrations\201703281313305_AddScheduleMinutes.Designer.cs">
       <DependentUpon>201703281313305_AddScheduleMinutes.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201703301409504_AddBenefitFamily.cs" />
+    <Compile Include="Migrations\201703301409504_AddBenefitFamily.Designer.cs">
+      <DependentUpon>201703301409504_AddBenefitFamily.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -514,6 +518,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201703281313305_AddScheduleMinutes.resx">
       <DependentUpon>201703281313305_AddScheduleMinutes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201703301409504_AddBenefitFamily.resx">
+      <DependentUpon>201703301409504_AddBenefitFamily.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

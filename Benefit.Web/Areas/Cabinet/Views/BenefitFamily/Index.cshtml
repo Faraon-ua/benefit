@@ -1,0 +1,75 @@
+﻿@using Benefit.Domain.Models
+@model ApplicationUser
+
+@{
+    ViewBag.Title = "Benefit Family";
+    ViewBag.CabinetProfileClass = "kabinet_profile";
+    Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
+}
+@section styles
+{
+    <link href="~/Content/css/input-icon-left.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/Scripts/common.js"></script>
+
+    <script>
+        var createOrUpdateMemberUrl = '@Url.Action("CreateOrUpdate")';
+
+        $(function () {
+            //validation
+            $("body").on('submit', 'form', function (e) {
+                $(this).find("input").removeClass("input-validation-error");
+                var emptyInputs = $("input.required").filter(function () {
+                    return $(this).val() == "";
+                });
+                if (emptyInputs.length > 0) {
+                    e.preventDefault();
+                }
+                emptyInputs.addClass("input-validation-error");
+            });
+
+            $("#add-member, .edit-family-member").click(function (e) {
+                e.preventDefault();
+                if ($(this).attr("href") != undefined) {
+                    createOrUpdateMemberUrl += "?id=" + $(this).attr("href");
+                }
+                $("#modal-container").load(createOrUpdateMemberUrl, function () {
+                    $("#modal-container").modal("show");
+                });
+            });
+        });
+    </script>
+}
+
+<div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
+    @Html.Partial("_FlashMessage")
+    @if (Model.BenefitCards.Any())
+    {
+        <table>
+            <tr>
+                <th class="col-md-4 border-bottom padding-vertical-5px">Ім’я учасника</th>
+                <th class="col-md-4 border-bottom padding-vertical-5px">Номер картки або брелка</th>
+                <th class="col-md-4"></th>
+            </tr>
+            @foreach (var card in Model.BenefitCards)
+            {
+                <tr>
+                    <td class="col-md-4 border-bottom padding-vertical-5px">@card.HolderName</td>
+                    <td class="col-md-4 border-bottom padding-vertical-5px">@card.Id</td>
+                    <td class="col-md-4">
+                        <a href="@card.Id" title="Редагувати" class="title-to-tooltip edit-family-member">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </a>
+                        <a href="@Url.Action("Delete", new { id=card.Id })" title="Видалити" class="title-to-tooltip" onclick="return confirm('Ви впевнені?')">
+                            <i class="glyphicon glyphicon-remove font-red margin-left-10"></i>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    <br />
+    <button type="button" class="btn btn-success btn-lg" id="add-member">Додати учасника</button>
+</div>
+<div id="modal-container" class="modal fade in"></div>

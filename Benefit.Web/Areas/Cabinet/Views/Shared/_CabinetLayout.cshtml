@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Benefit.Domain.Models
+<!DOCTYPE html>
 <html lang="uk">
 <head>
     <title>@ViewBag.Title - Кабінет партнера Benefit Company</title>
@@ -19,7 +20,7 @@
             </div>
         </aside>
         <div class="row container_table">
-            @RenderSection("PartnerHead", true)
+            @Html.Partial("_PartnerHead", ViewBag.User as ApplicationUser)
             @Html.Partial("_PartnerMenu")
             @RenderBody()
         </div>

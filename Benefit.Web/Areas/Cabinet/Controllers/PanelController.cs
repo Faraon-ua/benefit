@@ -45,7 +45,6 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         // GET: /Cabinet/Panel/
         public ActionResult Index()
         {
-            ViewBag.User = UserService.GetUserInfoWithRegions(RouteData.Values[DomainConstants.UserIdKey].ToString());
             using (var db = new ApplicationDbContext())
             {
                 var banners = db.Banners.Where(entry => entry.BannerType == BannerType.PartnerPageBanners).ToList();
@@ -67,7 +66,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult Profile()
         {
-            var user = UserService.GetUserInfoWithRegions(RouteData.Values[DomainConstants.UserIdKey].ToString());
+            var user = ViewBag.User;
             return View(user);
         }
 
@@ -113,8 +112,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult VerifyCard()
         {
-            var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
-            var user = UserService.GetUserInfoWithRegions(userId);
+            var user = ViewBag.User;
             return View(user);
         }
 
@@ -138,13 +136,11 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult UserAddress(string id)
         {
-            var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
-            var user = UserService.GetUserInfoWithRegions(userId);
-            ViewBag.User = user;
             Address address;
+            var user = ViewBag.User as ApplicationUser;
             using (var db = new ApplicationDbContext())
             {
-                address = db.Addresses.FirstOrDefault(entry => entry.Id == id && entry.UserId == userId) ?? new Address();
+                address = db.Addresses.FirstOrDefault(entry => entry.Id == id && entry.UserId == user.Id) ?? new Address();
                 if (address.Region != null)
                 {
                     var expandedRegionName = address.Region.ExpandedName;
@@ -179,7 +175,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                 }
                 return RedirectToAction("Profile");
             }
-            var user = UserService.GetUserInfoWithRegions(userId);
+            var user = ViewBag.User;
             ViewBag.User = user;
 
             return View(address);
@@ -205,7 +201,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult planvunagorod()
         {
-            var user = UserService.GetUserInfoWithRegions(RouteData.Values[DomainConstants.UserIdKey].ToString());
+            var user = ViewBag.User;
             using (var db = new ApplicationDbContext())
             {
                 ViewBag.Page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "plan_vinagorod").Content;
@@ -251,6 +247,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             var user = UserService.GetUserInfoWithRegionsAndSellers(RouteData.Values[DomainConstants.UserIdKey].ToString());
             return View(user);
         }
+
         [HttpPost]
         public ActionResult contact_us(string Subject, string Message, string userId)
         {
@@ -280,6 +277,12 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                 imagesService.ResizeToSiteRatio(Path.Combine(pathString, fullPath), ImageType.UserAvatar);
             }
             return RedirectToAction("Index");
+        }
+
+        public ActionResult RemoveCard()
+        {
+            UserService.RemoveCard(ViewBag.User.Id);
+            return Content(string.Empty);
         }
     }
 }

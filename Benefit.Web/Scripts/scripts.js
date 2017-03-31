@@ -390,7 +390,7 @@ $(document).ready(function() {
     });
 
     // tooltip
-    $('.battery').tooltip();
+    $('.battery, .title-to-tooltip').tooltip();
 
     //structure table
     $('body').on('click', '.expand_close', function () {

@@ -110,5 +110,15 @@ namespace Benefit.Services.Domain
             }
             return partners.ToList();
         }
+
+        public void RemoveCard(string userId)
+        {
+            var user = db.Users.Find(userId);
+            user.CardNumber = null;
+            user.NFCCardNumber = null;
+            user.IsCardVerified = false;
+            db.Entry(user).State = EntityState.Modified;
+            db.SaveChanges();
+        }
     }
 }
