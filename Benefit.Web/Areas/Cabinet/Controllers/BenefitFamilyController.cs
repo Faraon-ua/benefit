@@ -1,5 +1,7 @@
-﻿using System.Data.Entity;
+﻿using System;
+using System.Data.Entity;
 using System.Linq;
+using System.Net;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -27,7 +29,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateOrUpdate(string holderName, string cardNumber, string originalCardNumber)
+        public ActionResult CreateOrUpdate(string holderName, string cardNumber)
         {
             var card = db.BenefitCards.Find(cardNumber);
             if (card != null)
@@ -37,14 +39,25 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                     card.UserId = ViewBag.User.Id;
                     card.HolderName = holderName;
                     db.Entry(card).State = EntityState.Modified;
-                    if (!string.IsNullOrEmpty(originalCardNumber))
-                    {
-                        Delete(originalCardNumber);
-                    }
                     db.SaveChanges();
                     TempData["SuccessMessage"] = "Учасника успішно збережено";
                     return RedirectToAction("Index");
                 }
+            }
+            var unsuccessfulAttempts = Request.Cookies["unsuccessfulAttempts"] == null
+                ? 0
+                : int.Parse(Request.Cookies["unsuccessfulAttempts"].Value);
+            unsuccessfulAttempts++;
+            var unsuccessfulAttemptsCookie = new System.Web.HttpCookie("unsuccessfulAttempts")
+            {
+                Value = unsuccessfulAttempts.ToString(),
+                Expires = DateTime.Now.AddHours(1)
+            };
+            Response.Cookies.Add(unsuccessfulAttemptsCookie);
+
+            if (unsuccessfulAttempts >= 3)
+            {
+                return RedirectToAction("contact_us", "Panel", new { subject = "Потрібна допомога в активації картки/брелка", body = cardNumber });
             }
             TempData["ErrorMessage"] = "Неможливо зберегти цю картку";
             return RedirectToAction("Index");
