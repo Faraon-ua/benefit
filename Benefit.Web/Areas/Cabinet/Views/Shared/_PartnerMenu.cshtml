@@ -25,13 +25,13 @@
                 <a href="@Url.Action("Profile", "Panel")">Профіль</a>
             </li>
             @{
-        if (ViewBag.User.CardNumber == null)
+        if (ViewBag.User.CardNumber != null && ViewBag.User.IsCardVerified)
         {
-            active = ActiveStatus.Inactive;
+            active = ViewContext.RouteData.GetRequiredString("controller") == "BenefitFamily" ? ActiveStatus.Active : ActiveStatus.None;
         }
         else
         {
-            active = ViewContext.RouteData.GetRequiredString("controller") == "BenefitFamily" ? ActiveStatus.Active : ActiveStatus.None;
+            active = ActiveStatus.Inactive;
         }
             }
             <li class="partner_menu_family @Enumerations.GetEnumDescription(active)">
@@ -41,7 +41,7 @@
                 }
                 @if (active == ActiveStatus.Inactive)
                 {
-                    <a href="#" title="Для активації Benefit Family зареєструйте особисту бонусну картку у розділі Профіль" class="title-to-tooltip">
+                    <a href="#" title="Для активації Benefit Family зареєструйте і верифікуйте особисту бонусну картку у розділі Профіль" class="title-to-tooltip">
                         <span class="inactive">Benefit Family</span>
                     </a>
                 }
@@ -139,13 +139,13 @@
                 <a href="@Url.Action("Profile", "Panel", new { userId = Request.QueryString[DomainConstants.UserIdKey] })">Профіль</a>
             </li>
             @{
-        if (ViewBag.User.CardNumber == null)
+        if (ViewBag.User.CardNumber != null && ViewBag.User.IsCardVerified)
         {
-            active = ActiveStatus.Inactive;
+            active = ViewContext.RouteData.GetRequiredString("controller") == "BenefitFamily" ? ActiveStatus.Active : ActiveStatus.None;
         }
         else
         {
-            active = ViewContext.RouteData.GetRequiredString("controller") == "BenefitFamily" ? ActiveStatus.Active : ActiveStatus.None;
+            active = ActiveStatus.Inactive;
         }
             }
             <li class="partner_menu_family @Enumerations.GetEnumDescription(active)">
@@ -156,7 +156,7 @@
                 }
                 else
                 {
-                    <a href="#" title="Для активації Benefit Family зареєструйте особисту бонусну картку у розділі Профіль" class="title-to-tooltip">
+                    <a href="#" title="Для активації Benefit Family зареєструйте і верифікуйте особисту бонусну картку у розділі Профіль" class="title-to-tooltip">
                         <span class="inactive">Benefit Family</span>
                     </a>
                 }

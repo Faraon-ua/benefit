@@ -113,6 +113,9 @@
     padding-top: 5px !important;
     padding-bottom: 5px !important;
 }
+.padding-top-5 {
+    padding-top: 5px !important;
+}
 .padding-top-15 {
     padding-top: 15px !important;
 }
@@ -151,26 +154,27 @@
 .width-30-px {
     width: 30px !important;
 }
+.width-70 {
+    width: 70% !important;
+}
 .width-50 {
     width: 50% !important;
 }
-
 .width-40 {
     width: 40% !important;
 }
-
+.width-30 {
+  width: 30% !important;
+}
 .width-20 {
     width: 20% !important;
 }
-
 .width-10 {
     width: 10% !important;
 }
-
 .width-5 {
     width: 5% !important;
 }
-
 .width-3 {
     width: 3% !important;
 }

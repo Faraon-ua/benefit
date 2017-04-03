@@ -242,8 +242,16 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             return View(user);
         }
 
-        public ActionResult contact_us()
+        public ActionResult contact_us(string subject, string body)
         {
+            if (subject != null)
+            {
+                ViewBag.Subject = subject;
+            }
+            if (body != null)
+            {
+                ViewBag.Body = body;
+            }
             var user = UserService.GetUserInfoWithRegionsAndSellers(RouteData.Values[DomainConstants.UserIdKey].ToString());
             return View(user);
         }

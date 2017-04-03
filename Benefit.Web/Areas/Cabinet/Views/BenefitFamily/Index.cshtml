@@ -16,11 +16,47 @@
     <script>
         var createOrUpdateMemberUrl = '@Url.Action("CreateOrUpdate")';
 
+        function SetTrinketTextBox() {
+            var readOnlyLength = $('#cardNumber').val().length;
+
+            $('#cardNumber').on('keypress, keydown', function (event) {
+                if ((event.which != 37 && (event.which != 39))
+                    && ((this.selectionStart < readOnlyLength)
+                        || ((this.selectionStart == readOnlyLength) && (event.which == 8)))) {
+                    return false;
+                }
+
+                // Allow: backspace, delete, tab, escape, enter and .
+                if ($.inArray(event.which, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                    // Allow: home, end, left, right, down, up
+                    (event.which >= 35 && event.which <= 40)) {
+                    // let it happen, don't do anything
+                    return true;
+                }
+
+                // Ensure that it is a number and stop the keypress
+                if (((event.which < 48 || event.which > 57)) && (event.which < 96 || event.which > 105)) {
+                    return false;
+                }
+            });
+        }
+
         $(function () {
+            $("body").on("change", "#IsTrinket", function() {
+                if (this.checked) {
+                    $("#cardNumber").val("BC");
+                    SetTrinketTextBox();
+                } else {
+                    $('#cardNumber').val('');
+                    $('#cardNumber').off('keydown');
+                    $('#cardNumber').off('keypress');
+                }
+            });
+
             //validation
-            $("body").on('submit', 'form', function (e) {
+            $("body").on('submit', 'form', function(e) {
                 $(this).find("input").removeClass("input-validation-error");
-                var emptyInputs = $("input.required").filter(function () {
+                var emptyInputs = $("input.required").filter(function() {
                     return $(this).val() == "";
                 });
                 if (emptyInputs.length > 0) {
@@ -29,12 +65,12 @@
                 emptyInputs.addClass("input-validation-error");
             });
 
-            $("#add-member, .edit-family-member").click(function (e) {
+            $("#add-member, .edit-family-member").click(function(e) {
                 e.preventDefault();
                 if ($(this).attr("href") != undefined) {
                     createOrUpdateMemberUrl += "?id=" + $(this).attr("href");
                 }
-                $("#modal-container").load(createOrUpdateMemberUrl, function () {
+                $("#modal-container").load(createOrUpdateMemberUrl, function() {
                     $("#modal-container").modal("show");
                 });
             });
@@ -58,10 +94,7 @@
                     <td class="col-md-4 border-bottom padding-vertical-5px">@card.HolderName</td>
                     <td class="col-md-4 border-bottom padding-vertical-5px">@card.Id</td>
                     <td class="col-md-4">
-                        <a href="@card.Id" title="Редагувати" class="title-to-tooltip edit-family-member">
-                            <i class="glyphicon glyphicon-pencil"></i>
-                        </a>
-                        <a href="@Url.Action("Delete", new { id=card.Id })" title="Видалити" class="title-to-tooltip" onclick="return confirm('Ви впевнені?')">
+                        <a href="@Url.Action("contact_us", "Panel", new { subject = "Запит на видалення картки (абе брелка) з мого акаунту", body = card.Id })" title="Видалити" class="title-to-tooltip">
                             <i class="glyphicon glyphicon-remove font-red margin-left-10"></i>
                         </a>
                     </td>

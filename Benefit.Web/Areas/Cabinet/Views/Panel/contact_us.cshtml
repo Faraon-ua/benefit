@@ -13,11 +13,11 @@
         <div class="container">
             <div class="row">
                 <div>
-                    @Html.TextBox("Subject", null, new { placeholder = "Тема повідомлення", @class = "col-md-6" })
+                    @Html.TextBox("Subject", ViewBag.Subject as string, new { placeholder = "Тема повідомлення", @class = "col-md-6" })
                 </div>
             </div>
             <div class="row margin-top-20">
-                @Html.TextArea("Message", null, new { placeholder = "Повідомлення", @class = "col-md-6 width-50" })
+                @Html.TextArea("Message", ViewBag.Body as string, new { placeholder = "Повідомлення", @class = "col-md-6 width-50" })
             </div>
             <button class="request_change_data margin-left-0" type="submit">Надіслати</button>
         </div>

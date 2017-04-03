@@ -15,8 +15,11 @@
                             <i class="form-control-feedback glyphicon glyphicon-user"></i>
                         </div>
                         <div class="form-group has-feedback has-feedback-left">
-                            <input type="text" class="form-control required" placeholder="Номер картки або брелка" name="cardNumber" value="@Model.Id"/>
-                            <input type="hidden" value="@Model.Id" name="originalCardNumber" />
+                            <input type="text" class="form-control required width-70 pull-left" placeholder="Номер картки або брелка" name="cardNumber" id="cardNumber" value="@Model.Id" />
+                            <span class="width-30 margin-left-10" style="line-height: 2.5em;">
+                                <input type="checkbox" id="IsTrinket"/>
+                                <label for="IsTrinket">Брелок</label>
+                            </span>
                             <i class="form-control-feedback glyphicon glyphicon-credit-card"></i>
                         </div>
                     </div>

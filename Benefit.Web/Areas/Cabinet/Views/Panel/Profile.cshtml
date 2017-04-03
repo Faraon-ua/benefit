@@ -26,17 +26,6 @@
 
             SetRegionsAutocomplete();
 
-            $("#remove-card").click(function (e) {
-                e.preventDefault();
-                var removeCardUrl = "@Url.Action("RemoveCard", "Panel")";
-                if (!confirm("Ви впевненні, що хочете видалити картку з вашого акаунту?")) {
-                    return;
-                }
-                $.post(removeCardUrl, null, function () {
-                    location.reload();
-                });
-            });
-
             $(".address_delete").click(function () {
                 var addressBlock = $(this).parents(".address_block");
                 var addressId = $(this).attr("data-address-id");
@@ -86,8 +75,8 @@
                     else
                     {
                         <input id="partner-referal" name="CardNumber" type="text" value="@Model.CardNumber" readonly />
-                        <a href="#" title="Видалити картку" id="remove-card" class="title-to-tooltip">
-                            <i class="glyphicon glyphicon-remove font-red"></i>
+                        <a href="@Url.Action("contact_us", new { subject = "Запит на видалення картки (абе брелка) з мого акаунту", body = Model.CardNumber })" title="Видалити картку" id="remove-card" class="title-to-tooltip">
+                        <i class="glyphicon glyphicon-remove font-red"></i>
                         </a>
                     }
                 </p>
