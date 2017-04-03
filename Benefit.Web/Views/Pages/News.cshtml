@@ -34,3 +34,14 @@
         </div>
     </div>
 }
+<div>
+    <ul class="pagination">
+        @for (var i = 0; i < ViewBag.PagesCount; i++)
+        {
+            <li>
+                <a href="@Url.Action("News", new { page = i })">@(i + 1)</a>
+            </li>
+        }
+    </ul>
+</div>
+

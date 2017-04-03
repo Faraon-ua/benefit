@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 
 namespace Benefit.Web.Controllers
@@ -23,9 +24,10 @@ namespace Benefit.Web.Controllers
             return View(page);
         }
 
-        public ActionResult News()
+        public ActionResult News(int page = 0)
         {
-            var news = db.InfoPages.Where(entry => entry.IsNews).OrderByDescending(entry => entry.CreatedOn).ToList();
+            var news = db.InfoPages.Where(entry => entry.IsNews).OrderByDescending(entry => entry.CreatedOn).Skip(page * ListConstants.NewsTakePerPage).Take(ListConstants.NewsTakePerPage).ToList();
+            ViewBag.PagesCount = db.InfoPages.Count(entry => entry.IsNews)/ListConstants.NewsTakePerPage;
             return View(news);
         }
 	}
