@@ -114,10 +114,10 @@ namespace Benefit.Services.Domain
             if (regionId != RegionConstants.AllUkraineRegionId)
             {
                 items = items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId) ||
-                             entry.ShippingMethods.Select(sm => sm.Region.Id)
-                                 .Contains(RegionConstants.AllUkraineRegionId)).OrderByDescending(entry => entry.UserDiscount);
+                                             entry.ShippingMethods.Select(sm => sm.Region.Id)
+                                                 .Contains(RegionConstants.AllUkraineRegionId));
             }
-            sellersDto.Items = items.ToList();
+            sellersDto.Items = items.OrderByDescending(entry => entry.UserDiscount).ToList();
 
             sellersDto.Items.ForEach(entry =>
             {
