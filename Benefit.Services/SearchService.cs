@@ -52,7 +52,7 @@ namespace Benefit.Services
             };
             term = term.ToLower();
             var translitTerm = term.Translit();
-            var productsResult = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Where(entry => entry.IsActive && entry.Seller.IsActive);
+            var productsResult = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
             if (categoryId != null)
             {
                 productsResult = productsResult.Where(entry => entry.CategoryId == categoryId);

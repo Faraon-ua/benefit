@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Threading;
 using Benefit.CardReader.DataTransfer.Offline;
 using Benefit.CardReader.Services;
+using Benefit.CardReader.Services.Factories;
 using Benefit.HttpClient;
 
 namespace Benefit.CardReader
@@ -22,9 +23,7 @@ namespace Benefit.CardReader
 
         private DefaultWindow defaultWindow;
         private BenefitHttpClient httpClient;
-        private ApiService apiService;
         public ReaderService readerService;
-        public DataService dataService;
         private App app;
 
         private DateTime startTime;
@@ -37,9 +36,7 @@ namespace Benefit.CardReader
             defaultWindow = new DefaultWindow();
             //            ((DefaultWindow)defaultWindow).SiteHyperlink.RequestNavigate += Hyperlink_OnRequestNavigate;
             httpClient = new BenefitHttpClient();
-            apiService = new ApiService();
             readerService = new ReaderService();
-            dataService = new DataService();
             readerService.CardReaded += readerService_CardReaded;
             app = (App)Application.Current;
             dispatcherTimer = new DispatcherTimer();
@@ -86,8 +83,7 @@ namespace Benefit.CardReader
             else
             {
                 //get license key from device;
-                app.Token = apiService.GetAuthToken(handShake.LicenseKey);
-                apiService.AuthToken = app.Token;
+                app.Token = ReaderFactory.GetReaderManager(app.IsConnected).GetAuthToken(handShake.LicenseKey);
                 if (app.Token == null)
                 {
                     //show device not authorized
@@ -106,6 +102,8 @@ namespace Benefit.CardReader
         }
         private void readerService_CardReaded(object sender, Common.CustomEventArgs.NfcEventArgs e)
         {
+            Dispatcher.Invoke(new Action(() => defaultWindow.Show()));
+
             if (app.AuthInfo.CashierNfc != null)
             {
                 //if returning cashier - log off
@@ -120,7 +118,7 @@ namespace Benefit.CardReader
                 //if new card - user auth
                 else
                 {
-                    var user = apiService.AuthUser(e.NfcCode);
+                    var user = ReaderFactory.GetReaderManager(app.IsConnected).AuthUser(e.NfcCode);
                     if (user != null)
                     {
                         app.AuthInfo.UserNfc = e.NfcCode;
@@ -145,19 +143,9 @@ namespace Benefit.CardReader
             //auth cashier
             else if (app.Token != null)
             {
-                Dispatcher.Invoke(new Action(() => defaultWindow.Show()));
-
-                var cashierSeller = apiService.AuthCashier(e.NfcCode);
+                var cashierSeller = ReaderFactory.GetReaderManager(app.IsConnected).AuthCashier(e.NfcCode);
                 if (cashierSeller != null)
                 {
-                    //add to offline
-                    Task.Factory.StartNew(() => dataService.Add(new Cashier()
-                    {
-                        CardNfc = e.NfcCode,
-                        Name = cashierSeller.CashierName,
-                        SellerName = cashierSeller.SellerName
-                    }));
-                    
                     app.AuthInfo.CashierNfc = e.NfcCode;
                     app.AuthInfo.CashierName = cashierSeller.CashierName;
                     app.AuthInfo.SellerName = cashierSeller.SellerName;

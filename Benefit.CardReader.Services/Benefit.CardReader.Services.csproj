@@ -47,6 +47,9 @@
     <Compile Include="ApiService.cs" />
     <Compile Include="CardReaderSettingsService.cs" />
     <Compile Include="DataService.cs" />
+    <Compile Include="Factories\IReaderManager.cs" />
+    <Compile Include="Factories\ReaderFactory.cs" />
+    <Compile Include="OfflineService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReaderService.cs" />
   </ItemGroup>

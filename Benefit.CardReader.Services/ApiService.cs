@@ -1,17 +1,22 @@
 ﻿using System.IO;
 using System.Net;
+using System.Threading.Tasks;
 using Benefit.CardReader.DataTransfer.Dto;
 using Benefit.CardReader.DataTransfer.Ingest;
+using Benefit.CardReader.DataTransfer.Offline;
+using Benefit.CardReader.Services.Factories;
 using Benefit.Common.Helpers;
 using Benefit.HttpClient;
 using Newtonsoft.Json;
 
 namespace Benefit.CardReader.Services
 {
-    public class ApiService
+    public class ApiService: IReaderManager
     {
         private BenefitHttpClient _httpClient = new BenefitHttpClient();
         public string AuthToken { get; set; }
+        private DataService dataService = new DataService();
+
         public string GetAuthToken(string licenseKey)
         {
             var token = new TokenIngest
@@ -22,7 +27,15 @@ namespace Benefit.CardReader.Services
             var tokenUrl = Path.Combine(CardReaderSettingsService.ApiHost, CardReaderSettingsService.ApiTokenPrefix);
             var tokenResult = _httpClient.Post<TokenDto>(tokenUrl, tokenForm, "application/x-www-form-urlencoded");
             if (tokenResult.StatusCode == HttpStatusCode.OK)
+            {
+                if (tokenResult.Data.access_token != null)
+                {
+                    AuthToken = tokenResult.Data.access_token;
+                    //add to offline
+                    Task.Factory.StartNew(() => dataService.Add(AuthToken));
+                }
                 return tokenResult.Data.access_token;
+            }
             return null;
         }
 
@@ -31,7 +44,19 @@ namespace Benefit.CardReader.Services
             var authCashierUrl = CardReaderSettingsService.ApiHost + CardReaderSettingsService.ApiPrefix + "AuthCashier?nfc=" + cashierNfc;
             var cashierResult = _httpClient.Get<SellerCashierAuthDto>(authCashierUrl, AuthToken);
             if (cashierResult.StatusCode == HttpStatusCode.OK)
+            {
+                if (cashierResult.Data != null)
+                {
+                    //add to offline
+                    Task.Factory.StartNew(() => dataService.Add(new Cashier()
+                    {
+                        CardNfc = cashierNfc,
+                        Name = cashierResult.Data.CashierName,
+                        SellerName = cashierResult.Data.SellerName
+                    }));
+                }
                 return cashierResult.Data;
+            }
             return null;
         }
 

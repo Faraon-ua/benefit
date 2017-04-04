@@ -159,7 +159,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Seller.ShippingMethods)
                 .Include(entry => entry.Seller.Addresses)
-                .Where(entry => entry.IsActive && entry.Seller.IsActive)
+                .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce)
                 .Where(entry => entry.Seller.Addresses.Any(addr => addr.RegionId == regionId) ||
                                 entry.Seller.ShippingMethods.Select(sm => sm.Region.Id).Contains(RegionConstants.AllUkraineRegionId) ||
                                 entry.Seller.ShippingMethods.Select(sm => sm.Region.Id).Contains(regionId));

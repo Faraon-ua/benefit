@@ -77,7 +77,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             {
                 var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
                 var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == userId);
-                user.Region = db.Regions.FirstOrDefault(entry => entry.Id == user.RegionId);
+                user.Region = db.Regions.FirstOrDefault(entry => entry.Id == profile.RegionId);
 
                 if(!string.IsNullOrEmpty(profile.CardNumber) && (db.Users.Any(entry => entry.CardNumber == profile.CardNumber && entry.Id != user.Id) || !db.BenefitCards.Any(entry => entry.Id == profile.CardNumber)))
                 {
