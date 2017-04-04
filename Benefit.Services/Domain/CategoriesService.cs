@@ -24,7 +24,7 @@ namespace Benefit.Services.Domain
         public List<Category> GetBaseCategories()
         {
             return db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order).ToList();
-        } 
+        }
         public List<Category> GetBreadcrumbs(string categoryId = null, string urlName = null)
         {
             var cacheKey = string.Format("{0}{1}{2}", CacheConstants.BreadCrumbsKey, categoryId, urlName);
@@ -48,22 +48,22 @@ namespace Benefit.Services.Domain
         }
 
         //todo: remove comment think about product list
-       /* public List<Product> GetCategoryProductsOnly(string categoryId, string sellerId, int skip, int take = ListConstants.DefaultTakePerPage)
-        {
-            var products = db.Products.Include(entry => entry.Images).Include(entry=>entry.Currency);
-            if (!string.IsNullOrEmpty(categoryId))
-            {
-                products = products.Where(entry => entry.CategoryId == categoryId);
-            }
-            if (!string.IsNullOrEmpty(sellerId))
-            {
-                products = products.Where(entry => entry.SellerId == sellerId);
-            }
-            products = products.OrderBy(entry => entry.Category.Order).ThenByDescending(entry => entry.Images.Any());
-            var result = products.Skip(skip).Take(take + 1).ToList();
-            result.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
-            return result;
-        }*/
+        /* public List<Product> GetCategoryProductsOnly(string categoryId, string sellerId, int skip, int take = ListConstants.DefaultTakePerPage)
+         {
+             var products = db.Products.Include(entry => entry.Images).Include(entry=>entry.Currency);
+             if (!string.IsNullOrEmpty(categoryId))
+             {
+                 products = products.Where(entry => entry.CategoryId == categoryId);
+             }
+             if (!string.IsNullOrEmpty(sellerId))
+             {
+                 products = products.Where(entry => entry.SellerId == sellerId);
+             }
+             products = products.OrderBy(entry => entry.Category.Order).ThenByDescending(entry => entry.Images.Any());
+             var result = products.Skip(skip).Take(take + 1).ToList();
+             result.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
+             return result;
+         }*/
 
         public ProductsViewModel GetCategoryProducts(string urlName, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
@@ -100,7 +100,8 @@ namespace Benefit.Services.Domain
 
             //filter by region and shippings
             var regionId = RegionService.GetRegionId();
-            sellersDto.Items =
+
+            var items =
                 db.Sellers
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Addresses)
@@ -109,12 +110,14 @@ namespace Benefit.Services.Domain
                     .Where(
                         entry =>
                             sellerIds.Contains(entry.Id) &&
-                            entry.IsActive &&
-                            (entry.Addresses.Select(addr => addr.RegionId).Contains(regionId) ||
+                            entry.IsActive);
+            if (regionId != RegionConstants.AllUkraineRegionId)
+            {
+                items = items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId) ||
                              entry.ShippingMethods.Select(sm => sm.Region.Id)
-                                 .Contains(RegionConstants.AllUkraineRegionId))
-                    )
-                    .OrderByDescending(entry=>entry.UserDiscount).ToList();
+                                 .Contains(RegionConstants.AllUkraineRegionId)).OrderByDescending(entry => entry.UserDiscount);
+            }
+            sellersDto.Items = items.ToList();
 
             sellersDto.Items.ForEach(entry =>
             {
@@ -187,11 +190,11 @@ namespace Benefit.Services.Domain
 
         public void Delete(string id)
         {
-            var category = db.Categories.Include(entry=>entry.SellerCategories).Include(entry=>entry.Products).Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.Id == id);
+            var category = db.Categories.Include(entry => entry.SellerCategories).Include(entry => entry.Products).Include(entry => entry.ChildCategories).FirstOrDefault(entry => entry.Id == id);
             if (category == null) return;
 
             db.SellerCategories.RemoveRange(category.SellerCategories);
-            
+
             db.ProductParameters.RemoveRange(category.ProductParameters);
             db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
             if (category.ImageUrl != null)
