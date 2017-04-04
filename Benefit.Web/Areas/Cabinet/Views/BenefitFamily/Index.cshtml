@@ -44,9 +44,11 @@
         $(function () {
             $("body").on("change", "#IsTrinket", function() {
                 if (this.checked) {
+                    $("#card-example").text("BC000001");
                     $("#cardNumber").val("BC");
                     SetTrinketTextBox();
                 } else {
+                    $("#card-example").text("000001");
                     $('#cardNumber').val('');
                     $('#cardNumber').off('keydown');
                     $('#cardNumber').off('keypress');
@@ -94,7 +96,7 @@
                     <td class="col-md-4 border-bottom padding-vertical-5px">@card.HolderName</td>
                     <td class="col-md-4 border-bottom padding-vertical-5px">@card.Id</td>
                     <td class="col-md-4">
-                        <a href="@Url.Action("contact_us", "Panel", new { subject = "Запит на видалення картки/брелка з мого акаунту", body = card.Id })" title="Видалити" class="title-to-tooltip">
+                        <a href="@Url.Action("contact_us", "Panel", new { subject = "Запит на видалення картки/брелка з мого акаунту", body = "Прошу видалити картку номер " + Model.CardNumber + " у зв’язку з:" })" title="Видалити" class="title-to-tooltip">
                             <i class="glyphicon glyphicon-remove font-red margin-left-10"></i>
                         </a>
                     </td>

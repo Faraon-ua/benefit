@@ -51,7 +51,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             var unsuccessfulAttemptsCookie = new System.Web.HttpCookie("unsuccessfulAttempts")
             {
                 Value = unsuccessfulAttempts.ToString(),
-                Expires = DateTime.Now.AddHours(1)
+                Expires = DateTime.Now.AddMinutes(3)
             };
             Response.Cookies.Add(unsuccessfulAttemptsCookie);
 

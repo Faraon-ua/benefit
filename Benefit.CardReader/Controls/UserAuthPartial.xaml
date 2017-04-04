@@ -4,7 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="745" d:DesignWidth="800">
+             d:DesignHeight="670" d:DesignWidth="800">
     <StackPanel Orientation="Vertical" Name="UserAuth">
         <Border Background="White" Margin="40, 25" Height="160" Width="720">
             <Border.Effect>
@@ -33,8 +33,8 @@
                 <DropShadowEffect Opacity="0.2" ShadowDepth="3" />
             </Border.Effect>
             <StackPanel Orientation="Vertical">
-                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontSize="36" LineHeight="36" Margin="0,50" LineStackingStrategy="BlockLineHeight" Foreground="#990100">Для авторизації <LineBreak/> клієнта піднесіть картку</TextBlock>
-                <Image Source="/Images/card.png" Width="550" Margin="23"></Image>
+                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontSize="36" LineHeight="36" Margin="0,30" LineStackingStrategy="BlockLineHeight" Foreground="#990100">Для авторизації <LineBreak/> клієнта піднесіть картку</TextBlock>
+                <Image Source="/Images/card.png" Width="550" Margin="20"></Image>
             </StackPanel>
         </Border>
     </StackPanel>

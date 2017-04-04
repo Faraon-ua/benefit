@@ -75,7 +75,7 @@
                     else
                     {
                         <input id="partner-referal" name="CardNumber" type="text" value="@Model.CardNumber" readonly />
-                        <a href="@Url.Action("contact_us", new { subject = "Запит на видалення картки/брелка з мого акаунту", body = Model.CardNumber })" title="Видалити картку" id="remove-card" class="title-to-tooltip">
+                        <a href="@Url.Action("contact_us", new { subject = "Запит на видалення картки/брелка з мого акаунту", body = "Прошу видалити картку номер " + Model.CardNumber + " у зв’язку з:" })" title="Видалити картку" id="remove-card" class="title-to-tooltip">
                         <i class="glyphicon glyphicon-remove font-red"></i>
                         </a>
                     }

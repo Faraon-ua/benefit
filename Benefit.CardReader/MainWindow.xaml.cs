@@ -151,12 +151,13 @@ namespace Benefit.CardReader
                 if (cashierSeller != null)
                 {
                     //add to offline
-                    dataService.Add(new Cashier()
+                    Task.Factory.StartNew(() => dataService.Add(new Cashier()
                     {
                         CardNfc = e.NfcCode,
                         Name = cashierSeller.CashierName,
                         SellerName = cashierSeller.SellerName
-                    });
+                    }));
+                    
                     app.AuthInfo.CashierNfc = e.NfcCode;
                     app.AuthInfo.CashierName = cashierSeller.CashierName;
                     app.AuthInfo.SellerName = cashierSeller.SellerName;

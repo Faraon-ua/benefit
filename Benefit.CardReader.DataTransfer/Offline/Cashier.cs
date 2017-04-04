@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Benefit.CardReader.DataTransfer.Offline
 {
@@ -8,5 +10,9 @@ namespace Benefit.CardReader.DataTransfer.Offline
         public string CardNfc { get; set; }
         public string Name { get; set; }
         public string SellerName { get; set; }
+        public override bool Equals(object obj)
+        {
+            return (obj as Cashier).CardNfc == CardNfc;
+        }
     }
 }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
-using Benefit.CardReader.DataTransfer.Dto;
 using Benefit.CardReader.DataTransfer.Offline;
 
 namespace Benefit.CardReader.Services
@@ -23,17 +22,20 @@ namespace Benefit.CardReader.Services
             var fileName = TypeToFileNameMapping[typeof(T)];
             using (Stream fileStream = File.Open(fileName, FileMode.OpenOrCreate))
             {
-                var cryptic = new DESCryptoServiceProvider
+                if (fileStream.Length == 0)
                 {
-                    Key = Encoding.ASCII.GetBytes(CardReaderSettingsService.OfflineFileSalt),
-                    IV = Encoding.ASCII.GetBytes(CardReaderSettingsService.OfflineFileSalt)
-                };
+                    return new List<T>();
+                }
 
-                using (var cryptoStream = new CryptoStream(fileStream, cryptic.CreateEncryptor(), CryptoStreamMode.Read))
+                var password = CardReaderSettingsService.OfflineFileSalt;
+                var encoding = new UnicodeEncoding();
+                var key = encoding.GetBytes(password);
+                var rmCrypto = new RijndaelManaged();
+                using (var cryptoStream = new CryptoStream(fileStream, rmCrypto.CreateDecryptor(key, key), CryptoStreamMode.Read))
                 {
-                    var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                    var result = bformatter.Deserialize(cryptoStream);
-                    return (List<T>) result;
+                    var binaryFormatter = new BinaryFormatter();
+                    var result = binaryFormatter.Deserialize(cryptoStream);
+                    return (List<T>)result;
                 }
             }
         }
@@ -48,18 +50,16 @@ namespace Benefit.CardReader.Services
             //serialize
             using (Stream fileStream = File.Open(fileName, FileMode.Create))
             {
-                var cryptic = new DESCryptoServiceProvider
+                string password = CardReaderSettingsService.OfflineFileSalt;
+                var encoding = new UnicodeEncoding();
+                var key = encoding.GetBytes(password);
+                var rmCrypto = new RijndaelManaged();
+                using (var cryptoStream = new CryptoStream(fileStream, rmCrypto.CreateEncryptor(key, key), CryptoStreamMode.Write))
                 {
-                    Key = Encoding.ASCII.GetBytes(CardReaderSettingsService.OfflineFileSalt),
-                    IV = Encoding.ASCII.GetBytes(CardReaderSettingsService.OfflineFileSalt)
-                };
-
-                using (var cryptoStream = new CryptoStream(fileStream, cryptic.CreateEncryptor(), CryptoStreamMode.Write))
-                {
-                    var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                    bformatter.Serialize(fileStream, collection);
-//                    cryptoStream.FlushFinalBlock();
+                    var binaryFormatter = new BinaryFormatter();
+                    binaryFormatter.Serialize(cryptoStream, collection);
                 }
+
             }
         }
     }

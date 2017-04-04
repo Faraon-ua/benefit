@@ -79,17 +79,20 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                 var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == userId);
                 user.Region = db.Regions.FirstOrDefault(entry => entry.Id == user.RegionId);
 
-                if (db.Users.Any(entry => entry.CardNumber == profile.CardNumber && entry.Id != user.Id) || !db.BenefitCards.Any(entry => entry.Id == profile.CardNumber))
+                if(!string.IsNullOrEmpty(profile.CardNumber) && (db.Users.Any(entry => entry.CardNumber == profile.CardNumber && entry.Id != user.Id) || !db.BenefitCards.Any(entry => entry.Id == profile.CardNumber)))
                 {
                     ModelState.AddModelError("CardNumber", "Не можливо підвязати цей номер карти до вашого акаунту");
                 }
                 if (ModelState.IsValid)
                 {
-                    if (user.CardNumber == null)
+                    if (!string.IsNullOrEmpty(profile.CardNumber))
                     {
-                        user.NFCCardNumber = db.BenefitCards.Find(profile.CardNumber).NfcCode;
+                        if (user.CardNumber == null)
+                        {
+                            user.NFCCardNumber = db.BenefitCards.Find(profile.CardNumber).NfcCode;
+                        }
+                        user.CardNumber = profile.CardNumber;
                     }
-                    user.CardNumber = profile.CardNumber;
                     user.RegionId = profile.RegionId;
                     user.Address = profile.Address;
                     db.Entry(user).State = EntityState.Modified;
