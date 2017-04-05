@@ -5,10 +5,6 @@
     ViewBag.Title = "Нова адреса доставки";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
-@section PartnerHead
-{
-    @Html.Partial("_PartnerHead", ViewBag.User as ApplicationUser)
-}
 @section scripts
 {
     <script src="~/Scripts/jquery.autocomplete.min.js"></script>

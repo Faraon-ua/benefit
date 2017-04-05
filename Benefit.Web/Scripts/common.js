@@ -54,12 +54,6 @@ function insertUrlParam(key, value) {
     return document.location.pathname + "?" + kvp.join('&');
 }
 
-function getCookie(name) {
-    var re = new RegExp(name + "=([^;]+)");
-    var value = re.exec(document.cookie);
-    return (value != null) ? unescape(value[1]) : null;
-}
-
 function onBegin() {
     $('#searchError').hide(0);
     $('#searchResults').hide(0);

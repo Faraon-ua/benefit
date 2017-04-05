@@ -82,5 +82,10 @@ namespace Benefit.CardReader
         {
             Application.Current.Shutdown();
         }
+
+        private void Taskbar_OnTrayMouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            Show();
+        }
     }
 }

@@ -1117,6 +1117,10 @@ footer {
         text-decoration: none;
     }
 
+    .f_links a:hover {
+        text-decoration: underline;
+    }
+
 .lebedev > div {
     overflow: hidden;
 }

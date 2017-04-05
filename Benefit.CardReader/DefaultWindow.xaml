@@ -14,7 +14,7 @@
         Height="800"
         Icon="favicon.ico">
     <DockPanel Background="#F0F0F0">
-        <tb:TaskbarIcon Name="Taskbar" ToolTipText="Benefit NFC Reader" MenuActivation="LeftOrRightClick">
+        <tb:TaskbarIcon Name="Taskbar" ToolTipText="Benefit NFC Reader" MenuActivation="LeftOrRightClick" TrayMouseDoubleClick="Taskbar_OnTrayMouseDoubleClick">
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="OpenWindow" Header="Відкрити" Click="OpenWindow_OnClick"/>
@@ -38,7 +38,7 @@
             <StackPanel Name="Header" Orientation="Horizontal">
                 <Border Width="800" Height="40" Background="#FF6600" Visibility="Collapsed" Name="NoConnection">
                     <Grid>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="26">Підключення відсутнє!</TextBlock>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="26">Працює в автономному режимі!</TextBlock>
                         <Image Source="/Images/notconnected.png" HorizontalAlignment="Right" Margin="20,2"></Image>
                     </Grid>
                 </Border>

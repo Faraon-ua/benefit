@@ -57,6 +57,7 @@ namespace Benefit.CardReader
             {
                 defaultWindow.ConnectionEsteblished.Visibility = Visibility.Visible;
                 defaultWindow.NoConnection.Visibility = Visibility.Collapsed;
+
             }
             else
             {
