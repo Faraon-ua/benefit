@@ -51,7 +51,7 @@
                     <Image Source="/Images/seller.png" Width="38" Height="33" HorizontalAlignment="Left"></Image>
                     <StackPanel Orientation="Vertical" Margin="20,0,0,0">
                         <TextBlock Foreground="#333333" FontSize="20">заклад:</TextBlock>
-                        <TextBlock Name="SellerName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Бордель "У Анастасії"</TextBlock>
+                        <TextBlock Name="SellerName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30"></TextBlock>
                     </StackPanel>
                 </StackPanel>
                 <Separator Foreground="#cccccc" Margin="0,10"></Separator>
@@ -59,7 +59,7 @@
                     <Image Source="/Images/cashier.png" Margin="5,0,0,0" Width="29" Height="38" HorizontalAlignment="Left"></Image>
                     <StackPanel Orientation="Vertical" Margin="20,0,0,0">
                         <TextBlock Foreground="#333333" FontSize="20" LineStackingStrategy="BlockLineHeight" LineHeight="20">обслуговує:</TextBlock>
-                        <TextBlock Name="CashierName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Анастасія Точаєва</TextBlock>
+                        <TextBlock Name="CashierName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30"></TextBlock>
                     </StackPanel>
                 </StackPanel>
             </StackPanel>
@@ -72,10 +72,10 @@
                 <Grid Margin="25,10">
                     <StackPanel Orientation="Vertical"  HorizontalAlignment="Left">
                         <TextBlock Foreground="#333333" FontSize="20">клієнт:</TextBlock>
-                        <TextBlock Name="UserName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30">Дубровський Олександр</TextBlock>
+                        <TextBlock Name="UserName" Foreground="#990100" FontSize="30" LineStackingStrategy="BlockLineHeight" LineHeight="30"></TextBlock>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Foreground="#333333" FontSize="20" LineStackingStrategy="BlockLineHeight" LineHeight="40">номер картки:</TextBlock>
-                            <TextBlock Name="UserCard" Foreground="#990100" FontSize="30" Margin="10,0">000001</TextBlock>
+                            <TextBlock Name="UserCard" Foreground="#990100" FontSize="30" Margin="10,0"></TextBlock>
                         </StackPanel>
                     </StackPanel>
                     <Image Name="btnUserInfo" Source="/Images/info.png" Width="61" Height="62" HorizontalAlignment="Right" Cursor="Hand" MouseLeftButtonDown="BtnUserInfo_OnMouseLeftButtonDown"></Image>
@@ -102,7 +102,7 @@
                     <Image Source="/Images/success-icon.png" Width="56" Height="43" Margin="0,10"></Image>
                     <TextBlock HorizontalAlignment="Center" FontSize="30">Нарахування проведено!</TextBlock>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
-                        <TextBlock HorizontalAlignment="Center" FontSize="25" Foreground="#990100">Нарахуванно бонусів:</TextBlock>
+                        <TextBlock HorizontalAlignment="Center" FontSize="25" Foreground="#990100">Нараховано бонусів:</TextBlock>
                         <TextBlock Name="BonusesAquired" HorizontalAlignment="Center" FontSize="25" Margin="5,0"></TextBlock>
                     </StackPanel> 
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">

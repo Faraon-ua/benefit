@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Caching;
 using Benefit.Common.Constants;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using NLog;
@@ -36,7 +37,7 @@ namespace Benefit.Services.Cart
             }
         }
 
-        public int AddProduct(OrderProduct orderProduct, string sellerId)
+        public CartEditResult AddProduct(OrderProduct orderProduct, string sellerId)
         {
             if (Order.SellerId != null && Order.SellerId != sellerId)
             {
@@ -68,15 +69,15 @@ namespace Benefit.Services.Cart
                 Order.OrderProducts.Add(orderProduct);
             }
             HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
-            return GetOrderProductsCount();
+            return GetOrderProductsCountAndPrice();
         }
 
-        public int RemoveProduct(string id)
+        public CartEditResult RemoveProduct(string id)
         {
             var productToRemove = Order.OrderProducts.FirstOrDefault(entry => entry.ProductId == id);
             Order.OrderProducts.Remove(productToRemove);
             HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);            
-            return GetOrderProductsCount();
+            return GetOrderProductsCountAndPrice();
         }
 
         public void Clear()
@@ -89,18 +90,23 @@ namespace Benefit.Services.Cart
             return Order.GetOrderSum();
         }
 
-        public int GetOrderProductsCount()
+        public CartEditResult GetOrderProductsCountAndPrice()
         {
-            var number = 0;
+            var result = new CartEditResult()
+            {
+                ProductsNumber = 0,
+                Price = 0
+            };
             foreach (var product in Order.OrderProducts)
             {
-                if (product.IsWeightProduct) number++;
+                if (product.IsWeightProduct) result.ProductsNumber++;
                 else
                 {
-                    number += (int)product.Amount;
+                    result.ProductsNumber += (int)product.Amount;
                 }
+                result.Price += product.ProductPrice*product.Amount;
             }
-            return number;
+            return result;
         }
     }
 }

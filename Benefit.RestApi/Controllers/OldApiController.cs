@@ -17,7 +17,7 @@ namespace Benefit.RestApi.Controllers
         private const string ApiVersion = "V2";
 
         [Route(ApiVersion + "/ProgFetchUserData" + ApiVersion + ".php")]
-//        [Route("ProgFetchUserData.php")]
+        //        [Route("ProgFetchUserData.php")]
         public SellerAuthDto SellerLogin(SellerAuthIngest auth)
         {
             var seller = GetSellerByUsernameAndPassword(auth.username, auth.password);
@@ -56,7 +56,7 @@ namespace Benefit.RestApi.Controllers
         }
 
         [Route(ApiVersion + "/ProgUserKassir" + ApiVersion + ".php")]
-//        [Route("ProgUserKassir.php")]
+        //        [Route("ProgUserKassir.php")]
         public PartnerAuthDto KassirLogin(PartnerAuthIngest authIngest)
         {
             var dto = new PartnerAuthDto();
@@ -142,10 +142,25 @@ namespace Benefit.RestApi.Controllers
                         }
                         else
                         {
-                            //не найден партнер
-                            dto.cardKassir = kassir.NFCCardNumber;
-                            dto.fioKassir = kassir.Name;
-                            dto.result = "no active";
+                            //проверить Benefit Family
+                            var familyUser =
+                                db.BenefitCards.Include(entry => entry.User).FirstOrDefault(
+                                    entry => entry.NfcCode.ToLower() == authIngest.cardId.ToLower());
+                            if (familyUser != null && familyUser.User != null)
+                            {
+                                dto.result = "success client";
+                                dto.cardKassir = kassir.NFCCardNumber;
+                                dto.fioKassir = kassir.Name;
+                                dto.cardClient = familyUser.Id;
+                                dto.nameClient = familyUser.HolderName;
+                            }
+                            else
+                            {
+                                //не найден партнер
+                                dto.cardKassir = kassir.NFCCardNumber;
+                                dto.fioKassir = kassir.Name;
+                                dto.result = "no active";
+                            }
                         }
                     }
                 }
@@ -154,7 +169,7 @@ namespace Benefit.RestApi.Controllers
         }
 
         [Route(ApiVersion + "/ProgFetchUserInfo" + ApiVersion + ".php")]
-//        [Route("ProgFetchUserInfo.php")]
+        //        [Route("ProgFetchUserInfo.php")]
         public UserAuthDto UserInfo(UserAuthIngest userAuth)
         {
             var seller = GetSellerByUsernameAndPassword(userAuth.username, userAuth.password);
@@ -180,12 +195,38 @@ namespace Benefit.RestApi.Controllers
                     };
                     return dto;
                 }
+                else
+                {
+                    //check for family user
+                    var familyUser =
+                        db.BenefitCards.Include(entry => entry.User)
+                            .FirstOrDefault(entry => entry.NfcCode.ToLower() == userAuth.cardnfc.ToLower());
+                    if (familyUser != null && familyUser.User != null)
+                    {
+                        var dto = new UserAuthDto()
+                        {
+                            typeuser = "client",
+                            name = familyUser.HolderName,
+                            phone = string.Empty,
+                            card = familyUser.Id,
+                            paybals = 0,
+                            paybonus = 0,
+                            bonus = 0,
+                            charged = (float)familyUser.User.CurrentBonusAccount,
+                            //в обробці
+                            balance = (float)familyUser.User.HangingBonusAccount,
+                            //доступно
+                            hold = (float)familyUser.User.BonusAccount
+                        };
+                        return dto;
+                    }
+                }
             }
             return null;
         }
 
         [Route(ApiVersion + "/ProgGetOrders" + ApiVersion + ".php")]
-//        [Route("ProgGetOrders.php")]
+        //        [Route("ProgGetOrders.php")]
         public GetOrdersDto CheckOrder(GetOrdersIngest ordersIngest)
         {
             var seller = GetSellerByUsernameAndPassword(ordersIngest.username, ordersIngest.password);
@@ -201,9 +242,11 @@ namespace Benefit.RestApi.Controllers
         }
 
         [Route(ApiVersion + "/ProgUserPayment" + ApiVersion + ".php")]
-//        [Route("ProgUserPayment.php")]
+        //        [Route("ProgUserPayment.php")]
         public async Task<PaymentDto> ProcessPayment(PaymentIngest payment)
         {
+            ApplicationUser user = null;
+            BenefitCard familyUser = null;
             var seller = GetSellerByUsernameAndPassword(payment.username, payment.password);
             if (seller == null)
             {
@@ -215,9 +258,21 @@ namespace Benefit.RestApi.Controllers
                     db.Personnels.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == payment.cardKassir.ToLower());
                 if (kassir == null)
                     return new PaymentDto { result = "no active" };
-                var user = db.Users.FirstOrDefault(entry => entry.CardNumber.ToLower() == payment.paymentcard.ToLower());
+                user = db.Users.FirstOrDefault(entry => entry.CardNumber.ToLower() == payment.paymentcard.ToLower());
                 if (user == null)
-                    return new PaymentDto { result = "no active" };
+                {
+                    familyUser =
+                        db.BenefitCards.Include(entry => entry.User)
+                            .FirstOrDefault(entry => entry.Id.ToLower() == payment.paymentcard.ToLower());
+                    if (familyUser != null && familyUser.User != null)
+                    {
+                        user = familyUser.User;
+                    }
+                    else
+                    {
+                        return new PaymentDto { result = "no active" };
+                    }
+                }
                 var points = payment.summachek / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
                 var bonuses = payment.summachek * seller.UserDiscount / 100;
                 //add finished order with benefit card type
@@ -225,7 +280,7 @@ namespace Benefit.RestApi.Controllers
                 var order = new Order()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    CardNumber = user.CardNumber,
+                    CardNumber = familyUser == null ? user.CardNumber : familyUser.Id,
                     OrderNumber = orderNumber + 1,
                     OrderType = OrderType.BenefitCard,
                     PaymentType = PaymentType.Cash,

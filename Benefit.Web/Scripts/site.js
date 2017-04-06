@@ -40,6 +40,25 @@ function setCookie(name, value, options) {
     document.cookie = updatedCookie;
 }
 
+function setCartSummary(data) {
+    setCookie("cartNumber", data.ProductsNumber, { expires: 36000, path: "/" });
+    setCookie("cartPrice", data.Price, { expires: 36000, path: "/" });
+    $("#cart-items-number").text(data.ProductsNumber + " шт.");
+    $("#cart-items-price").text(data.Price + " грн");
+    /*if (data.IsFreeShipping) {
+        $("#cart-items-price").removeClass();
+        $("#cart-items-price").addClass("text-success");
+    } else {
+        $("#cart-items-price").removeClass();
+        $("#cart-items-price").addClass("text-danger");
+    }*/
+    $(".cart-summary").show();
+
+    if (data.ProductsNumber == 0) {
+        $(".cart-summary").hide();
+    }
+}
+
 // удаляет cookie с именем name
 function deleteCookie(name) {
     setCookie(name, "", {
@@ -176,9 +195,7 @@ $(function () {
         $.post(routePrefix + "/Cart/CompleteOrder?sellerId=" + sellerId,
             { 'orderProducts': products },
             function (data) {
-                $("#cart-items-number").text(data.productsNumber);
-                $("#cart-items-number").show();
-                setCookie("cartNumber", data.productsNumber, { expires: 36000, path: "/" });
+                setCartSummary(data);
             }
         );
     });
@@ -206,8 +223,9 @@ $(function () {
     });
 
     if (getCookie("cartNumber")) {
-        $("#cart-items-number").text(getCookie("cartNumber"));
-        $("#cart-items-number").show();
+        $("#cart-items-number").text(getCookie("cartNumber") + " шт.");
+        $("#cart-items-price").text(getCookie("cartPrice") + " грн");
+        $(".cart-summary").show();
     }
 
     if (getCookie("regionName")) {

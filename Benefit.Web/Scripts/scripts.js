@@ -529,11 +529,8 @@ $(document).ready(function() {
         }
         var productId = $(this).attr("data-product-id");
         $.post(deleteProductFromCartUrl + productId, function (data) {
-            setCookie("cartNumber", data, { expires: 36000, path: "/" });
-            $("#cart-items-number").text(data);
-            if (data == 0) {
-                $("#cart-items-number").hide();
-            }
+            setCartSummary(data);
+           
             parentRow.remove();
             CalculateCartSum();
         });

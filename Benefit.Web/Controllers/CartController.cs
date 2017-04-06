@@ -63,7 +63,8 @@ namespace Benefit.Web.Controllers
             {
                 Cart.CurrentInstance.AddProduct(orderProduct, sellerId);
             }
-            return Json(new { redirectUrl = Url.Action("Order"), productsNumber = Cart.CurrentInstance.GetOrderProductsCount() });
+            var orderSummary = Cart.CurrentInstance.GetOrderProductsCountAndPrice();
+            return Json(new { redirectUrl = Url.Action("Order"), orderSummary.ProductsNumber, orderSummary.Price });
         }
 
         [Authorize]

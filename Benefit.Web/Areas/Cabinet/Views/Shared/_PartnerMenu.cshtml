@@ -71,14 +71,15 @@
                 <a href="@Url.Action("planvunagorod", "Panel")">План винагород</a>
             </li>
             @{
-        active = ViewContext.RouteData.GetRequiredString("action") == "partner_menu_study" ? ActiveStatus.Active : ActiveStatus.None;
+//        active = ViewContext.RouteData.GetRequiredString("action") == "partner_menu_study" ? ActiveStatus.Active : ActiveStatus.None;
+                active = ActiveStatus.Inactive;
             }
             <li class="partner_menu_study">
                 @if (active == ActiveStatus.Active)
                 {
                     <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
                 }
-                <a href="#">Бізнес навчання</a>
+                <a href="#" class="inactive">Бізнес навчання</a>
             </li>
             @{
         active = ViewContext.RouteData.GetRequiredString("action") == "finansovui_oblik" ? ActiveStatus.Active : ActiveStatus.None;
@@ -182,7 +183,7 @@
                 <a href="@Url.Action("planvunagorod", "Panel", new { userId = Request.QueryString[DomainConstants.UserIdKey] })">План винагород</a>
             </li>
             @{
-        active = ViewContext.RouteData.GetRequiredString("action") == "Panel" ? ActiveStatus.Active : ActiveStatus.None;
+                active = ViewContext.RouteData.GetRequiredString("action") == "Panel" ? ActiveStatus.Active : ActiveStatus.None;
             }
             <li class="partner_menu_study">
                 @if (active == ActiveStatus.Active)

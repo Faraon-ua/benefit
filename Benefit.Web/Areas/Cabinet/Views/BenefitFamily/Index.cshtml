@@ -1,4 +1,5 @@
-﻿@using Benefit.Domain.Models
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
 @model ApplicationUser
 
 @{
@@ -42,7 +43,7 @@
         }
 
         $(function () {
-            $("body").on("change", "#IsTrinket", function() {
+            $("body").on("change", "#IsTrinket", function () {
                 if (this.checked) {
                     $("#card-example").text("BC000001");
                     $("#cardNumber").val("BC");
@@ -56,9 +57,9 @@
             });
 
             //validation
-            $("body").on('submit', 'form', function(e) {
+            $("body").on('submit', 'form', function (e) {
                 $(this).find("input").removeClass("input-validation-error");
-                var emptyInputs = $("input.required").filter(function() {
+                var emptyInputs = $("input.required").filter(function () {
                     return $(this).val() == "";
                 });
                 if (emptyInputs.length > 0) {
@@ -67,12 +68,12 @@
                 emptyInputs.addClass("input-validation-error");
             });
 
-            $("#add-member, .edit-family-member").click(function(e) {
+            $("#add-member, .edit-family-member").click(function (e) {
                 e.preventDefault();
                 if ($(this).attr("href") != undefined) {
                     createOrUpdateMemberUrl += "?id=" + $(this).attr("href");
                 }
-                $("#modal-container").load(createOrUpdateMemberUrl, function() {
+                $("#modal-container").load(createOrUpdateMemberUrl, function () {
                     $("#modal-container").modal("show");
                 });
             });
@@ -82,7 +83,7 @@
 
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
     @Html.Partial("_FlashMessage")
-    @Html.Action("Content", "Pages", new { id = "32b21ab3-79ae-45c2-8a5a-bd85d5f0db23", area=string.Empty })
+    @Html.Action("Content", "Pages", new { id = "32b21ab3-79ae-45c2-8a5a-bd85d5f0db23", area = string.Empty })
     @if (Model.BenefitCards.Any())
     {
         <table>
@@ -100,6 +101,12 @@
                         <a href="@Url.Action("contact_us", "Panel", new { subject = "Запит на видалення картки/брелка з мого акаунту", body = "Прошу видалити картку номер " + Model.CardNumber + " у зв’язку з:" })" title="Видалити" class="title-to-tooltip">
                             <i class="glyphicon glyphicon-remove font-red margin-left-10"></i>
                         </a>
+                        @if (User.IsInRole(DomainConstants.AdminRoleName))
+                        {
+                            <a href="@Url.Action("Delete", new {id = card.Id, userId = ViewBag.User.Id})" title="Видалити" class="title-to-tooltip" onclick=" return confirm('Ви впевнені?') ">
+                                <i class="glyphicon glyphicon-trash font-red margin-left-10"></i>
+                            </a>
+                        }
                     </td>
                 </tr>
             }

@@ -33,7 +33,11 @@ namespace Benefit.CardReader.Services
 
         public BenefitCardUserAuthDto AuthUser(string userNfc)
         {
-            throw new NotImplementedException();
+            return new BenefitCardUserAuthDto()
+            {
+                Name = "Недоступно в автономному режимі",
+                CardNumber = "Недоступно в автономному режимі"
+            };
         }
 
         public BenefitCardUserDto GetUserInfo(string userNfc)

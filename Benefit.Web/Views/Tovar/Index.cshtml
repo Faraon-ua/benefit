@@ -97,9 +97,7 @@
                             setTimeout(function f() {
                                 $("#buy-product, #buy-product-with-options").removeAttr('disabled');
                                 $(".product_info_wrap").css("opacity", 1);
-                                $("#cart-items-number").text(data);
-                                $("#cart-items-number").show();
-                                setCookie("cartNumber", data, { expires: 36000, path: "/" });
+                                setCartSummary(data);
                             }, 1000);
                         });
                     console.log(order);

@@ -726,14 +726,26 @@ header {
     border-right: 2px solid #666666;
 }
 
-    .sh_btn:hover {
+    .sh_btn:not(.cart-summary):hover {
         background: #990000;
     }
+    .cart-summary {
+        width: auto !important;    
+    }
+    #cart-items-number {
+        color: white;
+    }
+    #cart-items-number, #cart-items-price {
+        margin: 4px;
+        text-align: left;
+        line-height: 1.2em;
+        font-size: 1em;
+    }
 
-        .sh_btn:hover span {
-            background: #fff;
-            color: #900;
-        }
+    .sh_btn:hover span {
+        background: #fff;
+        color: #900;
+    }
 
     .sh_btn span {
         top: 8px;
@@ -1117,9 +1129,9 @@ footer {
         text-decoration: none;
     }
 
-    .f_links a:hover {
-        text-decoration: underline;
-    }
+        .f_links a:hover {
+            text-decoration: underline;
+        }
 
 .lebedev > div {
     overflow: hidden;

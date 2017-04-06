@@ -60,6 +60,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="JSON\AutocompleteSearch.cs" />
     <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
+    <Compile Include="ViewModels\CartEditResult.cs" />
     <Compile Include="ViewModels\CategoriesListViewModel.cs" />
     <Compile Include="ViewModels\CompleteOrderViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />

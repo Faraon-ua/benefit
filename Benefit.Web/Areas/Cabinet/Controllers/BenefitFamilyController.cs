@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Data.Entity;
 using System.Linq;
-using System.Net;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Web.Filters;
@@ -63,6 +63,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             return RedirectToAction("Index");
         }
 
+        [Authorize(Roles = DomainConstants.AdminRoleName)]
         public ActionResult Delete(string id)
         {
             var card = db.BenefitCards.Find(id);
@@ -71,7 +72,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             db.Entry(card).State = EntityState.Modified;
             db.SaveChanges();
             TempData["SuccessMessage"] = "Учасника успішно видалено";
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { userId = ViewBag.User.Id });
         }
     }
 }
