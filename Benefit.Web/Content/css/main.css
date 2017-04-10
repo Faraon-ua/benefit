@@ -732,10 +732,13 @@ header {
     .cart-summary {
         width: auto !important;    
     }
+    #cart-items-price {
+        color: #71DA71;
+    }
     #cart-items-number {
         color: white;
     }
-    #cart-items-number, #cart-items-price {
+    #cart-items-number, #cart-items-price{
         margin: 4px;
         text-align: left;
         line-height: 1.2em;

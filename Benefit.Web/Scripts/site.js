@@ -168,6 +168,7 @@ $(function () {
         $.post(routePrefix + "/Cart/CompleteOrder?sellerId=" + sellerId,
             { 'orderProducts': products },
             function (data) {
+                setCartSummary(data);
                 window.location.href = data.redirectUrl;
             });
     });

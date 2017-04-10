@@ -246,16 +246,19 @@
     <Compile Include="Controllers\LayoutController.cs" />
     <Compile Include="Controllers\PagesController.cs" />
     <Compile Include="Controllers\PostachalnykController.cs" />
+    <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controllers\TovarController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\CabinetFilterAttribute.cs" />
+    <Compile Include="Filters\CustomKeyAuthAttribute.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\HtmlHelpers.cs" />
     <Compile Include="Helpers\PartialToString.cs" />
+    <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin\OrdersFilters.cs" />
     <Compile Include="Models\Admin\ProductFilters.cs" />
@@ -1607,6 +1610,7 @@
     <Folder Include="Images\UserPictures\" />
     <Folder Include="Views\Base\" />
     <Folder Include="Views\Localizations\" />
+    <Folder Include="Views\Schedule\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

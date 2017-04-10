@@ -13,6 +13,13 @@ namespace Benefit.Services
             {
                 return ConfigurationManager.AppSettings["BaseHostName"];
             }
+        }
+        public static string ScheduleKey
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["ScheduleKey"];
+            }
         } 
         public static List<string> SupportedLocalizations
         {

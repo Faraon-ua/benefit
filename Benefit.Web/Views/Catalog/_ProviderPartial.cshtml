@@ -1,6 +1,7 @@
 ﻿@using System.Text
 @using Benefit.Common.Constants
 @using Benefit.Domain.Models
+@using Benefit.Services
 @using Benefit.Services.Domain
 @model Seller
 @{
@@ -100,7 +101,9 @@
             {
                 <div class="provider_order_intake"><span>Години роботи сьогодні<br> з @schedule.StartHour до @schedule.EndHour</span></div>
             }
-            @*            <div class="provider_ball_ratio"><span>2 грн = 1 бал</span></div>*@
+            <div class="provider_ball_ratio">
+                <span>@SettingsService.DiscountPercentToPointRatio[Model.TotalDiscount] грн = 1 бал</span>
+            </div>
             @if (Model.IsBonusesPaymentActive)
             {
                 <div class="provider_bonus_payment"><span>Розрахунок бонусами</span></div>

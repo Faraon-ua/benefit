@@ -98,7 +98,7 @@
                     <td class="col-md-4 border-bottom padding-vertical-5px">@card.HolderName</td>
                     <td class="col-md-4 border-bottom padding-vertical-5px">@card.Id</td>
                     <td class="col-md-4">
-                        <a href="@Url.Action("contact_us", "Panel", new { subject = "Запит на видалення картки/брелка з мого акаунту", body = "Прошу видалити картку номер " + Model.CardNumber + " у зв’язку з:" })" title="Видалити" class="title-to-tooltip">
+                        <a href="@Url.Action("contact_us", "Panel", new { subject = "Запит на видалення картки/брелка з мого акаунту", body = "Прошу видалити картку номер " + card.Id + " у зв’язку з:" })" title="Видалити" class="title-to-tooltip">
                             <i class="glyphicon glyphicon-remove font-red margin-left-10"></i>
                         </a>
                         @if (User.IsInRole(DomainConstants.AdminRoleName))

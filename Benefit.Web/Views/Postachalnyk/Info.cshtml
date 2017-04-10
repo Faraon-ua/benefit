@@ -114,7 +114,7 @@
         <li><a data-toggle="tab" href="#map_org">На карті</a></li>
         @*        todo: add Додатково*@
         @*        <li><a data-toggle="tab" href="#addition_org">Додатково</a></li>*@
-        @if (!string.IsNullOrEmpty(Model.Seller.ShippingDescription))
+        @if (!string.IsNullOrEmpty(Model.Seller.ShippingDescription) && Model.Seller.HasEcommerce)
         {
             <li><a data-toggle="tab" href="#delivery_org">Доставка</a></li>
         }
@@ -148,31 +148,32 @@
             }
             <iframe style="border:0" src="https://www.google.com/maps/embed/v1/place?q=@addressStr&amp;key=AIzaSyACynVfj28_Sng9qeoClqX8LygAonDC4LE " allowfullscreen="" width="1000" height="450" frameborder="0"></iframe>
         </div>
-
-        <div id="delivery_org" class="delivery_org tab-pane fade">
-            <div>
-                @Html.Raw(Model.Seller.ShippingDescription)
+        @if (!string.IsNullOrEmpty(Model.Seller.ShippingDescription) && Model.Seller.HasEcommerce)
+        {
+            <div id="delivery_org" class="delivery_org tab-pane fade">
+                <div>
+                    @Html.Raw(Model.Seller.ShippingDescription)
+                </div>
+                @* <p>
+                        @foreach (var shipping in Model.Seller.ShippingMethods)
+                        {
+                            <p>
+                                Доставка по <b>@shipping.Region.Name_ua</b> службою <b>@shipping.Name</b>
+                                @if (shipping.CostBeforeFree == 0)
+                                {
+                                    <span>безкоштовна</span>
+                                }
+                                else
+                                {
+                                    <span>
+                                        становить @shipping.CostBeforeFree грн, від @shipping.FreeStartsFrom - безкоштовна
+                                    </span>
+                                }
+                            </p>
+                        }
+                    </p>*@
             </div>
-            @* <p>
-                    @foreach (var shipping in Model.Seller.ShippingMethods)
-                    {
-                        <p>
-                            Доставка по <b>@shipping.Region.Name_ua</b> службою <b>@shipping.Name</b>
-                            @if (shipping.CostBeforeFree == 0)
-                            {
-                                <span>безкоштовна</span>
-                            }
-                            else
-                            {
-                                <span>
-                                    становить @shipping.CostBeforeFree грн, від @shipping.FreeStartsFrom - безкоштовна
-                                </span>
-                            }
-                        </p>
-                    }
-                </p>*@
-        </div>
-
+        }
         <div id="recall_org" class="recall_org tab-pane fade">
             <form>
                 <label class="recall_label" for="recall">Залишити відгук</label>
