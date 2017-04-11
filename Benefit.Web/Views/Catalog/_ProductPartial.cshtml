@@ -40,7 +40,14 @@
             <div class="product_scale"></div>
             @if (Model.Product.AvailableAmount != 0)
             {
-                <a class="product_buy" href="#" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId" data-is-weight-product="@Model.Product.IsWeightProduct" disabled>Купити</a>
+                if (Model.AvailableForPurchase.Key)
+                {
+                    <a class="product_buy" href="#" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId" data-is-weight-product="@Model.Product.IsWeightProduct" disabled>Купити</a>
+                }
+                else
+                {
+                    <a class="product_buy bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @Model.AvailableForPurchase.Value">Купити</a>
+                }
             }
             else
             {

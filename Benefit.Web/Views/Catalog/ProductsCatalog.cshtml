@@ -2,6 +2,7 @@
 @using Benefit.Common.Constants
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models.Enums
+@using Benefit.Services.Domain
 @model ProductsViewModel
 
 @{
@@ -152,7 +153,8 @@
         {
             foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
             {
-                var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName };
+                var regionId = RegionService.GetRegionId();
+                var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
                 @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
             }
             if (Model.Items.Count > ListConstants.DefaultTakePerPage)

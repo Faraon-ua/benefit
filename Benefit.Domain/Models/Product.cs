@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
+using Benefit.Common.Constants;
 
 namespace Benefit.Domain.Models
 {
@@ -62,5 +64,20 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
         public virtual ICollection<ProductOption> ProductOptions { get; set; }
+
+        public KeyValuePair<bool, string> AvailableForPurchase(int regionId)
+        {
+            string shippingRegions = null;
+            var isAvailable =
+                Seller.ShippingMethods.Any(
+                    entry => entry.RegionId == RegionConstants.AllUkraineRegionId ||
+                        entry.RegionId == regionId);
+            if (!isAvailable)
+            {
+                shippingRegions = string.Join(",", Seller.ShippingMethods.Select(entry => entry.Region.Name_ua));
+            }
+
+            return new KeyValuePair<bool, string>(isAvailable, shippingRegions);
+        }
     }
 }
