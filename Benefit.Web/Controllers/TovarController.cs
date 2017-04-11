@@ -21,9 +21,10 @@ namespace Benefit.Web.Controllers
         }
         public ActionResult Index(string productUrl, string categoryUrl, string sellerUrl)
         {
-            var seller = SellerService.GetSeller(sellerUrl);
+            var seller = SellerService.GetSellerWithShippingMethods(sellerUrl);
             var product = ProductsService.GetProduct(productUrl);
             if (product == null) return HttpNotFound();
+            product.Seller = seller;
             var categoriesService = new CategoriesService();
 
             var result = new ProductDetailsViewModel()

@@ -1,4 +1,5 @@
 ﻿@using Benefit.Domain.Models
+@using Benefit.Services.Domain
 @model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
 
 @{
@@ -158,7 +159,16 @@
                     }
                     else
                     {
-                        <a id="buy-product" class="product_description_buy" href="#">Купити</a>
+                        var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+                        if (availableForPurchase.Key)
+                        {
+                            <a id="buy-product" class="product_description_buy" href="#">Купити</a>
+
+                        }
+                        else
+                        {
+                            <a class="product_description_buy bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">Купити</a>
+                        }
                     }
                 </div>
                 <div class="product_description_amount_wrap pull-right" data-weight-product="@Model.Product.IsWeightProduct">
@@ -227,7 +237,7 @@
                     <textarea class="recall_text" id="recall" placeholder="Залишити відгук може лише авторизований користувач"></textarea>
                     <p class="recall_register_notice"><a href="">Увійдіть</a> або <a href="">зареєструйтесь,</a> щоб залишити коментар</p>
                 </form>
-            </div> 
+            </div>
             <div id="product_shipping" class="tab-pane fade">
                 <h3>Умови доставки постачальника @Model.Product.Seller.Name</h3>
                 <div>

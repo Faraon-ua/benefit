@@ -81,9 +81,9 @@ namespace Benefit.Services.Domain
             };
         }
 
-        public Seller GetSeller(string urlName)
+        public Seller GetSellerWithShippingMethods(string urlName)
         {
-            return db.Sellers.FirstOrDefault(entry => entry.UrlName == urlName);
+            return db.Sellers.Include(entry=>entry.ShippingMethods.Select(sh=>sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
         }
         public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName)
         {

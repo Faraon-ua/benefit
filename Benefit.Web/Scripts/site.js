@@ -100,6 +100,8 @@ function CalculateProductPrice() {
 }
 
 $(function () {
+    $('input:checkbox').prop('checked', false);
+
     $(document).keyup(function(e) {
         if (e.keyCode == 27) {
             $(".modal").modal("hide");
