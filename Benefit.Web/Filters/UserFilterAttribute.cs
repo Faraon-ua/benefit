@@ -20,12 +20,19 @@ namespace Benefit.Web.Filters
                 using (var db = new ApplicationDbContext())
                 {
                     var user = db.Users.Find(filterContext.RequestContext.HttpContext.User.Identity.GetUserId());
-                    var cookieValue = HttpUtility.UrlEncode(user.FullName);
-                    var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, cookieValue)
+                    var cookieNameValue = HttpUtility.UrlEncode(user.FullName);
+                    var cookieReferalValue = user.ExternalNumber.ToString();
+
+                    var fullNameCookie = new HttpCookie(RouteConstants.FullNameCookieName, cookieNameValue)
+                    {
+                        Expires = DateTime.UtcNow.AddYears(1)
+                    };
+                    var selfReferalNumber = new HttpCookie(RouteConstants.SelfReferalCookieName, cookieReferalValue)
                     {
                         Expires = DateTime.UtcNow.AddYears(1)
                     };
                     HttpContext.Current.Response.Cookies.Add(fullNameCookie);
+                    HttpContext.Current.Response.Cookies.Add(selfReferalNumber);
                 }
             }
 

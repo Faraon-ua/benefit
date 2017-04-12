@@ -506,11 +506,15 @@ namespace Benefit.Web.Controllers
         {
             if (Request.Cookies[RouteConstants.FullNameCookieName] != null)
             {
-                Response.Cookies[RouteConstants.FullNameCookieName].Expires = DateTime.UtcNow.AddDays(-1);
+                CookiesService.Instance.RemoveCookie(RouteConstants.FullNameCookieName);
+            }
+            if (Request.Cookies[RouteConstants.SelfReferalCookieName] != null)
+            {
+                CookiesService.Instance.RemoveCookie(RouteConstants.SelfReferalCookieName);
             }
             if (Session[DomainConstants.SellerSessionIdKey] != null)
             {
-                Session[DomainConstants.SellerSessionIdKey] = null;
+                CookiesService.Instance.RemoveCookie(DomainConstants.SellerSessionIdKey);
             }
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");

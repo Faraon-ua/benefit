@@ -9,8 +9,8 @@
     @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].CostBeforeFree", Model.Key), Model.Value.CostBeforeFree, new { @class = "width-90 margin-top-10 mask-int-number", placeholder = "Вартість доставки до безкоштовної" })
     <br />
     <input type="text" placeholder="Місто, область" class="width-90 margin-top-10 regionSearch includeRegions" value="@(Model.Value.Region == null ? string.Empty : Model.Value.Region.ExpandedName)" />
-    <br />
     @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].RegionId", Model.Key), Model.Value.RegionId)
+    <br />
     <div class="margin-top-10">
         @Html.CheckBox(string.Format("Seller.ShippingMethods[{0}].SkipOrderAddress", Model.Key), Model.Value.SkipOrderAddress)
         <label for="@string.Format("Seller_ShippingMethods_{0}__SkipOrderAddress", Model.Key)">Не обирати адресу при замовленні</label>

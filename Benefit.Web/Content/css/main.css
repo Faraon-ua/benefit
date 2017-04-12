@@ -4210,18 +4210,18 @@ li:last-child .expand {
         }
 
             .product_description_share_wrap ul li a {
-                display: block;
+                display: inline-block;
                 width: 46px;
                 height: 34px;
                 background-image: url(../img/social_icons.png);
                 background-repeat: no-repeat;
             }
 
-    .product_description_share_wrap .facebook {
+    .product_description_share_wrap .facebook a {
         background-position: 0 0;
     }
 
-    .product_description_share_wrap .vk {
+    .product_description_share_wrap .vk a {
         background-position: -46px 0;
     }
 
