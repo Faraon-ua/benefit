@@ -25,13 +25,6 @@
         var deleteChatMessageUrl = '@Url.Action("DeleteComment", "Helper")';
 
         $(function () {
-            $(".seller-application").click(function () {
-                var sellerApplicationUrl = '@Url.Action("SellerApplication", "Email")';
-                $("#seller-application-container").load(sellerApplicationUrl, function () {
-                    $("#seller-application-modal").modal("show");
-                });
-            });
-
             $("#faq a").parents("p").next().hide();
 
             $("#faq a").click(function (e) {

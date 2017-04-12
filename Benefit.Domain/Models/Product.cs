@@ -74,7 +74,7 @@ namespace Benefit.Domain.Models
                         entry.RegionId == regionId);
             if (!isAvailable)
             {
-                shippingRegions = string.Join(",", Seller.ShippingMethods.Select(entry => entry.Region.Name_ua));
+                shippingRegions = string.Join(",", Seller.ShippingMethods.Select(entry => entry.Region.Name_ua).Distinct());
             }
 
             return new KeyValuePair<bool, string>(isAvailable, shippingRegions);
