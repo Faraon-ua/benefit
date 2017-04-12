@@ -1,15 +1,21 @@
 ﻿@model  KeyValuePair<int, Benefit.Domain.Models.ShippingMethod>
 
-<div class="row belong-shipping">
-    @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].Id", Model.Key), Model.Value.Id, new { @class = "col-sm-2 currency-id", data_number = Model.Key })
-    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].Name", Model.Key), Model.Value.Name, new { @class = "col-sm-2", placeholder = "Назва методу доставки" })
-    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].FreeStartsFrom", Model.Key), Model.Value.FreeStartsFrom, new { @class = "col-sm-2 mask-int-number", placeholder = "Безкоштовна доставка від (грн)" })
-    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].CostBeforeFree", Model.Key), Model.Value.CostBeforeFree, new { @class = "col-sm-2 mask-int-number", placeholder = "Вартість доставки до безкоштовної" })
-    <input type="text" placeholder="Місто, область" class="regionSearch includeRegions col-sm-3" value="@(Model.Value.Region == null ? string.Empty : Model.Value.Region.ExpandedName)" />
-    @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].RegionId", Model.Key), Model.Value.RegionId, new { @class = "col-sm-2" })
-    <div class="col-sm-1">
-        <a href="#" onclick="$(this).parent().parent().remove(); ReAssignIndexesToChildren('shipping', 'belong-shipping');">
-            <i class="icon-remove red"></i>
-        </a>
+<div class="belong-shipping bordered width-30 padding_5 margin-top-10 position-relative">
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].Name", Model.Key), Model.Value.Name, new { placeholder = "Назва методу доставки", @class = "width-90 text-bold" })
+    @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].Id", Model.Key), Model.Value.Id, new { data_number = Model.Key })
+    <br />
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].FreeStartsFrom", Model.Key), Model.Value.FreeStartsFrom, new { @class = "width-90 margin-top-10 mask-int-number", placeholder = "Безкоштовна доставка від (грн)" })
+    <br />
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].CostBeforeFree", Model.Key), Model.Value.CostBeforeFree, new { @class = "width-90 margin-top-10 mask-int-number", placeholder = "Вартість доставки до безкоштовної" })
+    <br />
+    <input type="text" placeholder="Місто, область" class="width-90 margin-top-10 regionSearch includeRegions" value="@(Model.Value.Region == null ? string.Empty : Model.Value.Region.ExpandedName)" />
+    <br />
+    @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].RegionId", Model.Key), Model.Value.RegionId)
+    <div class="margin-top-10">
+        @Html.CheckBox(string.Format("Seller.ShippingMethods[{0}].SkipOrderAddress", Model.Key), Model.Value.SkipOrderAddress)
+        <label for="@string.Format("Seller_ShippingMethods_{0}__SkipOrderAddress", Model.Key)">Не обирати адресу при замовленні</label>
     </div>
+    <a href="#" class="position-absolute position-top position-right margin-right-10" onclick="$(this).parent().remove(); ReAssignIndexesToChildren('shipping', 'belong-shipping');">
+        <i class="icon-remove red"></i>
+    </a>
 </div>

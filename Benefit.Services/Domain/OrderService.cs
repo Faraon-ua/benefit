@@ -44,7 +44,11 @@ namespace Benefit.Services.Domain
             order.ShippingCost = order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree ?? default(double)) : 0;
             order.ShippingName = shipping.Name;
             var address = db.Addresses.FirstOrDefault(entry => entry.Id == model.AddressId);
-            order.ShippingAddress = string.Format("{0}; {1}; {2}, {3}", address.FullName, address.Phone, address.Region.Name_ua, address.AddressLine);
+            if (address != null)
+            {
+                order.ShippingAddress = string.Format("{0}; {1}; {2}, {3}", address.FullName, address.Phone,
+                    address.Region.Name_ua, address.AddressLine);
+            }
 
             order.Time = DateTime.UtcNow;
             order.OrderType = OrderType.BenefitSite;

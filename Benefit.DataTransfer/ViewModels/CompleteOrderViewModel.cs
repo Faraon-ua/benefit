@@ -13,11 +13,11 @@ namespace Benefit.DataTransfer.ViewModels
             PaymentTypes = new List<PaymentType>();
         }
         public List<ShippingMethod> ShippingMethods { get; set; }
+        public bool RequireAddress { get; set; }
         public List<Address> Addresses { get; set; }
         public List<PaymentType> PaymentTypes { get; set; }
         [Required(ErrorMessage = "Оберіть метод доставки")]
         public string ShippingMethodId { get; set; }
-        [Required(ErrorMessage = "Оберіть адресу доставки")]
         public string AddressId { get; set; }
         [Required(ErrorMessage = "Оберіть вид оплати")]
         public PaymentType? PaymentType { get; set; }

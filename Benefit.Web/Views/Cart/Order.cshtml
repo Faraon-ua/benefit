@@ -24,6 +24,16 @@
                 $(".delivery_address_item").show();
             });
 
+            $("input[name=ShippingMethodId]").change(function () {
+                if ($(this).attr("data-skip-address").toLowerCase() === "true") {
+                    $(".delivery_address").hide();
+                    $("#RequireAddress").val("False");
+                } else {
+                    $(".delivery_address").show();
+                    $("#RequireAddress").val("True");
+                }
+            });
+
             $("input[name=ShippingMethodId], input[name=PaymentType]").change(function() {
                 CalculateSummary();
             });
@@ -99,9 +109,10 @@
             <p class="delivery_facilities_title">Спосіб доставки</p>
             @foreach (var shipping in Model.ShippingMethods)
             {
-                <input class="hidden" type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id">
+                <input class="hidden" type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id" data-skip-address="@shipping.SkipOrderAddress">
                 <label class="label_for_radio" for="@shipping.Id">@shipping.Name</label>
             }
+            @Html.HiddenFor(m=>m.RequireAddress)
         </div>
         @Html.Partial("_ShippingAddresses", Model)
         @Html.Partial("_PaymentTypes", Model)
