@@ -1,7 +1,8 @@
-﻿using System.Linq;
+﻿using System;
+using System.Globalization;
+using System.Linq;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
-using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -12,15 +13,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
         ApplicationDbContext db = new ApplicationDbContext();
         //
         // GET: /Admin/Dashboard/
-        public ActionResult Index()
+        public ActionResult Index(string date)
         {
-            var model = new DashboardViewModel
+            var revenue = db.CompanyRevenues.OrderByDescending(entry => entry.Stamp).FirstOrDefault();
+            if (date != null)
             {
-                BonusAcountsSum = db.Users.Sum(entry => entry.BonusAccount),
-                TotalBonusAcountsSum = db.Users.Sum(entry => entry.TotalBonusAccount),
-                HangingBonusAcountsSum = db.Users.Sum(entry => entry.HangingBonusAccount)
-            };
-            return View(model);
+                var format = "dd-MM-yyyy";
+                var provider = CultureInfo.InvariantCulture;
+                var dateDT = DateTime.ParseExact(date, format, provider).Date;
+                revenue =
+                    db.CompanyRevenues.FirstOrDefault(
+                        entry =>
+                            entry.Stamp.Year == dateDT.Year &&
+                            entry.Stamp.Month == dateDT.Month &&
+                            entry.Stamp.Day == dateDT.Day);
+            }
+            return View(revenue);
         }
     }
 }

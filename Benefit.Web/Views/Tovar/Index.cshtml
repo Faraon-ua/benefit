@@ -9,10 +9,10 @@
 }
 @{
     var image_src = Model.Product.Images.FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
+    var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
 }
 @section image_src
 {
-
     @if (image_src != null)
     {
         <link rel="image_src" href="~/Images/ProductGallery/@Model.Product.Id/@image_src.ImageUrl" />
@@ -21,6 +21,12 @@
 @section meta{
     <meta name="description" content="@Model.Product.ShortDescription">
     <meta name="keywords" content="@Model.Product.SearchTags">
+
+    <meta property="og:url" content="@shareUrl" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@Model.Product.Name" />
+    <meta property="og:description" content="Model.Product.ShortDescription" />
+    <meta property="og:image" content="@(image_src == null ? "" : SettingsService.BaseHostName + "/Images/ProductGallery/" +Model.Product.Id+"/"+image_src.ImageUrl)" />
 }
 @section LeftAside{
 
@@ -30,7 +36,7 @@
     <link href="~/Content/css/jquery.fancybox.css" rel="stylesheet" />
 }
 @section headscripts{
-    <script type="text/javascript" src="http://vk.com/js/api/share.js?90" charset="windows-1251"></script>
+    <script type="text/javascript" src="https://vk.com/js/api/share.js?90" charset="windows-1251"></script>
 }
 @section scripts
 {
@@ -195,9 +201,6 @@
                 </div>
                 <div class="product_description_share_wrap">
                     <ul>
-                        @{
-                            var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
-                        }
                         <li class="facebook">
                             <a href="https://www.facebook.com/sharer/sharer.php?u=@shareUrl"></a>
                         </li>
@@ -222,7 +225,7 @@
                             <li><a class="twitter" href=""></a></li>
                             <li><a class="instagram" href=""></a></li>*@
                         <li class="google">
-                            <a href="https://plus.google.com/share?url=@shareUrl" 
+                            <a href="https://plus.google.com/share?url=@shareUrl"
                                onclick="javascript:window.open(this.href,'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;">
                             </a>
                         </li>

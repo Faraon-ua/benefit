@@ -17,6 +17,7 @@ using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = DomainConstants.AdminRoleName)]
     public class UsersController : AdminController
     {
         public ApplicationDbContext db = new ApplicationDbContext();

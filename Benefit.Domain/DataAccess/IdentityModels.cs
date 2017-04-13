@@ -45,6 +45,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<Banner> Banners { get; set; }
         public DbSet<OrderStatusStamp> OrderStatusStamps { get; set; }
         public DbSet<SellerBusinessLevelIndex> SellerBusinessLevelIndexes { get; set; }
+        public DbSet<CompanyRevenue> CompanyRevenues { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

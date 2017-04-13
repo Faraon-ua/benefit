@@ -76,7 +76,14 @@
                 @Html.DisplayFor(modelItem => item.PersonnelName)
             </td>
             <td>
-                @Html.ActionLink(item.User.FullName, "Edit", "Users", new { id = item.User.Id }, new { target = "_blank" })
+                @if (User.IsInRole(DomainConstants.AdminRoleName))
+                {
+                    @Html.ActionLink(item.User.FullName, "Edit", "Users", new {id = item.User.Id}, new {target = "_blank"})
+                }
+                else
+                {
+                    <span>@item.User.FullName</span>
+                }
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Sum)

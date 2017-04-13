@@ -309,9 +309,14 @@
     <Compile Include="Migrations\201704120814381_AddSkipOrderAddress.Designer.cs">
       <DependentUpon>201704120814381_AddSkipOrderAddress.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704131001125_AddCompanyRevenues.cs" />
+    <Compile Include="Migrations\201704131001125_AddCompanyRevenues.Designer.cs">
+      <DependentUpon>201704131001125_AddCompanyRevenues.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
+    <Compile Include="Models\CompanyRevenue.cs" />
     <Compile Include="Models\Enums\ProductSortOption.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
@@ -528,6 +533,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704120814381_AddSkipOrderAddress.resx">
       <DependentUpon>201704120814381_AddSkipOrderAddress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704131001125_AddCompanyRevenues.resx">
+      <DependentUpon>201704131001125_AddCompanyRevenues.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

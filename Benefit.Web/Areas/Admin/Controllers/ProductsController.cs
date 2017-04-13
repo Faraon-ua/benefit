@@ -181,6 +181,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("AvailableAmount", "Доступна кількість не може бути негативного значення");
             }
+            if (string.IsNullOrEmpty(product.ShortDescription))
+            {
+                ModelState.AddModelError("ShortDescription", "Короткий опис обовязковий для заповнення");
+            }
             if (ModelState.IsValid)
             {
                 if (Seller.CurrentAuthorizedSellerId != null)
