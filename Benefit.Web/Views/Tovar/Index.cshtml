@@ -195,13 +195,16 @@
                 </div>
                 <div class="product_description_share_wrap">
                     <ul>
+                        @{
+                            var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
+                        }
                         <li class="facebook">
-                            <a href="#"></a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=@shareUrl"></a>
                         </li>
                         <li class="vk">
                             <script type="text/javascript">
                                 document.write(VK.Share.button({
-                                    url: '@Request.Url.AbsoluteUri?@RouteConstants.ReferalUrlName=@Request.Cookies[RouteConstants.SelfReferalCookieName].Value',
+                                    url: '@shareUrl',
                                     title: "@Model.Product.Name",
                                     description: "@Model.Product.ShortDescription",
                                     image: '@(image_src == null ? "" : SettingsService.BaseHostName + "/Images/ProductGallery/" +Model.Product.Id+"/"+image_src.ImageUrl)',
@@ -214,11 +217,15 @@
                                 ));
                             </script>
                         </li>
-                        <li><a class="ok" href=""></a></li>
-                        <li><a class="sml" href=""></a></li>
-                        <li><a class="twitter" href=""></a></li>
-                        <li><a class="instagram" href=""></a></li>
-                        <li><a class="google" href=""></a></li>
+                        @* <li><a class="ok" href=""></a></li>
+                            <li><a class="sml" href=""></a></li>
+                            <li><a class="twitter" href=""></a></li>
+                            <li><a class="instagram" href=""></a></li>*@
+                        <li class="google">
+                            <a href="https://plus.google.com/share?url=@shareUrl" 
+                               onclick="javascript:window.open(this.href,'', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false;">
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
