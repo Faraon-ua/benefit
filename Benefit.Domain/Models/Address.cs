@@ -12,6 +12,8 @@ namespace Benefit.Domain.Models
         [Required]
         [MaxLength(16)]
         public string Phone { get; set; }
+        [MaxLength(128)]
+        public string Email { get; set; }
         [MaxLength(256)]
         public string AddressLine { get; set; }
         public int? ZIP { get; set; }

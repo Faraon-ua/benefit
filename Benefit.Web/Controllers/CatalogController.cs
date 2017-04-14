@@ -45,7 +45,8 @@ namespace Benefit.Web.Controllers
             {
                 Product = entry,
                 CategoryUrl = entry.Category.UrlName,
-                SellerUrl = entry.Seller.UrlName
+                SellerUrl = entry.Seller.UrlName,
+                AvailableForPurchase = entry.AvailableForPurchase(RegionService.GetRegionId())
             })));
             return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
         }

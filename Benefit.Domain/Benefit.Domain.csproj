@@ -313,6 +313,10 @@
     <Compile Include="Migrations\201704131001125_AddCompanyRevenues.Designer.cs">
       <DependentUpon>201704131001125_AddCompanyRevenues.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704141135502_AddEmailToAddress.cs" />
+    <Compile Include="Migrations\201704141135502_AddEmailToAddress.Designer.cs">
+      <DependentUpon>201704141135502_AddEmailToAddress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -536,6 +540,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704131001125_AddCompanyRevenues.resx">
       <DependentUpon>201704131001125_AddCompanyRevenues.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704141135502_AddEmailToAddress.resx">
+      <DependentUpon>201704141135502_AddEmailToAddress.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

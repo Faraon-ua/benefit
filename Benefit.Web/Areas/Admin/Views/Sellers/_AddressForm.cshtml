@@ -10,6 +10,10 @@
         <div id="DIV_11">
             @Html.TextBox(string.Format("Seller.Addresses[{0}].Phone", Model.Key), Model.Value.Phone, new { placeholder = "Телефон Адміністратора", @class = "margin-left-10" })
         </div>
+        <div class="form-group has-feedback has-feedback-left margin-left-0" style="margin-left: -12px !important;">
+            <input type="email" class="form-control margin-left-10" placeholder="Email адміністратора" name="@string.Format("Seller.Addresses[{0}].Email", Model.Key)" value="@Model.Value.Email">
+            <i class="form-control-feedback glyphicon glyphicon-envelope"></i>
+        </div>
         <ul id="UL_6">
             <li id="LI_7">
                 @Html.TextBox(string.Format("Seller.Addresses[{0}].AddressLine", Model.Key), Model.Value.AddressLine, new { placeholder = "Вулиця, номер будинку і квартири" })

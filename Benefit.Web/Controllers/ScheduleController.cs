@@ -22,6 +22,12 @@ namespace Benefit.Web.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
+                var existing =
+                    db.CompanyRevenues.FirstOrDefault(
+                        entry =>
+                            entry.Stamp.Year == DateTime.UtcNow.Year && entry.Stamp.Month == DateTime.UtcNow.Month &&
+                            entry.Stamp.Day == DateTime.UtcNow.Day);
+                if (existing != null) return Content("Company revenue was already saved");
                 var revenue = new CompanyRevenue
                 {
                     Id = Guid.NewGuid().ToString(),
@@ -32,8 +38,8 @@ namespace Benefit.Web.Controllers
                 };
                 db.CompanyRevenues.Add(revenue);
                 db.SaveChanges();
+                return Content("Company revenue saved");
             }
-            return Content("Company revenue saved");
         }
     }
 }

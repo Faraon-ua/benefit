@@ -67,7 +67,7 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.Addresses)
                     .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
                     .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                     .Where(entry =>entry.IsActive);
+                     .Where(entry => entry.IsActive);
             if (regionId != RegionConstants.AllUkraineRegionId)
             {
                 sellers = sellers.Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId) ||
@@ -77,13 +77,13 @@ namespace Benefit.Services.Domain
             }
             return new SellersViewModel()
             {
-                Items = sellers.OrderByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry=>entry.UserDiscount).ToList()
+                Items = sellers.OrderByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry => entry.UserDiscount).ToList()
             };
         }
 
         public Seller GetSellerWithShippingMethods(string urlName)
         {
-            return db.Sellers.Include(entry=>entry.ShippingMethods.Select(sh=>sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
+            return db.Sellers.Include(entry => entry.ShippingMethods.Select(sh => sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
         }
         public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName)
         {
@@ -163,7 +163,7 @@ namespace Benefit.Services.Domain
             var regionId = RegionService.GetRegionId();
             var items = db.Products.Include(entry => entry.Category.ParentCategory.ParentCategory)
                 .Include(entry => entry.Seller)
-                .Include(entry => entry.Seller.ShippingMethods.Select(sm=>sm.Region))
+                .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                 .Include(entry => entry.Seller.Addresses)
                 .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
             if (regionId != RegionConstants.AllUkraineRegionId)
@@ -172,7 +172,7 @@ namespace Benefit.Services.Domain
                                 entry.Seller.ShippingMethods.Select(sm => sm.Region.Id).Contains(RegionConstants.AllUkraineRegionId) ||
                                 entry.Seller.ShippingMethods.Select(sm => sm.Region.Id).Contains(regionId));
             }
-                
+
             if (!string.IsNullOrEmpty(categoryId))
             {
                 var category = db.Categories.Find(categoryId);
@@ -216,8 +216,7 @@ namespace Benefit.Services.Domain
                     break;
             }
 
-            var result = items.ToList();
-            result = result.Skip(skip).Take(take + 1).ToList();
+            var result = items.Skip(skip).Take(take + 1).ToList();
             result.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
 
             return result;
