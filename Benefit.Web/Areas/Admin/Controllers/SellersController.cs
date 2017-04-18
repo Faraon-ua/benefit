@@ -9,7 +9,6 @@ using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
 using Benefit.Common.Constants;
-using Benefit.Domain.Migrations;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models.Enums;
@@ -239,8 +238,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(filters.Search))
             {
                 filters.Search = filters.Search.ToLower();
-                sellers = sellers.Where(entry => entry.Owner.FullName.ToLower().Contains(filters.Search) ||
-                                                 entry.Name.ToString().Contains(filters.Search));
+                sellers = sellers.Where(entry => entry.Name.ToString().Contains(filters.Search) || 
+                    entry.Personnels.Any(pers=>pers.CardNumber.Contains(filters.Search)));
             }
             else
             {
