@@ -74,6 +74,10 @@
                 $("form").submit();
             });
 
+            $("button[type=submit]").click(function () {
+                $("#page").val(0);
+            });
+
             $("input[name=PaymentTypeChk]").change(function () {
                 var paymentTypes = $("input[name=PaymentTypeChk]:checked").map(function () { return $(this).val() }).get().toString();
                 $("#PaymentType").val(paymentTypes);
