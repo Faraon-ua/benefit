@@ -42,9 +42,9 @@ function setCookie(name, value, options) {
 
 function setCartSummary(data) {
     setCookie("cartNumber", data.ProductsNumber, { expires: 36000, path: "/" });
-    setCookie("cartPrice", data.Price, { expires: 36000, path: "/" });
+    setCookie("cartPrice", data.Price.toFixed(2), { expires: 36000, path: "/" });
     $("#cart-items-number").text(data.ProductsNumber + " шт.");
-    $("#cart-items-price").text(data.Price + " грн");
+    $("#cart-items-price").text(data.Price.toFixed(2) + " грн");
     /*if (data.IsFreeShipping) {
         $("#cart-items-price").removeClass();
         $("#cart-items-price").addClass("text-success");
