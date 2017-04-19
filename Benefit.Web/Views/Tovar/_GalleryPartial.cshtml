@@ -2,10 +2,10 @@
 
 <div id="product_gallery" class="product_photo_wrap carousel slide" data-ride="carousel">
     <div class="product_photo_smal">
-        @for (var i = 0; i < Model.Product.Images.Take(4).Count(); i++)
+        @for (var i = 0; i < Model.Product.Images.Count(); i++)
         {
             <div class="photo-small-wrap">
-                <img class="@(i == 0 ? "active" : "")" src="~/Images/ProductGallery/@Model.Product.Id/@Model.Product.Images.ElementAt(i).ImageUrl" data-target="#product_gallery" data-slide-to="@i">
+                <img class="@(i == 0 ? "active" : "")" src="~/Images/ProductGallery/@Model.Product.Id/@Model.Product.Images.OrderBy(entry=>entry.Order).ElementAt(i).ImageUrl" data-target="#product_gallery" data-slide-to="@i" />
             </div>
         }
     </div>
@@ -13,7 +13,7 @@
         @if (Model.Product.Images.Any())
         {
             var hasActive = false;
-            foreach (var image in Model.Product.Images)
+            foreach (var image in Model.Product.Images.OrderBy(entry=>entry.Order))
             {
                 <a class="item @(hasActive? "":"active") fancybox" rel="group" href="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl">
                     <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">

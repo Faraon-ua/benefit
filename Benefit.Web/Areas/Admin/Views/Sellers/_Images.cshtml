@@ -39,6 +39,24 @@
     </p>
     <div id="dZUpload" class="dropzone">
     </div>
+    if (Model.Seller.Images.Any())
+    {
+        <br />
+        <p>Порядок зображень</p>
+        <div>
+            <ol class="dd-list" id="imagesOrder">
+                @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+                {
+                    <li class="cursor-move width-10" data-image-id="@image.Id">
+                        <div class="dd-handle">
+                            <img src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" height="70" />
+                        </div>
+                    </li>
+                }
+            </ol>
+        </div>
+        <button class="btn btn-info" id="saveImagesOrder">Зберегти порядок</button>
+    }
 }
 else
 {

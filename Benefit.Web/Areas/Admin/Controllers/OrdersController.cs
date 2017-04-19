@@ -33,7 +33,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var seller = db.Sellers.Include(entry => entry.ShippingMethods).FirstOrDefault(entry => entry.Id == order.SellerId);
             var shipping = seller.ShippingMethods.FirstOrDefault(entry => entry.Name == order.ShippingName);
             order.Sum = order.GetOrderSum();
-            order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? shipping.CostBeforeFree : 0);
+            order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree.HasValue ?  shipping.CostBeforeFree.Value : 0) : 0);
             order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
             order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
         }

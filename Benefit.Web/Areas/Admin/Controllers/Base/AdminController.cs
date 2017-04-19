@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web.Mvc;
@@ -11,6 +12,21 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
 {
     public class AdminController : Controller
     {
+        public ActionResult SaveImagesOrder(List<string> sortedImages)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var images = db.Images.Where(entry=>sortedImages.Contains(entry.Id)).ToList();
+                for (var i = 0; i < sortedImages.Count; i++)
+                {
+                    var img = images.FirstOrDefault(entry => entry.Id == sortedImages[i]);
+                    img.Order = i;
+                    db.Entry(img).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+            }
+            return Json("Сортування зображень збережено");
+        }
         public ActionResult DeleteUploadedFile(string fileName, string parentId, ImageType type)
         {
             var imagesService = new ImagesService();
@@ -22,7 +38,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
 
         public ActionResult SaveUploadedFile(ImageType type, string parentId)
         {
-            bool isSavedSuccessfully = true;
+            var isSavedSuccessfully = true;
             var imageId = Guid.NewGuid().ToString();
             string fileExt = null;
 

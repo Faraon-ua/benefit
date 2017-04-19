@@ -29,7 +29,7 @@
     <p class="organization_type">@specific</p>
     <div class="organization_slider_wrap">
         <div id="organization_slider" class="organization_slider">
-            @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery))
+            @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry=>entry.Order))
             {
                 <img class="item" src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" />
             }

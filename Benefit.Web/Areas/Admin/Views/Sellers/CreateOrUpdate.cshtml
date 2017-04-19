@@ -69,14 +69,38 @@
         $(function () {
             SetRegionsAutocomplete();
 
+            $("#imagesOrder").sortable();
+            $("#imagesOrder").disableSelection();
+
+            var saveImagesOrderUrl = '@Url.Action("SaveImagesOrder","Products")';
+            $("#saveImagesOrder").click(function () {
+                $("#saveImagesOrder").prop("disabled", true);
+                var currentListContaner = $("#imagesOrder");
+                var sortedImgs = [];
+                currentListContaner.find("li").each(function () {
+                    var imgId = $(this).attr("data-image-id");
+                    sortedImgs.push(imgId);
+                });
+                $.ajax({
+                    type: 'Post',
+                    dataType: 'json',
+                    url: saveImagesOrderUrl,
+                    data: JSON.stringify({ sortedImages: sortedImgs }),
+                    contentType: 'application/json; charset=utf-8',
+                    async: true,
+                    success: function (data) {
+                        flashMessage(data);
+                        $("#saveImagesOrder").removeAttr("disabled");
+                    },
+                    error: function (data) {
+                        console.debug(data);
+                    }
+                });
+            });
+
             $(".chosen-select").chosen({
                 search_contains: true,
                 width: "450px"
-            });
-
-            $("#add-business-level-index").click(function () {
-//                var newIndexUrl = '@Url.Action("")';
-//                $.get()
             });
 
             $("body").on("click", ".remove-personnel", function (e) {
