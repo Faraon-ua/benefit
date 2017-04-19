@@ -169,7 +169,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             if (product == null) continue;
                             if (product.AvailableAmount != null && product.AvailableAmount > 0)
                             {
-                                product.AvailableAmount = product.AvailableAmount - 1;
+                                product.AvailableAmount = product.AvailableAmount - (int)orderProduct.Amount;
                             }
                             db.Entry(product).State = EntityState.Modified;
                         }
