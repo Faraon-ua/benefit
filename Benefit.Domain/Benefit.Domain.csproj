@@ -321,6 +321,10 @@
     <Compile Include="Migrations\201704181429206_AddImageOrder.Designer.cs">
       <DependentUpon>201704181429206_AddImageOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704201125492_CardRequiredPersonell.cs" />
+    <Compile Include="Migrations\201704201125492_CardRequiredPersonell.Designer.cs">
+      <DependentUpon>201704201125492_CardRequiredPersonell.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -550,6 +554,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704181429206_AddImageOrder.resx">
       <DependentUpon>201704181429206_AddImageOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704201125492_CardRequiredPersonell.resx">
+      <DependentUpon>201704201125492_CardRequiredPersonell.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

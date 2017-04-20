@@ -7,7 +7,7 @@ namespace Benefit.Domain.Models
     public class Personnel
     {
         public string Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "І'мя обовязково для заповнення")]
         [MaxLength(32)]
         public string Name { get; set; }
         [MaxLength(16)]
@@ -15,6 +15,7 @@ namespace Benefit.Domain.Models
         [MaxLength(10)]
         public string CardNumber { get; set; }
         [MaxLength(10)]
+        [Required(ErrorMessage = "Неправильний номер картки")]
         public string NFCCardNumber { get; set; }
         [MaxLength(128)]
         public string SellerId { get; set; }

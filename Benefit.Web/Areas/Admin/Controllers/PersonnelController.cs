@@ -29,13 +29,26 @@ namespace Benefit.Web.Areas.Admin.Controllers
             personnel.Id = Guid.NewGuid().ToString();
             var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == personnel.CardNumber);
             personnel.NFCCardNumber = card == null ? null : card.NfcCode;
+            if (personnel.NFCCardNumber != null)
+            {
+                ModelState["NFCCardNumber"].Errors.Clear();    
+            }
+
             if (ModelState.IsValid)
             {
                 db.Personnels.Add(personnel);
                 db.SaveChanges();
+                var sellerPersonnel = db.Personnels.Where(entry => entry.SellerId == personnel.SellerId);
+                return PartialView("_PersonnelList", sellerPersonnel.ToList());
             }
-            var sellerPersonnel = db.Personnels.Where(entry => entry.SellerId == personnel.SellerId);
-            return PartialView("_PersonnelList", sellerPersonnel.ToList());
+            return
+                Json(
+                    new
+                    {
+                        error =
+                            string.Join("<br/>",
+                                ModelState.SelectMany(entry => entry.Value.Errors).Select(entry=>entry.ErrorMessage).ToList())
+                    });
         }
 
         [HttpPost]
@@ -56,7 +69,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Delete(string id)
         {
             var personnel = db.Personnels.Find(id);
-            if (personnel.RoleName!= null)
+            if (personnel.RoleName != null)
             {
                 _userManager.RemoveFromRole(personnel.UserId, personnel.RoleName);
             }
