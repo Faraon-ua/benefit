@@ -14,7 +14,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Index()
         {
-            var reviews = db.Reviews.Where(entry => !entry.IsActive);
+            var reviews = db.Reviews
+                .Include(entry => entry.Product.Category)
+                .Include(entry => entry.Product.Seller)
+                .Include(entry => entry.Seller).Where(entry => !entry.IsActive).OrderByDescending(entry=>entry.Stamp);
             return View(reviews);
         }
 
@@ -26,10 +29,20 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.Entry(review).State = EntityState.Modified;
             db.SaveChanges();
 
-            var product =
-                db.Products.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.Id == review.ProductId);
-            product.AvarageRating = (int)Math.Round(product.Reviews.Average(entry => entry.Rating), 0);
-            db.Entry(product).State = EntityState.Modified;
+            if (review.ProductId != null)
+            {
+                var product =
+                    db.Products.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.Id == review.ProductId);
+                product.AvarageRating = (int) Math.Round(product.Reviews.Average(entry => entry.Rating), 0);
+                db.Entry(product).State = EntityState.Modified;
+            }
+            if (review.SellerId != null)
+            {
+                var seller =
+                    db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.Id == review.SellerId);
+                seller.AvarageRating = (int)Math.Round(seller.Reviews.Average(entry => entry.Rating), 0);
+                db.Entry(seller).State = EntityState.Modified;
+            }
             db.SaveChanges();
 
             return Content(string.Empty);

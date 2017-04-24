@@ -54,8 +54,8 @@
             }
             <p class="provider_type">@specificsStr</p>
             <div class="rating_wrap">
-                <div class="perelik_rating top"></div>
-                <p class="rating_reviews">15 відгуків</p>
+                <div class="perelik_rating @CommonConstants.RatingToClass[Model.AvarageRating ?? default(int)]"></div>
+                <p class="rating_reviews">@Model.ApprovedReviews.Count відгуків</p>
             </div>
             <div class="reviews_menu_wrap">
                 @if (Model.HasEcommerce)

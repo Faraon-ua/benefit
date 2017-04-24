@@ -4,8 +4,10 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Web;
 using Benefit.Common.Constants;
+using Benefit.Domain.Models.Enums;
 
 namespace Benefit.Domain.Models
 {
@@ -40,7 +42,8 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
-        public int? AvarageRating { get; set; } 
+        public int? AvarageRating { get; set; }
+        public SellerStatus Status { get; set; }
         public bool TerminalOrderNotification { get; set; }
         public bool TerminalBillEnabled { get; set; }
         [MaxLength(32)]
@@ -97,6 +100,14 @@ namespace Benefit.Domain.Models
         public ICollection<ProductOption> ProductOptions { get; set; }
         public ICollection<Personnel> Personnels { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
+        [NotMapped]
+        public virtual ICollection<Review> ApprovedReviews
+        {
+            get
+            {
+                return Reviews.Where(entry => entry.IsActive).ToList();
+            }
+        }
 
         [NotMapped]
         public static string CurrentAuthorizedSellerId

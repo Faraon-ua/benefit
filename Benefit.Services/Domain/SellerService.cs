@@ -77,7 +77,7 @@ namespace Benefit.Services.Domain
             }
             return new SellersViewModel()
             {
-                Items = sellers.OrderByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry => entry.UserDiscount).ToList()
+                Items = sellers.OrderByDescending(entry=>entry.Status).ThenByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry => entry.UserDiscount).ToList()
             };
         }
 
@@ -93,6 +93,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Schedules)
                 .Include(entry => entry.Addresses)
                 .Include(entry => entry.ShippingMethods)
+                .Include(entry => entry.Reviews)
                 .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
                 .FirstOrDefault(entry => entry.UrlName == urlName);
             if (seller != null)

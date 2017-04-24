@@ -329,11 +329,16 @@
     <Compile Include="Migrations\201704201316236_AddReviews.Designer.cs">
       <DependentUpon>201704201316236_AddReviews.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704241133551_AddSellerStatus.cs" />
+    <Compile Include="Migrations\201704241133551_AddSellerStatus.Designer.cs">
+      <DependentUpon>201704241133551_AddSellerStatus.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\CompanyRevenue.cs" />
     <Compile Include="Models\Enums\ProductSortOption.cs" />
+    <Compile Include="Models\Enums\SellerStatus.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -565,6 +570,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704201316236_AddReviews.resx">
       <DependentUpon>201704201316236_AddReviews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704241133551_AddSellerStatus.resx">
+      <DependentUpon>201704241133551_AddSellerStatus.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

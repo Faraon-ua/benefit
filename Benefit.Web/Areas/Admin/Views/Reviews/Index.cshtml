@@ -1,4 +1,6 @@
-﻿@model IQueryable<Benefit.Domain.Models.Review>
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
+@model IQueryable<Benefit.Domain.Models.Review>
 
 @Html.Partial("_FlashMessage")
 
@@ -17,7 +19,7 @@
                 var row = $(this).parent().parent();
                 $.post(removeReviewUrl,
                     { reviewId: id },
-                    function(data) {
+                    function (data) {
                         if (!data.error) {
                             row.remove();
                             flashMessage("Відгук видалено", true);
@@ -51,10 +53,19 @@
     <thead>
         <tr>
             <th>
+                Час
+            </th>
+            <th>
                 Рейтинг
             </th>
             <th>
                 Коментарій
+            </th>
+            <th>
+                Товар
+            </th>
+            <th>
+                Постачальник
             </th>
             <th>
                 Дії
@@ -66,10 +77,29 @@
         {
             <tr>
                 <td>
+                    @review.Stamp.ToLocalDateTimeWithFormat()
+                </td>
+                <td>
                     @review.Rating
                 </td>
                 <td>
                     @review.Message
+                </td>
+                <td>
+                    @if (review.Product != null)
+                    {
+                        @Html.RouteLink(review.Product.Name, RouteConstants.ProductRouteWithSellerName,
+                            new { productUrl = review.Product.UrlName, categoryUrl = review.Product.Category.UrlName, sellerUrl = review.Product.Seller.UrlName },
+                            new { target = "_blank" })
+                    }
+                </td>
+                <td>
+                    @if (review.Seller != null)
+                    {
+                        @Html.RouteLink(review.Seller.Name, RouteConstants.SellersRouteName,
+                            new { id = review.Seller.UrlName },
+                                 new { target = "_blank" })
+                    }
                 </td>
                 <td>
                     <a class="btn btn-xs btn-success accept-review" data-review-id="@review.Id">

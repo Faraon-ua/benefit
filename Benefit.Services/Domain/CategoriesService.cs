@@ -117,7 +117,7 @@ namespace Benefit.Services.Domain
                                              entry.ShippingMethods.Select(sm => sm.Region.Id)
                                                  .Contains(RegionConstants.AllUkraineRegionId));
             }
-            sellersDto.Items = items.OrderByDescending(entry => entry.UserDiscount).ToList();
+            sellersDto.Items = items.OrderByDescending(entry=>entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
 
             sellersDto.Items.ForEach(entry =>
             {

@@ -99,7 +99,57 @@ function CalculateProductPrice() {
     $(".product-price").text((originalPrice + checkPriceGrowth + radioPriceGrowth).toFixed(2));
 }
 
+function processRating(ratingStars, e, isClick) {
+    var parentOffset = ratingStars.offset();
+    var relX = e.pageX - parentOffset.left;
+    var percent = relX / ratingStars.width();
+    ratingStars.removeClass();
+    ratingStars.addClass("pointer");
+    ratingStars.addClass("rating_star");
+    var intRating = 0;
+    if (percent >= 0 && percent <= 0.2) {
+        ratingStars.addClass("very_bed");
+        intRating = 1;
+    }
+    if (percent > 0.2 && percent <= 0.4) {
+        ratingStars.addClass("bed");
+        intRating = 2;
+    }
+    if (percent > 0.4 && percent <= 0.6) {
+        ratingStars.addClass("middle");
+        intRating = 3;
+    }
+    if (percent > 0.6 && percent <= 0.8) {
+        ratingStars.addClass("good");
+        intRating = 4;
+    }
+    if (percent > 0.8 && percent <= 1) {
+        ratingStars.addClass("top");
+        intRating = 5;
+    }
+    if (isClick) {
+        $("#Rating").val(intRating);
+    }
+}
+
 $(function () {
+    $("#review-rating").mousemove(function (e) {
+        processRating($(this), e);
+    });
+
+    $("#review-rating").mouseout(function () {
+        $(this).removeClass();
+        $(this).addClass("pointer");
+        $(this).addClass("rating_star");
+        $(this).addClass("none");
+    });
+
+    $("#review-rating").click(function (e) {
+        processRating($(this), e, true);
+        $("#review-rating").off("mousemove");
+        $("#review-rating").off("mouseout");
+    });
+
     $('input:checkbox').prop('checked', false);
 
     $(document).keyup(function(e) {
