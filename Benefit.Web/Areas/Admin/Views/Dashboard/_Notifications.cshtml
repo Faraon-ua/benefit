@@ -1,0 +1,25 @@
+﻿@model Benefit.DataTransfer.ViewModels.NotificationsViewModel
+
+<li class="purple">
+    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+        <i class="icon-bell-alt icon-animated-bell"></i>
+        <span class="badge badge-important">@Model.Total</span>
+    </a>
+    <ul class="pull-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
+        <li class="dropdown-header">
+            <i class="icon-warning-sign"></i>
+            @Model.Total Сповіщень
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Reviews")">
+                <div class="clearfix">
+                    <span class="pull-left">
+                        <i class="btn btn-xs no-hover btn-pink icon-star"></i>
+                        Нових відгуків
+                    </span>
+                    <span class="pull-right badge badge-info">@Model.Reviews</span>
+                </div>
+            </a>
+        </li>
+    </ul>
+</li>

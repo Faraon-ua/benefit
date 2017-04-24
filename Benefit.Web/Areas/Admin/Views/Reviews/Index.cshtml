@@ -1,0 +1,85 @@
+﻿@model IQueryable<Benefit.Domain.Models.Review>
+
+@Html.Partial("_FlashMessage")
+
+@section scripts
+{
+    <script>
+        $(function () {
+            var removeReviewUrl = '@Url.Action("RemoveReview")';
+            var acceptReviewUrl = '@Url.Action("AcceptReview")';
+
+            $(".remove-review").click(function () {
+                if (!confirm("Видалити відгук?")) {
+                    return;
+                }
+                var id = $(this).attr("data-review-id");
+                var row = $(this).parent().parent();
+                $.post(removeReviewUrl,
+                    { reviewId: id },
+                    function(data) {
+                        if (!data.error) {
+                            row.remove();
+                            flashMessage("Відгук видалено", true);
+                        }
+                    }
+                );
+            });
+
+            $(".accept-review").click(function () {
+                if (!confirm("Прийняти відгук?")) {
+                    return;
+                }
+                var id = $(this).attr("data-review-id");
+                var row = $(this).parent().parent();
+                $.post(acceptReviewUrl,
+                    { reviewId: id },
+                    function (data) {
+                        if (!data.error) {
+                            row.remove();
+                            flashMessage("Відгук прийнятий");
+                        }
+                    }
+                );
+            });
+        })
+    </script>
+}
+<h2>Модерація відгуків</h2>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                Рейтинг
+            </th>
+            <th>
+                Коментарій
+            </th>
+            <th>
+                Дії
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>
+                    @review.Rating
+                </td>
+                <td>
+                    @review.Message
+                </td>
+                <td>
+                    <a class="btn btn-xs btn-success accept-review" data-review-id="@review.Id">
+                        <i class="icon-check-sign bigger-120"></i>
+                    </a>
+                    <a class="btn btn-xs btn-danger remove-review" data-review-id="@review.Id">
+                        <i class="icon-trash bigger-120"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

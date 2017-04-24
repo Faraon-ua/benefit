@@ -2242,6 +2242,7 @@
         .partner_head .card_numb,
         .partner_head .bonus_personal,
         .partner_head .bonus_available,
+        .partner_head .user_business_status,
         .partner_head .ball_personal {
             display: none;
         }

@@ -325,6 +325,10 @@
     <Compile Include="Migrations\201704201125492_CardRequiredPersonell.Designer.cs">
       <DependentUpon>201704201125492_CardRequiredPersonell.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201704201316236_AddReviews.cs" />
+    <Compile Include="Migrations\201704201316236_AddReviews.Designer.cs">
+      <DependentUpon>201704201316236_AddReviews.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -359,6 +363,7 @@
     <Compile Include="Models\ProductParameterProduct.cs" />
     <Compile Include="Models\Region.cs" />
     <Compile Include="Models\Results\ProductImportResults.cs" />
+    <Compile Include="Models\Review.cs" />
     <Compile Include="Models\Schedule.cs" />
     <Compile Include="Models\Search\SearchResult.cs" />
     <Compile Include="Models\Seller.cs" />
@@ -557,6 +562,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201704201125492_CardRequiredPersonell.resx">
       <DependentUpon>201704201125492_CardRequiredPersonell.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201704201316236_AddReviews.resx">
+      <DependentUpon>201704201316236_AddReviews.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

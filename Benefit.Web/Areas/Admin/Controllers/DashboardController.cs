@@ -2,7 +2,9 @@
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
+using System.Web.UI.WebControls.WebParts;
 using Benefit.Common.Constants;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -29,6 +31,21 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             entry.Stamp.Day == dateDT.Day);
             }
             return View(revenue);
+        }
+
+        public ActionResult GetNotifications()
+        {
+            var reviewsToModerate = db.Reviews.Count(entry => !entry.IsActive);
+            var result = new NotificationsViewModel()
+            {
+                Reviews = reviewsToModerate,
+                Total = reviewsToModerate
+            };
+            if (result.Total > 0)
+            {
+                return PartialView("_Notifications", result);
+            }
+            return Content(string.Empty);
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Benefit.Domain.Models
         public string UrlName { get; set; }
         [Index(IsUnique = true)]
         public int SKU { get; set; }
+        public int? AvarageRating { get; set; } 
         [Required(AllowEmptyStrings = true, ErrorMessage = "Опис обовязковий для заповнення")]
         public string Description { get; set; }
         public double Price { get; set; }
@@ -64,6 +65,15 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
         public virtual ICollection<ProductOption> ProductOptions { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
+
+        [NotMapped]
+        public virtual ICollection<Review> ApprovedReviews {
+            get
+            {
+                return Reviews.Where(entry => entry.IsActive).ToList();
+            } 
+        }
 
         public KeyValuePair<bool, string> AvailableForPurchase(int regionId)
         {

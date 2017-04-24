@@ -40,6 +40,7 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
+        public int? AvarageRating { get; set; } 
         public bool TerminalOrderNotification { get; set; }
         public bool TerminalBillEnabled { get; set; }
         [MaxLength(32)]
@@ -95,6 +96,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<SellerBusinessLevelIndex> BusinessLevelIndexes { get; set; }
         public ICollection<ProductOption> ProductOptions { get; set; }
         public ICollection<Personnel> Personnels { get; set; }
+        public virtual ICollection<Review> Reviews { get; set; }
 
         [NotMapped]
         public static string CurrentAuthorizedSellerId

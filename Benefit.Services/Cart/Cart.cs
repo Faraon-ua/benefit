@@ -104,7 +104,7 @@ namespace Benefit.Services.Cart
                 {
                     result.ProductsNumber += (int)product.Amount;
                 }
-                result.Price += product.ProductPrice*product.Amount;
+                result.Price += product.ProductPrice*product.Amount + (product.OrderProductOptions.Sum(entry=>entry.ProductOptionPriceGrowth * entry.Amount));
             }
             return result;
         }

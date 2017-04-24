@@ -29,8 +29,8 @@
             </p>
 
             <div class="rating_wrap">
-                <div class="perelik_rating top"></div>
-                <p class="rating_reviews">0 відгуків</p>
+                <div class="perelik_rating @CommonConstants.RatingToClass[Model.Product.AvarageRating ?? default(int)]"></div>
+                <p class="rating_reviews">@Model.Product.ApprovedReviews.Count відгуків</p>
             </div>
             <div class="product_price">
                 @*            <span class="old_price">80,40</span>*@

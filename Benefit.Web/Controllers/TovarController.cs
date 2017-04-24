@@ -1,5 +1,9 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using System.Web;
 using System.Web.Mvc;
+using Antlr.Runtime.Misc;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -12,7 +16,7 @@ namespace Benefit.Web.Controllers
         //
         // GET: /Tovar/
         private ProductsService ProductsService { get; set; }
-        private SellerService SellerService{ get; set; }
+        private SellerService SellerService { get; set; }
 
         public TovarController()
         {
@@ -33,7 +37,7 @@ namespace Benefit.Web.Controllers
                 CategoryUrl = categoryUrl,
                 ProductOptions = ProductsService.GetProductOptions(product.Id),
                 Breadcrumbs = new BreadCrumbsViewModel()
-                { 
+                {
                     Seller = seller,
                     Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrl),
                     Product = product
@@ -61,6 +65,32 @@ namespace Benefit.Web.Controllers
                 return PartialView("_ProductOptions", result);
             }
             return Content(string.Empty);
+        }
+
+        [HttpPost]
+        public ActionResult AddReview(Review review)
+        {
+            review.Id = Guid.NewGuid().ToString();
+            review.UserFullName = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value);
+            review.Stamp = DateTime.UtcNow;
+            if (review.Rating == default(int))
+            {
+                ModelState.AddModelError("Rating", "Рейтинг не вказано");
+            }
+            if (ModelState.IsValid)
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    db.Reviews.Add(review);
+                    db.SaveChanges();
+                    TempData["SuccessMessage"] = "Ваш відгук з'явиться після модерації";
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Відгук невірно оформлений";
+            }
+            return Redirect(Request.UrlReferrer.AbsoluteUri);
         }
     }
 }

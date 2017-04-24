@@ -65,6 +65,7 @@
     <Compile Include="ViewModels\CompleteOrderViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="ViewModels\PaginatedList.cs" />
     <Compile Include="ViewModels\ProcessBonusesViewModel.cs" />
     <Compile Include="ViewModels\ProductDetailsViewModel.cs" />

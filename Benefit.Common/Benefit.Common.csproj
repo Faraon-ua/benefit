@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants\CacheConstants.cs" />
+    <Compile Include="Constants\CommonConstants.cs" />
     <Compile Include="Constants\DomainConstants.cs" />
     <Compile Include="Constants\FilterAndSortingConstants.cs" />
     <Compile Include="Constants\ListConstants.cs" />

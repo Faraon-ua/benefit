@@ -57,6 +57,15 @@
             </a>
         </li>
     }
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Index", "Reviews")">
+                <i class="icon-star"></i>
+                <span class="menu-text"> Відгуки</span>
+            </a>
+        </li>
+    }
 
     @if (User.IsInRole(DomainConstants.AdminRoleName))
     {
