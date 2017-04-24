@@ -54,6 +54,9 @@
         <tr>
             <th>
                 Час
+            </th> 
+            <th>
+                Користувач
             </th>
             <th>
                 Рейтинг
@@ -80,6 +83,9 @@
                     @review.Stamp.ToLocalDateTimeWithFormat()
                 </td>
                 <td>
+                    @review.UserFullName
+                </td>
+                <td>
                     @review.Rating
                 </td>
                 <td>
@@ -97,7 +103,7 @@
                     @if (review.Seller != null)
                     {
                         @Html.RouteLink(review.Seller.Name, RouteConstants.SellersRouteName,
-                            new { id = review.Seller.UrlName },
+                                 new { id = review.Seller.UrlName, action = string.Empty },
                                  new { target = "_blank" })
                     }
                 </td>

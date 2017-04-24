@@ -7,10 +7,12 @@ namespace Benefit.Domain.Models
     {
         public string Id { get; set; }
         [MaxLength(512)]
+        [Required(ErrorMessage = "Текст відгуку обов'язковий для заповнення")]
         public string Message { get; set; }
         [MaxLength(64)]
         public string UserFullName { get; set; }
         public DateTime Stamp { get; set; }
+        [Required(ErrorMessage = "Рейтинг не вказано")]
         public int Rating { get; set; }
         public bool IsActive { get; set; }
         [MaxLength(128)]

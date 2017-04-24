@@ -5,7 +5,7 @@
             @{
         var message = ViewBag.SuccessMessage ?? TempData["SuccessMessage"];
             }
-            @message
+            @Html.Raw(message)
         </p>
     }
     @if (ViewBag.ErrorMessage != null || TempData["ErrorMessage"] != null)
@@ -14,7 +14,7 @@
             @{
         var message = ViewBag.ErrorMessage ?? TempData["ErrorMessage"];
             }
-            @message
+            @Html.Raw(message)
         </p>
     }
 </div>

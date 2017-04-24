@@ -44,8 +44,11 @@
 
             <div class="navbar-header pull-right" role="navigation">
                 <ul class="nav ace-nav">
-                    @Html.Action("GetNotifications", "Dashboard")
-                    
+                    @if (User.IsInRole(DomainConstants.AdminRoleName))
+                    {
+                        @Html.Action("GetNotifications", "Dashboard")
+                    }
+
                     @* <li class="grey">
                             <a data-toggle="dropdown" class="dropdown-toggle" href="#">
                                 <i class="icon-tasks"></i>

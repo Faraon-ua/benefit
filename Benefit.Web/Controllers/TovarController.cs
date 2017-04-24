@@ -2,12 +2,12 @@
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Antlr.Runtime.Misc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
+using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Controllers
 {
@@ -73,10 +73,6 @@ namespace Benefit.Web.Controllers
             review.Id = Guid.NewGuid().ToString();
             review.UserFullName = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value);
             review.Stamp = DateTime.UtcNow;
-            if (review.Rating == default(int))
-            {
-                ModelState.AddModelError("Rating", "Рейтинг не вказано");
-            }
             if (ModelState.IsValid)
             {
                 using (var db = new ApplicationDbContext())
@@ -88,7 +84,7 @@ namespace Benefit.Web.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Відгук невірно оформлений";
+                TempData["ErrorMessage"] = "Відгук невірно оформлений<br/>" + ModelState.ModelStateErrors();
             }
             return Redirect(Request.UrlReferrer.AbsoluteUri);
         }
