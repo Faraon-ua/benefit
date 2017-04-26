@@ -34,7 +34,7 @@
         <p class="ref_code">Реферальний код:<br>@Model.ExternalNumber</p>
 
         <p class="bonus_available bonus_available_mobile">Доступні бонуси: <span class="bonus_border">@Model.BonusAccount.ToDoubleDigits()</span></p>
-        <p class="user_statuse margin-top-10">
+        <p class="user_statuse user-balls-mobile margin-top-10">
             Особисті бали за поточний період:<br><span class="bonus_border">
                 @string.Format("{0:0.00}", Math.Truncate(Model.PointsAccount * 100) / 100)
             </span>

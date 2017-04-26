@@ -62,7 +62,7 @@
                 </div>
             }
         </div>
-        foreach (var comment in review.ChildReviews.OrderByDescending(entry => entry.Stamp))
+        foreach (var comment in review.ChildReviews.Where(entry=>entry.IsActive).OrderByDescending(entry => entry.Stamp))
         {
             <div class="recall_item">
                 <div class="margin-left-30">

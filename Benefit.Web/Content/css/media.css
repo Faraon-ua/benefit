@@ -1850,8 +1850,9 @@
 @media all and (min-width: 768px) {
     .partner_head .bonus_available.bonus_available_mobile,
     .finance_tab_title,
-    .finance_bonuses_mobile {
-        display: none;
+    .finance_bonuses_mobile, 
+    .user-balls-mobile {
+        display: none !important;
     }
 }
 

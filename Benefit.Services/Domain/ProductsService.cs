@@ -19,7 +19,10 @@ namespace Benefit.Services.Domain
         private SellerService SellerService = new SellerService();
         public ProductDetailsViewModel GetProductDetails(string urlName, string sellerUrl, string categoryUrl, string userId)
         {
-            var product = db.Products.Include(entry => entry.Images).Include(entry => entry.Reviews).FirstOrDefault(entry => entry.UrlName == urlName);
+            var product = db.Products
+                .Include(entry => entry.Images)
+                .Include(entry => entry.Reviews.Select(rev=>rev.ChildReviews))
+                .FirstOrDefault(entry => entry.UrlName == urlName);
             if (product == null) return null;
 
             var seller = SellerService.GetSellerWithShippingMethods(sellerUrl);
