@@ -105,7 +105,7 @@ namespace Benefit.Domain.Models
         {
             get
             {
-                return Reviews.Where(entry => entry.IsActive).ToList();
+                return Reviews.Where(entry => entry.IsActive && entry.Rating != null).ToList();
             }
         }
 

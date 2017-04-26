@@ -1,4 +1,5 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @model Benefit.DataTransfer.ViewModels.SellerDetailsViewModel
 @{
@@ -179,7 +180,14 @@
             </div>
         }
         <div id="recall_org" class="recall_org tab-pane fade">
-            @Html.Partial("_ReviewsPartial", Model.Seller)
+            @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+            {
+                AvarageRating = Model.Seller.AvarageRating ?? default(int),
+                CanReview = Model.CanReview,
+                SellerId = Model.Seller.Id,
+                TargetName = Model.Seller.Name,
+                Reviews = Model.Seller.ApprovedReviews
+            })
         </div>
     </div>
 </div>

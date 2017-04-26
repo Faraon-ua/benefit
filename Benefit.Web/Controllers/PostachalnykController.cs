@@ -7,6 +7,7 @@ using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Services.Domain;
 using Benefit.Web.Models.Admin;
+using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Controllers
 {
@@ -50,7 +51,7 @@ namespace Benefit.Web.Controllers
                     }
                 }
             }
-            var sellerVm = SellerService.GetSellerDetails(id, categoryUrlName);
+            var sellerVm = SellerService.GetSellerDetails(id, categoryUrlName, User.Identity.GetUserId());
             if (sellerVm.Seller == null) return HttpNotFound();
             return View(sellerVm);
         }

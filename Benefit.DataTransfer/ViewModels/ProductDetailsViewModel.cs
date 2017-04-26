@@ -13,5 +13,6 @@ namespace Benefit.DataTransfer.ViewModels
         public string CategoryUrl { get; set; }
         public List<ProductOption> ProductOptions { get; set; }
         public BreadCrumbsViewModel Breadcrumbs { get; set; }
+        public bool CanReview { get; set; }
     }
 }

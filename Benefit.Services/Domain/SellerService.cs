@@ -85,7 +85,7 @@ namespace Benefit.Services.Domain
         {
             return db.Sellers.Include(entry => entry.ShippingMethods.Select(sh => sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
         }
-        public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName)
+        public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName, string currentUserId)
         {
             var sellerVM = new SellerDetailsViewModel();
             var seller = db.Sellers
@@ -93,7 +93,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Schedules)
                 .Include(entry => entry.Addresses)
                 .Include(entry => entry.ShippingMethods)
-                .Include(entry => entry.Reviews)
+                .Include(entry => entry.Reviews.Select(review=>review.ChildReviews))
                 .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
                 .FirstOrDefault(entry => entry.UrlName == urlName);
             if (seller != null)
@@ -125,6 +125,7 @@ namespace Benefit.Services.Domain
                     sellerVM.Breadcrumbs.Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrlName);
                 }
                 sellerVM.Breadcrumbs.IsInfoPage = true;
+                sellerVM.CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == currentUserId && entry.SellerId == seller.Id);
             }
             return sellerVM;
         }

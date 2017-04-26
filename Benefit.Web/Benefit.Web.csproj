@@ -1592,8 +1592,8 @@
     <Content Include="Views\Tovar\_GalleryPartial.cshtml" />
     <Content Include="Views\Home\_MobileLoginPartial.cshtml" />
     <Content Include="Views\Shared\_FlashMessage.cshtml" />
-    <Content Include="Views\Tovar\_ReviewsPartial.cshtml" />
-    <Content Include="Views\Postachalnyk\_ReviewsPartial.cshtml" />
+    <Content Include="Views\Shared\_ReviewsPartial.cshtml" />
+    <Content Include="Views\Tovar\_ReviewCommentPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

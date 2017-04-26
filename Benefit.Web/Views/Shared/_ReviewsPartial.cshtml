@@ -1,0 +1,80 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
+@model Benefit.DataTransfer.ViewModels.ReviewsViewModel
+
+@using (Html.BeginForm("AddReview", "Tovar"))
+{
+    <label class="recall_label" for="recall">Залишити відгук</label>
+    <div>
+        Ваша оцінка: <span id="review-rating" class="pointer rating_star @CommonConstants.RatingToClass[Model.AvarageRating]"></span>
+    </div>
+    <br />
+    var placeholder = User.Identity.IsAuthenticated ? "Текст відгуку" : "Залишити відгук може лише авторизований користувач";
+    <textarea class="recall_text" name="Message" placeholder="@placeholder"></textarea>
+    <input type="hidden" name="SellerId" value="@Model.SellerId" />
+    <input type="hidden" name="ProductId" value="@Model.ProductId" />
+    <input type="hidden" name="Rating" id="Rating" />
+    if (User.Identity.IsAuthenticated)
+    {
+        if (Model.CanReview)
+        {
+            <button type="submit" class="btn btn-success">Залишити відгук</button>
+        }
+        else
+        {
+            <div class="title-to-tooltip" title="Залишити відгук може тільки клієнт цього постачальника" style="display: inline-block;">
+                <button type="submit" class="btn btn-success" disabled="disabled">Залишити відгук</button>
+            </div>
+        }
+    }
+    else
+    {
+        <p class="recall_register_notice"><a href="@Url.Action("Login", "Account", new { returnUrl = Request.Url.PathAndQuery })">Увійдіть</a> або <a href="@Url.Action("Register","Account")">зареєструйтесь,</a> щоб залишити коментар</p>
+    }
+}
+
+@if (Model.Reviews.Any())
+{
+    <div class="recall_title_wrap clearfix">
+        <div class="recall_title">Відгуки про @Model.TargetName</div>
+        <div class="recall_rating">
+            <span class="rating_all">@Model.Reviews.Count відгук(а)</span>
+        </div>
+    </div>
+    foreach (var review in Model.Reviews.OrderByDescending(entry => entry.Stamp))
+    {
+        <div class="recall_item">
+            <div>
+                <div class="recall_item_head">
+                    <div class="recall_name bold">@review.UserFullName</div>
+                    <div class="recall_time">@review.Stamp.ToLocalDateTimeWithFormat()</div>
+                </div>
+                <span class="rating_star @CommonConstants.RatingToClass[review.Rating]"></span>
+                <p class="recall_main">
+                    @review.Message
+                </p>
+            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a href="#" class="review-comment" data-review-id="@review.Id">Відповісти</a>
+                <div class="hidden">
+
+                </div>
+            }
+        </div>
+        foreach (var comment in review.ChildReviews.OrderByDescending(entry => entry.Stamp))
+        {
+            <div class="recall_item">
+                <div class="margin-left-30">
+                    <div class="recall_item_head">
+                        <div class="recall_name bold">@comment.UserFullName</div>
+                        <div class="recall_time">@comment.Stamp.ToLocalDateTimeWithFormat()</div>
+                    </div>
+                    <p class="recall_main">
+                        @comment.Message
+                    </p>
+                </div>
+            </div>
+        }
+    }
+}

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.XmlModels;
@@ -15,12 +16,32 @@ namespace Benefit.Services.Domain
     public class ProductsService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
-        public Product GetProduct(string urlName)
+        private SellerService SellerService = new SellerService();
+        public ProductDetailsViewModel GetProductDetails(string urlName, string sellerUrl, string categoryUrl, string userId)
         {
-            var product = db.Products.Include(entry => entry.Images).Include(entry=>entry.Reviews).FirstOrDefault(entry => entry.UrlName == urlName);
+            var product = db.Products.Include(entry => entry.Images).Include(entry => entry.Reviews).FirstOrDefault(entry => entry.UrlName == urlName);
             if (product == null) return null;
-            return product;
+
+            var seller = SellerService.GetSellerWithShippingMethods(sellerUrl);
+
+            product.Seller = seller;
+            var categoriesService = new CategoriesService();
+
+            var result = new ProductDetailsViewModel()
+            {
+                Product = product,
+                CategoryUrl = categoryUrl,
+                ProductOptions = GetProductOptions(product.Id),
+                Breadcrumbs = new BreadCrumbsViewModel()
+                {
+                    Seller = seller,
+                    Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrl),
+                    Product = product,
+                },
+                CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == userId && entry.OrderProducts.Any(pr => pr.ProductId == product.Id))
+            };
+
+            return result;
         }
 
         public List<ProductOption> GetProductOptions(string productId)
@@ -46,7 +67,7 @@ namespace Benefit.Services.Domain
                 product.Price = xmlProductPrice.Price;
                 productPricesUpdated++;
             });
-               
+
             db.SaveChanges();
             return productPricesUpdated;
         }

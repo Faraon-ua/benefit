@@ -70,6 +70,7 @@
     <Compile Include="ViewModels\ProcessBonusesViewModel.cs" />
     <Compile Include="ViewModels\ProductDetailsViewModel.cs" />
     <Compile Include="ViewModels\ProductPartialViewModel.cs" />
+    <Compile Include="ViewModels\ReviewsViewModel.cs" />
     <Compile Include="ViewModels\SellerApplicationViewModel.cs" />
     <Compile Include="ViewModels\SellerCatalogViewModel.cs" />
     <Compile Include="ViewModels\SellerDetailsViewModel.cs" />

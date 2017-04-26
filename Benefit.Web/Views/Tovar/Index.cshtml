@@ -2,6 +2,7 @@
 @using Benefit.Domain.Models
 @using Benefit.Services
 @using Benefit.Services.Domain
+@using Benefit.DataTransfer.ViewModels;
 @model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
 
 @{
@@ -264,7 +265,14 @@
             </div>
 
             <div id="prodact_recall" class="prodact_recall tab-pane fade">
-                @Html.Partial("_ReviewsPartial", Model.Product)
+                @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                {
+                    AvarageRating = Model.Product.AvarageRating ?? default(int),
+                    CanReview = Model.CanReview,
+                    ProductId = Model.Product.Id,
+                    TargetName = Model.Product.Name,
+                    Reviews = Model.Product.ApprovedReviews
+                })
             </div>
             <div id="product_shipping" class="tab-pane fade">
                 <h3>Умови доставки постачальника @Model.Product.Seller.Name</h3>

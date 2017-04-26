@@ -8,6 +8,7 @@ using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
+using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Controllers
 {
@@ -25,25 +26,11 @@ namespace Benefit.Web.Controllers
         }
         public ActionResult Index(string productUrl, string categoryUrl, string sellerUrl)
         {
-            var seller = SellerService.GetSellerWithShippingMethods(sellerUrl);
-            var product = ProductsService.GetProduct(productUrl);
-            if (product == null) return HttpNotFound();
-            product.Seller = seller;
-            var categoriesService = new CategoriesService();
+            var productResult = ProductsService.GetProductDetails(productUrl, sellerUrl, categoryUrl,
+                User.Identity.GetUserId());
+            if (productResult == null) return HttpNotFound();
 
-            var result = new ProductDetailsViewModel()
-            {
-                Product = product,
-                CategoryUrl = categoryUrl,
-                ProductOptions = ProductsService.GetProductOptions(product.Id),
-                Breadcrumbs = new BreadCrumbsViewModel()
-                {
-                    Seller = seller,
-                    Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrl),
-                    Product = product
-                }
-            };
-            return View(result);
+            return View(productResult);
         }
 
         public ActionResult GetProductOptions(string productId)
@@ -73,6 +60,10 @@ namespace Benefit.Web.Controllers
             review.Id = Guid.NewGuid().ToString();
             review.UserFullName = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value);
             review.Stamp = DateTime.UtcNow;
+            if (review.Rating == null || review.Rating == default(int))
+            {
+                ModelState.AddModelError("Rating", "Рейтинг не вказано");
+            }
             if (ModelState.IsValid)
             {
                 using (var db = new ApplicationDbContext())
@@ -85,6 +76,34 @@ namespace Benefit.Web.Controllers
             else
             {
                 TempData["ErrorMessage"] = "Відгук невірно оформлений<br/>" + ModelState.ModelStateErrors();
+            }
+            return Redirect(Request.UrlReferrer.AbsoluteUri);
+        }
+
+        [HttpGet]
+        public ActionResult GetReviewCommentForm(string id)
+        {
+            return PartialView("_ReviewCommentPartial", id);
+        }
+
+        [HttpPost]
+        public ActionResult AddReviewComment(Review review)
+        {
+            review.Id = Guid.NewGuid().ToString();
+            review.UserFullName = User.IsInRole(DomainConstants.AdminRoleName) ? "Benefit Company" : HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value);
+            review.Stamp = DateTime.UtcNow;
+            if (ModelState.IsValid)
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    db.Reviews.Add(review);
+                    db.SaveChanges();
+                    TempData["SuccessMessage"] = "Ваш коментар з'явиться після модерації";
+                }
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "Коментар невірно оформлений<br/>" + ModelState.ModelStateErrors();
             }
             return Redirect(Request.UrlReferrer.AbsoluteUri);
         }

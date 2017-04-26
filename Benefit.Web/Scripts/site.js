@@ -150,6 +150,16 @@ $(function () {
         $("#review-rating").off("mouseout");
     });
 
+    $(".review-comment").click(function (e) {
+        e.preventDefault();
+        var answerLink = $(this);
+        var id = answerLink.attr("data-review-id");
+        answerLink.next().load(routePrefix + "/Tovar/GetReviewCommentForm/" + id, function () {
+            answerLink.next().removeClass("hidden");
+            answerLink.hide();
+        });
+    });
+
     $('input:checkbox').prop('checked', false);
 
     $(document).keyup(function(e) {

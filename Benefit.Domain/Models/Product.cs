@@ -15,6 +15,7 @@ namespace Benefit.Domain.Models
             Images = new Collection<Image>();
             ProductOptions = new Collection<ProductOption>();
             ProductParameterProducts = new Collection<ProductParameterProduct>();
+            Reviews = new Collection<Review>();
         }
 
         [Key]
@@ -71,7 +72,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Review> ApprovedReviews {
             get
             {
-                return Reviews.Where(entry => entry.IsActive).ToList();
+                return Reviews.Where(entry => entry.IsActive && entry.Rating != null).ToList();
             } 
         }
 

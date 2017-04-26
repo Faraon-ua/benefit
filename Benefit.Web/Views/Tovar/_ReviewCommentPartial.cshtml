@@ -1,0 +1,8 @@
+﻿@model string
+@using (Html.BeginForm("AddReviewComment", "Tovar"))
+{
+    <input type="hidden" name="ReviewId" value="@Model"/>
+    <textarea name="Message" placeholder="Ваш коментар" cols="100" rows="6"></textarea>
+    <br/>
+    <button class="btn btn-success margin-top-10" type="submit">Надіслати коментар</button>
+}

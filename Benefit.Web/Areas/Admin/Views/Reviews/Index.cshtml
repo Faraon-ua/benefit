@@ -62,7 +62,7 @@
                 Рейтинг
             </th>
             <th>
-                Коментарій
+                Коментар
             </th>
             <th>
                 Товар
@@ -76,7 +76,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var review in Model)
+        @foreach (var review in Model.Where(entry=>entry.ParentReview == null))
         {
             <tr>
                 <td>
@@ -106,6 +106,58 @@
                                  new { id = review.Seller.UrlName, action = string.Empty },
                                  new { target = "_blank" })
                     }
+                </td>
+                <td>
+                    <a class="btn btn-xs btn-success accept-review" data-review-id="@review.Id">
+                        <i class="icon-check-sign bigger-120"></i>
+                    </a>
+                    <a class="btn btn-xs btn-danger remove-review" data-review-id="@review.Id">
+                        <i class="icon-trash bigger-120"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<br/>
+<h2>Модерація коментарів</h2>
+
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                Час
+            </th>
+            <th>
+                Користувач
+            </th>
+            <th>
+                Відгук
+            </th>
+            <th>
+                Коментар
+            </th>
+            <th>
+                Дії
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model.Where(entry => entry.ParentReview != null))
+        {
+            <tr>
+                <td>
+                    @review.Stamp.ToLocalDateTimeWithFormat()
+                </td>
+                <td>
+                    @review.UserFullName
+                </td>
+                <td>
+                    @review.ParentReview.Message
+                </td>
+                <td>
+                    @review.Message
                 </td>
                 <td>
                     <a class="btn btn-xs btn-success accept-review" data-review-id="@review.Id">
