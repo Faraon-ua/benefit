@@ -1,0 +1,14 @@
+﻿@model  Benefit.Domain.Models.Promotion
+
+<div class="bordered width-30 padding_5 margin-top-10 position-relative">
+    @Html.TextBox("Promotion.Name", Model.Name, new { placeholder = "Назва" })
+    @Html.TextBox("Promotion.Start", Model.Start, new { placeholder = "Дата початку", @class = "date-picker" })
+    @Html.TextBox("Promotion.End", Model.End, new { placeholder = "Дата закінчення", @class = "date-picker" })
+    @Html.TextBox("Promotion.InstantDiscountFrom", Model.InstantDiscountFrom, new { placeholder = "Знижка від суми (грн)" })
+    @Html.TextBox("Promotion.InstantDiscountValue", Model.InstantDiscountValue, new { placeholder = "Знижка грн" })
+    <a href="#" class="position-absolute position-top position-right margin-right-10" onclick="$(this).parent().remove(); ReAssignIndexesToChildren('shipping', 'belong-shipping');">
+        <i class="icon-remove red"></i>
+    </a>
+    <br/>
+    <button type="button" class="btn btn-success submit-promo">Додати</button>
+</div>

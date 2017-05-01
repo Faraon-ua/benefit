@@ -23,6 +23,7 @@ namespace Benefit.Domain.Models
             SellerCategories = new Collection<SellerCategory>();
             ProductOptions = new Collection<ProductOption>();
             Personnels = new Collection<Personnel>();
+            Promotions = new Collection<Promotion>();
         }
 
         [Key]
@@ -100,6 +101,7 @@ namespace Benefit.Domain.Models
         public ICollection<ProductOption> ProductOptions { get; set; }
         public ICollection<Personnel> Personnels { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
+        public virtual ICollection<Promotion> Promotions { get; set; }
         [NotMapped]
         public virtual ICollection<Review> ApprovedReviews
         {

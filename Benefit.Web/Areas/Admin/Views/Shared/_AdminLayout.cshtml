@@ -335,9 +335,9 @@
     <script src="~/Areas/Admin/assets/js/typeahead-bs2.min.js"></script>
     <script src="~/Areas/Admin/assets/js/ace-elements.min.js"></script>
     <script src="~/Areas/Admin/assets/js/ace.min.js"></script>
+    <script src="~/Scripts/common.js"></script>
     <!-- scripts related to this page -->
     @RenderSection("scripts", required: false)
-    <script src="~/Scripts/common.js"></script>
     <script>
         var checkOrdersUrl = '@Url.Action("CheckNewOrder", "Orders")';
         var soundPath = '@Url.Content("~/Content/sounds/newOrder.mp3")';

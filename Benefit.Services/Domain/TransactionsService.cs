@@ -65,14 +65,15 @@ namespace Benefit.Services.Domain
         public void AddBonusesOrderTransaction(Order order)
         {
             var user = db.Users.Find(order.UserId);
-            var commission = order.Sum*SettingsService.BonusesComissionRate/100;
+            var sumToPay = order.Sum - order.SellerDiscount.GetValueOrDefault(0);
+            var commission = sumToPay*SettingsService.BonusesComissionRate/100;
             //add transaction for personal purchase
             var bonusesPaymentTransaction = new Transaction()
             {
                 Id = Guid.NewGuid().ToString(),
-                Bonuses = -(order.Sum),
+                Bonuses = -(sumToPay),
                 Commission = commission,
-                BonusesBalans = user.BonusAccount - (order.Sum + commission),
+                BonusesBalans = user.BonusAccount - (sumToPay + commission),
                 OrderId = order.Id,
                 PayeeId = user.Id,
                 Time = DateTime.UtcNow,

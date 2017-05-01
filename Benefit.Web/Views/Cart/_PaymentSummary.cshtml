@@ -43,7 +43,13 @@
                 <td>Доставка:</td>
                 <td id="shipping-cost"></td>
             </tr>
-
+            @if (Model.Order.SellerDiscount != null)
+            {
+                <tr>
+                    <td>@Model.Order.SellerDiscountName:</td>
+                    <td id="promotion">@Model.Order.SellerDiscount.Value.ToString("F")</td>
+                </tr>
+            }
             <tr>
                 <td>До сплати:</td>
                 <td id="pay-total"></td>

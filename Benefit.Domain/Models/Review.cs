@@ -13,7 +13,7 @@ namespace Benefit.Domain.Models
             ChildReviews = new Collection<Review>();
         }
         public string Id { get; set; }
-        [MaxLength(512)]
+        [MaxLength(512, ErrorMessage = "Текст відгуку не може перевищувати 512 символів")]
         [Required(ErrorMessage = "Текст відгуку обов'язковий для заповнення")]
         public string Message { get; set; }
         [MaxLength(64)]

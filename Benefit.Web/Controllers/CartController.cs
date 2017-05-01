@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Linq;
 using System.Data.Entity;
@@ -75,9 +76,21 @@ namespace Benefit.Web.Controllers
             var sellerId = Cart.CurrentInstance.Order.SellerId;
             using (var db = new ApplicationDbContext())
             {
-                var seller = db.Sellers.FirstOrDefault(entry => entry.Id == sellerId);
+                var seller = db.Sellers.Include(entry=>entry.Promotions).FirstOrDefault(entry => entry.Id == sellerId);
                 var userId = User.Identity.GetUserId();
                 if (seller == null) return HttpNotFound();
+                if (seller.Promotions.Any())
+                {
+                    var now = DateTime.UtcNow;
+                    var currentPromotion =
+                        seller.Promotions.FirstOrDefault(entry => entry.Start < now && entry.End > now);
+                    model.Order.Sum = model.Order.GetOrderSum();
+                    if (currentPromotion != null && model.Order.Sum >= currentPromotion.InstantDiscountFrom)
+                    {
+                        model.Order.SellerDiscount = currentPromotion.InstantDiscountValue;
+                        model.Order.SellerDiscountName = currentPromotion.Name;
+                    }
+                }
                 model.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == sellerId).ToList();
                 model.Addresses = db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
                 if (seller.IsPrePaidPaymentActive)

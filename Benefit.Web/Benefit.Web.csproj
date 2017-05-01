@@ -1134,6 +1134,8 @@
     <Content Include="Areas\Cabinet\Views\BenefitFamily\CreateOrUpdate.cshtml" />
     <Content Include="Areas\Admin\Views\Dashboard\_Notifications.cshtml" />
     <Content Include="Areas\Admin\Views\Reviews\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Promotions.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_PromotionForm.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

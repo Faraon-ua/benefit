@@ -77,6 +77,10 @@ function onFailure() {
     $('#searchError').show(0);
 }
 
+function SetDatePickers() {
+    $(".date-picker").datepicker();
+}
+
 function ReAssignIndexesToChildren(id, itemSelector) {
     var container = $("#" + id);
     var rows = container.find("." + itemSelector);

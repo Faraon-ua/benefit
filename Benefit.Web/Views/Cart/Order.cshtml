@@ -51,6 +51,10 @@
                     //shipping
                     var selectedShippingId = selectedShipping.Id;
                     var orderSum = parseFloat($("#order-total").text());
+                    var promotion = 0;
+                    if ($("#promotion").length > 0) {
+                        promotion = parseFloat($("#promotion").text());
+                    }
                     var shippingCost = 0;
                     var selectedShipping = shippingMethodsJson.filter(function(shipping) {
                         return shipping.Id == selectedShippingId;
@@ -70,7 +74,7 @@
                     var sum = parseFloat($("#order-total").text());
                     if (selectedPaymentType.attr("id") == "@PaymentType.Bonuses.ToString()") {
                         var checkBonusesUrl = '@Url.Action("CheckEnaughBonuses", "Cart")';
-                        $.get(checkBonusesUrl + "?sum=" + sum, function(data) {
+                        $.get(checkBonusesUrl + "?sum=" + (orderSum - discount), function (data) {
                             if (data.total) {
                                 $("#bonuses-summary").show();
                                 //bonuses section
@@ -93,8 +97,7 @@
                         $("#bonuses-summary").hide();
                         $("#discount-row").hide();
                     }
-
-                    $("#pay-total").text((shippingCost + orderSum).toFixed(2));
+                    $("#pay-total").text((shippingCost + orderSum - promotion).toFixed(2));
                 }
             }
         });

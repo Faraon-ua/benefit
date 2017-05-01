@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
 using Benefit.Common.Constants;
+using Benefit.Web.Helpers;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models.Enums;
@@ -228,6 +229,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 };
             }
         }
+
+        public ActionResult AddPromotion(Promotion promo)
+        {
+            promo.Id = Guid.NewGuid().ToString();
+            if (ModelState.IsValid)
+            {
+                db.Promotions.Add(promo);
+                db.SaveChanges();
+                var promos = db.Promotions.Where(entry => entry.SellerId == promo.SellerId);
+                return PartialView("_Promotions", promos.ToList());
+            }
+            else
+            {
+                return Json(new {error = ModelState.ModelStateErrors()});
+            }
+        }
+        public ActionResult GetPromotionForm(string sellerId, string id)
+        {
+            var promo = (id == null) ? new Promotion() {SellerId = sellerId} : db.Promotions.Find(id);
+            return PartialView("_PromotionForm", promo);
+        } 
         public ActionResult SellersSearch(SellerFilterValues filters)
         {
             IQueryable<Seller> sellers = db.Sellers.Include("Owner").AsQueryable();
@@ -307,6 +329,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     .Include(entry => entry.Schedules)
                     .Include(entry => entry.ShippingMethods.Select(sp => sp.Region))
                     .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                    .Include(entry => entry.Promotions)
                     .FirstOrDefault(entry => entry.Id == id);
             var seller = new SellerViewModel()
             {

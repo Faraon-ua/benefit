@@ -76,7 +76,14 @@
     <tr>
         <td style="width: 30%;">Загальна сума замовлення</td>
         <td style="width: 70%;">@Model.Sum.ToString("F")</td>
-    </tr>
+    </tr> 
+    @if (Model.SellerDiscount != null)
+    {
+        <tr>
+            <td style="width: 30%;">@Model.SellerDiscountName</td>
+            <td style="width: 70%;">@Model.SellerDiscount.Value.ToString("F")</td>
+        </tr>
+    }
     <tr>
         <td style="width: 30%;">Нараховано балів</td>
         <td style="width: 70%;">@Model.PointsSum</td>
@@ -282,7 +289,7 @@
                             Загальна сума замовлення
                         </b>
                     </div>
-                    <div class="col-md-4 text-right">@Model.Sum</div>
+                    <div class="col-md-4 text-right">@Model.Sum.ToString("F")</div>
                 </div>
                 <div class="row">
                     <div class="col-md-8">
@@ -292,13 +299,24 @@
                     </div>
                     <div class="col-md-4 text-right">@Model.ShippingCost</div>
                 </div>
+                @if (Model.SellerDiscount != null)
+                {
+                    <div class="row">
+                        <div class="col-md-8">
+                            <b>
+                                @Model.SellerDiscountName
+                            </b>
+                        </div>
+                        <div class="col-md-4 text-right">@Model.SellerDiscount.Value.ToString("F")</div>
+                    </div>
+                }
                 <div class="row">
                     <div class="col-md-8">
                         <b>
                             Всього
                         </b>
                     </div>
-                    <div class="col-md-4 text-right">@(Model.Sum + Model.ShippingCost)</div>
+                    <div class="col-md-4 text-right">@(Model.Sum + Model.ShippingCost - Model.SellerDiscount.GetValueOrDefault(0))</div>
                 </div>
             </div>
         </div>

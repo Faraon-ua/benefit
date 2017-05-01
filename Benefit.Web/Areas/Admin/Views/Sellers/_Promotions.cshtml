@@ -1,0 +1,6 @@
+﻿@model ICollection<Benefit.Domain.Models.Promotion>
+
+@foreach (var promo in Model)
+{
+    @Html.Partial("_PromotionForm", promo)
+}
