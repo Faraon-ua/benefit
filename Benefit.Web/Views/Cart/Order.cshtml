@@ -74,17 +74,17 @@
                     var sum = parseFloat($("#order-total").text());
                     if (selectedPaymentType.attr("id") == "@PaymentType.Bonuses.ToString()") {
                         var checkBonusesUrl = '@Url.Action("CheckEnaughBonuses", "Cart")';
-                        $.get(checkBonusesUrl + "?sum=" + (orderSum - discount), function (data) {
+                        $.get(checkBonusesUrl + "?sum=" + (orderSum - promotion), function (data) {
                             if (data.total) {
                                 $("#bonuses-summary").show();
                                 //bonuses section
-                                $("#bonuses-discount").text((sum - 0.01).toFixed(2));
+                                $("#bonuses-discount").text(((sum-promotion) - 0.01).toFixed(2));
                                 $("#bonuses-comission").text(data.comission.toFixed(2));
-                                $("#bonuses-total").text((sum + data.comission - 0.01).toFixed(2));
+                                $("#bonuses-total").text(((sum - promotion) + data.comission - 0.01).toFixed(2));
 
                                 //payment section
                                 $("#pay-total").text((shippingCost + 0.01).toFixed(2));
-                                $("#discount").text((sum - 0.01).toFixed(2));
+                                $("#discount").text(((sum-promotion) - 0.01).toFixed(2));
                                 $("#discount-row").show();
                             } else {
                                 //todo: add pretty windows

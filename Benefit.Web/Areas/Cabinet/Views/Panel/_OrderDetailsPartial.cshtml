@@ -90,12 +90,23 @@
                                             @Model.ShippingCost.ToString("F")
                                         </td>
                                     </tr>
+                                    @if (Model.SellerDiscount != null)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @Model.SellerDiscountName
+                                            </td>
+                                            <td>
+                                                @Model.SellerDiscount.GetValueOrDefault(0).ToString("F")
+                                            </td>
+                                        </tr>
+                                    }
                                     <tr>
                                         <td>
                                             До сплати
                                         </td>
                                         <td>
-                                            @((Model.Sum + Model.ShippingCost).ToString("F"))
+                                            @((Model.Sum + Model.ShippingCost - Model.SellerDiscount.GetValueOrDefault(0)).ToString("F"))
                                         </td>
                                     </tr>
                                 </table>
