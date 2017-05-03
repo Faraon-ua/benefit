@@ -51,7 +51,10 @@
                                         <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
                                             <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
                                             <td class="basket_modal_td">
-                                                <div class="modal_amount_wrap">
+                                                @{
+                                                    var visibleClass = orderProductOption.EditableAmount ? "" : "hidden";
+                                                }
+                                                <div class="modal_amount_wrap @visibleClass">
                                                     <div class="product_modal_minus">-</div>
                                                     <input class="product_modal_amount" value="@orderProductOption.Amount" type="text">
                                                     <div class="product_modal_plus">+</div>
@@ -73,7 +76,7 @@
                         <a href="#" id="continue-purchase" class="goto_back btn">Продовжити<br /> покупки</a>
                         <a href="#" id="complete-order" class="goto_ahead btn">Оформити<br /> замовлення</a>
                     </div>
-@*                    <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@
+                    @*                    <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@
                     //todo: add рекомендовані продукти
                     //todo: add weight product amount
                     @*                    <p class="basket_recomendation_title">Рекомендовані товари</p>*@

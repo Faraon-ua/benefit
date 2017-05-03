@@ -4,13 +4,16 @@
         @using (Html.BeginForm("CreateOrUpdate", "ProductOptions"))
         {
             @Html.AntiForgeryToken()
-            <label class="control-label col-sm-4">Назва опції</label>
-            @Html.TextBoxFor(m => m.Name, new { @class = "col-sm-8" })
+            <label class="control-label col-sm-6">Назва опції</label>
+            @Html.TextBoxFor(m => m.Name, new { @class = "col-sm-6" })
             <br />
-            <label class="control-label col-sm-4">Збільшення вартості</label>
-            @Html.EditorFor(m => m.PriceGrowth, new { @class = "col-sm-8" })
+            <label class="control-label col-sm-6">Збільшення вартості</label>
+            @Html.EditorFor(m => m.PriceGrowth, new { @class = "col-sm-6" })
             <br />
-
+            <div class="col-sm-12">
+                @Html.CheckBoxFor(m => m.EditableAmount)
+                @Html.LabelFor(m => m.EditableAmount, "Можливо замовити декілька", new { @class = "control-label" })
+            </div>
             @Html.HiddenFor(m => m.ParentProductOptionId)
             @Html.HiddenFor(m => m.CategoryId)
             @Html.HiddenFor(m => m.SellerId)

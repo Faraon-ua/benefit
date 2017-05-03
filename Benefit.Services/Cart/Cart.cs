@@ -63,6 +63,7 @@ namespace Benefit.Services.Cart
                         var productOption = db.ProductOptions.Find(orderProductOption.ProductOptionId);
                         orderProductOption.ProductOptionName = productOption.Name;
                         orderProductOption.ProductOptionPriceGrowth = productOption.PriceGrowth;
+                        orderProductOption.EditableAmount = productOption.EditableAmount;
                     }
                 }
                 Order.SellerId = sellerId;

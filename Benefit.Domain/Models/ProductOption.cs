@@ -17,6 +17,7 @@ namespace Benefit.Domain.Models
         [Required]
         public string Name { get; set; }
         public bool MultipleSelection { get; set; }
+        public bool EditableAmount { get; set; }
         public double PriceGrowth { get; set; }
         [MaxLength(128)]
         public string ParentProductOptionId { get; set; }

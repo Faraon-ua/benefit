@@ -18,5 +18,8 @@ namespace Benefit.Domain.Models
         public string ProductOptionName { get; set; }
         public double ProductOptionPriceGrowth { get; set; }
         public int Amount { get; set; }
+
+        [NotMapped]
+        public bool EditableAmount { get; set; }
     }
 }

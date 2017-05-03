@@ -66,7 +66,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult ProductOptionValue(string parentId, string categoryId = null, string sellerId = null, string productId = null)
         {
-            var productParameter = new ProductOption() { ParentProductOptionId = parentId, CategoryId = categoryId, SellerId = sellerId, ProductId = productId };
+            var productParameter = new ProductOption() { ParentProductOptionId = parentId, CategoryId = categoryId, SellerId = sellerId, ProductId = productId, EditableAmount =  true };
             return PartialView("_ProductOptionValue", productParameter);
         }
 

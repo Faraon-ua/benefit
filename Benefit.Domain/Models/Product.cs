@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Data.Entity;
 using Benefit.Common.Constants;
+using Benefit.Domain.DataAccess;
 
 namespace Benefit.Domain.Models
 {
@@ -76,19 +78,28 @@ namespace Benefit.Domain.Models
             } 
         }
 
+        private KeyValuePair<bool, string>? _availableForPurchase = null;
         public KeyValuePair<bool, string> AvailableForPurchase(int regionId)
         {
-            string shippingRegions = null;
-            var isAvailable =
-                Seller.ShippingMethods.Any(
-                    entry => entry.RegionId == RegionConstants.AllUkraineRegionId ||
-                        entry.RegionId == regionId);
-            if (!isAvailable)
+            if (_availableForPurchase.HasValue)
             {
-                shippingRegions = string.Join(",", Seller.ShippingMethods.Select(entry => entry.Region.Name_ua).Distinct());
+                return _availableForPurchase.Value;
             }
-
-            return new KeyValuePair<bool, string>(isAvailable, shippingRegions);
+            string shippingRegions = null;
+            using (var db = new ApplicationDbContext())
+            {
+                var isAvailable =
+                    db.ShippingMethods.Any(
+                        entry => entry.SellerId == SellerId && (entry.RegionId == RegionConstants.AllUkraineRegionId ||
+                                                                 entry.RegionId == regionId));
+                if (!isAvailable)
+                {
+                    shippingRegions = string.Join(",", db.ShippingMethods.Include(entry=>entry.Region).Where(entry=>entry.SellerId == SellerId).Select(entry => entry.Region.Name_ua).Distinct());
+                }
+                _availableForPurchase = new KeyValuePair<bool, string>(isAvailable, shippingRegions);
+            }
+            
+            return _availableForPurchase.Value;
         }
     }
 }
