@@ -1,3 +1,18 @@
+function CalculateProductPrice() {
+    var checkOptions = $(".product_modal_form input[type=checkbox]:checked").map(function () {
+        var checkboxPriceGrowth = parseFloat($(this).attr("data-price-growth"));
+        var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+        return checkboxPriceGrowth * amount;
+    }).get();
+    var radioOptions = $(".product_modal_form input[type=radio]:checked").map(function () {
+        return parseFloat($(this).attr("data-price-growth"));
+    }).get();
+    var checkPriceGrowth = checkOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
+    var radioPriceGrowth = radioOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
+    var originalPrice = parseFloat($(".product-price").attr("data-original-price"));
+    $(".product-price").text((originalPrice + checkPriceGrowth + radioPriceGrowth).toFixed(2));
+}
+
 window.onload = function () {
     (function (d) {
         var
@@ -517,6 +532,10 @@ $(document).ready(function() {
 
     $('body').on("blur", ".product_modal_amount", function () {
         CalculateCartSum();
+    });
+
+    $("body").on("click", ".product_modal_form input[type=checkbox], .product_modal_form input[type=radio], .product_modal_form div.product_modal_minus, .product_modal_form div.product_modal_plus", function () {
+        CalculateProductPrice();
     });
 
     /*basket_modal_table delete product*/
