@@ -22,7 +22,10 @@
                                     foreach (var option in optionsGroup.ChildProductOptions)
                                     {
                                         <div class="product_modal_row">
-                                            <input class="hidden" type="checkbox" id="@option.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" />
+                                            @{
+                                                var editableAmountClass = option.EditableAmount ? "editable-amount" : "";
+                                            }
+                                            <input class="hidden @editableAmountClass" type="checkbox" id="@option.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" />
                                             <label class="label_for_check" for="@option.Id">
                                                 @option.Name ( +@option.PriceGrowth.ToString("F"))
                                             </label>

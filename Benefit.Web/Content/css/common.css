@@ -1,4 +1,8 @@
-﻿.inactive {
+﻿.word-break-all {
+    word-break: break-all;
+}
+
+.inactive {
     color: #666666;
 }
 

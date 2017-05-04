@@ -50,7 +50,7 @@
                     <div class="recall_time">@review.Stamp.ToLocalDateTimeWithFormat()</div>
                 </div>
                 <span class="rating_star @CommonConstants.RatingToClass[review.Rating]"></span>
-                <p class="recall_main">
+                <p class="recall_main word-break-all">
                     @review.Message
                 </p>
             </div>
@@ -70,7 +70,7 @@
                         <div class="recall_name bold">@comment.UserFullName</div>
                         <div class="recall_time">@comment.Stamp.ToLocalDateTimeWithFormat()</div>
                     </div>
-                    <p class="recall_main">
+                    <p class="recall_main recall_main">
                         @comment.Message
                     </p>
                 </div>

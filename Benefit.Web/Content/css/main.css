@@ -4433,7 +4433,7 @@ li:last-child .expand {
     text-align-last: center;
 }
 
-.product_modal input[type="checkbox"]:checked ~ .modal_amount_wrap {
+.product_modal input[type="checkbox"].editable-amount:checked ~ .modal_amount_wrap {
     display: inline-block;
 }
 
