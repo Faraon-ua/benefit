@@ -36,7 +36,7 @@
         <div id="organization_slider" class="organization_slider">
             @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
             {
-                <img class="item" src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" />
+                <img class="item" src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" alt="@Model.Seller.Name" />
             }
         </div>
         @if (Model.Seller.IsBenefitCardActive)

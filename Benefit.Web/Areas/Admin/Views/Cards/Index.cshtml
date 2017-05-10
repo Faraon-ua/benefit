@@ -1,0 +1,99 @@
+﻿@using Benefit.Common.Constants
+@model IEnumerable<Benefit.Domain.Models.BenefitCard>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section scripts
+{
+    <script>
+        $(function() {
+            $(".pagination a").click(function () {
+                debugger;
+                $("#page").val($(this).attr("data-page-number"));
+                $("form").submit();
+            });
+        });
+    </script>
+}
+<div>
+    @using (Html.BeginForm())
+    {
+        <input type="text" name="CardNumber" placeholder="Номер катки або брелока" class="col-sm-8" />
+        <input type="hidden" name="page" id="page" />
+        <input type="submit" class="btn btn-purple btn-sm" value="Пошук" />
+    }
+</div>
+
+<p>
+    @Html.ActionLink("Додати нову картку або брелок", "CreateOrUpdate", null, new { @class = "btn btn-info" })
+</p>
+@if (Model.Any())
+{
+    <ul class="pagination">
+        @{
+    var firstStage = ViewBag.Pages >= ListConstants.PagingFirstStage ? ListConstants.PagingFirstStage : ViewBag.Pages;
+    var lastDisplayedPage = 0;
+        }
+        @for (var i = 0; i < ViewBag.Pages; i++)
+        {
+            if ((i >= 0 && i < firstStage) ||
+                (i >= ViewBag.ActivePage - ListConstants.PagingActivePageSiblinbgsRange && i <= ViewBag.ActivePage + ListConstants.PagingActivePageSiblinbgsRange) ||
+                (i >= ViewBag.Pages - ListConstants.PagingFirstStage && i < ViewBag.Pages))
+            {
+                <li class="@(i == ViewBag.ActivePage ? "active" : "")">
+                    <a href="#" data-page-number="@i">@(i + 1)</a>
+                </li>
+                lastDisplayedPage = i;
+            }
+            else
+            {
+                if (i == lastDisplayedPage + 1)
+                {
+                    <li>
+                        <span class="pull-left">...</span>
+                    </li>
+                }
+            }
+        }
+    </ul>
+}
+<table class="table">
+    <tr>
+        <th>
+            Номер
+        </th>
+        <th>
+            NFC
+        </th>
+        <th>
+            Брелок
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @item.Id
+            </td>
+            <td>
+                @item.NfcCode
+            </td>
+
+            <td>
+                @if (item.IsTrinket)
+                {
+                    <i class="icon-check-sign green"></i>
+                }
+            </td>
+            <td>
+                @Html.ActionLink("Редагувати", "CreateOrUpdate", new { id = item.Id }) |
+                @Html.ActionLink("Видалити", "Delete", new { id = item.Id }, new { onclick="return confirm('Ви впевенні?');" })
+            </td>
+        </tr>
+    }
+
+</table>

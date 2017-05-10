@@ -1,0 +1,55 @@
+﻿@model Benefit.Domain.Models.BenefitCard
+
+@{
+    ViewBag.Title = Model.Id == null ? "Нова картка або брелок" : "Картка №"+ Model.Id;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                Номер
+            </label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Id)
+                @Html.ValidationMessageFor(model => model.Id)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2">
+                NFC
+            </label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.NfcCode)
+                @Html.ValidationMessageFor(model => model.NfcCode)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="control-label col-md-2" for="IsTrinket">
+                Брелок
+            </label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.IsTrinket)
+                @Html.ValidationMessageFor(model => model.IsTrinket)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Зберегти" class="btn btn-success" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("До списку", "Index")
+</div>

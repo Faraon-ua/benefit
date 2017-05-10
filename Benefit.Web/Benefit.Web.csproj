@@ -218,6 +218,7 @@
     <Compile Include="Areas\Admin\Controllers\AdminStuffController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannersController.cs" />
     <Compile Include="Areas\Admin\Controllers\Base\AdminController.cs" />
+    <Compile Include="Areas\Admin\Controllers\Base\CardsController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\InfoPagesController.cs" />
@@ -1136,6 +1137,8 @@
     <Content Include="Areas\Admin\Views\Reviews\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Promotions.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_PromotionForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Cards\CreateOrUpdate.cshtml" />
+    <Content Include="Areas\Admin\Views\Cards\Index.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
