@@ -51,7 +51,10 @@ namespace Benefit.Domain.Models
         public string LastModifiedBy { get; set; }
         [MaxLength(160)]
         [Index]
+        //internal site search
         public string SearchTags { get; set; }
+        [MaxLength(100)]
+        public string AltText { get; set; }
         [MaxLength(160)]
         public string ShortDescription { get; set; }
         [Required]

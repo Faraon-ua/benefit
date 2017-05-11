@@ -18,7 +18,6 @@
 }
 @section meta{
     <meta name="description" content="@Model.Seller.ShortSescription">
-    <meta name="keywords" content="@Model.Seller.KeyWords">
 }
 <div class="clearfix">
     @Html.Partial("_FlashMessage")
@@ -36,7 +35,7 @@
         <div id="organization_slider" class="organization_slider">
             @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
             {
-                <img class="item" src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" alt="@Model.Seller.Name" />
+                <img class="item" src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" alt="@Model.Seller.AltText" />
             }
         </div>
         @if (Model.Seller.IsBenefitCardActive)

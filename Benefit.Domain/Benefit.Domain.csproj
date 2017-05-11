@@ -345,6 +345,10 @@
     <Compile Include="Migrations\201705030920577_EditableProductOptionAmount.Designer.cs">
       <DependentUpon>201705030920577_EditableProductOptionAmount.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705101252279_EditBenefitCardsAndKeywords.cs" />
+    <Compile Include="Migrations\201705101252279_EditBenefitCardsAndKeywords.Designer.cs">
+      <DependentUpon>201705101252279_EditBenefitCardsAndKeywords.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -595,6 +599,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705030920577_EditableProductOptionAmount.resx">
       <DependentUpon>201705030920577_EditableProductOptionAmount.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705101252279_EditBenefitCardsAndKeywords.resx">
+      <DependentUpon>201705101252279_EditBenefitCardsAndKeywords.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

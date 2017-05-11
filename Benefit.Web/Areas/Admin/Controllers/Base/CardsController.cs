@@ -37,7 +37,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
        // GET: /Admin/Cards/Create
         public ActionResult CreateOrUpdate(string id)
         {
-            var card = db.BenefitCards.Find(id) ?? new BenefitCard();
+            var card = db.BenefitCards.FirstOrDefault(entry=>entry.Id == id) ?? new BenefitCard();
             return View(card);
         }
 
@@ -46,7 +46,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
         {
             if (ModelState.IsValid)
             {
-                if (db.BenefitCards.Any(entry => entry.Id == benefitcard.Id))
+                if (db.BenefitCards.Any(entry => entry.Id == benefitcard.Id && entry.IsTrinket == benefitcard.IsTrinket))
                 {
                     db.Entry(benefitcard).State = EntityState.Modified;
                 }
@@ -64,7 +64,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
 
         public ActionResult Delete(string id)
         {
-            var benefitcard = db.BenefitCards.Find(id);
+            var benefitcard = db.BenefitCards.FirstOrDefault(entry=>entry.Id == id);
             db.BenefitCards.Remove(benefitcard);
             db.SaveChanges();
             TempData["SuccessMessage"] = string.Format("Картку або брелок №{0} видалено", benefitcard.Id);

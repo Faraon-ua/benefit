@@ -79,14 +79,6 @@
         <label class="col-sm-3 control-label no-padding-right">Активний</label>
 
         <div class="col-xs-10 col-sm-5">
-            @*<label>
-                    <input type="checkbox" class="ace ace-switch ace-switch-4" name="Seller.IsBenefitCardActive" @(Model.Seller.IsBenefitCardActive ? "checked=checked" : "") $1$value="@Model.Seller.IsBenefitCardActive"#1#>
-                    <span class="lbl"></span>
-                </label>*@
-            @* <label>
-                    <input type="checkbox" class="ace" name="IsActive" @(Model.Seller.IsBenefitCardActive ? "checked=checked" : "") value="@Model.Seller.IsBenefitCardActive">
-                    <span class="lbl"> BenefitCard</span>
-                </label>*@
             @Html.CheckBoxFor(m => m.Seller.IsActive)
         </div>
     </div>
@@ -95,14 +87,6 @@
         <label class="col-sm-3 control-label no-padding-right">Benefit Card</label>
 
         <div class="col-xs-10 col-sm-5">
-            @*<label>
-                    <input type="checkbox" class="ace ace-switch ace-switch-4" name="Seller.IsBenefitCardActive" @(Model.Seller.IsBenefitCardActive ? "checked=checked" : "") $1$value="@Model.Seller.IsBenefitCardActive"#1#>
-                    <span class="lbl"></span>
-                </label>*@
-            @* <label>
-                    <input type="checkbox" class="ace" name="IsActive" @(Model.Seller.IsBenefitCardActive ? "checked=checked" : "") value="@Model.Seller.IsBenefitCardActive">
-                    <span class="lbl"> BenefitCard</span>
-                </label>*@
             @Html.CheckBoxFor(m => m.Seller.IsBenefitCardActive)
         </div>
     </div>
@@ -111,14 +95,6 @@
         <label class="col-sm-3 control-label no-padding-right">Інтернет магазин</label>
 
         <div class="col-xs-10 col-sm-5">
-            @*<label>
-                    <input type="checkbox" class="ace ace-switch ace-switch-4" name="Seller.HasEcommerce" @(Model.Seller.HasEcommerce ? "checked=checked" : "") $1$value="@Model.Seller.HasEcommerce"#1#>
-                    <span class="lbl"></span>
-                </label>*@
-            @*  <label>
-                    <input type="checkbox" class="ace" name="IsActive" @(Model.Seller.HasEcommerce ? "checked=checked" : "") value="@Model.Seller.HasEcommerce">
-                    <span class="lbl"> HasEcommerce</span>
-                </label>*@
             @Html.CheckBoxFor(m => m.Seller.HasEcommerce)
         </div>
     </div> 

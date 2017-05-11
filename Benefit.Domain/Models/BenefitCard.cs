@@ -5,14 +5,11 @@ namespace Benefit.Domain.Models
 {
     public class BenefitCard
     {
-        //written number
-        [Required]
         [MaxLength(10)]
-        [Index(IsUnique = true)]
+        [Key, Column(Order = 0)]
         public string Id { get; set; }
-        [Required]
         [MaxLength(16)]
-        [Index(IsUnique = true)]
+        [Key, Column(Order = 1)]
         public string NfcCode { get; set; }
         public bool IsTrinket { get; set; }
         [MaxLength(64)]

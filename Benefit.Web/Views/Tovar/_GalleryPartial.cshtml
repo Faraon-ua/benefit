@@ -16,7 +16,7 @@
             foreach (var image in Model.Product.Images.OrderBy(entry=>entry.Order))
             {
                 <a class="item @(hasActive? "":"active") fancybox" rel="group" href="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl">
-                    <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
+                    <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.AltText">
                 </a>
                 hasActive = true;
             }

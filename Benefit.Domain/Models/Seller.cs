@@ -37,7 +37,10 @@ namespace Benefit.Domain.Models
         [MaxLength(160)]
         public string ShortSescription { get; set; }
         [MaxLength(160)]
-        public string KeyWords { get; set; }
+        //internal site search
+        public string SearchTags { get; set; }
+        [MaxLength(100)]
+        public string AltText { get; set; }
         public string ShippingDescription { get; set; }
         [Required]
         [MaxLength(128)]

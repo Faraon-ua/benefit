@@ -24,14 +24,16 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult CreateOrUpdate(string id)
         {
-            var card = db.BenefitCards.Find(id) ?? new BenefitCard();
+            var card = db.BenefitCards.FirstOrDefault(entry=>entry.Id == id) ?? new BenefitCard();
             return PartialView(card);
         }
 
         [HttpPost]
         public ActionResult CreateOrUpdate(string holderName, string cardNumber)
         {
-            var card = db.BenefitCards.Find(cardNumber);
+            //todo: remove BC remove workaround
+            cardNumber = cardNumber.Replace("BC", "");
+            var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == cardNumber);
             if (card != null)
             {
                 if (card.UserId == null && db.Users.FirstOrDefault(entry => entry.CardNumber == cardNumber) == null)
@@ -66,7 +68,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         [Authorize(Roles = DomainConstants.AdminRoleName)]
         public ActionResult Delete(string id)
         {
-            var card = db.BenefitCards.Find(id);
+            var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == id);
             card.UserId = null;
             card.HolderName = null;
             db.Entry(card).State = EntityState.Modified;

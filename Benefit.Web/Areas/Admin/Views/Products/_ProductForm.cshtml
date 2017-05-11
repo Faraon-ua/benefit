@@ -103,6 +103,13 @@
             <input type="text" name="SearchTags" id="SearchTags" value="@Model.SearchTags" placeholder="Пошукові теги (через кому)" />
         </div>
     </div>
+    
+    <div class="form-group">
+        <label class="control-label no-padding-right">Альтернативний текст зображень</label>
+        <div>
+            @Html.TextBoxFor(entry => entry.Seller.AltText, new { @class = "width-50" })
+        </div>
+    </div> 
 
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Короткий опис (для пошуку - до 160 символів)</label>

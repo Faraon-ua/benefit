@@ -249,7 +249,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return Json("occupied", JsonRequestBehavior.AllowGet);
             }
 
-            var card = db.BenefitCards.Find(cardNumber);
+            var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == cardNumber);
             return Json(card == null ? "" : card.NfcCode, JsonRequestBehavior.AllowGet);
         }
     }

@@ -78,12 +78,13 @@ namespace Benefit.Services
                 db.Sellers
                     .Include(entry => entry.Addresses)
                     .Include(entry => entry.ShippingMethods)
-                    .Include(entry => entry.ShippingMethods.Select(sh=>sh.Region))
+                    .Include(entry => entry.ShippingMethods.Select(sh => sh.Region))
                     .Where(entry => entry.IsActive &&
-                                    (entry.Name.ToLower().Contains(term) || entry.Name.ToLower().Contains(translitTerm)) &&
                                     (entry.Addresses.Any(addr => addr.RegionId == regionId) ||
                                      entry.ShippingMethods.Select(sm => sm.Region.Id)
-                                         .Contains(RegionConstants.AllUkraineRegionId))).ToList();
+                                         .Contains(RegionConstants.AllUkraineRegionId)))
+                                         .Search(entry => entry.Name, entry => entry.SearchTags).Containing(term, translitTerm)
+                                         .ToList();
 
 
             result.Sellers = sellerResult;

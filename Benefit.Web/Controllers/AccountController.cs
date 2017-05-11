@@ -122,7 +122,7 @@ namespace Benefit.Web.Controllers
             BenefitCard card;
             using (var db = new ApplicationDbContext())
             {
-                card = db.BenefitCards.Find(model.CardNumber);
+                card = db.BenefitCards.FirstOrDefault(entry=>entry.Id == model.CardNumber);
                 externalNumber = db.Users.Max(entry => entry.ExternalNumber);
                 referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber == model.ReferalNumber);
                 if (model.CardNumber != null && card == null)
