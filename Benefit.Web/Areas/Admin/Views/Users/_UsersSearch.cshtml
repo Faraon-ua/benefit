@@ -40,7 +40,7 @@ else
                         <td>
                             @user.ExternalNumber
                         </td>
-                         <td>
+                        <td>
                             @user.FullName
                         </td>
                         <td>
@@ -51,7 +51,11 @@ else
                         </td>
                         <td>
                             @user.CardNumber
-                        </td> 
+                            @if (user.BenefitCards.Any())
+                            {
+                                <span>, @string.Join(",", user.BenefitCards.Select(entry => entry.Id))</span>
+                            }
+                        </td>
                         <td>
                             @user.RegisteredOn.ToLocalDateTimeWithFormat()
                         </td>

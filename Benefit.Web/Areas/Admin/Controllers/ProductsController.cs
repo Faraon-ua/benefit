@@ -217,7 +217,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             //todo: add check for seller role
             var ownerId = User.Identity.GetUserId();
-            var seller = db.Sellers.FirstOrDefault(entry => ownerId == entry.Owner.Id) ?? db.Sellers.FirstOrDefault(entry=>entry.Id == product.SellerId);
+            var seller = db.Sellers.FirstOrDefault(entry => ownerId == entry.Owner.Id) ?? db.Sellers.FirstOrDefault(entry => entry.Id == product.SellerId);
             if (User.IsInRole(DomainConstants.AdminRoleName))
             {
                 ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName", product.CategoryId);

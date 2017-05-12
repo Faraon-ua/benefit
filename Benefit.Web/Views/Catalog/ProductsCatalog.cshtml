@@ -17,7 +17,10 @@
     }
     ViewBag.Title = title.ToString();
 }
-
+@section meta
+{
+    <meta name="description" content="@Model.Category.Description">
+}
 @section scripts{
     <script>
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
@@ -129,51 +132,51 @@
 }
 
 @*<main class="full_content full_content_product">*@
-    <div class="product_row clearfix">
-        <div class="padding-bottom-15 clearfix">
-            <div class="col-md-9">
-                @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
-            </div>
-            <div class="provider_sort col-md-3">
-                @using (Html.BeginForm("Catalog", "Postachalnyk", FormMethod.Get, new { id="sort-form" }))
-                {
-                    var sort = Request.QueryString["sort"] == null ? ProductSortOption.Default : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
-                    <label for="provider_sort_title">Сортувати</label>
-                    <select id="provider_sort_select" name="sort" class="provider_sort_select">
-                        <option value="Default" @(sort == ProductSortOption.Default ? "selected" : "")>По замовчуванню</option>
-                        <option value="PriceAsc" @(sort == ProductSortOption.PriceAsc ? "selected" : "")>Ціна &#8593;</option>
-                        <option value="PriceDesc" @(sort == ProductSortOption.PriceDesc ? "selected" : "")>Ціна &#8595;</option>
-                        <option value="NameAsc" @(sort == ProductSortOption.NameAsc ? "selected" : "")>А-Я</option>
-                        <option value="NameDesc" @(sort == ProductSortOption.NameDesc ? "selected" : "")>Я-А</option>
-                    </select>
-                }
-            </div>
+<div class="product_row clearfix">
+    <div class="padding-bottom-15 clearfix">
+        <div class="col-md-9">
+            @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
         </div>
-        @if (Model.Items.Any())
-        {
-            foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
+        <div class="provider_sort col-md-3">
+            @using (Html.BeginForm("Catalog", "Postachalnyk", FormMethod.Get, new { id = "sort-form" }))
             {
-                var regionId = RegionService.GetRegionId();
-                var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
-                @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
+                var sort = Request.QueryString["sort"] == null ? ProductSortOption.Default : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
+                <label for="provider_sort_title">Сортувати</label>
+                <select id="provider_sort_select" name="sort" class="provider_sort_select">
+                    <option value="Default" @(sort == ProductSortOption.Default ? "selected" : "")>По замовчуванню</option>
+                    <option value="PriceAsc" @(sort == ProductSortOption.PriceAsc ? "selected" : "")>Ціна &#8593;</option>
+                    <option value="PriceDesc" @(sort == ProductSortOption.PriceDesc ? "selected" : "")>Ціна &#8595;</option>
+                    <option value="NameAsc" @(sort == ProductSortOption.NameAsc ? "selected" : "")>А-Я</option>
+                    <option value="NameDesc" @(sort == ProductSortOption.NameDesc ? "selected" : "")>Я-А</option>
+                </select>
             }
-            if (Model.Items.Count > ListConstants.DefaultTakePerPage)
-            {
-                <div class="product_container" id="more-products">
-                    <div class="product">
-                        @*<div class="more-items"></div>*@
-                        <div>
-                            <a class="more-items" href="#" id="add-more-products">Показати ще</a>
-                        </div>
+        </div>
+    </div>
+    @if (Model.Items.Any())
+    {
+        foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
+        {
+            var regionId = RegionService.GetRegionId();
+            var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
+            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
+        }
+        if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+        {
+            <div class="product_container" id="more-products">
+                <div class="product">
+                    @*<div class="more-items"></div>*@
+                    <div>
+                        <a class="more-items" href="#" id="add-more-products">Показати ще</a>
                     </div>
                 </div>
-            }
+            </div>
         }
-        else
-        {
-            <div>У вибраній вами категорії не знайдено жодного товару</div>
-        }
+    }
+    else
+    {
+        <div>У вибраній вами категорії не знайдено жодного товару</div>
+    }
 
-    </div>
-    <div id="product-options-wrap"></div>
+</div>
+<div id="product-options-wrap"></div>
 @*</main>*@

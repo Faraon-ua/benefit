@@ -105,9 +105,9 @@
     </div>
     
     <div class="form-group">
-        <label class="control-label no-padding-right">Альтернативний текст зображень</label>
-        <div>
-            @Html.TextBoxFor(entry => entry.Seller.AltText, new { @class = "width-50" })
+        <label class="col-sm-3 control-label no-padding-right">Альтернативний текст зображень</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.TextBoxFor(model => model.AltText, new { @class = "width-100" })
         </div>
     </div> 
 

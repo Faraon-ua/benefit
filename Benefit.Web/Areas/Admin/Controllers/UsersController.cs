@@ -3,7 +3,6 @@ using System.Data.Entity;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
-using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Linq;
 using Benefit.Domain.Models;
@@ -36,7 +35,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public RoleManager<IdentityRole> RolesManager { get; private set; }
         //
         // GET: /Admin/Users/
-        public ActionResult Index(string search)
+        public ActionResult Index()
         {
             var usersCount = db.Users.Count();
             return View(usersCount);
@@ -51,7 +50,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult UsersSearch(string search, string dateRange = null)
         {
-            IQueryable<ApplicationUser> users = db.Users.AsQueryable();
+            IQueryable<ApplicationUser> users = db.Users.Include(entry=>entry.BenefitCards).AsQueryable();
             if (!string.IsNullOrEmpty(dateRange))
             {
                 var dateRangeValues = dateRange.Split('-');
@@ -67,7 +66,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                              entry.PhoneNumber.ToLower().Contains(search) ||
                                              entry.UserName.ToLower().Contains(search) ||
                                              entry.CardNumber.ToString().Contains(search) ||
-                                             entry.ExternalNumber.ToString().Contains(search));
+                                             entry.ExternalNumber.ToString().Contains(search) ||
+                                             entry.BenefitCards.Any(bc=>bc.Id == search));
             }
             return PartialView("_UsersSearch", users);
         }

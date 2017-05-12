@@ -5,7 +5,10 @@
     ViewBag.SellerUrl = Model.Category.UrlName;
     ViewBag.MainContainerClass = "full_content full_content_provider";
 }
-
+@section meta
+{
+    <meta name="description" content="@Model.Category.Description">
+}
 @section scripts{
     <script>
         $("#sellerFilters input[type=checkbox]").change(function () {
