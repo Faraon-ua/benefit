@@ -54,6 +54,15 @@ header {
 .sub_header_row {
 }
 
+.sellers-location img {
+    width: 100%;
+}
+
+.sellers-location-head {
+    text-align: center;
+    font-size: 1.8em;
+    border-top: 3px solid #cb2728;
+}
 
 .container_table {
     display: table;

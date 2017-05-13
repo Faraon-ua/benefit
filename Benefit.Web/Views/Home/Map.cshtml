@@ -1,0 +1,52 @@
+﻿@using Benefit.Services.Domain
+@model List<Benefit.DataTransfer.ViewModels.SellerMapLocation>
+@{
+    ViewBag.Title = "Мапа закладів";
+}
+
+@section scripts
+{
+    <script>
+        var map;
+
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 50.127346, lng: 30.111094 },
+                zoom: 8
+            });
+            var location = '@HttpUtility.UrlDecode(RegionService.GetRegionName())';
+            var geocoder = new google.maps.Geocoder();
+            geocoder.geocode({ 'address': location }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    map.setCenter(results[0].geometry.location);
+                    map.setZoom(13);
+                }
+            });
+        }
+
+        var mapDataUrl = '@Url.Action("GetMapData")';
+        $.getJSON(mapDataUrl, function (data) {
+            for (var i = 0; i < data.length; i++) {
+                debugger;
+                var infowindow = new google.maps.InfoWindow({
+                    content: "<strong>" + data[i].Name + "</strong><br/>" +
+                             "<span>" + data[i].Specialization + "</span><br/>" +
+                             "<span>Бонус: " + data[i].UserDiscount + "%</span><br/>" +
+                             "<a target='_blank' href='" + data[i].Url + "'>" + data[i].Url + "</a><br/>"
+                });
+                var marker = new google.maps.Marker({
+                    position: { lat: data[i].Latitude, lng: data[i].Longitude },
+                    map: map,
+                    title: data[i].Name
+                });
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
+            }
+        });
+    </script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0Ryf-Uk4SouHzTJPPuUXAVSmaAQ5X-oM&callback=initMap" async defer></script>
+}
+<div id="map" style="height: 600px;width: 100%;">
+</div>
+

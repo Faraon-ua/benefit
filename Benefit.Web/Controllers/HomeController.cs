@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Routing;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
@@ -29,7 +30,7 @@ namespace Benefit.Web.Controllers
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => entry.IsFeatured).OrderBy(entry=>entry.Order).ToList();
+                    .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList();
                 mainPageViewModel.NewProducts = db.Products
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
@@ -52,7 +53,7 @@ namespace Benefit.Web.Controllers
         {
             return PartialView("_LoginPartial");
         }
-        
+
         public ActionResult MobileLoginPartial()
         {
             return PartialView("_MobileLoginPartial");
@@ -70,7 +71,7 @@ namespace Benefit.Web.Controllers
                 var parent = db.Categories.Find(parentCategoryId);
                 var parentName = parent == null ? null : parent.Name;
                 var categories = db.Categories.Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive).OrderBy(entry => entry.Order).ToList();
-                categories.ForEach(entry=>entry.ChildCategories = db.Categories.Where(cat=>cat.ParentCategoryId == entry.Id && cat.IsActive).ToList());
+                categories.ForEach(entry => entry.ChildCategories = db.Categories.Where(cat => cat.ParentCategoryId == entry.Id && cat.IsActive).ToList());
                 if (sellerUrl != null)
                 {
                     var sellersService = new SellerService();
@@ -221,6 +222,33 @@ namespace Benefit.Web.Controllers
             ViewBag.Message = "Your contact page.";
 
             return View();
+        }
+
+        public ActionResult Map()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public ActionResult GetMapData()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var sellers =
+                    db.Sellers
+                    .Include(entry=>entry.SellerCategories.Select(cat=>cat.Category))
+                    .Where(entry => entry.Longitude != null && entry.Latitude != null).ToList();
+                var result = sellers.Select(entry => new SellerMapLocation()
+                {
+                    Name = entry.Name,
+                    Url = Url.RouteUrl(RouteConstants.SellersRouteName, new RouteValueDictionary(new { id = entry.UrlName, action = string.Empty }), Request.Url.Scheme, Request.Url.Host),
+                    Specialization = entry.SellerCategories.FirstOrDefault(cat=>cat.IsDefault).Category.Name,
+                    UserDiscount = entry.UserDiscount,
+                    Latitude = entry.Latitude.Value,
+                    Longitude = entry.Longitude.Value
+                }).ToList();
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
         }
 
         #region tempMethods

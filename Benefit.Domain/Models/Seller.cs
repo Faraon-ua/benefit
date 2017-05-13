@@ -34,6 +34,8 @@ namespace Benefit.Domain.Models
         [Index]
         public string Name { get; set; }
         public string Description { get; set; }
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
         [MaxLength(160)]
         public string ShortSescription { get; set; }
         [MaxLength(160)]

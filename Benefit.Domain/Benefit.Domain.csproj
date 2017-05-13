@@ -349,6 +349,10 @@
     <Compile Include="Migrations\201705101252279_EditBenefitCardsAndKeywords.Designer.cs">
       <DependentUpon>201705101252279_EditBenefitCardsAndKeywords.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705121410417_SellerLatLong.cs" />
+    <Compile Include="Migrations\201705121410417_SellerLatLong.Designer.cs">
+      <DependentUpon>201705121410417_SellerLatLong.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -602,6 +606,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705101252279_EditBenefitCardsAndKeywords.resx">
       <DependentUpon>201705101252279_EditBenefitCardsAndKeywords.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705121410417_SellerLatLong.resx">
+      <DependentUpon>201705121410417_SellerLatLong.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

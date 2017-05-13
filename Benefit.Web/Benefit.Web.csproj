@@ -1139,6 +1139,7 @@
     <Content Include="Areas\Admin\Views\Sellers\_PromotionForm.cshtml" />
     <Content Include="Areas\Admin\Views\Cards\CreateOrUpdate.cshtml" />
     <Content Include="Areas\Admin\Views\Cards\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_LocationPartial.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1599,6 +1600,7 @@
     <Content Include="Views\Shared\_FlashMessage.cshtml" />
     <Content Include="Views\Shared\_ReviewsPartial.cshtml" />
     <Content Include="Views\Tovar\_ReviewCommentPartial.cshtml" />
+    <Content Include="Views\Home\Map.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

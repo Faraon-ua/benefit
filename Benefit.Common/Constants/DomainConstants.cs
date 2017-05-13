@@ -21,6 +21,7 @@
         public const string SellerSessionNameKey = "SellerName";
 
         public const string RegionIdCookieKey = "regionId";
+        public const string RegionNameCookieKey = "regionName";
 
         public const string OrderPrefixKey = "Cart";
     }

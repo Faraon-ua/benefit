@@ -25,5 +25,18 @@ namespace Benefit.Services.Domain
                 return regionId;
             }
         }
+
+        public static string GetRegionName()
+        {
+            if (HttpContext.Current != null)
+            {
+                var regionNameCookie = HttpContext.Current.Request.Cookies[DomainConstants.RegionNameCookieKey];
+                if (regionNameCookie != null)
+                {
+                    return regionNameCookie.Value;
+                }
+            }
+            return null;
+        }
     }
 }
