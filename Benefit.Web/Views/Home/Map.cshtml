@@ -1,9 +1,21 @@
-﻿@using Benefit.Services.Domain
-@model List<Benefit.DataTransfer.ViewModels.SellerMapLocation>
+﻿@using System.Activities
+@using Benefit.Common.Constants
+@using Benefit.Services.Domain
+@model List<Benefit.Domain.Models.Category>
 @{
     ViewBag.Title = "Мапа закладів";
 }
-
+@section LeftAside{
+    @*<ul>
+            @foreach (var cat in Model)
+            {
+                <li>
+                    <input type="checkbox" data-category-id="@cat.Id" name="@cat.Id" id="@cat.Id" />
+                    <label for="@cat.Id">@cat.Name</label>
+                </li>
+            }
+        </ul>*@
+}
 @section scripts
 {
     <script>
@@ -15,11 +27,19 @@
                 zoom: 8
             });
             var location = '@HttpUtility.UrlDecode(RegionService.GetRegionName())';
+            var zoom = 13;
+            @if (RegionService.GetRegionId() == RegionConstants.AllUkraineRegionId)
+            {
+                <text>
+                    location = 'Україна';
+                    zoom = 6;
+                </text>
+            }
             var geocoder = new google.maps.Geocoder();
             geocoder.geocode({ 'address': location }, function (results, status) {
                 if (status == google.maps.GeocoderStatus.OK) {
                     map.setCenter(results[0].geometry.location);
-                    map.setZoom(13);
+                    map.setZoom(zoom);
                 }
             });
         }
@@ -27,21 +47,22 @@
         var mapDataUrl = '@Url.Action("GetMapData")';
         $.getJSON(mapDataUrl, function (data) {
             for (var i = 0; i < data.length; i++) {
-                debugger;
-                var infowindow = new google.maps.InfoWindow({
-                    content: "<strong>" + data[i].Name + "</strong><br/>" +
-                             "<span>" + data[i].Specialization + "</span><br/>" +
-                             "<span>Бонус: " + data[i].UserDiscount + "%</span><br/>" +
-                             "<a target='_blank' href='" + data[i].Url + "'>" + data[i].Url + "</a><br/>"
-                });
+                var content = "<strong>" + data[i].Name + "</strong><br/>" +
+                    "<span>" + data[i].Specialization + "</span><br/>" +
+                    "<span>Бонус: " + data[i].UserDiscount + "%</span><br/>" +
+                    "<a target='_blank' href='" + data[i].Url + "'>" + data[i].Url + "</a><br/>";
+                var infowindow = new google.maps.InfoWindow();
                 var marker = new google.maps.Marker({
                     position: { lat: data[i].Latitude, lng: data[i].Longitude },
                     map: map,
                     title: data[i].Name
                 });
-                marker.addListener('click', function () {
-                    infowindow.open(map, marker);
-                });
+                google.maps.event.addListener(marker, 'click', (function (marker, content, infowindow) {
+                    return function () {
+                        infowindow.setContent(content);
+                        infowindow.open(map, marker);
+                    };
+                })(marker, content, infowindow));
             }
         });
     </script>

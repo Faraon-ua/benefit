@@ -226,6 +226,32 @@ namespace Benefit.Web.Controllers
 
         public ActionResult Map()
         {
+/*
+            using (var db = new ApplicationDbContext())
+            {
+                var regionId = RegionService.GetRegionId();
+                var cats =
+                    db.Sellers
+                        .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                        .Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId))
+                        .Select(entry => entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category)
+                         .OrderBy(
+                            entry =>
+                                entry.ParentCategory == null
+                                    ? 1000
+                                    : entry.ParentCategory.ParentCategory == null
+                                        ? 1000
+                                        : entry.ParentCategory.ParentCategory.Order)
+                        .ThenBy(
+                            entry => entry.ParentCategory == null ? 1000 : entry.ParentCategory.Order)
+                        .ThenBy(entry => entry.Order)
+                        .Where(entry => entry != null)
+                        .Distinct()
+                        .ToList();
+                return View(cats);
+            }
+*/
+
             return View();
         }
 
@@ -236,13 +262,15 @@ namespace Benefit.Web.Controllers
             {
                 var sellers =
                     db.Sellers
-                    .Include(entry=>entry.SellerCategories.Select(cat=>cat.Category))
-                    .Where(entry => entry.Longitude != null && entry.Latitude != null).ToList();
+                    .Include(entry => entry.SellerCategories.Select(cat => cat.Category))
+                    .Where(entry => entry.Longitude != null && entry.Latitude != null && entry.IsBenefitCardActive)
+                    .ToList();
+
                 var result = sellers.Select(entry => new SellerMapLocation()
                 {
                     Name = entry.Name,
                     Url = Url.RouteUrl(RouteConstants.SellersRouteName, new RouteValueDictionary(new { id = entry.UrlName, action = string.Empty }), Request.Url.Scheme, Request.Url.Host),
-                    Specialization = entry.SellerCategories.FirstOrDefault(cat=>cat.IsDefault).Category.Name,
+                    Specialization = entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category.Name,
                     UserDiscount = entry.UserDiscount,
                     Latitude = entry.Latitude.Value,
                     Longitude = entry.Longitude.Value
