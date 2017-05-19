@@ -48,9 +48,12 @@
         <th>
             Постачальник
         </th>
-        <th>
-            Касир
-        </th>
+        @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitCard)
+        {
+            <th>
+                Касир
+            </th>
+        }
         <th>
             Клієнт
         </th>
@@ -91,9 +94,12 @@
             <td>
                 @Html.ActionLink(item.SellerName, "CreateOrUpdate", "Sellers", new { id = item.SellerId }, new { target = "_blank" })
             </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PersonnelName)
-            </td>
+            @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitCard)
+            {
+                <td>
+                    @Html.DisplayFor(modelItem => item.PersonnelName)
+                </td>
+            }
             <td>
                 @if (User.IsInRole(DomainConstants.AdminRoleName))
                 {

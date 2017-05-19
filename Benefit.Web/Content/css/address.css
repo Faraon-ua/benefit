@@ -48,7 +48,7 @@
 
 #DIV_3, #DIV_15 {
     float: left;
-    height: 267px;
+    height: 280px;
     text-align: left;
     width: 350px;
     perspective-origin: 148.797px 133.5px;
@@ -63,7 +63,7 @@
 #DIV_4, #DIV_16 {
     bottom: 0px;
     box-sizing: border-box;
-    height: 250px;
+    height: 280px;
     left: 0px;
     position: relative;
     right: 0px;
@@ -139,7 +139,7 @@
     transform-origin: 131.797px 7.5px;
     font: normal normal normal normal 12px / 15.6px "Open Sans", Arial, Helvetica, sans-serif, SimSun, 宋体;
     list-style: none outside none;
-    margin: 0px 0px 20px;
+    margin: 0px 0px 5px;
 }
 /*#DIV_10, #DIV_22*/
 

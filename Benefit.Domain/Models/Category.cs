@@ -45,6 +45,12 @@ namespace Benefit.Domain.Models
         public bool IsActive { get; set; }
         public DateTime LastModified { get; set; }
         public string LastModifiedBy { get; set; }
+        public bool IsSellerCategory { get; set; }
+        public string SellerId { get; set; }
+        public Seller Seller { get; set; }
+        public string MappedParentCategoryId { get; set; }
+        public Category MappedParentCategory { get; set; }
+        public ICollection<Category> MappedCategories { get; set; }
         [MaxLength(128)]
         public string ParentCategoryId { get; set; }
         public virtual Category ParentCategory { get; set; }

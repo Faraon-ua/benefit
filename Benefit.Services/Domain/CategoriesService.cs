@@ -155,39 +155,6 @@ namespace Benefit.Services.Domain
             }
         }
 
-        private void SaveCategoryFromXmlCategory(XmlCategory xmlCategory, IEnumerable<XmlCategory> xmlCategories)
-        {
-            var existingCategory = db.Categories.Find(xmlCategory.Id);
-            if (existingCategory != null)
-            {
-                existingCategory.Name = xmlCategory.Name;
-                existingCategory.ParentCategoryId = xmlCategory.ParentId;
-                db.Entry(existingCategory).State = EntityState.Modified;
-                existingCategory.LastModified = DateTime.UtcNow;
-                existingCategory.LastModifiedBy = "1CFileImport";
-            }
-            else
-            {
-                db.Categories.Add(new Category()
-                {
-                    Id = xmlCategory.Id,
-                    Name = xmlCategory.Name,
-                    UrlName = xmlCategory.Name.Translit(),
-                    ParentCategoryId = xmlCategory.ParentId,
-                    IsActive = true,
-                    NavigationType = CategoryNavigationType.SellersAndProducts.ToString(),
-                    LastModified = DateTime.UtcNow,
-                    LastModifiedBy = "1CFileImport"
-                });
-            }
-
-            var childCategories = xmlCategories.Where(entry => entry.ParentId == xmlCategory.Id).ToList();
-            if (xmlCategories.Any())
-            {
-                childCategories.ForEach(entry => SaveCategoryFromXmlCategory(entry, xmlCategories));
-            }
-        }
-
         public void Delete(string id)
         {
             var category = db.Categories.Include(entry => entry.SellerCategories).Include(entry => entry.Products).Include(entry => entry.ChildCategories).FirstOrDefault(entry => entry.Id == id);

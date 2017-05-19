@@ -55,6 +55,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult CreateModerator(Personnel personnel)
         {
             personnel.Id = Guid.NewGuid().ToString();
+            ModelState["NFCCardNumber"].Errors.Clear();
+            personnel.NFCCardNumber = "dummy";
             if (ModelState.IsValid)
             {
                 _userManager.AddToRole(personnel.UserId, personnel.RoleName);

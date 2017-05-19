@@ -102,10 +102,17 @@
             @Html.Hidden("NavigationType", Model.NavigationType.ToString(), new { id = "navType" })
         </div>
         <div class="col-md-2">
-            <input type="text" class="width-100 form-control number-input" name="OrderNumber" placeholder="Номер замовлення" value="@Model.OrderNumber" />
+            @if (Model.NavigationType == OrderType.BenefitSite)
+            {
+                <input type="text" class="width-100 form-control number-input" name="OrderNumber" placeholder="Номер замовлення" value="@Model.OrderNumber" />
+            }
+            @if (Model.NavigationType == OrderType.BenefitCard)
+            {
+                <input type="text" class="width-100 form-control" name="PersonnelName" placeholder="І’мя касира" value="@Model.PersonnelName" />
+            }
         </div>
         <div class="col-md-2">
-            <input type="text" class="width-100 form-control" name="ClientName" placeholder="Імя клієнта" value="@Model.ClientName" />
+            <input type="text" class="width-100 form-control" name="ClientName" placeholder="І’мя клієнта" value="@Model.ClientName" />
         </div>
 
         <div class="col-md-2">
@@ -120,7 +127,6 @@
         <div class="col-md-1">
             <button type="submit" class="btn btn-purple btn-sm">
                 Фільтрувати
-                <i class="icon-search icon-on-right bigger-110"></i>
             </button>
         </div>
     </div>

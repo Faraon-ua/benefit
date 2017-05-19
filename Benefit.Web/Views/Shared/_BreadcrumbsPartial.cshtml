@@ -34,7 +34,7 @@
         @if (Model.Product != null)
         {
             <li>
-                &gt; <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = Model.Categories.Last().UrlName, productUrl = Model.Product.UrlName })">@Model.Product.Name</a>
+                &gt; <a href="#">@Model.Product.Name</a>
             </li>
         }
     </ul>

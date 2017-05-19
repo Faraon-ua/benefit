@@ -27,17 +27,17 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             }
             else
             {
-                benefitcards = benefitcards.OrderBy(entry=>entry.Id).Skip(page * ListConstants.DefaultTakePerPage).Take(ListConstants.DefaultTakePerPage);
+                benefitcards = benefitcards.OrderBy(entry => entry.Id).Skip(page * ListConstants.DefaultTakePerPage).Take(ListConstants.DefaultTakePerPage);
             }
             ViewBag.ActivePage = page;
             ViewBag.Pages = benefitcards.Count();
             return View(benefitcards.ToList());
         }
 
-       // GET: /Admin/Cards/Create
+        // GET: /Admin/Cards/Create
         public ActionResult CreateOrUpdate(string id)
         {
-            var card = db.BenefitCards.FirstOrDefault(entry=>entry.Id == id) ?? new BenefitCard();
+            var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == id) ?? new BenefitCard();
             return View(card);
         }
 
@@ -46,14 +46,13 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
         {
             if (ModelState.IsValid)
             {
-                if (db.BenefitCards.Any(entry => entry.Id == benefitcard.Id && entry.IsTrinket == benefitcard.IsTrinket))
+                var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == benefitcard.Id);
+                if (card != null)
                 {
-                    db.Entry(benefitcard).State = EntityState.Modified;
+                    db.BenefitCards.Remove(card);
+                    db.SaveChanges();
                 }
-                else
-                {
-                    db.BenefitCards.Add(benefitcard);    
-                }
+                db.BenefitCards.Add(benefitcard);
                 db.SaveChanges();
                 TempData["SuccessMessage"] = string.Format("Картку або брелок №{0} збережено", benefitcard.Id);
                 return RedirectToAction("Index");
@@ -64,7 +63,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
 
         public ActionResult Delete(string id)
         {
-            var benefitcard = db.BenefitCards.FirstOrDefault(entry=>entry.Id == id);
+            var benefitcard = db.BenefitCards.FirstOrDefault(entry => entry.Id == id);
             db.BenefitCards.Remove(benefitcard);
             db.SaveChanges();
             TempData["SuccessMessage"] = string.Format("Картку або брелок №{0} видалено", benefitcard.Id);

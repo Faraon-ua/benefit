@@ -97,6 +97,7 @@ namespace Benefit.Domain.Models
         public string WebSiteReferalId { get; set; }
         public virtual ApplicationUser WebSiteReferal { get; set; }
         public virtual ICollection<SellerCategory> SellerCategories { get; set; }
+        public virtual ICollection<Category> MappedCategories { get; set; }
         public virtual ICollection<Currency> Currencies { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<Image> Images { get; set; }

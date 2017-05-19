@@ -1,0 +1,56 @@
+﻿@model Benefit.Domain.Models.Seller
+
+@{
+    ViewBag.Title = "Імпорт/Експорт";
+}
+@section scripts
+{
+    <script>
+        $("#1CCommerceML").click(function () {
+            $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
+            $.ajax({
+                type: "POST",
+                url: routePrefix + '/Admin/Sellers/OneCCommerceMLImport?id=@Model.Id',
+                success: function (result) {
+                    flashMessage(result.message, false, true);
+                },
+                error: function (xhr) {
+                    flashMessage(xhr.responseJSON, true, true);
+                }
+            });
+        });
+    </script>
+}
+<h2>Імпорт</h2>
+<div class="tabbable">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active">
+            <a data-toggle="tab" href="#prom">
+                Prom.ua/Yandex market
+            </a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#1ccommerceml">
+                1C Commerce ML
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="prom" class="tab-pane in active">
+            @Html.Action("GetPromImport")
+        </div>
+        <div id="1ccommerceml" class="tab-pane">
+            <div id="importFiles">
+                <h3 class="red" id="warning-message">Імпорт з файлу зробить неактивними всі товари з бази, яких немає у файлі імпорту.</h3>
+                <h2 class="underlined">
+                    1C Commerce ML
+                </h2>
+                <p>1) Завантажте файли експортовані з 1С на наш FTP</p>
+                <p>
+                    2) Натисніть кнопку
+                    <button type="button" class="btn btn-success" id="1CCommerceML">Завантажити</button>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

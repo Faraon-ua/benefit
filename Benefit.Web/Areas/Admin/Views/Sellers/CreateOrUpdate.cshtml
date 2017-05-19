@@ -207,20 +207,6 @@
                 });
             });
 
-            $("#1CCommerceML").click(function () {
-                $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
-                $.ajax({
-                    type: "POST",
-                    url: routePrefix + '/Admin/Sellers/OneCCommerceMLImport?id=@Model.Seller.Id',
-                    success: function (result) {
-                        flashMessage(result.message, false, true);
-                    },
-                    error: function (xhr) {
-                        flashMessage(xhr.responseJSON, true, true);
-                    }
-                });
-            });
-
             $('.mask-number').mask("#0.00", { reverse: true });
             $('.mask-int-number').mask("#");
 

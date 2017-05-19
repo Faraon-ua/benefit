@@ -353,12 +353,17 @@
     <Compile Include="Migrations\201705121410417_SellerLatLong.Designer.cs">
       <DependentUpon>201705121410417_SellerLatLong.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201705161333098_ImportExport.cs" />
+    <Compile Include="Migrations\201705161333098_ImportExport.Designer.cs">
+      <DependentUpon>201705161333098_ImportExport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\CompanyRevenue.cs" />
     <Compile Include="Models\Enums\ProductSortOption.cs" />
     <Compile Include="Models\Enums\SellerStatus.cs" />
+    <Compile Include="Models\ExportImport.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -609,6 +614,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705121410417_SellerLatLong.resx">
       <DependentUpon>201705121410417_SellerLatLong.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201705161333098_ImportExport.resx">
+      <DependentUpon>201705161333098_ImportExport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

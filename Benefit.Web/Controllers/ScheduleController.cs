@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services.Domain;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 
@@ -11,6 +12,13 @@ namespace Benefit.Web.Controllers
     [CustomKeyAuth]
     public class ScheduleController : Controller
     {
+        public ActionResult ProcessImportTasks()
+        {
+            var importService = new ImportExportService();
+            importService.ImportFromPromua(Seller.CurrentAuthorizedSellerId);
+            return Content("Ok");
+        }
+
         public ActionResult GenerateSiteMap()
         {
             var siteMapHelper = new SiteMapHelper();

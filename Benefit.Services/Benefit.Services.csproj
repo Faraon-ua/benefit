@@ -79,6 +79,7 @@
     <Compile Include="Cart\Cart.cs" />
     <Compile Include="CookiesService.cs" />
     <Compile Include="Domain\CategoriesService.cs" />
+    <Compile Include="Domain\ImportExportService.cs" />
     <Compile Include="Domain\OrderService.cs" />
     <Compile Include="Domain\ProductsService.cs" />
     <Compile Include="Domain\RegionService.cs" />

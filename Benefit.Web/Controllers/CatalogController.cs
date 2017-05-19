@@ -6,7 +6,6 @@ using Benefit.Domain.Models.Enums;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
 
-
 namespace Benefit.Web.Controllers
 {
     public class CatalogController : Controller

@@ -18,6 +18,7 @@ namespace Benefit.Web.Models.Admin
         public double Sum { get; set; }
         public int Number { get; set; }
         public int? OrderNumber { get; set; }
+        public string PersonnelName { get; set; }
         public string ClientName { get; set; }
         public string DateRange { get; set; }
         public string SellerId { get; set; }

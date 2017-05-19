@@ -65,7 +65,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(ordersFilters.ClientName))
             {
                 orders = orders.Where(entry => entry.User.FullName.ToLower().Contains(ordersFilters.ClientName.ToLower()));
-
+            }
+            if (!string.IsNullOrEmpty(ordersFilters.PersonnelName))
+            {
+                orders = orders.Where(entry => entry.PersonnelName.ToLower().Contains(ordersFilters.PersonnelName.ToLower()));
             }
             if (!string.IsNullOrEmpty(ordersFilters.DateRange))
             {

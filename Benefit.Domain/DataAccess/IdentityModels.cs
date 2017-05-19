@@ -48,6 +48,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<CompanyRevenue> CompanyRevenues { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<ExportImport> ExportImports { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -86,6 +87,14 @@ namespace Benefit.Domain.DataAccess
             modelBuilder.Entity<Transaction>()
                   .HasOptional<ApplicationUser>(s => s.Payee)
                   .WithMany(s => s.Transactions).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Category>()
+                  .HasOptional<Category>(s => s.MappedParentCategory)
+                  .WithMany(s => s.MappedCategories).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Category>()
+                  .HasOptional<Seller>(s => s.Seller)
+                  .WithMany(s => s.MappedCategories).WillCascadeOnDelete(false);
         }
 
         public override int SaveChanges()
