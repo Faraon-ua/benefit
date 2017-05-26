@@ -70,7 +70,7 @@ namespace Benefit.Web.Controllers
             {
                 var parent = db.Categories.Find(parentCategoryId);
                 var parentName = parent == null ? null : parent.Name;
-                var categories = db.Categories.Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive).OrderBy(entry => entry.Order).ToList();
+                var categories = db.Categories.Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive && !entry.IsSellerCategory).OrderBy(entry => entry.Order).ToList();
                 categories.ForEach(entry => entry.ChildCategories = db.Categories.Where(cat => cat.ParentCategoryId == entry.Id && cat.IsActive).ToList());
                 if (sellerUrl != null)
                 {
@@ -251,7 +251,6 @@ namespace Benefit.Web.Controllers
                 return View(cats);
             }
 */
-
             return View();
         }
 
@@ -263,7 +262,7 @@ namespace Benefit.Web.Controllers
                 var sellers =
                     db.Sellers
                     .Include(entry => entry.SellerCategories.Select(cat => cat.Category))
-                    .Where(entry => entry.Longitude != null && entry.Latitude != null && entry.IsBenefitCardActive)
+                    .Where(entry =>entry.IsActive && entry.Longitude != null && entry.Latitude != null && entry.IsBenefitCardActive)
                     .ToList();
 
                 var result = sellers.Select(entry => new SellerMapLocation()

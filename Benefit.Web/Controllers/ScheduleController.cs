@@ -15,7 +15,7 @@ namespace Benefit.Web.Controllers
         public ActionResult ProcessImportTasks()
         {
             var importService = new ImportExportService();
-            importService.ImportFromPromua(Seller.CurrentAuthorizedSellerId);
+            importService.ImportFromPromua();
             return Content("Ok");
         }
 

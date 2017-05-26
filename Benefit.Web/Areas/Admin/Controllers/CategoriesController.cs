@@ -11,6 +11,7 @@ using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
+using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -32,7 +33,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     parentCategoryId = seller.SellerCategories.First().CategoryId;
                 }
             }
-            var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId).OrderBy(entry => entry.Order);
+            var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId && !entry.IsSellerCategory).OrderBy(entry => entry.Order);
             var viewModel = new KeyValuePair<string, IEnumerable<Category>>(parentCategoryId, cats);
             return PartialView("_CategoriesList", viewModel);
         }
@@ -62,7 +63,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, Seller")]
         public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
-            var category = db.Categories.Include(entry=>entry.SellerCategories.Select(sc=>sc.Category)).Include(entry=>entry.Products).FirstOrDefault(entry=>entry.Id == id) ??
+            var category = db.Categories.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).Include(entry => entry.Products).FirstOrDefault(entry => entry.Id == id) ??
                            new Category()
                            {
                                Id = Guid.NewGuid().ToString(),
@@ -71,7 +72,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                            };
             ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id), "Id",
                 "ExpandedName", category.ParentCategoryId);
-            category.Localizations = LocalizationService.Get(category, new[] {"Name", "Description"});
+            category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
             return View(category);
         }
 
@@ -123,6 +124,49 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var categoriesService = new CategoriesService();
             categoriesService.Delete(id);
             return Json(true);
+        }
+
+        private void SetMappedCategories(List<Category> categories)
+        {
+            categories.ForEach(entry => entry.MappedParentCategory = db.Categories.Find(entry.MappedParentCategoryId));
+            foreach (var cat in categories)
+            {
+                SetMappedCategories(cat.ChildCategories.ToList());
+            }
+        }
+
+        public ActionResult Mapping()
+        {
+            var sellerId = Seller.CurrentAuthorizedSellerId;
+            var categoriesToMap = db.Categories.Include(entry => entry.ChildCategories.Select(ch => ch.ChildCategories)).Where(entry => entry.SellerId == sellerId && entry.IsSellerCategory && entry.ParentCategoryId == null).ToList();
+            SetMappedCategories(categoriesToMap);
+            ViewBag.RootCategories = db.Categories.Where(entry => entry.IsActive && !entry.IsSellerCategory && entry.ParentCategoryId == null && entry.Order > 0).OrderBy(entry => entry.Order).ToList();
+            return View(categoriesToMap);
+        }
+
+        public ActionResult SearchCategories(string search)
+        {
+            var categories = db.Categories.Include(entry=>entry.ChildCategories).Where(entry => !entry.ChildCategories.Any() && entry.Name.ToLower().Contains(search.ToLower())).ToList();
+            return PartialView("_MappingSearchCategories", categories);
+        }
+
+        public ActionResult GetMappingCategories(string parentId)
+        {
+            var cats =
+                db.Categories.Where(
+                    entry => entry.ParentCategoryId == parentId && entry.IsActive && !entry.IsSellerCategory).OrderBy(entry => entry.Order).ToList();
+            var partialHtml = ControllerContext.RenderPartialToString("_MappingSiteCategoriesList", cats);
+            return Json(new {html = partialHtml, selectable = !cats.Any()}, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult MapCategories(string sellerCatId, string siteCatId)
+        {
+            var sellerCat = db.Categories.FirstOrDefault(entry => entry.Id == sellerCatId);
+            if (sellerCat == null) return HttpNotFound();
+            sellerCat.MappedParentCategoryId = siteCatId;
+            db.Entry(sellerCat).State = EntityState.Modified;
+            db.SaveChanges();
+            return new HttpStatusCodeResult(200);
         }
 
         protected override void Dispose(bool disposing)

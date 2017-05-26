@@ -29,7 +29,7 @@ namespace Benefit.Domain.Models
         public string Name { get; set; }
         [Required]
         [MaxLength(128)]
-        [Index(IsUnique = true)]
+        [Index]
         public string UrlName { get; set; }
         [Index(IsUnique = true)]
         public int SKU { get; set; }
@@ -45,6 +45,7 @@ namespace Benefit.Domain.Models
         public int Order { get; set; }
         #endregion
         public bool IsActive { get; set; }
+        public bool IsImported { get; set; }
         public bool DoesCountForShipping { get; set; }
         public DateTime LastModified { get; set; }
         [MaxLength(64)]

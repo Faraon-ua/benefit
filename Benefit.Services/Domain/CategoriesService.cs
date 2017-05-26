@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Web;
 using Benefit.Common.Constants;
-using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
@@ -20,6 +18,7 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private SellerService SellerService = new SellerService();
+        private ProductsService ProductsService = new ProductsService();
 
         public List<Category> GetBaseCategories()
         {
@@ -67,7 +66,11 @@ namespace Benefit.Services.Domain
 
         public ProductsViewModel GetCategoryProducts(string urlName, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
-            var category = db.Categories.Include(entry => entry.Products).Include(entry => entry.Products.Select(pr => pr.Images)).Include(entry => entry.Products.Select(pr => pr.Currency)).FirstOrDefault(entry => entry.UrlName == urlName);
+            var category =
+                db.Categories.Include(entry => entry.Products)
+                    .Include(entry => entry.Products.Select(pr => pr.Images))
+                    .Include(entry => entry.Products.Select(pr => pr.Currency))
+                    .FirstOrDefault(entry => entry.UrlName == urlName);
             if (category.Products.Count == 0)
             {
                 return null;
@@ -88,7 +91,11 @@ namespace Benefit.Services.Domain
             //which sellers to display
             var sellerIds = new List<string>();
             //get selected category with child categories and sellers
-            var category = db.Categories.Include(entry => entry.ChildCategories).Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.UrlName == urlName);
+            var category =
+                db.Categories.Include(entry => entry.ChildCategories)
+                    .Include(entry => entry.SellerCategories)
+                    .Include(entry => entry.MappedCategories)
+                    .FirstOrDefault(entry => entry.UrlName == urlName);
             if (category == null) return null;
             var sellersDto = new SellersViewModel()
             {
@@ -96,7 +103,9 @@ namespace Benefit.Services.Domain
             };
             //add all sellers categories except default
             sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
+            sellerIds.AddRange(category.MappedCategories.Select(entry => entry.SellerId));
             sellerIds.AddRange(category.GetAllChildrenRecursively().SelectMany(entry => entry.SellerCategories).Select(entry => entry.SellerId));
+            sellerIds.AddRange(category.GetAllChildrenRecursively().SelectMany(entry => entry.MappedCategories).Select(entry => entry.SellerId));
 
             //filter by region and shippings
             var regionId = RegionService.GetRegionId();
@@ -157,7 +166,7 @@ namespace Benefit.Services.Domain
 
         public void Delete(string id)
         {
-            var category = db.Categories.Include(entry => entry.SellerCategories).Include(entry => entry.Products).Include(entry => entry.ChildCategories).FirstOrDefault(entry => entry.Id == id);
+            var category = db.Categories.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.Id == id);
             if (category == null) return;
 
             db.SellerCategories.RemoveRange(category.SellerCategories);
@@ -170,8 +179,14 @@ namespace Benefit.Services.Domain
                 if (image.Exists)
                     image.Delete();
             }
+            var products = db.Products.AsNoTracking().Where(entry => entry.CategoryId == id).ToList();
+            foreach (var product in products)
+            {
+                ProductsService.Delete(product.Id);
+            }
 
-            foreach (var childCategory in category.ChildCategories)
+            var childCats = db.Categories.AsNoTracking().Where(entry => entry.ParentCategoryId == id).ToList();
+            foreach (var childCategory in childCats)
             {
                 Delete(childCategory.Id);
             }

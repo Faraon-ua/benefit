@@ -1,0 +1,76 @@
+﻿@model List<Benefit.Domain.Models.Category>
+
+@{
+    ViewBag.Title = "Зведення категорій";
+}
+@section styles{
+    <link href="~/Content/css/category-selector.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/Areas/Admin/assets/js/bootbox.min.js"></script>
+
+    <script>
+        var getCatsUrl = '@Url.Action("GetMappingCategories")';
+        var mapCatsUrl = '@Url.Action("MapCategories")';
+        var selectedSellerCategoryId;
+        var selectedSiteCategoryId;
+        var selectedSiteCategoryName;
+
+        $(function () {
+            $(".add-mapping-category").click(function () {
+                selectedSellerCategoryId = $(this).attr("id");
+                $(".modal").modal();
+            });
+
+            $("body").on("click", "#category-selector-box li", function () {
+                var currentLi = $(this);
+                currentLi.parent().find("li").removeClass();
+                currentLi.addClass("current");
+                selectedSiteCategoryId = currentLi.attr("data-category-id");
+                selectedSiteCategoryName = currentLi.text();
+                $.get(getCatsUrl + "?parentId=" + selectedSiteCategoryId, function (data) {
+                    currentLi.parent("ul").parent("div").nextAll().remove();
+                    if (data.selectable) {
+                        $("#select-category").removeAttr("disabled");
+                    } else {
+                        currentLi.parent("ul").parent("div").after(data.html);
+                        $("#select-category").attr("disabled", "disabled");
+                    }
+                });
+            });
+
+            $("#select-category").click(function() {
+                $("#" + selectedSellerCategoryId).prevAll().remove();
+                $("#" + selectedSellerCategoryId).before("<span>" + selectedSiteCategoryName + "</span>");
+                $(".modal").modal("hide");
+                $.post(mapCatsUrl, { 'sellerCatId': selectedSellerCategoryId, 'siteCatId': selectedSiteCategoryId });
+            });
+
+            $("body").on("click", ".select-searched-category", function() {
+                selectedSiteCategoryId = $(this).attr("data-category-id");
+                selectedSiteCategoryName = $(this).attr("data-category-name");
+                $("#" + selectedSellerCategoryId).prevAll().remove();
+                $("#" + selectedSellerCategoryId).before("<span>" + selectedSiteCategoryName + "</span>");
+                $(".modal").modal("hide");
+                $.post(mapCatsUrl, { 'sellerCatId': selectedSellerCategoryId, 'siteCatId': selectedSiteCategoryId });
+                $(".search-result").html("");
+                $("#search-text").val("");
+            });
+
+            var searchUrl = '@Url.Action("SearchCategories")';
+            $("#search-category").click(function() {
+                var text = $("#search-text").val();
+                if (text.length < 3) {
+                    alert("Поле пошуку має містити мінімум 3 символи");
+                    return;
+                }
+                $.get(searchUrl + "?search=" + text, function (data) {
+                    $(".search-result").html(data);
+                    $(".search-result").show();
+                });
+            });
+        });
+    </script>
+}
+@Html.Partial("_MappingCategoriesList", Model)
+@Html.Partial("_MapCategoryPartial")

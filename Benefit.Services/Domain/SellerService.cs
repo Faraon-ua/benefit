@@ -177,9 +177,12 @@ namespace Benefit.Services.Domain
 
             if (!string.IsNullOrEmpty(categoryId))
             {
-                var category = db.Categories.Find(categoryId);
-                var allDescendants = category.GetAllChildrenRecursively();
-                var allIds = allDescendants.ToList().Select(entry => entry.Id).ToList();
+                var category = db.Categories.Include(entry=>entry.MappedCategories).FirstOrDefault(entry=>entry.Id == categoryId);
+                var allDescendants = category.GetAllChildrenRecursively().ToList();
+                var allIds = allDescendants.Select(entry => entry.Id).ToList();
+                //add mapped categoryIds
+                allIds.AddRange(allDescendants.SelectMany(entry=>entry.MappedCategories).Select(entry=>entry.Id));
+                allIds.AddRange(category.MappedCategories.Select(entry=>entry.Id));
                 allIds.Add(categoryId);
                 items = items.Where(entry => allIds.Contains(entry.CategoryId));
             }

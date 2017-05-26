@@ -602,6 +602,7 @@
     <Content Include="Content\css\autocomplete.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
+    <Content Include="Content\css\category-selector.css" />
     <Content Include="Content\css\chat.css" />
     <Content Include="Content\css\common.css" />
     <Content Include="Content\css\font-awesome.min.css" />
@@ -1144,6 +1145,11 @@
     <Content Include="Areas\Admin\Views\Sellers\_LocationPartial.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\_Promua.cshtml" />
+    <Content Include="Areas\Admin\Views\Categories\Mapping.cshtml" />
+    <Content Include="Areas\Admin\Views\Categories\_MappingCategoriesList.cshtml" />
+    <Content Include="Areas\Admin\Views\Categories\_MapCategoryPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Categories\_MappingSiteCategoriesList.cshtml" />
+    <Content Include="Areas\Admin\Views\Categories\_MappingSearchCategories.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

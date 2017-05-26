@@ -65,8 +65,10 @@ header {
 
 .sellers-location-head {
     text-align: center;
-    font-size: 1.5em;
+    font-size: 1.1em;
     border-top: 3px solid #cb2728;
+    line-height: 1.0em;
+    padding: 5px 0;
 }
 
 .container_table {

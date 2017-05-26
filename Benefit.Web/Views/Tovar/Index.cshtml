@@ -35,9 +35,6 @@
 {
     <link href="~/Content/css/jquery.fancybox.css" rel="stylesheet" />
 }
-@section headscripts{
-    <script type="text/javascript" src="https://vk.com/js/api/share.js?90" charset="windows-1251"></script>
-}
 @section scripts
 {
     <script src="~/Scripts/jquery.fancybox.js"></script>
@@ -203,22 +200,6 @@
                     <ul>
                         <li class="facebook">
                             <a href="https://www.facebook.com/sharer/sharer.php?u=@shareUrl" target="_blank"></a>
-                        </li>
-                        <li class="vk">
-                            <script type="text/javascript">
-                                document.write(VK.Share.button({
-                                        url: '@shareUrl',
-                                        title: "@Model.Product.Name",
-                                        description: "@Model.Product.ShortDescription",
-                                        image: '@(image_src == null ? "" : SettingsService.BaseHostName + "/Images/ProductGallery/" + Model.Product.Id + "/" + image_src.ImageUrl)',
-                                        noparse: true
-                                    },
-                                    {
-                                        type: 'custom',
-                                        text: ' '
-                                    }
-                                ));
-                            </script>
                         </li>
                         @* <li><a class="ok" href=""></a></li>
                             <li><a class="sml" href=""></a></li>

@@ -7,6 +7,7 @@ namespace Benefit.Domain.Migrations
     {
         public override void Up()
         {
+            DropIndex("dbo.Products", new[] { "UrlName" });
             CreateTable(
                 "dbo.ExportImports",
                 c => new
@@ -20,7 +21,7 @@ namespace Benefit.Domain.Migrations
                         SyncPeriod = c.Int(nullable: false),
                         LastUpdateStatus = c.Boolean(),
                         LastUpdateMessage = c.String(),
-                        LastSync = c.DateTime(storeType: "datetime2"),                        
+                        LastSync = c.DateTime(storeType: "datetime2"),
                         ProductsAdded = c.Int(),
                         ProductsModified = c.Int(),
                         ProductsRemoved = c.Int(),
@@ -30,9 +31,12 @@ namespace Benefit.Domain.Migrations
                 .ForeignKey("dbo.Sellers", t => t.SellerId, cascadeDelete: true)
                 .Index(t => t.SellerId);
             
+            AddColumn("dbo.Images", "IsAbsoluteUrl", c => c.Boolean(nullable: false));
+            AddColumn("dbo.Products", "IsImported", c => c.Boolean(nullable: false));
             AddColumn("dbo.Categories", "IsSellerCategory", c => c.Boolean(nullable: false));
             AddColumn("dbo.Categories", "SellerId", c => c.String(maxLength: 128));
             AddColumn("dbo.Categories", "MappedParentCategoryId", c => c.String(maxLength: 128));
+            CreateIndex("dbo.Products", "UrlName");
             CreateIndex("dbo.Categories", "SellerId");
             CreateIndex("dbo.Categories", "MappedParentCategoryId");
             AddForeignKey("dbo.Categories", "MappedParentCategoryId", "dbo.Categories", "Id");
@@ -47,10 +51,14 @@ namespace Benefit.Domain.Migrations
             DropIndex("dbo.ExportImports", new[] { "SellerId" });
             DropIndex("dbo.Categories", new[] { "MappedParentCategoryId" });
             DropIndex("dbo.Categories", new[] { "SellerId" });
+            DropIndex("dbo.Products", new[] { "UrlName" });
             DropColumn("dbo.Categories", "MappedParentCategoryId");
             DropColumn("dbo.Categories", "SellerId");
             DropColumn("dbo.Categories", "IsSellerCategory");
+            DropColumn("dbo.Products", "IsImported");
+            DropColumn("dbo.Images", "IsAbsoluteUrl");
             DropTable("dbo.ExportImports");
+            CreateIndex("dbo.Products", "UrlName", unique: true);
         }
     }
 }

@@ -1,0 +1,60 @@
+﻿@using Benefit.Domain.Models
+
+<div role="dialog" class="modal" style="display: none;" id="category-selector-box">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="close close-this-modal" type="button" data-dismiss="modal">x</button>
+                <h4 id="category-selector-box-label" class="modal-title">Вибір категорії</h4>
+            </div>
+            <div class="modal-body select-category">
+                <div class="search-cont">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="input-group form-group search-form-cont">
+                                <input id="search-text" placeholder="Пошук по назві" class="form-control input-sm" type="text">
+                                <span class="input-group-btn">
+                                    <button type="button" class="btn btn-sm btn-default search-but" id="search-category">
+                                        <i class="icon-search"></i>
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="search-result">
+                       
+                    </div>
+                </div>
+
+                <div class="category-viewport">
+                    @Html.Partial("_MappingSiteCategoriesList", ViewBag.RootCategories as List<Category>)
+                </div>
+
+            </div>
+            <div class="modal-body add-category" style="display: none;">
+
+                <div class="form-group">
+                    <label>
+                        Родительская группа
+                    </label>
+                    <select class="form-control" name="parent">
+                        <option value="0">-- Корневая рубрика --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        Название группы
+                    </label>
+                    <input class="form-control" name="name" type="text">
+                </div>
+
+            </div>
+            <div class="modal-footer select-category">
+                <button class="btn btn-primary select-category" id="select-category" type="button" disabled>Обрати</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>

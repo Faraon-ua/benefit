@@ -18,6 +18,7 @@ namespace Benefit.Domain.Models
         [Required]
         [MaxLength(256)]
         public string ImageUrl { get; set; }
+        public bool IsAbsoluteUrl { get; set; }
         public ImageType ImageType { get; set; }
         public int Order { get; set; }
         [MaxLength(128)]

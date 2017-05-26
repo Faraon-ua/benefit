@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Benefit.Domain.Models.Category>
+<div class="pull-left category-list-cont margin-right-20">
+    <ul>
+        @foreach (var cat in Model)
+        {
+            <li data-category-id="@cat.Id">
+                <span>@cat.Name</span>
+            </li>
+        }
+    </ul>
+</div>

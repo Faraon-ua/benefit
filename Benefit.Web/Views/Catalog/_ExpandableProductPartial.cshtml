@@ -17,8 +17,16 @@
                     }
                     else
                     {
-                        <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
+                        if (image.IsAbsoluteUrl)
+                        {
+                            <img src="@image.ImageUrl" alt="@Model.Product.Name">
+                        }
+                        else
+                        {
+                            <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
+                        }
                     }
+
                 </a>
             </div>
 

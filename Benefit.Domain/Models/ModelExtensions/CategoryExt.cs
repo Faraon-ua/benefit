@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Benefit.Domain.DataAccess;
+using System.Data.Entity;
 
 namespace Benefit.Domain.Models.ModelExtensions
 {
@@ -11,7 +11,7 @@ namespace Benefit.Domain.Models.ModelExtensions
         {
             using (var db = new ApplicationDbContext())
             {
-                foreach (var cat in db.Categories.Include("ChildCategories").Include("SellerCategories").Where(entry => entry.ParentCategoryId == category.Id))
+                foreach (var cat in db.Categories.Include("ChildCategories").Include("SellerCategories").Include(entry => entry.MappedCategories).Where(entry => entry.ParentCategoryId == category.Id))
                 {
                     yield return cat;
 

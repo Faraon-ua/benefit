@@ -5,7 +5,14 @@
         @for (var i = 0; i < Model.Product.Images.Count(); i++)
         {
             <div class="photo-small-wrap">
-                <img class="@(i == 0 ? "active" : "")" src="~/Images/ProductGallery/@Model.Product.Id/@Model.Product.Images.OrderBy(entry=>entry.Order).ElementAt(i).ImageUrl" data-target="#product_gallery" data-slide-to="@i" />
+                @if (Model.Product.Images.OrderBy(entry => entry.Order).ElementAt(i).IsAbsoluteUrl)
+                {
+                    <img class="@(i == 0 ? "active" : "")" src="@Model.Product.Images.OrderBy(entry => entry.Order).ElementAt(i).ImageUrl" data-target="#product_gallery" data-slide-to="@i" />
+                }
+                else
+                {
+                    <img class="@(i == 0 ? "active" : "")" src="~/Images/ProductGallery/@Model.Product.Id/@Model.Product.Images.OrderBy(entry => entry.Order).ElementAt(i).ImageUrl" data-target="#product_gallery" data-slide-to="@i" />
+                }
             </div>
         }
     </div>
@@ -13,11 +20,20 @@
         @if (Model.Product.Images.Any())
         {
             var hasActive = false;
-            foreach (var image in Model.Product.Images.OrderBy(entry=>entry.Order))
+            foreach (var image in Model.Product.Images.OrderBy(entry => entry.Order))
             {
-                <a class="item @(hasActive? "":"active") fancybox" rel="group" href="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl">
-                    <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.AltText">
-                </a>
+                if (image.IsAbsoluteUrl)
+                {
+                    <a class="item @(hasActive? "":"active") fancybox" rel="group" href="@image.ImageUrl">
+                        <img src="@image.ImageUrl" alt="@Model.Product.AltText">
+                    </a>
+                }
+                else
+                {
+                    <a class="item @(hasActive? "":"active") fancybox" rel="group" href="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl">
+                        <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.AltText">
+                    </a>
+                }
                 hasActive = true;
             }
         }
@@ -27,4 +43,3 @@
         }
     </div>
 </div>
-

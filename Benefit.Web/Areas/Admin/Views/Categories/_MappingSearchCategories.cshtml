@@ -1,0 +1,15 @@
+﻿@model List<Benefit.Domain.Models.Category>
+
+<div style="max-height: 300px; overflow-y: scroll; overflow-x: hidden;">
+    @foreach (var cat in Model)
+    {
+        <div class="row margin-top-5">
+            <div class="col-sm-10">
+                @cat.ExpandedName
+            </div>
+            <div class="col-sm-2">
+                <button class="btn btn-xs btn-info select-searched-category" data-category-id="@cat.Id" data-category-name="@cat.Name">Обрати</button>
+            </div>
+        </div>
+    }
+</div>

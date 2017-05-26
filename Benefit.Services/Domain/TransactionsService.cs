@@ -89,7 +89,7 @@ namespace Benefit.Services.Domain
         public void AddOrderFinishedTransaction(Order order, ApplicationDbContext transactionDb)
         {
             var user = transactionDb.Users.Find(order.UserId);
-
+            var seller = transactionDb.Sellers.Find(order.SellerId);
             //add transaction for personal purchase
             var transaction = new Transaction()
             {
@@ -103,6 +103,7 @@ namespace Benefit.Services.Domain
             };
             user.CurrentBonusAccount = transaction.BonusesBalans;
             user.PointsAccount += order.PointsSum;
+            seller.PointsAccount += order.PointsSum;
 
             if (order.PaymentType == PaymentType.Bonuses)
             {
@@ -134,6 +135,7 @@ namespace Benefit.Services.Domain
 
             transactionDb.Transactions.Add(transaction);
             transactionDb.Entry(user).State = EntityState.Modified;
+            transactionDb.Entry(seller).State = EntityState.Modified;
         }
 
         public PartnerTransactionsViewModel GetPartnerTransactions(string id, DateTime start, DateTime end)
