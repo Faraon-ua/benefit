@@ -36,6 +36,7 @@ namespace Benefit.Domain.Migrations
             AddColumn("dbo.Categories", "IsSellerCategory", c => c.Boolean(nullable: false));
             AddColumn("dbo.Categories", "SellerId", c => c.String(maxLength: 128));
             AddColumn("dbo.Categories", "MappedParentCategoryId", c => c.String(maxLength: 128));
+            AlterColumn("dbo.Orders", "ShippingName", c => c.String(maxLength: 64));
             CreateIndex("dbo.Products", "UrlName");
             CreateIndex("dbo.Categories", "SellerId");
             CreateIndex("dbo.Categories", "MappedParentCategoryId");
@@ -52,6 +53,7 @@ namespace Benefit.Domain.Migrations
             DropIndex("dbo.Categories", new[] { "MappedParentCategoryId" });
             DropIndex("dbo.Categories", new[] { "SellerId" });
             DropIndex("dbo.Products", new[] { "UrlName" });
+            AlterColumn("dbo.Orders", "ShippingName", c => c.String(maxLength: 32));
             DropColumn("dbo.Categories", "MappedParentCategoryId");
             DropColumn("dbo.Categories", "SellerId");
             DropColumn("dbo.Categories", "IsSellerCategory");

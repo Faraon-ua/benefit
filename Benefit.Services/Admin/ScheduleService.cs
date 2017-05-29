@@ -290,7 +290,8 @@ namespace Benefit.Services.Admin
                                         Time = DateTime.UtcNow,
                                         Type = TransactionType.VIPSellerBonus,
                                         PayeeId = vipPortion.User.Id,
-                                        Payee = vipPortion.User
+                                        Payee = vipPortion.User,
+                                        Description = webSeller.Name
                                     },
                                     PointsAmount = 0
                                 };
@@ -298,9 +299,9 @@ namespace Benefit.Services.Admin
                             }
 
                             double benefirCardSellerBonus = 0;
-                            foreach (var webSeller in vipPortion.User.ReferedBenefitCardSellers)
+                            foreach (var cardSeller in vipPortion.User.ReferedBenefitCardSellers)
                             {
-                                benefirCardSellerBonus = webSeller.HangingPointsAccount * SettingsService.RewardsPlan.DistributionToPointsPercentageMap[DistributionType.SellerInvolvement] / 100;
+                                benefirCardSellerBonus = cardSeller.HangingPointsAccount * SettingsService.RewardsPlan.DistributionToPointsPercentageMap[DistributionType.SellerInvolvement] / 100;
                                 var bonusesBeforeSellerBonus = vipPortion.User.BonusAccount +
                                                  partnerReckons.Where(entry => entry.Transaction.PayeeId == vipPortion.User.Id)
                                                      .Sum(entry => entry.Transaction.Bonuses);
@@ -314,7 +315,8 @@ namespace Benefit.Services.Admin
                                         Time = DateTime.UtcNow,
                                         Type = TransactionType.VIPSellerBonus,
                                         PayeeId = vipPortion.User.Id,
-                                        Payee = vipPortion.User
+                                        Payee = vipPortion.User,
+                                        Description = cardSeller.Name
                                     },
                                     PointsAmount = 0
                                 };

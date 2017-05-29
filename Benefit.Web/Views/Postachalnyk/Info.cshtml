@@ -33,12 +33,12 @@
             @if (Model.Seller.Latitude != null && Model.Seller.Longitude != null)
             {
                 <text>
-                       center = @string.Format("{{lat: {0}, lng: {1}}};", Model.Seller.Latitude, Model.Seller.Longitude)
-                       SetMarker(map, center);
-                </text>
+            center = @string.Format("{{lat: {0}, lng: {1}}};", Model.Seller.Latitude, Model.Seller.Longitude)
+            SetMarker(map, center);
+            </text>
             }
             else{
-               
+
                 var mapAddress = Model.Seller.Addresses.FirstOrDefault();
                 var addressStr = string.Empty;
                 if (mapAddress != null)
@@ -46,13 +46,13 @@
                     addressStr = mapAddress.Region.Name_ua + "," + mapAddress.AddressLine;
                 }
                 <text>
-                    address = "@addressStr";
-                    geocoder.geocode({ 'address': address }, function (results, status) {
-                        if (status == google.maps.GeocoderStatus.OK) {
-                            SetMarker(map, results[0].geometry.location)
-                        }
-                    });
-                </text>
+            address = "@addressStr";
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    SetMarker(map, results[0].geometry.location)
+                }
+            });
+            </text>
             }
         }
 
@@ -101,7 +101,7 @@
         {
             <div class="organization_adress">
                 @{
-                    var address = Model.Seller.Addresses.FirstOrDefault();
+            var address = Model.Seller.Addresses.FirstOrDefault();
                 }
                 @if (address != null)
                 {
@@ -171,7 +171,17 @@
         {
             <li><a data-toggle="tab" href="#delivery_org">Доставка</a></li>
         }
-        <li><a data-toggle="tab" href="#recall_org">Відгуки</a></li>
+        <li>
+            <a data-toggle="tab" href="#recall_org">
+                Відгуки
+                @if (Model.Seller.Reviews.Any())
+                {
+                    <span class="badge badge-danger">
+                        @Model.Seller.Reviews.Count(entry => entry.ReviewId == null)
+                    </span>
+                }
+            </a>
+        </li>
     </ul>
 
     <div class="tab-content">

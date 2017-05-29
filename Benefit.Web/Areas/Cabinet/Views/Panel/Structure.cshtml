@@ -12,18 +12,26 @@
         var loadPartnersUrl = '@Url.Action("GetPartnersByReferalIds", "Panel")';
 
         function loadPartners(level) {
-            var partnerLevelIds = $("li.partner-level-" + level).map(function () { return $(this).attr("id"); }).get();
+            var partnerLevelIds = $("li.partner-level-" + level).map(function() { return $(this).attr("id"); }).get();
             var postData = { ids: partnerLevelIds };
             $.post(loadPartnersUrl + '?&level=' + parseInt(level + 1),
                 postData,
-                function (data) {
+                function(data) {
                     var keys = Object.keys(data);
                     if (keys.length == 0) {
                         $("#showAllStructureLbl").removeClass("hidden");
                         var totalPartners = $(".structure_table_row").length - 1;
                         $("#totalPartners").text(totalPartners);
+                        var totalPartnersTurnover = 0;
+                        $(".structure_table_row .structure_table_balls").each(function() {
+                            var points = Number($(this).text());
+                            if (!isNaN(points)) {
+                                totalPartnersTurnover += points;
+                            }
+                        });
+                        $("#totalPartnersTurnover").text(totalPartnersTurnover);
                     }
-                    $(keys).each(function (index, key) {
+                    $(keys).each(function(index, key) {
                         var li = $("#" + key);
                         if (data[key].length > 0) {
                             var currentRow = li.find("div.structure_table_row");
@@ -31,13 +39,13 @@
                             currentRow.after(data[key]);
                         }
                         if (partnerLevelIds.length == (index + 1)) {
-                            setTimeout(function () { loadPartners(level + 1); }, 1000);
+                            setTimeout(function() { loadPartners(level + 1); }, 1000);
                         }
                     });
                 });
         }
 
-        $(function () {
+        $(function() {
             loadPartners(0);
         });
     </script>
@@ -67,6 +75,9 @@
             @*            <a href="#">Зареєструвати нового партнера в свою структуру</a>*@
             <span>Всього партнерів у структурі: </span>
             <a href="#" id="totalPartners">завантаження...</a>
+            <br/>
+            <span>Загальний товарообіг структури: </span>
+            <a href="#" id="totalPartnersTurnover">завантаження...</a>
         </div>
     </div>
 
