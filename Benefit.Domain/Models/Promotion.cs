@@ -17,9 +17,11 @@ namespace Benefit.Domain.Models
         public string SellerId { get; set; }
         public Seller Seller { get; set; }
         [Required]
-        public double? InstantDiscountFrom { get; set; }
+        public double? DiscountFrom { get; set; }
         [Required]
-        public double? InstantDiscountValue { get; set; }
+        public double? DiscountValue { get; set; }
         public bool IsActive { get; set; }
+        public bool IsInstantDiscount { get; set; }
+        public int Level { get; set; }
     }
 }

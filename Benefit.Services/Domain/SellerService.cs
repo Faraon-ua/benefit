@@ -137,12 +137,25 @@ namespace Benefit.Services.Domain
             if (cacheCats == null)
             {
                 var seller =
-                    db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                    db.Sellers
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                    .Include(entry => entry.MappedCategories.Select(mc=>mc.MappedParentCategory))
                         .FirstOrDefault(entry => entry.UrlName == sellerUrl);
                 var all = new List<Category>();
                 var sellerCats = seller.SellerCategories.Select(entry => entry.Category);
+                var sellerMappedCats = seller.MappedCategories.Where(entry=>entry.MappedParentCategory != null).Select(entry=>entry.MappedParentCategory).ToList();
                 all.AddRange(sellerCats);
+                all.AddRange(sellerMappedCats);
                 foreach (var sellerCat in sellerCats)
+                {
+                    var parent = sellerCat.ParentCategory;
+                    while (parent != null)
+                    {
+                        all.Add(parent);
+                        parent = parent.ParentCategory;
+                    }
+                } 
+                foreach (var sellerCat in sellerMappedCats)
                 {
                     var parent = sellerCat.ParentCategory;
                     while (parent != null)

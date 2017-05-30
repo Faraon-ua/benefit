@@ -1017,7 +1017,6 @@
     <Content Include="Areas\Admin\Views\Products\_ProductParameters.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductOption.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterValue.cshtml" />
-    <Content Include="Areas\Admin\Views\Sellers\_Import.cshtml" />
     <Content Include="Areas\Admin\Views\ProductOptions\_ProductOptionGroup.cshtml" />
     <Content Include="Areas\Admin\Views\ProductOptions\_ProductOptionValue.cshtml" />
     <Content Include="Areas\Admin\Views\ProductOptions\Index.cshtml" />

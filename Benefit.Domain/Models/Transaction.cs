@@ -30,7 +30,9 @@ namespace Benefit.Domain.Models
         PersonalMonthAggregate,
         Custom,
         [Description("Додаткове нарахування за бізнес рівень")]
-        BusinessLevel
+        BusinessLevel,
+        [Description("Бонуси по акції")]
+        Promotion
     }
     public class Transaction
     {

@@ -48,7 +48,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var deleteProductsOption = new List<SelectListItem>()
             {
                 new SelectListItem() {Text = "Видаляти", Value = true.ToString()},
-                new SelectListItem() { Text = "Робити неактивними", Value = false.ToString()}
+                new SelectListItem() {Text = "Робити неактивними", Value = false.ToString()}
             };
             ViewBag.RemoveProducts = new SelectList(deleteProductsOption, "Value", "Text", importTask.RemoveProducts);
 
@@ -83,7 +83,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 existingImport.RemoveProducts = exportImport.RemoveProducts;
                 existingImport.FileUrl = exportImport.FileUrl;
                 existingImport.SyncPeriod = exportImport.SyncPeriod;
-                db.Entry(exportImport).State = EntityState.Modified;
+                db.Entry(existingImport).State = EntityState.Modified;
             }
             db.SaveChanges();
             TempData["SuccessMessage"] = "Дані імпорту оновлено";

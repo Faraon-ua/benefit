@@ -115,7 +115,7 @@
             </li>
         }
     }
-    @if (!User.IsInRole(DomainConstants.AdminRoleName))
+    @if (User.IsInRole(DomainConstants.SellerModeratorRoleName) || User.IsInRole(DomainConstants.SellerRoleName))
     {
         <li>
             <a href="@Url.Action("Index", "ImportExport")">

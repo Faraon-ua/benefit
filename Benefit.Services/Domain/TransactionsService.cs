@@ -31,6 +31,27 @@ namespace Benefit.Services.Domain
             user.TotalBonusAccount += sum;
             db.Entry(user).State = EntityState.Modified;
             db.SaveChanges();
+        } 
+        
+        public void AddPromotionBonusesPayment(string userId, Promotion promotion)
+        {
+            var user = db.Users.Find(userId);
+            var bonuses = promotion.DiscountValue.GetValueOrDefault(0);
+            var transaction = new Transaction()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Bonuses = bonuses,
+                BonusesBalans = user.BonusAccount + bonuses,
+                Description = promotion.Name,
+                PayeeId = userId,
+                Time = DateTime.UtcNow,
+                Type = TransactionType.Promotion
+            };
+            db.Transactions.Add(transaction);
+            user.BonusAccount = transaction.BonusesBalans;
+            user.TotalBonusAccount += bonuses;
+            db.Entry(user).State = EntityState.Modified;
+            db.SaveChanges();
         }
 
         public void AddBonusesOrderAbandonedTransaction(Order order, ApplicationDbContext transactionDb)

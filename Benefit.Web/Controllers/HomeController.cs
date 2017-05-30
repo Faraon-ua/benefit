@@ -76,8 +76,7 @@ namespace Benefit.Web.Controllers
                 {
                     var sellersService = new SellerService();
                     var sellerCategories = sellersService.GetAllSellerCategories(sellerUrl).ToList();
-                    var sellerCategoriesIds =
-                        sellersService.GetAllSellerCategories(sellerUrl).Select(entry => entry.Id).ToList();
+                    var sellerCategoriesIds = sellerCategories.Select(entry => entry.Id).ToList();
                     if (parent == null || parent.ParentCategoryId == null)
                     {
                         categories =

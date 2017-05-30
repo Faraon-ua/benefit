@@ -82,6 +82,7 @@
     <Compile Include="Domain\ImportExportService.cs" />
     <Compile Include="Domain\OrderService.cs" />
     <Compile Include="Domain\ProductsService.cs" />
+    <Compile Include="Domain\PromotionService.cs" />
     <Compile Include="Domain\RegionService.cs" />
     <Compile Include="Domain\SellerService.cs" />
     <Compile Include="Domain\TransactionsService.cs" />

@@ -194,8 +194,8 @@
                     Name: $("#Promotion_Name").val(),
                     Start: $("#Promotion_Start").val(),
                     End: $("#Promotion_End").val(),
-                    InstantDiscountFrom: $("#Promotion_InstantDiscountFrom").val(),
-                    InstantDiscountValue: $("#Promotion_InstantDiscountValue").val(),
+                    DiscountFrom: $("#Promotion_DiscountFrom").val(),
+                    DiscountValue: $("#Promotion_DiscountValue").val(),
                     SellerId: "@Model.Seller.Id"
                 };
                 $.post(addPromotionUrl, promo, function (data) {
@@ -393,12 +393,6 @@
                     Персонал
                 </a>
             </li>
-            <li>
-                <a href="#import" data-toggle="tab">
-                    <i class="pink icon-download-alt bigger-110"></i>
-                    Імпорт
-                </a>
-            </li>
         </ul>
 
         <div class="tab-content" style="min-height: 450px;">
@@ -445,9 +439,6 @@
             </div>
             <div class="tab-pane" id="currency">
                 @Html.Partial("_Currencies", Model.Seller)
-            </div>
-            <div class="tab-pane" id="import">
-                @Html.Partial("_Import", Model.Seller)
             </div>
             <div class="tab-pane" id="personell">
                 @Html.Partial("~/Areas/Admin/Views/Personnel/_PersonnelList.cshtml", Model.Seller.Personnels)

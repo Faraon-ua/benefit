@@ -84,14 +84,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             else
             {
-                return Json(new {error = ModelState.ModelStateErrors()});
+                return Json(new { error = ModelState.ModelStateErrors() });
             }
         }
         public ActionResult GetPromotionForm(string sellerId, string id)
         {
-            var promo = (id == null) ? new Promotion() {SellerId = sellerId} : db.Promotions.Find(id);
+            var promo = (id == null) ? new Promotion() { SellerId = sellerId } : db.Promotions.Find(id);
             return PartialView("_PromotionForm", promo);
-        } 
+        }
         public ActionResult SellersSearch(SellerFilterValues filters)
         {
             IQueryable<Seller> sellers = db.Sellers.Include("Owner").AsQueryable();
@@ -102,8 +102,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(filters.Search))
             {
                 filters.Search = filters.Search.ToLower();
-                sellers = sellers.Where(entry => entry.Name.ToString().Contains(filters.Search) || 
-                    entry.Personnels.Any(pers=>pers.CardNumber.Contains(filters.Search)));
+                sellers = sellers.Where(entry => entry.Name.ToString().Contains(filters.Search) ||
+                    entry.Personnels.Any(pers => pers.CardNumber.Contains(filters.Search)));
             }
             else
             {
@@ -189,7 +189,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             if (!seller.Seller.BusinessLevelIndexes.Any())
             {
-                seller.Seller.BusinessLevelIndexes= SetBusinessLevelIndexeses().ToList();
+                seller.Seller.BusinessLevelIndexes = SetBusinessLevelIndexeses().ToList();
             }
             if (seller.Seller.ShippingDescription != null)
             {
@@ -307,7 +307,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         db.Entry(schedule).State = EntityState.Modified;
                     }
                 }
-                
+
                 if (!db.SellerBusinessLevelIndexes.Any(entry => entry.SellerId == sellerId))
                 {
                     db.SellerBusinessLevelIndexes.AddRange(seller.BusinessLevelIndexes);
@@ -353,7 +353,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.SellerCategories.Where(
                     entry => scIds.Contains(entry.CategoryId) && entry.SellerId == sellervm.Seller.Id).ToList();
             sellervm.Seller.Personnels = db.Personnels.Where(entry => entry.SellerId == sellervm.Seller.Id).ToList();
-            sellervm.Seller.ShippingMethods.ForEach(entry=>entry.Region = db.Regions.Find(entry.RegionId));
+            sellervm.Seller.ShippingMethods.ForEach(entry => entry.Region = db.Regions.Find(entry.RegionId));
             return View(sellervm);
         }
 
@@ -375,7 +375,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             imagesService.DeleteAll(seller.Images, id, ImageType.SellerGallery, true, false);
             imagesService.DeleteAll(seller.Images, id, ImageType.SellerLogo, true, false);
             db.ExportImports.RemoveRange(db.ExportImports.Where(entry => entry.SellerId == id));
-            db.Categories.Where(entry => entry.SellerId == id).ToList().ForEach(entry=>categoriesService.Delete(entry.Id));
+            db.Categories.Where(entry => entry.SellerId == id).ToList().ForEach(entry => categoriesService.Delete(entry.Id));
             db.Sellers.Remove(seller);
             db.SaveChanges();
             return Json(true);

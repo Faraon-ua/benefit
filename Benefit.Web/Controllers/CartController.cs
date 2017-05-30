@@ -85,9 +85,9 @@ namespace Benefit.Web.Controllers
                     var currentPromotion =
                         seller.Promotions.FirstOrDefault(entry => entry.Start < now && entry.End > now);
                     model.Order.Sum = model.Order.GetOrderSum();
-                    if (currentPromotion != null && model.Order.Sum >= currentPromotion.InstantDiscountFrom)
+                    if (currentPromotion != null && model.Order.Sum >= currentPromotion.DiscountFrom)
                     {
-                        model.Order.SellerDiscount = currentPromotion.InstantDiscountValue;
+                        model.Order.SellerDiscount = currentPromotion.DiscountValue;
                         model.Order.SellerDiscountName = currentPromotion.Name;
                     }
                 }

@@ -9,16 +9,12 @@
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.SellerId)
         @Html.HiddenFor(model => model.IsImport)
-        @Html.HiddenFor(model => model.IsActive)
         @Html.HiddenFor(model => model.SyncType)
 
         <div class="form-group">
             <label class="control-label col-md-2" for="IsActive">Статус синхронізації</label>
             <div class="col-md-10">
-                <label>
-                    @Html.CheckBoxFor(m => m.IsActive, new { @class = "ace ace-switch ace-switch-7" })
-                    <span class="lbl"></span>
-                </label>
+                @Html.CheckBoxFor(m => m.IsActive)
             </div>
         </div>
 
