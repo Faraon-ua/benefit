@@ -3,13 +3,14 @@
 
 @{
     ViewBag.Title = "Структура";
-    ViewBag.CabinetProfileClass = "kabinet_profile";    
+    ViewBag.CabinetProfileClass = "kabinet_profile";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
 
 @section scripts{
     <script>
         var loadPartnersUrl = '@Url.Action("GetPartnersByReferalIds", "Panel")';
+        var getPromotionsAccomplishersUrl = '@Url.Action("StructurePromotionAcomplishmenters", "Panel")';
 
         function loadPartners(level) {
             var partnerLevelIds = $("li.partner-level-" + level).map(function() { return $(this).attr("id"); }).get();
@@ -30,6 +31,23 @@
                             }
                         });
                         $("#totalPartnersTurnover").text(totalPartnersTurnover);
+                        //show promotions tabs
+                        var allPartnerIds = $(".structure_table_wrap li").map(function() { return $(this).attr("id"); }).get();
+                        var allPartnersData = { ids: allPartnerIds };
+
+                        $.post(getPromotionsAccomplishersUrl, allPartnersData, function(promotionAccomplishments) {
+                            $.each(promotionAccomplishments, function(index, promo) {
+                                $(".tabbable ul").append("<li><a href='#" + promo.PromotionId + "' data-toggle='tab'>" + promo.PromotionName + "</a></li>");
+                                var promoAccompliment = "";
+                                promoAccompliment += "<div class='row padding_5'><div class='col-md-3'><b>Імя партнера</b></div><div class='col-md-3'><b>Кількість пакетів</b></div></div>";
+                                $.each(promo.Accomplishers, function(ind, accomplisher) {
+                                    promoAccompliment += "<div class='row padding_5'><div class='col-md-3'>" + accomplisher.UserFullName + "</div><div class='col-md-1'>" + accomplisher.AccomplishmentNumber + "</div></div>";
+                                });
+                                $(".tabbable .tab-content").append("<div class='tab-pane' id='" + promo.PromotionId + "'>" + 
+                                   promoAccompliment +
+                                   "</div>");
+                            });
+                        });
                     }
                     $(keys).each(function(index, key) {
                         var li = $("#" + key);
@@ -51,57 +69,70 @@
     </script>
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
-    <div class="structure_menu">
-        <div class="structure_menu_mentor">
-            <p class="mentor_title">Наставник</p>
-            @{
-                var referal = Model.Referal == null ? "Немає" : Model.Referal.FullName;
-            }
-            <a class="mentor_name" data-toggle="modal" data-target="#mentor_modal">@referal</a>
-        </div>
-    </div>
-    <div class="structure_submenu clearfix">
-        <form class="structure_submenu_filters">
-            <fieldset>
-                <input class="hidden" type="checkbox" id="showAllStructure" name="showAllStructure">
-                <label class="label_for_check hidden" id="showAllStructureLbl" for="showAllStructure">Показати всю структуру</label>
 
-                <input class="hidden" type="checkbox" id="hasNoCard" name="hasNoCard">
-                <label class="label_for_check" for="hasNoCard">Не мають бонусної картки</label>
-
-            </fieldset>
-        </form>
-        <div class="structure_registration">
-            @*            <a href="#">Зареєструвати нового партнера в свою структуру</a>*@
-            <span>Всього партнерів у структурі: </span>
-            <a href="#" id="totalPartners">завантаження...</a>
-            <br/>
-            <span>Загальний товарообіг структури: </span>
-            <a href="#" id="totalPartnersTurnover">завантаження...</a>
-        </div>
-    </div>
-
-    <div class="structure_table_wrap">
-        <ul class="clearfix structure_table">
-
-            <li class="structure_table_head">
-                <div class="structure_table_row">
-                    <div class="expand"></div>
-                    <div class="table_content">
-                        <div class="structure_table_name"><span>ПІБ</span></div>
-                        <div class="structure_table_status"><span>Статус</span></div>
-                        <div class="structure_table_balls pointer"><span>Бали</span></div>
-                        <div class="structure_table_bonuses pointer"><span>Доступні бонуси</span></div>
-                        <div class="structure_table_register_date"><span>Дата реєстрації</span></div>
-                        <div class="structure_table_register_location"><span>Населений пункт</span></div>
-                        <div class="structure_table_register_email"><span>E-mail</span></div>
-                        <div class="structure_table_register_phone"><span>Телефон</span></div>
-                        <div class="structure_table_register_card_number"><span>Номер картки</span></div>
-                        <div class="structure_table_register_ref_code"><span>Реферальний код</span></div>
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#structureTab" data-toggle="tab">Структура</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active" id="structureTab">
+                <div class="structure_menu">
+                    <div class="structure_menu_mentor">
+                        <p class="mentor_title">Наставник</p>
+                        @{
+                            var referal = Model.Referal == null ? "Немає" : Model.Referal.FullName;
+                        }
+                        <a class="mentor_name" data-toggle="modal" data-target="#mentor_modal">@referal</a>
                     </div>
                 </div>
-            </li>
-            @Html.Partial("_PartnersPartial", new KeyValuePair<int, IEnumerable<ApplicationUser>>(0, Model.Partners))
-        </ul>
+                <div class="structure_submenu clearfix">
+                    <form class="structure_submenu_filters">
+                        <fieldset>
+                            <input class="hidden" type="checkbox" id="showAllStructure" name="showAllStructure">
+                            <label class="label_for_check hidden" id="showAllStructureLbl" for="showAllStructure">Показати всю структуру</label>
+
+                            <input class="hidden" type="checkbox" id="hasNoCard" name="hasNoCard">
+                            <label class="label_for_check" for="hasNoCard">Не мають бонусної картки</label>
+
+                        </fieldset>
+                    </form>
+                    <div class="structure_registration">
+                        @*            <a href="#">Зареєструвати нового партнера в свою структуру</a>*@
+                        <span>Всього партнерів у структурі: </span>
+                        <a href="#" id="totalPartners">завантаження...</a>
+                        <br />
+                        <span>Загальний товарообіг структури: </span>
+                        <a href="#" id="totalPartnersTurnover">завантаження...</a>
+                    </div>
+                </div>
+
+                <div class="structure_table_wrap">
+                    <ul class="clearfix structure_table">
+
+                        <li class="structure_table_head">
+                            <div class="structure_table_row">
+                                <div class="expand"></div>
+                                <div class="table_content">
+                                    <div class="structure_table_name"><span>ПІБ</span></div>
+                                    <div class="structure_table_status"><span>Статус</span></div>
+                                    <div class="structure_table_balls pointer"><span>Бали</span></div>
+                                    <div class="structure_table_bonuses pointer"><span>Доступні бонуси</span></div>
+                                    <div class="structure_table_register_date"><span>Дата реєстрації</span></div>
+                                    <div class="structure_table_register_location"><span>Населений пункт</span></div>
+                                    <div class="structure_table_register_email"><span>E-mail</span></div>
+                                    <div class="structure_table_register_phone"><span>Телефон</span></div>
+                                    <div class="structure_table_register_card_number"><span>Номер картки</span></div>
+                                    <div class="structure_table_register_ref_code"><span>Реферальний код</span></div>
+                                </div>
+                            </div>
+                        </li>
+                        @Html.Partial("_PartnersPartial", new KeyValuePair<int, IEnumerable<ApplicationUser>>(0, Model.Partners))
+                    </ul>
+                </div>
+            </div>
+        </div>
     </div>
+
 </div>

@@ -396,6 +396,7 @@
     <Compile Include="Models\ProductParameterValue.cs" />
     <Compile Include="Models\ProductParameterProduct.cs" />
     <Compile Include="Models\Promotion.cs" />
+    <Compile Include="Models\PromotionAccomplishment.cs" />
     <Compile Include="Models\Region.cs" />
     <Compile Include="Models\Results\ProductImportResults.cs" />
     <Compile Include="Models\Review.cs" />

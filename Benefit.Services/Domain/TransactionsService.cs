@@ -13,7 +13,7 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public void AddCustomBonusesPayment(string userId, double sum, string comment)
+        public void AddCustomBonusesPayment(string userId, double sum, string comment, TransactionType transactionType = TransactionType.Custom)
         {
             var user = db.Users.Find(userId);
             var transaction = new Transaction()
@@ -24,18 +24,19 @@ namespace Benefit.Services.Domain
                 Description = comment,
                 PayeeId = userId,
                 Time = DateTime.UtcNow,
-                Type = TransactionType.Custom
+                Type = transactionType
             };
             db.Transactions.Add(transaction);
             user.BonusAccount = transaction.BonusesBalans;
             user.TotalBonusAccount += sum;
             db.Entry(user).State = EntityState.Modified;
             db.SaveChanges();
-        } 
-        
-        public void AddPromotionBonusesPayment(string userId, Promotion promotion)
+        }
+
+        public void AddPromotionBonusesPayment(string userId, Promotion promotion, ApplicationDbContext transactionDb)
         {
-            var user = db.Users.Find(userId);
+            var user = transactionDb.Users.Find(userId);
+            if(!user.IsCardVerified) return;
             var bonuses = promotion.DiscountValue.GetValueOrDefault(0);
             var transaction = new Transaction()
             {
@@ -47,11 +48,10 @@ namespace Benefit.Services.Domain
                 Time = DateTime.UtcNow,
                 Type = TransactionType.Promotion
             };
-            db.Transactions.Add(transaction);
+            transactionDb.Transactions.Add(transaction);
             user.BonusAccount = transaction.BonusesBalans;
             user.TotalBonusAccount += bonuses;
-            db.Entry(user).State = EntityState.Modified;
-            db.SaveChanges();
+            transactionDb.Entry(user).State = EntityState.Modified;
         }
 
         public void AddBonusesOrderAbandonedTransaction(Order order, ApplicationDbContext transactionDb)
@@ -175,6 +175,7 @@ namespace Benefit.Services.Domain
                 user.Transactions.Where(
                     entry =>
                         entry.Type == TransactionType.Custom ||
+                        entry.Type == TransactionType.Promotion ||
                         entry.Type == TransactionType.BonusesOrderPayment ||
                         entry.Type == TransactionType.OrderRefund ||
                         entry.Type == TransactionType.BonusesOrderAbandonedPayment ||

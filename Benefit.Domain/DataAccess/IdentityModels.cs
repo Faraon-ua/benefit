@@ -48,6 +48,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<CompanyRevenue> CompanyRevenues { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<PromotionAccomplishment> PromotionAccomplishments{ get; set; }
         public DbSet<ExportImport> ExportImports { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

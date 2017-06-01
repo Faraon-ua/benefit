@@ -102,7 +102,7 @@ namespace Benefit.Services.Domain
             if (skip > 0)
                 partners = partners.Skip(skip).OrderByDescending(entry => entry.RegisteredOn);
             if (take > 0)
-                partners = partners.Take(take).OrderByDescending(entry => entry.RegisteredOn); ;
+                partners = partners.Take(take).OrderByDescending(entry => entry.RegisteredOn);
             var temp = partners.ToList();
             foreach (var partner in partners)
             {

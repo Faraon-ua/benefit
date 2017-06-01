@@ -1,14 +1,54 @@
 ﻿@model  Benefit.Domain.Models.Promotion
 
-<div class="bordered width-30 padding_5 margin-top-10 position-relative">
-    @Html.TextBox("Promotion.Name", Model.Name, new { placeholder = "Назва" })
-    @Html.TextBox("Promotion.Start", Model.Start, new { placeholder = "Дата початку", @class = "date-picker" })
-    @Html.TextBox("Promotion.End", Model.End, new { placeholder = "Дата закінчення", @class = "date-picker" })
-    @Html.TextBox("Promotion.DiscountFrom", Model.DiscountFrom, new { placeholder = "Знижка від суми (грн)" })
-    @Html.TextBox("Promotion.DiscountValue", Model.DiscountValue, new { placeholder = "Знижка грн" })
-    <a href="#" class="position-absolute position-top position-right margin-right-10" onclick="$(this).parent().remove(); ReAssignIndexesToChildren('shipping', 'belong-shipping');">
+<div class="bordered width-50 padding_5 margin-top-10 position-relative">
+    @Html.Hidden("Promotion.Id", Model.Id)
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Активна</label>
+        @Html.CheckBox("Promotion.IsActive", Model.IsActive)
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4">Назва</label>
+        @Html.TextBox("Promotion.Name", Model.Name, new { @class = "col-md-7" })
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4">ID товару</label>
+        @Html.TextBox("Promotion.ProductId", Model.ProductId, new { @class = "col-md-7" })
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4">Дата початку</label>
+        @Html.TextBox("Promotion.Start", Model.Start, new { @class = "date-picker col-md-7" })
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Дата закінчення</label>
+        @Html.TextBox("Promotion.End", Model.End, new { @class = "date-picker col-md-7" })
+    </div>
+
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Винагрода від</label>
+        @Html.TextBox("Promotion.DiscountFrom", Model.DiscountFrom, new { @class = "col-md-7" }) грн/чол
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Винагрода</label>
+        @Html.TextBox("Promotion.DiscountValue", Model.DiscountValue, new { @class = "col-md-7" })
+        <span class="col-md-1">грн</span>
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Винагорода бонусами</label>
+        @Html.CheckBox("Promotion.IsBonusDiscount", Model.IsBonusDiscount)
+    </div>
+    
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Відображати у структурі</label>
+        @Html.CheckBox("Promotion.ShouldBeVisibleInStructure", Model.ShouldBeVisibleInStructure)
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Рівень</label>
+        @Html.TextBox("Promotion.Level", Model.Level, new { @class = "col-md-3", @type = "number" })
+        <span class="col-md-1">грн</span>
+    </div>
+    <a href="#" class="position-absolute position-top position-right margin-right-10" onclick="$(this).parent().remove(); DeletePromotion('@Model.Id');">
         <i class="icon-remove red"></i>
     </a>
-    <br/>
-    <button type="button" class="btn btn-success submit-promo">Додати</button>
+    <br />
+    <button type="button" class="btn btn-success submit-promo">Зберегти</button>
 </div>

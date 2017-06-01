@@ -198,7 +198,7 @@ namespace Benefit.Web.Controllers
             string path = Server.MapPath("~/Images/uploads/") + upload.FileName;
             upload.SaveAs(path);
 
-            url = Request.Url.GetLeftPart(UriPartial.Authority) + "/Images/uploads/" + upload.FileName; ;
+            url = Request.Url.GetLeftPart(UriPartial.Authority) + "/Images/uploads/" + upload.FileName;
 
             // passing message success/failure
             message = "Image was saved correctly";

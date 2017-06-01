@@ -202,6 +202,27 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             return View(user);
         }
 
+        public ActionResult StructurePromotionAcomplishmenters(string[] ids)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var promotionsToShow = db.Promotions.Where(entry => entry.ShouldBeVisibleInStructure).ToList();
+                var result = (from promotion in promotionsToShow
+                    let partners = db.Users.Include(entry => entry.PromotionAccomplishments.Select(pa => pa.Promotion)).Where(entry => ids.Contains(entry.Id) && entry.PromotionAccomplishments.FirstOrDefault(pa => pa.PromotionId == promotion.Id) != null && entry.PromotionAccomplishments.FirstOrDefault(pa => pa.PromotionId == promotion.Id).AccomplishmentsNumber > 0).ToList()
+                    select new PromotionAccomplishementsViewModel()
+                    {
+                        PromotionName = promotion.Name, 
+                        PromotionId = promotion.Id, 
+                        Accomplishers = partners.Select(entry => new PromotionAccomplisher()
+                        {
+                            UserFullName = entry.FullName,
+                            AccomplishmentNumber = entry.PromotionAccomplishments.First(pa => pa.PromotionId == promotion.Id).AccomplishmentsNumber
+                        }).ToList()
+                    }).ToList();
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
+
         public ActionResult planvunagorod()
         {
             var user = ViewBag.User;

@@ -72,20 +72,34 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult AddPromotion(Promotion promo)
+        public ActionResult CreateOrUpdatePromotion(Promotion promo)
         {
-            promo.Id = Guid.NewGuid().ToString();
+            promo.Id = promo.Id ?? Guid.NewGuid().ToString();
             if (ModelState.IsValid)
             {
-                db.Promotions.Add(promo);
+                if (db.Promotions.Any(entry => entry.Id == promo.Id))
+                {
+                    db.Entry(promo).State = EntityState.Modified;
+                }
+                else
+                {
+                    db.Promotions.Add(promo);
+                }
                 db.SaveChanges();
                 var promos = db.Promotions.Where(entry => entry.SellerId == promo.SellerId);
                 return PartialView("_Promotions", promos.ToList());
             }
-            else
-            {
-                return Json(new { error = ModelState.ModelStateErrors() });
-            }
+            return Json(new { error = ModelState.ModelStateErrors() });
+        }
+
+        public ActionResult DeletePromotion(string id)
+        {
+            var promo = db.Promotions.FirstOrDefault(entry => entry.Id == id);
+
+            if (promo == null) return new HttpStatusCodeResult(200);
+            db.Promotions.Remove(promo);
+            db.SaveChanges();
+            return new HttpStatusCodeResult(200);
         }
         public ActionResult GetPromotionForm(string sellerId, string id)
         {

@@ -76,14 +76,16 @@ namespace Benefit.Web.Controllers
             var sellerId = Cart.CurrentInstance.Order.SellerId;
             using (var db = new ApplicationDbContext())
             {
-                var seller = db.Sellers.Include(entry=>entry.Promotions).FirstOrDefault(entry => entry.Id == sellerId);
+                var seller = db.Sellers.Include(entry => entry.Promotions).FirstOrDefault(entry => entry.Id == sellerId);
                 var userId = User.Identity.GetUserId();
                 if (seller == null) return HttpNotFound();
-                if (seller.Promotions.Any())
+
+                //promotions
+                var now = DateTime.UtcNow;
+                var currentPromotion =
+                    seller.Promotions.FirstOrDefault(entry => entry.Start < now && entry.End > now && !entry.IsBonusDiscount && entry.IsActive);
+                if (currentPromotion != null)
                 {
-                    var now = DateTime.UtcNow;
-                    var currentPromotion =
-                        seller.Promotions.FirstOrDefault(entry => entry.Start < now && entry.End > now);
                     model.Order.Sum = model.Order.GetOrderSum();
                     if (currentPromotion != null && model.Order.Sum >= currentPromotion.DiscountFrom)
                     {
@@ -91,6 +93,7 @@ namespace Benefit.Web.Controllers
                         model.Order.SellerDiscountName = currentPromotion.Name;
                     }
                 }
+
                 model.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == sellerId).ToList();
                 model.Addresses = db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
                 if (seller.IsPrePaidPaymentActive)
@@ -123,8 +126,8 @@ namespace Benefit.Web.Controllers
             {
                 var sum = Cart.CurrentInstance.GetOrderSum();
                 var user = UserService.GetUser(User.Identity.GetUserId());
-                var sumWithCommision = sum + sum * SettingsService.BonusesComissionRate / 100;;
-                
+                var sumWithCommision = sum + sum * SettingsService.BonusesComissionRate / 100;
+
                 if (user.BonusAccount < sumWithCommision)
                 {
                     ModelState.AddModelError("PaymentType", "Недостатньо бонусів на рахунку");
@@ -134,7 +137,7 @@ namespace Benefit.Web.Controllers
             {
                 ModelState.AddModelError("AddressId", "Оберіть адресу доставки");
             }
-            
+
             if (ModelState.IsValid)
             {
                 completeOrder.Order.UserId = User.Identity.GetUserId();
@@ -150,7 +153,7 @@ namespace Benefit.Web.Controllers
                 completeOrder.Addresses =
                     db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
                 if (seller.IsPrePaidPaymentActive)
-                    completeOrder.PaymentTypes.Add(PaymentType.PrePaid); 
+                    completeOrder.PaymentTypes.Add(PaymentType.PrePaid);
                 if (seller.IsPostPaidPaymentActive)
                     completeOrder.PaymentTypes.Add(PaymentType.PostPaid);
                 if (seller.IsCashPaymentActive)

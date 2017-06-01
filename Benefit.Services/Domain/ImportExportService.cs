@@ -113,7 +113,7 @@ namespace Benefit.Services.Domain
                 var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToAdd);
                 var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToAdd);
 
-                var name = xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim(); ;
+                var name = xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim();
                 var shortDescr = xmlProduct.Element("description").Value.Replace("\n", "<br/>");
                 var currencyId = xmlProduct.Element("currencyId").Value;
 

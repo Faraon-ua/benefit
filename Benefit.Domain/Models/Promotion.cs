@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
@@ -21,7 +22,10 @@ namespace Benefit.Domain.Models
         [Required]
         public double? DiscountValue { get; set; }
         public bool IsActive { get; set; }
-        public bool IsInstantDiscount { get; set; }
+        public bool IsBonusDiscount { get; set; }
+        public bool ShouldBeVisibleInStructure { get; set; }
         public int Level { get; set; }
+
+        public ICollection<PromotionAccomplishment> PromotionAccomplishments { get; set; } 
     }
 }

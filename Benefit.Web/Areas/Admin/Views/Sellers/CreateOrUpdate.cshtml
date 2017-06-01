@@ -30,7 +30,8 @@
         var createModeratorUrl = '@Url.Action("CreateModerator", "Personnel")';
         var getUserUrl = '@Url.Action("GetUserByExternalNumber", "Users")';
         var getPromotionFormUrl = '@Url.Action("GetPromotionForm")';
-        var addPromotionUrl = '@Url.Action("AddPromotion")';
+        var addPromotionUrl = '@Url.Action("CreateOrUpdatePromotion")';
+        var deletePromotionUrl = '@Url.Action("DeletePromotion")';
 
         function GenerateLicenseKey() {
             $("#Seller_TerminalPassword").val(guid());
@@ -67,6 +68,10 @@
             $("#addNewShippingMethod").attr("href", href);
             $("#addNewShippingMethod").removeAttr('disabled');
             SetRegionsAutocomplete();
+        }
+
+        function DeletePromotion(id) {
+            $.post(deletePromotionUrl + "/" + id);
         }
 
         $(function () {
@@ -191,17 +196,25 @@
 
             $("body").on("click", ".submit-promo", function () {
                 var promo = {
+                    Id: $("#Promotion_Id").val(),
                     Name: $("#Promotion_Name").val(),
                     Start: $("#Promotion_Start").val(),
                     End: $("#Promotion_End").val(),
                     DiscountFrom: $("#Promotion_DiscountFrom").val(),
                     DiscountValue: $("#Promotion_DiscountValue").val(),
+                    IsActive: $("#Promotion_IsActive").val(),
+                    IsBonusDiscount: $("#Promotion_IsBonusDiscount").val(),
+                    ShouldBeVisibleInStructure: $("#Promotion_ShouldBeVisibleInStructure").val(),
+                    Level: $("#Promotion_Level").val(),
+                    ProductId: $("#Promotion_ProductId").val(),
                     SellerId: "@Model.Seller.Id"
                 };
+                debugger;
                 $.post(addPromotionUrl, promo, function (data) {
                     if (data.error) {
                         flashMessage(data.error, true, true);
                     } else {
+                        flashMessage("Акцію збережено");
                         $(".promotions-list").html(data);
                     }
                 });
