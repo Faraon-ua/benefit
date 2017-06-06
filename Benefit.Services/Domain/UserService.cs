@@ -103,7 +103,6 @@ namespace Benefit.Services.Domain
                 partners = partners.Skip(skip).OrderByDescending(entry => entry.RegisteredOn);
             if (take > 0)
                 partners = partners.Take(take).OrderByDescending(entry => entry.RegisteredOn);
-            var temp = partners.ToList();
             foreach (var partner in partners)
             {
                 partner.Partners = new List<ApplicationUser>(GetPartnersInDepth(partner.Id, -1, -1));

@@ -1,4 +1,5 @@
-﻿@using Benefit.Domain.Models.ModelExtensions
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models.ModelExtensions
 @model IEnumerable<Benefit.Domain.Models.Product>
 @if (!Model.Any())
 {
@@ -44,7 +45,9 @@ else
                             @product.SKU
                         </td>
                         <td>
-                            @product.Name
+                            @Html.RouteLink(product.Name, RouteConstants.ProductRouteWithSellerName,
+                            new { productUrl = product.UrlName, categoryUrl = product.Category.UrlName, sellerUrl = product.Seller.UrlName },
+                            new { target = "_blank" })
                         </td>
                         <td>
                             @product.Category.Name

@@ -176,8 +176,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             }
                             db.Entry(product).State = EntityState.Modified;
                         }
-                        var PromotionService = new PromotionService();
-                        PromotionService.ProcessPromotions(order, db);
+                        var PromotionService = new PromotionService(db);
+                        PromotionService.ProcessPromotions(order);
                     }
                     if (orderStatus == OrderStatus.Abandoned && order.PaymentType == PaymentType.Bonuses)
                     {

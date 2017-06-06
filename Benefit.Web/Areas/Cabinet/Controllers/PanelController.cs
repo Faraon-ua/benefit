@@ -172,7 +172,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                     }
                     else
                     {
-                        db.Entry(address).State = EntityState.Modified; ;
+                        db.Entry(address).State = EntityState.Modified;
                     }
                     db.SaveChanges();
                 }

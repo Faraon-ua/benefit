@@ -37,7 +37,7 @@
 
                         $.post(getPromotionsAccomplishersUrl, allPartnersData, function(promotionAccomplishments) {
                             $.each(promotionAccomplishments, function(index, promo) {
-                                $(".tabbable ul").append("<li><a href='#" + promo.PromotionId + "' data-toggle='tab'>" + promo.PromotionName + "</a></li>");
+                                $(".tabbable ul.nav").append("<li><a href='#" + promo.PromotionId + "' data-toggle='tab'>" + promo.PromotionName + "</a></li>");
                                 var promoAccompliment = "";
                                 promoAccompliment += "<div class='row padding_5'><div class='col-md-3'><b>Імя партнера</b></div><div class='col-md-3'><b>Кількість пакетів</b></div></div>";
                                 $.each(promo.Accomplishers, function(ind, accomplisher) {
