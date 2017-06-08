@@ -155,16 +155,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             .Contains(Seller.CurrentAuthorizedSellerId)), "Id", "ExpandedName", product.CategoryId);
             }
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name", product.SellerId);
-            var resultCurrencies =
-                db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider)
+            var currencies =
+                db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider || entry.SellerId == product.SellerId)
                     .OrderBy(entry => entry.Id).ToList();
-            if (!User.IsInRole(DomainConstants.AdminRoleName) && (User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName)))
-            {
-                var seller = db.Sellers.FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
-                var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id).ToList();
-                resultCurrencies.AddRange(sellerCurrencies);
-            }
-            ViewBag.CurrencyId = new SelectList(resultCurrencies, "Id", "ExpandedName", product.CurrencyId);
+            ViewBag.CurrencyId = new SelectList(currencies, "Id", "ExpandedName", product.CurrencyId);
             return View(product);
         }
 

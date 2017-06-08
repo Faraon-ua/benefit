@@ -21,10 +21,11 @@ namespace Benefit.Services.Domain
         {
             var product = db.Products
                 .Include(entry => entry.Images)
+                .Include(entry => entry.Currency)
                 .Include(entry => entry.Reviews.Select(rev=>rev.ChildReviews))
                 .FirstOrDefault(entry => entry.UrlName == urlName);
             if (product == null) return null;
-
+            product.Price = product.Price*product.Currency.Rate.Value;
             var seller = SellerService.GetSellerWithShippingMethods(sellerUrl);
 
             product.Seller = seller;
