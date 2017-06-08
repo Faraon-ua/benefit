@@ -47,11 +47,12 @@ namespace Benefit.Services.Domain
                     {
                         var prevPromotion = promotions.FirstOrDefault(entry => entry.Level == i - 1);
                         if (prevPromotion == null) return;
+                        var partnerIds = user.Partners.Select(p => p.Id).ToList();
                         var partnerAccomplishments =
                             _transactionDb.PromotionAccomplishments.Where(
                                 entry =>
                                     entry.PromotionId == prevPromotion.Id &&
-                                    user.Partners.Select(p => p.Id).Contains(entry.UserId));
+                                    partnerIds.Contains(entry.UserId)).ToList();
 
                         if (partnerAccomplishments.Count() >= promotion.DiscountFrom.Value)
                         {
@@ -68,10 +69,11 @@ namespace Benefit.Services.Domain
                             var totalpartnerAccomplishments =
                                 partnerAccomplishments.Sum(entry => entry.AccomplishmentsNumber);
 
-                            if (((int)(totalpartnerAccomplishments / promotion.DiscountFrom) -
-                                 userAccomplishment.AccomplishmentsNumber) > 0)
+                            var accomplishmentsNumber = (int) (totalpartnerAccomplishments/promotion.DiscountFrom) -
+                                                        userAccomplishment.AccomplishmentsNumber;
+                            if (accomplishmentsNumber > 0)
                             {
-                                userAccomplishment.AccomplishmentsNumber++;
+                                userAccomplishment.AccomplishmentsNumber+=accomplishmentsNumber;
 
                                 if (!_transactionDb.PromotionAccomplishments.Any(
                                     entry => entry.PromotionId == promotion.Id && entry.UserId == user.Id))
@@ -81,6 +83,10 @@ namespace Benefit.Services.Domain
                                 else
                                 {
                                     _transactionDb.Entry(userAccomplishment).State = EntityState.Modified;
+                                }
+                                for (var j = 0; j < accomplishmentsNumber; j++)
+                                {
+                                    _transactionsService.AddPromotionBonusesPayment(user.Id, promotion, _transactionDb);
                                 }
                             }
                         }
