@@ -233,7 +233,8 @@ namespace Benefit.Services.Domain
 
             foreach (var product in productsToAddList)
             {
-                product.SKU = maxSku++;
+                product.SKU = maxSku;
+                product.UrlName = product.UrlName.Insert(0, maxSku + "_");
             }
             db.Products.AddRange(productsToAddList);
             db.Images.AddRange(imagesToAddList);

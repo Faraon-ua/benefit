@@ -126,7 +126,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                    db.Sellers.OrderBy(entry => entry.Name)
                        .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
                 productsViewModel.ProductFilters.Categories =
-                    db.Categories.OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
+                    db.Categories.Where(entry=>!entry.IsSellerCategory).OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
                         .Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
             }
             return PartialView(productsViewModel);

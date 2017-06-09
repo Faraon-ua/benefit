@@ -104,7 +104,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             using (var db = new ApplicationDbContext())
             {
                 ViewBag.Categories =
-                    db.Categories.ToList().Select(
+                    db.Categories.Where(entry=>!entry.IsSellerCategory).ToList().Select(
                         entry =>
                             new SelectListItem()
                             {

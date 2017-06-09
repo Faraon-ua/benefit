@@ -153,9 +153,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Index()
         {
             var catsList = new List<Category>();
-            var cats = db.Categories.Include(entry => entry.ChildCategories).Where(entry => entry.ParentCategoryId == null).ToList();
+            var cats = db.Categories.Include(entry => entry.ChildCategories).Where(entry => entry.ParentCategoryId == null && !entry.IsSellerCategory).ToList();
             catsList.AddRange(cats);
-            catsList.AddRange(cats.SelectMany(entry => entry.ChildCategories));
+            catsList.AddRange(cats.SelectMany(entry => entry.ChildCategories).Where(entry=>!entry.IsSellerCategory));
             catsList = catsList.OrderBy(entry => entry.ExpandedName).ToList();
             var options = new SellerFilterOptions
             {
