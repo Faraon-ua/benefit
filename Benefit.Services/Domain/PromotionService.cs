@@ -35,6 +35,8 @@ namespace Benefit.Services.Domain
                             entry.IsActive && entry.Start < localTime &&
                             entry.End > localTime && entry.IsBonusDiscount &&
                             entry.SellerId == order.SellerId && entry.ProductId == productId).ToList();
+                if (!promotions.Any()) return;
+
                 var user =
                       _transactionDb.Users.Include(entry => entry.Partners)
                           .FirstOrDefault(entry => entry.Id == order.UserId);

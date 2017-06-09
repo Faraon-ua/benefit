@@ -268,7 +268,7 @@ namespace Benefit.Web.Controllers
                 {
                     Name = entry.Name,
                     Url = Url.RouteUrl(RouteConstants.SellersRouteName, new RouteValueDictionary(new { id = entry.UrlName, action = string.Empty }), Request.Url.Scheme, Request.Url.Host),
-                    Specialization = entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category.Name,
+                    Specialization = entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault) == null ? "" : entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category.Name,
                     UserDiscount = entry.UserDiscount,
                     Latitude = entry.Latitude.Value,
                     Longitude = entry.Longitude.Value

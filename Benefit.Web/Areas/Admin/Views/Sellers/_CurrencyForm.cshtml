@@ -4,7 +4,7 @@
     @Html.Hidden(string.Format("Seller.Currencies[{0}].Id", Model.Key), Model.Value.Id, new { @class = "col-sm-2 currency-id", data_number = Model.Key })
     @Html.TextBox(string.Format("Seller.Currencies[{0}].Name", Model.Key), Model.Value.Name, new { @class = "col-sm-2", placeholder = "Назва курсу" })
     @Html.TextBox(string.Format("Seller.Currencies[{0}].Provider", Model.Key), Model.Value.Provider, new { @class = "col-sm-2", placeholder = "Провайдер курсу" })
-    @Html.TextBox(string.Format("Seller.Currencies[{0}].Rate", Model.Key), Model.Value.Rate.Value.ToString("F"), new { @class = "col-sm-2 mask-number", placeholder = "Грн за одиницю" })
+    @Html.TextBox(string.Format("Seller.Currencies[{0}].Rate", Model.Key), Model.Value.Rate.GetValueOrDefault(1).ToString("F"), new { @class = "col-sm-2 mask-number", placeholder = "Грн за одиницю" })
     <div class="col-sm-1">
         <a href="#" onclick="$(this).parent().parent().remove(); ReAssignIndexesToChildren('currency', 'belong-currency');">
             <i class="icon-remove red"></i>
