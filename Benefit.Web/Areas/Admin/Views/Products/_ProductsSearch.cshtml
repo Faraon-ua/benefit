@@ -18,6 +18,9 @@ else
                         Назва
                     </th>
                     <th>
+                        Порядок
+                    </th>
+                    <th>
                         Категорія
                     </th>
                     <th>
@@ -46,12 +49,15 @@ else
                         </td>
                         <td>
                             @Html.RouteLink(product.Name, RouteConstants.ProductRouteWithSellerName,
-                            new { productUrl = product.UrlName, categoryUrl = product.Category.UrlName, sellerUrl = product.Seller.UrlName },
-                            new { target = "_blank" })
+                                new {productUrl = product.UrlName, categoryUrl = product.Category.UrlName, sellerUrl = product.Seller.UrlName},
+                                new {target = "_blank"})
+                        </td>
+                        <td>
+                            @product.Order
                         </td>
                         <td>
                             @product.Category.Name
-                        </td>
+                        </td> 
                         <td>
                             @product.Seller.Name
                         </td>

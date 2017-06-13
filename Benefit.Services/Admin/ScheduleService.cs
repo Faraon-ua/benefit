@@ -112,10 +112,10 @@ namespace Benefit.Services.Admin
                                     {
                                         var promotionSellersWithReferalBusinessLevel =
                                             promotionSellerIndexes.Where(
-                                                entry => entry.BusinessLevel == currentReferal.BusinessLevel).Select(entry=>entry.SellerId).ToList();
+                                                entry => entry.BusinessLevel == currentReferal.BusinessLevel).Select(entry => entry.SellerId).ToList();
 
                                         promotionPurchasesPoints =
-                                            db.Orders.Include(entry=>entry.OrderStatusStamps).Where(
+                                            db.Orders.Include(entry => entry.OrderStatusStamps).Where(
                                                 entry =>
                                                     entry.UserId == partner.Id &&
                                                     promotionSellersWithReferalBusinessLevel.Contains(entry.SellerId) &&
@@ -129,10 +129,10 @@ namespace Benefit.Services.Admin
                                         if (promotionPurchasesPoints > 0)
                                         {
 
-                                            businessLevelBonuses = promotionPurchasesPoints*
+                                            businessLevelBonuses = promotionPurchasesPoints *
                                                                    SettingsService.RewardsPlan
                                                                        .DistributionToPointsPercentageMap[
-                                                                           DistributionType.Mentor]/100;
+                                                                           DistributionType.Mentor] / 100;
 
                                             var businessLevelTransaction = new TransactionServiceModel()
                                             {
@@ -280,22 +280,25 @@ namespace Benefit.Services.Admin
                                 var bonusesBeforeSellerBonus = vipPortion.User.BonusAccount +
                                                  partnerReckons.Where(entry => entry.Transaction.PayeeId == vipPortion.User.Id)
                                                      .Sum(entry => entry.Transaction.Bonuses);
-                                var sellerTransaction = new TransactionServiceModel()
+                                if (webSellerBonus > 0)
                                 {
-                                    Transaction = new Transaction()
+                                    var sellerTransaction = new TransactionServiceModel()
                                     {
-                                        Id = Guid.NewGuid().ToString(),
-                                        Bonuses = webSellerBonus,
-                                        BonusesBalans = bonusesBeforeSellerBonus + webSellerBonus,
-                                        Time = DateTime.UtcNow,
-                                        Type = TransactionType.VIPSellerBonus,
-                                        PayeeId = vipPortion.User.Id,
-                                        Payee = vipPortion.User,
-                                        Description = webSeller.Name
-                                    },
-                                    PointsAmount = 0
-                                };
-                                partnerReckons.Add(sellerTransaction);
+                                        Transaction = new Transaction()
+                                        {
+                                            Id = Guid.NewGuid().ToString(),
+                                            Bonuses = webSellerBonus,
+                                            BonusesBalans = bonusesBeforeSellerBonus + webSellerBonus,
+                                            Time = DateTime.UtcNow,
+                                            Type = TransactionType.VIPSellerBonus,
+                                            PayeeId = vipPortion.User.Id,
+                                            Payee = vipPortion.User,
+                                            Description = webSeller.Name
+                                        },
+                                        PointsAmount = 0
+                                    };
+                                    partnerReckons.Add(sellerTransaction);
+                                }
                             }
 
                             double benefirCardSellerBonus = 0;

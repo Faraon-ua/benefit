@@ -4,7 +4,8 @@ namespace Benefit.Domain.Models.Enums
 {
     public enum ProductSortOption
     {
-        Default,
+        [Description("Порядковий номер")]
+        Order,
         [Description("Назва &#8593;")]
         NameAsc,
         [Description("Назва &#8595;")]

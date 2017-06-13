@@ -361,6 +361,10 @@
     <Compile Include="Migrations\201705291416501_UpgradePromotion.Designer.cs">
       <DependentUpon>201705291416501_UpgradePromotion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706131138488_UpdateCurrencies.cs" />
+    <Compile Include="Migrations\201706131138488_UpdateCurrencies.Designer.cs">
+      <DependentUpon>201706131138488_UpdateCurrencies.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -625,6 +629,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201705291416501_UpgradePromotion.resx">
       <DependentUpon>201705291416501_UpgradePromotion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706131138488_UpdateCurrencies.resx">
+      <DependentUpon>201706131138488_UpdateCurrencies.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

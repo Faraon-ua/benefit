@@ -1,0 +1,43 @@
+﻿@using Benefit.Common.Helpers
+@model IEnumerable<Benefit.Domain.Models.Currency>
+
+@{
+    ViewBag.Title = "Курси та індекси";
+}
+
+<p>
+    @Html.ActionLink("Створити новий", "CreateOrUpdate", null, new { @class="btn btn-info" })
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Назва
+        </th>
+        <th>
+            Провайдер
+        </th>
+        <th>
+            Індекс
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Enumerations.GetDisplayNameValue(item.Provider)
+        </td>
+        <td>
+            @item.Rate.ToString("F")
+        </td>
+        <td>
+            @Html.ActionLink("Редагувати", "CreateOrUpdate", new { id=item.Id }) |
+            @Html.ActionLink("Видалити", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

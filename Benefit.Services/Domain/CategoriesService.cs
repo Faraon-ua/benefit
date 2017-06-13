@@ -75,7 +75,7 @@ namespace Benefit.Services.Domain
             {
                 return null;
             }
-            var products = SellerService.GetSellerCatalogProducts(null, category.Id, ProductSortOption.Default, skip, take);
+            var products = SellerService.GetSellerCatalogProducts(null, category.Id, ProductSortOption.Order, skip, take);
             if (!products.Any()) return null;
             var result = new ProductsViewModel()
             {

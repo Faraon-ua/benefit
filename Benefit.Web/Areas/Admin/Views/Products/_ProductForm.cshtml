@@ -77,6 +77,13 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Порядок</label>
+        <div class="col-sm-9">
+            @Html.TextBoxFor(model => model.Order, new { @class = "col-xs-4 col-sm-2", type="number" })
+            @Html.ValidationMessageFor(model => model.Order)
+        </div>
+    </div>
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Категорія</label>
         <div class="col-md-9">
             @Html.DropDownListFor(m => m.CategoryId, null, "Не обрано", new { @class = "chosen-select col-xs-10 col-sm-5" })

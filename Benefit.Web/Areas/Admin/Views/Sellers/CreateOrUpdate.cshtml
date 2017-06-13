@@ -195,18 +195,20 @@
             });
 
             $("body").on("click", ".submit-promo", function () {
+                debugger;
+                var parent = $(this).parent();
                 var promo = {
-                    Id: $("#Promotion_Id").val(),
-                    Name: $("#Promotion_Name").val(),
-                    Start: $("#Promotion_Start").val(),
-                    End: $("#Promotion_End").val(),
-                    DiscountFrom: $("#Promotion_DiscountFrom").val(),
-                    DiscountValue: $("#Promotion_DiscountValue").val(),
-                    IsActive: $("#Promotion_IsActive").val(),
-                    IsBonusDiscount: $("#Promotion_IsBonusDiscount").val(),
-                    ShouldBeVisibleInStructure: $("#Promotion_ShouldBeVisibleInStructure").val(),
-                    Level: $("#Promotion_Level").val(),
-                    ProductId: $("#Promotion_ProductId").val(),
+                    Id: parent.find("#Promotion_Id").val(),
+                    Name: parent.find("#Promotion_Name").val(),
+                    Start: parent.find("#Promotion_Start").val(),
+                    End: parent.find("#Promotion_End").val(),
+                    DiscountFrom: parent.find("#Promotion_DiscountFrom").val(),
+                    DiscountValue: parent.find("#Promotion_DiscountValue").val(),
+                    IsActive: parent.find("#Promotion_IsActive:checked").length > 0,
+                    IsBonusDiscount: parent.find("#Promotion_IsBonusDiscount:checked").length > 0,
+                    ShouldBeVisibleInStructure: parent.find("#Promotion_ShouldBeVisibleInStructure:checked").length > 0,
+                    Level: parent.find("#Promotion_Level").val(),
+                    ProductId: parent.find("#Promotion_ProductId").val(),
                     SellerId: "@Model.Seller.Id"
                 };
                 debugger;
@@ -216,6 +218,7 @@
                     } else {
                         flashMessage("Акцію збережено");
                         $(".promotions-list").html(data);
+                        $(".new-promotions").html("");
                     }
                 });
             });
@@ -394,12 +397,12 @@
                     Графік роботи
                 </a>
             </li>
-            <li>
+            @*<li>
                 <a href="#currency" data-toggle="tab">
                     <i class="blue icon-money bigger-110"></i>
                     Курси валют
                 </a>
-            </li>
+            </li>*@
             <li>
                 <a href="#personell" data-toggle="tab">
                     <i class="pink icon-group bigger-110"></i>
@@ -450,9 +453,9 @@
             <div class="tab-pane" id="schedule">
                 @Html.Partial("_Schedules", Model.Seller.Schedules.ToList())
             </div>
-            <div class="tab-pane" id="currency">
+        @*    <div class="tab-pane" id="currency">
                 @Html.Partial("_Currencies", Model.Seller)
-            </div>
+            </div>*@
             <div class="tab-pane" id="personell">
                 @Html.Partial("~/Areas/Admin/Views/Personnel/_PersonnelList.cshtml", Model.Seller.Personnels)
             </div>

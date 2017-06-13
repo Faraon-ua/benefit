@@ -220,6 +220,7 @@
     <Compile Include="Areas\Admin\Controllers\Base\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\Base\CardsController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CurrenciesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImportExportController.cs" />
     <Compile Include="Areas\Admin\Controllers\InfoPagesController.cs" />
@@ -600,6 +601,7 @@
     <Content Include="Areas\Admin\styles\categories.css" />
     <Content Include="Content\css\address.css" />
     <Content Include="Content\css\autocomplete.css" />
+    <Content Include="Content\css\bootstrap-select.min.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\category-selector.css" />
@@ -901,6 +903,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\img\fav.jpg" />
     <Content Include="Scripts\address.js" />
+    <Content Include="Scripts\bootstrap-select.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admin\Views\web.config" />
@@ -1149,6 +1152,8 @@
     <Content Include="Areas\Admin\Views\Categories\_MapCategoryPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\_MappingSiteCategoriesList.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\_MappingSearchCategories.cshtml" />
+    <Content Include="Areas\Admin\Views\Currencies\CreateOrUpdate.cshtml" />
+    <Content Include="Areas\Admin\Views\Currencies\Index.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

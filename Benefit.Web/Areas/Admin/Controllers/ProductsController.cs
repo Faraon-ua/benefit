@@ -69,6 +69,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     switch (filters.Sorting.Value)
                     {
+                        case ProductSortOption.Order:
+                            products = products.OrderBy(entry => entry.Order);
+                            break; 
                         case ProductSortOption.NameAsc:
                             products = products.OrderBy(entry => entry.Name);
                             break;
@@ -156,7 +159,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name", product.SellerId);
             var currencies =
-                db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider || entry.SellerId == product.SellerId)
+                db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank || entry.SellerId == product.SellerId)
                     .OrderBy(entry => entry.Id).ToList();
             ViewBag.CurrencyId = new SelectList(currencies, "Id", "ExpandedName", product.CurrencyId);
             return View(product);
@@ -226,7 +229,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name");
             var resultCurrencies =
-                db.Currencies.Where(entry => entry.Provider == DomainConstants.DefaultUSDCurrencyProvider)
+                db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank)
                     .OrderBy(entry => entry.Id).ToList();
             var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id);
             resultCurrencies.AddRange(sellerCurrencies);

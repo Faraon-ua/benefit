@@ -1,0 +1,94 @@
+﻿@using Benefit.Domain.Models
+@model Benefit.Domain.Models.Currency
+
+@{
+    ViewBag.Title = "Редагування курсу/індексу";
+}
+@section styles
+{
+    <link href="~/Content/css/bootstrap-select.min.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
+    <script src="~/Scripts/bootstrap-select.js"></script>
+    <script>
+        var applyToCatsUrl = '@Url.Action("ApplyToCats", new {id=Model.Id})';
+
+        $(function () {
+            $('.mask-number').mask("#0.00", { reverse: true });
+
+            $("#applyToCats").click(function () {
+                debugger;
+                var ids = $("#catsToApply").val();
+                var postData = { "catIds": ids }
+                $.post(applyToCatsUrl, postData, function (data) {
+                    flashMessage("Курс/індекс успішно застосований");
+                });
+            });
+        })
+    </script>
+}
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <div class="col-md-6">
+            @Html.ValidationSummary(true)
+
+            @Html.HiddenFor(model => model.Id)
+            @Html.HiddenFor(model => model.SellerId)
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Назва</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Name)
+                    @Html.ValidationMessageFor(model => model.Name)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Провайдер</label>
+
+                <div class="col-md-10">
+                    @Html.EnumDropDownListFor(model => model.Provider)
+                    @Html.ValidationMessageFor(model => model.Provider)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Індекс</label>
+
+                <div class="col-md-10">
+                    @Html.TextBoxFor(model => model.Rate, new { @class = "mask-number" })
+                    @Html.ValidationMessageFor(model => model.Rate)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Зберегти" class="btn btn-default" />
+                </div>
+            </div>
+            <div>
+                @Html.ActionLink("Назад до списку", "Index")
+            </div>
+        </div>
+        <div class="col-md-6">
+            @if (Model.Id != null)
+            {
+                <p>Застосувати цей курс/індекс до всіх цін товарів категорій:</p>
+                <select class="selectpicker" multiple id="catsToApply">
+                    @foreach (var category in ViewBag.Categories as IEnumerable<SelectListItem>)
+                    {
+                        <option value="@category.Value">@category.Text</option>
+                    }
+                </select>
+                <button type="button" class="btn btn-success" id="applyToCats">Застосувати</button>
+            }
+        </div>
+    </div>
+}
+
+

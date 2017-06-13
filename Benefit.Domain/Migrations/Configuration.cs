@@ -88,7 +88,7 @@ namespace Benefit.Domain.Migrations
                 userManager.AddToRole(userToInsert.Id, DomainConstants.SuperAdminRoleName);
             }
 
-            if (!(context.Currencies.Any(u => u.Provider == DomainConstants.DefaultUSDCurrencyProvider)))
+            if (!(context.Currencies.Any(u => u.Provider == CurrencyProvider.PrivatBank)))
             {
                 var defaultCurrencies = new List<Currency>()
                 {
@@ -96,28 +96,28 @@ namespace Benefit.Domain.Migrations
                     {
                         Id = "125c1e97-f765-45e7-b47a-36a99c28947a",
                         Name = "UAH",
-                        Provider = DomainConstants.DefaultUSDCurrencyProvider,
+                        Provider = CurrencyProvider.PrivatBank,
                         Rate = 1
                     },
                     new Currency()
                     {
                         Id = "225c1e97-f765-45e7-b47a-36a99c28947a",
                         Name = "USD",
-                        Provider = DomainConstants.DefaultUSDCurrencyProvider,
+                        Provider = CurrencyProvider.PrivatBank,
                         Rate = 1
                     },
                     new Currency()
                     {
                         Id = "325c1e97-f765-45e7-b47a-36a99c28947a",
                         Name = "EUR",
-                        Provider = DomainConstants.DefaultUSDCurrencyProvider,
+                        Provider = CurrencyProvider.PrivatBank,
                         Rate = 1
                     },
                     new Currency()
                     {
                         Id = "425c1e97-f765-45e7-b47a-36a99c28947a",
                         Name = "RUR",
-                        Provider = DomainConstants.DefaultUSDCurrencyProvider,
+                        Provider = CurrencyProvider.PrivatBank,
                         Rate = 1
                     }
                 };

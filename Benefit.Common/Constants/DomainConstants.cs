@@ -4,7 +4,6 @@
     {
         public const string UserIdKey = "userId";
         public const string CabinetAreaName = "Cabinet";
-        public const string DefaultUSDCurrencyProvider = "PrivatBank";
         public const string DefaultAdminUserName = "benefitforbusiness@gmail.com";
         public const string DefaultAdminPassword = "xD67F_gH367";
 

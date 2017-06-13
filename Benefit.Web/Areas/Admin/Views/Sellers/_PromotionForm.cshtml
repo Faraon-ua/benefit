@@ -44,7 +44,6 @@
     <div class="row padding-top-5">
         <label class="col-md-4 padding-top-5">Рівень</label>
         @Html.TextBox("Promotion.Level", Model.Level, new { @class = "col-md-3", @type = "number" })
-        <span class="col-md-1">грн</span>
     </div>
     <a href="#" class="position-absolute position-top position-right margin-right-10" onclick="$(this).parent().remove(); DeletePromotion('@Model.Id');">
         <i class="icon-remove red"></i>

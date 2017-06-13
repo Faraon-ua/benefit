@@ -206,7 +206,7 @@ namespace Benefit.Services.Domain
             //todo: instead all products show recomendations
             switch (sort)
             {
-                case ProductSortOption.Default:
+                case ProductSortOption.Order:
                     items = items
                         .OrderBy(
                             entry =>

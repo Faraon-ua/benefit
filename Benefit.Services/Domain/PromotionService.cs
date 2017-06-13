@@ -124,41 +124,5 @@ namespace Benefit.Services.Domain
                 }
             }
         }
-
-        //private KeyValuePair<int, int> CheckUserForPromotionCompletement(ApplicationUser user, List<Promotion> promotions, int level)
-        //{
-        //    var promotion = promotions.FirstOrDefault(entry => entry.Level == level);
-        //    if (promotion == null) return new KeyValuePair<int, int>(0, 0);
-        //    var orders = _transactionDb.Orders.Include(entry => entry.OrderProducts)
-        //        .Count(entry => entry.UserId == user.Id
-        //                        &&
-        //                        entry.OrderProducts
-        //                            .Select(
-        //                                pr =>
-        //                                    pr.ProductId)
-        //                            .Contains(
-        //                                promotion
-        //                                    .ProductId)
-        //                        &&
-        //                        entry.Time >
-        //                        promotion.Start.Value &&
-        //                        entry.Time <
-        //                        promotion.End.Value &&
-        //                        entry.Status ==
-        //                        OrderStatus.Finished);
-
-        //    switch (promotion.Level)
-        //    {
-        //        case 0:
-        //            return orders;
-        //        case 1:
-        //            return user.Partners
-        //                .Sum(entry => CheckUserForPromotionCompletement(entry, promotions, 0));
-        //        case 2:
-        //            return user.Partners
-        //                .Sum(entry => CheckUserForPromotionCompletement(entry, promotions, 1));
-        //    }
-        //    return 0;
-        //}
     }
 }

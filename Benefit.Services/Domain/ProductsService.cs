@@ -25,7 +25,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Reviews.Select(rev=>rev.ChildReviews))
                 .FirstOrDefault(entry => entry.UrlName == urlName);
             if (product == null) return null;
-            product.Price = product.Price*product.Currency.Rate.Value;
+            product.Price = product.Price*product.Currency.Rate;
             var seller = SellerService.GetSellerWithShippingMethods(sellerUrl);
 
             product.Seller = seller;
@@ -158,7 +158,7 @@ namespace Benefit.Services.Domain
                         SellerId = sellerId,
                         CurrencyId =
                             db.Currencies.FirstOrDefault(
-                                cur => cur.Name == "UAH" && cur.Provider == DomainConstants.DefaultUSDCurrencyProvider).Id
+                                cur => cur.Name == "UAH" && cur.Provider == CurrencyProvider.PrivatBank).Id
                     };
                     productsToAdd.Add(dbProduct);
                 });

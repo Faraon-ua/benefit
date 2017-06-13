@@ -57,7 +57,7 @@ namespace Benefit.Web.Controllers
         [HttpGet]
         public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null, ProductSortOption? sort = null)
         {
-            var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl, sort.GetValueOrDefault(ProductSortOption.Default));
+            var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl, sort.GetValueOrDefault(ProductSortOption.Order));
             return View("../Catalog/ProductsCatalog", model);
         }
     }
