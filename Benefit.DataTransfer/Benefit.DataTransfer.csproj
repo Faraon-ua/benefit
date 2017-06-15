@@ -80,6 +80,7 @@
     <Compile Include="ViewModels\SellersViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\SellerTurnoverViewModel.cs" />
+    <Compile Include="ViewModels\StructureItem.cs" />
     <Compile Include="ViewModels\TransactionsViewModel.cs" />
     <Compile Include="ViewModels\UpdateProfileViewModel.cs" />
   </ItemGroup>

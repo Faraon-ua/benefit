@@ -42,6 +42,7 @@ namespace Benefit.Services.Domain
                           .FirstOrDefault(entry => entry.Id == order.UserId);
                 for (var i = 0; i < promotions.Max(entry => entry.Level) + 1; i++)
                 {
+                    if(user == null) continue;
                     //lvl 0
                     //add accomplishment reward
                     var promotion = promotions.FirstOrDefault(entry => entry.Level == i);

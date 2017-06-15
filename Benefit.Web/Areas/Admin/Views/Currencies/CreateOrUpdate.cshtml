@@ -19,7 +19,6 @@
             $('.mask-number').mask("#0.00", { reverse: true });
 
             $("#applyToCats").click(function () {
-                debugger;
                 var ids = $("#catsToApply").val();
                 var postData = { "catIds": ids }
                 $.post(applyToCatsUrl, postData, function (data) {

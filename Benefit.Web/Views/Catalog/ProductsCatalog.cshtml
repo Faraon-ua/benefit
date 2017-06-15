@@ -140,10 +140,10 @@
         <div class="provider_sort col-md-3">
             @using (Html.BeginForm("Catalog", "Postachalnyk", FormMethod.Get, new { id = "sort-form" }))
             {
-                var sort = Request.QueryString["sort"] == null ? ProductSortOption.Default : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
+                var sort = Request.QueryString["sort"] == null ? ProductSortOption.Order : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
                 <label for="provider_sort_title">Сортувати</label>
                 <select id="provider_sort_select" name="sort" class="provider_sort_select">
-                    <option value="Default" @(sort == ProductSortOption.Default ? "selected" : "")>По замовчуванню</option>
+                    <option value="Default" @(sort == ProductSortOption.Order ? "selected" : "")>По замовчуванню</option>
                     <option value="PriceAsc" @(sort == ProductSortOption.PriceAsc ? "selected" : "")>Ціна &#8593;</option>
                     <option value="PriceDesc" @(sort == ProductSortOption.PriceDesc ? "selected" : "")>Ціна &#8595;</option>
                     <option value="NameAsc" @(sort == ProductSortOption.NameAsc ? "selected" : "")>А-Я</option>

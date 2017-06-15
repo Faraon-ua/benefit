@@ -13,18 +13,18 @@
         var getPromotionsAccomplishersUrl = '@Url.Action("StructurePromotionAcomplishmenters", "Panel")';
 
         function loadPartners(level) {
-            var partnerLevelIds = $("li.partner-level-" + level).map(function() { return $(this).attr("id"); }).get();
+            var partnerLevelIds = $("li.partner-level-" + level).map(function () { return $(this).attr("id"); }).get();
             var postData = { ids: partnerLevelIds };
             $.post(loadPartnersUrl + '?&level=' + parseInt(level + 1),
                 postData,
-                function(data) {
+                function (data) {
                     var keys = Object.keys(data);
                     if (keys.length == 0) {
                         $("#showAllStructureLbl").removeClass("hidden");
                         var totalPartners = $(".structure_table_row").length - 1;
                         $("#totalPartners").text(totalPartners);
                         var totalPartnersTurnover = 0;
-                        $(".structure_table_row .structure_table_balls").each(function() {
+                        $(".structure_table_row .structure_table_balls").each(function () {
                             var points = Number($(this).text());
                             if (!isNaN(points)) {
                                 totalPartnersTurnover += points;
@@ -32,24 +32,25 @@
                         });
                         $("#totalPartnersTurnover").text(totalPartnersTurnover);
                         //show promotions tabs
-                        var allPartnerIds = $(".structure_table_wrap li").map(function() { return $(this).attr("id"); }).get();
+                        var allPartnerIds = $(".structure_table_wrap li").map(function () { return { "Id": $(this).attr("id"), "ParentId": $(this).parents("li").attr("id") } }).get();
+                        allPartnerIds = allPartnerIds.filter(function (item) {
+                            return item.Id != undefined;
+                        });
                         var allPartnersData = { ids: allPartnerIds };
 
-                        $.post(getPromotionsAccomplishersUrl, allPartnersData, function(promotionAccomplishments) {
-                            $.each(promotionAccomplishments, function(index, promo) {
+                        $.post(getPromotionsAccomplishersUrl, allPartnersData, function (promotionAccomplishments) {
+                            $.each(promotionAccomplishments, function (index, promo) {
                                 $(".tabbable ul.nav").append("<li><a href='#" + promo.PromotionId + "' data-toggle='tab'>" + promo.PromotionName + "</a></li>");
                                 var promoAccompliment = "";
                                 promoAccompliment += "<div class='row padding_5'><div class='col-md-3'><b>Імя партнера</b></div><div class='col-md-3'><b>Кількість пакетів</b></div></div>";
-                                $.each(promo.Accomplishers, function(ind, accomplisher) {
-                                    promoAccompliment += "<div class='row padding_5'><div class='col-md-3'>" + accomplisher.UserFullName + "</div><div class='col-md-1'>" + accomplisher.AccomplishmentNumber + "</div></div>";
-                                });
-                                $(".tabbable .tab-content").append("<div class='tab-pane' id='" + promo.PromotionId + "'>" + 
+                                promoAccompliment = RenderAccomplishers(promo.Accomplishers, promoAccompliment, 0);
+                                $(".tabbable .tab-content").append("<div class='tab-pane' id='" + promo.PromotionId + "'>" +
                                    promoAccompliment +
                                    "</div>");
                             });
                         });
                     }
-                    $(keys).each(function(index, key) {
+                    $(keys).each(function (index, key) {
                         var li = $("#" + key);
                         if (data[key].length > 0) {
                             var currentRow = li.find("div.structure_table_row");
@@ -57,15 +58,25 @@
                             currentRow.after(data[key]);
                         }
                         if (partnerLevelIds.length == (index + 1)) {
-                            setTimeout(function() { loadPartners(level + 1); }, 1000);
+                            setTimeout(function () { loadPartners(level + 1); }, 1000);
                         }
                     });
                 });
         }
 
-        $(function() {
+        $(function () {
             loadPartners(0);
         });
+
+        function RenderAccomplishers(accomplishers, result, level) {
+            for (var i = 0; i < accomplishers.length; i++) {
+                result += "<div class='row padding_5' style='margin-left:"+level*20+"px;'><div class='col-md-3'>" + accomplishers[i].UserFullName + "</div><div class='col-md-1'>" + accomplishers[i].AccomplishmentNumber + "</div></div>";
+                if (accomplishers[i].Children.length > 0) {
+                    result = RenderAccomplishers(accomplishers[i].Children, result, level+1);
+                }
+            }
+            return result;
+        }
     </script>
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">

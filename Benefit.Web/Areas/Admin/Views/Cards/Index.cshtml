@@ -10,7 +10,6 @@
     <script>
         $(function() {
             $(".pagination a").click(function () {
-                debugger;
                 $("#page").val($(this).attr("data-page-number"));
                 $("form").submit();
             });

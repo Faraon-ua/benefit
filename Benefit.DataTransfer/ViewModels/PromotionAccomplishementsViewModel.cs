@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Benefit.DataTransfer.ViewModels
 {
     public class PromotionAccomplisher
     {
+        public string Id { get; set; }
+        public string ParentId { get; set; }
         public string UserFullName { get; set; }
         public int AccomplishmentNumber { get; set; }
+        public List<PromotionAccomplisher> Children { get; set; }
     }
      public class PromotionAccomplishementsViewModel
     {

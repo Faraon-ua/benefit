@@ -195,7 +195,6 @@
             });
 
             $("body").on("click", ".submit-promo", function () {
-                debugger;
                 var parent = $(this).parent();
                 var promo = {
                     Id: parent.find("#Promotion_Id").val(),
@@ -211,7 +210,6 @@
                     ProductId: parent.find("#Promotion_ProductId").val(),
                     SellerId: "@Model.Seller.Id"
                 };
-                debugger;
                 $.post(addPromotionUrl, promo, function (data) {
                     if (data.error) {
                         flashMessage(data.error, true, true);
