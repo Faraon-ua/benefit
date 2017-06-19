@@ -226,6 +226,10 @@ namespace Benefit.Services.Admin
                         var vipPortions = new List<VipPortion>();
                         foreach (var vipPartner in vipPartners)
                         {
+                            if (vipPartner.Status.HasValue && vipPartner.Status.Value == Status.Partner)
+                            {
+                                vipPartner.Status = Status.VIP;
+                            }
                             var vipPartnerTotalStructurePointAmount =
                                 vipPartner.GetAllStructurePartners(db).Sum(entry => entry.HangingPointsAccount) + vipPartner.HangingPointsAccount; //вместе с ним
 

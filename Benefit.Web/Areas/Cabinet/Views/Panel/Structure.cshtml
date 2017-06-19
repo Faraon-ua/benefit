@@ -32,18 +32,22 @@
                         });
                         $("#totalPartnersTurnover").text(totalPartnersTurnover);
                         //show promotions tabs
-                        var allPartnerIds = $(".structure_table_wrap li").map(function () { return { "Id": $(this).attr("id"), "ParentId": $(this).parents("li").attr("id") } }).get();
+                        var allPartnerIds = $(".structure_table_wrap li").map(function() {
+                            return { "Id": $(this).attr("id"), "Level": $(this).attr("class").replace(/^\D+/g, '') }
+                        }).get();
                         allPartnerIds = allPartnerIds.filter(function (item) {
                             return item.Id != undefined;
                         });
-                        var allPartnersData = { ids: allPartnerIds };
+                        var allPartnersData = { allPartners: allPartnerIds };
 
                         $.post(getPromotionsAccomplishersUrl, allPartnersData, function (promotionAccomplishments) {
                             $.each(promotionAccomplishments, function (index, promo) {
                                 $(".tabbable ul.nav").append("<li><a href='#" + promo.PromotionId + "' data-toggle='tab'>" + promo.PromotionName + "</a></li>");
                                 var promoAccompliment = "";
-                                promoAccompliment += "<div class='row padding_5'><div class='col-md-3'><b>Імя партнера</b></div><div class='col-md-3'><b>Кількість пакетів</b></div></div>";
-                                promoAccompliment = RenderAccomplishers(promo.Accomplishers, promoAccompliment, 0);
+                                promoAccompliment += "<div class='row padding_5'><div class='col-md-3'><b>Імя партнера</b></div><div class='col-md-3'><b>Кількість пакетів</b></div><div class='col-md-3'><b>Лінія</b></div></div>";
+                                $.each(promo.Accomplishers, function (ind, accomplisher) {
+                                    promoAccompliment += "<div class='row padding_5'><div class='col-md-3'>" + accomplisher.UserFullName + "</div><div class='col-md-3'>" + accomplisher.AccomplishmentNumber + "</div><div class='col-md-3'>" + accomplisher.Level + "</div></div>";
+                                });
                                 $(".tabbable .tab-content").append("<div class='tab-pane' id='" + promo.PromotionId + "'>" +
                                    promoAccompliment +
                                    "</div>");
@@ -67,16 +71,6 @@
         $(function () {
             loadPartners(0);
         });
-
-        function RenderAccomplishers(accomplishers, result, level) {
-            for (var i = 0; i < accomplishers.length; i++) {
-                result += "<div class='row padding_5' style='margin-left:"+level*20+"px;'><div class='col-md-3'>" + accomplishers[i].UserFullName + "</div><div class='col-md-1'>" + accomplishers[i].AccomplishmentNumber + "</div></div>";
-                if (accomplishers[i].Children.length > 0) {
-                    result = RenderAccomplishers(accomplishers[i].Children, result, level+1);
-                }
-            }
-            return result;
-        }
     </script>
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">

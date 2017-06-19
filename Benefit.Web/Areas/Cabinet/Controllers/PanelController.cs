@@ -202,67 +202,26 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             return View(user);
         }
 
-        public ActionResult StructurePromotionAcomplishmenters(StructureItem[] ids)
+        public ActionResult StructurePromotionAcomplishmenters(StructureItem[] allPartners)
         {
             using (var db = new ApplicationDbContext())
             {
-                var promotionsToShow = db.Promotions.Where(entry => entry.ShouldBeVisibleInStructure && entry.IsActive).ToList();
-                var itemIds = ids.Select(item => item.Id).ToList();
-                var result = new List<PromotionAccomplishementsViewModel>();
-                foreach (var promotion in promotionsToShow)
-                {
-                    var partners = db.Users.Include(entry => entry.PromotionAccomplishments.Select(pa => pa.Promotion))
-                       .Where(
-                           entry =>
-                               itemIds.Contains(entry.Id) &&
-                               entry.PromotionAccomplishments.FirstOrDefault(pa => pa.PromotionId == promotion.Id) !=
-                               null &&
-                               entry.PromotionAccomplishments.FirstOrDefault(pa => pa.PromotionId == promotion.Id)
-                                   .AccomplishmentsNumber > 0)
-                       .ToList();
-
-                    var rootPartners = ids.Where(item => item.ParentId == null).Select(item => item.Id).ToList();
-                    var promotionAccomplishement = new PromotionAccomplishementsViewModel()
-                    {
-                        PromotionName = promotion.Name,
-                        PromotionId = promotion.Id,
-                        Accomplishers = partners.Where(entry => rootPartners.Contains(entry.Id)).Select(entry => new PromotionAccomplisher()
-                        {
-                            Id = entry.Id,
-                            ParentId = ids.First(p => p.Id == entry.Id).ParentId,
-                            UserFullName = entry.FullName,
-                            AccomplishmentNumber =
-                                entry.PromotionAccomplishments.First(pa => pa.PromotionId == promotion.Id)
-                                    .AccomplishmentsNumber
-                        }).ToList()
-                    };
-                    foreach (var promotionAccomplisher in promotionAccomplishement.Accomplishers)
-                    {
-                        OrginizePromotionAccomplishers(promotionAccomplisher, partners, ids, promotion.Id);
-                    }
-
-                    result.Add(promotionAccomplishement);
-                }
+                var promotionsToShow = db.Promotions.Where(entry => entry.ShouldBeVisibleInStructure).ToList();
+                var ids = allPartners.Select(entry => entry.Id).ToList();
+                var result = (from promotion in promotionsToShow
+                              let partners = db.Users.Include(entry => entry.PromotionAccomplishments.Select(pa => pa.Promotion)).Where(entry => ids.Contains(entry.Id) && entry.PromotionAccomplishments.FirstOrDefault(pa => pa.PromotionId == promotion.Id) != null && entry.PromotionAccomplishments.FirstOrDefault(pa => pa.PromotionId == promotion.Id).AccomplishmentsNumber > 0).ToList()
+                              select new PromotionAccomplishementsViewModel()
+                              {
+                                  PromotionName = promotion.Name,
+                                  PromotionId = promotion.Id,
+                                  Accomplishers = partners.Select(entry => new PromotionAccomplisher()
+                                  {
+                                      UserFullName = entry.FullName,
+                                      AccomplishmentNumber = entry.PromotionAccomplishments.First(pa => pa.PromotionId == promotion.Id).AccomplishmentsNumber,
+                                      Level = allPartners.First(p=>p.Id == entry.Id).Level + 1
+                                  }).ToList()
+                              }).ToList();
                 return Json(result, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        private void OrginizePromotionAccomplishers(PromotionAccomplisher accomplisher, List<ApplicationUser> partners, StructureItem[] relations, string promotionId)
-        {
-            var partnerIds = relations.Where(item => item.ParentId == accomplisher.Id).Select(item => item.Id).ToList();
-            accomplisher.Children =
-                partners.Where(entry => partnerIds.Contains(entry.Id)).Select(entry => new PromotionAccomplisher()
-                {
-                    Id = entry.Id,
-                    ParentId = relations.First(p => p.Id == entry.Id).ParentId,
-                    UserFullName = entry.FullName,
-                    AccomplishmentNumber =
-                        entry.PromotionAccomplishments.First(pa => pa.PromotionId == promotionId)
-                            .AccomplishmentsNumber
-                }).ToList();
-            foreach (var promotionAccomplisher in accomplisher.Children)
-            {
-                OrginizePromotionAccomplishers(promotionAccomplisher, partners, relations, promotionId);
             }
         }
 
