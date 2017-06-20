@@ -10,7 +10,7 @@
             $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
             $.ajax({
                 type: "POST",
-                url: routePrefix + '/Admin/Sellers/OneCCommerceMLImport?id=@Model.Id',
+                url: routePrefix + '/Admin/ImportExport/OneCCommerceMLImport?id=@Model.Id',
                 success: function (result) {
                     flashMessage(result.message, false, true);
                 },

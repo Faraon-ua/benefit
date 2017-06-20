@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web.Mvc;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
-using Action = Antlr.Runtime.Misc.Action;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -21,17 +20,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult CreateOrUpdate(string id)
         {
             var currency = db.Currencies.FirstOrDefault(entry => entry.Id == id) ?? new Currency();
-            if (currency != null)
-            {
-                var seller =
-                    db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category))
-                        .Include(entry => entry.MappedCategories)
-                        .FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
-                var cats =
-                    seller.SellerCategories.Select(entry => entry.Category).Union(seller.MappedCategories).ToList();
-                ViewBag.Categories =
-                    cats.Select(entry => new SelectListItem() {Text = entry.Name, Value = entry.Id}).ToList();
-            }
+            var seller =
+                db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                    .Include(entry => entry.MappedCategories)
+                    .FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
+            var cats =
+                seller.SellerCategories.Select(entry => entry.Category).Union(seller.MappedCategories).ToList();
+            ViewBag.Categories =
+                cats.Select(entry => new SelectListItem() { Text = entry.Name, Value = entry.Id }).ToList();
+
             return View(currency);
         }
 
@@ -39,6 +36,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateOrUpdate(Currency currency)
         {
+            currency.Provider = CurrencyProvider.Custom;
             if (currency.Id == null)
             {
                 currency.Id = Guid.NewGuid().ToString();
@@ -74,6 +72,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult Delete(string id)
         {
+            var products = db.Products.Where(entry => entry.CurrencyId == id).ToList();
+            if (products.Any())
+            {
+                var defaultCurrency =
+                    db.Currencies.First(entry => entry.Provider == CurrencyProvider.PrivatBank && entry.Name == "UAH");
+                foreach (var product in products)
+                {
+                    product.CurrencyId = defaultCurrency.Id;
+                }
+            }
             var currency = db.Currencies.Find(id);
             db.Currencies.Remove(currency);
             db.SaveChanges();

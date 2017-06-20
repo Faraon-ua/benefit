@@ -71,7 +71,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         case ProductSortOption.Order:
                             products = products.OrderBy(entry => entry.Order);
-                            break; 
+                            break;
                         case ProductSortOption.NameAsc:
                             products = products.OrderBy(entry => entry.Name);
                             break;
@@ -129,7 +129,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                    db.Sellers.OrderBy(entry => entry.Name)
                        .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
                 productsViewModel.ProductFilters.Categories =
-                    db.Categories.Where(entry=>!entry.IsSellerCategory).OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
+                    db.Categories.Where(entry => !entry.IsSellerCategory).OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
                         .Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
             }
             return PartialView(productsViewModel);
@@ -151,11 +151,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             else
             {
-                ViewBag.CategoryId = new SelectList(db.Categories.Where(
+                var categories = db.Categories.Where(
                     entry =>
                         entry.SellerCategories.Where(sc => !sc.IsDefault)
                             .Select(sc => sc.SellerId)
-                            .Contains(Seller.CurrentAuthorizedSellerId)), "Id", "ExpandedName", product.CategoryId);
+                            .Contains(Seller.CurrentAuthorizedSellerId)).ToList();
+                if (id != null)
+                {
+                    categories =
+                        categories.Union(
+                            db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == product.SellerId)).ToList();
+                }
+                ViewBag.CategoryId = new SelectList(categories, "Id", "ExpandedName", product.CategoryId);
             }
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name", product.SellerId);
             var currencies =

@@ -48,15 +48,6 @@
             </div>
 
             <div class="form-group">
-                <label class="control-label col-md-2">Провайдер</label>
-
-                <div class="col-md-10">
-                    @Html.EnumDropDownListFor(model => model.Provider)
-                    @Html.ValidationMessageFor(model => model.Provider)
-                </div>
-            </div>
-
-            <div class="form-group">
                 <label class="control-label col-md-2">Індекс</label>
 
                 <div class="col-md-10">
@@ -64,12 +55,15 @@
                     @Html.ValidationMessageFor(model => model.Rate)
                 </div>
             </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Зберегти" class="btn btn-default" />
+            @if (Model.Provider == CurrencyProvider.Custom)
+            {
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Зберегти" class="btn btn-default" />
+                    </div>
                 </div>
-            </div>
+            }
+
             <div>
                 @Html.ActionLink("Назад до списку", "Index")
             </div>
@@ -78,7 +72,7 @@
             @if (Model.Id != null)
             {
                 <p>Застосувати цей курс/індекс до всіх цін товарів категорій:</p>
-                <select class="selectpicker" multiple id="catsToApply">
+                <select class="selectpicker" multiple id="catsToApply" data-style="btn-info" data-actions-box="true" data-selectalltext="Всі" data-deselectalltext="Нич">
                     @foreach (var category in ViewBag.Categories as IEnumerable<SelectListItem>)
                     {
                         <option value="@category.Value">@category.Text</option>

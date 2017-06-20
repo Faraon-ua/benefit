@@ -143,7 +143,7 @@
                 var sort = Request.QueryString["sort"] == null ? ProductSortOption.Order : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
                 <label for="provider_sort_title">Сортувати</label>
                 <select id="provider_sort_select" name="sort" class="provider_sort_select">
-                    <option value="Default" @(sort == ProductSortOption.Order ? "selected" : "")>По замовчуванню</option>
+                    <option value="Order" @(sort == ProductSortOption.Order ? "selected" : "")>По замовчуванню</option>
                     <option value="PriceAsc" @(sort == ProductSortOption.PriceAsc ? "selected" : "")>Ціна &#8593;</option>
                     <option value="PriceDesc" @(sort == ProductSortOption.PriceDesc ? "selected" : "")>Ціна &#8595;</option>
                     <option value="NameAsc" @(sort == ProductSortOption.NameAsc ? "selected" : "")>А-Я</option>
