@@ -88,10 +88,27 @@
                         };
                     }).get();
 
+                    var available = $("#available-amount");
+                    var amount = $(".product_description_amount").val();
+
+                    if (available.length > 0) {
+                        available = parseFloat(available.text());
+                        var amount = parseFloat(amount);
+                        if (amount > available) {
+                            alert("Не можливо замовити більше товарів, ніж є в наявності");
+                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                            $(".product_info_wrap").css("opacity", 1);
+                            return;
+                        }
+                    } else {
+                        available = "";
+                    }
+
                     var product = {
                         ProductId: '@Model.Product.Id',
                         IsWeightProduct: '@Model.Product.IsWeightProduct',
-                        Amount: $(".product_description_amount").val(),
+                        Amount: amount,
+                        AvailableAmount: available,
                         OrderProductOptions: productOptions
                     };
 
@@ -109,7 +126,6 @@
                                 setCartSummary(data);
                             }, 1000);
                         });
-                    console.log(order);
                 });
             });
         });
@@ -147,7 +163,7 @@
                     }
                     else
                     {
-                        <span>В наявності: @Model.Product.AvailableAmount @(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                        <span>В наявності: <span id="available-amount">@Model.Product.AvailableAmount</span> @(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
                     }
                 </p>
                 <p class="product_description_price">

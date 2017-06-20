@@ -24,30 +24,30 @@
                         </thead>
                         <tbody>
                             @foreach (var product in Model.OrderProducts)
-                            {
-                                <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
-                                    <td class="basket_modal_td">@product.ProductName</td>
-                                    <td class="basket_modal_td">
-                                        <div class="modal_amount_wrap" data-weight-product="@product.IsWeightProduct">
-                                            <div class="product_modal_minus">-</div>
-                                            <input class="product_modal_amount" value="@product.Amount" type="text" data-is-weight-product="@product.IsWeightProduct">
-                                            <div class="product_modal_plus">+</div>
-                                        </div>
-                                    </td>
-                                    <td class="basket_modal_td">@product.ProductPrice.ToString("F")</td>
-                                    @{
-                                var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
-                                var productSum = product.ProductPrice * product.Amount;
-                                    }
-                                    <td class="basket_modal_td product-total-price">@((productSum + productOptionsSum).ToString("F"))</td>
-                                    <td class="basket_modal_td">
-                                        <div class="delete_product" data-product-id="@product.ProductId"></div>
-                                    </td>
-                                </tr>
-                                if (product.OrderProductOptions.Any())
-                                {
-                                    foreach (var orderProductOption in product.OrderProductOptions)
-                                    {
+{
+    <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount">
+        <td class="basket_modal_td">@product.ProductName</td>
+        <td class="basket_modal_td">
+            <div class="modal_amount_wrap" data-weight-product="@product.IsWeightProduct">
+                <div class="product_modal_minus">-</div>
+                <input class="product_modal_amount" value="@product.Amount" type="text" data-is-weight-product="@product.IsWeightProduct">
+                <div class="product_modal_plus">+</div>
+            </div>
+        </td>
+        <td class="basket_modal_td">@product.ProductPrice.ToString("F")</td>
+        @{
+    var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+    var productSum = product.ProductPrice * product.Amount;
+        }
+        <td class="basket_modal_td product-total-price">@((productSum + productOptionsSum).ToString("F"))</td>
+        <td class="basket_modal_td">
+            <div class="delete_product" data-product-id="@product.ProductId"></div>
+        </td>
+    </tr>
+    if (product.OrderProductOptions.Any())
+    {
+        foreach (var orderProductOption in product.OrderProductOptions)
+        {
                                         <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
                                             <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
                                             <td class="basket_modal_td">

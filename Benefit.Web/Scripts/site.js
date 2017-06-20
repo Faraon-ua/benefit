@@ -188,10 +188,12 @@ $(function () {
     });
 
     $("body").on("click", "#complete-order", function () {
-        $(this).attr("disabled", "disabled");
+        var btn = $(this)
+        btn.attr("disabled", "disabled");
         var products = $("#cart-container tr.basket_modal_table_row.product").map(function () {
             var id = $(this).attr("data-product-id");
-            var amount = $(this).find(".product_modal_amount").val();
+            var available = parseFloat($(this).attr("data-available-amount"));
+            var amount = parseFloat($(this).find(".product_modal_amount").val());
             var productOptions = $(this).nextUntil(".product").map(function () {
                 var optionId = $(this).attr("data-option-id");
                 var optionAmount = $(this).find(".product_modal_amount").val();
@@ -203,9 +205,26 @@ $(function () {
             return {
                 ProductId: id,
                 Amount: amount,
+                AvailableAmount: available,
                 OrderProductOptions: productOptions
             };
         }).get();
+
+        var hasExceededAmount = false;
+        for (var i = 0; i < products.length; i++) {
+            var prod = products[i];
+            if (!isNaN(prod.AvailableAmount) && prod.Amount > prod.AvailableAmount) {
+                $("#cart-container tr.basket_modal_table_row.product[data-product-id=" + prod.ProductId + "]").addClass("bg-danger");
+                hasExceededAmount = true;
+            } else {
+                $("#cart-container tr.basket_modal_table_row.product[data-product-id=" + prod.ProductId + "]").removeClass("bg-danger");
+            }
+        }
+        if (hasExceededAmount) {
+            alert("Замовлена кількість товарів перевищує доступну кількість");
+            btn.removeAttr("disabled");
+            return;
+        }
 
         var sellerId = $("#basket_modal").attr("data-seller-id");
         $.post(routePrefix + "/Cart/CompleteOrder?sellerId=" + sellerId,
