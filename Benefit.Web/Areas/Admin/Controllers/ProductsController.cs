@@ -114,14 +114,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
             };
             if (Seller.CurrentAuthorizedSellerId != null)
             {
+                var categories = db.Categories.Where(
+                    entry =>
+                        entry.SellerCategories.Where(sc => !sc.IsDefault)
+                            .Select(sc => sc.SellerId)
+                            .Contains(Seller.CurrentAuthorizedSellerId))
+                    .OrderBy(entry => entry.ParentCategoryId)
+                    .ThenBy(entry => entry.Name)
+                    .ToList();
+                categories =
+                    categories.Union(
+                        db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == Seller.CurrentAuthorizedSellerId)).ToList();
                 productsViewModel.ProductFilters.Categories =
-                    db.Categories.Where(
-                        entry =>
-                            entry.SellerCategories.Where(sc => !sc.IsDefault).Select(sc => sc.SellerId).Contains(Seller.CurrentAuthorizedSellerId))
-                        .OrderBy(entry => entry.ParentCategoryId)
-                        .ThenBy(entry => entry.Name)
-                        .ToList()
-                        .Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
+                    categories.Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
             }
             else
             {
