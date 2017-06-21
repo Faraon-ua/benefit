@@ -59,6 +59,17 @@ namespace Benefit.Services
             }
         }
 
+        public class Notifications
+        {
+            public static string FacebookVerificationToken
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["FacebookVerificationToken"];
+                }
+            }
+        }
+
         public class SendPulse
         {
             public static string SendPulseAuthUrl

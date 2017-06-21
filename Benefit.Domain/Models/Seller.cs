@@ -77,6 +77,9 @@ namespace Benefit.Domain.Models
         public bool IsCashPaymentActive { get; set; }
         [DisplayName("Еквайринг")]
         public bool IsAcquiringActive { get; set; }
+        #region Notification contacts
+        public string FacebookId { get; set; }
+        #endregion
         public bool HasEcommerce { get; set; }
         public int TotalDiscount { get; set; }
         public double UserDiscount { get; set; }

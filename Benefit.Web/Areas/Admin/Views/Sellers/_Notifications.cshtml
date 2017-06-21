@@ -1,0 +1,16 @@
+﻿@using Benefit.Common.Helpers
+@using Benefit.Domain.Models.Enums
+@model Benefit.Web.Models.Admin.SellerViewModel
+           
+<fieldset>
+    <legend>Сповіщення</legend>
+    <div class="form-horizontal">
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Facebook ID</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.FacebookId, new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+    </div>
+</fieldset>

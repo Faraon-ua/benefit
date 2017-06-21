@@ -365,6 +365,10 @@
     <Compile Include="Migrations\201706131138488_UpdateCurrencies.Designer.cs">
       <DependentUpon>201706131138488_UpdateCurrencies.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706211224268_AddFacebookIdToSeller.cs" />
+    <Compile Include="Migrations\201706211224268_AddFacebookIdToSeller.Designer.cs">
+      <DependentUpon>201706211224268_AddFacebookIdToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -632,6 +636,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706131138488_UpdateCurrencies.resx">
       <DependentUpon>201706131138488_UpdateCurrencies.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706211224268_AddFacebookIdToSeller.resx">
+      <DependentUpon>201706211224268_AddFacebookIdToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

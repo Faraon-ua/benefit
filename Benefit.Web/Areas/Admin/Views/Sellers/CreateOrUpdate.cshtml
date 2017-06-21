@@ -359,7 +359,13 @@
                     Зображення та опис
                 </a>
             </li>
-            <li>
+            <li class="@displayClass">
+                <a href="#notifications" data-toggle="tab">
+                    <i class="green icon-bullhorn bigger-110"></i>
+                    Сповіщення
+                </a>
+            </li>
+             <li>
                 <a href="#security" data-toggle="tab">
                     <i class="red icon-lock bigger-110"></i>
                     Безпека
@@ -421,6 +427,9 @@
             </div>
             <div class="tab-pane" id="security">
                 @Html.Partial("_Security", Model)
+            </div>
+            <div class="tab-pane" id="notifications">
+                @Html.Partial("_Notifications", Model)
             </div>
             <div class="tab-pane @displayClass" id="paymentTypes">
                 @Html.Partial("_PaymentTypes")
