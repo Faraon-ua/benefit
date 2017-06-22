@@ -197,6 +197,7 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NotificationsController.cs" />
     <Compile Include="Controllers\OldApiController.cs" />
     <Compile Include="Controllers\NfcReaderController.cs" />
     <Compile Include="Global.asax.cs">

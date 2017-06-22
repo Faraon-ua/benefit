@@ -248,7 +248,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\CatalogController.cs" />
     <Compile Include="Controllers\LayoutController.cs" />
-    <Compile Include="Controllers\NotificationsController.cs" />
     <Compile Include="Controllers\PagesController.cs" />
     <Compile Include="Controllers\PostachalnykController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
