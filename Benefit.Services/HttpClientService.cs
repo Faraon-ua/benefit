@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,7 +9,7 @@ namespace Benefit.Services
 {
     public class HttpClientService
     {
-        public async Task<T> GetObectFromService<T>(string url, HttpContent content, string authorization = null)
+        public async Task<T> PostObectToService<T>(string url, HttpContent content, string authorization = null)
         {
             using (var client = new HttpClient())
             {
@@ -18,7 +17,7 @@ namespace Benefit.Services
                 {
                     client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", authorization);
                 }
-                var response = await client.PostAsync(url, content);
+                var response = await client.PostAsync(url, content).ConfigureAwait(false);
                 var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 using (JsonReader reader = new JsonTextReader(new StringReader(responseString)))
                 {
@@ -32,6 +31,6 @@ namespace Benefit.Services
                     }
                 }
             }
-        }
+        } 
     }
 }

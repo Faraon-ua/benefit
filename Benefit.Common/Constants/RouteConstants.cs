@@ -2,6 +2,8 @@
 {
     public class RouteConstants
     {
+        public const string AdminAreaName = "Admin";
+
         public const string CategoriesRouteName = "CategoriesRoute";
         public const string CategoriesRoutePrefix = "catalog";
 

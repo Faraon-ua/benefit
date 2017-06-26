@@ -59,13 +59,27 @@ namespace Benefit.Services
             }
         }
 
-        public class Notifications
+        public class Facebook
         {
-            public static string FacebookVerificationToken
+            public static string VerificationToken
             {
                 get
                 {
                     return ConfigurationManager.AppSettings["FacebookVerificationToken"];
+                }
+            }
+            public static string MessengerAPIUrl
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["FacebookMessengerAPIUrl"];
+                }
+            }
+            public static string PageAccessToken 
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["FacebookPageAccessToken"];
                 }
             }
         }

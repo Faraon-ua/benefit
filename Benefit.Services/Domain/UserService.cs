@@ -33,14 +33,14 @@ namespace Benefit.Services.Domain
             string postBody = JsonConvert.SerializeObject(authValues);
             var content = new StringContent(postBody, Encoding.UTF8, "application/json");
 
-            var authResult = await httpClientService.GetObectFromService<SPAuthDto>(SettingsService.SendPulse.SendPulseAuthUrl, content);
+            var authResult = await httpClientService.PostObectToService<SPAuthDto>(SettingsService.SendPulse.SendPulseAuthUrl, content);
 
             var addEmailUrl = SettingsService.SendPulse.SendPulseAddEmailUrl.Replace("{id}",
                 SettingsService.SendPulse.SendPulseFinLikbezAddressBookId);
 
             var strContent = "emails=[{\"email\": \"" + email + "\"}]";
             content = new StringContent(strContent, Encoding.UTF8, "application/x-www-form-urlencoded");
-            var result = await httpClientService.GetObectFromService<string>(addEmailUrl, content, authResult.access_token);
+            var result = await httpClientService.PostObectToService<string>(addEmailUrl, content, authResult.access_token);
         }
 
         public string SetUserPic(string id, string fileExt)

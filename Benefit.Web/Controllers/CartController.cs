@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Linq;
 using System.Data.Entity;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Cart;
 using Benefit.Services.Domain;
+using Benefit.Services.ExternalApi;
 using Microsoft.AspNet.Identity;
 using NLog;
 
@@ -142,6 +144,11 @@ namespace Benefit.Web.Controllers
             {
                 completeOrder.Order.UserId = User.Identity.GetUserId();
                 var orderNumber = OrderService.AddOrder(completeOrder);
+
+                //order notifications
+                var NotificationService = new NotificationsService();
+                var orderUrl = Url.Action("Details", "Orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName });
+                NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl, completeOrder.Order.SellerId);
                 return RedirectToAction("OrderCompleted", new { number = orderNumber });
             }
             using (var db = new ApplicationDbContext())

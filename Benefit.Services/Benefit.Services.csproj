@@ -90,7 +90,9 @@
     <Compile Include="EmailService.cs" />
     <Compile Include="Domain\ImagesService.cs" />
     <Compile Include="Domain\LocalizationService.cs" />
+    <Compile Include="ExternalApi\Facebook.cs" />
     <Compile Include="HttpClientService.cs" />
+    <Compile Include="NotificationsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchService.cs" />
     <Compile Include="SettingsService.cs" />

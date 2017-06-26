@@ -51,6 +51,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiDto\Facebook\MessengerApiModels.cs" />
     <Compile Include="ApiDto\OldApi\KassirAuth.cs" />
     <Compile Include="ApiDto\OldApi\Orders.cs" />
     <Compile Include="ApiDto\OldApi\Payments.cs" />
