@@ -3,7 +3,6 @@ using System.Web.Http;
 using Benefit.Services;
 using Benefit.Services.ExternalApi;
 using System;
-using System.Diagnostics;
 using System.Linq;
 using Benefit.Domain.DataAccess;
 
@@ -45,21 +44,6 @@ namespace Benefit.Web.Controllers.API
                         }
                         catch
                         {
-                            using (var db = new ApplicationDbContext())
-                            {
-                                var user = db.Users.FirstOrDefault(us => us.Email == message);
-                                if (user != null)
-                                {
-                                    var msg = user.IsCardVerified
-                                        ? "Your card is verified"
-                                        : "Your card is NOT verified";
-                                    FacebookService.SendMessage(sender, msg);
-                                }
-                                else
-                                {
-                                    FacebookService.SendMessage(sender, "User was not found");
-                                }
-                            }
                         }
                     }
                 }

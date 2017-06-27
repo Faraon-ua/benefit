@@ -147,7 +147,7 @@ namespace Benefit.Web.Controllers
 
                 //order notifications
                 var NotificationService = new NotificationsService();
-                var orderUrl = Url.Action("Details", "Orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName });
+                var orderUrl = Url.Action("Details", "Orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName }, Request.Url.Scheme);
                 NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl, completeOrder.Order.SellerId);
                 return RedirectToAction("OrderCompleted", new { number = orderNumber });
             }
