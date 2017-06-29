@@ -37,7 +37,7 @@
                     $(this).attr("name", $(this).attr("name").replace("{n}", index));
                     if ($(this).next().length > 0) {
                         $(this).next().attr("name", $(this).next().attr("name").replace("{n}", index));
-                        if ($(this).next().next().length > 0)
+                        if ($(this).next().next().length > 0 && $(this).next().next().attr("name") != undefined)
                             $(this).next().next().attr("name", $(this).next().next().attr("name").replace("{n}", index));
                     }
                 });
@@ -82,7 +82,7 @@
                     }
                 });
             });
-            
+
             $(".chosen-select").chosen({
                 search_contains: true
             });
@@ -214,13 +214,13 @@
                         Додаткові опції
                     </a>
                 </li>
-                @* <li>
-                        <a href="#parameters" data-toggle="tab">
-                            <i class="orange icon-check bigger-110"></i>
-                            Характеристики
-                        </a>
-                    </li>
-
+                <li>
+                    <a href="#parameters" data-toggle="tab">
+                        <i class="orange icon-check bigger-110"></i>
+                        Характеристики
+                    </a>
+                </li>
+                @*
                     <li>
                         <a href="#recommendations" data-toggle="tab">
                             <i class="purple icon-dropbox bigger-110"></i>

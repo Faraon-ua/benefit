@@ -12,7 +12,6 @@ namespace Benefit.Domain.Models
     {
         public ProductParameter()
         {
-            ChildProductParameters = new Collection<ProductParameter>();
             ProductParameterValues = new Collection<ProductParameterValue>();
         }
         [Key]
@@ -34,12 +33,8 @@ namespace Benefit.Domain.Models
         public string AddedById { get; set; }
         public virtual ApplicationUser AddedBy { get; set; }
         [MaxLength(128)]
-        public string ParentProductParameterId { get; set; }
-        public virtual ProductParameter ParentProductParameter { get; set; }
-        [MaxLength(128)]
         public string CategoryId { get; set; }
         public virtual Category Category { get; set; }
-        public virtual ICollection<ProductParameter> ChildProductParameters { get; set; } 
         public virtual ICollection<ProductParameterValue> ProductParameterValues { get; set; }
         public virtual ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
 

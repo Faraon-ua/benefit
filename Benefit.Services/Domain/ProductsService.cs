@@ -22,6 +22,7 @@ namespace Benefit.Services.Domain
             var product = db.Products
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Currency)
+                .Include(entry => entry.ProductParameterProducts.Select(pr=>pr.ProductParameter))
                 .Include(entry => entry.Reviews.Select(rev=>rev.ChildReviews))
                 .FirstOrDefault(entry => entry.UrlName == urlName);
             if (product == null) return null;
@@ -212,16 +213,10 @@ namespace Benefit.Services.Domain
 
         public void DeleteProductParameter(string id)
         {
-            var productparameter = db.ProductParameters.Include(entry => entry.ChildProductParameters).Include(entry => entry.ChildProductParameters.Select(child => child.ProductParameterValues)).FirstOrDefault(entry => entry.Id == id);
+            var productparameter = db.ProductParameters.FirstOrDefault(entry => entry.Id == id);
             //remove self values and product relations
             db.ProductParameterValues.RemoveRange(productparameter.ProductParameterValues);
             db.ProductParameterProducts.RemoveRange(productparameter.ProductParameterProducts);
-
-            //remove childs's values and product relations
-            db.ProductParameterValues.RemoveRange(productparameter.ChildProductParameters.SelectMany(entry => entry.ProductParameterValues));
-            db.ProductParameterProducts.RemoveRange(productparameter.ChildProductParameters.SelectMany(entry => entry.ProductParameterProducts));
-            //remove childs
-            db.ProductParameters.RemoveRange(productparameter.ChildProductParameters);
 
             db.ProductParameters.Remove(productparameter);
             db.SaveChanges();

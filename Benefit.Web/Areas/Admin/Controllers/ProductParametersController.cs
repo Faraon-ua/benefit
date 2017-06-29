@@ -20,7 +20,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (categoryId == null) return HttpNotFound();
             var category = db.Categories.Find(categoryId);
-            var productparameters = db.ProductParameters.Include(p => p.Category).Include(p => p.ParentProductParameter).Where(entry => entry.ParentProductParameterId == null && entry.CategoryId == categoryId);
+            var productparameters = db.ProductParameters.Include(p => p.Category).Where(entry => entry.CategoryId == categoryId).ToList();
             var model = new KeyValuePair<Category, IEnumerable<ProductParameter>>(category, productparameters);
             return View(model);
         }
@@ -67,8 +67,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             };
             var productParameter = new ProductParameter()
             {
-                CategoryId = categoryId,
-                ParentProductParameterId = parentId
+                CategoryId = categoryId
             };
             return View(productParameter);
         }

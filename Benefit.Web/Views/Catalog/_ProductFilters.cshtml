@@ -1,13 +1,39 @@
 ﻿@model Benefit.DataTransfer.ViewModels.ProductsViewModel
 
+<div class="vertical_menu padding-bottom-15 clear-fix" id="right-menu" data-seller-url="@(Model.Seller == null ? "" : Model.Seller.UrlName)" data-category-id="@(Model.Category == null ? "" : Model.Category.Id)">
+</div>
+<br class="clearfix"/>
+
 <div id="productFilters">
+    @if (Model.Category.ProductParameters.Any())
+    {
+        foreach (var filter in Model.Category.ProductParameters)
+        {
+            <hr/>
+            <div>@filter.Name</div>
+            <div>
+                @if (filter.Type == typeof (string).ToString())
+                {
+                    <ul>
+                        @foreach (var filterValue in filter.ProductParameterValues)
+                        {
+                            <li>
+                                <input type="checkbox" id="@filterValue.Id"/>
+                                <label for="@filterValue.Id">@filterValue.ParameterValue</label>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+    }
+
     @*  @if (Model.Items.Any())
         {
 
         }
         else
         {*@
-    <div class="vertical_menu" id="right-menu" data-seller-url="@(Model.Seller == null ? "" : Model.Seller.UrlName)" data-category-id="@(Model.Category == null? "":Model.Category.Id)">
-    </div>
+    
     @*    }*@
 </div>

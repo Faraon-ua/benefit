@@ -257,6 +257,10 @@
                                 {
                                     <span>- @productParameter.EndValue</span>
                                 }
+                                @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
+                                {
+                                    <span>@productParameter.ProductParameter.MeasureUnit</span>
+                                }
                             </td>
                         </tr>
                     }

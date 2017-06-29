@@ -70,6 +70,7 @@ namespace Benefit.Services.Domain
                 db.Categories.Include(entry => entry.Products)
                     .Include(entry => entry.Products.Select(pr => pr.Images))
                     .Include(entry => entry.Products.Select(pr => pr.Currency))
+                    .Include(entry => entry.ProductParameters.Select(pr=>pr.ProductParameterValues))
                     .FirstOrDefault(entry => entry.UrlName == urlName);
             if (category.Products.Count == 0)
             {

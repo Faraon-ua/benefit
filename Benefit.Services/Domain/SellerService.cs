@@ -247,7 +247,7 @@ namespace Benefit.Services.Domain
             var seller = db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.UrlName == sellerUrl);
             if (seller == null) return null;
             result.Seller = seller;
-            var category = db.Categories.FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            var category = db.Categories.Include(entry=>entry.ProductParameters.Select(pr=>pr.ProductParameterValues)).FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
             result.Items = GetSellerCatalogProducts(seller.Id, categoryId, sort).ToList();

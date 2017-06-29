@@ -203,6 +203,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = User.Identity.Name;
                 product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
+                db.ProductParameterProducts.RemoveRange(
+                   db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
+                db.ProductParameterProducts.AddRange(product.ProductParameterProducts);
                 if (db.Products.Any(entry => entry.Id == product.Id))
                 {
                     db.Entry(product).State = EntityState.Modified;
@@ -217,9 +220,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     product.SKU = (int)maxSku + 1;
                     db.Products.Add(product);
                 }
-                db.ProductParameterProducts.RemoveRange(
-                    db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
-                db.ProductParameterProducts.AddRange(product.ProductParameterProducts);
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Товар збережено";
                 return RedirectToAction("CreateOrUpdate", new { id = product.Id });

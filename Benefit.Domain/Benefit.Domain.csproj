@@ -369,6 +369,10 @@
     <Compile Include="Migrations\201706291300376_AddNotificationChannels.Designer.cs">
       <DependentUpon>201706291300376_AddNotificationChannels.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201706270839147_RemoveParentProductParameter.cs" />
+    <Compile Include="Migrations\201706270839147_RemoveParentProductParameter.Designer.cs">
+      <DependentUpon>201706270839147_RemoveParentProductParameter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -640,6 +644,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201706291300376_AddNotificationChannels.resx">
       <DependentUpon>201706291300376_AddNotificationChannels.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201706270839147_RemoveParentProductParameter.resx">
+      <DependentUpon>201706270839147_RemoveParentProductParameter.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

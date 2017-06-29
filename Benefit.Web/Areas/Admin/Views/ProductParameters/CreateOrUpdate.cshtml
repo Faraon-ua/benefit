@@ -1,7 +1,7 @@
 ﻿@model Benefit.Domain.Models.ProductParameter
 
 @{
-    ViewBag.Title = "Нова група характеристик";
+    ViewBag.Title = "Нова характеристика";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -15,7 +15,6 @@
 
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.CategoryId)
-        @Html.HiddenFor(model => model.ParentProductParameterId)
 
         <div class="form-group">
             <label class="col-sm-2 control-label no-padding-right">Назва</label>

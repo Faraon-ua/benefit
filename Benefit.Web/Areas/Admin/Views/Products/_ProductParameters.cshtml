@@ -5,45 +5,37 @@
 }
 else
 {
-    foreach (var group in Model.Category.ProductParameters.Where(entry => entry.ParentProductParameterId == null))
+    foreach (var parameter in Model.Category.ProductParameters)
     {
-        <div>
-            <h3>@group.Name</h3>
-        </div>
-        <hr class="margin-top-0" />
-        foreach (var parameter in group.ChildProductParameters)
-        {
-            <div class="row">
-                @{
-            var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
+        <div class="row">
+            @{
+        var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
+            }
+            <div class="col-sm-3">
+                @parameter.Name (@type)
+                @if (parameter.Type == typeof(string).ToString())
+                {
+                    <a href="#" class="add-product-option-value" data-parameter-id="@parameter.Id" data-parameter-type="@parameter.Type">+ Додати значення</a>
                 }
-                <div class="col-sm-2">
-                    @parameter.Name (@type)
-                    @if (parameter.Type == typeof(string).ToString())
-                    {
-                        <a href="#" class="add-product-option-value" data-parameter-id="@parameter.Id" data-parameter-type="@parameter.Type">+ Додати значення</a>
-                    }
-                </div>
-                <div class="col-sm-3">
-                    @foreach (var parValue in Model.ProductParameterProducts.Where(entry => entry.ProductParameterId == parameter.Id))
-                    {
-                        if (parameter.Type == typeof(int).ToString() || parameter.Type == typeof(double).ToString())
-                        {
-                            <input name="ProductParameterProducts[{n}].StartValue" class="number-input product-option-value" value="@parValue.StartValue" />
-                            @parameter.MeasureUnit
-                            @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", parameter.Id)
-                        }
-                        else if (parameter.Type == typeof(string).ToString())
-                        {
-                            {
-                                @Html.Action("GetProductParameterDefinedValues", "ProductParameters", new { parameterId = parameter.Id, amount = parValue.Amount, selected = parValue.StartValue })
-                            }
-                        }
-                    }
-                </div>
             </div>
-            <br />
-            <hr />
-        }
+            <div class="col-sm-6">
+                @if (parameter.Type == typeof(int).ToString() || parameter.Type == typeof(double).ToString())
+                {
+                    var paramValue = Model.ProductParameterProducts.FirstOrDefault(entry => entry.ProductParameterId == parameter.Id);
+                    <input type="number" name="ProductParameterProducts[{n}].StartValue" value="@(paramValue == null?string.Empty:paramValue.StartValue)" class="product-option-value" />
+                    @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", parameter.Id)
+                    <span>@parameter.MeasureUnit</span>
+                }
+                else
+                {
+                    foreach (var parValue in Model.ProductParameterProducts.Where(entry => entry.ProductParameterId == parameter.Id))
+                    {
+                        @Html.Action("GetProductParameterDefinedValues", "ProductParameters", new { parameterId = parameter.Id, amount = parValue.Amount, selected = parValue.StartValue })
+                    }
+                }
+            </div>
+        </div>
+        <br />
+        <hr />
     }
 }
