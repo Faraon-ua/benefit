@@ -1173,6 +1173,7 @@
     <Content Include="Areas\Admin\Views\Sellers\_Notifications.cshtml" />
     <Content Include="Areas\Admin\Views\Notifications\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Notifications\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\PromotionDetails.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

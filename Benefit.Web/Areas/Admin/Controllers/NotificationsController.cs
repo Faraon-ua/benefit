@@ -37,5 +37,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             TempData["ErrorMessage"] = "Невірне значення";
             return RedirectToAction("Index");
         }
+
+        public ActionResult Delete(string id)
+        {
+            var channel = db.NotificationChannels.Find(id);
+            db.NotificationChannels.Remove(channel);
+            db.SaveChanges();
+            TempData["SuccessMessage"] = "Канал сповіщення видалено";
+            return RedirectToAction("Index");
+        }
     }
 }

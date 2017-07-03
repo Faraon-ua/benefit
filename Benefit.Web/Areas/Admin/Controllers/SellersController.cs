@@ -402,5 +402,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult PromotionDetails(string id)
+        {
+            var promotionAccomplishers = db.PromotionAccomplishments.Include(entry=>entry.User).Where(entry => entry.PromotionId == id).ToList();
+            return View(promotionAccomplishers);
+        }
     }
 }

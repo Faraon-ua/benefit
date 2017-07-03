@@ -8,7 +8,7 @@ using Benefit.Domain.DataAccess;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName + ", " + DomainConstants.SellerOperatorRoleName)]
+    [Authorize(Roles = DomainConstants.AdminRoleName)]
     public class DashboardController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();

@@ -14,6 +14,18 @@
 {
     <meta name="description" content="Benefit Company – це глобальний інтернет ресурс, який надає можливість замовляти ряд різних товарів та послуг онлайн, та заробляти на рекомендаціях. Ви можете замовити будь-що, починаючи від продуктів харчування, їжі з улюбленого ресторану і закінчуючи меблями для дому. І все це, на одному ресурсі. Ми працюємо над тим, щоб забезпечити Ваші потреби! Замовляйте все потрібне на одному ресурсі з доставкою додому у будь-який куточок України, рекомендуйте нас та заробляйте з нами. Benefit Company – Ваше стабільне майбутнє!">
 }
+@section scripts
+{
+    <script>
+        $(function () {
+            $("#short_text_show_link").click(function (e) {
+                e.preventDefault();
+                $("#short_text").removeClass("box-hide");
+                $(".text-description-more").remove();
+            });
+        })
+    </script>
+}
 <div class="top_slider">
     @foreach (var banner in Model.Banners)
     {
@@ -23,7 +35,7 @@
     }
 </div>
 <!-- product carousel -->
-<p class="center_p">Товари дня</p>
+<p class="center_p">Хіти продажу</p>
 <div class="product_carousel">
     @foreach (var hit in Model.FeaturedProducts)
     {
@@ -63,3 +75,18 @@
     }
 </div>
 <!-- .product carousel -->
+
+@*<div id="text-description-page" class="text-description-page">
+    <div class="body-layout">
+        <div class="wrap">
+            <div id="short_text" class="text-description-content box-hide">
+                @Html.Action("Content", "Pages", new { id = "32b21ab3-79ae-45c2-8a5a-bd85d5f0db23", area = string.Empty })
+            </div>
+            <div class="text-description-more">
+                <a href="#" id="short_text_show_link" class="novisited arrow-link text-description-more-link">
+                    <span class="xhr arrow-link-inner">Читать полностью</span>&nbsp;→
+                </a>
+            </div>
+        </div>
+    </div>
+</div>*@

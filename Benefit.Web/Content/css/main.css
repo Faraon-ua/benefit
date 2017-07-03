@@ -2845,10 +2845,6 @@ li:last-child .expand {
     }
 
 /*perelik postachalnikiv*/
-.container_provider {
-    padding-bottom: 50px;
-}
-
 .left_sidebar,
 .right_sidebar {
     display: table-cell;
@@ -5012,4 +5008,58 @@ basket_modal_table td:nth-child(4) {
     width: 147px;
     border-left: 1px solid #ffffff;
     float: right;
+}
+
+.text-description-page {
+    bottom: 22em;
+    color: #999;
+    left: 0;
+    width: 100%;
+}
+.text-description-page h1, .text-description-page h2, .text-description-page h3, .text-description-page h4 {
+    font-size: 1.15em;
+    font-weight: normal;
+}
+.text-description-page h1, .text-description-page h2 {
+    font-size: 1.25em;
+}
+.text-description-page p, .text-description-page ul {
+    font-size: 1em;
+    line-height: 1.25em;
+    margin-bottom: 1em;
+}
+.text-description-page ul {
+    list-style: outside none disc;
+    padding-left: 2em;
+}
+.text-description-page li {
+    padding-bottom: 0.5em;
+}
+.text-description-content {
+    padding-top: 2em;
+}
+.text-description-content.box-hide {
+    max-height: 12em;
+    overflow: hidden;
+    position: relative;
+}
+.text-description-content.box-hide::before {
+    background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , rgba(255, 255, 255, 0) 0%, #fff 100%) repeat scroll 0 0;
+    bottom: 0;
+    content: "";
+    display: block;
+    height: 4em;
+    left: 0;
+    position: absolute;
+    right: 0;
+}
+.text-description-more {
+    padding-bottom: 2em;
+    text-align: right;
+}
+.text-description-more-link {
+    font-size: 1.30769em;
+}
+.text-description-more-link:hover .arrow-link-inner {
+    text-decoration: none;
 }

@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Benefit.Domain.Models.PromotionAccomplishment>
+
+@{
+    ViewBag.Title = "Учасники акції";
+}
+<div class="row">
+    <div class="col-md-4">
+        <strong>Імя учасника</strong>
+    </div>
+    <div class="col-md-2">
+        <strong>Кількість виконань</strong>
+    </div>
+</div>
+@foreach (var accomplishment in Model)
+{
+    <div class="row padding-top-5">
+        <div class="col-md-4">
+            @accomplishment.User.FullName
+        </div>
+        <div class="col-md-2">
+            @accomplishment.AccomplishmentsNumber
+        </div>
+    </div>
+}
