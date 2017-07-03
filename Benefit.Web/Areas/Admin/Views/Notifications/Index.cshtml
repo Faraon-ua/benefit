@@ -1,0 +1,107 @@
+﻿@using Benefit.Domain.Models
+@model IEnumerable<NotificationChannel>
+
+@{
+    ViewBag.Title = "Сповіщення";
+}
+@section scripts
+{
+    <script>
+        $(function() {
+            $(".add-notification").click(function(e) {
+                e.preventDefault();
+                var addNotificationUrl = '@Url.Action("Create")';
+                addNotificationUrl += "?channelType=" + $(this).attr("data-channel-type");
+                $("#modal-container").load(addNotificationUrl, function() {
+                    $("#modal-container").modal("show");
+                });
+            });
+        });
+    </script>
+}
+<div id="modal-container" class="modal fade in"></div>
+
+<div class="row">
+    <div class="col-sm-5">
+        <h3 class="row header smaller lighter blue">
+            <span class="col-sm-8">
+                <i class="icon-facebook-sign"></i>
+                Facebook
+            </span>
+            <span class="col-sm-4">
+                <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Facebook">
+                    <i class="icon-plus bigger-110 icon-only"></i>
+                </a>
+            </span>
+        </h3>
+        <div>
+            @foreach (var fb in Model.Where(entry => entry.ChannelType == NotificationChannelType.Facebook))
+            {
+                <div class="well well-sm clearfix">
+                    <span class="col-sm-11">
+                        @fb.Address
+                    </span>
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = fb.Id })" class="pull-right">
+                        <i class="icon-remove red"></i>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-sm-2">
+    </div>
+    <div class="col-sm-5">
+        <h3 class="row header smaller lighter orange">
+            <span class="col-sm-8">
+                <i class="icon-envelope-alt"></i>
+                Email
+            </span>
+            <span class="col-sm-4">
+                <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Email">
+                    <i class="icon-plus bigger-110 icon-only"></i>
+                </a>
+            </span>
+        </h3>
+        <div>
+            @foreach (var email in Model.Where(entry => entry.ChannelType == NotificationChannelType.Email))
+            {
+                <div class="well well-sm clearfix">
+                    <span class="col-sm-11">
+                        @email.Address
+                    </span>
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = email.Id })" class="pull-right">
+                        <i class="icon-remove red"></i>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-5">
+        <h3 class="row header smaller lighter purple">
+            <span class="col-sm-8">
+                <i class="icon-phone-sign"></i>
+                SMS
+            </span>
+            <span class="col-sm-4">
+                <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Phone">
+                    <i class="icon-plus bigger-110 icon-only"></i>
+                </a>
+            </span>
+        </h3>
+        <div>
+            @foreach (var phone in Model.Where(entry => entry.ChannelType == NotificationChannelType.Phone))
+            {
+                <div class="well well-sm clearfix">
+                    <span class="col-sm-11">
+                        @phone.Address
+                    </span>
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = phone.Id })" class="pull-right">
+                        <i class="icon-remove red"></i>
+                    </a>
+                </div>
+            }
+        </div>
+    </div><!-- /span -->
+</div>

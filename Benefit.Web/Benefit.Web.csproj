@@ -238,6 +238,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImportExportController.cs" />
     <Compile Include="Areas\Admin\Controllers\InfoPagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NotificationsController.cs" />
     <Compile Include="Areas\Admin\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Admin\Controllers\PersonnelController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductOptionsController.cs" />
@@ -1170,6 +1171,8 @@
     <Content Include="Areas\Admin\Views\Currencies\CreateOrUpdate.cshtml" />
     <Content Include="Areas\Admin\Views\Currencies\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Notifications.cshtml" />
+    <Content Include="Areas\Admin\Views\Notifications\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Notifications\Create.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

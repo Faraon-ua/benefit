@@ -77,9 +77,6 @@ namespace Benefit.Domain.Models
         public bool IsCashPaymentActive { get; set; }
         [DisplayName("Еквайринг")]
         public bool IsAcquiringActive { get; set; }
-        #region Notification contacts
-        public string FacebookId { get; set; }
-        #endregion
         public bool HasEcommerce { get; set; }
         public int TotalDiscount { get; set; }
         public double UserDiscount { get; set; }
@@ -111,6 +108,7 @@ namespace Benefit.Domain.Models
         public ICollection<Personnel> Personnels { get; set; }
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Promotion> Promotions { get; set; }
+        public virtual ICollection<NotificationChannel> NotificationChannels { get; set; }
         [NotMapped]
         public virtual ICollection<Review> ApprovedReviews
         {

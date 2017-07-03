@@ -36,15 +36,7 @@ namespace Benefit.Web.Controllers.API
                     {
                         var sender = messaging["sender"]["id"].Value;
                         string message = Convert.ToString(messaging["message"]["text"].Value);
-                        //for testing purposes
-                        try
-                        {
-                            new Guid(message);
-                            FacebookService.ReceiveMessage(message, sender);
-                        }
-                        catch
-                        {
-                        }
+                        FacebookService.ReceiveMessage(message, sender);
                     }
                 }
             }

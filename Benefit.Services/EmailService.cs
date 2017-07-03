@@ -19,7 +19,7 @@ namespace Benefit.Services
         private const string BenefitInfoEmail = "info.benefitcompany@gmail.com";
         private const string AdminEmail = "faraon.ua@gmail.com";
 
-        private void SendTemplatedEmail(string templateName, string toad, string subjectcontent, params string[] parameters)
+        private async Task SendTemplatedEmail(string templateName, string toad, string subjectcontent, params string[] parameters)
         {
             string body;
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
@@ -36,7 +36,7 @@ namespace Benefit.Services
             client.Send(usermail);
         }
 
-        private bool SendEmail(string toad, string body, string subjectcontent)
+        public async Task<bool> SendEmail(string toad, string body, string subjectcontent)
         {
             var usermail = Mailbodplain(new List<string> { toad }, body, DisplayName, subjectcontent);
             var client = new SmtpClient() { EnableSsl = true, DeliveryMethod = SmtpDeliveryMethod.Network };

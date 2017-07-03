@@ -365,9 +365,9 @@
     <Compile Include="Migrations\201706131138488_UpdateCurrencies.Designer.cs">
       <DependentUpon>201706131138488_UpdateCurrencies.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201706211224268_AddFacebookIdToSeller.cs" />
-    <Compile Include="Migrations\201706211224268_AddFacebookIdToSeller.Designer.cs">
-      <DependentUpon>201706211224268_AddFacebookIdToSeller.cs</DependentUpon>
+    <Compile Include="Migrations\201706291300376_AddNotificationChannels.cs" />
+    <Compile Include="Migrations\201706291300376_AddNotificationChannels.Designer.cs">
+      <DependentUpon>201706291300376_AddNotificationChannels.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
@@ -389,6 +389,7 @@
     <Compile Include="Models\Enums\Level.cs" />
     <Compile Include="Models\ModelExtensions\StringExt.cs" />
     <Compile Include="Models\ModelExtensions\UserExt.cs" />
+    <Compile Include="Models\NotificationChannel.cs" />
     <Compile Include="Models\OrderProductOption.cs" />
     <Compile Include="Models\OrderProduct.cs" />
     <Compile Include="Models\Personnel.cs" />
@@ -637,8 +638,8 @@
     <EmbeddedResource Include="Migrations\201706131138488_UpdateCurrencies.resx">
       <DependentUpon>201706131138488_UpdateCurrencies.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201706211224268_AddFacebookIdToSeller.resx">
-      <DependentUpon>201706211224268_AddFacebookIdToSeller.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201706291300376_AddNotificationChannels.resx">
+      <DependentUpon>201706291300376_AddNotificationChannels.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

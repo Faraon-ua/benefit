@@ -50,6 +50,8 @@ namespace Benefit.Domain.DataAccess
         public DbSet<Promotion> Promotions { get; set; }
         public DbSet<PromotionAccomplishment> PromotionAccomplishments{ get; set; }
         public DbSet<ExportImport> ExportImports { get; set; }
+        public DbSet<NotificationChannel> NotificationChannels { get; set; }
+        
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
