@@ -8,7 +8,6 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
 using Benefit.Domain.Models;
-using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Domain.Models.XmlModels;
 
