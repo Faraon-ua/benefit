@@ -23,7 +23,7 @@
             <div class="col-8">
                 <div class="row sub_header_row">
                     <div class="col-sm-8">
-                        @using (Html.BeginForm("Index", "Search", new { area = "" }, FormMethod.Get, new { id = "search-form" }))
+                        @using (Html.BeginForm("Index", "Search", new {area = ""}, FormMethod.Get, new {id = "search-form"}))
                         {
                             <div class="search_block">
                                 <div class="input-group">
@@ -34,7 +34,7 @@
                                             <span class="sr-only"></span>
                                         </button>
                                         <ul class="dropdown-menu">
-                                            @Html.Action("GetBaseCategories", "Catalog", new { area = "" })
+                                            @Html.Action("GetBaseCategories", "Catalog", new {area = ""})
                                         </ul>
                                         <button type="submit" class="btn btn-default"><i class="icn search"></i></button>
                                     </div>
@@ -81,4 +81,5 @@
             </div>
         </div>
     </div>
+    <div class="loader" style="display: none;"></div>
 </div>

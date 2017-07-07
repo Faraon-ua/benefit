@@ -55,10 +55,18 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null, ProductSortOption? sort = null)
+        public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null, string options = null, ProductSortOption? sort = null)
         {
-            var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl, sort.GetValueOrDefault(ProductSortOption.Order));
+            var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl, options);
             return View("../Catalog/ProductsCatalog", model);
         }
+
+       /* [HttpGet]
+        public ActionResult ProductsList(string sellerId = null, string categoryId = null, string options = null,
+            ProductSortOption? sort = null)
+        {
+            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, sort.GetValueOrDefault(ProductSortOption.Order));
+            return PartialView("ProductsList", products);
+        }*/
     }
 }

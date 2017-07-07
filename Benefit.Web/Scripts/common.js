@@ -179,6 +179,10 @@ function flashMessage(text, error, alwaysStayVisible) {
     }
 }
 
+function showLoader() {
+    $(".loader").show();
+}
+
 function SaveLocalization(id, resourceType, resourceId, resourceField, resourceValue, lang) {
     var localization = {
         Id: id,

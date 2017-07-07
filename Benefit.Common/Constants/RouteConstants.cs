@@ -15,6 +15,7 @@
         public const string ProductRoutePrefix = "tovar";
 
         public const string SellerCatalogRouteName = "SellerCatalogRoute";
+        public const string CatalogRouteName = "CatalogRoute";
 
         public const string ReferalUrlName = "referal";
         public const string ReferalCookieName = "ReferalNumber";

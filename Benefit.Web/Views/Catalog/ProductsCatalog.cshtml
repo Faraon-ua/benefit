@@ -32,6 +32,31 @@
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
         }
         $(function () {
+            //select all checkboxes from url
+            var parts = location.href.split('/');
+            var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
+            var options = "";
+            @if (Model.Category != null)
+            {<text>
+            if (lastSegment != '@Model.Category.UrlName') {
+                options = lastSegment;
+                $.each(options.split(";"), function (i, urlSegment) {
+                    if (urlSegment === "") return;
+                    var optKeyValue = urlSegment.split("=");
+                    var optionName = optKeyValue[0];
+                    var optionValues = optKeyValue[1].split(",");
+                    if (optionName === "sort") {
+                        $("select#provider_sort_select").val(optionValues[0]);
+                    } else {
+                        $.each(optionValues, function (j, optValue) {
+                            $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).prop('checked', true);
+                        });
+                    }
+                });
+            }
+            </text>
+            }
+
             $("#add-more-products").click(function (e) {
                 e.preventDefault();
                 $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&skip=" + skip + "&sort=" + $("select[name=sort]").val(), function (data) {
@@ -73,9 +98,60 @@
                 AddOrderProduct(productId, sellerId, true, false);
             });
 
-            $("select[name=sort]").change(function () {
-                $("#sort-form").submit();
-            });
+            @if (Model.Category != null)
+            {
+                <text>
+                $("#productFilters input[type=checkbox], select#provider_sort_select").change(function () {
+                    $(".loader").show();
+                    var parts = location.href.split('/');
+                    var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
+                    var options = "";
+
+                    if (lastSegment != '@Model.Category.UrlName') {
+                        options = lastSegment;
+                    }
+
+
+                    var parent = $(this).parents(".filter-section");
+                    var optionName = parent.attr("data-filter-name");
+                    var optionNameIndex = options.indexOf(optionName);
+
+                    var currentOption = '';
+                    var selectedValues = parent.find("input[type=checkbox]:checked").map(function () {
+                        return $(this).attr("id");
+                    }).get();
+                    if ($(this).attr("id") === "provider_sort_select") {
+                        selectedValues.push($("select#provider_sort_select").val());
+                    }
+                    if (selectedValues.length > 0) {
+                        currentOption = optionName;
+                        currentOption += "=";
+                        currentOption += selectedValues.join();
+                        currentOption += ";";
+                    }
+
+                    if (optionNameIndex >= 0) {
+                        var ending = options.indexOf(";", optionNameIndex);
+                        var oldOption = options.substring(optionNameIndex, ending + 1);
+                        options = options.replace(oldOption, currentOption);
+                    } else {
+                        options += currentOption;
+                    }
+                    if (lastSegment !== '@Model.Category.UrlName') {
+                        var locBuilder = location.href.replace(lastSegment + "/", "") + options;
+                        if (options.length > 0)
+                            locBuilder += "/";
+                        location.href = locBuilder;
+                    } else {
+                        var locBuilder = location.href;
+                        if (location.href[location.href.length - 1] !== "/") {
+                            locBuilder += "/";
+                        }
+                        location.href = locBuilder + options + "/";
+                    }
+                });
+                </text>
+            }
         });
 
         function AddOrderProduct(productId, sellerId, hasOptions, isWeightProduct) {
@@ -137,40 +213,38 @@
         <div class="col-md-9">
             @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
         </div>
-        <div class="provider_sort col-md-3">
-            @using (Html.BeginForm("Catalog", "Postachalnyk", FormMethod.Get, new { id = "sort-form" }))
-            {
-                var sort = Request.QueryString["sort"] == null ? ProductSortOption.Order : (ProductSortOption)Enum.Parse(typeof(ProductSortOption), Request.QueryString["sort"]);
-                <label for="provider_sort_title">Сортувати</label>
-                <select id="provider_sort_select" name="sort" class="provider_sort_select">
-                    <option value="Order" @(sort == ProductSortOption.Order ? "selected" : "")>По замовчуванню</option>
-                    <option value="PriceAsc" @(sort == ProductSortOption.PriceAsc ? "selected" : "")>Ціна &#8593;</option>
-                    <option value="PriceDesc" @(sort == ProductSortOption.PriceDesc ? "selected" : "")>Ціна &#8595;</option>
-                    <option value="NameAsc" @(sort == ProductSortOption.NameAsc ? "selected" : "")>А-Я</option>
-                    <option value="NameDesc" @(sort == ProductSortOption.NameDesc ? "selected" : "")>Я-А</option>
-                </select>
-            }
+        <div class="provider_sort col-md-3 filter-section" data-filter-name="sort">
+            <label for="provider_sort_title">Сортувати</label>
+            <select id="provider_sort_select" name="sort" class="provider_sort_select">
+                <option value="Order">По замовчуванню</option>
+                <option value="PriceAsc">Ціна &#8593;</option>
+                <option value="PriceDesc">Ціна &#8595;</option>
+                <option value="NameAsc">А-Я</option>
+                <option value="NameDesc">Я-А</option>
+            </select>
         </div>
     </div>
     @if (Model.Items.Any())
     {
-        foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
-        {
-            var regionId = RegionService.GetRegionId();
-            var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
-            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
-        }
-        if (Model.Items.Count > ListConstants.DefaultTakePerPage)
-        {
-            <div class="product_container" id="more-products">
-                <div class="product">
-                    @*<div class="more-items"></div>*@
-                    <div>
-                        <a class="more-items" href="#" id="add-more-products">Показати ще</a>
+        <div id="products-list">
+            @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
+            {
+                var regionId = RegionService.GetRegionId();
+                var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
+                @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
+            }
+            @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+            {
+                <div class="product_container" id="more-products">
+                    <div class="product">
+                        @*<div class="more-items"></div>*@
+                        <div>
+                            <a class="more-items" href="#" id="add-more-products">Показати ще</a>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     }
     else
     {

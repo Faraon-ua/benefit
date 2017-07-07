@@ -3,7 +3,7 @@ namespace Benefit.Domain.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class RemoveParentProductParameter : DbMigration
+    public partial class UpgradeProductParameters : DbMigration
     {
         public override void Up()
         {

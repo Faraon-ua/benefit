@@ -34,7 +34,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         new SelectListItem()
                         {
                             Text = entry.ParameterValue,
-                            Selected = entry.ParameterValue == selected
+                            Value = entry.ParameterValueUrl,
+                            Selected = entry.ParameterValueUrl == selected
                         });
             var model = new ProductParameterProduct()
             {

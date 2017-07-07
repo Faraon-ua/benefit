@@ -10,6 +10,7 @@ using Benefit.Common.Helpers;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
+using Benefit.Common.Extensions;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
@@ -77,7 +78,7 @@ namespace Benefit.Services.Domain
             }
             return new SellersViewModel()
             {
-                Items = sellers.OrderByDescending(entry=>entry.Status).ThenByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry => entry.UserDiscount).ToList()
+                Items = sellers.OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry => entry.UserDiscount).ToList()
             };
         }
 
@@ -93,7 +94,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Schedules)
                 .Include(entry => entry.Addresses)
                 .Include(entry => entry.ShippingMethods)
-                .Include(entry => entry.Reviews.Select(review=>review.ChildReviews))
+                .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
                 .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
                 .FirstOrDefault(entry => entry.UrlName == urlName);
             if (seller != null)
@@ -139,11 +140,11 @@ namespace Benefit.Services.Domain
                 var seller =
                     db.Sellers
                     .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
-                    .Include(entry => entry.MappedCategories.Select(mc=>mc.MappedParentCategory))
+                    .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory))
                         .FirstOrDefault(entry => entry.UrlName == sellerUrl);
                 var all = new List<Category>();
                 var sellerCats = seller.SellerCategories.Select(entry => entry.Category);
-                var sellerMappedCats = seller.MappedCategories.Where(entry=>entry.MappedParentCategory != null).Select(entry=>entry.MappedParentCategory).ToList();
+                var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null).Select(entry => entry.MappedParentCategory).ToList();
                 all.AddRange(sellerCats);
                 all.AddRange(sellerMappedCats);
                 foreach (var sellerCat in sellerCats)
@@ -154,7 +155,7 @@ namespace Benefit.Services.Domain
                         all.Add(parent);
                         parent = parent.ParentCategory;
                     }
-                } 
+                }
                 foreach (var sellerCat in sellerMappedCats)
                 {
                     var parent = sellerCat.ParentCategory;
@@ -173,13 +174,14 @@ namespace Benefit.Services.Domain
             return cacheCats as List<Category>;
         }
 
-        public List<Product> GetSellerCatalogProducts(string sellerId, string categoryId, ProductSortOption sort, int skip = 0, int take = ListConstants.DefaultTakePerPage)
+        public List<Product> GetSellerCatalogProducts(string sellerId, string categoryId, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
             var regionId = RegionService.GetRegionId();
             var items = db.Products.Include(entry => entry.Category.ParentCategory.ParentCategory)
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                 .Include(entry => entry.Seller.Addresses)
+                .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
                 .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
             if (regionId != RegionConstants.AllUkraineRegionId)
             {
@@ -190,12 +192,12 @@ namespace Benefit.Services.Domain
 
             if (!string.IsNullOrEmpty(categoryId))
             {
-                var category = db.Categories.Include(entry=>entry.MappedCategories).FirstOrDefault(entry=>entry.Id == categoryId);
+                var category = db.Categories.Include(entry => entry.MappedCategories).FirstOrDefault(entry => entry.Id == categoryId);
                 var allDescendants = category.GetAllChildrenRecursively().ToList();
                 var allIds = allDescendants.Select(entry => entry.Id).ToList();
                 //add mapped categoryIds
-                allIds.AddRange(allDescendants.SelectMany(entry=>entry.MappedCategories).Select(entry=>entry.Id));
-                allIds.AddRange(category.MappedCategories.Select(entry=>entry.Id));
+                allIds.AddRange(allDescendants.SelectMany(entry => entry.MappedCategories).Select(entry => entry.Id));
+                allIds.AddRange(category.MappedCategories.Select(entry => entry.Id));
                 allIds.Add(categoryId);
                 items = items.Where(entry => allIds.Contains(entry.CategoryId));
             }
@@ -204,6 +206,36 @@ namespace Benefit.Services.Domain
                 items = items.Where(entry => entry.SellerId == sellerId);
             }
             //todo: instead all products show recomendations
+            var sort = ProductSortOption.Order;
+            if (options != null)
+            {
+                var optionSegments = options.Split(';');
+                foreach (var optionSegment in optionSegments)
+                {
+                    if (optionSegment == string.Empty) continue;
+                    var optionKeyValue = optionSegment.Split('=');
+                    var optionKey = optionKeyValue.First();
+                    var optionValues = optionKeyValue.Last().Split(',');
+                    if (optionKey != "sort")
+                    {
+                        items =
+                            items.Where(
+                                entry =>
+                                    entry.ProductParameterProducts.Any(pr => pr.ProductParameter.UrlName == optionKey) &&
+                                    optionValues.Any(
+                                        optValue =>
+                                            entry.ProductParameterProducts.Select(pr => pr.StartValue)
+                                                .Contains(optValue)));
+                    }
+                    else
+                    {
+                        if (optionKey == "sort")
+                        {
+                            sort = (ProductSortOption)Enum.Parse(typeof(ProductSortOption), optionValues.First());
+                        }
+                    }
+                }
+            }
             switch (sort)
             {
                 case ProductSortOption.Order:
@@ -240,17 +272,17 @@ namespace Benefit.Services.Domain
             return result;
         }
 
-        public ProductsViewModel GetSellerCatalog(string sellerUrl, string categoryUrl, ProductSortOption sort)
+        public ProductsViewModel GetSellerCatalog(string sellerUrl, string categoryUrl, string options)
         {
             var categoriesService = new CategoriesService();
             var result = new ProductsViewModel();
             var seller = db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.UrlName == sellerUrl);
             if (seller == null) return null;
             result.Seller = seller;
-            var category = db.Categories.Include(entry=>entry.ProductParameters.Select(pr=>pr.ProductParameterValues)).FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            var category = db.Categories.Include(entry => entry.ProductParameters.Select(pr => pr.ProductParameterValues)).FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
-            result.Items = GetSellerCatalogProducts(seller.Id, categoryId, sort).ToList();
+            result.Items = GetSellerCatalogProducts(seller.Id, categoryId, options).ToList();
             //todo: add breadcrumbs
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {

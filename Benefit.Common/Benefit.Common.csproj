@@ -60,6 +60,7 @@
     <Compile Include="CustomEventArgs\NfcEventArgs.cs" />
     <Compile Include="Exceptions\ServiceException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\LinqExtensions.cs" />
     <Compile Include="Extensions\NumbersExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\UrlExtensions.cs" />

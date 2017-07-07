@@ -46,7 +46,14 @@
                     <div class="special red">-45%</div>
                     <div class="special orange">бонус 15%</div>
                 </div>*@
-            <div class="img" style="background-image: url('../../Images/ProductGallery/@hit.Id/@image.ImageUrl');"></div>
+            @if (image == null)
+            {
+                <div class="img" style="background-image: url('../../Images/ProductGallery/default_product_thumbnail.png');"></div>
+            }
+            else
+            {
+                <div class="img" style="background-image: url('../../Images/ProductGallery/@hit.Id/@image.ImageUrl');"></div>
+            }
             <p>@hit.Name</p>
             @*            <span class="price old">3999,00 грн</span>*@
             <span class="price new">@hit.Price грн</span>

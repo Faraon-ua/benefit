@@ -7,13 +7,13 @@ namespace Benefit.Domain.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class RemoveParentProductParameter : IMigrationMetadata
+    public sealed partial class UpgradeProductParameters : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(RemoveParentProductParameter));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(UpgradeProductParameters));
         
         string IMigrationMetadata.Id
         {
-            get { return "201706270839147_RemoveParentProductParameter"; }
+            get { return "201707040813503_UpgradeProductParameters"; }
         }
         
         string IMigrationMetadata.Source

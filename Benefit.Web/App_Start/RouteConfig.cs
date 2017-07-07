@@ -25,9 +25,16 @@ namespace Benefit.Web
                name: RouteConstants.SellerCatalogRouteName,
                url:
                    RouteConstants.SellersRoutePrefix + "/{sellerUrl}/" + RouteConstants.CategoriesRoutePrefix +
-                   "/{categoryUrl}",
-               defaults: new { controller = "Postachalnyk", action = "Catalog", sellerUrl = UrlParameter.Optional, categoryUrl = UrlParameter.Optional }
+                   "/{categoryUrl}/{options}",
+               defaults: new { controller = "Postachalnyk", action = "Catalog", sellerUrl = UrlParameter.Optional, categoryUrl = UrlParameter.Optional, options = UrlParameter.Optional }
                );
+
+            routes.MapRoute(
+             name: RouteConstants.CatalogRouteName,
+             url:
+                 RouteConstants.CategoriesRoutePrefix + "/{categoryUrl}/{options}",
+             defaults: new { controller = "Catalog", action = "Index", categoryUrl = UrlParameter.Optional, options = UrlParameter.Optional }
+             );
 
             routes.MapRoute(
                 name: RouteConstants.SellersRouteName,

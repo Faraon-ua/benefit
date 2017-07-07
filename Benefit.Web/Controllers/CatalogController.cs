@@ -25,21 +25,21 @@ namespace Benefit.Web.Controllers
             return PartialView("_BaseCategoriesPartial", categories);
         }
 
-        public ActionResult Index(string id)
+        public ActionResult Index(string categoryUrl, string options)
         {
-            var products = CategoriesService.GetCategoryProducts(id);
+            var products = CategoriesService.GetCategoryProducts(categoryUrl, options);
             if (products != null)
             {
                 return View("ProductsCatalog", products);
             }
-            var sellers = CategoriesService.GetCategorySellers(id);
+            var sellers = CategoriesService.GetCategorySellers(categoryUrl);
             if (sellers == null) return HttpNotFound();
             return View("SellersCatalog", sellers);
         }
 
-        public ActionResult GetProducts(string categoryId, string sellerId, ProductSortOption sort, int skip, int take = ListConstants.DefaultTakePerPage)
+        public ActionResult GetProducts(string categoryId, string sellerId, string options, int skip, int take = ListConstants.DefaultTakePerPage)
         {
-            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, sort, skip, take);
+            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, take);
             var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("_ProductPartial",new ProductPartialViewModel
             {
                 Product = entry,

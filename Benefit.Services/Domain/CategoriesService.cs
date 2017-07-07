@@ -64,7 +64,7 @@ namespace Benefit.Services.Domain
              return result;
          }*/
 
-        public ProductsViewModel GetCategoryProducts(string urlName, int skip = 0, int take = ListConstants.DefaultTakePerPage)
+        public ProductsViewModel GetCategoryProducts(string urlName, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
             var category =
                 db.Categories.Include(entry => entry.Products)
@@ -76,7 +76,7 @@ namespace Benefit.Services.Domain
             {
                 return null;
             }
-            var products = SellerService.GetSellerCatalogProducts(null, category.Id, ProductSortOption.Order, skip, take);
+            var products = SellerService.GetSellerCatalogProducts(null, category.Id, options, skip, take);
             if (!products.Any()) return null;
             var result = new ProductsViewModel()
             {

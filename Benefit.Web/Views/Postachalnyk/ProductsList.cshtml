@@ -1,0 +1,22 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Services.Domain
+@model IEnumerable<Benefit.Domain.Models.Product>
+
+@foreach (var product in Model.Take(ListConstants.DefaultTakePerPage))
+{
+    var regionId = RegionService.GetRegionId();
+    var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = product.Category == null ? null : product.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
+    @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
+}
+@if (Model.Count() > ListConstants.DefaultTakePerPage)
+{
+    <div class="product_container" id="more-products">
+        <div class="product">
+            @*<div class="more-items"></div>*@
+            <div>
+                <a class="more-items" href="#" id="add-more-products">Показати ще</a>
+            </div>
+        </div>
+    </div>
+}
