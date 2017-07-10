@@ -14,7 +14,15 @@ namespace Benefit.Domain.Models
         public string ProductId { get; set; }
         public Product Product { get; set; }
         public int? Amount { get; set; }
+        [MaxLength(16)]
+        [Key, Column(Order = 2)]
         public string StartValue { get; set; }
+        [MaxLength(32)]
+        public string StartText { get; set; }
+        [MaxLength(16)]
+        [Index]
         public string EndValue { get; set; }
+        [MaxLength(32)]
+        public string EndText { get; set; }
     }
 }

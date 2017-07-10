@@ -29,84 +29,39 @@
     </script>
 }
 <div id="dialogContainer">
-    
+
 </div>
 <a class="btn btn-purple btn-sm" href="@Url.Action("CreateOrUpdate", new { categoryId = Model.Key.Id })">Додати характеристику</a>
-<br/>
-<hr/>
+<br />
+<hr />
 @foreach (var parameter in Model.Value)
 {
-            <div>
-            @{
-        var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
+    <div class="row">
+        @{
+    var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
+        }
+        <div class="col-sm-4">
+            @parameter.Name (@type)
+            <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = parameter.Id, categoryId = Model.Key.Id })">
+                <i class="icon-remove red"></i>
+            </a>
+            @if (parameter.Type == typeof(string).ToString())
+            {
+                <a onclick="ProductParameterValue('@parameter.Id')" href="#">+ Додати значення</a>
             }
-            <div class="col-sm-2">
-                @parameter.Name (@type)
-                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = parameter.Id, categoryId = Model.Key.Id })">
-                    <i class="icon-remove red"></i>
-                </a>
-                @if (parameter.Type == typeof (string).ToString())
-                {
-                    <a onclick="ProductParameterValue('@parameter.Id')" href="#">+ Додати значення</a>
-                }
-            </div>
-            <div class="col-sm-3">
-                @foreach (var prParValue in @parameter.ProductParameterValues)
-                {
-                    <div>
-                        @prParValue.ParameterValue
-                        <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("DeleteValue", new { id = prParValue.Id, categoryId = Model.Key.Id })">
-                            <i class="icon-remove red"></i>
-                        </a>
-                    </div>
-                }
-            </div>
         </div>
-        <br />
-        <hr />
-   @* <div>
-        <h3 class="pull-left">@group.Name</h3>
-        <a class="btn btn-success btn-sm margin-right-10 pull-left" href="@Url.Action("CreateOrUpdate", new { categoryId = Model.Key.Id, parentId = group.Id })" target="_blank" title="Додати характеристику">
-            <i class="icon-plus"></i>
-        </a>
-        <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Редагувати" onclick="ProductParameterGroup('@Model.Key.Id', '@group.Id')">
-            <i class="icon-edit"></i>
-        </a>
-        <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryId = Model.Key.Id })" onclick="return confirm('Ви впевненні?')">
-            <i class="icon-trash"></i>
-        </a>
-        <div class="clearfix"></div>
+        <div class="col-sm-3">
+            @foreach (var prParValue in @parameter.ProductParameterValues)
+            {
+                <div>
+                    @prParValue.ParameterValue
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("DeleteValue", new { id = prParValue.Id, categoryId = Model.Key.Id })">
+                        <i class="icon-remove red"></i>
+                    </a>
+                </div>
+            }
+        </div>
     </div>
-    <hr class="margin-top-0" />
-    foreach (var parameter in group.ChildProductParameters)
-    {
-        <div>
-            @{
-        var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
-            }
-            <div class="col-sm-2">
-                @parameter.Name (@type)
-                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = parameter.Id, categoryId = Model.Key.Id })">
-                    <i class="icon-remove red"></i>
-                </a>
-                @if (parameter.Type == typeof (string).ToString())
-                {
-                    <a onclick="ProductParameterValue('@parameter.Id')" href="#">+ Додати значення</a>
-                }
-            </div>
-            <div class="col-sm-3">
-                @foreach (var prParValue in @parameter.ProductParameterValues)
-                {
-                    <div>
-                        @prParValue.ParameterValue
-                        <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("DeleteValue", new { id = prParValue.Id, categoryId = Model.Key.Id })">
-                            <i class="icon-remove red"></i>
-                        </a>
-                    </div>
-                }
-            </div>
-        </div>
-        <br />
-        <hr />
-    }*@
+    <br />
+    <hr />
 }

@@ -247,12 +247,12 @@
 
             <div id="product_charachters_tab" class="product_descr_tab tab-pane fade in">
                 <table>
-                    @foreach (var productParameter in Model.Product.ProductParameterProducts)
+                    @foreach (var productParameter in Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null))
                     {
                         <tr>
                             <td>@productParameter.ProductParameter.Name</td>
                             <td>
-                                @productParameter.StartValue
+                                @productParameter.StartText
                                 @if (!string.IsNullOrEmpty(productParameter.EndValue))
                                 {
                                     <span>- @productParameter.EndValue</span>

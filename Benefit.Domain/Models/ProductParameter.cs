@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
@@ -21,6 +22,7 @@ namespace Benefit.Domain.Models
         public string Name { get; set; }
         [MaxLength(64)]
         [Required]
+        [Index]
         public string UrlName { get; set; }
         public int? Order { get; set; }
         public bool DisplayInFilters { get; set; }

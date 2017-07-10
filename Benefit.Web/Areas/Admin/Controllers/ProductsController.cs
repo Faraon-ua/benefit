@@ -194,6 +194,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("ShortDescription", "Короткий опис обовязковий для заповнення");
             }
+            product.ProductParameterProducts = product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
             if (ModelState.IsValid)
             {
                 if (Seller.CurrentAuthorizedSellerId != null)
