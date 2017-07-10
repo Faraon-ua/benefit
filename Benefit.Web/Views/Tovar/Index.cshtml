@@ -252,7 +252,7 @@
                         <tr>
                             <td>@productParameter.ProductParameter.Name</td>
                             <td>
-                                @productParameter.StartText
+                                @(productParameter.StartText ?? productParameter.StartValue)
                                 @if (!string.IsNullOrEmpty(productParameter.EndValue))
                                 {
                                     <span>- @productParameter.EndValue</span>

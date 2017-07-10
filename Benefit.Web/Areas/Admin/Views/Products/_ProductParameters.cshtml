@@ -19,10 +19,10 @@ else
                 }
             </div>
             <div class="col-sm-6">
-                @if (parameter.Type == typeof(int).ToString() || parameter.Type == typeof(double).ToString())
-{
+                @if (parameter.Type == typeof (int).ToString() || parameter.Type == typeof (double).ToString())
+                {
                     var paramValue = Model.ProductParameterProducts.FirstOrDefault(entry => entry.ProductParameterId == parameter.Id);
-                    <input type="number" step="0.01" name="ProductParameterProducts[{n}].StartValue" value="@(paramValue == null?string.Empty:paramValue.StartValue)" class="product-option-value" />
+                    <input type="number" step="0.01" name="ProductParameterProducts[{n}].StartValue" value="@(paramValue == null ? string.Empty : paramValue.StartValue)" class="product-option-value"/>
                     @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", parameter.Id)
                     <span>@parameter.MeasureUnit</span>
                 }
@@ -30,7 +30,7 @@ else
                 {
                     foreach (var parValue in Model.ProductParameterProducts.Where(entry => entry.ProductParameterId == parameter.Id))
                     {
-                        @Html.Action("GetProductParameterDefinedValues", "ProductParameters", new { parameterId = parameter.Id, amount = parValue.Amount, selected = parValue.StartValue })
+                        @Html.Action("GetProductParameterDefinedValues", "ProductParameters", new {parameterId = parameter.Id, amount = parValue.Amount, selectedValue = parValue.StartValue, selectedText = parValue.StartText})
                     }
                 }
             </div>

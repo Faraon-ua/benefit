@@ -25,7 +25,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(model);
         }
 
-        public ActionResult GetProductParameterDefinedValues(string parameterId, int? amount = null, string selected = null)
+        public ActionResult GetProductParameterDefinedValues(string parameterId, int? amount = null, string selectedValue = null, string selectedText = null)
         {
             var parameter = db.ProductParameters.Find(parameterId);
             var values =
@@ -35,12 +35,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         {
                             Text = entry.ParameterValue,
                             Value = entry.ParameterValueUrl,
-                            Selected = entry.ParameterValueUrl == selected
+                            Selected = entry.ParameterValueUrl == selectedValue
                         });
             var model = new ProductParameterProduct()
             {
                 Amount = amount,
-                ProductParameterId = parameterId
+                ProductParameterId = parameterId,
+                StartText = selectedText
             };
             ViewBag.StartValue = values;
             return PartialView("_ProductOption", model);
