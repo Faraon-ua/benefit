@@ -19,6 +19,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
     public class AdminStuffController : AdminController
     {
         ApplicationDbContext db = new ApplicationDbContext();
+        ScheduleService ScheduleService = new ScheduleService();
+
         //todo: change controller name
         //
         // GET: /Admin/AdminStuff/
@@ -37,21 +39,26 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult ClosePeriod()
         {
-            var service = new ScheduleService();
-            service.CloseQualificationPeriod();
+            ScheduleService.CloseQualificationPeriod();
             TempData["SuccessMessage"] = "Період було закрито";
             return View("Index");
         }
 
         public ActionResult BonusesCalculation()
         {
-            var service = new ScheduleService();
-            var result = service.ProcessBonuses();
+            var result = ScheduleService.ProcessBonuses();
             if (result == null) return View("BonusesCalculationError");
             var bonusesHtml = ControllerContext.RenderPartialToString("_BonusesCalculationPartial", result);
             var emailService = new EmailService();
             emailService.SendBonusesRozrahunokResults(bonusesHtml);
             return View(result);
+        }
+
+        public ActionResult TerminateNonActivePartners()
+        {
+            var result = ScheduleService.TerminateNonActivePartners();
+            TempData["SuccessMessage"] = "Користувачів було терміновано";
+            return File(result, "text/csv", DateTime.Now.ToShortDateString()+".csv");
         }
 
         public ActionResult ClearChat()

@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.IO;
 using System.Linq;
-using System.Security.Policy;
-using System.Text;
-using System.Xml;
-using System.Xml.Linq;
-using Benefit.Common.Constants;
+using System.Threading.Tasks;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Domain.Models.Service;
+using Benefit.Services.Files;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Benefit.Services.Admin
 {
     public class ScheduleService
     {
+        private readonly UserManager<ApplicationUser> _userManager;
+        private static readonly ApplicationDbContext db = new ApplicationDbContext();
+        public ScheduleService(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
+        public ScheduleService()
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db)))
+        {
+        }
         public void CloseQualificationPeriod()
         {
             using (var db = new ApplicationDbContext())
@@ -373,6 +381,106 @@ namespace Benefit.Services.Admin
                 }
             }
             return result;
+        }
+
+        public byte[] TerminateNonActivePartners()
+        {
+            var filesExportService = new FilesExportService();
+            var period = DateTime.Now.AddMonths(-6);
+            var usersToTerminate =
+                db.Users
+                .Include(entry => entry.Referal)
+                .Include(entry => entry.Partners)
+                .Include(entry => entry.Orders)
+                .Include(entry => entry.Transactions)
+                .Include(entry => entry.BenefitCards)
+                .Include(entry => entry.Addresses)
+                .Include(entry => entry.Messages)
+                .Include(entry => entry.NotificationChannels)
+                .Include(entry => entry.Personnels)
+                .Include(entry => entry.OwnedSellers)
+                .Include(entry => entry.ReferedBenefitCardSellers)
+                .Include(entry => entry.ReferedWebSiteSellers)
+                    .Where(
+                        entry =>
+                            entry.BonusAccount <= 0 &&
+                            entry.CurrentBonusAccount <= 0 &&
+                            entry.HangingBonusAccount <= 0 &&
+                            (entry.Status == null || entry.Status == 0) &&
+                            !entry.Personnels.Any() &&
+                            !entry.OwnedSellers.Any() &&
+                            entry.RegisteredOn < period &&
+                            !entry.Orders.Any(ord => ord.Time > period)).ToList();
+
+            var userIds = usersToTerminate.Select(entry => entry.Id).ToList();
+            var csvUsers = filesExportService.CreateCSVFromGenericList(usersToTerminate);
+            var benefitCards = new List<BenefitCard>();
+            var referedBenefitCardSellers = new List<Seller>();
+            var referedWebSiteSellers = new List<Seller>();
+            var addresses = new List<Address>();
+            var messages = new List<Message>();
+            var channels = new List<NotificationChannel>();
+            var transactions = new List<Transaction>();
+
+            object sync = new object();
+            Parallel.ForEach(usersToTerminate, (terminatedUser) =>
+            {
+                //foreach (var terminatedUser in usersToTerminate)
+                //{
+                benefitCards.AddRange(terminatedUser.BenefitCards);
+                referedBenefitCardSellers.AddRange(terminatedUser.ReferedBenefitCardSellers);
+                referedWebSiteSellers.AddRange(terminatedUser.ReferedWebSiteSellers);
+
+                //partners
+                var partners = terminatedUser.Partners.ToList();
+                foreach (var partner in partners)
+                {
+                    if (partner.ReferalId != null)
+                    {
+                        lock (sync)
+                        {
+                            partner.ReferalId = terminatedUser.ReferalId;
+                            db.Entry(partner).State = EntityState.Modified;
+                        }
+                    }
+                }
+                addresses.AddRange(terminatedUser.Addresses);
+
+                //messages
+                messages.AddRange(terminatedUser.Messages);
+
+                //notifications
+                channels.AddRange(terminatedUser.NotificationChannels);
+            });
+            transactions.AddRange(db.Transactions.Where(entry => userIds.Contains(entry.PayerId) || userIds.Contains(entry.PayeeId)));
+
+            foreach (var benefitCard in benefitCards)
+            {
+                benefitCard.UserId = null;
+                db.Entry(benefitCard).State = EntityState.Modified;
+            }
+            foreach (var seller in referedBenefitCardSellers)
+            {
+                seller.BenefitCardReferalId = null;
+                db.Entry(seller).State = EntityState.Modified;
+            }
+            foreach (var seller in referedWebSiteSellers)
+            {
+                seller.WebSiteReferalId = null;
+                db.Entry(seller).State = EntityState.Modified;
+            }
+            db.Addresses.RemoveRange(addresses);
+            db.Messages.RemoveRange(messages);
+            db.NotificationChannels.RemoveRange(channels);
+            db.Transactions.RemoveRange(transactions);
+            db.SaveChanges();
+
+            usersToTerminate.ForEach(entry =>
+            {
+                _userManager.Delete(entry);
+            });
+
+            return csvUsers;
         }
     }
 }

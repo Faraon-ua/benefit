@@ -40,3 +40,9 @@
     </legend>
     <a class="btn btn-info" href="@Url.Action("GenerateSitemap", "AdminStuff")">Згенерувати sitemap.xml</a>
 </fieldset>
+<fieldset>
+    <legend>
+        Термінація
+    </legend>
+    <a class="btn btn-info" href="@Url.Action("TerminateNonActivePartners", "AdminStuff")" onclick="$(this).attr('disabled', 'disabled');">Термінація користувачів</a>
+</fieldset>

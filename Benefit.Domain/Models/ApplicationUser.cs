@@ -64,6 +64,9 @@ namespace Benefit.Domain.Models
         public ICollection<Transaction> Transactions { get; set; }
         public ICollection<BenefitCard> BenefitCards { get; set; }
         public ICollection<PromotionAccomplishment> PromotionAccomplishments { get; set; }
+        public ICollection<Message> Messages { get; set; }
+        public ICollection<NotificationChannel> NotificationChannels{ get; set; }
+        public ICollection<Personnel> Personnels { get; set; }
     }
 
     public class ApplicationUserComparer : IEqualityComparer<ApplicationUser>
