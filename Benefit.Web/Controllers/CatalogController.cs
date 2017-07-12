@@ -27,7 +27,7 @@ namespace Benefit.Web.Controllers
 
         public ActionResult Index(string categoryUrl, string options)
         {
-            var products = CategoriesService.GetCategoryProducts(categoryUrl, options);
+            var products = SellerService.GetSellerCatalog(null, categoryUrl, options);
             if (products != null)
             {
                 return View("ProductsCatalog", products);

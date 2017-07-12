@@ -59,7 +59,7 @@
 
             $("#add-more-products").click(function (e) {
                 e.preventDefault();
-                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&skip=" + skip + "&sort=" + $("select[name=sort]").val(), function (data) {
+                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&skip=" + skip + "&options=" + options, function (data) {
                     if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
                         $("#more-products").hide();
                     }

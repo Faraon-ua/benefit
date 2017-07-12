@@ -5,9 +5,9 @@
 <br class="clearfix" />
 
 <div id="productFilters">
-    @if (Model.Category != null && Model.Category.ProductParameters.Any())
+    @if (Model.ProductParameters.Any())
     {
-        foreach (var filter in Model.Category.ProductParameters)
+        foreach (var filter in Model.ProductParameters)
         {
             <div class="filter-section" data-filter-name="@filter.UrlName">
                 <hr />

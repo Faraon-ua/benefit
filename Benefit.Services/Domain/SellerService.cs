@@ -277,12 +277,28 @@ namespace Benefit.Services.Domain
             var categoriesService = new CategoriesService();
             var result = new ProductsViewModel();
             var seller = db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.UrlName == sellerUrl);
-            if (seller == null) return null;
+            //            if (seller == null) return null;
             result.Seller = seller;
             var category = db.Categories.Include(entry => entry.ProductParameters.Select(pr => pr.ProductParameterValues)).FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
-            result.Items = GetSellerCatalogProducts(seller.Id, categoryId, options).ToList();
+            result.Items = GetSellerCatalogProducts(seller == null ? null : seller.Id, categoryId, options).ToList();
+
+            //product parameters
+            if (category != null)
+            {
+                result.ProductParameters = category.ProductParameters.Where(entry => entry.DisplayInFilters).ToList();
+                var productParametersInItems =
+                    result.Items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue))
+                        .Distinct()
+                        .ToList();
+                foreach (var productParameter in result.ProductParameters)
+                {
+                    productParameter.ProductParameterValues =
+                        productParameter.ProductParameterValues.Where(
+                            entry => productParametersInItems.Contains(entry.ParameterValueUrl)).ToList();
+                }
+            }
             //todo: add breadcrumbs
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {

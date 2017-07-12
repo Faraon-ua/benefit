@@ -252,6 +252,10 @@
                         <tr>
                             <td>@productParameter.ProductParameter.Name</td>
                             <td>
+                                @if (productParameter.Amount.HasValue)
+                                {
+                                    <span>@(productParameter.Amount.Value)x</span>
+                                }
                                 @(productParameter.StartText ?? productParameter.StartValue)
                                 @if (!string.IsNullOrEmpty(productParameter.EndValue))
                                 {

@@ -63,7 +63,7 @@ namespace Benefit.Services.Domain
              return result;
          }*/
 
-        public ProductsViewModel GetCategoryProducts(string urlName, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage)
+        /*public ProductsViewModel GetCategoryProducts(string urlName, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage)
         {
             var category =
                 db.Categories.Include(entry => entry.Products)
@@ -84,7 +84,7 @@ namespace Benefit.Services.Domain
                 Breadcrumbs = new BreadCrumbsViewModel() { Categories = GetBreadcrumbs(urlName: urlName) }
             };
             return result;
-        }
+        }*/
 
         public SellersViewModel GetCategorySellers(string urlName)
         {
