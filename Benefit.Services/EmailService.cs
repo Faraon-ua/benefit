@@ -15,8 +15,8 @@ namespace Benefit.Services
     public class EmailService : IIdentityMessageService
     {
         private const string DisplayName = "Benefit Company";
-        private const string BenefitBusinessEmail = "benefitforbusiness@gmail.com";
-        private const string BenefitInfoEmail = "info.benefitcompany@gmail.com";
+        public const string BenefitBusinessEmail = "benefitforbusiness@gmail.com";
+        public const string BenefitInfoEmail = "info.benefitcompany@gmail.com";
         private const string AdminEmail = "faraon.ua@gmail.com";
 
         private async Task SendTemplatedEmail(string templateName, string toad, string subjectcontent, params string[] parameters)

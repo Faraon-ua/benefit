@@ -41,7 +41,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 Amount = amount,
                 ProductParameterId = parameterId,
-                StartText = selectedText
+                StartText = selectedText ?? values.First().Text
             };
             ViewBag.StartValue = values;
             return PartialView("_ProductOption", model);
