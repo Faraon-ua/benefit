@@ -19,7 +19,7 @@ namespace Benefit.Services.Domain
         private CategoriesService categoriesService = new CategoriesService();
         private ProductsService productsService = new ProductsService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
-        Object lockObj = new Object();  
+        Object lockObj = new Object();
 
         private void CreateAndUpdatePromUaCategories(List<XElement> xmlCategories, string sellerUrlName, string sellerId, Category parent = null)
         {
@@ -46,7 +46,7 @@ namespace Benefit.Services.Domain
                         IsSellerCategory = true,
                         SellerId = sellerId,
                         Name = catName,
-                        UrlName = string.Format("{0}_{1}_{2}", sellerUrlName, parent == null ? string.Empty : parent.Name.Translit(), catName.Translit()),
+                        UrlName = string.Format("{0}_{1}", catId, catName.Translit()),
                         Description = catName,
                         NavigationType = CategoryNavigationType.SellersAndProducts.ToString(),
                         IsActive = true,
@@ -58,8 +58,7 @@ namespace Benefit.Services.Domain
                 else
                 {
                     dbCategory.Name = catName;
-                    dbCategory.UrlName = string.Format("{0}_{1}_{2}", sellerUrlName,
-                        parent == null ? string.Empty : parent.Name.Translit(), catName.Translit());
+                    dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit());
 
                     dbCategory.ParentCategoryId = xmlCategory.Attribute("parentId") == null
                         ? null
@@ -118,6 +117,7 @@ namespace Benefit.Services.Domain
                 var currencyId = xmlProduct.Element("currencyId").Value;
 
                 string descr = null;
+                var urlName = name.Translit();
                 if (xmlProduct.Element("vendor") != null || xmlProduct.Elements("param").Any())
                 {
                     var descrBuilder = new StringBuilder();
@@ -139,10 +139,10 @@ namespace Benefit.Services.Domain
                 {
                     Id = xmlProduct.Attribute("id").Value,
                     Name = name,
-                    UrlName = name.Translit(),
+                    UrlName = urlName.Truncate(128),
                     CategoryId = xmlProduct.Element("categoryId").Value,
                     SellerId = sellerId,
-                    Description = descr,
+                    Description = descr ?? name,
                     IsWeightProduct = false,
                     Price = double.Parse(xmlProduct.Element("price").Value),
                     CurrencyId = currencies.First(entry => entry.Name == currencyId).Id,
@@ -152,7 +152,7 @@ namespace Benefit.Services.Domain
                     DoesCountForShipping = true,
                     LastModified = DateTime.UtcNow,
                     LastModifiedBy = "PromUaImport",
-                    AltText = name,
+                    AltText = name.Truncate(100),
                     ShortDescription = name
                 };
                 lock (lockObj)
@@ -180,6 +180,7 @@ namespace Benefit.Services.Domain
                 var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToUpdate);
 
                 var name = xmlProduct.Element("name").Value;
+                var urlName = name.Translit();
                 var shortDescr = xmlProduct.Element("description").Value.Replace("\n", "<br/>");
                 string descr = null;
                 var currencyId = xmlProduct.Element("currencyId").Value;
@@ -203,7 +204,7 @@ namespace Benefit.Services.Domain
                 }
 
                 product.Name = name;
-                product.UrlName = name.Translit();
+                product.UrlName = urlName.Truncate(128);
                 product.CategoryId = xmlProduct.Element("categoryId").Value;
                 product.Description = descr;
                 product.Price = double.Parse(xmlProduct.Element("price").Value);
@@ -212,7 +213,7 @@ namespace Benefit.Services.Domain
                 product.AvailableAmount = xmlProduct.Attribute("available").Value == "true" ? null : (int?)0;
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = "PromUaImport";
-                product.AltText = name;
+                product.AltText = name.Truncate(100);
                 product.ShortDescription = name;
 
                 var order = 0;
@@ -242,7 +243,7 @@ namespace Benefit.Services.Domain
 
         private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId, bool delete)
         {
-            var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).Select(entry=>entry.Id).ToList();
+            var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).Select(entry => entry.Id).ToList();
             var xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
             var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).ToList();
             foreach (var prodId in productIdsToRemove)
@@ -262,60 +263,58 @@ namespace Benefit.Services.Domain
 
         public void ImportFromPromua()
         {
+            var importTasks =
+                db.ExportImports.Include(entry => entry.Seller.MappedCategories).Where(
+                    entry => entry.IsActive && entry.IsImport && entry.SyncType == SyncType.Promua).ToList();
+            foreach (var importTask in importTasks)
             {
-                var importTasks =
-                    db.ExportImports.Include(entry => entry.Seller.MappedCategories).Where(
-                        entry => entry.IsActive && entry.IsImport && entry.SyncType == SyncType.Promua).ToList();
-                foreach (var importTask in importTasks)
+                XDocument xml = null;
+                try
                 {
-                    XDocument xml = null;
-                    try
-                    {
-                        xml = XDocument.Load(importTask.FileUrl);
-                    }
-                    catch (Exception ex)
-                    {
-                        importTask.LastUpdateStatus = false;
-                        importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
-                        importTask.LastSync = DateTime.UtcNow;
-                        db.Entry(importTask).State = EntityState.Modified;
-                        db.SaveChanges();
-                        return;
-                    }
+                    xml = XDocument.Load(importTask.FileUrl);
+                }
+                catch (Exception ex)
+                {
+                    importTask.LastUpdateStatus = false;
+                    importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
+                    importTask.LastSync = DateTime.UtcNow;
+                    db.Entry(importTask).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return;
+                }
 
-                    try
-                    {
-                        var root = xml.Element("yml_catalog").Element("shop");
-                        var xmlCategories = root.Descendants("categories").First().Elements().ToList();
-                        CreateAndUpdatePromUaCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
-                        db.SaveChanges();
-                        DeletePromUaCategories(importTask.Seller, xmlCategories, importTask.RemoveProducts);
-                        db.SaveChanges();
+                try
+                {
+                    var root = xml.Element("yml_catalog").Element("shop");
+                    var xmlCategories = root.Descendants("categories").First().Elements().ToList();
+                    CreateAndUpdatePromUaCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
+                    db.SaveChanges();
+                    DeletePromUaCategories(importTask.Seller, xmlCategories, importTask.RemoveProducts);
+                    db.SaveChanges();
 
-                        var xmlProducts = root.Descendants("offers").First().Elements().ToList();
-                        AddAndUpdatePromUaProducts(xmlProducts, importTask.SellerId);
-                        db.SaveChanges();
-                        DeletePromUaProducts(xmlProducts, importTask.SellerId, importTask.RemoveProducts);
-                        db.SaveChanges();
+                    var xmlProducts = root.Descendants("offers").First().Elements().ToList();
+                    AddAndUpdatePromUaProducts(xmlProducts, importTask.SellerId);
+                    db.SaveChanges();
+                    DeletePromUaProducts(xmlProducts, importTask.SellerId, importTask.RemoveProducts);
+                    db.SaveChanges();
 
-                        //todo:handle exceptions
+                    //todo:handle exceptions
 
-                        importTask.LastUpdateStatus = true;
-                        importTask.LastUpdateMessage = null;
-                        importTask.LastSync = DateTime.UtcNow;
-                        db.Entry(importTask).State = EntityState.Modified;
-                        db.SaveChanges();
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(ex);
-                        importTask.LastUpdateStatus = false;
-                        importTask.LastUpdateMessage = "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
-                        importTask.LastSync = DateTime.UtcNow;
-                        db.Entry(importTask).State = EntityState.Modified;
-                        db.SaveChanges();
-                        return;
-                    }
+                    importTask.LastUpdateStatus = true;
+                    importTask.LastUpdateMessage = null;
+                    importTask.LastSync = DateTime.UtcNow;
+                    db.Entry(importTask).State = EntityState.Modified;
+                    db.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    importTask.LastUpdateStatus = false;
+                    importTask.LastUpdateMessage = "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
+                    importTask.LastSync = DateTime.UtcNow;
+                    db.Entry(importTask).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return;
                 }
             }
         }

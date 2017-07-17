@@ -26,5 +26,15 @@ namespace Benefit.Common.Extensions
         {
             return theDate.Date.AddDays(1).AddTicks(-1);
         }
+
+        public static DateTime StartOfMonth(this DateTime theDate)
+        {
+            return new DateTime(theDate.Year, theDate.Month, 1);
+        }
+
+        public static DateTime EndOfMonth(this DateTime theDate)
+        {
+            return theDate.StartOfMonth().AddMonths(1).AddTicks(-1);
+        }
     }
 }

@@ -421,6 +421,7 @@ namespace Benefit.Services.Admin
             var messages = new List<Message>();
             var channels = new List<NotificationChannel>();
             var transactions = new List<Transaction>();
+            var orders = new List<Order>();
 
             object sync = new object();
             Parallel.ForEach(usersToTerminate, (terminatedUser) =>
@@ -451,6 +452,7 @@ namespace Benefit.Services.Admin
 
                 //notifications
                 channels.AddRange(terminatedUser.NotificationChannels);
+                orders.AddRange(terminatedUser.Orders);
             });
             transactions.AddRange(db.Transactions.Where(entry => userIds.Contains(entry.PayerId) || userIds.Contains(entry.PayeeId)));
 
@@ -473,6 +475,7 @@ namespace Benefit.Services.Admin
             db.Messages.RemoveRange(messages);
             db.NotificationChannels.RemoveRange(channels);
             db.Transactions.RemoveRange(transactions);
+            db.Orders.RemoveRange(orders);
             db.SaveChanges();
 
             usersToTerminate.ForEach(entry =>

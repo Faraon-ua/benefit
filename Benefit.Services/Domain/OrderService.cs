@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using Benefit.Common.Constants;
+using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -90,12 +91,34 @@ namespace Benefit.Services.Domain
         public void DeleteOrder(string orderId)
         {
             var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.User).Include(entry => entry.Transactions).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
-            order.User.PointsAccount = order.User.PointsAccount - order.PointsSum;
-            order.User.CurrentBonusAccount = order.User.CurrentBonusAccount - order.PersonalBonusesSum;
+            var now = DateTime.UtcNow;
+            var seller = db.Sellers.FirstOrDefault(entry => entry.Id == order.SellerId);
+            if (seller != null)
+            {
+                if (order.Time > now.StartOfMonth() && order.Time < now.EndOfMonth())
+                {
+                    seller.PointsAccount = seller.PointsAccount - order.PointsSum;
+                }
+                if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
+                {
+                    seller.HangingPointsAccount = seller.HangingPointsAccount - order.PointsSum;
+                }
+                db.Entry(seller).State = EntityState.Modified;
+            }
+            if (order.Time > now.StartOfMonth() && order.Time < now.EndOfMonth())
+            {
+                order.User.PointsAccount = order.User.PointsAccount - order.PointsSum;
+                order.User.CurrentBonusAccount = order.User.CurrentBonusAccount - order.PersonalBonusesSum;
+            }
+            if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
+            {
+                order.User.HangingPointsAccount = order.User.HangingPointsAccount - order.PointsSum;
+                order.User.HangingBonusAccount = order.User.HangingBonusAccount - order.PersonalBonusesSum;
+            }
+           
             db.Transactions.RemoveRange(order.Transactions);
             db.OrderProductOptions.RemoveRange(order.OrderProductOptions);
             db.OrderProducts.RemoveRange(order.OrderProducts);
-            db.Transactions.RemoveRange(db.Transactions.Where(entry => entry.OrderId == orderId));
             db.Entry(order.User).State = EntityState.Modified;
             db.Orders.Remove(order);
             db.SaveChanges();

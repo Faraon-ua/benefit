@@ -2,7 +2,6 @@
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
-using Benefit.Domain.Models.Enums;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
 

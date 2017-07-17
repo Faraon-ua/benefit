@@ -5,6 +5,12 @@ namespace Benefit.Common.Extensions
 {
     public static class StringExtensions
     {
+        public static string Truncate(this string value, int maxLength)
+        {
+            if (value == null) return null;
+            return value.Substring(0, value.Length > maxLength ? maxLength : value.Length);
+        }
+
         public static string Translit(this string value)
         {
             var words = new Dictionary<string, string>();

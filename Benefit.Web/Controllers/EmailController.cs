@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.Domain.Models;
 using Benefit.Services;
 
 namespace Benefit.Web.Controllers
@@ -24,7 +25,7 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         public ActionResult SendFacebookAccoutJoinRequest(string facebookAccount)
         {
-            EmailService.SendEmail(EmailService.BenefitInfoEmail, facebookAccount,
+            EmailService.SendEmail(EmailService.BenefitInfoEmail, string.Format("Постачальник: {0}, фейсбук: {1}", Seller.CurrentAuthorizedSellerName, facebookAccount),
                 "Запит на підключення фейсбук сповіщень");
             return new HttpStatusCodeResult(200);
         }

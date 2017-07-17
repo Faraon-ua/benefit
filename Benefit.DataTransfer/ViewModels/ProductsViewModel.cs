@@ -5,6 +5,10 @@ namespace Benefit.DataTransfer.ViewModels
 {
     public class ProductsViewModel
     {
+        public ProductsViewModel()
+        {
+            ProductParameters = new List<ProductParameter>();
+        }
         public List<Product> Items { get; set; }
         public Category Category { get; set; }
         public Seller Seller { get; set; }

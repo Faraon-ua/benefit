@@ -137,7 +137,10 @@
 
                 </td>
             }
-            @if (item.OrderType == OrderType.BenefitCard && User.IsInRole(DomainConstants.SuperAdminRoleName))
+            @{
+                var now = DateTime.UtcNow;
+            }
+            @if (item.OrderType == OrderType.BenefitCard && User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time>now.StartOfMonth().AddMonths(-1))
             {
                 <td>
                     <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>

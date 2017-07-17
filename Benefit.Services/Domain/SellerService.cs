@@ -10,7 +10,6 @@ using Benefit.Common.Helpers;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
-using Benefit.Common.Extensions;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
@@ -236,6 +235,8 @@ namespace Benefit.Services.Domain
                     }
                 }
             }
+            var productParameters =
+                items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue)).ToList();
             switch (sort)
             {
                 case ProductSortOption.Order:
