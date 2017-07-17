@@ -173,8 +173,10 @@ namespace Benefit.Services.Domain
             return cacheCats as List<Category>;
         }
 
-        public List<Product> GetSellerCatalogProducts(string sellerId, string categoryId, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage)
+        public ProductsWithParametersList GetSellerCatalogProducts(string sellerId, string categoryId, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage, bool fetchParameters = true)
         {
+            var result = new ProductsWithParametersList();
+
             var regionId = RegionService.GetRegionId();
             var items = db.Products.Include(entry => entry.Category.ParentCategory.ParentCategory)
                 .Include(entry => entry.Seller)
@@ -192,11 +194,17 @@ namespace Benefit.Services.Domain
             if (!string.IsNullOrEmpty(categoryId))
             {
                 var category = db.Categories.Include(entry => entry.MappedCategories).FirstOrDefault(entry => entry.Id == categoryId);
-                var allDescendants = category.GetAllChildrenRecursively().ToList();
-                var allIds = allDescendants.Select(entry => entry.Id).ToList();
+                var allIds = new List<string>();
                 //add mapped categoryIds
-                allIds.AddRange(allDescendants.SelectMany(entry => entry.MappedCategories).Select(entry => entry.Id));
                 allIds.AddRange(category.MappedCategories.Select(entry => entry.Id));
+
+                if (sellerId != null)
+                {
+                    var allDescendants = category.GetAllChildrenRecursively().ToList();
+                    var allDescandantIds = allDescendants.Select(entry => entry.Id).ToList();
+                    allIds.AddRange(allDescandantIds);
+                    allIds.AddRange(allDescendants.SelectMany(entry => entry.MappedCategories).Select(entry => entry.Id));
+                }
                 allIds.Add(categoryId);
                 items = items.Where(entry => allIds.Contains(entry.CategoryId));
             }
@@ -235,8 +243,11 @@ namespace Benefit.Services.Domain
                     }
                 }
             }
-            var productParameters =
-                items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue)).ToList();
+            if (fetchParameters)
+            {
+                result.ProductParameters =
+                    items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue)).ToList();
+            }
             switch (sort)
             {
                 case ProductSortOption.Order:
@@ -267,8 +278,8 @@ namespace Benefit.Services.Domain
                     break;
             }
 
-            var result = items.Skip(skip).Take(take + 1).ToList();
-            result.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
+            result.Products = items.Skip(skip).Take(take + 1).ToList();
+            result.Products.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
 
             return result;
         }
@@ -283,21 +294,18 @@ namespace Benefit.Services.Domain
             var category = db.Categories.Include(entry => entry.ProductParameters.Select(pr => pr.ProductParameterValues)).FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
-            result.Items = GetSellerCatalogProducts(seller == null ? null : seller.Id, categoryId, options).ToList();
+            var catalog = GetSellerCatalogProducts(seller == null ? null : seller.Id, categoryId, options);
+            result.Items = catalog.Products.ToList();
 
             //product parameters
             if (category != null)
             {
                 result.ProductParameters = category.ProductParameters.Where(entry => entry.DisplayInFilters).ToList();
-                var productParametersInItems =
-                    result.Items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue))
-                        .Distinct()
-                        .ToList();
                 foreach (var productParameter in result.ProductParameters)
                 {
                     productParameter.ProductParameterValues =
                         productParameter.ProductParameterValues.Where(
-                            entry => productParametersInItems.Contains(entry.ParameterValueUrl)).ToList();
+                            entry => catalog.ProductParameters.Contains(entry.ParameterValueUrl)).ToList();
                 }
             }
             //todo: add breadcrumbs

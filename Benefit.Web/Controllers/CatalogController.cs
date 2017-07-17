@@ -26,10 +26,10 @@ namespace Benefit.Web.Controllers
 
         public ActionResult Index(string categoryUrl, string options)
         {
-            var products = SellerService.GetSellerCatalog(null, categoryUrl, options);
-            if (products != null)
+            var catalog = SellerService.GetSellerCatalog(null, categoryUrl, options);
+            if (catalog.Items.Any())
             {
-                return View("ProductsCatalog", products);
+                return View("ProductsCatalog", catalog);
             }
             var sellers = CategoriesService.GetCategorySellers(categoryUrl);
             if (sellers == null) return HttpNotFound();
@@ -38,7 +38,7 @@ namespace Benefit.Web.Controllers
 
         public ActionResult GetProducts(string categoryId, string sellerId, string options, int skip, int take = ListConstants.DefaultTakePerPage)
         {
-            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, take);
+            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, take, false).Products;
             var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("_ProductPartial",new ProductPartialViewModel
             {
                 Product = entry,

@@ -59,12 +59,14 @@
 
             $("#add-more-products").click(function (e) {
                 e.preventDefault();
+                $(".loader").show();
                 $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&skip=" + skip + "&options=" + options, function (data) {
                     if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
                         $("#more-products").hide();
                     }
                     $("#more-products").before(data.products);
                     skip += data.number;
+                    $(".loader").hide();
                 });
             });
 

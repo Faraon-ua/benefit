@@ -46,7 +46,7 @@ namespace Benefit.Services.Domain
                         IsSellerCategory = true,
                         SellerId = sellerId,
                         Name = catName,
-                        UrlName = string.Format("{0}_{1}", catId, catName.Translit()),
+                        UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128),
                         Description = catName,
                         NavigationType = CategoryNavigationType.SellersAndProducts.ToString(),
                         IsActive = true,
@@ -58,7 +58,7 @@ namespace Benefit.Services.Domain
                 else
                 {
                     dbCategory.Name = catName;
-                    dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit());
+                    dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
 
                     dbCategory.ParentCategoryId = xmlCategory.Attribute("parentId") == null
                         ? null
@@ -235,7 +235,7 @@ namespace Benefit.Services.Domain
             foreach (var product in productsToAddList)
             {
                 product.SKU = maxSku;
-                product.UrlName = product.UrlName.Insert(0, maxSku++ + "_");
+                product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
             }
             db.Products.AddRange(productsToAddList);
             db.Images.AddRange(imagesToAddList);

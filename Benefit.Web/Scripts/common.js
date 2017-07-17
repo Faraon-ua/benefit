@@ -183,6 +183,10 @@ function showLoader() {
     $(".loader").show();
 }
 
+function hideLoader() {
+    $(".loader").hide();
+}
+
 function SaveLocalization(id, resourceType, resourceId, resourceField, resourceValue, lang) {
     var localization = {
         Id: id,
