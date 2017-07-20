@@ -83,7 +83,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (productparameter.Id == null)
                 {
                     productparameter.Id = Guid.NewGuid().ToString();
-                    productparameter.AddedById = User.Identity.GetUserId();
+                    productparameter.AddedBy = User.Identity.Name;
                     db.ProductParameters.Add(productparameter);
                 }
                 else

@@ -172,7 +172,16 @@ namespace Benefit.Services.Domain
 
             db.SellerCategories.RemoveRange(category.SellerCategories);
 
-            db.ProductParameters.RemoveRange(category.ProductParameters);
+            var productParameters = category.ProductParameters;
+            var productParameterValues =
+                db.ProductParameterValues.Where(
+                    entry => productParameters.Select(pr => pr.Id).Contains(entry.ProductParameterId));
+            var productParameterProducts = db.ProductParameterProducts.Where(
+                    entry => productParameters.Select(pr => pr.Id).Contains(entry.ProductParameterId));
+            
+            db.ProductParameterProducts.RemoveRange(productParameterProducts);
+            db.ProductParameterValues.RemoveRange(productParameterValues);
+            db.ProductParameters.RemoveRange(productParameters);
             db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
             if (category.ImageUrl != null)
             {

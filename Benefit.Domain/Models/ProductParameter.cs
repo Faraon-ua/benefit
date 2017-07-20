@@ -32,8 +32,7 @@ namespace Benefit.Domain.Models
         public string Type { get; set; }
         public bool IsVerified { get; set; }
         [MaxLength(128)]
-        public string AddedById { get; set; }
-        public virtual ApplicationUser AddedBy { get; set; }
+        public string AddedBy { get; set; }
         [MaxLength(128)]
         public string CategoryId { get; set; }
         public virtual Category Category { get; set; }

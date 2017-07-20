@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Benefit.Common.Extensions;
@@ -104,42 +103,86 @@ namespace Benefit.Services.Domain
 
             var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
             db.Images.RemoveRange(existingImages);
-
             var currencies = db.Currencies.Where(entry => entry.SellerId == null || entry.SellerId == sellerId).ToList();
+
+            //parameters
+            var productParametersToAdd = new List<ProductParameter>();
+            var productParameterValuesToAdd = new List<ProductParameterValue>();
+            var productParameterProductsToAdd = new List<ProductParameterProduct>();
+            var productsGroupByCategoryId = xmlProducts.GroupBy(entry => entry.Element("categoryId").Value).ToList();
+
+            var categryIds = productsGroupByCategoryId.Select(pr => pr.Key).ToList();
+            var existingProductParameters =
+                db.ProductParameters.Where(
+                    entry => categryIds.Contains(entry.CategoryId)).ToList();
+            var productParameterIds = existingProductParameters.Select(pr => pr.Id).ToList();
+            var existingProductParameterValues =
+                db.ProductParameterValues.Where(
+                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+            var existingProductParameterProducts = db.ProductParameterProducts.Where(
+                entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+
+            db.ProductParameterProducts.RemoveRange(existingProductParameterProducts);
+            db.ProductParameterValues.RemoveRange(existingProductParameterValues);
+            db.ProductParameters.RemoveRange(existingProductParameters);
+
+            foreach (var categoryGroupParams in productsGroupByCategoryId)
+            {
+                var xmlParameters =
+                    categoryGroupParams.SelectMany(entry => entry.Elements("param"))
+                    .Select(entry => new { Name = entry.Attribute("name").Value, Unit = entry.Attribute("unit") == null ? null : entry.Attribute("unit").Value == string.Empty ? null : entry.Attribute("unit").Value }).Distinct().ToList();
+
+                foreach (var parameter in xmlParameters)
+                {
+                    var productParameter = new ProductParameter()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = parameter.Name,
+                        UrlName = parameter.Name.Translit(),
+                        MeasureUnit = parameter.Unit,
+                        CategoryId = categoryGroupParams.Key,
+                        AddedBy = "PromUaImport",
+                        DisplayInFilters = parameter.Unit == null,
+                        IsVerified = true,
+                        Type = typeof(string).ToString()
+                    };
+                    productParametersToAdd.Add(productParameter);
+
+                    if (parameter.Unit == null)
+                    {
+                        var xmlProductParameterValues =
+                            xmlProducts.SelectMany(entry => entry.Elements("param"))
+                                .Where(entry => entry.Attribute("name").Value == parameter.Name)
+                                .Select(entry => entry.Value.ToLower())
+                                .Distinct().ToList();
+
+                        var productParameterValues =
+                            xmlProductParameterValues.Select(entry => new ProductParameterValue()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ProductParameterId = productParameter.Id,
+                                IsVerified = true,
+                                ParameterValue = entry.Truncate(64),
+                                ParameterValueUrl = entry.Translit().Truncate(64)
+                            });
+                        productParameterValuesToAdd.AddRange(productParameterValues);
+                    }
+                }
+            }
 
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
             {
-                var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToAdd);
                 var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToAdd);
-
                 var name = xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim();
-                var shortDescr = xmlProduct.Element("description").Value.Replace("\n", "<br/>");
+                var descr = xmlProduct.Element("description").Value.Replace("\n", "<br/>");
                 var currencyId = xmlProduct.Element("currencyId").Value;
-
-                string descr = null;
                 var urlName = name.Translit();
-                if (xmlProduct.Element("vendor") != null || xmlProduct.Elements("param").Any())
-                {
-                    var descrBuilder = new StringBuilder();
-                    if (xmlProduct.Element("vendor") != null)
-                    {
-                        descrBuilder.AppendFormat("<tr><td>Виробник</td><td>{0}</td></tr>",
-                            xmlProduct.Element("vendor").Value);
-                    }
-                    foreach (var xmlParam in xmlProduct.Elements("param"))
-                    {
-                        descrBuilder.AppendFormat("<tr><td>{0}</td><td>{1}</td></tr>",
-                            xmlParam.Attribute("name").Value, xmlParam.Value);
-                    }
-                    descr = shortDescr +
-                            string.Format("<table><tr><td colspan='2'>Характеристики</td></tr>{0}</table>",
-                                descrBuilder);
-                }
-                product = new Product()
+                var product = new Product()
                 {
                     Id = xmlProduct.Attribute("id").Value,
                     Name = name,
                     UrlName = urlName.Truncate(128),
+                    Vendor = xmlProduct.Element("vendor") == null ? null : xmlProduct.Element("vendor").Value,
                     CategoryId = xmlProduct.Element("categoryId").Value,
                     SellerId = sellerId,
                     Description = descr ?? name,
@@ -155,6 +198,21 @@ namespace Benefit.Services.Domain
                     AltText = name.Truncate(100),
                     ShortDescription = name
                 };
+                var productParams = new List<ProductParameterProduct>();
+                foreach (var param in xmlProduct.Elements("param"))
+                {
+                    var productParameterValue = new ProductParameterProduct()
+                    {
+                        ProductId = product.Id,
+                        ProductParameterId = productParametersToAdd.First(entry => entry.Name == param.Attribute("name").Value).Id,
+                        StartValue = param.Value.Translit().Truncate(64),
+                        StartText = param.Value.Truncate(64)
+                    };
+                    productParams.Add(productParameterValue);
+                }
+                productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
+                productParameterProductsToAdd.AddRange(productParams);
+
                 lock (lockObj)
                 {
                     productsToAddList.Add(product);
@@ -206,7 +264,7 @@ namespace Benefit.Services.Domain
                 product.Name = name;
                 product.UrlName = urlName.Truncate(128);
                 product.CategoryId = xmlProduct.Element("categoryId").Value;
-                product.Description = descr;
+                product.Description = descr ?? name;
                 product.Price = double.Parse(xmlProduct.Element("price").Value);
                 product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
 
@@ -230,6 +288,20 @@ namespace Benefit.Services.Domain
                         ProductId = product.Id
                     }));
                 }
+                var productParams = new List<ProductParameterProduct>();
+                foreach (var param in xmlProduct.Elements("param"))
+                {
+                    var productParameterValue = new ProductParameterProduct()
+                    {
+                        ProductId = product.Id,
+                        ProductParameterId = productParametersToAdd.First(entry => entry.Name == param.Attribute("name").Value).Id,
+                        StartValue = param.Value.Translit().Truncate(64),
+                        StartText = param.Value.Truncate(64)
+                    };
+                    productParams.Add(productParameterValue);
+                }
+                productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
+                productParameterProductsToAdd.AddRange(productParams);
             });
 
             foreach (var product in productsToAddList)
@@ -237,7 +309,12 @@ namespace Benefit.Services.Domain
                 product.SKU = maxSku;
                 product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
             }
+
             db.Products.AddRange(productsToAddList);
+            db.ProductParameters.AddRange(productParametersToAdd);
+            db.ProductParameterValues.AddRange(productParameterValuesToAdd);
+            db.ProductParameterProducts.AddRange(productParameterProductsToAdd);
+
             db.Images.AddRange(imagesToAddList);
         }
 

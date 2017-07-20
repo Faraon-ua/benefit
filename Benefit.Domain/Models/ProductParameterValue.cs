@@ -12,8 +12,7 @@ namespace Benefit.Domain.Models
         public string ParameterValueUrl { get; set; }
         public bool IsVerified { get; set; }
         [MaxLength(128)]
-        public string AddedById { get; set; }
-        public virtual ApplicationUser AddedBy { get; set; }
+        public string AddedBy { get; set; }
         [MaxLength(128)]
         public string ProductParameterId { get; set; }
         public ProductParameter ProductParameter { get; set; }

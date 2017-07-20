@@ -301,6 +301,18 @@ namespace Benefit.Services.Domain
             if (category != null)
             {
                 result.ProductParameters = category.ProductParameters.Where(entry => entry.DisplayInFilters).ToList();
+                if (seller != null)
+                {
+                    result.ProductParameters.Union(db.Categories.Include(
+                        entry => entry.MappedCategories.Select(mc => mc.ProductParameters))
+                        .Where(
+                            entry =>
+                                entry.SellerId == seller.Id && entry.ParentCategoryId == category.Id &&
+                                entry.IsActive)
+                        .SelectMany(entry => entry.MappedCategories)
+                        .SelectMany(entry => entry.ProductParameters)
+                        .Where(entry => entry.DisplayInFilters));
+                }
                 foreach (var productParameter in result.ProductParameters)
                 {
                     productParameter.ProductParameterValues =
