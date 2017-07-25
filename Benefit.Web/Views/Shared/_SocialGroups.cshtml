@@ -1,8 +1,6 @@
-﻿@using Benefit.Common.Constants
-
-<!-- Bonuses usage Widget -->
+﻿<!-- Bonuses usage Widget -->
 <div class="social_block fb hide_on_tablet bordered sellers-location">
-    <a style="display: block" href="@Url.Action("Vsi","Postachalnyk")">
+    <a style="display: block" href="@Html.Raw(Url.Action("Vsi", "Postachalnyk", new { options = "criteria=BonusPayment" }))">
         <div class="sellers-location-head">
             Використати бонуси
         </div>

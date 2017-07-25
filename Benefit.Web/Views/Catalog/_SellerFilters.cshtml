@@ -33,26 +33,33 @@
         var regionId = RegionService.GetRegionId();
     }
 
-    <fieldset class="width-100 sidebar_hidden">
-        <legend>Критерії</legend>
-        @if (regionId != RegionConstants.AllUkraineRegionId)
-        {
-            <input class="hidden" type="checkbox" name="seller-options" value="MyCityOnly" id="MyCityOnly">
-            <label class="label_for_check" for="MyCityOnly">Тільки моє місто (@Model.Items.Count(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)))</label>
-        }
+    <div class="filter-section" data-filter-name="criteria">
+        <hr>
+        <div class="margin-bottom-5">
+            <strong>
+                Критерії
+            </strong>
+        </div>
+        <div>
+            @if (regionId != RegionConstants.AllUkraineRegionId)
+            {
+                <input class="hidden" type="checkbox" name="seller-options" value="MyCityOnly" id="MyCityOnly">
+                <label class="label_for_check" for="MyCityOnly">Тільки моє місто (@Model.Items.Count(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)))</label>
+            }
 
-        <input class="hidden" type="checkbox" name="seller-options" value="BenefitCard" id="BenefitCard">
-        <label class="label_for_check" for="BenefitCard">Benefit Card (@Model.Items.Count(entry => entry.IsBenefitCardActive))</label>
+            <input class="hidden" type="checkbox" name="seller-options" value="BenefitCard" id="BenefitCard">
+            <label class="label_for_check" for="BenefitCard">Benefit Card (@Model.Items.Count(entry => entry.IsBenefitCardActive))</label>
 
-        <input class="hidden" type="checkbox" name="seller-options" value="FreeShipping" id="FreeShipping">
-        <label class="label_for_check" for="FreeShipping">Безкоштовна доставка (@Model.Items.Count(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom != null)))</label>
+            <input class="hidden" type="checkbox" name="seller-options" value="FreeShipping" id="FreeShipping">
+            <label class="label_for_check" for="FreeShipping">Безкоштовна доставка (@Model.Items.Count(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom != null)))</label>
 
-        <input class="hidden" type="checkbox" name="seller-options" value="Acquiring" id="BankCard">
-        <label class="label_for_check" for="BankCard">Оплата карткою (@Model.Items.Count(entry => entry.IsAcquiringActive))</label>
+            <input class="hidden" type="checkbox" name="seller-options" value="Acquiring" id="BankCard">
+            <label class="label_for_check" for="BankCard">Оплата карткою (@Model.Items.Count(entry => entry.IsAcquiringActive))</label>
 
-        <input class="hidden" type="checkbox" name="seller-options" value="BonusPayment" id="BonusPayment">
-        <label class="label_for_check" for="BonusPayment">Використати бонуси (@Model.Items.Count(entry => entry.IsBonusesPaymentActive))</label>
-    </fieldset>
+            <input class="hidden" type="checkbox" name="seller-options" value="BonusPayment" id="BonusPayment">
+            <label class="label_for_check" for="BonusPayment">Використати бонуси (@Model.Items.Count(entry => entry.IsBonusesPaymentActive))</label>
+        </div>
+    </div>
 </div>
 
 

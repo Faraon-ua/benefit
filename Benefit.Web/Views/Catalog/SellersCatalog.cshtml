@@ -12,31 +12,7 @@
 @section scripts{
     <script>
         $(function () {
-            var parts = location.href.split('/');
-            var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
-            var options = "";
-            @if (Model.Category != null)
-            {<text>
-            if (lastSegment != '@Model.Category.UrlName') {
-                options = lastSegment;
-                $.each(options.split(";"), function (i, urlSegment) {
-                    if (urlSegment === "") return;
-                    var optKeyValue = urlSegment.split("=");
-                    var optionName = optKeyValue[0];
-                    var optionValues = optKeyValue[1].split(",");
-                    if (optionName === "sort") {
-                        $("select#provider_sort_select").val(optionValues[0]);
-                    } else {
-                        $.each(optionValues, function (j, optValue) {
-                            $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).prop('checked', true);
-                        });
-                    }
-                });
-            }
-                </text>
-            }
-
-            $("#sellerFilters input[type=checkbox]").change(function() {
+            $("#sellerFilters input[type=checkbox]").change(function () {
                 //if none selected - show all
                 if ($("#sellerFilters input[type=checkbox]:checked").length == 0) {
                     $(".provider_container").removeClass("hidden");
@@ -45,23 +21,45 @@
                     $(".provider_container").addClass("hidden");
 
                     var allCheckedFilters = $("#sellerFilters input[type=checkbox]:checked");
-                    var allFilterNames = allCheckedFilters.map(function() { return $(this).attr("name"); }).get();
+                    var allFilterNames = allCheckedFilters.map(function () { return $(this).attr("name"); }).get();
                     //distinct
                     allFilterNames = jQuery.unique(allFilterNames);
                     for (var i = 0; i < allFilterNames.length; i++) {
                         allCheckedFilters.filter(
-                            function() {
+                            function () {
                                 return $(this).attr("name") == allFilterNames[i];
-                            }).map(function() { return $(this).val(); }).each(function() {
-                            //show selected
-                            var currentValue = this.toString();
-                            $(".provider_container").filter(function() {
-                                return $(this).attr("data-" + allFilterNames[i]).indexOf(currentValue) >= 0;
-                            }).removeClass("hidden");
-                        });
+                            }).map(function () { return $(this).val(); }).each(function () {
+                                //show selected
+                                var currentValue = this.toString();
+                                $(".provider_container").filter(function () {
+                                    return $(this).attr("data-" + allFilterNames[i]).indexOf(currentValue) >= 0;
+                                }).removeClass("hidden");
+                            });
                     }
                 }
             });
+
+            var parts = location.href.split('/');
+            var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
+            var options = "";
+            @if (Model.Category != null)
+            {<text>
+            if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
+                options = lastSegment;
+                $.each(options.split(";"), function (i, urlSegment) {
+                    if (urlSegment === "") return;
+                    urlSegment = decodeURIComponent(urlSegment);
+                    var optKeyValue = urlSegment.split("=");
+                    var optionName = optKeyValue[0];
+                    var optionValues = optKeyValue[1].split(",");
+                    $.each(optionValues, function (j, optValue) {
+                        debugger;
+                        $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).click();
+                    });
+                });
+            }
+            </text>
+            }
         });
     </script>
 }

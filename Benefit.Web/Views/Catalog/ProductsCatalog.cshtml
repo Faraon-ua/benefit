@@ -45,9 +45,13 @@
                     var optKeyValue = urlSegment.split("=");
                     var optionName = optKeyValue[0];
                     var optionValues = optKeyValue[1].split(",");
-                    $.each(optionValues, function (j, optValue) {
-                        $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).prop('checked', true);
-                    });
+                    if (optionName === "sort") {
+                        $("select#provider_sort_select").val(optionValues[0]);
+                    } else {
+                        $.each(optionValues, function (j, optValue) {
+                            $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).prop('checked', true);
+                        });
+                    }
                 });
             }
             </text>
