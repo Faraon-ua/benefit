@@ -258,6 +258,7 @@ namespace Benefit.Services.Domain
                 var currencyId = xmlProduct.Element("currencyId").Value;
 
                 product.Name = name;
+                product.UrlName = string.Format("{0}_{1}",product.SKU ,name.Translit()).Truncate(128);
                 product.CategoryId = xmlProduct.Element("categoryId").Value;
                 product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                 product.Price = double.Parse(xmlProduct.Element("price").Value);
@@ -315,6 +316,7 @@ namespace Benefit.Services.Domain
             db.InsertIntoMembers(imagesToAddList);
             db.InsertIntoMembers(productParametersToAdd);
             db.InsertIntoMembers(productParameterValuesToAdd);
+            productParameterProductsToAdd = productParameterProductsToAdd.Where(entry => entry != null).ToList();
             db.InsertIntoMembers(productParameterProductsToAdd);
         }
 

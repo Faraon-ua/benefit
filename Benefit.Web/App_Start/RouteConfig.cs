@@ -11,9 +11,17 @@ namespace Benefit.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+               name: RouteConstants.ProductRouteWithSellerName,
+               url:
+                   RouteConstants.SellersRoutePrefix + "/{sellerUrl}/" + RouteConstants.CategoriesRoutePrefix +
+                   "/{categoryUrl}/" + RouteConstants.ProductRoutePrefix + "/{productUrl}",
+               defaults: new { controller = "Tovar", action = "Index", id = UrlParameter.Optional }
+               );
+
+            routes.MapRoute(
                name: "AllSellers",
-               url: RouteConstants.SellersRoutePrefix + "/vsi",
-               defaults: new { controller = "Postachalnyk", action = "Vsi" }
+               url: RouteConstants.SellersRoutePrefix + "/vsi/{options}",
+               defaults: new { controller = "Postachalnyk", action = "Vsi", options = UrlParameter.Optional }
                );
 
             routes.MapRoute(
@@ -54,14 +62,6 @@ namespace Benefit.Web
                 url:
                     RouteConstants.CategoriesRoutePrefix + "/{categoryUrl}/" + RouteConstants.ProductRoutePrefix +
                     "/{productUrl}",
-                defaults: new { controller = "Tovar", action = "Index", id = UrlParameter.Optional }
-                );
-
-            routes.MapRoute(
-                name: RouteConstants.ProductRouteWithSellerName,
-                url:
-                    RouteConstants.SellersRoutePrefix + "/{sellerUrl}/" + RouteConstants.CategoriesRoutePrefix +
-                    "/{categoryUrl}/" + RouteConstants.ProductRoutePrefix + "/{productUrl}",
                 defaults: new { controller = "Tovar", action = "Index", id = UrlParameter.Optional }
                 );
 

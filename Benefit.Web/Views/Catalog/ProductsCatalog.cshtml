@@ -38,20 +38,16 @@
             var options = "";
             @if (Model.Category != null)
             {<text>
-            if (lastSegment != '@Model.Category.UrlName') {
+            if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
                 options = lastSegment;
                 $.each(options.split(";"), function (i, urlSegment) {
                     if (urlSegment === "") return;
                     var optKeyValue = urlSegment.split("=");
                     var optionName = optKeyValue[0];
                     var optionValues = optKeyValue[1].split(",");
-                    if (optionName === "sort") {
-                        $("select#provider_sort_select").val(optionValues[0]);
-                    } else {
-                        $.each(optionValues, function (j, optValue) {
-                            $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).prop('checked', true);
-                        });
-                    }
+                    $.each(optionValues, function (j, optValue) {
+                        $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).prop('checked', true);
+                    });
                 });
             }
             </text>
@@ -103,56 +99,56 @@
             @if (Model.Category != null)
             {
                 <text>
-                $("#productFilters input[type=checkbox], select#provider_sort_select").change(function () {
-                    $(".loader").show();
-                    var parts = location.href.split('/');
-                    var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
-                    var options = "";
+            $("#productFilters input[type=checkbox], select#provider_sort_select").change(function () {
+                $(".loader").show();
+                var parts = location.href.split('/');
+                var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
+                var options = "";
 
-                    if (lastSegment != '@Model.Category.UrlName') {
-                        options = lastSegment;
-                    }
+                if (lastSegment != '@Model.Category.UrlName') {
+                    options = lastSegment;
+                }
 
 
-                    var parent = $(this).parents(".filter-section");
-                    var optionName = parent.attr("data-filter-name");
-                    var optionNameIndex = options.indexOf(optionName);
+                var parent = $(this).parents(".filter-section");
+                var optionName = parent.attr("data-filter-name");
+                var optionNameIndex = options.indexOf(optionName);
 
-                    var currentOption = '';
-                    var selectedValues = parent.find("input[type=checkbox]:checked").map(function () {
-                        return $(this).attr("id");
-                    }).get();
-                    if ($(this).attr("id") === "provider_sort_select") {
-                        selectedValues.push($("select#provider_sort_select").val());
-                    }
-                    if (selectedValues.length > 0) {
-                        currentOption = optionName;
-                        currentOption += "=";
-                        currentOption += selectedValues.join();
-                        currentOption += ";";
-                    }
+                var currentOption = '';
+                var selectedValues = parent.find("input[type=checkbox]:checked").map(function () {
+                    return $(this).attr("id");
+                }).get();
+                if ($(this).attr("id") === "provider_sort_select") {
+                    selectedValues.push($("select#provider_sort_select").val());
+                }
+                if (selectedValues.length > 0) {
+                    currentOption = optionName;
+                    currentOption += "=";
+                    currentOption += selectedValues.join();
+                    currentOption += ";";
+                }
 
-                    if (optionNameIndex >= 0) {
-                        var ending = options.indexOf(";", optionNameIndex);
-                        var oldOption = options.substring(optionNameIndex, ending + 1);
-                        options = options.replace(oldOption, currentOption);
-                    } else {
-                        options += currentOption;
+                if (optionNameIndex >= 0) {
+                    var ending = options.indexOf(";", optionNameIndex);
+                    var oldOption = options.substring(optionNameIndex, ending + 1);
+                    options = options.replace(oldOption, currentOption);
+                } else {
+                    options += currentOption;
+                }
+                if (lastSegment !== '@Model.Category.UrlName') {
+                    var locBuilder = location.href.replace(lastSegment + "/", "") + options;
+                    if (options.length > 0)
+                        locBuilder += "/";
+                    location.href = locBuilder;
+                } else {
+                    var locBuilder = location.href;
+                    if (location.href[location.href.length - 1] !== "/") {
+                        locBuilder += "/";
                     }
-                    if (lastSegment !== '@Model.Category.UrlName') {
-                        var locBuilder = location.href.replace(lastSegment + "/", "") + options;
-                        if (options.length > 0)
-                            locBuilder += "/";
-                        location.href = locBuilder;
-                    } else {
-                        var locBuilder = location.href;
-                        if (location.href[location.href.length - 1] !== "/") {
-                            locBuilder += "/";
-                        }
-                        location.href = locBuilder + options + "/";
-                    }
-                });
-                </text>
+                    location.href = locBuilder + options + "/";
+                }
+            });
+            </text>
             }
         });
 

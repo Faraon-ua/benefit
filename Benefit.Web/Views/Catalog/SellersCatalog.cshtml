@@ -11,31 +11,57 @@
 }
 @section scripts{
     <script>
-        $("#sellerFilters input[type=checkbox]").change(function () {
-            //if none selected - show all
-            if ($("#sellerFilters input[type=checkbox]:checked").length == 0) {
-                $(".provider_container").removeClass("hidden");
-            } else {
-                //hide all
-                $(".provider_container").addClass("hidden");
+        $(function () {
+            var parts = location.href.split('/');
+            var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
+            var options = "";
+            @if (Model.Category != null)
+            {<text>
+            if (lastSegment != '@Model.Category.UrlName') {
+                options = lastSegment;
+                $.each(options.split(";"), function (i, urlSegment) {
+                    if (urlSegment === "") return;
+                    var optKeyValue = urlSegment.split("=");
+                    var optionName = optKeyValue[0];
+                    var optionValues = optKeyValue[1].split(",");
+                    if (optionName === "sort") {
+                        $("select#provider_sort_select").val(optionValues[0]);
+                    } else {
+                        $.each(optionValues, function (j, optValue) {
+                            $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).prop('checked', true);
+                        });
+                    }
+                });
+            }
+                </text>
+            }
 
-                var allCheckedFilters = $("#sellerFilters input[type=checkbox]:checked");
-                var allFilterNames = allCheckedFilters.map(function () { return $(this).attr("name"); }).get();
-                //distinct
-                allFilterNames = jQuery.unique(allFilterNames);
-                for (var i = 0; i < allFilterNames.length; i++) {
-                    allCheckedFilters.filter(
-                        function () {
-                            return $(this).attr("name") == allFilterNames[i];
-                        }).map(function () { return $(this).val(); }).each(function () {
+            $("#sellerFilters input[type=checkbox]").change(function() {
+                //if none selected - show all
+                if ($("#sellerFilters input[type=checkbox]:checked").length == 0) {
+                    $(".provider_container").removeClass("hidden");
+                } else {
+                    //hide all
+                    $(".provider_container").addClass("hidden");
+
+                    var allCheckedFilters = $("#sellerFilters input[type=checkbox]:checked");
+                    var allFilterNames = allCheckedFilters.map(function() { return $(this).attr("name"); }).get();
+                    //distinct
+                    allFilterNames = jQuery.unique(allFilterNames);
+                    for (var i = 0; i < allFilterNames.length; i++) {
+                        allCheckedFilters.filter(
+                            function() {
+                                return $(this).attr("name") == allFilterNames[i];
+                            }).map(function() { return $(this).val(); }).each(function() {
                             //show selected
                             var currentValue = this.toString();
-                            $(".provider_container").filter(function () {
+                            $(".provider_container").filter(function() {
                                 return $(this).attr("data-" + allFilterNames[i]).indexOf(currentValue) >= 0;
                             }).removeClass("hidden");
                         });
+                    }
                 }
-            }
+            });
         });
     </script>
 }
@@ -43,67 +69,67 @@
     @Html.Partial("~/Views/Catalog/_SellerFilters.cshtml", Model)
 }
 
-    <div class="provider_row clearfix">
-        @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
-        <div class="list_filter_wrap show_on_tablet clearfix">
-            <div class="list_filter" data-toggle="modal" data-target="#filter_modal">Фільтрувати</div>
-            <div class="list_sort" data-toggle="modal" data-target="#sort_modal">Сортувати</div>
-        </div>
-        @if (Model.Items.Any())
-        {
-            foreach (var seller in Model.Items)
-            {
-                @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
-            }
-        }
-        else
-        {
-            <div style="text-align-last: left;">
-                @{
-            var regionName = HttpContext.Current.Request.Cookies["regionName"];
-                }
-                <b style="font-size: 1em;">
-                    В категорії <span style="color: #cb2728; ">@Model.Category.Name</span>
-                    @if (regionName != null)
-                    {
-                        <span>
-                            для населеного пункту
-                            <span style="color: #cb2728; ">@HttpUtility.UrlDecode(regionName.Value)</span>
-                        </span>
-                    }
-                    постачальників поки що немає.
-                    <br />
-                    Якщо ви хочете зробити нам ділову пропозицію, чекаємо на вашу заявку.
-                    <br />
-                    <a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })">
-                        <img style="width: 100%;" src="~/Content/img/spivpracia.jpg" />
-                    </a>
-                </b>
-            </div>
-        }
-
+<div class="provider_row clearfix">
+    @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+    <div class="list_filter_wrap show_on_tablet clearfix">
+        <div class="list_filter" data-toggle="modal" data-target="#filter_modal">Фільтрувати</div>
+        <div class="list_sort" data-toggle="modal" data-target="#sort_modal">Сортувати</div>
     </div>
-    @*  //todo: Add easy loadingsn
-             <div class="bottom_control clearfix">
-            <div class="pagination_wrap">
-                <div class="pagination_prew">&lt;</div>
-                <ul class="pagination">
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li class="active">4</li>
-                    <li>5</li>
-                    <li>6</li>
-                    <li>...</li>
-                    <li>54</li>
-                </ul>
-                <div class="pagination_next">&gt;</div>
-            </div>
-            <div class="show_more">
-                <label for="more_providers">Показати</label>
-                <select id="more_providers" class="orders_org_choice">
-                    <option>16</option>
-                    <option>32</option>
-                </select>
-            </div>
-        </div>*@
+    @if (Model.Items.Any())
+    {
+        foreach (var seller in Model.Items)
+        {
+            @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
+        }
+    }
+    else
+    {
+        <div style="text-align-last: left;">
+            @{
+        var regionName = HttpContext.Current.Request.Cookies["regionName"];
+            }
+            <b style="font-size: 1em;">
+                В категорії <span style="color: #cb2728; ">@Model.Category.Name</span>
+                @if (regionName != null)
+                {
+                    <span>
+                        для населеного пункту
+                        <span style="color: #cb2728; ">@HttpUtility.UrlDecode(regionName.Value)</span>
+                    </span>
+                }
+                постачальників поки що немає.
+                <br />
+                Якщо ви хочете зробити нам ділову пропозицію, чекаємо на вашу заявку.
+                <br />
+                <a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })">
+                    <img style="width: 100%;" src="~/Content/img/spivpracia.jpg" />
+                </a>
+            </b>
+        </div>
+    }
+
+</div>
+@*  //todo: Add easy loadingsn
+         <div class="bottom_control clearfix">
+        <div class="pagination_wrap">
+            <div class="pagination_prew">&lt;</div>
+            <ul class="pagination">
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li class="active">4</li>
+                <li>5</li>
+                <li>6</li>
+                <li>...</li>
+                <li>54</li>
+            </ul>
+            <div class="pagination_next">&gt;</div>
+        </div>
+        <div class="show_more">
+            <label for="more_providers">Показати</label>
+            <select id="more_providers" class="orders_org_choice">
+                <option>16</option>
+                <option>32</option>
+            </select>
+        </div>
+    </div>*@

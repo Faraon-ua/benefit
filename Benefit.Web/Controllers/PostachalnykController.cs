@@ -19,10 +19,10 @@ namespace Benefit.Web.Controllers
             return View();
         }
 
-        public ActionResult Vsi()
+        public ActionResult Vsi(string options)
         {
             var model = SellerService.GetAllSellers();
-            model.Category = new Category();
+            model.Category = new Category() { UrlName = "vsi" };
             model.Category.Name = "Всі постачальники";
             model.Breadcrumbs = new BreadCrumbsViewModel()
             {
@@ -61,12 +61,12 @@ namespace Benefit.Web.Controllers
             return View("../Catalog/ProductsCatalog", model);
         }
 
-       /* [HttpGet]
-        public ActionResult ProductsList(string sellerId = null, string categoryId = null, string options = null,
-            ProductSortOption? sort = null)
-        {
-            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, sort.GetValueOrDefault(ProductSortOption.Order));
-            return PartialView("ProductsList", products);
-        }*/
+        /* [HttpGet]
+         public ActionResult ProductsList(string sellerId = null, string categoryId = null, string options = null,
+             ProductSortOption? sort = null)
+         {
+             var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, sort.GetValueOrDefault(ProductSortOption.Order));
+             return PartialView("ProductsList", products);
+         }*/
     }
 }
