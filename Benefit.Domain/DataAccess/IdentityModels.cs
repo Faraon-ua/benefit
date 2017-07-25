@@ -1,9 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Core.EntityClient;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Infrastructure.Annotations;
 using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.Linq;
+using Benefit.Common.Extensions;
 using Benefit.Domain.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 
@@ -48,10 +54,10 @@ namespace Benefit.Domain.DataAccess
         public DbSet<CompanyRevenue> CompanyRevenues { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
-        public DbSet<PromotionAccomplishment> PromotionAccomplishments{ get; set; }
+        public DbSet<PromotionAccomplishment> PromotionAccomplishments { get; set; }
         public DbSet<ExportImport> ExportImports { get; set; }
         public DbSet<NotificationChannel> NotificationChannels { get; set; }
-        
+
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -86,7 +92,7 @@ namespace Benefit.Domain.DataAccess
             modelBuilder.Entity<ApplicationUser>()
                   .HasOptional<ApplicationUser>(s => s.Referal)
                   .WithMany(s => s.Partners).WillCascadeOnDelete(false);
-            
+
             modelBuilder.Entity<Transaction>()
                   .HasOptional<ApplicationUser>(s => s.Payee)
                   .WithMany(s => s.Transactions).WillCascadeOnDelete(false);
@@ -122,6 +128,49 @@ namespace Benefit.Domain.DataAccess
                 // Throw a new DbEntityValidationException with the improved exception message.
                 throw new DbEntityValidationException(exceptionMessage, ex.EntityValidationErrors);
             }
+        }
+
+        public void DeleteWhereColumnIn<T>(IEnumerable<T> items, string columnName = "Id") where T : class
+        {
+            if (!items.Any()) return;
+            var idProperty = typeof(T).GetProperty(columnName);
+            if (idProperty == null) return;
+            var ids = items.Select(entry => string.Format("'{0}'", idProperty.GetValue(entry, null))).ToList();
+            var name = (this as IObjectContextAdapter).ObjectContext.CreateObjectSet<T>().EntitySet.Name;
+            var sql = string.Format("DELETE from {0} where {1} in ({2})", name, columnName, string.Join(",", ids));
+            Database.ExecuteSqlCommand(sql);
+        }
+        public void InsertIntoMembers<T>(List<T> data) where T : class
+        {
+            var dataTable = data.ToDataTable();
+            var destinationTableName = (this as IObjectContextAdapter).ObjectContext.CreateObjectSet<T>().EntitySet.Name;
+            var connection = Database.Connection as SqlConnection;
+            SqlTransaction transaction = null;
+            if (connection.State == ConnectionState.Closed)
+            {
+                connection.Open();
+            }
+            try
+            {
+                transaction = connection.BeginTransaction();
+                using (var bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.TableLock, transaction))
+                {
+                    foreach (DataColumn col in dataTable.Columns)
+                    {
+                        bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                    }
+
+                    bulkCopy.BulkCopyTimeout = 600;
+                    bulkCopy.DestinationTableName = destinationTableName;
+                    bulkCopy.WriteToServer(dataTable);
+                }
+                transaction.Commit();
+            }
+            catch (Exception)
+            {
+                transaction.Rollback();
+            }
+            connection.Close();
         }
     }
 }

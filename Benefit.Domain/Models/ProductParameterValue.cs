@@ -1,7 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
 {
+    public class ProductParameterValueComparer : IEqualityComparer<ProductParameterValue>
+    {
+        public bool Equals(ProductParameterValue x, ProductParameterValue y)
+        {
+            return x.ParameterValueUrl == y.ParameterValueUrl;
+        }
+
+        public int GetHashCode(ProductParameterValue obj)
+        {
+            return obj.ParameterValueUrl.GetHashCode();
+        }
+    } 
     public class ProductParameterValue
     {
         [Key]

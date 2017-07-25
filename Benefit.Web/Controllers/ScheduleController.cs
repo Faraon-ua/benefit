@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -15,7 +16,7 @@ namespace Benefit.Web.Controllers
         public ActionResult ProcessImportTasks()
         {
             var importService = new ImportExportService();
-            importService.ImportFromPromua();
+            Task.Run(() => importService.ImportFromPromua()); 
             return Content("Ok");
         }
 

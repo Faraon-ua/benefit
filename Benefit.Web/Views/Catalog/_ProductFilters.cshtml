@@ -9,24 +9,27 @@
     {
         foreach (var filter in Model.ProductParameters)
         {
-            <div class="filter-section" data-filter-name="@filter.UrlName">
-                <hr />
-                <div class="margin-bottom-5">
-                    <strong>
-                        @filter.Name
-                    </strong>
-                </div>
-                <div>
-                    @if (filter.Type == typeof(string).ToString())
-                    {
-                        foreach (var filterValue in filter.ProductParameterValues)
+            if (filter.ProductParameterValues.Any())
+            {
+                <div class="filter-section" data-filter-name="@filter.UrlName">
+                    <hr/>
+                    <div class="margin-bottom-5">
+                        <strong>
+                            @filter.Name
+                        </strong>
+                    </div>
+                    <div>
+                        @if (filter.Type == typeof (string).ToString())
                         {
-                            <input id="@filterValue.ParameterValueUrl" class="hidden" type="checkbox">
-                            <label class="label_for_check" for="@filterValue.ParameterValueUrl">@filterValue.ParameterValue</label>
+                            foreach (var filterValue in filter.ProductParameterValues)
+                            {
+                                <input id="@filterValue.ParameterValueUrl" class="hidden" type="checkbox">
+                                <label class="label_for_check" for="@filterValue.ParameterValueUrl">@filterValue.ParameterValue</label>
+                            }
                         }
-                    }
+                    </div>
                 </div>
-            </div>
+            }
         }
     }
 </div>

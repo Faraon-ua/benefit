@@ -4275,7 +4275,8 @@ li:last-child .expand {
 }
 
 .product_descr_tab tr td:first-child {
-    width: 150px;
+    width: 40%;
+    padding-right: 30px;
 }
 
 .product_recomendation {

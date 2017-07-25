@@ -300,24 +300,34 @@ namespace Benefit.Services.Domain
             //product parameters
             if (category != null)
             {
-                result.ProductParameters = category.ProductParameters.Where(entry => entry.DisplayInFilters).ToList();
+                var productParameters = category.ProductParameters.Where(entry => entry.DisplayInFilters).ToList();
                 if (seller != null)
                 {
-                    result.ProductParameters.Union(db.Categories.Include(
+                    var mappedCategories = db.Categories.Include(
                         entry => entry.MappedCategories.Select(mc => mc.ProductParameters))
                         .Where(
                             entry =>
-                                entry.SellerId == seller.Id && entry.ParentCategoryId == category.Id &&
-                                entry.IsActive)
-                        .SelectMany(entry => entry.MappedCategories)
+                                entry.SellerId == seller.Id && entry.MappedParentCategoryId == category.Id &&
+                                entry.IsActive).ToList();
+                    var mappedCategoriesParameters = mappedCategories
                         .SelectMany(entry => entry.ProductParameters)
-                        .Where(entry => entry.DisplayInFilters));
+                        .Where(entry => entry.DisplayInFilters).ToList();
+                    productParameters = productParameters.Union(mappedCategoriesParameters).ToList();
                 }
-                foreach (var productParameter in result.ProductParameters)
+                foreach (var productParameter in productParameters)
                 {
                     productParameter.ProductParameterValues =
                         productParameter.ProductParameterValues.Where(
                             entry => catalog.ProductParameters.Contains(entry.ParameterValueUrl)).ToList();
+                }
+                var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
+                foreach (var productParameterName in productParameterNames)
+                {
+                    var parameters = productParameters.Where(entry => entry.UrlName == productParameterName).ToList();
+                    var parameter = parameters.First();
+                    parameter.ProductParameterValues =
+                        parameters.SelectMany(entry => entry.ProductParameterValues).Distinct(new ProductParameterValueComparer()).ToList();
+                    result.ProductParameters.Add(parameter);
                 }
             }
             //todo: add breadcrumbs

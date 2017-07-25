@@ -60,8 +60,10 @@
     <Compile Include="CustomEventArgs\NfcEventArgs.cs" />
     <Compile Include="Exceptions\ServiceException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\ListExtension.cs" />
     <Compile Include="Extensions\NumbersExtension.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Extensions\UrlExtensions.cs" />
     <Compile Include="Helpers\ContentTypeConvert.cs" />
     <Compile Include="Helpers\Enumerations.cs" />
