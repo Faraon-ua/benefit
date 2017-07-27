@@ -41,10 +41,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 IQueryable<Product> products = db.Products.AsQueryable();
                 if (!string.IsNullOrEmpty(filters.CategoryId))
                 {
-                    var category = db.Categories.FirstOrDefault(entry => entry.Id == filters.CategoryId);
+                    var categoryIds = new List<string>();
+                    var category = db.Categories.Include(entry=>entry.MappedCategories).FirstOrDefault(entry => entry.Id == filters.CategoryId);
                     var children = category.GetAllChildrenRecursively().ToList();
-                    children.Add(category);
-                    var categoryIds = children.Select(cat => cat.Id).ToList();
+                    categoryIds.Add(category.Id);
+                    categoryIds.AddRange(children.Select(cat => cat.Id));
+                    categoryIds.AddRange(category.MappedCategories.Select(entry=>entry.Id));
                     products = products.Where(entry => categoryIds.Contains(entry.CategoryId));
                 }
                 if (!string.IsNullOrEmpty(filters.SellerId))

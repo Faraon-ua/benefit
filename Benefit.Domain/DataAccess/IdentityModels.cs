@@ -130,15 +130,22 @@ namespace Benefit.Domain.DataAccess
             }
         }
 
-        public void DeleteWhereColumnIn<T>(IEnumerable<T> items, string columnName = "Id") where T : class
+        public void DeleteWhereColumnIn<T>(IEnumerable<T> items, string columnName = "Id", int batchSize = 5000) where T : class
         {
             if (!items.Any()) return;
             var idProperty = typeof(T).GetProperty(columnName);
             if (idProperty == null) return;
-            var ids = items.Select(entry => string.Format("'{0}'", idProperty.GetValue(entry, null))).ToList();
             var name = (this as IObjectContextAdapter).ObjectContext.CreateObjectSet<T>().EntitySet.Name;
-            var sql = string.Format("DELETE from {0} where {1} in ({2})", name, columnName, string.Join(",", ids));
-            Database.ExecuteSqlCommand(sql);
+            var ids = items.Select(entry => string.Format("'{0}'", idProperty.GetValue(entry, null))).Distinct().ToList();
+            var skip = 0;
+            do
+            {
+                var batchIds = ids.Skip(skip).Take(batchSize);
+                var sql = string.Format("DELETE from {0} where {1} in ({2})", name, columnName,
+                    string.Join(",", batchIds));
+                Database.ExecuteSqlCommand(sql);
+                skip += batchSize;
+            } while (skip < ids.Count);
         }
         public void InsertIntoMembers<T>(List<T> data) where T : class
         {
