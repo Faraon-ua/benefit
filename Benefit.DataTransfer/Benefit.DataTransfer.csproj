@@ -60,12 +60,14 @@
     <Compile Include="ApiDto\SendPulse\AuthDto.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="JSON\AutocompleteSearch.cs" />
+    <Compile Include="ViewModels\Base\NavigationEntitiesViewModel.cs" />
     <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
     <Compile Include="ViewModels\CartEditResult.cs" />
     <Compile Include="ViewModels\CategoriesListViewModel.cs" />
     <Compile Include="ViewModels\CompleteOrderViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
+    <Compile Include="ViewModels\NavigationEntities\CategoriesViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />
     <Compile Include="ViewModels\PaginatedList.cs" />
     <Compile Include="ViewModels\ProcessBonusesViewModel.cs" />
@@ -77,9 +79,9 @@
     <Compile Include="ViewModels\SellerApplicationViewModel.cs" />
     <Compile Include="ViewModels\SellerCatalogViewModel.cs" />
     <Compile Include="ViewModels\SellerDetailsViewModel.cs" />
-    <Compile Include="ViewModels\ProductsViewModel.cs" />
+    <Compile Include="ViewModels\NavigationEntities\ProductsViewModel.cs" />
     <Compile Include="ViewModels\SellerMapLocation.cs" />
-    <Compile Include="ViewModels\SellersViewModel.cs" />
+    <Compile Include="ViewModels\NavigationEntities\SellersViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\SellerTurnoverViewModel.cs" />
     <Compile Include="ViewModels\StructureItem.cs" />

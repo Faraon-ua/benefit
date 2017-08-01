@@ -1,0 +1,58 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.CategoriesViewModel
+@{
+    ViewBag.SellerUrlName = Model.Seller.UrlName;
+    ViewBag.Title = string.Format("{0} - {1}", Model.Seller.Name, Model.Category == null ? Model.Seller.CatalogButtonName : Model.Category.Name);
+    ViewBag.SellerUrl = Model.Seller.UrlName;
+    ViewBag.MainContainerClass = "full_content full_content_provider";
+}
+@section meta
+{
+    <meta name="description" content="@(Model.Category == null ? string.Empty : Model.Category.Description)">
+}
+@section LeftAside
+{
+    <div class="vertical_menu padding-bottom-15 clear-fix" id="right-menu" data-seller-url="@(Model.Seller == null ? "" : Model.Seller.UrlName)" data-category-id="@(Model.Category == null ? "" : Model.Category.Id)">
+    </div>
+}
+<div class="clearfix categories-catalog">
+    @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+
+    <header class="title-page">
+        <h1 class="pab-h1">
+            @string.Format("{0} - {1}", Model.Seller.Name, Model.Category == null ? Model.Seller.CatalogButtonName : Model.Category.Name)
+        </h1>
+    </header>
+
+    @if (Model.Items.Any())
+{
+    foreach (var category in Model.Items)
+    {
+        if (category.ChildCategories.Any())
+        {
+            var counter = 0;
+            var childCount = category.ChildCategories.Count;
+            <h2 class="pab-h2 padding-bottom-15">
+                <a class="pab-h2-link" href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = category.UrlName})" title="@category.Description">
+                    @category.Name
+                </a>
+            </h2>
+            for (var i = 0; i <= childCount / 6; i++)
+            {
+                    <div class="row">
+                        @do
+                        {
+                            var child = category.ChildCategories.ElementAt(counter++);
+                            @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
+                        }
+                        while (counter % 6 != 0 && counter < childCount);
+                    </div>
+                }
+            }
+            else
+            {
+                @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", category)
+            }
+        }
+    }
+</div>

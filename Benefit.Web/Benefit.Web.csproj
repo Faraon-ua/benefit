@@ -1636,6 +1636,8 @@
     <Content Include="Views\Tovar\_ReviewCommentPartial.cshtml" />
     <Content Include="Views\Home\Map.cshtml" />
     <Content Include="Views\Postachalnyk\ProductsList.cshtml" />
+    <Content Include="Views\Catalog\CategoriesCatalog.cshtml" />
+    <Content Include="Views\Catalog\_CategoryPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

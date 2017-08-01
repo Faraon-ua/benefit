@@ -7,6 +7,8 @@ using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
+using Benefit.DataTransfer.ViewModels.Base;
+using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Domain.Models.XmlModels;
@@ -18,6 +20,13 @@ namespace Benefit.Services.Domain
         private ApplicationDbContext db = new ApplicationDbContext();
         private SellerService SellerService = new SellerService();
         private ProductsService ProductsService = new ProductsService();
+
+        public Category GetByUrlWithChildren(string urlName)
+        {
+            var category =
+                db.Categories.Include(entry => entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == urlName);
+            return category;
+        }
 
         public List<Category> GetBaseCategories()
         {
@@ -43,6 +52,47 @@ namespace Benefit.Services.Domain
             }
             resultList.Reverse();
             return resultList;
+        }
+
+        public CategoriesViewModel GetSellerCategoriesCatalog(Category parent, string sellerUrl)
+        {
+            var seller = db.Sellers.FirstOrDefault(entry => entry.UrlName.ToLower() == sellerUrl.ToLower());
+            var sellerCategories = SellerService.GetAllSellerCategories(sellerUrl).ToList();
+
+            List<Category> categories;
+            if (parent == null || parent.ParentCategoryId == null)
+            {
+                categories =
+                    sellerCategories.Where(entry => entry.ParentCategoryId == null)
+                        .OrderBy(entry => entry.Order)
+                        .ToList();
+                foreach (var category in categories)
+                {
+                    category.ChildCategories = category.ChildCategories.OrderBy(entry => entry.Order).ToList();
+                }
+            }
+            else
+            {
+                categories = sellerCategories
+                            .Where(
+                                entry =>
+                                    entry.ParentCategoryId == parent.Id)
+                            .OrderBy(entry => entry.Order)
+                            .ToList();
+            }
+
+            var catsModel = new CategoriesViewModel()
+            {
+                Category = parent,
+                Items = categories.OrderBy(entry=>entry.ChildCategories.Any()).ToList(),
+                Seller = seller,
+                Breadcrumbs = new BreadCrumbsViewModel()
+                {
+                    Categories = GetBreadcrumbs(parent == null ? null : parent.Id),
+                    Seller = seller
+                }
+            };
+            return catsModel;
         }
 
         //todo: remove comment think about product list
@@ -127,7 +177,7 @@ namespace Benefit.Services.Domain
                                              entry.ShippingMethods.Select(sm => sm.Region.Id)
                                                  .Contains(RegionConstants.AllUkraineRegionId));
             }
-            sellersDto.Items = items.OrderByDescending(entry=>entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
+            sellersDto.Items = items.OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
 
             sellersDto.Items.ForEach(entry =>
             {
@@ -149,22 +199,6 @@ namespace Benefit.Services.Domain
             return sellersDto;
         }
 
-        public void AddOrUpdateCategoriesFromXml(Seller seller, IEnumerable<XmlCategory> xmlCategories)
-        {
-            var defaultCategory = seller.SellerCategories.First(entry => entry.IsDefault).Category;
-            var allDbCategories = defaultCategory.GetAllChildrenRecursively().ToList();
-
-            var xmlToDbCategoriesMapping = new Dictionary<string, string>();
-            foreach (var dbCategory in allDbCategories)
-            {
-                var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Name == dbCategory.Name);
-                if (xmlCategory != null)
-                {
-                    xmlToDbCategoriesMapping.Add(xmlCategory.Id, dbCategory.Id);
-                }
-            }
-        }
-
         public void Delete(string id)
         {
             var category = db.Categories.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.Id == id);
@@ -178,7 +212,7 @@ namespace Benefit.Services.Domain
                     entry => productParameters.Select(pr => pr.Id).Contains(entry.ProductParameterId));
             var productParameterProducts = db.ProductParameterProducts.Where(
                     entry => productParameters.Select(pr => pr.Id).Contains(entry.ProductParameterId));
-            
+
             db.ProductParameterProducts.RemoveRange(productParameterProducts);
             db.ProductParameterValues.RemoveRange(productParameterValues);
             db.ProductParameters.RemoveRange(productParameters);

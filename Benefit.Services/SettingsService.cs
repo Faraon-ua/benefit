@@ -143,6 +143,20 @@ namespace Benefit.Services
                     return int.Parse(ConfigurationManager.AppSettings["UserAvatarMaxHeight"]);
                 }
             }
+            public static int CategoryLogoMaxWidth
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["CategoryLogoMaxWidth"]);
+                }
+            }
+            public static int CategoryLogoMaxHeight
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["CategoryLogoMaxHeight"]);
+                }
+            }
             public static int SellerGalleryImageMaxWidth
             {
                 get

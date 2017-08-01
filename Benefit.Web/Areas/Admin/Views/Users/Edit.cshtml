@@ -7,7 +7,7 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
     <script src="~/Scripts/address.js"></script>
-    <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
+    <script src="https://rawgit.com/RobinHerbots/Inputmask/4.x/dist/jquery.inputmask.bundle.js"></script>
     <script src="~/Scripts/common.js"></script>
     <script>
         var getNfcUrl = '@Url.Action("GetNfcCode")';
@@ -15,7 +15,9 @@
         var customBonusesPaymentUrl = '@Url.Action("AddCustomBonusesPayment", new { id=Model.Id })';
 
         $(function () {
-            $('.number-float-input').mask("#0.00", { reverse: true });
+            $('.number-float-input').inputmask("decimal", {
+                digits: 2
+            });
 
             $("#NFCNumber").focus(function () {
                 var nfc = $(this);

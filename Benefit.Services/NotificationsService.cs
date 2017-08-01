@@ -9,7 +9,7 @@ namespace Benefit.Services
 {
     public class NotificationsService
     {
-        public async Task NotifySeller(int orderNumber, string orderUrl, string sellerId)
+        public void NotifySeller(int orderNumber, string orderUrl, string sellerId)
         {
             var message = string.Format(
                 "Доброго дня. Ви отримали замовлення №{0} на сайті benefit-company.com. Щоб обробити його перейдіть за посиланням {1}.",

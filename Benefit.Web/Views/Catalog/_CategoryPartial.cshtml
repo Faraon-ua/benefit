@@ -1,0 +1,17 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.Domain.Models.Category
+
+@{
+    var url = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = ViewBag.SellerUrlName, categoryUrl = Model.UrlName });
+}
+
+<div class="col-md-2 cat-box">
+    <a href="@url" title="@Model.Description">
+        <img src="~/Images/CategoryLogo/@Model.ImageUrl" alt="@Model.Name" />
+    </a>
+    <h3 class="pab-h3">
+        <a href="@url" title="@Model.Description">
+            @Model.Name
+        </a>
+    </h3>
+</div>

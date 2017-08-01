@@ -14,60 +14,6 @@
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
     <script type="text/javascript">
         $(function () {
-            $("#CategoryImage").ace_file_input({
-                style: 'well',
-                btn_choose: 'Drop images here or click to choose',
-                btn_change: null, /* we don't need it */
-                no_icon: 'icon-cloud-upload',
-                droppable: true,
-                thumbnail: 'large',
-                before_change: function (files, dropped) {
-                    var file = files[0];
-                    if (typeof file == "string") {
-                        //file is just a file name here (in browsers that don't support FileReader API such as IE8)
-                        if (!(/\.(jpe?g|png|gif)$/i).test(file)) {
-                            //not an image extension?
-                            //alert user
-                            return false;
-                        }
-                    } else {
-                        var type = $.trim(file.type);
-                        if (
-                            (type.length > 0 && !(/^image\/(jpe?g|png|gif)$/i).test(type))
-                                ||
-                            //for android's default browser!
-                                (type.length == 0 && !(/\.(jpe?g|png|gif)$/i).test(file.name))
-                        ) {
-                            //alert user
-                            return false;
-                        }
-
-                        /* if (file.size > 1024 * 100) {
-                             //is the file size larger than 100KB?
-                             //alert user
-                             return false;
-                         }*/
-                    }
-
-                    return true;
-                },
-
-                before_remove: function () {
-                    //if(upload_in_progress) return false;//don't allow resetting the file input while upload in progress
-                    return true;
-                },
-
-                preview_error: function (filename, error_code) {
-                    alert(error_code);
-                    //name of the file that failed
-                    //error_code values
-                    //1 = 'FILE_LOAD_FAILED',
-                    //2 = 'IMAGE_LOAD_FAILED',//the loaded file is not an image
-                    //3 = 'THUMBNAIL_FAILED'//somehow creating the thumbnail failed.
-                    //notify user?!
-                }
-            });
-
             $(".chosen-select").chosen({
                 search_contains: true
             });
@@ -203,9 +149,15 @@
                             </div>
                         </div>
                     }
-                    @*<div class="width-30">
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <label class="text-left control-label">Зображення</label>
+                        </div>
+                        <div class="col-md-10">
+                            <img src="~/Images/CategoryLogo/@Model.ImageUrl" />
                             <input type="file" id="CategoryImage" name="categoryImage" />
-                        </div>*@
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id="ru" class="tab-pane">

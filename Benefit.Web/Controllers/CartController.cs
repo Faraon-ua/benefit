@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Linq;
 using System.Data.Entity;
+using System.Threading.Tasks;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
@@ -148,7 +149,9 @@ namespace Benefit.Web.Controllers
                 //order notifications
                 var NotificationService = new NotificationsService();
                 var orderUrl = Url.Action("Details", "Orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName }, Request.Url.Scheme);
-                NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl, completeOrder.Order.SellerId);
+                Task.Run(() =>
+                    NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl,
+                        completeOrder.Order.SellerId));
                 return RedirectToAction("OrderCompleted", new { number = orderNumber });
             }
             using (var db = new ApplicationDbContext())

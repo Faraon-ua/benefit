@@ -71,10 +71,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Url має бути заповнено";
                 return RedirectToAction("Index");
             }
-            if (exportImport.Id == null)
+            if (db.ExportImports.Any(entry => entry.FileUrl == exportImport.FileUrl))
             {
-                exportImport.Id = Guid.NewGuid().ToString();
-                db.ExportImports.Add(exportImport);
+                TempData["ErrorMessage"] = "Такий файл вже зареєстровано";
+                return RedirectToAction("Index");
             }
             else
             {

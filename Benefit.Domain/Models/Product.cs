@@ -35,7 +35,9 @@ namespace Benefit.Domain.Models
         [Index(IsUnique = true)]
         public int SKU { get; set; }
         [MaxLength(128)]
-        public string Vendor { get; set; }
+        public string Vendor { get; set; } 
+        [MaxLength(64)]
+        public string OriginCountry { get; set; }
         public int? AvarageRating { get; set; } 
         [Required(AllowEmptyStrings = true, ErrorMessage = "Опис обовязковий для заповнення")]
         public string Description { get; set; }

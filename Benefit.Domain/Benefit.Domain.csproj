@@ -373,6 +373,10 @@
     <Compile Include="Migrations\201707040813503_UpgradeProductParameters.Designer.cs">
       <DependentUpon>201707040813503_UpgradeProductParameters.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201707280923010_AddOriginCountryToProduct.cs" />
+    <Compile Include="Migrations\201707280923010_AddOriginCountryToProduct.Designer.cs">
+      <DependentUpon>201707280923010_AddOriginCountryToProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -647,6 +651,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201707040813503_UpgradeProductParameters.resx">
       <DependentUpon>201707040813503_UpgradeProductParameters.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201707280923010_AddOriginCountryToProduct.resx">
+      <DependentUpon>201707280923010_AddOriginCountryToProduct.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

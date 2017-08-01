@@ -60,7 +60,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Categories/Create
-        [Authorize(Roles = "Admin, Seller")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
             var category = db.Categories.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).Include(entry => entry.Products).FirstOrDefault(entry => entry.Id == id) ??
@@ -70,7 +70,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                ParentCategoryId = parentCategoryId,
                                NavigationType = CategoryNavigationType.SellersAndProducts.ToString()
                            };
-            ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id), "Id",
+            ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id && entry.SellerId == null), "Id",
                 "ExpandedName", category.ParentCategoryId);
             category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
             return View(category);
@@ -78,22 +78,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin, Seller")]
+        [Authorize(Roles = "Admin, SuperAdmin")]
         public ActionResult CreateOrUpdate(Category category, HttpPostedFileBase categoryImage)
         {
             if (db.Categories.Any(entry => entry.UrlName == category.UrlName && entry.Id != category.Id))
             {
                 ModelState.AddModelError("UrlName", "Категорія з таким Url вже існує");
-            }
-            if (categoryImage != null && categoryImage.ContentLength > 0)
-            {
-                //todo: add image resizing
-                var fileName = Path.GetFileName(categoryImage.FileName);
-                var dotIndex = fileName.IndexOf('.');
-                var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
-                var path = Path.Combine(Server.MapPath("~/Images/"), category.Id + fileExt);
-                category.ImageUrl = category.Id + fileExt;
-                categoryImage.SaveAs(path);
             }
             if (ModelState.IsValid)
             {
@@ -108,6 +98,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     category.Order = db.Categories.Max(entry => entry.Order) + 1;
                     db.Categories.Add(category);
                     LocalizationService.Save(category.Localizations);
+                }
+                if (categoryImage != null && categoryImage.ContentLength > 0)
+                {
+                    //todo: add image resizing
+                    var fileName = Path.GetFileName(categoryImage.FileName);
+                    var dotIndex = fileName.IndexOf('.');
+                    var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
+                    var path = Path.Combine(Server.MapPath("~/Images/CategoryLogo/"), category.Id + fileExt);
+                    category.ImageUrl = category.Id + fileExt;
+                    categoryImage.SaveAs(path);
+                    var imageService = new ImagesService();
+                    imageService.ResizeToSiteRatio(path, ImageType.CategoryLogo);
+                }
+                else
+                {
+                    db.Entry(category).Property(entry => entry.ImageUrl).IsModified = false;
                 }
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Категорію було збережено";

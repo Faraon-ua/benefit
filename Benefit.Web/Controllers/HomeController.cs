@@ -110,7 +110,6 @@ namespace Benefit.Web.Controllers
                             if (childCategories.Count == 0) break;
                             categories = childCategories;
                         }
-
                     }
                     var sellerCatsModel = new CategoriesListViewModel()
                     {

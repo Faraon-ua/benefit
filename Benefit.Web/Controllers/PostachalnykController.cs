@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Services.Domain;
@@ -12,6 +14,7 @@ namespace Benefit.Web.Controllers
     public class PostachalnykController : Controller
     {
         SellerService SellerService = new SellerService();
+        CategoriesService CategoriesService = new CategoriesService();
         //
         // GET: /Postachalnyk/
         public ActionResult Index()
@@ -57,6 +60,13 @@ namespace Benefit.Web.Controllers
         [HttpGet]
         public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null, string options = null, ProductSortOption? sort = null)
         {
+            var category = CategoriesService.GetByUrlWithChildren(categoryUrl);
+            if (category == null || (category != null  && category.ChildCategories.Any()))
+            {
+                var catsModel = CategoriesService.GetSellerCategoriesCatalog(category, sellerUrl);
+                return View("../Catalog/CategoriesCatalog", catsModel);
+                
+            }
             var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl, options);
             return View("../Catalog/ProductsCatalog", model);
         }

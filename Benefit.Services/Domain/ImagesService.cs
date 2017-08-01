@@ -95,6 +95,10 @@ namespace Benefit.Services
                 case ImageType.UserAvatar:
                     maxHeight = SettingsService.Images.SellerGalleryImageMaxHeight;
                     maxWidth = SettingsService.Images.SellerGalleryImageMaxWidth;
+                    break;  
+                case ImageType.CategoryLogo:
+                    maxHeight = SettingsService.Images.CategoryLogoMaxHeight;
+                    maxWidth = SettingsService.Images.CategoryLogoMaxWidth;
                     break;
             }
             if (img.Height <= maxHeight &&

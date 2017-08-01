@@ -10,6 +10,8 @@ using Benefit.Common.Helpers;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
+using Benefit.DataTransfer.ViewModels.Base;
+using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
@@ -284,7 +286,7 @@ namespace Benefit.Services.Domain
             return result;
         }
 
-        public ProductsViewModel GetSellerCatalog(string sellerUrl, string categoryUrl, string options)
+        public NavigationEntitiesViewModel<Product> GetSellerCatalog(string sellerUrl, string categoryUrl, string options)
         {
             var categoriesService = new CategoriesService();
             var result = new ProductsViewModel();

@@ -44,7 +44,7 @@ namespace Benefit.Services.Domain
                         ParentCategoryId = xmlCategory.Attribute("parentId") == null ? null : xmlCategory.Attribute("parentId").Value,
                         IsSellerCategory = true,
                         SellerId = sellerId,
-                        Name = catName,
+                        Name = catName.Truncate(64),
                         UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128),
                         Description = catName,
                         NavigationType = CategoryNavigationType.SellersAndProducts.ToString(),
@@ -56,7 +56,7 @@ namespace Benefit.Services.Domain
                 }
                 else
                 {
-                    dbCategory.Name = catName;
+                    dbCategory.Name = catName.Truncate(64);
                     dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
 
                     dbCategory.ParentCategoryId = xmlCategory.Attribute("parentId") == null
@@ -148,8 +148,8 @@ namespace Benefit.Services.Domain
                     var productParameter = new ProductParameter()
                     {
                         Id = Guid.NewGuid().ToString(),
-                        Name = parameter.Name,
-                        UrlName = parameter.Name.Translit(),
+                        Name = parameter.Name.Truncate(64),
+                        UrlName = parameter.Name.Translit().Truncate(64),
                         MeasureUnit = parameter.Unit,
                         CategoryId = categoryGroupParams.Key,
                         AddedBy = "PromUaImport",
@@ -194,6 +194,7 @@ namespace Benefit.Services.Domain
                     Name = name,
                     UrlName = urlName.Truncate(128),
                     Vendor = xmlProduct.Element("vendor") == null ? null : xmlProduct.Element("vendor").Value,
+                    OriginCountry = xmlProduct.Element("country_of_origin") == null ? null : xmlProduct.Element("country_of_origin").Value,
                     CategoryId = xmlProduct.Element("categoryId").Value,
                     SellerId = sellerId,
                     Description = string.IsNullOrEmpty(descr) ? name : descr,

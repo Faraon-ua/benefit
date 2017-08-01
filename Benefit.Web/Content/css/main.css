@@ -40,6 +40,42 @@ header {
         margin-bottom: 63px;
     }
 
+.title-page {
+    min-height: auto;
+    position: static;
+}
+
+.categories-catalog a {
+    color: #3e77aa;
+}
+
+.pab-h2, .pab-h3, .pab-h4 {
+    overflow-wrap: break-word;
+}
+
+.pab-h2 {
+    font-size: 1.69231em;
+    font-weight: bold;
+    margin-bottom: 0.18182em;
+}
+
+.pab-h3 {
+    font-size: 1.38462em;
+    text-align: center;
+    margin-bottom: 0.38889em;
+}
+
+.cat-box {
+    display: table-cell;
+    border-bottom: 1px solid #eaeaea;
+    border-right: 1px solid #eaeaea;
+}
+
+    .cat-box h3 {
+        height: 60px;
+    }
+
+
 .container {
     width: 100%;
     max-width: 1800px;
@@ -745,44 +781,48 @@ header {
     .sh_btn:not(.cart-summary):hover {
         background: #990000;
     }
-    .cart-summary {
-        width: auto !important;    
-    }
-    #cart-items-price {
-        color: #71DA71;
-    }
-    #cart-items-number {
-        color: white;
-    }
-    #cart-items-number, #cart-items-price{
-        margin: 4px;
-        text-align: left;
-        line-height: 1.2em;
-        font-size: 1em;
-    }
 
-    .sh_btn:hover span {
-        background: #fff;
-        color: #900;
-    }
+.cart-summary {
+    width: auto !important;
+}
 
-    .sh_btn span {
-        top: 8px;
-        right: 2px;
-        line-height: 16px;
-        text-align: center;
-        position: absolute;
-        display: block;
-        width: 17px;
-        height: 17px;
-        color: #fff;
-        background: #900;
-        font-size: 15px;
-    }
+#cart-items-price {
+    color: #71DA71;
+}
 
-    .sh_btn:last-child {
-        border-left: 2px solid #666666;
-    }
+#cart-items-number {
+    color: white;
+}
+
+#cart-items-number, #cart-items-price {
+    margin: 4px;
+    text-align: left;
+    line-height: 1.2em;
+    font-size: 1em;
+}
+
+.sh_btn:hover span {
+    background: #fff;
+    color: #900;
+}
+
+.sh_btn span {
+    top: 8px;
+    right: 2px;
+    line-height: 16px;
+    text-align: center;
+    position: absolute;
+    display: block;
+    width: 17px;
+    height: 17px;
+    color: #fff;
+    background: #900;
+    font-size: 15px;
+}
+
+.sh_btn:last-child {
+    border-left: 2px solid #666666;
+}
 
 
 .social_block {
@@ -5017,50 +5057,61 @@ basket_modal_table td:nth-child(4) {
     left: 0;
     width: 100%;
 }
-.text-description-page h1, .text-description-page h2, .text-description-page h3, .text-description-page h4 {
-    font-size: 1.15em;
-    font-weight: normal;
-}
-.text-description-page h1, .text-description-page h2 {
-    font-size: 1.25em;
-}
-.text-description-page p, .text-description-page ul {
-    font-size: 1em;
-    line-height: 1.25em;
-    margin-bottom: 1em;
-}
-.text-description-page ul {
-    list-style: outside none disc;
-    padding-left: 2em;
-}
-.text-description-page li {
-    padding-bottom: 0.5em;
-}
+
+    .text-description-page h1, .text-description-page h2, .text-description-page h3, .text-description-page h4 {
+        font-size: 1.15em;
+        font-weight: normal;
+    }
+
+    .text-description-page h1, .text-description-page h2 {
+        font-size: 1.25em;
+    }
+
+    .text-description-page p, .text-description-page ul {
+        font-size: 1em;
+        line-height: 1.25em;
+        margin-bottom: 1em;
+    }
+
+    .text-description-page ul {
+        list-style: outside none disc;
+        padding-left: 2em;
+    }
+
+    .text-description-page li {
+        padding-bottom: 0.5em;
+    }
+
 .text-description-content {
     padding-top: 2em;
 }
-.text-description-content.box-hide {
-    max-height: 12em;
-    overflow: hidden;
-    position: relative;
-}
-.text-description-content.box-hide::before {
-    background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top , rgba(255, 255, 255, 0) 0%, #fff 100%) repeat scroll 0 0;
-    bottom: 0;
-    content: "";
-    display: block;
-    height: 4em;
-    left: 0;
-    position: absolute;
-    right: 0;
-}
+
+    .text-description-content.box-hide {
+        max-height: 12em;
+        overflow: hidden;
+        position: relative;
+    }
+
+        .text-description-content.box-hide::before {
+            background: rgba(0, 0, 0, 0) -moz-linear-gradient(center top, rgba(255, 255, 255, 0) 0%, #fff 100%) repeat scroll 0 0;
+            bottom: 0;
+            content: "";
+            display: block;
+            height: 4em;
+            left: 0;
+            position: absolute;
+            right: 0;
+        }
+
 .text-description-more {
     padding-bottom: 2em;
     text-align: right;
 }
+
 .text-description-more-link {
     font-size: 1.30769em;
 }
-.text-description-more-link:hover .arrow-link-inner {
-    text-decoration: none;
-}
+
+    .text-description-more-link:hover .arrow-link-inner {
+        text-decoration: none;
+    }
