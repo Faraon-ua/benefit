@@ -40,8 +40,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         // GET: /Admin/Categories/
         [Authorize(Roles = "Admin, Seller")]
-        public ActionResult Index()
+        public ActionResult Index(string search = null)
         {
+            var model = new List<Category>();
+            if (!string.IsNullOrEmpty(search))
+            {
+                model = db.Categories.Where(entry => entry.Name.ToLower().Contains(search.ToLower())).ToList();
+//                model.ForEach(entry=>entry.ExpandedName = entry.ExpandedName);
+            }
             return View();
         }
 

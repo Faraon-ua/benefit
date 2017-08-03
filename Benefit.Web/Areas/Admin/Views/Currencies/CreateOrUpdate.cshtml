@@ -51,7 +51,14 @@
                 <label class="control-label col-md-2">Індекс</label>
 
                 <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.Rate, new { @class = "mask-number" })
+                    @if (Model.Provider == CurrencyProvider.Custom)
+                    {
+                        @Html.TextBoxFor(model => model.Rate, new {@class = "mask-number"})
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.Rate, new { @class = "mask-number", @readonly = "readonly", disabled = "disabled" })
+                    }
                     @Html.ValidationMessageFor(model => model.Rate)
                 </div>
             </div>

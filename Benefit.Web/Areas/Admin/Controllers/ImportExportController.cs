@@ -40,6 +40,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.ExportImports.FirstOrDefault(
                     entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == SyncType.Promua) ?? new ExportImport()
                     {
+                        Id = Guid.NewGuid().ToString(),
                         IsActive = true,
                         IsImport = true,
                         SyncType = SyncType.Promua,
@@ -71,19 +72,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 TempData["ErrorMessage"] = "Url має бути заповнено";
                 return RedirectToAction("Index");
             }
-            if (db.ExportImports.Any(entry => entry.FileUrl == exportImport.FileUrl))
+            if (db.ExportImports.Any(entry => entry.FileUrl == exportImport.FileUrl && entry.Id != exportImport.Id))
             {
                 TempData["ErrorMessage"] = "Такий файл вже зареєстровано";
                 return RedirectToAction("Index");
             }
             else
             {
-                var existingImport = db.ExportImports.Find(exportImport.Id);
-                existingImport.IsActive = exportImport.IsActive;
-                existingImport.RemoveProducts = exportImport.RemoveProducts;
-                existingImport.FileUrl = exportImport.FileUrl;
-                existingImport.SyncPeriod = exportImport.SyncPeriod;
-                db.Entry(existingImport).State = EntityState.Modified;
+                var import = db.ExportImports.Find(exportImport.Id);
+                if (import == null)
+                {
+                    import = exportImport;
+                    db.ExportImports.Add(import);
+                }
+                else
+                {
+                    db.Entry(import).State = EntityState.Modified;
+                }
+                import.IsActive = exportImport.IsActive;
+                import.RemoveProducts = exportImport.RemoveProducts;
+                import.FileUrl = exportImport.FileUrl;
+                import.SyncPeriod = exportImport.SyncPeriod;
             }
             db.SaveChanges();
             TempData["SuccessMessage"] = "Дані імпорту оновлено";

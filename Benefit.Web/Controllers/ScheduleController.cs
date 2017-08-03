@@ -50,5 +50,11 @@ namespace Benefit.Web.Controllers
                 return Content("Company revenue saved");
             }
         }
+
+        public ActionResult ProcessCurrenciesTask()
+        {
+
+            return Content("Ok");
+        }
     }
 }

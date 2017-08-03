@@ -1,4 +1,6 @@
-﻿@{
+﻿@model List<Benefit.Domain.Models.Category>
+
+@{
     ViewBag.Title = "Категорії";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
@@ -76,9 +78,36 @@
         }
     </script>
 }
-<div id="catLists">
-    @Html.Action("CategoriesList")
-</div>
-<div id="productsList">
+<div class="nav-search" id="nav-search" style="position: static;">
+    @using (Html.BeginForm("Index", "Categories", FormMethod.Get, new { @class = "form-search" }))
+    {
+        <div class="input-group col-md-4">
+            <input class="form-control search-query" placeholder="Пошук..." type="text">
+            <span class="input-group-btn">
+                <button type="button" class="btn btn-purple btn-sm">
+                    Знайти
+                    <i class="icon-search icon-on-right bigger-110"></i>
+                </button>
+            </span>
+        </div>
+    }
+    <br />
+    @if (Model.Any())
+    {
+        <div>
+            Результати пошуку
+        </div>
+        foreach (var cat in Model)
+        {
+            <div class="row">
 
+            </div>
+        }
+    }
+    <div id="catLists">
+        @Html.Action("CategoriesList")
+    </div>
+    <div id="productsList">
+
+    </div>
 </div>
