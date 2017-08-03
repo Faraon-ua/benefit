@@ -358,24 +358,6 @@ namespace Benefit.Services.Domain
             db.SaveChanges();
         }
 
-        public void ProcessCurrencies(List<Currency> currencies, string sellerId)
-        {
-            var toRemove = db.Currencies.Where(entry => entry.SellerId == sellerId).ToList();
-            db.Currencies.RemoveRange(toRemove);
-            if (!currencies.Any())
-            {
-                db.SaveChanges();
-                return;
-            }
-            currencies.ForEach(entry =>
-            {
-                entry.Id = Guid.NewGuid().ToString();
-                entry.SellerId = sellerId;
-            });
-            db.Currencies.AddRange(currencies);
-            db.SaveChanges();
-        }
-
         public void ProcessAddresses(List<Address> addresses, string sellerId)
         {
             var toRemove = db.Addresses.Where(entry => entry.SellerId == sellerId).ToList();

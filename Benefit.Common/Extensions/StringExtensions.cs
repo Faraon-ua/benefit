@@ -19,6 +19,7 @@ namespace Benefit.Common.Extensions
             words.Add("/", "-");
             words.Add("\\", "-proc");
             words.Add("&", "");
+            words.Add("*", "x");
             words.Add(".", "");
             words.Add("\"", "");
             words.Add("'", "");

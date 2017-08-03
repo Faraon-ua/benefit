@@ -300,9 +300,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                     SellerService.ProcessAddresses(seller.Addresses.ToList(), sellerId);
 
-                    seller.Currencies = seller.Currencies.Distinct(new CurrencyComparer()).ToList();
-                    SellerService.ProcessCurrencies(seller.Currencies.ToList(), sellerId);
-
                     SellerService.ProcessShippingMethods(seller.ShippingMethods.ToList(), sellerId);
                     db.Entry(seller).State = EntityState.Modified;
                     TempData["SuccessMessage"] = string.Format("Дані постачальника {0} було збережено", seller.Name);

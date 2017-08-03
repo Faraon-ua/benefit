@@ -33,7 +33,7 @@
             var counter = 0;
             var childCount = category.ChildCategories.Count;
             <h2 class="pab-h2 padding-bottom-15">
-                <a class="pab-h2-link" href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = category.UrlName})" title="@category.Description">
+                <a class="pab-h2-link" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = ViewBag.SellerUrlName, categoryUrl = category.UrlName })" title="@category.Description">
                     @category.Name
                 </a>
             </h2>
