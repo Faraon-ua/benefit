@@ -7,7 +7,14 @@
 
 <div class="col-md-2 cat-box">
     <a href="@url" title="@Model.Description">
-        <img src="~/Images/CategoryLogo/@Model.ImageUrl" alt="@Model.Name" />
+        @if (Model.ImageUrl == null)
+        {
+            <img src="~/Content/img/category_default.jpg" alt="@Model.Name"/>
+        }
+        else
+        {
+            <img src="~/Images/CategoryLogo/@Model.ImageUrl" alt="@Model.Name"/>
+        }
     </a>
     <h3 class="pab-h3">
         <a href="@url" title="@Model.Description">

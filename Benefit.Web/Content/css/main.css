@@ -381,7 +381,7 @@ header {
     text-align: center;
     font-size: 15px;
     letter-spacing: 0.025em;
-    padding-right: 24px;
+    padding-left: 24px;
 }
 
 .login_box {
@@ -1166,6 +1166,15 @@ footer {
 
     .f_soc_p > a.ig {
         background-color: #785633;
+    }
+    .f_soc_p > a.skype {
+        background-color: #19b5e9;
+    } 
+    .f_soc_p > a.whatsapp {
+        background-color: #43b84c;
+    } 
+    .f_soc_p > a.viber {
+        background-color: #671da2;
     }
 
 .f_soc_under {

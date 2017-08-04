@@ -368,16 +368,16 @@
         padding: 0 46px;
     }
 
-        .container_table.topheader_content .col-8 {
+        .container_table.topheader_content .menu-container {
             padding: 0;
             display: block;
         }
 
-        .container_table.topheader_content .col-2:first-child {
-            width: 100%;
+        .container_table.topheader_content .logo-container {
+            width: 90%;
         }
 
-        .container_table.topheader_content .col-2:last-child {
+        .container_table.topheader_content .contacts-container {
             display: none;
         }
 
