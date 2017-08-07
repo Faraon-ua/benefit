@@ -71,7 +71,12 @@ header {
     display: table-cell;
     border-bottom: 1px solid #eaeaea;
     border-right: 1px solid #eaeaea;
+    padding: 0;
 }
+
+    .cat-box img {
+        width: 100%;
+    }
 
     .cat-box h3 {
         height: 60px;

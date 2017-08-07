@@ -28,31 +28,38 @@
     {
         foreach (var category in Model.Items)
         {
-            <div class="row">
+            <div>
                 @if (category.ChildCategories.Any())
                 {
-                var counter = 0;
-                var childCount = category.ChildCategories.Count;
+                    var counter = 0;
+                    var childCount = category.ChildCategories.Count;
                     <h2 class="pab-h2 padding-bottom-15">
-                        <a class="pab-h2-link" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = ViewBag.SellerUrlName, categoryUrl = category.UrlName})" title="@category.Description">
-                            @category.Name
-                        </a>
-                    </h2>
-                for (var i = 0; i <= childCount/6; i++)
-                {
-                    <div class="row">
-                        @do
+                        @if (Model.Category.Id == category.Id)
                         {
-                            if (counter >= childCount)
+                            <span>@category.Name</span>
+                        }
+                        else
+                        {
+                            <a class="pab-h2-link" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = ViewBag.SellerUrlName, categoryUrl = category.UrlName})" title="@category.Description">
+                                @category.Name
+                            </a>
+                        }
+                    </h2>
+                    for (var i = 0; i <= childCount / 6; i++)
+                    {
+                        <div>
+                            @do
                             {
-                                break;
-                            }
-                            var child = category.ChildCategories.ElementAt(counter);
-                            counter++;
-                            @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
-                        } while (counter%6 != 0);
-                    </div>
-                }
+                                if (counter >= childCount)
+                                {
+                                    break;
+                                }
+                                var child = category.ChildCategories.ElementAt(counter);
+                                counter++;
+                                @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
+                            } while (counter % 6 != 0);
+                        </div>
+                    }
                 }
                 else
                 {
