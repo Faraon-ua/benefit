@@ -82,7 +82,7 @@
     @using (Html.BeginForm("Index", "Categories", FormMethod.Get, new { @class = "form-search" }))
     {
         <div class="input-group col-md-4">
-            <input class="form-control search-query" placeholder="Пошук..." type="text">
+            <input class="form-control search-query" placeholder="Пошук..." type="text" name="search">
             <span class="input-group-btn">
                 <button type="button" class="btn btn-purple btn-sm">
                     Знайти
@@ -91,18 +91,40 @@
             </span>
         </div>
     }
-    <br />
     @if (Model.Any())
     {
-        <div>
+        <h3>
             Результати пошуку
+        </h3>
+        <div class="clearfix margin-bottom-15">
+            @foreach (var cat in Model)
+            {
+                <div class="row col-md-4">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="">
+                                @cat.Name
+                            </div>
+                        </div>
+                        <div class="col-sm-6 controls" style="">
+                            <a class="btn btn-danger btn-sm pull-right btn-xs" onclick="DeleteCategory('@cat.Id', '@cat.Name')" title="Видалити категорію">
+                                <i class="icon-trash"></i>
+                            </a>
+                            <a class="btn btn-primary btn-sm pull-right btn-xs" href="@Url.Action("CreateOrUpdate", new { id = cat.Id })" target="_blank" title="Редагувати категорію">
+                                <i class="icon-edit"></i>
+                            </a>
+                            <a class="btn btn-purple btn-sm pull-right btn-xs" href="@Url.Action("Index", "ProductOptions", new { categoryId =cat.Id})" title="Редагувати додаткові опції" target="_blank">
+                                <i class="icon-plus"></i>
+                            </a>
+                            <a class="btn btn-warning btn-sm pull-right btn-xs" href="@Url.Action("Index", "ProductParameters", new { categoryId =cat.Id})" title="Редагувати фільтри" target="_blank">
+                                <i class="icon-check"></i>
+                            </a>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                </div>
+            }
         </div>
-        foreach (var cat in Model)
-        {
-            <div class="row">
-
-            </div>
-        }
     }
     <div id="catLists">
         @Html.Action("CategoriesList")

@@ -54,13 +54,15 @@ header {
 }
 
 .pab-h2 {
-    font-size: 1.69231em;
-    font-weight: bold;
+    font-size: 1.3em;
     margin-bottom: 0.18182em;
+}
+.pab-h2-link {
+    color: #555555 !important;
 }
 
 .pab-h3 {
-    font-size: 1.38462em;
+    font-size: 1.2em;
     text-align: center;
     margin-bottom: 0.38889em;
 }

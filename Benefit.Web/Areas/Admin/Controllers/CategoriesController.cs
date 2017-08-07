@@ -46,9 +46,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(search))
             {
                 model = db.Categories.Where(entry => entry.Name.ToLower().Contains(search.ToLower())).ToList();
-//                model.ForEach(entry=>entry.ExpandedName = entry.ExpandedName);
             }
-            return View();
+            return View(model);
         }
 
         [HttpPost]

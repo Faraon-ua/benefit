@@ -25,34 +25,40 @@
     </header>
 
     @if (Model.Items.Any())
-{
-    foreach (var category in Model.Items)
     {
-        if (category.ChildCategories.Any())
+        foreach (var category in Model.Items)
         {
-            var counter = 0;
-            var childCount = category.ChildCategories.Count;
-            <h2 class="pab-h2 padding-bottom-15">
-                <a class="pab-h2-link" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = ViewBag.SellerUrlName, categoryUrl = category.UrlName })" title="@category.Description">
-                    @category.Name
-                </a>
-            </h2>
-            for (var i = 0; i <= childCount / 6; i++)
-            {
+            <div class="row">
+                @if (category.ChildCategories.Any())
+                {
+                var counter = 0;
+                var childCount = category.ChildCategories.Count;
+                    <h2 class="pab-h2 padding-bottom-15">
+                        <a class="pab-h2-link" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = ViewBag.SellerUrlName, categoryUrl = category.UrlName})" title="@category.Description">
+                            @category.Name
+                        </a>
+                    </h2>
+                for (var i = 0; i <= childCount/6; i++)
+                {
                     <div class="row">
                         @do
                         {
-                            var child = category.ChildCategories.ElementAt(counter++);
+                            if (counter >= childCount)
+                            {
+                                break;
+                            }
+                            var child = category.ChildCategories.ElementAt(counter);
+                            counter++;
                             @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
-                        }
-                        while (counter % 6 != 0 && counter < childCount);
+                        } while (counter%6 != 0);
                     </div>
                 }
-            }
-            else
-            {
-                @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", category)
-            }
+                }
+                else
+                {
+                    @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", category)
+                }
+            </div>
         }
     }
 </div>

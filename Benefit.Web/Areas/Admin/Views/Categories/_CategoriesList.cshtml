@@ -25,7 +25,7 @@
                                 <a class="btn btn-danger btn-sm pull-right btn-xs" onclick="DeleteCategory('@cat.Id', '@cat.Name.Replace("'", String.Empty)')" title="Видалити категорію">
                                 <i class="icon-trash"></i>
                                 </a>
-                                <a class="btn btn-primary btn-sm margin-right-10 pull-right btn-xs" href="@Url.Action("CreateOrUpdate", new {id = cat.Id})" target="_blank" title="Редагувати категорію">
+                                <a class="btn btn-primary btn-sm pull-right btn-xs" href="@Url.Action("CreateOrUpdate", new {id = cat.Id})" target="_blank" title="Редагувати категорію">
                                     <i class="icon-edit"></i>
                                 </a>
                             }
