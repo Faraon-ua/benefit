@@ -185,7 +185,7 @@ namespace Benefit.Services.Domain
             {
                 var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToAdd);
                 var name = xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim();
-                var descr = xmlProduct.Element("description").Value.Replace("\n", "<br/>");
+                var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
                 var currencyId = xmlProduct.Element("currencyId").Value;
                 var urlName = name.Translit();
                 var product = new Product()
@@ -193,8 +193,8 @@ namespace Benefit.Services.Domain
                     Id = xmlProduct.Attribute("id").Value,
                     Name = name,
                     UrlName = urlName.Truncate(128),
-                    Vendor = xmlProduct.Element("vendor") == null ? null : xmlProduct.Element("vendor").Value,
-                    OriginCountry = xmlProduct.Element("country_of_origin") == null ? null : xmlProduct.Element("country_of_origin").Value,
+                    Vendor = xmlProduct.Element("vendor").GetValueOrDefault(null),
+                    OriginCountry = xmlProduct.Element("country_of_origin").GetValueOrDefault(null),
                     CategoryId = xmlProduct.Element("categoryId").Value,
                     SellerId = sellerId,
                     Description = string.IsNullOrEmpty(descr) ? name : descr,
@@ -255,7 +255,7 @@ namespace Benefit.Services.Domain
                 var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToUpdate);
 
                 var name = xmlProduct.Element("name").Value;
-                var descr = xmlProduct.Element("description").Value.Replace("\n", "<br/>");
+                var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
                 var currencyId = xmlProduct.Element("currencyId").Value;
 
                 product.Name = name;

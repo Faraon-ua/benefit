@@ -15,6 +15,9 @@
     <div class="vertical_menu padding-bottom-15 clear-fix" id="right-menu" data-seller-url="@(Model.Seller == null ? "" : Model.Seller.UrlName)" data-category-id="@(Model.Category == null ? "" : Model.Category.Id)">
     </div>
 }
+@{
+    var closingDivRendered = false;
+}
 <div class="clearfix categories-catalog">
     @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
 
@@ -26,13 +29,21 @@
 
     @if (Model.Items.Any())
     {
+        @:<div class="clearfix">
         foreach (var category in Model.Items)
         {
-            <div class="clearfix">
-                @if (category.ChildCategories.Any())
+            if (category.ChildCategories.Any())
+            {
+                if (!closingDivRendered)
                 {
-                    var counter = 0;
-                    var childCount = category.ChildCategories.Count;
+                    @:</div>
+                    closingDivRendered = true;
+                }
+                <div class="clearfix">
+                    @{
+                        var counter = 0;
+                        var childCount = category.ChildCategories.Count;
+                    }
                     <h2 class="pab-h2 padding-bottom-15">
                         @if (Model.Category != null && Model.Category.Id == category.Id)
                         {
@@ -45,27 +56,28 @@
                             </a>
                         }
                     </h2>
-                    for (var i = 0; i <= childCount / 6; i++)
+                    @for (var i = 0; i <= childCount / 6; i++)
                     {
-                        <div class="clearfix">
-                            @do
+                    <div class="clearfix">
+                        @do
+                        {
+                            if (counter >= childCount)
                             {
-                                if (counter >= childCount)
-                                {
-                                    break;
-                                }
-                                var child = category.ChildCategories.ElementAt(counter);
-                                counter++;
-                                @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
-                            } while (counter % 6 != 0);
-                        </div>
+                                break;
+                            }
+                            var child = category.ChildCategories.ElementAt(counter);
+                            counter++;
+                            @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
+                        } while (counter%6 != 0);
+                    </div>
                     }
-                }
-                else
-                {
-                    @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", category)
-                }
-            </div>
+                </div>
+
+            }
+            else
+            {
+                @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", category)
+            }
         }
     }
 </div>

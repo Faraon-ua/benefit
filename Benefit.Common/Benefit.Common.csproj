@@ -65,6 +65,7 @@
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
     <Compile Include="Extensions\UrlExtensions.cs" />
+    <Compile Include="Extensions\XmlExtensions.cs" />
     <Compile Include="Helpers\ContentTypeConvert.cs" />
     <Compile Include="Helpers\Enumerations.cs" />
     <Compile Include="Helpers\HexHelper.cs" />
