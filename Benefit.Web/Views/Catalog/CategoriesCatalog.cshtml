@@ -28,13 +28,13 @@
     {
         foreach (var category in Model.Items)
         {
-            <div>
+            <div class="clearfix">
                 @if (category.ChildCategories.Any())
                 {
                     var counter = 0;
                     var childCount = category.ChildCategories.Count;
                     <h2 class="pab-h2 padding-bottom-15">
-                        @if (Model.Category.Id == category.Id)
+                        @if (Model.Category != null && Model.Category.Id == category.Id)
                         {
                             <span>@category.Name</span>
                         }
@@ -47,7 +47,7 @@
                     </h2>
                     for (var i = 0; i <= childCount / 6; i++)
                     {
-                        <div>
+                        <div class="clearfix">
                             @do
                             {
                                 if (counter >= childCount)
