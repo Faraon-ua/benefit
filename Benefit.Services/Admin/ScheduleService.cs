@@ -236,6 +236,10 @@ namespace Benefit.Services.Admin
                             {
                                 vipPartner.Status = Status.VIP;
                             }
+                            vipPartner.StatusCompletionMonths = vipPartner.StatusCompletionMonths == null
+                                ? 1
+                                : vipPartner.StatusCompletionMonths + 1;
+
                             var vipPartnerTotalStructurePointAmount =
                                 vipPartner.GetAllStructurePartners(db).Sum(entry => entry.HangingPointsAccount) + vipPartner.HangingPointsAccount; //вместе с ним
 
@@ -342,6 +346,14 @@ namespace Benefit.Services.Admin
                                 QualifiedPartnersNumber = vipPortion.UserStructurePoints
                             });
                         }
+
+                        //обнулить кол-во подтверждений выполнения статуса
+                        allUsers.Where(entry => entry.Status > Status.Partner && !vipPartnerIds.Contains(entry.Id))
+                            .ToList()
+                            .ForEach(entry =>
+                            {
+                                entry.StatusCompletionMonths = 0;
+                            });
 
                         //для всех пользователей, у кого есть баллы в обработке
                         allUsers.Where(entry => entry.HangingPointsAccount > 0).ToList().ForEach(entry =>

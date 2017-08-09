@@ -24,7 +24,6 @@ namespace Benefit.Web.Models
     
     public class RegisterViewModel
     {
-        [Required(ErrorMessage = "Реферальний код є обов'язковим для заповнення")]
         public int? ReferalNumber { get; set; }
         [MaxLength(32)]
         [Required(ErrorMessage = "Ім'я є обов'язковим для заповнення")]
@@ -52,9 +51,10 @@ namespace Benefit.Web.Models
         public string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm password")]
+        [Display(Name = "Підтвердження паролю")]
         [Compare("Password", ErrorMessage = "Пароль і підтвердження паролю не співпадають")]
         public string ConfirmPassword { get; set; }
+        public bool TermsAgree { get; set; }
     }
 
     public class ManageUserViewModel
@@ -78,16 +78,16 @@ namespace Benefit.Web.Models
 
     public class LoginViewModel
     {
-        [Required]
-        [Display(Name = "User name")]
+        [Required(ErrorMessage = "Email обов’язковий для заповнення")]
+        [Display(Name = "Email")]
         public string UserName { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Пароль обов’язковий для заповнення")]
         [DataType(DataType.Password)]
-        [Display(Name = "Password")]
+        [Display(Name = "Пароль")]
         public string Password { get; set; }
 
-        [Display(Name = "Remember me?")]
+        [Display(Name = "Запам’ятати мене?")]
         public bool RememberMe { get; set; }
     }
 

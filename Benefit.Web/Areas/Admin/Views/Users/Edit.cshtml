@@ -104,6 +104,12 @@
                     Додаткові нарахування
                 </a>
             </li>
+            <li>
+                <a href="#status" data-toggle="tab">
+                    <i class="red icon-briefcase bigger-110"></i>
+                    Статус
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -124,6 +130,9 @@
             </div>
             <div class="tab-pane" id="additionalPayments">
                 @Html.Partial("_AdditionalPaymentsPartial", Model)
+            </div>
+            <div class="tab-pane" id="status">
+                @Html.Partial("_StatusPartial", Model)
             </div>
         </div>
     </div>

@@ -1,210 +1,20 @@
 ﻿@model Benefit.Web.Models.RegisterViewModel
+
 @{
-    Layout = null;
+    ViewBag.Title = "Реєстрація";
 }
-<!DOCTYPE html>
-<!--[if IE]><![endif]-->
-<!--[if IE 8 ]><html dir="ltr" lang="uk" class="ie8"><![endif]-->
-<!--[if IE 9 ]><html dir="ltr" lang="uk" class="ie9"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!-->
-<html dir="ltr" class="ltr" lang="uk">
-<!--<![endif]-->
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Реєстрація в Benefit Company</title>
-    <!--<base href="https://benefit-company.com/" />-->
-    <meta name="description" content="Benefit Company " />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link href="~/Content/img/fav.jpg" rel="icon" />
-    <link href="~/Content/reg_lp_catalog/view/theme/megashop/stylesheet/style.css" rel="stylesheet" />
-    <link href="~/Content/reg_lp_catalog/view/theme/megashop/stylesheet/bootstrap.css" rel="stylesheet" />
-    <link href="~/Content/reg_lp_catalog/view/theme/megashop/stylesheet/stylesheet.css" rel="stylesheet" />
-    <link href="~/Content/reg_lp_catalog/view/theme/megashop/stylesheet/font.css" rel="stylesheet" />
-    <link href="~/Content/reg_lp_catalog/view/javascript/font-awesome/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="~/Content/reg_lp_catalog/view/javascript/jquery/magnific/magnific-popup.css" rel="stylesheet" />
-    <link href="~/Content/reg_lp_catalog/view/theme/default/stylesheet/multiseller.css" rel="stylesheet" />
-    <link rel="stylesheet" type="text/css" href="~/Content/reg_lp_catalog/view/theme/default/stylesheet/affiliate.css" />
-    <!-- <script src="~/Content/reg_lp_catalog/view/javascript/mf/jquery-ui.min.js" type="text/javascript"></script> -->
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/theme/megashop/javascript/underscore.js"></script>
-    <!--<script src="https://api-maps.yandex.ru/2.0-stable/?load=package.standard&lang=ru-RU"></script>-->
-    <link href="~/Content/reg_lp_catalog/view/theme/default/stylesheet/geoip.css" rel="stylesheet">
-    <script type="text/javascript">
-        if (!window.console) console = {
-            log: function () { }
-        };
-        var config_language = undefined;
-    </script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/jquery/jquery-2.1.1.min.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/mf/jquery-ui.min.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/jquery/magnific/jquery.magnific-popup.min.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/bootstrap/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/common.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/mask.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/theme/megashop/javascript/common.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/quick_buy.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/ms-common.js"></script>
-    <!-- scripts for reg landing only -->
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/theme/megashop/javascript/jquery.downCount.js"></script>
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/theme/megashop/javascript/jssocials.min.js"></script>
-
-    <link rel="stylesheet" href="~/Content/reg_lp_catalog/view/javascript/ekko-lightbox.css">
-    <script type="text/javascript" src="~/Content/reg_lp_catalog/view/javascript/ekko-lightbox.js"></script>
-    <script src="~/Content/reg_lp_catalog/view/javascript/jquery/jquery.geoip-module.js" type="text/javascript"></script>
-
+@section styles
+{
     <link href="~/Content/css/validation-errors.css" rel="stylesheet" />
     <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
     <link href="~/Content/css/address.css" rel="stylesheet" />
+}
+@section scripts
+{
     <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/jquery.autocomplete.min.js"></script>
     <script src="~/Scripts/address.js"></script>
     <script>
-        $(function () {
-            SetRegionsAutocomplete();
-        })
-    </script>
-</head>
-<body>
-    <!-- sys-notification -->
-    <div id="sys-notification">
-        <div class="container">
-            <div id="notification"></div>
-        </div>
-    </div>
-    <!-- /sys-notification -->
-    <div class="landing_reg_header">
-        <div class="lr_header_bg">
-            <div class="lr_logo"></div>
-            <div class="lr_under_logo">
-                <h2>Стань партнером</h2>
-                <h1>benefit company!</h1>
-            </div>
-            <div class="lr_under_video">
-                @*                <video style="width: 518px; height: 291px; left: 0px; top: 4.3125px;" tabindex="-1" class="video-stream html5-main-video" src="mediasource:https://www.youtube.com/e7777328-1577-4ce8-a57b-1c5c9e4f074a"></video>*@
-                <iframe src="https://www.youtube.com/embed/Fsi1rA8e-z4" frameborder="0" allowfullscreen></iframe>
-            </div>
-
-        </div>
-        <div class="lr_header_content">
-            <div style="margin-top: 20px; text-align: center;">
-                <h3>Якщо ви не можете зараз подивитись відео, пропонуємо</h3>
-                <div class="reg-form-agreement" style="margin-top: 10px; margin-bottom: 15px;">
-                    <button type="submit" id="rSubmitButton" onclick="window.location.href = '@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })';">Прочитати</button>
-                </div>
-            </div>
-        </div>
-        <div class="lr_header_content">
-                <h2>
-                    <span>Тільки зараз!</span>
-                    Реєструйся та отримай абсолютно безкоштовно:
-                </h2>
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <i class="lr_sprite sprite_avatar"></i>
-                            <p class="lr_upper_p">
-                                Акаунт в системі Benefit Company без плати за реєстрацію, активацію і підтримання його в системі
-                            </p>
-                        </div>
-                        <div class="col-md-6">
-                            <i class="lr_sprite sprite_hat"></i>
-                            <p class="lr_upper_p">
-                                5 спеціальних відео-уроків унікальної освітньої програми<br /> «Ліквідація фінансової безграмотності»
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </div><!-- end lr_header_content -->
-        <div class="lr_header_white">
-                <div class="lrhw_text">
-                    Для получения подарка у вас
-                    осталось на регистрацию
-                </div>
-                <div class="lr_timer_block">
-                    <div class="countdown">
-                        <div class="time_block_p">
-                            <div class="time_block minutes">00</div>
-                            <span>минут</span>
-                        </div>
-                        <div class="time_block_p">
-                            <div class="time_block seconds">00</div>
-                            <span>секунд</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </div><!-- end landing_reg_header -->
-    <div class="reg-form" id="reg-form">
-        <div class="container">
-            <div class="row">
-                @using (Html.BeginForm())
-                {
-                    <h2>Реєстрація</h2>
-                    @Html.ValidationSummary()
-                    @Html.AntiForgeryToken()
-                    <div class="reg-form-content">
-                        <div class="reg-form-step">
-                            <input name="ReferalNumber" id="ReferalNumber" type="text" placeholder="Реферальний код" value="@Model.ReferalNumber">
-                        </div>
-                        <p style="text-align: center; color: white; font-size: 1.2em;" id="referal-name">
-
-                        </p>
-                        <div class="reg-form-step">
-                            <input name="FirstName" type="text" placeholder="Імя" value="@Model.FirstName">
-                        </div>
-                        <div class="reg-form-step">
-                            <input name="LastName" type="text" placeholder="Прізвище" value="@Model.LastName">
-                        </div>
-                        <div class="reg-form-step">
-                            <input name="RegionName" type="text" placeholder="Місто" class="regionSearch" value="@Model.RegionName">
-                            @Html.HiddenFor(m => m.RegionId)
-                        </div>
-                        <div class="reg-form-step">
-                            <input name="Email" type="text" placeholder="E-mail" value="@Model.Email">
-                        </div>
-                        <div class="reg-form-step">
-                            <input name="PhoneNumber" type="tel" placeholder="Телефон" value="@Model.PhoneNumber">
-                        </div>
-                        <div class="reg-form-step">
-                            @Html.TextBoxFor(m => m.CardNumber, new { type = "text", placeholder = "Номер карти (при наявності)" })
-@*                            <input name="CardNumber" type="text" placeholder="Номер карти (при наявності)" value="@Model.CardNumber">*@
-                        </div>
-                        <div class="reg-form-step">
-                            @Html.PasswordFor(m => m.Password, new { placeholder = "Пароль" })
-                        </div>
-                        <div class="reg-form-step">
-                            @Html.PasswordFor(m => m.ConfirmPassword, new { placeholder = "Підтвердження паролю" })
-                        </div>
-                        <div class="reg-form-agreement">
-                            <button type="submit" id="rSubmitButton">Зареєструватись</button>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
-    <div class="lr_footer">
-        <h2>Поділися з друзями:</h2>
-        <div id="share"></div>
-    </div>
-
-    <!-- modal -->
-    <div id="modal-affiliate-info" class="modal">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <!-- Заголовок модального окна -->
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                </div>
-                <!-- Основной текст сообщения -->
-                <div class="modal-body cabin2-wrapper">
-                    <div class="lr_modal_text"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script type="text/javascript">
         var referalUserUrl = '@Url.Action("GetReferalName")';
 
         function GetReferalName() {
@@ -216,7 +26,10 @@
             });
         }
 
-        $(document).ready(function () {
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            SetRegionsAutocomplete();
+
             if ($("#ReferalNumber").val()) {
                 GetReferalName();
             }
@@ -224,126 +37,150 @@
             $("#ReferalNumber").focusout(function () {
                 GetReferalName();
             });
-
-            /**
-        	 * Важно для того, чтобы шапка подгонялась под высоту окна,
-        	 *
-             *
-        	 *
-    		 	var wh = $(window).height() - 170;
-    		 	$('.lr_header_bg').css('height', wh);
-            */
-
-            /**
-             * Настройки таймера тут
-             *
-             */
-            var d1 = new Date(),
-                d2 = new Date(d1);
-            d2.setMinutes(d1.getMinutes() + 15);
-
-            var formated_date = d2.format("mm/dd/yyyy HH:MM:ss");
-            console.log(formated_date);
-            $('.countdown').downCount({
-                date: formated_date,
-                offset: +1
-            }, function () {
-                // событие после окончания таймера
-            });
-
-
-            /**
-             * Настройки соц. счетчика тут
-             *
-             */
-            $("#share").jsSocials({
-                shares: ["facebook", "vk", "ok", "twitter", "googleplus"],
-                url: "http://google.ru",
-                text: "text to share",
-                showLabel: true,
-                showCount: false,
-                shareIn: "popup",
-            });
-
-            /**
-             * Вызов модальных окон по ссылкам внизу
-             *
-             */
-            $('.under_links a').click(function (e) {
-                e.preventDefault();
-                var text = $(this).attr('data-modal-content');
-                $('.lr_modal_text').html(text);
-                $('.modal').css({ 'display': 'block', 'background': 'rgba(0, 0, 0, 0.66)' });
-
-            });
-            $('.modal-header .close').click(function () {
-                $('.modal').attr('style', '');
-            })
-
-
-            $("input[type=tel]").mask("+38999?9999999");
-            $("input[name=fax]").mask("999?999");
-
-            $("input[type=tel]").on("blur", function () {
-                var last = $(this).val().substr($(this).val().indexOf("-") + 1);
-
-                if (last.length == 3) {
-                    var move = $(this).val().substr($(this).val().indexOf("-") - 1, 1);
-                    var lastfour = move + last;
-
-                    var first = $(this).val().substr(0, 9);
-
-                    $(this).val(first + '-' + lastfour);
-                }
-            });
-        });
-
-        $('#rSubmitButton').click(function (event) {
-            event.preventDefault;
-
-            var rcode = $('[name=tracking]');
-            var rarea = $('[name=city]');
-            var rname = $('[name=firstname]');
-            var rlastname = $('[name=lastname]');
-            var remail = $('[name=email]');
-            var rphone = $('[name=telephone]');
-
-            if (rcode.val() == '') {
-                rcode.addClass('empty-input');
-            } else {
-                rcode.removeClass('empty-input');
-            }
-
-            if (rarea.val() == '') {
-                rarea.addClass('empty-input');
-            } else {
-                rarea.removeClass('empty-input');
-            }
-
-            if (rname.val() == '') {
-                rname.addClass('empty-input');
-            } else {
-                rname.removeClass('empty-input');
-            }
-
-            if (rlastname.val() == '') {
-                rlastname.addClass('empty-input');
-            } else {
-                rlastname.removeClass('empty-input');
-            }
-
-            if (remail.val() == '') {
-                remail.addClass('empty-input');
-            } else {
-                remail.removeClass('empty-input');
-            }
-
-            if (rphone.val() == '') {
-                rphone.addClass('empty-input');
-            } else {
-                rphone.removeClass('empty-input');
-            }
         });
     </script>
-</body>
-</html>
+}
+<div class="enter_wrap">
+    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))
+    {
+        @Html.ValidationSummary()
+        @Html.AntiForgeryToken()
+        <p class="enter_title">Реєстрація</p>
+
+        @Html.TextBoxFor(m => m.FirstName, new { placeholder = "І’мя *" })
+        @Html.ValidationMessageFor(m => m.FirstName)
+
+        @Html.TextBoxFor(m => m.LastName, new { placeholder = "Прізвище *" })
+        @Html.ValidationMessageFor(m => m.LastName)
+
+        <div class="col-sm-12">
+            @Html.TextBoxFor(m => m.RegionName, new { placeholder = "Місто *", @class = "regionSearch" })
+            @Html.HiddenFor(m => m.RegionId)
+            <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-map-marker form-control-feedback" title="Почніть вводити місто проживання і виберіть із списку">
+            </a>
+        </div>
+        @Html.ValidationMessageFor(m => m.RegionId)
+
+        <div class="col-sm-12">
+            @Html.TextBoxFor(m => m.Email, new { placeholder = "Email *", type = "email" })
+            <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-envelope form-control-feedback">
+            </a>
+        </div>
+        @Html.ValidationMessageFor(m => m.Email)
+
+        <div class="col-sm-12">
+            @Html.TextBoxFor(m => m.PhoneNumber, new { placeholder = "Номер телефону *", type = "tel" })
+            <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-phone form-control-feedback">
+            </a>
+        </div>
+        @Html.ValidationMessageFor(m => m.PhoneNumber)
+
+        <div class="col-sm-12">
+            @Html.TextBoxFor(m => m.CardNumber, new { placeholder = "Номер карти (при наявності)" })
+            <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-credit-card form-control-feedback" title="Номер картки Benefit Card, залишіть поле пустим, якщо не маєте картки">
+            </a>
+        </div>
+        @Html.ValidationMessageFor(m => m.CardNumber)
+
+        <div class="col-sm-12">
+            @Html.TextBoxFor(m => m.Password, new { placeholder = "Пароль *", type = "password" })
+            <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-asterisk form-control-feedback" title="Пароль має бути не менший за 4 символи">
+            </a>
+        </div>
+        @Html.ValidationMessageFor(m => m.Password)
+
+        <div class="col-sm-12">
+            @Html.TextBoxFor(m => m.ConfirmPassword, new { placeholder = "Підтвердження паролю *", type = "password" })
+            <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-asterisk form-control-feedback" title="Пароль і підтвердження паролю мають співпадати">
+            </a>
+        </div>
+        @Html.ValidationMessageFor(m => m.ConfirmPassword)
+
+        <div class="col-sm-12">
+            @Html.TextBoxFor(m => m.ReferalNumber, new { placeholder = "Реєстраційний код" })
+            <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-question-sign form-control-feedback" title="Введіть реєстраційний код наставника, або ми підберемо для вас найкращого наставника, якщо поле залишається незаповненим">
+            </a>
+            <p style="text-align: center; font-size: 1.2em;" id="referal-name">
+
+            </p>
+        </div>
+        @Html.ValidationMessageFor(m => m.ReferalNumber)
+
+        <div>
+            @Html.CheckBoxFor(m => m.TermsAgree, new { @class = "pull-left" })
+            <label for="TermsAgree" class="display-inline padding-left-5">
+                Я ознайомився і згоден з
+                <a href="@Url.RouteUrl("pagesRoute", new {id = "dogovir-ofertu"})">Договором оферти</a>
+            </label>
+        </div>
+        <br />
+
+        <input type="submit" class="enter_button" value="Реєстрація" />
+    }
+
+    <div class="enter_right">
+        <p class="enter_title_social">Вхід через</p>
+        <a href="" class="enter_soc enter_fb clearfix">
+            <span class="enter_soc_logo">
+                <i class="fa fa-facebook" aria-hidden="true"></i>
+            </span>
+            <span class="enter_soc_text">Facebook</span>
+        </a>
+        <a href="" class="enter_soc enter_go clearfix">
+            <span class="enter_soc_logo">
+                <i class="fa fa-google" aria-hidden="true"></i>
+            </span>
+            <span class="enter_soc_text">Google</span>
+        </a>
+    </div>
+</div>
+@*<div class="row">
+        <div class="col-md-8">
+            <section id="loginForm">
+
+                @Html.AntiForgeryToken()
+                <h4>Use a local account to log in.</h4>
+                <hr />
+                @Html.ValidationSummary(true)
+                <div class="form-group">
+                    @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.UserName)
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
+                    <div class="col-md-10">
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                        @Html.ValidationMessageFor(m => m.Password)
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                            @Html.CheckBoxFor(m => m.RememberMe)
+                            @Html.LabelFor(m => m.RememberMe)
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Log in" class="btn btn-default" />
+                    </div>
+                </div>
+                <p>
+                    @Html.ActionLink("Забули пароль", "ForgotPassword")
+                </p>
+                <p>
+                    @Html.ActionLink("Register", "Register") if you don't have a local account.
+                </p>
+            </section>
+
+        </div>
+        <div class="col-md-4">
+            <section id="socialLoginForm">
+                @Html.Partial("_ExternalLoginsListPartial", new { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })
+            </section>
+        </div>
+    </div>*@

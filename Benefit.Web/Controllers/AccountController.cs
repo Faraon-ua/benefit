@@ -64,8 +64,15 @@ namespace Benefit.Web.Controllers
                 var user = await UserManager.FindAsync(model.UserName, model.Password);
                 if (user != null)
                 {
-                    await SignInAsync(user, model.RememberMe);
-                    return RedirectToLocal(returnUrl);
+                    if (!user.EmailConfirmed)
+                    {
+                        ModelState.AddModelError("", "Email не підтверджено");
+                    }
+                    else
+                    {
+                        await SignInAsync(user, model.RememberMe);
+                        return RedirectToLocal(returnUrl);
+                    }
                 }
                 else
                 {
@@ -122,7 +129,7 @@ namespace Benefit.Web.Controllers
             BenefitCard card;
             using (var db = new ApplicationDbContext())
             {
-                card = db.BenefitCards.FirstOrDefault(entry=>entry.Id == model.CardNumber);
+                card = db.BenefitCards.FirstOrDefault(entry => entry.Id == model.CardNumber);
                 externalNumber = db.Users.Max(entry => entry.ExternalNumber);
                 referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber == model.ReferalNumber);
                 if (model.CardNumber != null && card == null)
@@ -133,7 +140,7 @@ namespace Benefit.Web.Controllers
                 {
                     ModelState.AddModelError("CardNumber", "Ця картка зайнята");
                 }
-                if (referal == null)
+                if (model.ReferalNumber != null && referal == null)
                 {
                     ModelState.AddModelError("ReferalNumber", "Користувача з таким реферальним кодом не знайдено");
                 }
@@ -145,6 +152,10 @@ namespace Benefit.Web.Controllers
                 {
                     ModelState.AddModelError("Email", "Цей телефон вже зареєстрований");
                 }
+                if (!model.TermsAgree)
+                {
+                    ModelState.AddModelError("TermsAgree", "Ви маєте ознайомитись і погодитись із Договором оферти");
+                }
             }
 
             if (ModelState.IsValid)
@@ -152,7 +163,6 @@ namespace Benefit.Web.Controllers
                 var user = new ApplicationUser()
                 {
                     UserName = model.Email,
-                    ReferalId = referal.Id,
                     FullName = string.Format("{0} {1}", model.FirstName, model.LastName),
                     RegionId = model.RegionId.GetValueOrDefault(RegionConstants.AllUkraineRegionId),
                     Email = model.Email,
@@ -163,9 +173,16 @@ namespace Benefit.Web.Controllers
                     PhoneNumber = model.PhoneNumber,
                     RegisteredOn = DateTime.UtcNow
                 };
+                if (referal == null)
+                {
+                    var UserService = new UserService();
+                    user.ReferalId = UserService.GetVipReferalCode();
+                }
+                else
+                {
+                    user.ReferalId = referal.Id;
+                }
                 var result = await UserManager.CreateAsync(user, model.Password);
-                var userService = new UserService();
-                userService.SubscribeSendPulse(user.Email);
 
                 if (result.Succeeded)
                 {

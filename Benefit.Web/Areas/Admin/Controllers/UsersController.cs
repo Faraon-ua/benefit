@@ -103,6 +103,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 NFCNumber = user.NFCCardNumber,
                 BusinessLevel = user.BusinessLevel,
                 Status = user.Status,
+                StatusCompletionMonths = user.StatusCompletionMonths,
                 IsActive = user.IsActive,
                 IsCardVerified = user.IsCardVerified,
                 Email = user.Email,
@@ -161,6 +162,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 existingUser.CardNumber = user.CardNumber;
                 existingUser.BusinessLevel = user.BusinessLevel;
                 existingUser.IsActive = user.IsActive;
+                existingUser.StatusCompletionMonths = user.StatusCompletionMonths;
 
                 //if card verivied - set partner status
                 if (user.IsCardVerified && !existingUser.IsCardVerified && existingUser.Status == null)

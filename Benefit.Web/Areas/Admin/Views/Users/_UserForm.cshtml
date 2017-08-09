@@ -82,14 +82,6 @@
     </div>
 
     <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Статус</label>
-
-        <div class="col-sm-9">
-            @Html.EnumDropDownListFor(m => m.Status, "Не має", new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-
-    <div class="form-group">
         <label>
             @Html.CheckBoxFor(m => m.IsActive)
             <span class="lbl" for="IsActive"> Активний</span>

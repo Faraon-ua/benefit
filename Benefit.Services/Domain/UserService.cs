@@ -21,6 +21,16 @@ namespace Benefit.Services.Domain
         {
             return db.Users.Find(id);
         }
+
+        public string GetVipReferalCode()
+        {
+            var completedVips =
+                db.Users.Where(entry => entry.StatusCompletionMonths != null && entry.StatusCompletionMonths > 0)
+                    .ToList();
+            var random = new Random();
+            return completedVips[random.Next(completedVips.Count)].Id;
+        }
+
         public async Task SubscribeSendPulse(string email)
         {
             var httpClientService = new HttpClientService();

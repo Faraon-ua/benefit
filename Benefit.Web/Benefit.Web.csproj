@@ -1174,6 +1174,7 @@
     <Content Include="Areas\Admin\Views\Notifications\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Notifications\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\PromotionDetails.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_StatusPartial.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1576,7 +1577,7 @@
     <Content Include="Views\Account\ExternalLoginFailure.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Manage.cshtml" />
-    <Content Include="Views\Account\Register.cshtml" />
+    <Content Include="Views\Account\RegisterOld.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Home\uploadPartial.cshtml" />
     <Content Include="Views\Shared\_SocialGroups.cshtml" />
@@ -1638,6 +1639,7 @@
     <Content Include="Views\Postachalnyk\ProductsList.cshtml" />
     <Content Include="Views\Catalog\CategoriesCatalog.cshtml" />
     <Content Include="Views\Catalog\_CategoryPartial.cshtml" />
+    <Content Include="Views\Account\Register.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
