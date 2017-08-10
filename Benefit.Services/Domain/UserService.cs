@@ -27,6 +27,10 @@ namespace Benefit.Services.Domain
             var completedVips =
                 db.Users.Where(entry => entry.StatusCompletionMonths != null && entry.StatusCompletionMonths > 0)
                     .ToList();
+            if (!completedVips.Any())
+            {
+                return "53214e23-bfef-11e6-a542-c48508062b41";
+            }
             var random = new Random();
             return completedVips[random.Next(completedVips.Count)].Id;
         }

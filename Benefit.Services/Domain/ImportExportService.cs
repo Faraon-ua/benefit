@@ -360,7 +360,7 @@ namespace Benefit.Services.Domain
                     importTask.LastSync = DateTime.UtcNow;
                     db.Entry(importTask).State = EntityState.Modified;
                     db.SaveChanges();
-                    return;
+                    continue;
                 }
 
                 try

@@ -54,7 +54,6 @@ namespace Benefit.Web.Models
         [Display(Name = "Підтвердження паролю")]
         [Compare("Password", ErrorMessage = "Пароль і підтвердження паролю не співпадають")]
         public string ConfirmPassword { get; set; }
-        public bool TermsAgree { get; set; }
     }
 
     public class ManageUserViewModel

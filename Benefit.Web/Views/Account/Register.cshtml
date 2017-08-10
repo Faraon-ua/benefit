@@ -107,11 +107,8 @@
         @Html.ValidationMessageFor(m => m.ReferalNumber)
 
         <div>
-            @Html.CheckBoxFor(m => m.TermsAgree, new { @class = "pull-left" })
-            <label for="TermsAgree" class="display-inline padding-left-5">
-                Я ознайомився і згоден з
-                <a href="@Url.RouteUrl("pagesRoute", new {id = "dogovir-ofertu"})">Договором оферти</a>
-            </label>
+            Реєструючись, ви погоджуєтесь з
+            <a href="@Url.RouteUrl("pagesRoute", new {id = "ugoda-korustuvacha"})">угодою користувача</a>
         </div>
         <br />
 

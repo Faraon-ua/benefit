@@ -186,8 +186,6 @@ namespace Benefit.Web.Controllers
 
                 if (result.Succeeded)
                 {
-                    await SignInAsync(user, isPersistent: false);
-
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("ConfirmEmail", "Account",
                        new { userId = user.Id, code }, protocol: Request.Url.Scheme);
