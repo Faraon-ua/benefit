@@ -152,10 +152,6 @@ namespace Benefit.Web.Controllers
                 {
                     ModelState.AddModelError("Email", "Цей телефон вже зареєстрований");
                 }
-                if (!model.TermsAgree)
-                {
-                    ModelState.AddModelError("TermsAgree", "Ви маєте ознайомитись і погодитись із Договором оферти");
-                }
             }
 
             if (ModelState.IsValid)
