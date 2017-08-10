@@ -66,6 +66,10 @@ namespace Benefit.Services.Domain
                     sellerCategories.Where(entry => entry.ParentCategoryId == null)
                         .OrderBy(entry => entry.Order)
                         .ToList();
+                if (categories.Count == 1)
+                {
+                    categories = categories.SelectMany(entry => entry.ChildCategories).ToList();
+                }
                 foreach (var category in categories)
                 {
                     category.ChildCategories = category.ChildCategories.OrderBy(entry => entry.Order).ToList();
@@ -81,10 +85,11 @@ namespace Benefit.Services.Domain
                             .ToList();
             }
 
+            var parentId = parent == null ? null : parent.Id;
             var catsModel = new CategoriesViewModel()
             {
                 Category = parent,
-                Items = categories.OrderBy(entry=>entry.ChildCategories.Any()).ToList(),
+                Items = categories.OrderBy(entry=>entry.ChildCategories.Any()).ThenByDescending(entry=>entry.Id == parentId).ToList(),
                 Seller = seller,
                 Breadcrumbs = new BreadCrumbsViewModel()
                 {
