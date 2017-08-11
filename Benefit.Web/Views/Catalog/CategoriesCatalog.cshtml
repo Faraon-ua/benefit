@@ -41,8 +41,8 @@
                 }
                 <div class="clearfix">
                     @{
-                        var counter = 0;
-                        var childCount = category.ChildCategories.Count;
+                var counter = 0;
+                var childCount = category.ChildCategories.Count;
                     }
                     <h2 class="pab-h2 padding-bottom-15">
                         @if (Model.Category != null && Model.Category.Id == category.Id)
@@ -56,23 +56,11 @@
                             </a>
                         }
                     </h2>
-                    @for (var i = 0; i <= childCount / 6; i++)
+                    @foreach (var child in category.ChildCategories)
                     {
-                    <div class="clearfix">
-                        @do
-                        {
-                            if (counter >= childCount)
-                            {
-                                break;
-                            }
-                            var child = category.ChildCategories.ElementAt(counter);
-                            counter++;
-                            @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
-                        } while (counter%6 != 0);
-                    </div>
+                        @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
                     }
                 </div>
-
             }
             else
             {

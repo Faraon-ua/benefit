@@ -5,15 +5,15 @@
     var url = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = ViewBag.SellerUrlName, categoryUrl = Model.UrlName });
 }
 
-<div class="col-md-2 cat-box">
+<div class="product_container">
     <a href="@url" title="@Model.Description">
         @if (Model.ImageUrl == null)
         {
-            <img src="~/Content/img/category_default.jpg" alt="@Model.Name"/>
+            <img src="~/Content/img/category_default.jpg" alt="@Model.Name" />
         }
         else
         {
-            <img src="~/Images/CategoryLogo/@Model.ImageUrl" alt="@Model.Name"/>
+            <img src="~/Images/CategoryLogo/@Model.ImageUrl" alt="@Model.Name" />
         }
     </a>
     <h3 class="pab-h3">
