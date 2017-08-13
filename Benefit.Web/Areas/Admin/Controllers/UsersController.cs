@@ -50,13 +50,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult UsersSearch(string search, string dateRange = null)
         {
-            IQueryable<ApplicationUser> users = db.Users.Include(entry=>entry.BenefitCards).AsQueryable();
+            var users = db.Users.Include(entry => entry.Referal).Include(entry => entry.BenefitCards).AsQueryable();
             if (!string.IsNullOrEmpty(dateRange))
             {
                 var dateRangeValues = dateRange.Split('-');
                 var startDate = DateTime.Parse(dateRangeValues.First());
                 var endDate = DateTime.Parse(dateRangeValues.Last());
-                users = users.Include(entry=>entry.Referal).Where(entry => entry.RegisteredOn >= startDate && entry.RegisteredOn <= endDate);
+                users = users.Where(entry => entry.RegisteredOn >= startDate && entry.RegisteredOn <= endDate);
             }
             else
             {
@@ -67,9 +67,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                              entry.UserName.ToLower().Contains(search) ||
                                              entry.CardNumber.ToString().Contains(search) ||
                                              entry.ExternalNumber.ToString().Contains(search) ||
-                                             entry.BenefitCards.Any(bc=>bc.Id == search)).OrderByDescending(entry=>entry.RegisteredOn);
+                                             entry.BenefitCards.Any(bc=>bc.Id == search));
             }
-            return PartialView("_UsersSearch", users.ToList());
+            return PartialView("_UsersSearch", users.OrderByDescending(entry => entry.RegisteredOn).ToList());
         }
 
         [HttpPost]
