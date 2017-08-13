@@ -24,6 +24,9 @@ else
                     </th>
                     <th>
                         Номер Карти
+                    </th> 
+                    <th>
+                        Наставник
                     </th>
                     <th>
                         Зареєстрований
@@ -55,6 +58,9 @@ else
                             {
                                 <span>, @string.Join(",", user.BenefitCards.Select(entry => entry.Id))</span>
                             }
+                        </td>
+                        <td>
+                            @(user.Referal == null? string.Empty : user.Referal.FullName)
                         </td>
                         <td>
                             @user.RegisteredOn.ToLocalDateTimeWithFormat()

@@ -2,7 +2,10 @@
     ViewBag.Title = "Email адресу підтверджено";
 }
 
-<h2>@ViewBag.Title.</h2>
+<h2>
+    <span class="glyphicon glyphicon-ok" style="color: greenyellow"></span>
+    @ViewBag.Title.
+</h2>
 <div>
     <p>
         Дякуємо за підтвердження вашої Email адреси. Будь ласка @Html.ActionLink("Клікніть тут для входу на сайт", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })

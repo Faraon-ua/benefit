@@ -56,7 +56,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var dateRangeValues = dateRange.Split('-');
                 var startDate = DateTime.Parse(dateRangeValues.First());
                 var endDate = DateTime.Parse(dateRangeValues.Last());
-                users = users.Where(entry => entry.RegisteredOn >= startDate && entry.RegisteredOn <= endDate);
+                users = users.Include(entry=>entry.Referal).Where(entry => entry.RegisteredOn >= startDate && entry.RegisteredOn <= endDate);
             }
             else
             {
@@ -67,9 +67,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                              entry.UserName.ToLower().Contains(search) ||
                                              entry.CardNumber.ToString().Contains(search) ||
                                              entry.ExternalNumber.ToString().Contains(search) ||
-                                             entry.BenefitCards.Any(bc=>bc.Id == search));
+                                             entry.BenefitCards.Any(bc=>bc.Id == search)).OrderByDescending(entry=>entry.RegisteredOn);
             }
-            return PartialView("_UsersSearch", users);
+            return PartialView("_UsersSearch", users.ToList());
         }
 
         [HttpPost]
