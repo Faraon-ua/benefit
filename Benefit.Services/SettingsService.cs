@@ -59,6 +59,17 @@ namespace Benefit.Services
             }
         }
 
+        public class PrivatBank
+        {
+            public static string CurrenciesApiUrl
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["PrivatBankCurrenciesApi"];
+                }
+            }
+        }
+
         public class Facebook
         {
             public static string VerificationToken

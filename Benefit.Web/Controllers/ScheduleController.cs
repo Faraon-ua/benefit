@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services.Admin;
 using Benefit.Services.Domain;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
@@ -13,6 +14,8 @@ namespace Benefit.Web.Controllers
     [CustomKeyAuth]
     public class ScheduleController : Controller
     {
+        private ScheduleService ScheduleService = new ScheduleService();
+
         public ActionResult ProcessImportTasks()
         {
             var importService = new ImportExportService();
@@ -53,8 +56,8 @@ namespace Benefit.Web.Controllers
 
         public ActionResult ProcessCurrenciesTask()
         {
-
-            return Content("Ok");
+            ScheduleService.UpdateCurrencies();
+            return Content("Currencies Ok");
         }
     }
 }

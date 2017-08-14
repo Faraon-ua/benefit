@@ -53,11 +53,11 @@
                 <div class="col-md-10">
                     @if (Model.Provider == CurrencyProvider.Custom)
                     {
-                        @Html.TextBoxFor(model => model.Rate, new {@class = "mask-number"})
+                        @Html.TextBox("Rate", Model.Rate.ToString("0.00"), new { @class = "mask-number" })
                     }
                     else
                     {
-                        @Html.TextBoxFor(model => model.Rate, new { @class = "mask-number", @readonly = "readonly", disabled = "disabled" })
+                        @Html.TextBox("Rate", Model.Rate.ToString("0.00"), new { @class = "mask-number", @readonly = "readonly", disabled = "disabled" })
                     }
                     @Html.ValidationMessageFor(model => model.Rate)
                 </div>

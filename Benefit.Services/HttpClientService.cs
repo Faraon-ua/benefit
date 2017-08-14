@@ -31,6 +31,26 @@ namespace Benefit.Services
                     }
                 }
             }
+        }
+
+        public async Task<T> GetObectFromService<T>(string url)
+        {
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(url).ConfigureAwait(false);
+                var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                using (JsonReader reader = new JsonTextReader(new StringReader(responseString)))
+                {
+                    try
+                    {
+                        return JsonSerializer.Create().Deserialize<T>(reader);
+                    }
+                    catch (Exception)
+                    {
+                        return default(T);
+                    }
+                }
+            }
         } 
     }
 }

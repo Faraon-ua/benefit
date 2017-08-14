@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using Benefit.DataTransfer.ApiDto.PrivatBank;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -496,6 +497,24 @@ namespace Benefit.Services.Admin
             });
 
             return csvUsers;
+        }
+
+        public async Task UpdateCurrencies()
+        {
+            var client = new HttpClientService();
+            var currencies = await client.GetObectFromService<List<PrivatBankCurrency>>(SettingsService.PrivatBank.CurrenciesApiUrl).ConfigureAwait(false);
+            foreach (var currency in currencies)
+            {
+                var dbCurrency =
+                    db.Currencies.FirstOrDefault(
+                        entry => entry.Name == currency.ccy && entry.Provider == CurrencyProvider.PrivatBank);
+                if (dbCurrency != null)
+                {
+                    dbCurrency.Rate = currency.sale;
+                    db.Entry(dbCurrency).State = EntityState.Modified;
+                }
+            }
+            db.SaveChanges();
         }
     }
 }

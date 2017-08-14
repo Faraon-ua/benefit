@@ -57,6 +57,7 @@
     <Compile Include="ApiDto\OldApi\Payments.cs" />
     <Compile Include="ApiDto\OldApi\SellerAuth.cs" />
     <Compile Include="ApiDto\OldApi\UserAuth.cs" />
+    <Compile Include="ApiDto\PrivatBank\PrivatBankCurrency.cs" />
     <Compile Include="ApiDto\SendPulse\AuthDto.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="JSON\AutocompleteSearch.cs" />
