@@ -8,6 +8,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
 using Benefit.Services;
 
 namespace Benefit.Web.Helpers
@@ -46,7 +47,25 @@ namespace Benefit.Web.Helpers
                     urlSet.Add(url);
                     count++;
                 }
-                foreach (var product in db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Where(entry => entry.Seller.IsActive && entry.IsActive))
+                foreach (var cat in db.Categories.Include(entry => entry.Products).Where(entry => entry.Products.Any() && entry.IsActive).ToList())
+                {
+                    var url = new XElement(ns + "url");
+                    var loc = new XElement(ns + "loc",
+                        string.Concat(
+                            SettingsService.BaseHostName,
+                            urlHelper.RouteUrl(RouteConstants.CategoriesRouteName,
+                                new
+                                {
+                                    id = cat.UrlName
+                                })
+                            ));
+                    var lastmod = new XElement(ns + "lastmod", XmlConvert.ToString(cat.LastModified));
+                    url.Add(loc);
+                    url.Add(lastmod);
+                    urlSet.Add(url);
+                    count++;
+                }
+                /*foreach (var product in db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Where(entry => entry.Seller.IsActive && entry.IsActive))
                 {
                     var url = new XElement(ns + "url");
                     var loc = new XElement(ns + "loc",
@@ -65,10 +84,10 @@ namespace Benefit.Web.Helpers
                     url.Add(lastmod);
                     urlSet.Add(url);
                     count++;
-                }
+                }*/
                 doc.Add(urlSet);
                 var basePath = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                using (var stream = System.IO.File.Create(Path.Combine(basePath, "sitemap.xml")))
+                using (var stream = File.Create(Path.Combine(basePath, "sitemap.xml")))
                 {
                     using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
                     {
