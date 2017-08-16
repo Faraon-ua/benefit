@@ -100,11 +100,15 @@
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Name="TransactionResult" Visibility="Hidden">
                     <Image Source="/Images/success-icon.png" Width="56" Height="43" Margin="0,10"></Image>
-                    <TextBlock HorizontalAlignment="Center" FontSize="30">Нарахування проведено!</TextBlock>
+                    <TextBlock HorizontalAlignment="Center" FontSize="30" Name="PaymentStatus"></TextBlock>
+                    <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Name="BonusesChargedPanel" Visibility="Collapsed">
+                        <TextBlock HorizontalAlignment="Center" FontSize="25" Foreground="#990100">Списано бонусів:</TextBlock>
+                        <TextBlock Name="BonusesCharged" HorizontalAlignment="Center" FontSize="25" Margin="5,0"></TextBlock>
+                    </StackPanel>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Center" FontSize="25" Foreground="#990100">Нараховано бонусів:</TextBlock>
                         <TextBlock Name="BonusesAquired" HorizontalAlignment="Center" FontSize="25" Margin="5,0"></TextBlock>
-                    </StackPanel> 
+                    </StackPanel>
                     <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
                         <TextBlock HorizontalAlignment="Center" FontSize="25" Foreground="#990100">Доступні бонуси:</TextBlock>
                         <TextBlock Name="BonusesAccount" HorizontalAlignment="Center" FontSize="25" Margin="5,0"></TextBlock>

@@ -2,6 +2,7 @@
 using System.Text;
 using Benefit.CardReader.DataTransfer.Dto.Base;
 using Newtonsoft.Json;
+using System.IO;
 
 namespace Benefit.HttpClient
 {
@@ -74,7 +75,18 @@ namespace Benefit.HttpClient
             }
             catch (WebException ex)
             {
-                result.StatusCode = ((HttpWebResponse) ex.Response).StatusCode;
+                result.StatusCode = ((HttpWebResponse)ex.Response).StatusCode;
+
+                var responseStream = ex.Response == null ? null : ex.Response.GetResponseStream();
+                if (responseStream != null)
+                {
+                    using (var reader = new StreamReader(responseStream))
+                    {
+                        var definition = new { Message = "" };
+                        var jsonResult = JsonConvert.DeserializeAnonymousType(reader.ReadToEnd(), definition);
+                        result.ErrorMessage = jsonResult.Message;
+                    }
+                }
             }
             if (result.StatusCode == HttpStatusCode.OK)
             {

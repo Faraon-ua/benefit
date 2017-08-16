@@ -2,6 +2,7 @@
 using System.Net;
 using System.Threading.Tasks;
 using Benefit.CardReader.DataTransfer.Dto;
+using Benefit.CardReader.DataTransfer.Dto.Base;
 using Benefit.CardReader.DataTransfer.Ingest;
 using Benefit.CardReader.DataTransfer.Offline;
 using Benefit.CardReader.Services.Factories;
@@ -11,7 +12,7 @@ using Newtonsoft.Json;
 
 namespace Benefit.CardReader.Services
 {
-    public class ApiService: IReaderManager
+    public class ApiService : IReaderManager
     {
         private BenefitHttpClient _httpClient = new BenefitHttpClient();
         public string AuthToken { get; set; }
@@ -78,14 +79,12 @@ namespace Benefit.CardReader.Services
             return null;
         }
 
-        public PaymentResultDto ProcessPayment(PaymentIngest paymentIngest)
+        public ResponseResult<PaymentResultDto> ProcessPayment(PaymentIngest paymentIngest)
         {
             var paymentUrl = CardReaderSettingsService.ApiHost + CardReaderSettingsService.ApiPrefix + "ProcessPayment";
             var postData = JsonConvert.SerializeObject(paymentIngest);
             var paymentResult = _httpClient.Post<PaymentResultDto>(paymentUrl, postData, "application/json", AuthToken);
-            if (paymentResult.StatusCode == HttpStatusCode.OK)
-                return paymentResult.Data;
-            return null;
+            return paymentResult;
         }
 
         public void PingOnline(string authorizationToken)

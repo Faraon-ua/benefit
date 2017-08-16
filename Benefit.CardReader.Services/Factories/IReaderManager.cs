@@ -1,4 +1,5 @@
 ﻿using Benefit.CardReader.DataTransfer.Dto;
+using Benefit.CardReader.DataTransfer.Dto.Base;
 using Benefit.CardReader.DataTransfer.Ingest;
 
 namespace Benefit.CardReader.Services.Factories
@@ -9,6 +10,6 @@ namespace Benefit.CardReader.Services.Factories
         SellerCashierAuthDto AuthCashier(string cashierNfc);
         BenefitCardUserAuthDto AuthUser(string userNfc);
         BenefitCardUserDto GetUserInfo(string userNfc);
-        PaymentResultDto ProcessPayment(PaymentIngest paymentIngest);
+        ResponseResult<PaymentResultDto> ProcessPayment(PaymentIngest paymentIngest);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Net;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Benefit.CardReader.DataTransfer.Ingest;
@@ -19,6 +20,55 @@ namespace Benefit.CardReader.Controls
             InitializeComponent();
             app = (App)App.Current;
             apiService = new ApiService();
+        }
+
+        private void ProcessPayment(bool chargeBonuses = false)
+        {
+            var billNumber = txtBillNumber.Text == txtBillNumber.Tag.ToString() ? null : txtBillNumber.Text;
+            double paymentSum = 0;
+            try
+            {
+                paymentSum = double.Parse(txtPaymentSum.Text);
+            }
+            catch
+            {
+                var parent = Window.GetWindow(this) as DefaultWindow;
+                parent.ShowErrorMessage("Невірний формат суми");
+                return;
+            }
+            var paymentIngest = new PaymentIngest
+            {
+                CashierNfc = app.AuthInfo.CashierNfc,
+                UserNfc = app.AuthInfo.UserNfc,
+                Sum = paymentSum,
+                BillNumber = billNumber,
+                ChargedBonuses = chargeBonuses
+            };
+            apiService.AuthToken = app.Token;
+            var result = apiService.ProcessPayment(paymentIngest);
+            if (result.StatusCode != HttpStatusCode.OK)
+            {
+                var parent = Window.GetWindow(this) as DefaultWindow;
+                parent.ShowErrorMessage(result.ErrorMessage ?? "Нарахування не було проведено");
+            }
+            else
+            {
+                if (chargeBonuses)
+                {
+                    PaymentStatus.Text = "Списання пройшло успішно!";
+                    BonusesCharged.Text = result.Data.BonusesCharged.ToString("F");
+                    BonusesChargedPanel.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    PaymentStatus.Text = "Нарахування проведено!";
+                    BonusesChargedPanel.Visibility = Visibility.Collapsed;
+                }
+                BonusesAquired.Text = result.Data.BonusesAcquired.ToString("F");
+                BonusesAccount.Text = result.Data.BonusesAccount.ToString("F");
+                TransactionPanel.Visibility = Visibility.Hidden;
+                TransactionResult.Visibility = Visibility.Visible;
+            }
         }
 
         private void BtnUserInfo_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -76,39 +126,12 @@ namespace Benefit.CardReader.Controls
 
         private void BtnPayBonuses_OnClick(object sender, RoutedEventArgs e)
         {
-            var billNumber = txtBillNumber.Text == txtBillNumber.Tag.ToString() ? null : txtBillNumber.Text;
-            double paymentSum = 0;
-            try
-            {
-                paymentSum = double.Parse(txtPaymentSum.Text);
-            }
-            catch
-            {
-                var parent = Window.GetWindow(this) as DefaultWindow;
-                parent.ShowErrorMessage("Невірний формат суми");
-                return;
-            }
-            var paymentIngest = new PaymentIngest
-            {
-                CashierNfc = app.AuthInfo.CashierNfc,
-                UserNfc = app.AuthInfo.UserNfc,
-                Sum = paymentSum,
-                BillNumber = billNumber
-            };
-            apiService.AuthToken = app.Token;
-            var result = apiService.ProcessPayment(paymentIngest);
-            if (result == null)
-            {
-                var parent = Window.GetWindow(this) as DefaultWindow;
-                parent.ShowErrorMessage("Нарахування не було проведено");
-            }
-            else
-            {
-                BonusesAquired.Text = result.BonusesAcquired.ToString("F");
-                BonusesAccount.Text = result.BonusesAccount.ToString("F");
-                TransactionPanel.Visibility = Visibility.Hidden;
-                TransactionResult.Visibility = Visibility.Visible;
-            }
+           ProcessPayment();
+        }
+
+        private void BtnChargeBonuses_OnClick(object sender, RoutedEventArgs e)
+        {
+            ProcessPayment(true);
         }
 
         private void TransactionOk_OnClick(object sender, RoutedEventArgs e)
@@ -121,11 +144,6 @@ namespace Benefit.CardReader.Controls
             var parent = Window.GetWindow(this) as DefaultWindow;
             parent.ShowSingleControl(ViewType.UserAuthPartial);
             app.ClearUserAndSellerInfo();
-        }
-
-        private void BtnChargeBonuses_OnClick(object sender, RoutedEventArgs e)
-        {
-                
         }
     }
 }

@@ -176,6 +176,7 @@ namespace Benefit.Services.Domain
                     entry =>
                         entry.Type == TransactionType.Custom ||
                         entry.Type == TransactionType.Promotion ||
+                        entry.Type == TransactionType.BenefitCardBonusesPayment ||
                         entry.Type == TransactionType.BonusesOrderPayment ||
                         entry.Type == TransactionType.OrderRefund ||
                         entry.Type == TransactionType.BonusesOrderAbandonedPayment ||

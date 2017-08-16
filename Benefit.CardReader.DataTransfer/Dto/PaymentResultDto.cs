@@ -3,6 +3,7 @@
     public class PaymentResultDto
     {
         public double BonusesAcquired { get; set; }
+        public double BonusesCharged { get; set; }
         public double BonusesAccount { get; set; }
     }
 }

@@ -6,5 +6,6 @@ namespace Benefit.CardReader.DataTransfer.Dto.Base
     {
         public HttpStatusCode StatusCode { get; set; }
         public T Data { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }

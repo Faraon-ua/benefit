@@ -84,6 +84,8 @@ namespace Benefit.RestApi.Controllers
         [Route("ProcessPayment")]
         public HttpResponseMessage ProcessPayment(PaymentIngest paymentIngest)
         {
+            double sumToPay = 0;
+            double commission = 0;
             try
             {
                 var cashier =
@@ -150,12 +152,40 @@ namespace Benefit.RestApi.Controllers
                 //add points and bonuses to personal user account
                 user.PointsAccount += points;
                 user.CurrentBonusAccount += bonuses;
+
+                //charge bonuses
+                if (paymentIngest.ChargedBonuses)
+                {
+                    sumToPay = order.Sum - order.SellerDiscount.GetValueOrDefault(0);
+                    commission = sumToPay * SettingsService.BonusesComissionRate / 100;
+                    if (user.BonusAccount < (sumToPay + commission))
+                    {
+                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Недостатньо бонусів на рахунку");
+                    }
+                    //add transaction for personal purchase
+                    var bonusesPaymentTransaction = new Transaction()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Bonuses = -(sumToPay),
+                        Commission = commission,
+                        BonusesBalans = user.BonusAccount - (sumToPay + commission),
+                        OrderId = order.Id,
+                        PayeeId = user.Id,
+                        Time = DateTime.UtcNow,
+                        Type = TransactionType.BenefitCardBonusesPayment,
+                        Description = seller.Name
+                    };
+                    user.BonusAccount = bonusesPaymentTransaction.BonusesBalans;
+                    db.Transactions.Add(bonusesPaymentTransaction);
+                }
+
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChangesAsync();
 
                 return Request.CreateResponse(HttpStatusCode.OK,
                     new PaymentResultDto()
                     {
+                        BonusesCharged = sumToPay + commission,
                         BonusesAcquired = bonuses,
                         BonusesAccount = user.BonusAccount
                     });

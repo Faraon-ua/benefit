@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Benefit.CardReader.DataTransfer.Dto;
+using Benefit.CardReader.DataTransfer.Dto.Base;
 using Benefit.CardReader.DataTransfer.Ingest;
 using Benefit.CardReader.DataTransfer.Offline;
 using Benefit.CardReader.Services.Factories;
@@ -45,7 +46,7 @@ namespace Benefit.CardReader.Services
             throw new NotImplementedException();
         }
 
-        public PaymentResultDto ProcessPayment(PaymentIngest paymentIngest)
+        public ResponseResult<PaymentResultDto> ProcessPayment(PaymentIngest paymentIngest)
         {
             throw new NotImplementedException();
         }

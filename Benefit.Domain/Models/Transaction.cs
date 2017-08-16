@@ -32,7 +32,9 @@ namespace Benefit.Domain.Models
         [Description("Додаткове нарахування за бізнес рівень")]
         BusinessLevel,
         [Description("Бонуси по акції")]
-        Promotion
+        Promotion,
+        [Description("Розрахунок бонусами через Benefit Card")]
+        BenefitCardBonusesPayment
     }
     public class Transaction
     {

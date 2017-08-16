@@ -112,8 +112,6 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         public ActionResult PostRegister(string email)
         {
-            var userService = new UserService();
-            userService.SubscribeSendPulse(email);
             return RedirectToAction("Index", "Home");
         }
 

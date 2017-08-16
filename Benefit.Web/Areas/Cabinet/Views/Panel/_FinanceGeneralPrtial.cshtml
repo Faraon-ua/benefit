@@ -42,6 +42,12 @@
                         Оплата за замовлення №@transaction.Order.OrderNumber
                     </span>
                     <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                    } 
+                @if (transaction.Type == TransactionType.BenefitCardBonusesPayment)
+                    {
+                    <span>
+                        Розрахунок бонусами через Benefit Card у постачальника @transaction.Description
+                    </span>
                     }
                 @if (transaction.Type == TransactionType.BonusesOrderAbandonedPayment)
                     {
