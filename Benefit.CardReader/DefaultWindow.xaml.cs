@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using System.Windows.Navigation;
-using System.Windows.Threading;
-using Benefit.CardReader.Controls;
 using Benefit.CardReader.Services;
-using Benefit.HttpClient;
 using System.IO.Ports;
 using System.Linq;
-using System.Collections.Generic;
 
 namespace Benefit.CardReader
 {

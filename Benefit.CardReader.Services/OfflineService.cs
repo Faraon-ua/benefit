@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Benefit.CardReader.DataTransfer.Dto;
 using Benefit.CardReader.DataTransfer.Dto.Base;
 using Benefit.CardReader.DataTransfer.Ingest;
@@ -48,7 +50,34 @@ namespace Benefit.CardReader.Services
 
         public ResponseResult<PaymentResultDto> ProcessPayment(PaymentIngest paymentIngest)
         {
-            throw new NotImplementedException();
+            _dataService.Add(paymentIngest);
+            return new ResponseResult<PaymentResultDto>()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Data = new PaymentResultDto()
+            };
+        }
+
+        public void ProcessStoredPayments(string licenseKey)
+        {
+            if(licenseKey == null) return;
+            var payments = _dataService.Get<PaymentIngest>();
+            var failedPayments = new List<PaymentIngest>();
+            if (payments.Any())
+            {
+                var apiService = new ApiService ();
+                apiService.GetAuthToken(licenseKey);
+                foreach (var paymentIngest in payments)
+                {
+                    var result = apiService.ProcessPayment(paymentIngest);
+                    if (result.StatusCode != HttpStatusCode.OK)
+                    {
+                        failedPayments.Add(paymentIngest);
+                    }
+                }
+
+                _dataService.AddList(failedPayments);
+            }
         }
     }
 }

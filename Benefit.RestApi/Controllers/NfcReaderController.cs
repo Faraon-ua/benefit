@@ -154,7 +154,7 @@ namespace Benefit.RestApi.Controllers
                 user.CurrentBonusAccount += bonuses;
 
                 //charge bonuses
-                if (paymentIngest.ChargedBonuses)
+                if (paymentIngest.ChargeBonuses)
                 {
                     sumToPay = order.Sum - order.SellerDiscount.GetValueOrDefault(0);
                     commission = sumToPay * SettingsService.BonusesComissionRate / 100;

@@ -17,6 +17,7 @@ namespace Benefit.CardReader
         public bool IsConnected { get; set; }
         public BenefitAuthInfo AuthInfo { get; set; }
         public string Token { get; set; }
+        public string LicenseKey { get; set; }
 
         private DispatcherTimer timer;
         public App()

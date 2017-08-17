@@ -59,7 +59,7 @@
             <p class="profile_title_description">@Model.ExternalNumber</p>
             @using (Html.BeginForm("Profile", "Panel"))
             {
-                <p class="profile_title">Реферальне посилання</p>
+                <p class="profile_title">Реєстраційне посилання</p>
                 <p class="profile_title">
                     <input id="partner-referal" type="text" value="@Url.RouteUrl("OldRegister", new { id = Model.ExternalNumber }, Request.Url.Scheme)" readonly />
                 </p>

@@ -5,6 +5,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security.Cryptography;
 using System.Text;
 using Benefit.CardReader.DataTransfer.Offline;
+using Benefit.CardReader.DataTransfer.Ingest;
 
 namespace Benefit.CardReader.Services
 {
@@ -12,16 +13,19 @@ namespace Benefit.CardReader.Services
     {
         private const string TokenFileName = "token.dat";
         private const string CashiersFileName = "cashiers.dat";
+        private const string PaymentsFileName = "payments.dat";
 
         private readonly Dictionary<Type, string> TypeToFileNameMapping = new Dictionary<Type, string>()
         {
             {typeof (string), TokenFileName},
-            {typeof (Cashier), CashiersFileName}
+            {typeof (Cashier), CashiersFileName},
+            {typeof (PaymentIngest), PaymentsFileName}
         };
 
         public List<T> Get<T>()
         {
             var fileName = TypeToFileNameMapping[typeof(T)];
+            if(!File.Exists(fileName)) return new List<T>();
             using (Stream fileStream = File.Open(fileName, FileMode.OpenOrCreate))
             {
                 if (fileStream.Length == 0)
@@ -60,6 +64,29 @@ namespace Benefit.CardReader.Services
                     binaryFormatter.Serialize(cryptoStream, collection);
                 }
             }
+        }
+
+        public void AddList<T>(List<T> items)
+        {
+            var fileName = TypeToFileNameMapping[typeof(T)];
+            //serialize
+            using (Stream fileStream = File.Open(fileName, FileMode.Create))
+            {
+                var encoding = new UnicodeEncoding();
+                var key = encoding.GetBytes(CardReaderSettingsService.OfflineFileSalt);
+                var rmCrypto = new RijndaelManaged();
+                using (var cryptoStream = new CryptoStream(fileStream, rmCrypto.CreateEncryptor(key, key), CryptoStreamMode.Write))
+                {
+                    var binaryFormatter = new BinaryFormatter();
+                    binaryFormatter.Serialize(cryptoStream, items);
+                }
+            }
+        }
+
+        public void Clear<T>()
+        {
+            var fileName = TypeToFileNameMapping[typeof(T)];
+            File.Delete(fileName);
         }
     }
 }

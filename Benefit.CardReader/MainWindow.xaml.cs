@@ -24,6 +24,7 @@ namespace Benefit.CardReader
         private DefaultWindow defaultWindow;
         private BenefitHttpClient httpClient;
         public ReaderService readerService;
+        public OfflineService OfflineService;
         private App app;
 
         private DateTime startTime;
@@ -36,6 +37,7 @@ namespace Benefit.CardReader
             defaultWindow = new DefaultWindow();
             //            ((DefaultWindow)defaultWindow).SiteHyperlink.RequestNavigate += Hyperlink_OnRequestNavigate;
             httpClient = new BenefitHttpClient();
+            OfflineService = new OfflineService();
             readerService = new ReaderService();
             readerService.CardReaded += readerService_CardReaded;
             app = (App)Application.Current;
@@ -52,6 +54,15 @@ namespace Benefit.CardReader
                 SetView();
             }
             var isconnected = httpClient.CheckForInternetConnection();
+            if (isconnected)
+            {
+                OfflineService.ProcessStoredPayments(app.LicenseKey);
+                defaultWindow.TransactionPartial.btnChargeBonuses.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                defaultWindow.TransactionPartial.btnChargeBonuses.Visibility = Visibility.Hidden;
+            }
             ((App)Application.Current).IsConnected = isconnected;
             if (isconnected)
             {
@@ -85,6 +96,7 @@ namespace Benefit.CardReader
             {
                 //get license key from device;
                 app.Token = ReaderFactory.GetReaderManager(app.IsConnected).GetAuthToken(handShake.LicenseKey);
+                app.LicenseKey = handShake.LicenseKey;
                 if (app.Token == null)
                 {
                     //show device not authorized

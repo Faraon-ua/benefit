@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Benefit.CardReader.DataTransfer.Ingest;
 using Benefit.CardReader.Services;
+using Benefit.CardReader.Services.Factories;
 using Benefit.Common.Extensions;
 
 namespace Benefit.CardReader.Controls
@@ -42,10 +43,10 @@ namespace Benefit.CardReader.Controls
                 UserNfc = app.AuthInfo.UserNfc,
                 Sum = paymentSum,
                 BillNumber = billNumber,
-                ChargedBonuses = chargeBonuses
+                ChargeBonuses = chargeBonuses
             };
             apiService.AuthToken = app.Token;
-            var result = apiService.ProcessPayment(paymentIngest);
+            var result = ReaderFactory.GetReaderManager(app.IsConnected).ProcessPayment(paymentIngest);
             if (result.StatusCode != HttpStatusCode.OK)
             {
                 var parent = Window.GetWindow(this) as DefaultWindow;
@@ -61,11 +62,21 @@ namespace Benefit.CardReader.Controls
                 }
                 else
                 {
-                    PaymentStatus.Text = "Нарахування проведено!";
+                    PaymentStatus.Text = app.IsConnected ? "Нарахування проведено!" : "Нарахування буде проведено в онлайн режимі";
                     BonusesChargedPanel.Visibility = Visibility.Collapsed;
                 }
-                BonusesAquired.Text = result.Data.BonusesAcquired.ToString("F");
-                BonusesAccount.Text = result.Data.BonusesAccount.ToString("F");
+                if (!app.IsConnected)
+                {
+                    BonusesAquired.Visibility = Visibility.Hidden;
+                    BonusesAccount.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    BonusesAquired.Visibility = Visibility.Visible;
+                    BonusesAccount.Visibility = Visibility.Visible;
+                    BonusesAquired.Text = result.Data.BonusesAcquired.GetValueOrDefault(0).ToString("F");
+                    BonusesAccount.Text = result.Data.BonusesAccount.GetValueOrDefault(0).ToString("F");                    
+                }
                 TransactionPanel.Visibility = Visibility.Hidden;
                 TransactionResult.Visibility = Visibility.Visible;
             }
