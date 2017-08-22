@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:controls="clr-namespace:Benefit.CardReader.Controls"
         xmlns:tb="http://www.hardcodet.net/taskbar"
-        Title="DefaultWindow" 
+        Title="Benefit NFC Card Reader" 
         AllowsTransparency="True"
         ResizeMode="NoResize"
         WindowStyle="None" 
@@ -11,7 +11,7 @@
         BorderThickness="1"
         BorderBrush="#333333"
         Width="800"
-        Height="800"
+        Height="650"
         Icon="favicon.ico">
     <DockPanel Background="#F0F0F0">
         <tb:TaskbarIcon Name="Taskbar" ToolTipText="Benefit NFC Reader" MenuActivation="LeftOrRightClick" TrayMouseDoubleClick="Taskbar_OnTrayMouseDoubleClick">
@@ -28,9 +28,9 @@
                 VerticalAlignment="Top"
                 Width="800">
                 <Grid>
-                    <StackPanel Orientation="Horizontal" Margin="50, 0">
-                        <Image Source="/Images/logo.png" HorizontalAlignment="Left"></Image>
-                        <TextBlock Foreground="White" Margin="15, 5" FontSize="24" LineHeight="28" LineStackingStrategy="BlockLineHeight">Benefit NFC <LineBreak/> Reader Software</TextBlock>
+                    <StackPanel Orientation="Horizontal" Margin="25, 0">
+                        <Image Source="/Images/logo.png" HorizontalAlignment="Left" Height="54" VerticalAlignment="Top"></Image>
+                        <TextBlock Foreground="White" Margin="15, 5" FontSize="20" LineHeight="22" FontWeight="Thin" LineStackingStrategy="BlockLineHeight">Benefit NFC <LineBreak/> Reader Software</TextBlock>
                     </StackPanel>
                     <Button Name="CloseButton" Height="30" VerticalAlignment="Top" Margin="10" HorizontalAlignment="Right" Click="CloseButton_OnClick" Style="{StaticResource ToggleButtonWindowClose}" />
                 </Grid>
@@ -38,20 +38,21 @@
             <StackPanel Name="Header" Orientation="Horizontal">
                 <Border Width="800" Height="40" Background="#FF6600" Visibility="Collapsed" Name="NoConnection">
                     <Grid>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="26">Працює в автономному режимі!</TextBlock>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26">Працює в автономному режимі!</TextBlock>
                         <Image Source="/Images/notconnected.png" HorizontalAlignment="Right" Margin="20,2"></Image>
                     </Grid>
                 </Border>
                 <Border Width="800" Height="40" Background="Green" Name="ConnectionEsteblished">
                     <Grid>
-                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Bold" FontSize="26" Foreground="White">З'єднання встановлено</TextBlock>
+                        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="26" Foreground="White">З'єднання встановлено</TextBlock>
                         <Image Source="/Images/connected.png" HorizontalAlignment="Right" Margin="20,5"></Image>
                     </Grid>
                 </Border>
             </StackPanel>
-            <Grid Name="Container" Height="630">
+            <Grid Name="Container" Height="514">
                 <controls:UserInfo x:Name="UserInfo" Visibility="Hidden" Grid.ZIndex="1000"></controls:UserInfo>
                 <controls:ErrorPartial x:Name="ErrorMessage" Visibility="Hidden" Grid.ZIndex="1000"></controls:ErrorPartial>
+                <controls:Loading x:Name="LoadingSpinner" Visibility="Hidden" Grid.ZIndex="1000"></controls:Loading>
                 <controls:CashierPartial x:Name="CashierPartial" Visibility="Visible" Grid.ZIndex="0"></controls:CashierPartial>
                 <controls:UserAuthPartial x:Name="UserAuthPartial" Visibility="Hidden" Grid.ZIndex="0"></controls:UserAuthPartial>
                 <controls:TransactionPartial x:Name="TransactionPartial" Visibility="Hidden" Grid.ZIndex="0"></controls:TransactionPartial>

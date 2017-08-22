@@ -8,8 +8,8 @@
 {
     <ul class="pagination">
         @{
-            var firstStage = Model.Pages >= ListConstants.PagingFirstStage ? ListConstants.PagingFirstStage : Model.Pages;
-            var lastDisplayedPage = 0;
+    var firstStage = Model.Pages >= ListConstants.PagingFirstStage ? ListConstants.PagingFirstStage : Model.Pages;
+    var lastDisplayedPage = 0;
         }
         @for (var i = 0; i < Model.Pages; i++)
         {
@@ -60,17 +60,21 @@
         <th>
             Сума
         </th>
+
         <th>
             Час створення
-        </th>
-        <th>
-            Час завершення
         </th>
         @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitSite)
         {
             <th>
-                Метод оплати
+                Час завершення
             </th>
+        }
+        <th>
+            Метод оплати
+        </th>
+        @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitSite)
+        {
             <th>
                 Статус
             </th>
@@ -116,18 +120,21 @@
             <td>
                 @item.Time.ToLocalDateTimeWithFormat()
             </td>
-            <td>
-                @{
-                var finishedStamp = item.OrderStatusStamps.FirstOrDefault(entry => entry.OrderStatus == OrderStatus.Finished);
-                var finishedTime = finishedStamp == null ? "-" : finishedStamp.Time.ToLocalDateTimeWithFormat();
-                }
-                @finishedTime
-            </td>
             @if (item.OrderType == OrderType.BenefitSite)
             {
                 <td>
-                    @Enumerations.GetEnumDescription(item.PaymentType)
+                    @{
+                var finishedStamp = item.OrderStatusStamps.FirstOrDefault(entry => entry.OrderStatus == OrderStatus.Finished);
+                var finishedTime = finishedStamp == null ? "-" : finishedStamp.Time.ToLocalDateTimeWithFormat();
+                    }
+                    @finishedTime
                 </td>
+            }
+            <td>
+                @Enumerations.GetEnumDescription(item.PaymentType)
+            </td>
+            @if (item.OrderType == OrderType.BenefitSite)
+            {
                 <td>
                     @Enumerations.GetEnumDescription(item.Status)
                 </td>
@@ -138,9 +145,9 @@
                 </td>
             }
             @{
-                var now = DateTime.UtcNow;
+        var now = DateTime.UtcNow;
             }
-            @if (item.OrderType == OrderType.BenefitCard && User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time>now.StartOfMonth().AddMonths(-1))
+            @if (item.OrderType == OrderType.BenefitCard && User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time > now.StartOfMonth().AddMonths(-1))
             {
                 <td>
                     <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>

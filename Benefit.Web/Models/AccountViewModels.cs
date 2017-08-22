@@ -49,11 +49,6 @@ namespace Benefit.Web.Models
         [DataType(DataType.Password)]
         [Display(Name = "Пароль")]
         public string Password { get; set; }
-
-        [DataType(DataType.Password)]
-        [Display(Name = "Підтвердження паролю")]
-        [Compare("Password", ErrorMessage = "Пароль і підтвердження паролю не співпадають")]
-        public string ConfirmPassword { get; set; }
     }
 
     public class ManageUserViewModel

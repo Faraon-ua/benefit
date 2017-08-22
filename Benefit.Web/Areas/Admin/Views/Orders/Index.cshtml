@@ -97,8 +97,8 @@
     <div class="row">
         @Html.Hidden("page", Model)
         <div class="col-md-3">
-            <a data-navtype="BenefitSite" class="btn switchNavigationType @(Model.NavigationType == OrderType.BenefitSite ? "btn-primary":"")">Онлайн</a>
-            <a data-navtype="BenefitCard" class="btn switchNavigationType @(Model.NavigationType == OrderType.BenefitCard ? "btn-primary":"")">Benefit Card</a>
+            <a data-navtype="BenefitSite" class="btn switchNavigationType @(Model.NavigationType == OrderType.BenefitSite ? "btn-primary" : "")">Онлайн</a>
+            <a data-navtype="BenefitCard" class="btn switchNavigationType @(Model.NavigationType == OrderType.BenefitCard ? "btn-primary" : "")">Benefit Card</a>
             @Html.Hidden("NavigationType", Model.NavigationType.ToString(), new { id = "navType" })
         </div>
         <div class="col-md-2">
@@ -130,47 +130,47 @@
             </button>
         </div>
     </div>
-    if (Model.NavigationType == OrderType.BenefitSite)
-    {
-        <div class="row">
-            <div class="col-md-3">
-                @Html.HiddenFor(m => m.PaymentType)
-                <div class="page-header no-padding-bottom">
-                    <h1 class="no-padding-bottom">Метод оплати</h1>
-                </div>
-                <ul style="list-style-type: none; margin: 0;">
-                    @foreach (Enum paymentMethod in Enum.GetValues(typeof(PaymentType)))
-                    {
-                        <li>
-                            @{
-                        var paymentName = Enumerations.GetEnumDescription(paymentMethod);
-                            }
-                            <input type="checkbox" name="PaymentTypeChk" value="@paymentMethod" @(Model.PaymentType.Contains(paymentMethod.ToString()) ? "checked" : "") />
-                            <label for="@paymentMethod">@paymentName</label>
-                        </li>
-                    }
-                </ul>
+    <div class="row">
+        <div class="col-md-3">
+            @Html.HiddenFor(m => m.PaymentType)
+            <div class="page-header no-padding-bottom">
+                <h1 class="no-padding-bottom">Метод оплати</h1>
             </div>
+            <ul style="list-style-type: none; margin: 0;">
+                @foreach (Enum paymentMethod in Enum.GetValues(typeof(PaymentType)))
+                {
+                    <li>
+                        @{
+                    var paymentName = Enumerations.GetEnumDescription(paymentMethod);
+                        }
+                        <input type="checkbox" name="PaymentTypeChk" value="@paymentMethod" @(Model.PaymentType.Contains(paymentMethod.ToString()) ? "checked" : "") />
+                        <label for="@paymentMethod">@paymentName</label>
+                    </li>
+                }
+            </ul>
+        </div>
+        @if (Model.NavigationType == OrderType.BenefitSite)
+        {
             <div class="col-md-3">
                 @Html.HiddenFor(m => m.Status)
                 <div class="page-header no-padding-bottom">
                     <h1 class="no-padding-bottom">Статус</h1>
                 </div>
                 <ul style="list-style-type: none; margin: 0;">
-                    @foreach (Enum status in Enum.GetValues(typeof(OrderStatus)))
+                    @foreach (Enum status in Enum.GetValues(typeof (OrderStatus)))
                     {
                         <li>
                             @{
-                        var statusName = Enumerations.GetEnumDescription(status);
+                                var statusName = Enumerations.GetEnumDescription(status);
                             }
-                            <input type="checkbox" name="StatusChk" value="@status" @(Model.Status.Contains(status.ToString()) ? "checked" : "") />
+                            <input type="checkbox" name="StatusChk" value="@status" @(Model.Status.Contains(status.ToString()) ? "checked" : "")/>
                             <label for="@status">@statusName</label>
                         </li>
                     }
                 </ul>
             </div>
-        </div>
-    }
+        }
+    </div>
 }
 
 <div id="ordersList">

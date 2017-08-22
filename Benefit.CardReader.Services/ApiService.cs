@@ -1,4 +1,4 @@
-﻿using System.IO;
+﻿using System;
 using System.Net;
 using System.Threading.Tasks;
 using Benefit.CardReader.DataTransfer.Dto;
@@ -25,7 +25,8 @@ namespace Benefit.CardReader.Services
                 username = licenseKey
             };
             var tokenForm = ContentTypeConvert.SerializeToXwwwFormUrlencoded(token);
-            var tokenUrl = Path.Combine(CardReaderSettingsService.ApiHost, CardReaderSettingsService.ApiTokenPrefix);
+            var baseUri = new Uri(CardReaderSettingsService.ApiHost);
+            var tokenUrl = new Uri(baseUri, CardReaderSettingsService.ApiTokenPrefix).ToString();
             var tokenResult = _httpClient.Post<TokenDto>(tokenUrl, tokenForm, "application/x-www-form-urlencoded");
             if (tokenResult.StatusCode == HttpStatusCode.OK)
             {

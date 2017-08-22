@@ -39,7 +39,7 @@ namespace Benefit.CardReader.Services
             return new BenefitCardUserAuthDto()
             {
                 Name = "Недоступно в автономному режимі",
-                CardNumber = "Недоступно в автономному режимі"
+                AvailableBonuses = "Недоступно в автономному режимі"
             };
         }
 

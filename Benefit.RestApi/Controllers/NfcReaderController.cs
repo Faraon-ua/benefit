@@ -47,7 +47,7 @@ namespace Benefit.RestApi.Controllers
                 return Ok(new BenefitCardUserAuthDto
                 {
                     Name = user.FullName,
-                    CardNumber = user.CardNumber
+                    AvailableBonuses = user.BonusAccount.ToString("F")
                 });
             }
             return NotFound();
@@ -58,6 +58,17 @@ namespace Benefit.RestApi.Controllers
         public IHttpActionResult UserInfo(string nfc)
         {
             var user = db.Users.Include(entry => entry.Orders).FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == nfc.ToLower());
+            if (user == null)
+            {
+                var benefitCard =
+                      db.BenefitCards.Include(entry => entry.User.Orders).FirstOrDefault(
+                          entry => entry.NfcCode.ToLower() == nfc.ToLower());
+                if (benefitCard != null)
+                {
+                    user = benefitCard.User;
+                }
+            }
+            
             if (user != null)
             {
                 var lastCardOrder =
@@ -102,8 +113,15 @@ namespace Benefit.RestApi.Controllers
                     db.Users.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == paymentIngest.UserNfc.ToLower());
                 if (user == null)
                 {
-                    _logger.Error("User not found, nfc: " + paymentIngest.UserNfc);
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "User not found");
+                    var benefitCard =
+                        db.BenefitCards.FirstOrDefault(
+                            entry => entry.NfcCode.ToLower() == paymentIngest.UserNfc.ToLower());
+                    if (benefitCard == null)
+                    {
+                        _logger.Error("User not found, nfc: " + paymentIngest.UserNfc);
+                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "User not found");
+                    }
+                    user = benefitCard.User;
                 }
                 var points = paymentIngest.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
                 var bonuses = paymentIngest.Sum * seller.UserDiscount / 100;
@@ -115,7 +133,7 @@ namespace Benefit.RestApi.Controllers
                     CardNumber = user.CardNumber,
                     OrderNumber = orderNumber + 1,
                     OrderType = OrderType.BenefitCard,
-                    PaymentType = PaymentType.Cash,
+                    PaymentType = paymentIngest.ChargeBonuses ? PaymentType.Bonuses : PaymentType.Cash,
                     SellerId = seller.Id,
                     SellerName = seller.Name,
                     PersonnelName = cashier.Name,

@@ -81,16 +81,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 orders = orders.Where(entry => entry.SellerId == ordersFilters.SellerId);
             }
+            if (!string.IsNullOrEmpty(ordersFilters.PaymentType))
+            {
+                orders = orders.Where(entry => ordersFilters.PaymentType.Contains(entry.PaymentType.ToString()));
+            }
+            else
+            {
+                ordersFilters.PaymentType = string.Empty;
+            }
             if (ordersFilters.NavigationType == OrderType.BenefitSite)
             {
-                if (!string.IsNullOrEmpty(ordersFilters.PaymentType))
-                {
-                    orders = orders.Where(entry => ordersFilters.PaymentType.Contains(entry.PaymentType.ToString()));
-                }
-                else
-                {
-                    ordersFilters.PaymentType = string.Empty;
-                }
                 if (!string.IsNullOrEmpty(ordersFilters.Status))
                 {
                     orders = orders.Where(entry => ordersFilters.Status.Contains(entry.Status.ToString()));

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.Globalization;
+using System.Net;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -16,20 +17,28 @@ namespace Benefit.CardReader.Controls
     {
         private App app;
         private ApiService apiService;
+        private DefaultWindow defaultWindow;
         public TransactionPartial()
         {
             InitializeComponent();
             app = (App)App.Current;
             apiService = new ApiService();
+            Loaded += TransactionPartial_Loaded;
+        }
+
+        void TransactionPartial_Loaded(object sender, RoutedEventArgs e)
+        {
+            defaultWindow = Window.GetWindow(this) as DefaultWindow;
         }
 
         private void ProcessPayment(bool chargeBonuses = false)
         {
+            defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
             var billNumber = txtBillNumber.Text == txtBillNumber.Tag.ToString() ? null : txtBillNumber.Text;
             double paymentSum = 0;
             try
             {
-                paymentSum = double.Parse(txtPaymentSum.Text);
+                paymentSum = double.Parse(txtPaymentSum.Text, CultureInfo.InvariantCulture);
             }
             catch
             {
@@ -47,6 +56,7 @@ namespace Benefit.CardReader.Controls
             };
             apiService.AuthToken = app.Token;
             var result = ReaderFactory.GetReaderManager(app.IsConnected).ProcessPayment(paymentIngest);
+            defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
             if (result.StatusCode != HttpStatusCode.OK)
             {
                 var parent = Window.GetWindow(this) as DefaultWindow;

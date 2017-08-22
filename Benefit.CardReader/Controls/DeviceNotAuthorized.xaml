@@ -4,13 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-            d:DesignHeight="700" d:DesignWidth="800">
-    <Border Background="White" Margin="40, 25" Name="CashierAuth">
+            d:DesignHeight="500" d:DesignWidth="800">
+    <Border Background="White" Margin="40, 15" Name="CashierAuth">
         <Border.Effect>
             <DropShadowEffect Opacity="0.2" ShadowDepth="3" />
         </Border.Effect>
         <StackPanel Orientation="Vertical">
-            <Image Source="/Images/exclamation.png" HorizontalAlignment="Center" Margin="0,50" Width="350"></Image>
+            <Image Source="/Images/triangle.png" HorizontalAlignment="Center" Margin="0,40" Width="300"></Image>
             <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontSize="36" LineHeight="36" Margin="0,20" LineStackingStrategy="BlockLineHeight" Foreground="#990100">Зчитувач Benefit Card<LineBreak/> не авторизовано</TextBlock>
         </StackPanel>
     </Border>

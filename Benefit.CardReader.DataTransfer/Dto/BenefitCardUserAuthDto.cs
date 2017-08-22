@@ -3,6 +3,6 @@
     public class BenefitCardUserAuthDto
     {
         public string Name { get; set; }
-        public string CardNumber { get; set; }
+        public string AvailableBonuses  { get; set; }
     }
 }

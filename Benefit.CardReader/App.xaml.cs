@@ -54,8 +54,6 @@ namespace Benefit.CardReader
             AuthInfo.UserNfc = null;
             AuthInfo.UserName = null;
             AuthInfo.UserCard = null;
-            AuthInfo.SellerName = null;
-            AuthInfo.SellerName = null;
         }
     }
 }

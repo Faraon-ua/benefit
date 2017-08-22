@@ -131,31 +131,44 @@ namespace Benefit.CardReader
                 //if new card - user auth
                 else
                 {
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
+                    }));
                     var user = ReaderFactory.GetReaderManager(app.IsConnected).AuthUser(e.NfcCode);
                     if (user != null)
                     {
                         app.AuthInfo.UserNfc = e.NfcCode;
                         app.AuthInfo.UserName = user.Name;
-                        app.AuthInfo.UserCard = user.CardNumber;
+                        app.AuthInfo.UserCard = user.AvailableBonuses;
 
                         Dispatcher.Invoke(new Action(() =>
                         {
                             defaultWindow.TransactionPartial.SellerName.Text = app.AuthInfo.SellerName;
                             defaultWindow.TransactionPartial.CashierName.Text = app.AuthInfo.CashierName;
                             defaultWindow.TransactionPartial.UserName.Text = user.Name;
-                            defaultWindow.TransactionPartial.UserCard.Text = user.CardNumber;
+                            defaultWindow.TransactionPartial.UserCard.Text = user.AvailableBonuses;
                             defaultWindow.ShowSingleControl(ViewType.TransactionPartial);
+                            defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
                         }));
                     }
                     else
                     {
-                        Dispatcher.Invoke(new Action(() => defaultWindow.ShowErrorMessage("Картка клієнта не активована")));
+                        Dispatcher.Invoke(new Action(() =>
+                        {
+                            defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
+                            defaultWindow.ShowErrorMessage("Картка клієнта не активована");
+                        }));
                     }
                 }
             }
             //auth cashier
             else if (app.Token != null)
             {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
+                }));
                 var cashierSeller = ReaderFactory.GetReaderManager(app.IsConnected).AuthCashier(e.NfcCode);
                 if (cashierSeller != null)
                 {
@@ -168,11 +181,16 @@ namespace Benefit.CardReader
                         defaultWindow.UserAuthPartial.SellerName.Text = cashierSeller.SellerName;
                         defaultWindow.UserAuthPartial.CashierName.Text = cashierSeller.CashierName;
                         defaultWindow.ShowSingleControl(ViewType.UserAuthPartial);
+                        defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
                     }));
                 }
                 else
                 {
-                    Dispatcher.Invoke(new Action(() => defaultWindow.ShowErrorMessage("Картка касира не активована")));
+                    Dispatcher.Invoke(new Action(() =>
+                    {
+                        defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
+                        defaultWindow.ShowErrorMessage("Картка касира не активована");
+                    }));
                 }
             }
         }

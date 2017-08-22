@@ -90,13 +90,6 @@
         @Html.ValidationMessageFor(m => m.Password)
 
         <div class="col-sm-12">
-            @Html.TextBoxFor(m => m.ConfirmPassword, new { placeholder = "Підтвердження паролю *", type = "password" })
-            <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-asterisk form-control-feedback" title="Пароль і підтвердження паролю мають співпадати">
-            </a>
-        </div>
-        @Html.ValidationMessageFor(m => m.ConfirmPassword)
-
-        <div class="col-sm-12">
             @Html.TextBoxFor(m => m.ReferalNumber, new { placeholder = "Реєстраційний код" })
             <a href="#" data-toggle="tooltip" class="glyphicon glyphicon-question-sign form-control-feedback" title="Введіть реєстраційний код наставника, або ми підберемо для вас найкращого наставника, якщо поле залишається незаповненим">
             </a>
