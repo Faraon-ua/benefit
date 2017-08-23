@@ -1,8 +1,13 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
 using System.Net;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Benefit.CardReader.DataTransfer.Dto;
+using Benefit.CardReader.DataTransfer.Dto.Base;
 using Benefit.CardReader.DataTransfer.Ingest;
 using Benefit.CardReader.Services;
 using Benefit.CardReader.Services.Factories;
@@ -34,6 +39,7 @@ namespace Benefit.CardReader.Controls
         private void ProcessPayment(bool chargeBonuses = false)
         {
             defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
+
             var billNumber = txtBillNumber.Text == txtBillNumber.Tag.ToString() ? null : txtBillNumber.Text;
             double paymentSum = 0;
             try
@@ -42,8 +48,7 @@ namespace Benefit.CardReader.Controls
             }
             catch
             {
-                var parent = Window.GetWindow(this) as DefaultWindow;
-                parent.ShowErrorMessage("Невірний формат суми");
+                defaultWindow.ShowErrorMessage("Невірний формат суми");
                 return;
             }
             var paymentIngest = new PaymentIngest
@@ -55,41 +60,51 @@ namespace Benefit.CardReader.Controls
                 ChargeBonuses = chargeBonuses
             };
             apiService.AuthToken = app.Token;
-            var result = ReaderFactory.GetReaderManager(app.IsConnected).ProcessPayment(paymentIngest);
-            defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
-            if (result.StatusCode != HttpStatusCode.OK)
+
+            var task = Task.Factory.StartNew(() => ReaderFactory.GetReaderManager(app.IsConnected).ProcessPayment(paymentIngest));
+            task.ContinueWith(x =>
             {
-                var parent = Window.GetWindow(this) as DefaultWindow;
-                parent.ShowErrorMessage(result.ErrorMessage ?? "Нарахування не було проведено");
-            }
-            else
-            {
-                if (chargeBonuses)
+                var result = x.Result;
+                Dispatcher.Invoke(new Action(() =>
                 {
-                    PaymentStatus.Text = "Списання пройшло успішно!";
-                    BonusesCharged.Text = result.Data.BonusesCharged.ToString("F");
-                    BonusesChargedPanel.Visibility = Visibility.Visible;
+                    defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
+                    if (result.StatusCode != HttpStatusCode.OK)
+                    {
+                        defaultWindow.ShowErrorMessage(result.ErrorMessage ?? "Нарахування не було проведено");
+                    }
+                    else
+                    {
+                        if (chargeBonuses)
+                        {
+                            PaymentStatus.Text = "Списання пройшло успішно!";
+                            BonusesCharged.Text = result.Data.BonusesCharged.ToString("F");
+                            BonusesChargedPanel.Visibility = Visibility.Visible;
+                        }
+                        else
+                        {
+                            PaymentStatus.Text = app.IsConnected
+                                ? "Нарахування проведено!"
+                                : "Нарахування буде проведено в онлайн режимі";
+                            BonusesChargedPanel.Visibility = Visibility.Collapsed;
+                        }
+                        if (!app.IsConnected)
+                        {
+                            BonusesAquired.Visibility = Visibility.Hidden;
+                            BonusesAccount.Visibility = Visibility.Hidden;
+                        }
+                        else
+                        {
+                            BonusesAquired.Visibility = Visibility.Visible;
+                            BonusesAccount.Visibility = Visibility.Visible;
+                            BonusesAquired.Text = result.Data.BonusesAcquired.GetValueOrDefault(0).ToString("F");
+                            BonusesAccount.Text = result.Data.BonusesAccount.GetValueOrDefault(0).ToString("F");
+                        }
+                        TransactionPanel.Visibility = Visibility.Hidden;
+                        TransactionResult.Visibility = Visibility.Visible;
+                    }
                 }
-                else
-                {
-                    PaymentStatus.Text = app.IsConnected ? "Нарахування проведено!" : "Нарахування буде проведено в онлайн режимі";
-                    BonusesChargedPanel.Visibility = Visibility.Collapsed;
-                }
-                if (!app.IsConnected)
-                {
-                    BonusesAquired.Visibility = Visibility.Hidden;
-                    BonusesAccount.Visibility = Visibility.Hidden;
-                }
-                else
-                {
-                    BonusesAquired.Visibility = Visibility.Visible;
-                    BonusesAccount.Visibility = Visibility.Visible;
-                    BonusesAquired.Text = result.Data.BonusesAcquired.GetValueOrDefault(0).ToString("F");
-                    BonusesAccount.Text = result.Data.BonusesAccount.GetValueOrDefault(0).ToString("F");                    
-                }
-                TransactionPanel.Visibility = Visibility.Hidden;
-                TransactionResult.Visibility = Visibility.Visible;
-            }
+                    ));
+            });
         }
 
         private void BtnUserInfo_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -147,7 +162,7 @@ namespace Benefit.CardReader.Controls
 
         private void BtnPayBonuses_OnClick(object sender, RoutedEventArgs e)
         {
-           ProcessPayment();
+            ProcessPayment();
         }
 
         private void BtnChargeBonuses_OnClick(object sender, RoutedEventArgs e)

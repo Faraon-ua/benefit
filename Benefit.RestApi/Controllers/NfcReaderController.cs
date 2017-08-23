@@ -8,6 +8,7 @@ using Benefit.CardReader.DataTransfer.Dto;
 using Benefit.CardReader.DataTransfer.Ingest;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
+using System.Threading;
 using Benefit.Domain.Models;
 using NLog;
 using Benefit.Services;
@@ -108,6 +109,7 @@ namespace Benefit.RestApi.Controllers
         {
             double sumToPay = 0;
             double commission = 0;
+            BenefitCard benefitCard = null;
             try
             {
                 var cashier =
@@ -124,7 +126,7 @@ namespace Benefit.RestApi.Controllers
                     db.Users.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == paymentIngest.UserNfc.ToLower());
                 if (user == null)
                 {
-                    var benefitCard =
+                    benefitCard =
                         db.BenefitCards.Include(entry=>entry.User).FirstOrDefault(
                             entry => entry.NfcCode.ToLower() == paymentIngest.UserNfc.ToLower());
                     if (benefitCard == null)
@@ -141,7 +143,7 @@ namespace Benefit.RestApi.Controllers
                 var order = new Order()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    CardNumber = user.CardNumber,
+                    CardNumber = benefitCard == null ? user.CardNumber : benefitCard.Id,
                     OrderNumber = orderNumber + 1,
                     OrderType = OrderType.BenefitCard,
                     PaymentType = paymentIngest.ChargeBonuses ? PaymentType.Bonuses : PaymentType.Cash,
@@ -210,7 +212,7 @@ namespace Benefit.RestApi.Controllers
 
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChangesAsync();
-
+                
                 return Request.CreateResponse(HttpStatusCode.OK,
                     new PaymentResultDto()
                     {
