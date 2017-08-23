@@ -67,7 +67,7 @@
                 <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="40,0" HorizontalAlignment="Left">
                     <Hyperlink Name="SiteHyperlink" NavigateUri="https://benefit-company.com" TextDecorations="None" Foreground="White" RequestNavigate="Hyperlink_OnRequestNavigate">www.benefit-company.com</Hyperlink>
                 </TextBlock>
-                <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="40,0" HorizontalAlignment="Right">Гаряча лінія: (066) 427 01 63</TextBlock>
+                <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="40,0" HorizontalAlignment="Right">Гаряча лінія: (095) 913 34 44</TextBlock>
             </Grid>
         </Border>
     </DockPanel>

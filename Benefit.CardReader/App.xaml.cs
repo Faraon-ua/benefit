@@ -27,7 +27,7 @@ namespace Benefit.CardReader
             timer.Interval = new TimeSpan(0, PingOnlinePeriod, 0);
             timer.Start();
             AuthInfo = new BenefitAuthInfo();
-            InstallMeOnStartUp();
+//            InstallMeOnStartUp();
         }
         void InstallMeOnStartUp()
         {

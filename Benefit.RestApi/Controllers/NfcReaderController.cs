@@ -42,6 +42,16 @@ namespace Benefit.RestApi.Controllers
         public IHttpActionResult AuthUser(string nfc)
         {
             var user = db.Users.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == nfc.ToLower());
+            if (user == null)
+            {
+                var benefitCard =
+                      db.BenefitCards.Include(entry=>entry.User).FirstOrDefault(
+                          entry => entry.NfcCode.ToLower() == nfc.ToLower());
+                if (benefitCard != null)
+                {
+                    user = benefitCard.User;
+                }    
+            }
             if (user != null)
             {
                 return Ok(new BenefitCardUserAuthDto
@@ -114,7 +124,7 @@ namespace Benefit.RestApi.Controllers
                 if (user == null)
                 {
                     var benefitCard =
-                        db.BenefitCards.FirstOrDefault(
+                        db.BenefitCards.Include(entry=>entry.User).FirstOrDefault(
                             entry => entry.NfcCode.ToLower() == paymentIngest.UserNfc.ToLower());
                     if (benefitCard == null)
                     {

@@ -130,7 +130,7 @@
                             <th>Дата</th>
                             <th>Номер картки</th>
                             <th>Заклад</th>
-                            <th>Сума (грн)</th>
+                            <th>Сума</th>
                             <th>Бонуси</th>
                             <th>Бали</th>
                         </tr>
@@ -140,7 +140,17 @@
                                 <td>@order.Time.ToLocalTimeWithDateFormat()</td>
                                 <td>@order.CardNumber</td>
                                 <td>@order.SellerName</td>
-                                <td>@order.Sum.ToString("F")</td>
+                                <td>
+                                    @order.Sum.ToString("F")
+                                    @if (order.PaymentType == PaymentType.Bonuses)
+                                    {
+                                        <span>бонусів</span>
+                                    }
+                                    else
+                                    {
+                                        <span>грн</span>
+                                    }
+                                </td>
                                 <td>@order.PersonalBonusesSum.ToString("F")</td>
                                 <td>@order.PointsSum.ToString("F")</td>
                             </tr>
