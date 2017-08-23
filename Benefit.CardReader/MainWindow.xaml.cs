@@ -182,6 +182,9 @@ namespace Benefit.CardReader
                         defaultWindow.UserAuthPartial.CashierName.Text = cashierSeller.CashierName;
                         defaultWindow.ShowSingleControl(ViewType.UserAuthPartial);
                         defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
+                        defaultWindow.TransactionPartial.txtBillNumber.Visibility = cashierSeller.ShowBill
+                            ? Visibility.Visible
+                            : Visibility.Collapsed;
                     }));
                 }
                 else

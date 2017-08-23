@@ -30,7 +30,8 @@ namespace Benefit.CardReader.Services
             return new SellerCashierAuthDto()
             {
                 CashierName = cashier.Name,
-                SellerName = cashier.SellerName
+                SellerName = cashier.SellerName,
+                ShowBill = cashier.SellerShowBill
             };
         }
 

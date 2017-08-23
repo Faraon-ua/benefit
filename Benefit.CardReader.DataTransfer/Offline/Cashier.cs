@@ -8,6 +8,8 @@ namespace Benefit.CardReader.DataTransfer.Offline
         public string CardNfc { get; set; }
         public string Name { get; set; }
         public string SellerName { get; set; }
+        public bool SellerShowBill { get; set; }
+
         public override bool Equals(object obj)
         {
             return (obj as Cashier).CardNfc == CardNfc;

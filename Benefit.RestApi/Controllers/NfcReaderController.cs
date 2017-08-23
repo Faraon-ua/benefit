@@ -31,7 +31,8 @@ namespace Benefit.RestApi.Controllers
                 return Ok(new SellerCashierAuthDto()
                 {
                     SellerName = cashier.Seller.Name,
-                    CashierName = cashier.Name
+                    CashierName = cashier.Name,
+                    ShowBill = cashier.Seller.TerminalBillEnabled
                 });
             }
             return NotFound();
