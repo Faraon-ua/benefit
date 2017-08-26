@@ -4906,8 +4906,9 @@ basket_modal_table td:nth-child(4) {
 }
 
 .enter_left {
-    display: inline-block;
-    margin-right: 77px;
+    /*display: inline-block;*/
+    /*margin-right: 77px;*/
+    margin: 0 auto;
     max-width: 320px;
     vertical-align: top;
 }
