@@ -109,11 +109,19 @@ namespace Benefit.Services.Domain
             {
                 order.User.PointsAccount = order.User.PointsAccount - order.PointsSum;
                 order.User.CurrentBonusAccount = order.User.CurrentBonusAccount - order.PersonalBonusesSum;
+                if (order.PaymentType == PaymentType.Bonuses)
+                {
+                    order.User.PointsAccount = order.User.PointsAccount + order.Sum;
+                }
             }
             if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
             {
                 order.User.HangingPointsAccount = order.User.HangingPointsAccount - order.PointsSum;
                 order.User.HangingBonusAccount = order.User.HangingBonusAccount - order.PersonalBonusesSum;
+                if (order.PaymentType == PaymentType.Bonuses)
+                {
+                    order.User.PointsAccount = order.User.PointsAccount + order.Sum;
+                }
             }
            
             db.Transactions.RemoveRange(order.Transactions);

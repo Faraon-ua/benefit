@@ -78,8 +78,8 @@
             <th>
                 Статус
             </th>
-            <th></th>
         }
+        <th></th>
     </tr>
 
     @foreach (var item in Model.Items)
@@ -138,21 +138,21 @@
                 <td>
                     @Enumerations.GetEnumDescription(item.Status)
                 </td>
-
-                <td>
+            }
+            <td>
+                @if (item.OrderType == OrderType.BenefitSite)
+                {
                     @Html.ActionLink("Детальніше", "Details", "Orders", new { id = item.Id }, new { target = "_blank" })
-
-                </td>
-            }
-            @{
-        var now = DateTime.UtcNow;
-            }
-            @if (item.OrderType == OrderType.BenefitCard && User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time > now.StartOfMonth().AddMonths(-1))
-            {
-                <td>
+                    <span>|</span>
+                }
+                @{
+                    var now = DateTime.UtcNow;
+                }
+                @if (User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time > now.StartOfMonth().AddMonths(-1))
+                {
                     <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>
-                </td>
-            }
+                }
+            </td>
         </tr>
     }
 </table>
