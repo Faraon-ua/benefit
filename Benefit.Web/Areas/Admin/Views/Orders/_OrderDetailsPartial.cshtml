@@ -337,7 +337,6 @@
                     <td>Час</td>
                     <td>Вид операції</td>
                     <td>Бонуси</td>
-                    <td>Комісія</td>
                     <td>Залишок</td>
                     @if (User.IsInRole(DomainConstants.AdminRoleName))
                     {
@@ -369,9 +368,6 @@
                             }
 
                             @transaction.Bonuses.ToDoubleDigits()
-                        </td>
-                        <td>
-                            @transaction.Commission.ToDoubleDigits()
                         </td>
                         <td>
                             @transaction.BonusesBalans.ToDoubleDigits()
