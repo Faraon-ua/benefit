@@ -79,8 +79,7 @@
                                 $("#bonuses-summary").show();
                                 //bonuses section
                                 $("#bonuses-discount").text(((sum-promotion) - 0.01).toFixed(2));
-                                $("#bonuses-comission").text(data.comission.toFixed(2));
-                                $("#bonuses-total").text(((sum - promotion) + data.comission - 0.01).toFixed(2));
+                                $("#bonuses-total").text(((sum - promotion) - 0.01).toFixed(2));
 
                                 //payment section
                                 $("#pay-total").text((shippingCost + 0.01).toFixed(2));

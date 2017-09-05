@@ -34,7 +34,9 @@ namespace Benefit.Domain.Models
         [Description("Бонуси по акції")]
         Promotion,
         [Description("Розрахунок бонусами через Benefit Card")]
-        BenefitCardBonusesPayment
+        BenefitCardBonusesPayment,
+        [Description("Комісія за користування системою Benefit")]
+        Comission
     }
     public class Transaction
     {
@@ -43,7 +45,6 @@ namespace Benefit.Domain.Models
         public string Id { get; set; }
         public TransactionType Type { get; set; }
         public double Bonuses { get; set; }
-        public double Commission { get; set; }
         public double BonusesBalans { get; set; }
         public DateTime Time { get; set; }
         public string Description { get; set; }

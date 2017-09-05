@@ -8,5 +8,6 @@ namespace Benefit.DataTransfer.ViewModels
         public List<PartnerReckon> Partners { get; set; }
         public List<PartnerReckon> VipPartners { get; set; }
         public int ActiveBuyersCount { get; set; }
+        public double PersonalBonusesAccrued { get; set; }
     }
 }

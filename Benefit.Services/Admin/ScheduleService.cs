@@ -359,6 +359,7 @@ namespace Benefit.Services.Admin
                         //для всех пользователей, у кого есть баллы в обработке
                         allUsers.Where(entry => entry.HangingPointsAccount > 0).ToList().ForEach(entry =>
                         {
+                            result.PersonalBonusesAccrued += entry.HangingBonusAccount;
                             var hangingTransaction = new Transaction()
                             {
                                 Id = Guid.NewGuid().ToString(),
@@ -382,7 +383,31 @@ namespace Benefit.Services.Admin
                             db.Entry(entry).State = EntityState.Modified;
                         });
 
-                        db.Transactions.AddRange(partnerReckons.Select(entry => entry.Transaction));
+                        var transactions = partnerReckons.Select(entry => entry.Transaction).ToList();
+                        var transactionsByUserId = transactions.GroupBy(entry => entry.PayeeId);
+
+                        var commissionTransactions = new List<Transaction>();
+                        foreach (var groupedTransactions in transactionsByUserId)
+                        {
+                            var user = allUsers.FirstOrDefault(entry => entry.Id == groupedTransactions.Key);
+                            var transactionsSum = groupedTransactions.Sum(entry => entry.Bonuses);
+                            var commission = transactionsSum*SettingsService.BonusesComissionRate/100;
+                            var commissionTransaction = new Transaction()
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                Bonuses = commission,
+                                BonusesBalans = user.BonusAccount - commission,
+                                Time = DateTime.UtcNow,
+                                Type = TransactionType.Comission,
+                                PayeeId = groupedTransactions.Key
+                            };
+                            commissionTransactions.Add(commissionTransaction);
+                            user.BonusAccount = commissionTransaction.BonusesBalans;
+                            db.Entry(user).State = EntityState.Modified;
+                        }
+
+                        db.Transactions.AddRange(transactions);
+                        db.Transactions.AddRange(commissionTransactions);
                         db.SaveChanges();
                         dbTransaction.Commit();
                     }

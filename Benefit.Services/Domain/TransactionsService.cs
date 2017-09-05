@@ -70,8 +70,8 @@ namespace Benefit.Services.Domain
             var bonusesPaymentTransaction = new Transaction()
             {
                 Id = Guid.NewGuid().ToString(),
-                Bonuses = bonuses + transaction.Commission,
-                BonusesBalans = user.BonusAccount + (bonuses + transaction.Commission),
+                Bonuses = bonuses,
+                BonusesBalans = user.BonusAccount + bonuses,
                 OrderId = order.Id,
                 PayeeId = user.Id,
                 Time = DateTime.UtcNow,
@@ -87,14 +87,12 @@ namespace Benefit.Services.Domain
         {
             var user = db.Users.Find(order.UserId);
             var sumToPay = order.Sum - order.SellerDiscount.GetValueOrDefault(0);
-            var commission = sumToPay*SettingsService.BonusesComissionRate/100;
             //add transaction for personal purchase
             var bonusesPaymentTransaction = new Transaction()
             {
                 Id = Guid.NewGuid().ToString(),
                 Bonuses = -(sumToPay),
-                Commission = commission,
-                BonusesBalans = user.BonusAccount - (sumToPay + commission),
+                BonusesBalans = user.BonusAccount - sumToPay,
                 OrderId = order.Id,
                 PayeeId = user.Id,
                 Time = DateTime.UtcNow,
@@ -138,7 +136,6 @@ namespace Benefit.Services.Domain
                 if (order.Sum < Math.Abs(orderTransaction.Bonuses))
                 {
                     var difference = (Math.Abs(orderTransaction.Bonuses) - order.Sum);
-                    difference = difference + difference*SettingsService.BonusesComissionRate/100;
                     var refundTransaction = new Transaction()
                     {
                         Id = Guid.NewGuid().ToString(),

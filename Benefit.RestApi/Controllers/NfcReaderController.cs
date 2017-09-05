@@ -108,7 +108,6 @@ namespace Benefit.RestApi.Controllers
         public HttpResponseMessage ProcessPayment(PaymentIngest paymentIngest)
         {
             double sumToPay = 0;
-            double commission = 0;
             BenefitCard benefitCard = null;
             try
             {
@@ -188,8 +187,7 @@ namespace Benefit.RestApi.Controllers
                 if (paymentIngest.ChargeBonuses)
                 {
                     sumToPay = order.Sum - order.SellerDiscount.GetValueOrDefault(0);
-                    commission = sumToPay * SettingsService.BonusesComissionRate / 100;
-                    if (user.BonusAccount < (sumToPay + commission))
+                    if (user.BonusAccount < sumToPay)
                     {
                         return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Недостатньо бонусів на рахунку");
                     }
@@ -198,8 +196,7 @@ namespace Benefit.RestApi.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         Bonuses = -(sumToPay),
-                        Commission = commission,
-                        BonusesBalans = user.BonusAccount - (sumToPay + commission),
+                        BonusesBalans = user.BonusAccount - sumToPay,
                         OrderId = order.Id,
                         PayeeId = user.Id,
                         Time = DateTime.UtcNow,
@@ -216,7 +213,7 @@ namespace Benefit.RestApi.Controllers
                 return Request.CreateResponse(HttpStatusCode.OK,
                     new PaymentResultDto()
                     {
-                        BonusesCharged = sumToPay + commission,
+                        BonusesCharged = sumToPay,
                         BonusesAcquired = bonuses,
                         BonusesAccount = user.BonusAccount
                     });

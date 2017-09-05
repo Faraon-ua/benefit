@@ -11,7 +11,6 @@ using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Cart;
 using Benefit.Services.Domain;
-using Benefit.Services.ExternalApi;
 using Microsoft.AspNet.Identity;
 using NLog;
 
@@ -27,17 +26,14 @@ namespace Benefit.Web.Controllers
         public ActionResult CheckEnaughBonuses(double sum)
         {
             var user = UserService.GetUser(User.Identity.GetUserId());
-            var comission = sum * SettingsService.BonusesComissionRate / 100;
-            var sumWithCommision = sum + comission;
             var result = .0;
-            if (user.BonusAccount >= sumWithCommision)
+            if (user.BonusAccount >= sum)
             {
-                result = sumWithCommision;
+                result = sum;
             }
             return Json(new
             {
-                total = result,
-                comission
+                total = result
             }, JsonRequestBehavior.AllowGet);
         }
 
@@ -129,9 +125,8 @@ namespace Benefit.Web.Controllers
             {
                 var sum = Cart.CurrentInstance.GetOrderSum();
                 var user = UserService.GetUser(User.Identity.GetUserId());
-                var sumWithCommision = sum + sum * SettingsService.BonusesComissionRate / 100;
 
-                if (user.BonusAccount < sumWithCommision)
+                if (user.BonusAccount < sum)
                 {
                     ModelState.AddModelError("PaymentType", "Недостатньо бонусів на рахунку");
                 }

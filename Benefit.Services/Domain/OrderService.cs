@@ -111,7 +111,7 @@ namespace Benefit.Services.Domain
                 order.User.CurrentBonusAccount = order.User.CurrentBonusAccount - order.PersonalBonusesSum;
                 if (order.PaymentType == PaymentType.Bonuses)
                 {
-                    order.User.PointsAccount = order.User.PointsAccount + order.Sum;
+                    order.User.BonusAccount = order.User.BonusAccount + order.Sum;
                 }
             }
             if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
@@ -120,7 +120,7 @@ namespace Benefit.Services.Domain
                 order.User.HangingBonusAccount = order.User.HangingBonusAccount - order.PersonalBonusesSum;
                 if (order.PaymentType == PaymentType.Bonuses)
                 {
-                    order.User.PointsAccount = order.User.PointsAccount + order.Sum;
+                    order.User.BonusAccount = order.User.BonusAccount + order.Sum;
                 }
             }
            
