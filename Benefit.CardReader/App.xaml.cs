@@ -12,7 +12,7 @@ namespace Benefit.CardReader
     /// </summary>
     public partial class App : Application
     {
-        private const int PingOnlinePeriod = 15;//minutes
+        private const int PingOnlinePeriod = 1;//minutes
 
         public bool IsConnected { get; set; }
         public BenefitAuthInfo AuthInfo { get; set; }
