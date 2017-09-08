@@ -1,0 +1,65 @@
+﻿@using Benefit.Common.Extensions
+@model ICollection<Benefit.Domain.Models.Seller>
+
+@{
+    ViewBag.Title = "Онлайн статус терміналів";
+    var now = DateTime.UtcNow;
+}
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Назва
+                </th>
+                <th>
+                    Статус
+                </th>
+                <th>
+                    Останній час онлайн
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var seller in Model)
+            {
+                <tr>
+                    <td>
+                        @seller.Name
+                    </td>
+                    <td>
+                        @if (seller.TerminalLastOnline != null)
+                        {
+                            var difference = (now - seller.TerminalLastOnline).Value.TotalHours;
+                            string statusClass;
+
+                            if (difference <= 1)
+                            {
+                                <span class="label label-sm label-success">Online</span>
+                            }
+                            if (difference > 1 && difference <= 3)
+                            {
+                                <span class="label label-sm label-warning">Receintly Online</span>
+                            }
+                            if (difference > 3)
+                            {
+                                <span class="label label-sm label-danger">Offline</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="label label-sm label-default">No data</span>
+                        }
+                    </td>
+                    <td>
+                        @if (seller.TerminalLastOnline != null)
+                        {
+                            @seller.TerminalLastOnline.Value.ToLocalDateTimeWithFormat()
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -92,8 +92,8 @@
                 <StackPanel Orientation="Vertical" Name="TransactionPanel" Visibility="Visible">
                     <TextBlock HorizontalAlignment="Center" Margin="5" FontSize="25">Нарахування</TextBlock>
                     <Grid Margin="25,5,25,0">
-                        <TextBox Name="txtBillNumber" Width="300" Height="65" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="25" TextAlignment="Center" Padding="13" HorizontalAlignment="Left" Tag="Номер чеку">Номер чеку</TextBox>
-                        <TextBox Name="txtPaymentSum" Width="300" Height="65" FlowDirection="LeftToRight" PreviewTextInput="PaymentSum_OnPreviewTextInput" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="25" TextAlignment="Center" Padding="13" HorizontalAlignment="Right" Tag="Сума">Сума</TextBox>
+                        <TextBox Name="txtPaymentSum" Width="300" Height="65" FlowDirection="LeftToRight" PreviewTextInput="PaymentSum_OnPreviewTextInput" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="25" TextAlignment="Center" Padding="13" HorizontalAlignment="Left" Tag="Сума">Сума</TextBox>
+                        <TextBox Name="txtBillNumber" Width="300" Height="65" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="25" TextAlignment="Center" Padding="13" HorizontalAlignment="Right" Tag="Номер чеку">Номер чеку</TextBox>
                     </Grid>
                     <Grid Margin="25,15">
                         <Button Name="btnPayBonuses" Click="BtnPayBonuses_OnClick" Cursor="Hand" Width="300" Height="75" HorizontalAlignment="Left" FontSize="26" Style="{StaticResource PayBonuses}">Нарахувати бонуси</Button>

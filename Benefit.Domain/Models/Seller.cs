@@ -56,7 +56,7 @@ namespace Benefit.Domain.Models
         public string TerminalLogin { get; set; }
         [MaxLength(32)]
         public string TerminalPassword { get; set; }
-        public DateTime TerminalLastOnline { get; set; }
+        public DateTime? TerminalLastOnline { get; set; }
         //hours
         public int? RepeatingTransactionInterval { get; set; }
         [Required]

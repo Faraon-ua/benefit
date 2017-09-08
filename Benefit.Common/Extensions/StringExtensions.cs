@@ -100,7 +100,7 @@ namespace Benefit.Common.Extensions
             words.Add("Ї", "ji");
             words.Add("Є", "e");
             words.Add("Ґ", "g");
-            words.Add(" ", "_");
+            words.Add(" ", "-");
 
             return words.Aggregate(value, (current, pair) => current.Replace(pair.Key, pair.Value)).ToLower();
         }

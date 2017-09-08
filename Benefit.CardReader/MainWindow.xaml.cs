@@ -54,24 +54,20 @@ namespace Benefit.CardReader
                 SetView();
             }
             var isconnected = httpClient.CheckForInternetConnection();
+            ((App)Application.Current).IsConnected = isconnected;
+
             if (isconnected)
             {
                 OfflineService.ProcessStoredPayments(app.LicenseKey);
                 defaultWindow.TransactionPartial.btnChargeBonuses.Visibility = Visibility.Visible;
+                defaultWindow.TransactionPartial.btnUserInfo.Visibility = Visibility.Visible;
+                defaultWindow.ConnectionEsteblished.Visibility = Visibility.Visible;
+                defaultWindow.NoConnection.Visibility = Visibility.Collapsed;
             }
             else
             {
                 defaultWindow.TransactionPartial.btnChargeBonuses.Visibility = Visibility.Hidden;
-            }
-            ((App)Application.Current).IsConnected = isconnected;
-            if (isconnected)
-            {
-                defaultWindow.ConnectionEsteblished.Visibility = Visibility.Visible;
-                defaultWindow.NoConnection.Visibility = Visibility.Collapsed;
-
-            }
-            else
-            {
+                defaultWindow.TransactionPartial.btnUserInfo.Visibility = Visibility.Hidden;
                 defaultWindow.ConnectionEsteblished.Visibility = Visibility.Collapsed;
                 defaultWindow.NoConnection.Visibility = Visibility.Visible;
             }

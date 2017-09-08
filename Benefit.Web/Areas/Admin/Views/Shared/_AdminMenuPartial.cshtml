@@ -142,6 +142,15 @@
             </a>
         </li>
     }
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <li>
+            <a href="@Url.Action("OnlineStatus", "Terminal")">
+                <i class="icon-terminal"></i>
+                <span class="menu-text">Статус терміналів</span>
+            </a>
+        </li>
+    }
     <li>
         <a href="@Url.Action("TabableContent", "InfoPages", new { pageUrls = "instrukciya_dlya_postachalnika,instrukciya_vstanovlennya_ta_vikoristannya_komplektu_b2b"})">
             <i class="icon-laptop"></i>
