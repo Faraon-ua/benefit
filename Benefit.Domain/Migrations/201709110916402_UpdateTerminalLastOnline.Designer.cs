@@ -13,7 +13,7 @@ namespace Benefit.Domain.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201709071313543_UpdateTerminalLastOnline"; }
+            get { return "201709110916402_UpdateTerminalLastOnline"; }
         }
         
         string IMigrationMetadata.Source

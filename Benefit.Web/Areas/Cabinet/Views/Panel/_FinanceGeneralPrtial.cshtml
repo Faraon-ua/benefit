@@ -24,7 +24,6 @@
                 <th>Час</th>
                 <th>Вид операції</th>
                 <th>Бонуси</th>
-                <th>Комісія</th>
                 <th>Залишок</th>
             </tr>
             @foreach (var transaction in Model.General)
@@ -108,9 +107,6 @@
                     }
 
                 @transaction.Bonuses.ToDoubleDigits()
-            </td>
-            <td>
-                @transaction.Commission.ToDoubleDigits()
             </td>
             <td>
                 @transaction.BonusesBalans.ToDoubleDigits()

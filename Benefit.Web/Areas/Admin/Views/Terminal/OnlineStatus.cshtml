@@ -5,6 +5,23 @@
     ViewBag.Title = "Онлайн статус терміналів";
     var now = DateTime.UtcNow;
 }
+@using (Html.BeginForm("OnlineStatus", "Terminal", FormMethod.Get))
+{
+    <div class="row">
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input name="search" id="searchText" type="text" placeholder="Введіть назву постачальника" class="form-control search-query">
+                <span class="input-group-btn">
+                    <button class="btn btn-purple btn-sm" type="submit">
+                        Пошук
+                        <i class="icon-search icon-on-right bigger-110"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
+}
+<br />
 
 <div class="table-responsive">
     <table class="table table-striped table-bordered table-hover">
@@ -18,6 +35,9 @@
                 </th>
                 <th>
                     Останній час онлайн
+                </th>
+                <th>
+                    Тип
                 </th>
             </tr>
         </thead>
@@ -56,6 +76,20 @@
                         @if (seller.TerminalLastOnline != null)
                         {
                             @seller.TerminalLastOnline.Value.ToLocalDateTimeWithFormat()
+                        }
+                    </td>
+                    <td>
+                        @if (seller.IsObsoleteTerminal)
+                        {
+                            <a href="#" title="Старий термінал(планшет)">
+                                <i class="icon icon-tablet red"></i>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" title="NFC Reader">
+                                <i class="icon icon-terminal green"></i>
+                            </a>
                         }
                     </td>
                 </tr>

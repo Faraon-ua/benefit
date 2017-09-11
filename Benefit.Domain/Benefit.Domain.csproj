@@ -385,9 +385,9 @@
     <Compile Include="Migrations\201709050850328_RemoveComission.Designer.cs">
       <DependentUpon>201709050850328_RemoveComission.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201709071313543_UpdateTerminalLastOnline.cs" />
-    <Compile Include="Migrations\201709071313543_UpdateTerminalLastOnline.Designer.cs">
-      <DependentUpon>201709071313543_UpdateTerminalLastOnline.cs</DependentUpon>
+    <Compile Include="Migrations\201709110916402_UpdateTerminalLastOnline.cs" />
+    <Compile Include="Migrations\201709110916402_UpdateTerminalLastOnline.Designer.cs">
+      <DependentUpon>201709110916402_UpdateTerminalLastOnline.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
@@ -673,8 +673,8 @@
     <EmbeddedResource Include="Migrations\201709050850328_RemoveComission.resx">
       <DependentUpon>201709050850328_RemoveComission.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201709071313543_UpdateTerminalLastOnline.resx">
-      <DependentUpon>201709071313543_UpdateTerminalLastOnline.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201709110916402_UpdateTerminalLastOnline.resx">
+      <DependentUpon>201709110916402_UpdateTerminalLastOnline.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
