@@ -172,6 +172,7 @@ namespace Benefit.Services.Domain
                 user.Transactions.Where(
                     entry =>
                         entry.Type == TransactionType.Custom ||
+                        entry.Type == TransactionType.Comission ||
                         entry.Type == TransactionType.Promotion ||
                         entry.Type == TransactionType.BenefitCardBonusesPayment ||
                         entry.Type == TransactionType.BonusesOrderPayment ||

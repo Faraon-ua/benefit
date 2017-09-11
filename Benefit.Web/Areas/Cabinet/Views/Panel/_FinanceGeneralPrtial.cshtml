@@ -97,6 +97,12 @@
                     <span>
                         Нарахування по акції @transaction.Description
                     </span>
+                    } 
+                @if (transaction.Type == TransactionType.Comission)
+                    {
+                    <span>
+                        Комісія за користування системою Benefit
+                    </span>
                     }
             </td>
 

@@ -395,7 +395,7 @@ namespace Benefit.Services.Admin
                             var commissionTransaction = new Transaction()
                             {
                                 Id = Guid.NewGuid().ToString(),
-                                Bonuses = commission,
+                                Bonuses = -commission,
                                 BonusesBalans = user.BonusAccount - commission,
                                 Time = DateTime.UtcNow,
                                 Type = TransactionType.Comission,
