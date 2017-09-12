@@ -27,12 +27,33 @@
         });
     </script>
 }
-@if (Model.Sellers.Any())
+@if (Model.CurrentRegionSellers.Any() || Model.Sellers.Any())
 {
-    <p>Результати пошуку запиту <strong class="bigger-125">"@Model.Term"</strong> по постачальникам</p>
-    foreach (var seller in Model.Sellers)
+    <p>
+        Результати пошуку запиту <strong class="bigger-125">"@Model.Term"</strong> по постачальникам
+    </p>
+    if (Model.CurrentRegionSellers.Any())
     {
-        @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
+        <div>
+            <h3 style="display: inline-block;">Постачальники з мого міста</h3>
+        </div>
+        <br />
+        foreach (var seller in Model.CurrentRegionSellers)
+        {
+            @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
+        }
+    }
+
+    if (Model.Sellers.Any())
+    {
+        <div>
+            <h3 style="display: inline-block;">Інші міста України</h3>
+        </div>
+        <br />
+        foreach (var seller in Model.Sellers)
+        {
+            @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
+        }
     }
 }
 <p class="margin-top-20">Результати пошуку по запиту <strong class="bigger-125">"@Model.Term"</strong> по товарам</p>

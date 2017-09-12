@@ -182,8 +182,8 @@ namespace Benefit.Services.Domain
                 sellersDto.CurrentRegionItems =
                     items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
             }
-
-            sellersDto.Items = items.Except(sellersDto.CurrentRegionItems).
+            var currentRegionItemsIds = sellersDto.CurrentRegionItems.Select(sc => sc.Id).ToList();
+            sellersDto.Items = items.Where(entry=>!currentRegionItemsIds.Contains(entry.Id)).
                 OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
 
             sellersDto.Items.ForEach(entry =>

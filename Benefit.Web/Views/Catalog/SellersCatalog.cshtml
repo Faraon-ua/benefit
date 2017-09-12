@@ -73,8 +73,25 @@
         <div class="list_filter" data-toggle="modal" data-target="#filter_modal">Фільтрувати</div>
         <div class="list_sort" data-toggle="modal" data-target="#sort_modal">Сортувати</div>
     </div>
+
+    @if (Model.CurrentRegionItems.Any())
+    {
+        <div>
+            <h3 style="display: inline-block;">Постачальники з мого міста</h3>
+        </div>
+        <br />
+        foreach (var seller in Model.CurrentRegionItems)
+        {
+            @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
+        }
+    }
+
     @if (Model.Items.Any())
     {
+        <div>
+            <h3 style="display: inline-block;">Інші міста України</h3>
+        </div>
+        <br />
         foreach (var seller in Model.Items)
         {
             @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)

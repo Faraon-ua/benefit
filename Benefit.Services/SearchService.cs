@@ -63,9 +63,6 @@ namespace Benefit.Services
                     entry => entry.Category.Name
                 ).Containing(term.Split(new[] { ' ' }))
                 .ToRanked()
-                .Where(entry => entry.Item.Seller.Addresses.Any(addr => addr.RegionId == regionId) ||
-                             entry.Item.Seller.ShippingMethods.Select(sm => sm.Region.Id)
-                                 .Contains(RegionConstants.AllUkraineRegionId))
                 .Where(entry => entry.Item.IsActive)
                 .OrderByDescending(entry => entry.Hits)
                 .Skip(skip)
@@ -74,20 +71,19 @@ namespace Benefit.Services
 
             result.Products = productResult.Select(entry => entry.Item).ToList();
 
-            var sellerResult =
+            var sellers =
                 db.Sellers
                     .Include(entry => entry.Addresses)
                     .Include(entry => entry.ShippingMethods)
                     .Include(entry => entry.ShippingMethods.Select(sh => sh.Region))
-                    .Where(entry => entry.IsActive &&
-                                    (entry.Addresses.Any(addr => addr.RegionId == regionId) ||
-                                     entry.ShippingMethods.Select(sm => sm.Region.Id)
-                                         .Contains(RegionConstants.AllUkraineRegionId)))
-                                         .Search(entry => entry.Name, entry => entry.SearchTags).Containing(term, translitTerm)
-                                         .ToList();
+                    .Where(entry => entry.IsActive)
+                    .Search(entry => entry.Name, entry => entry.SearchTags)
+                    .Containing(term, translitTerm);
 
+            result.CurrentRegionSellers = sellers.Where(entry=>entry.Addresses.Any(addr => addr.RegionId == regionId)).ToList();
+            var currectRegionSellerIds = result.CurrentRegionSellers.Select(entry => entry.Id).ToList();
+            result.Sellers = sellers.Where(entry => !currectRegionSellerIds.Contains(entry.Id)).ToList();
 
-            result.Sellers = sellerResult;
             return result;
         }
     }
