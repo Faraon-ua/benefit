@@ -70,7 +70,7 @@ namespace Benefit.Web.Controllers
             {
                 var parent = db.Categories.Find(parentCategoryId);
                 var parentName = parent == null ? null : parent.Name;
-                var categories = db.Categories.Include(entry => entry.ParentCategory).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive && !entry.IsSellerCategory).OrderBy(entry => entry.Order).ToList();
+                var categories = db.Categories.Include(entry => entry.ParentCategory).Include(entry => entry.ChildCategories).Include(entry=>entry.Products).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive && !entry.IsSellerCategory && (entry.ChildCategories.Any() || entry.Products.Any())).OrderBy(entry => entry.Order).ToList();
                 categories.ForEach(entry => entry.ChildCategories = db.Categories.Where(cat => cat.ParentCategoryId == entry.Id && cat.IsActive).ToList());
                 if (sellerUrl != null)
                 {

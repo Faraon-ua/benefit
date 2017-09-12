@@ -69,7 +69,17 @@
                                 <td>@order.OrderNumber</td>
                                 <td>@order.Time.ToLocalTimeWithDateFormat()</td>
                                 <td>@order.SellerName</td>
-                                <td>@order.Sum.ToString("F")</td>
+                                <td>
+                                    @order.Sum.ToString("F")
+                                    @if (order.PaymentType == PaymentType.Bonuses)
+                                    {
+                                        <span>бонусів</span>
+                                    }
+                                    else
+                                    {
+                                        <span>грн</span>
+                                    }
+                                </td>
                                 <td>@order.PersonalBonusesSum.ToDoubleDigits()</td>
                                 <td>@order.PointsSum.ToDoubleDigits()</td>
                                 <td>@Enumerations.GetEnumDescription(order.Status)</td>
