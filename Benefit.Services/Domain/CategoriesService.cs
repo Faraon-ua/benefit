@@ -176,13 +176,15 @@ namespace Benefit.Services.Domain
                         entry =>
                             sellerIds.Contains(entry.Id) &&
                             entry.IsActive);
+
             if (regionId != RegionConstants.AllUkraineRegionId)
             {
-                items = items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId) ||
-                                             entry.ShippingMethods.Select(sm => sm.Region.Id)
-                                                 .Contains(RegionConstants.AllUkraineRegionId));
+                sellersDto.CurrentRegionItems =
+                    items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
             }
-            sellersDto.Items = items.OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
+
+            sellersDto.Items = items.Except(sellersDto.CurrentRegionItems).
+                OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
 
             sellersDto.Items.ForEach(entry =>
             {

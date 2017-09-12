@@ -357,10 +357,12 @@ namespace Benefit.Services.Admin
                             });
 
                         //для всех пользователей, у кого есть баллы в обработке
+                        var transactions = partnerReckons.Select(entry => entry.Transaction).ToList();
+                        
                         allUsers.Where(entry => entry.HangingPointsAccount > 0).ToList().ForEach(entry =>
                         {
                             result.PersonalBonusesAccrued += entry.HangingBonusAccount;
-                            var hangingTransaction = new Transaction()
+                            transactions.Add(new Transaction()
                             {
                                 Id = Guid.NewGuid().ToString(),
                                 Bonuses = entry.HangingBonusAccount,
@@ -368,8 +370,7 @@ namespace Benefit.Services.Admin
                                 Time = DateTime.UtcNow,
                                 Type = TransactionType.PersonalMonthAggregate,
                                 PayeeId = entry.Id
-                            };
-                            db.Transactions.Add(hangingTransaction);
+                            });
 
                             //бонусы в обработке - в доступные
                             entry.BonusAccount += entry.HangingBonusAccount;
@@ -383,9 +384,7 @@ namespace Benefit.Services.Admin
                             db.Entry(entry).State = EntityState.Modified;
                         });
 
-                        var transactions = partnerReckons.Select(entry => entry.Transaction).ToList();
                         var transactionsByUserId = transactions.GroupBy(entry => entry.PayeeId);
-
                         var commissionTransactions = new List<Transaction>();
                         foreach (var groupedTransactions in transactionsByUserId)
                         {
