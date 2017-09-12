@@ -76,7 +76,7 @@
                     {
                         <input id="partner-referal" name="CardNumber" type="text" value="@Model.CardNumber" readonly />
                         <a href="@Url.Action("contact_us", new { subject = "Запит на видалення картки/брелка з мого акаунту", body = "Прошу видалити картку номер " + Model.CardNumber + " у зв’язку з:" })" title="Видалити картку" id="remove-card" class="title-to-tooltip">
-                        <i class="glyphicon glyphicon-remove font-red"></i>
+                            <i class="glyphicon glyphicon-remove font-red"></i>
                         </a>
                     }
                 </p>
@@ -150,10 +150,20 @@
         </div>
 
         <div id="security" class="security tab-pane fade">
-            <button class="change_password">змінити пароль</button>
-            <button class="change_pin">змінити пін-код</button>
-            <p class="security_description">Пін-код використовується під час проведення будь-яких фінансових операцій, які пов’язані із використанням бонусів.</p>
-            <p class="security_description">При зміні паролю чи пін-коду необхідно перейти за посиланням, яке буде відправлено компанією на вашу електронну пошту.</p>
+            @using (Html.BeginForm("ChangePassword", "Account", new { area = string.Empty }))
+            {
+                <div class="form-group">
+                    <input name="currentPassword" type="password" placeholder="Поточний пароль" class="form-control width-30" />
+                    <br />
+                    <input name="newPassword" type="password" placeholder="Новий пароль" class="form-control width-30" />
+                    <br />
+                    <button class="btn btn-success">Змінити пароль</button>
+                </div>
+
+            }
+            @*<button class="change_pin">змінити пін-код</button>
+                <p class="security_description">Пін-код використовується під час проведення будь-яких фінансових операцій, які пов’язані із використанням бонусів.</p>
+                <p class="security_description">При зміні паролю чи пін-коду необхідно перейти за посиланням, яке буде відправлено компанією на вашу електронну пошту.</p>*@
         </div>
 
         <div id="change_data" class="change_data tab-pane fade">

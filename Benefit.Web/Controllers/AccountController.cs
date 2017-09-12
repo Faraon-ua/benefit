@@ -9,6 +9,7 @@ using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Domain;
+using Benefit.Web.Helpers;
 using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -656,6 +657,19 @@ namespace Benefit.Web.Controllers
                 }
                 return null;
             }
+        }
+
+        public async Task<ActionResult> ChangePassword(string currentPassword, string newPassword)
+        {
+            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), currentPassword, newPassword);
+            if (result.Succeeded)
+            {
+                TempData["SuccessMessage"] = "Пароль успішно змінено";
+                return RedirectToAction("Profile", "Panel", new { area = DomainConstants.CabinetAreaName });
+            }
+            AddErrors(result);
+            TempData["ErrorMessage"] = ModelState.ModelStateErrors();
+            return RedirectToAction("Profile", "Panel", new { area = DomainConstants.CabinetAreaName });
         }
     }
 }
