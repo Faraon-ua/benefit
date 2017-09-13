@@ -665,10 +665,12 @@ namespace Benefit.Web.Controllers
             if (result.Succeeded)
             {
                 TempData["SuccessMessage"] = "Пароль успішно змінено";
-                return RedirectToAction("Profile", "Panel", new { area = DomainConstants.CabinetAreaName });
             }
-            AddErrors(result);
-            TempData["ErrorMessage"] = ModelState.ModelStateErrors();
+            else
+            {
+                AddErrors(result);
+                TempData["ErrorMessage"] = ModelState.ModelStateErrors();
+            }
             return RedirectToAction("Profile", "Panel", new { area = DomainConstants.CabinetAreaName });
         }
     }

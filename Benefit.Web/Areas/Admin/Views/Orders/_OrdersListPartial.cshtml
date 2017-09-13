@@ -148,7 +148,7 @@
                 @{
                     var now = DateTime.UtcNow;
                 }
-                @if (User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time > now.StartOfMonth().AddMonths(-1))
+                @if (User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time.StartOfMonth().AddMonths(1).AddDays(15) > now)
                 {
                     <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>
                 }
