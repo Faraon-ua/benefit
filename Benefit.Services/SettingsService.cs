@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Runtime.Remoting;
 using Benefit.Domain.Models.Enums;
 
 namespace Benefit.Services
@@ -66,6 +67,17 @@ namespace Benefit.Services
                 get
                 {
                     return ConfigurationManager.AppSettings["PrivatBankCurrenciesApi"];
+                }
+            }
+        }
+
+        public class Telegram
+        {
+            public static string BotToken
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["TelegramBotToken"];
                 }
             }
         }

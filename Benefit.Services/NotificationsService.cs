@@ -4,6 +4,7 @@ using Benefit.Services.ExternalApi;
 using System.Data.Entity;
 using System.Linq;
 using Benefit.Domain.Models;
+using Telegram.Bot;
 
 namespace Benefit.Services
 {
@@ -26,6 +27,12 @@ namespace Benefit.Services
                         {
                             var fbService = new FacebookService();
                             fbService.SendMessage(notificationChannel.Address, message);
+                        } 
+                        //Telegram
+                        if (notificationChannel.ChannelType == NotificationChannelType.Telegram)
+                        {
+                            var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
+                            telegram.SendTextMessageAsync(notificationChannel.Address, message);
                         }
                         //SMS
                         if (notificationChannel.ChannelType == NotificationChannelType.Phone)

@@ -15,6 +15,7 @@ namespace Benefit.CardReader
         private const int PingOnlinePeriod = 15;//minutes
 
         public bool IsConnected { get; set; }
+        public bool IsDeviceConnected { get; set; }
         public BenefitAuthInfo AuthInfo { get; set; }
         public string Token { get; set; }
         public string LicenseKey { get; set; }
@@ -44,7 +45,7 @@ namespace Benefit.CardReader
 
         void timer_Tick(object sender, EventArgs e)
         {
-            if (Token == null || !IsConnected) return;
+            if (Token == null || !IsConnected || !IsDeviceConnected) return;
             var apiService = new ApiService();
             apiService.PingOnline(Token);
         }

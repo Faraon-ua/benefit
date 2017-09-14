@@ -22,6 +22,25 @@ namespace Benefit.Services.Domain
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
+        public bool AddNotificationChannel(string sellerId, string channelAddress, NotificationChannelType channelType)
+        {
+            var seller = db.Sellers.Find(sellerId);
+            if (seller == null) return false;
+            var existingNotification =
+                db.NotificationChannels.FirstOrDefault(
+                    entry => entry.SellerId == sellerId && entry.Address == channelAddress);
+            if (existingNotification != null) return true;
+            var notificationCHannel = new NotificationChannel()
+            {
+                Id = Guid.NewGuid().ToString(),
+                SellerId = sellerId,
+                ChannelType = channelType,
+                Address = channelAddress
+            };
+            db.NotificationChannels.Add(notificationCHannel);
+            db.SaveChanges();
+            return true;
+        }
         public byte[] GenerateIntelHexFile(string password)
         {
             const int bytesInLine = 0x10; //16 bytes

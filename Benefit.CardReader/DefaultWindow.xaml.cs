@@ -28,6 +28,7 @@ namespace Benefit.CardReader
         private SerialPort _serialPort;
         private char[] _readSymbols;
         private Dictionary<ViewType, Control> _controls = new Dictionary<ViewType, Control>();
+        private ViewType ActiveView { get; set; }
         public DefaultWindow()
         {
             InitializeComponent();
@@ -51,10 +52,15 @@ namespace Benefit.CardReader
             ErrorMessage.txtError.Text = errorMessage;
         }
 
-        public void ShowSingleControl(ViewType viewType)
+        public void ShowSingleControl(ViewType? viewType = null, bool track = true)
         {
+            var view = viewType.GetValueOrDefault(ActiveView);
             _controls.Select(entry => entry.Value).ToList().ForEach(entry => entry.Visibility = Visibility.Hidden);
-            _controls[viewType].Visibility = Visibility.Visible;
+            _controls[view].Visibility = Visibility.Visible;
+            if (track)
+            {
+                ActiveView = view;
+            }
         }
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)

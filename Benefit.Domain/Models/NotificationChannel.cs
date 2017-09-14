@@ -6,7 +6,8 @@ namespace Benefit.Domain.Models
     {
         Phone,
         Email,
-        Facebook
+        Facebook,
+        Telegram
     }
     public class NotificationChannel
     {

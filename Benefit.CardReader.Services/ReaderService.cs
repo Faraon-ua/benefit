@@ -72,18 +72,26 @@ namespace Benefit.CardReader.Services
             {
                 try
                 {
+                    if (_serialPort.IsOpen)
+                    {
+                       _serialPort.Close(); 
+                    }
                     _serialPort.PortName = comPort;
                     _serialPort.Open();
 
                     var prefix = CardReaderSettingsService.ReaderHandShakePrefix;
                     var authCode = StringHelper.RandomString(4);
                     var handShakeMessage = prefix + authCode;
+                    readSymbols = new byte[128];
                     _serialPort.Write(handShakeMessage);
+                    var totalDelay = 0;
                     do
                     {
                         Thread.Sleep(100);
-                    } while (readSymbols[0] == 0);
+                        totalDelay += 100;
+                    } while (readSymbols[0] == 0 && totalDelay < 1000);
                     var data = readSymbols.ToList();
+                    readSymbols = new byte[128];
                     var saltedAuthCode = data.GetRange(10, 4);
                     var authCodeSalt = data.GetRange(20, 4);
                     var saltedLicenseKey = data.GetRange(30, 32);

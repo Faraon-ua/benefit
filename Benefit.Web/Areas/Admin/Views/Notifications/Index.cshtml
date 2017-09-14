@@ -87,14 +87,14 @@
             </p>
             @foreach (var fb in Model.Where(entry => entry.ChannelType == NotificationChannelType.Facebook))
             {
-                <div class="well well-sm clearfix">
-                    <span class="col-sm-11">
-                        @fb.Address
-                    </span>
-                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = fb.Id})" class="pull-right">
-                        <i class="icon-remove red"></i>
-                    </a>
-                </div>
+            <div class="well well-sm clearfix">
+                <span class="col-sm-11">
+                    @fb.Address
+                </span>
+                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = fb.Id})" class="pull-right">
+                    <i class="icon-remove red"></i>
+                </a>
+            </div>
             }
         </div>
     </div>
@@ -115,14 +115,14 @@
         <div>
             @foreach (var email in Model.Where(entry => entry.ChannelType == NotificationChannelType.Email))
             {
-                <div class="well well-sm clearfix">
-                    <span class="col-sm-11">
-                        @email.Address
-                    </span>
-                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = email.Id })" class="pull-right">
-                        <i class="icon-remove red"></i>
-                    </a>
-                </div>
+            <div class="well well-sm clearfix">
+                <span class="col-sm-11">
+                    @email.Address
+                </span>
+                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = email.Id })" class="pull-right">
+                    <i class="icon-remove red"></i>
+                </a>
+            </div>
             }
         </div>
     </div>
@@ -143,15 +143,50 @@
         <div>
             @foreach (var phone in Model.Where(entry => entry.ChannelType == NotificationChannelType.Phone))
             {
+            <div class="well well-sm clearfix">
+                <span class="col-sm-11">
+                    @phone.Address
+                </span>
+                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = phone.Id})" class="pull-right">
+                    <i class="icon-remove red"></i>
+                </a>
+            </div>
+            }
+        </div>
+    </div>
+    <div class="col-sm-2">
+    </div>
+    <div class="col-sm-5">
+        <h3 class="row header smaller lighter red">
+            <span class="col-sm-8">
+                <i class="fa fa-telegram"></i>
+                Telegram
+            </span>
+            <span class="col-sm-4">
+                <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Facebook">
+                    <i class="icon-plus bigger-110 icon-only"></i>
+                </a>
+            </span>
+        </h3>
+        <div>
+            <p>
+                Для того, щоб підключити Telegram повідомлення про нові замовлення пройдіть таку нескладну процедуру
+            </p>
+            <p>
+                Відправте повідомлення чат боту <a href="tg://resolve?domain=BenefitCompanyBot">BenefitCompanyBot</a>
+                з цим текстом: @Seller.CurrentAuthorizedSellerId
+            </p>
+            @foreach (var telegram in Model.Where(entry => entry.ChannelType == NotificationChannelType.Telegram))
+            {
                 <div class="well well-sm clearfix">
                     <span class="col-sm-11">
-                        @phone.Address
+                        @telegram.Address
                     </span>
-                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = phone.Id })" class="pull-right">
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = telegram.Id })" class="pull-right">
                         <i class="icon-remove red"></i>
                     </a>
                 </div>
             }
         </div>
-    </div><!-- /span -->
+    </div>
 </div>

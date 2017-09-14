@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
-using Benefit.CardReader.DataTransfer.Offline;
 using Benefit.CardReader.Services;
 using Benefit.CardReader.Services.Factories;
 using Benefit.HttpClient;
@@ -18,8 +17,9 @@ namespace Benefit.CardReader
         private TimeSpan _minLoadTime = new TimeSpan(0, 0, 5);//sec
 
         private const int CheckConnectionPeriod = 15; //seconds
-        private bool checkForDeviceConnection;
-        private DispatcherTimer dispatcherTimer;
+        private const int CheckDevicePeriod = 60; //seconds
+        private DispatcherTimer onlineCheckTimer;
+        private DispatcherTimer deviceCheckTimer;
 
         private DefaultWindow defaultWindow;
         private BenefitHttpClient httpClient;
@@ -41,18 +41,25 @@ namespace Benefit.CardReader
             readerService = new ReaderService();
             readerService.CardReaded += readerService_CardReaded;
             app = (App)Application.Current;
-            dispatcherTimer = new DispatcherTimer();
-            dispatcherTimer.Tick += CheckConnection;
-            dispatcherTimer.Interval = new TimeSpan(0, 0, CheckConnectionPeriod);
-            dispatcherTimer.Start();
+            
+            onlineCheckTimer = new DispatcherTimer();
+            onlineCheckTimer.Tick += CheckConnection;
+            onlineCheckTimer.Interval = new TimeSpan(0, 0, CheckConnectionPeriod);
+            onlineCheckTimer.Start();
+
+            deviceCheckTimer = new DispatcherTimer();
+            deviceCheckTimer.Tick += DeviceCheck;
+            deviceCheckTimer.Interval = new TimeSpan(0, 0, CheckDevicePeriod);
+            deviceCheckTimer.Start();
+        }
+
+        private void DeviceCheck(object sender, EventArgs eventArgs)
+        {
+            SetView();
         }
 
         void CheckConnection(object sender, EventArgs e)
         {
-            if (checkForDeviceConnection)
-            {
-                SetView();
-            }
             var isconnected = httpClient.CheckForInternetConnection();
             ((App)Application.Current).IsConnected = isconnected;
 
@@ -82,14 +89,15 @@ namespace Benefit.CardReader
         {
             //view bar
             var handShake = readerService.HandShake();
-            checkForDeviceConnection = handShake == null;
             if (handShake == null)
             {
+                ((App)Application.Current).IsDeviceConnected = false;
                 //show no device connected
-                defaultWindow.ShowSingleControl(ViewType.DeviceNotConnected);
+                defaultWindow.ShowSingleControl(ViewType.DeviceNotConnected, false);
             }
             else
             {
+                ((App)Application.Current).IsDeviceConnected = true;
                 //get license key from device;
                 app.Token = ReaderFactory.GetReaderManager(app.IsConnected).GetAuthToken(handShake.LicenseKey);
                 app.LicenseKey = handShake.LicenseKey;
@@ -100,7 +108,7 @@ namespace Benefit.CardReader
                 }
                 else
                 {
-                    defaultWindow.ShowSingleControl(ViewType.CashierPartial);
+                    defaultWindow.ShowSingleControl();
                 }
             }
         }
@@ -111,8 +119,12 @@ namespace Benefit.CardReader
         }
         private void readerService_CardReaded(object sender, Common.CustomEventArgs.NfcEventArgs e)
         {
+            //reset timer
+            deviceCheckTimer.Stop();
+            deviceCheckTimer.Start();
             Dispatcher.Invoke(new Action(() => defaultWindow.Show()));
 
+            //auth user
             if (app.AuthInfo.CashierNfc != null)
             {
                 //if returning cashier - log off
