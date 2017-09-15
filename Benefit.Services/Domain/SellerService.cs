@@ -22,14 +22,14 @@ namespace Benefit.Services.Domain
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
-        public bool AddNotificationChannel(string sellerId, string channelAddress, NotificationChannelType channelType)
+        public string AddNotificationChannel(string sellerId, string channelAddress, NotificationChannelType channelType)
         {
             var seller = db.Sellers.Find(sellerId);
-            if (seller == null) return false;
+            if (seller == null) return null;
             var existingNotification =
                 db.NotificationChannels.FirstOrDefault(
                     entry => entry.SellerId == sellerId && entry.Address == channelAddress);
-            if (existingNotification != null) return true;
+            if (existingNotification != null) return seller.Name;
             var notificationCHannel = new NotificationChannel()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -39,7 +39,7 @@ namespace Benefit.Services.Domain
             };
             db.NotificationChannels.Add(notificationCHannel);
             db.SaveChanges();
-            return true;
+            return seller.Name;
         }
         public byte[] GenerateIntelHexFile(string password)
         {

@@ -23,10 +23,11 @@ namespace Benefit.Web.Controllers.API
             var message = update.Message;
             if (message.Type.Equals(MessageType.TextMessage))
             {
-                if (SellerService.AddNotificationChannel(message.Text, message.Chat.Id.ToString(),
-                    NotificationChannelType.Telegram))
+                var result = SellerService.AddNotificationChannel(message.Text, message.Chat.Id.ToString(),
+                    NotificationChannelType.Telegram);
+                if (result != null)
                 {
-                    await _bot.SendTextMessageAsync(message.Chat.Id, "Telegram сповіщення успішно увімкненно");
+                    await _bot.SendTextMessageAsync(message.Chat.Id, "Telegram сповіщення успішно увімкненно для " + result);
                 }
                 else
                 {
