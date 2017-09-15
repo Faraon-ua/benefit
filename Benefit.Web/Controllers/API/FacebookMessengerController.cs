@@ -3,8 +3,6 @@ using System.Web.Http;
 using Benefit.Services;
 using Benefit.Services.ExternalApi;
 using System;
-using System.Linq;
-using Benefit.Domain.DataAccess;
 
 namespace Benefit.Web.Controllers.API
 {

@@ -42,11 +42,11 @@ namespace Benefit.Services
                         //Email
                         if (notificationChannel.ChannelType == NotificationChannelType.Email)
                         {
-                            message = string.Format(
+                            var emailMessage = string.Format(
                                 "Доброго дня. Ви отримали замовлення №{0} на сайті benefit-company.com. Щоб обробити його перейдіть за посиланням <a href='{1}'>{1}</a>.",
                                 orderNumber, orderUrl);
                             var mailService = new EmailService();
-                            mailService.SendEmail(notificationChannel.Address, message, "Нове замовлення на сайті benefit-company.com");
+                            mailService.SendEmail(notificationChannel.Address, emailMessage, "Нове замовлення на сайті benefit-company.com");
                         }
                     }
                 }
