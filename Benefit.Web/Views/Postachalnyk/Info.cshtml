@@ -233,7 +233,8 @@
             @Html.Partial("_ReviewsPartial", new ReviewsViewModel
             {
                 AvarageRating = Model.Seller.AvarageRating ?? default(int),
-                CanReview = Model.CanReview,
+//                CanReview = Model.CanReview,
+                CanReview = true,
                 SellerId = Model.Seller.Id,
                 TargetName = Model.Seller.Name,
                 Reviews = Model.Seller.ApprovedReviews

@@ -13,6 +13,11 @@
     {
         sellerOptions.Append("BenefitCard");
     }
+    if (Model.HasEcommerce)
+    {
+        sellerOptions.Append(",");
+        sellerOptions.Append("BenefitOnline");
+    }
     if (Model.IsBonusesPaymentActive)
     {
         sellerOptions.Append(",");
@@ -40,13 +45,13 @@
         <div class="provider_main_info">
             <div class="provider_bonus_label">@(Model.UserDiscount)%<br>бонус</div>
 
-            <div class="provider_img_wrap">
+            <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new {id = Model.UrlName, action = string.Empty})" class="provider_img_wrap" title="@Model.Name">
                 @{
                     var logo = Model.Images.FirstOrDefault(entry => entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo);
                     var logoUrl = logo == null ? "" : logo.ImageUrl;
                 }
                 <img src="~/Images/SellerLogo/@logoUrl" alt="@Model.Name">
-            </div>
+            </a>
             <p class="provider_name">@Model.Name</p>
             @{
                 var specifics = Model.SellerCategories.FirstOrDefault(entry => entry.IsDefault);

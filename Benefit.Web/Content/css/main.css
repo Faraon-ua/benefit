@@ -3388,6 +3388,7 @@ li:last-child .expand {
 
 .provider_img_wrap {
     height: 111px;
+    display: block;
 }
 
 .provider_type {

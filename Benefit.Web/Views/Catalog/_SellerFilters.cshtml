@@ -41,23 +41,29 @@
             </strong>
         </div>
         <div>
+            @{
+                var allItems = Model.Items.Union(Model.CurrentRegionItems);
+            }
             @if (regionId != RegionConstants.AllUkraineRegionId)
             {
                 <input class="hidden" type="checkbox" name="seller-options" value="MyCityOnly" id="MyCityOnly">
-                <label class="label_for_check" for="MyCityOnly">Тільки моє місто (@Model.Items.Count(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)))</label>
+                <label class="label_for_check" for="MyCityOnly">Тільки моє місто (@allItems.Count(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)))</label>
             }
 
             <input class="hidden" type="checkbox" name="seller-options" value="BenefitCard" id="BenefitCard">
-            <label class="label_for_check" for="BenefitCard">Benefit Card (@Model.Items.Count(entry => entry.IsBenefitCardActive))</label>
+            <label class="label_for_check" for="BenefitCard">Benefit Card (@allItems.Count(entry => entry.IsBenefitCardActive))</label>
+
+            <input class="hidden" type="checkbox" name="seller-options" value="BenefitOnline" id="BenefitOnline">
+            <label class="label_for_check" for="BenefitOnline">Benefit Online (@allItems.Count(entry => entry.HasEcommerce))</label>
 
             <input class="hidden" type="checkbox" name="seller-options" value="FreeShipping" id="FreeShipping">
-            <label class="label_for_check" for="FreeShipping">Безкоштовна доставка (@Model.Items.Count(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom != null)))</label>
+            <label class="label_for_check" for="FreeShipping">Безкоштовна доставка (@allItems.Count(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom != null)))</label>
 
             <input class="hidden" type="checkbox" name="seller-options" value="Acquiring" id="BankCard">
-            <label class="label_for_check" for="BankCard">Оплата карткою (@Model.Items.Count(entry => entry.IsAcquiringActive))</label>
+            <label class="label_for_check" for="BankCard">Оплата карткою (@allItems.Count(entry => entry.IsAcquiringActive))</label>
 
             <input class="hidden" type="checkbox" name="seller-options" value="BonusPayment" id="BonusPayment">
-            <label class="label_for_check" for="BonusPayment">Використати бонуси (@Model.Items.Count(entry => entry.IsBonusesPaymentActive))</label>
+            <label class="label_for_check" for="BonusPayment">Використати бонуси (@allItems.Count(entry => entry.IsBonusesPaymentActive))</label>
         </div>
     </div>
 </div>
