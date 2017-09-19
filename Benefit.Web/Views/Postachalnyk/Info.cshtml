@@ -177,7 +177,7 @@
                 @if (Model.Seller.Reviews.Any())
                 {
                     <span class="badge badge-danger">
-                        @Model.Seller.Reviews.Count(entry => entry.ReviewId == null)
+                        @Model.Seller.Reviews.Count(entry => entry.ReviewId == null && entry.IsActive)
                     </span>
                 }
             </a>

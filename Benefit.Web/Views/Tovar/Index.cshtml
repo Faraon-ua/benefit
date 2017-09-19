@@ -236,7 +236,15 @@
         <ul class="tab_menu nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#product_descr_tab">Опис</a></li>
             <li><a data-toggle="tab" href="#product_charachters_tab">Характеристики</a></li>
-            <li><a data-toggle="tab" href="#prodact_recall">Відгуки</a></li>
+            <li><a data-toggle="tab" href="#prodact_recall">
+                Відгуки
+                    @if (Model.Product.Reviews.Any())
+                    {
+                        <span class="badge badge-danger">
+                            @Model.Product.Reviews.Count(entry => entry.ReviewId == null && entry.IsActive)
+                        </span>
+                    }
+            </a></li>
             <li><a data-toggle="tab" href="#product_shipping">Доставка</a></li>
         </ul>
 
