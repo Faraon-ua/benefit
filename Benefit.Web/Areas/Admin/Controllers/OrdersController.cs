@@ -104,6 +104,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     orders = orders.Where(entry => entry.OrderNumber == ordersFilters.OrderNumber);
                 }
             }
+            if (ordersFilters.ClientGrouping)
+            {
+                var groupedOrders = orders.GroupBy(entry => entry.UserId).OrderByDescending(entry => entry.Count()).ToList();
+                orders = groupedOrders.SelectMany(entry => entry.OrderByDescending(grp => grp.Time)).AsQueryable();
+            }
             var ordersTotal = orders.Count();
             ordersFilters.Sum = orders.Select(l => l.Sum).DefaultIfEmpty(0).Sum();
             ordersFilters.Number = orders.Count();

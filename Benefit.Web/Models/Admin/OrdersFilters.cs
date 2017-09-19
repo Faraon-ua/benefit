@@ -21,6 +21,7 @@ namespace Benefit.Web.Models.Admin
         public string PersonnelName { get; set; }
         public string ClientName { get; set; }
         public string DateRange { get; set; }
+        public bool ClientGrouping { get; set; }
         public string SellerId { get; set; }
         public OrderType NavigationType { get; set; }
         public IEnumerable<SelectListItem> Sellers { get; set; }

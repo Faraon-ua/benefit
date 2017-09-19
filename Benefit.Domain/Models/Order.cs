@@ -29,6 +29,7 @@ namespace Benefit.Domain.Models
         BenefitSite,
         BenefitCard 
     }
+
     public class Order
     {
         public Order()

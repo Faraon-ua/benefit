@@ -157,16 +157,30 @@
                     <h1 class="no-padding-bottom">Статус</h1>
                 </div>
                 <ul style="list-style-type: none; margin: 0;">
-                    @foreach (Enum status in Enum.GetValues(typeof (OrderStatus)))
+                    @foreach (Enum status in Enum.GetValues(typeof(OrderStatus)))
                     {
                         <li>
                             @{
-                                var statusName = Enumerations.GetEnumDescription(status);
+                        var statusName = Enumerations.GetEnumDescription(status);
                             }
-                            <input type="checkbox" name="StatusChk" value="@status" @(Model.Status.Contains(status.ToString()) ? "checked" : "")/>
+                            <input type="checkbox" name="StatusChk" value="@status" @(Model.Status.Contains(status.ToString()) ? "checked" : "") />
                             <label for="@status">@statusName</label>
                         </li>
                     }
+                </ul>
+            </div>
+        }
+        @if (!string.IsNullOrEmpty(Model.DateRange))
+        {
+            <div class="col-md-3">
+                <div class="page-header no-padding-bottom">
+                    <h1 class="no-padding-bottom">Додаткові опції</h1>
+                </div>
+                <ul style="list-style-type: none; margin: 0;">
+                    <li>
+                        @Html.CheckBoxFor(m => m.ClientGrouping)
+                        <label for="ClientGrouping">Групувати за клієнтом</label>
+                    </li>
                 </ul>
             </div>
         }
