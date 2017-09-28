@@ -41,7 +41,7 @@ namespace Benefit.CardReader
             readerService = new ReaderService();
             readerService.CardReaded += readerService_CardReaded;
             app = (App)Application.Current;
-            
+
             onlineCheckTimer = new DispatcherTimer();
             onlineCheckTimer.Tick += CheckConnection;
             onlineCheckTimer.Interval = new TimeSpan(0, 0, CheckConnectionPeriod);
@@ -53,10 +53,52 @@ namespace Benefit.CardReader
             deviceCheckTimer.Start();
         }
 
+        #region helper methods
+
         private void DeviceCheck(object sender, EventArgs eventArgs)
         {
             SetView();
         }
+
+        private bool ProcessAuthCashier(string nfcCode)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
+            }));
+            var cashierSeller = ReaderFactory.GetReaderManager(app.IsConnected).AuthCashier(nfcCode);
+            if (cashierSeller != null)
+            {
+                app.AuthInfo.CashierNfc = nfcCode;
+                app.AuthInfo.CashierName = cashierSeller.CashierName;
+                app.AuthInfo.SellerName = cashierSeller.SellerName;
+
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    defaultWindow.UserAuthPartial.SellerName.Text = cashierSeller.SellerName;
+                    defaultWindow.UserAuthPartial.CashierName.Text = cashierSeller.CashierName;
+                    defaultWindow.ShowSingleControl(ViewType.UserAuthPartial);
+                    defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
+                    defaultWindow.TransactionPartial.txtBillNumber.Visibility = cashierSeller.ShowBill
+                        ? Visibility.Visible
+                        : Visibility.Collapsed;
+                }));
+                return true;
+            }
+            else
+            {
+                Dispatcher.Invoke(new Action(() =>
+                {
+                    defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
+                    defaultWindow.ShowErrorMessage("Картка касира не активована");
+                }));
+            }
+            return false;
+        }
+
+        #endregion
+
+        
 
         void CheckConnection(object sender, EventArgs e)
         {
@@ -162,47 +204,21 @@ namespace Benefit.CardReader
                     }
                     else
                     {
-                        Dispatcher.Invoke(new Action(() =>
+                        if (!ProcessAuthCashier(e.NfcCode))
                         {
-                            defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
-                            defaultWindow.ShowErrorMessage("Картка клієнта не активована");
-                        }));
+                            Dispatcher.Invoke(new Action(() =>
+                            {
+                                defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
+                                defaultWindow.ShowErrorMessage("Картка клієнта не активована");
+                            }));
+                        }
                     }
                 }
             }
             //auth cashier
             else if (app.Token != null)
             {
-                Dispatcher.Invoke(new Action(() =>
-                {
-                    defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
-                }));
-                var cashierSeller = ReaderFactory.GetReaderManager(app.IsConnected).AuthCashier(e.NfcCode);
-                if (cashierSeller != null)
-                {
-                    app.AuthInfo.CashierNfc = e.NfcCode;
-                    app.AuthInfo.CashierName = cashierSeller.CashierName;
-                    app.AuthInfo.SellerName = cashierSeller.SellerName;
-
-                    Dispatcher.Invoke(new Action(() =>
-                    {
-                        defaultWindow.UserAuthPartial.SellerName.Text = cashierSeller.SellerName;
-                        defaultWindow.UserAuthPartial.CashierName.Text = cashierSeller.CashierName;
-                        defaultWindow.ShowSingleControl(ViewType.UserAuthPartial);
-                        defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
-                        defaultWindow.TransactionPartial.txtBillNumber.Visibility = cashierSeller.ShowBill
-                            ? Visibility.Visible
-                            : Visibility.Collapsed;
-                    }));
-                }
-                else
-                {
-                    Dispatcher.Invoke(new Action(() =>
-                    {
-                        defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
-                        defaultWindow.ShowErrorMessage("Картка касира не активована");
-                    }));
-                }
+                ProcessAuthCashier(e.NfcCode);
             }
         }
 

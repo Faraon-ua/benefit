@@ -33,7 +33,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 ModelState["NFCCardNumber"].Errors.Clear();    
             }
-
+            if (db.Personnels.Any(entry => entry.NFCCardNumber == personnel.NFCCardNumber))
+            {
+                ModelState.AddModelError("NFCCardNumber", "Дана картка вже зайнята");
+            }
             if (ModelState.IsValid)
             {
                 db.Personnels.Add(personnel);
