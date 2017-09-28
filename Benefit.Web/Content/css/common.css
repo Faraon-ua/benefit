@@ -1,4 +1,18 @@
-﻿.tooltip-inner {
+﻿.x-pseudo-link {
+    display: inline;
+    color: #0670eb;
+    border-bottom: 1px dashed;
+    cursor: pointer;
+}
+.x-pseudo-link:hover {
+    border-bottom: none;
+    text-decoration: none;
+}
+.green {
+    color: #69aa46 !important;
+}
+
+.tooltip-inner {
     background: white;
     border: 1px solid black;
     color: black;

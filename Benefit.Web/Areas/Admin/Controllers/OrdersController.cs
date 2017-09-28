@@ -16,7 +16,6 @@ using Benefit.Web.Helpers;
 using Benefit.Web.Models.Admin;
 using NLog;
 
-
 namespace Benefit.Web.Areas.Admin.Controllers
 {
     [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName + ", " + DomainConstants.SellerOperatorRoleName)]

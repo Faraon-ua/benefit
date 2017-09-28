@@ -32,6 +32,7 @@ logs/
 obj/
 TestResults/
 Images/
+Benefit.Web/Data/
 ###################
 # Web publish log #
 ###################

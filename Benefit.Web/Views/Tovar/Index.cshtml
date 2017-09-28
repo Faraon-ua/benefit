@@ -48,6 +48,11 @@
                 interval: 3000
             });
 
+            $("#wholesalePices").click(function () {
+                $(this).next("p").show();
+                $(this).hide();
+            });
+
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
             var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
             var sellerId = '@Model.Product.SellerId';
@@ -169,10 +174,23 @@
                 <p class="product_description_price">
                     <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
                 </p>
-                <div class="product_description">
-                    @*                    <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>*@
+                @if (Model.Product.WholesalePrice.HasValue)
+                {
+                    <div>
+                        <a class="x-pseudo-link" id="wholesalePices">Оптові ціни</a>
+                        <p style="display: none;">
+                            <span>@Model.Product.WholesalePrice грн</span>
+                            <span>.........................</span>
+                            <span>від @Model.Product.WholesaleFrom шт.</span>
+                        </p>
+                    </div>
+
+                }
+
+               @* <div class="product_description">
+                    <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>
                     <a href="#product_descr_tab">Детальніше</a>
-                </div>
+                </div>*@
 
                 <div class="product_description_control_wrap pull-right">
                     @*<div class="product_description_like"></div>
@@ -236,15 +254,17 @@
         <ul class="tab_menu nav nav-tabs">
             <li class="active"><a data-toggle="tab" href="#product_descr_tab">Опис</a></li>
             <li><a data-toggle="tab" href="#product_charachters_tab">Характеристики</a></li>
-            <li><a data-toggle="tab" href="#prodact_recall">
-                Відгуки
+            <li>
+                <a data-toggle="tab" href="#prodact_recall">
+                    Відгуки
                     @if (Model.Product.Reviews.Any())
                     {
                         <span class="badge badge-danger">
                             @Model.Product.Reviews.Count(entry => entry.ReviewId == null && entry.IsActive)
                         </span>
                     }
-            </a></li>
+                </a>
+            </li>
             <li><a data-toggle="tab" href="#product_shipping">Доставка</a></li>
         </ul>
 
@@ -283,7 +303,7 @@
                 @Html.Partial("_ReviewsPartial", new ReviewsViewModel
                 {
                     AvarageRating = Model.Product.AvarageRating ?? default(int),
-//                    CanReview = Model.CanReview,
+                    //                    CanReview = Model.CanReview,
                     CanReview = true,
                     ProductId = Model.Product.Id,
                     TargetName = Model.Product.Name,

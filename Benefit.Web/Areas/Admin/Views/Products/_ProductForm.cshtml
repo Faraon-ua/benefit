@@ -35,6 +35,20 @@
             @Html.ValidationMessageFor(model => model.Price)
         </div>
     </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Оптова Ціна</label>
+        <div class="col-md-9">
+            @Html.TextBox("WholesalePrice", Model.WholesalePrice == null ? null : Model.WholesalePrice.Value.ToString("F"), new {@class = "col-sm-1 pull-left"})
+            @Html.ValidationMessageFor(model => model.WholesalePrice)
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Опт від</label>
+        <div class="col-md-9">
+            @Html.TextBox("WholesaleFrom", Model.WholesaleFrom == null ? null : Model.WholesaleFrom.Value.ToString(), new { @class = "col-sm-1 pull-left" }) шт
+            @Html.ValidationMessageFor(model => model.WholesaleFrom)
+        </div>
+    </div>
 
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Доступна кількість</label>
@@ -79,7 +93,7 @@
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Порядок</label>
         <div class="col-sm-9">
-            @Html.TextBoxFor(model => model.Order, new { @class = "col-xs-4 col-sm-2", type="number" })
+            @Html.TextBoxFor(model => model.Order, new { @class = "col-xs-4 col-sm-2", type = "number" })
             @Html.ValidationMessageFor(model => model.Order)
         </div>
     </div>
@@ -110,13 +124,13 @@
             <input type="text" name="SearchTags" id="SearchTags" value="@Model.SearchTags" placeholder="Пошукові теги (через кому)" />
         </div>
     </div>
-    
+
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Альтернативний текст зображень</label>
         <div class="col-xs-10 col-sm-5">
             @Html.TextBoxFor(model => model.AltText, new { @class = "width-100" })
         </div>
-    </div> 
+    </div>
 
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Короткий опис (для пошуку - до 160 символів)</label>

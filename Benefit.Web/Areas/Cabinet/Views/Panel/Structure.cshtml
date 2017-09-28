@@ -30,7 +30,8 @@
                                 totalPartnersTurnover += points;
                             }
                         });
-                        $("#totalPartnersTurnover").text(totalPartnersTurnover);
+                        totalPartnersTurnover += @Model.PointsAccount
+                        $("#totalPartnersTurnover").text(totalPartnersTurnover.toFixed(2));
                         //show promotions tabs
                         var allPartnerIds = $(".structure_table_wrap li").map(function() {
                             return { "Id": $(this).attr("id"), "Level": $(this).attr("class").replace(/^\D+/g, '') }

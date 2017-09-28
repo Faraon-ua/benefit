@@ -4550,6 +4550,12 @@ li:last-child .expand {
     text-align: right;
 }
 
+.basket_modal_saving {
+    text-align: right;
+    font-weight: 700;
+    color: #669900;
+}
+
 .goto_back,
 .goto_back:hover,
 .goto_back:active,

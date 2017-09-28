@@ -25,7 +25,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     .Include(entry => entry.MappedCategories)
                     .FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
             var cats =
-                seller.SellerCategories.SelectMany(entry=>seller.MappedCategories).ToList();
+                seller.SellerCategories.SelectMany(entry => seller.MappedCategories)
+                    .Union(seller.SellerCategories.Select(entry => entry.Category))
+                    .ToList();
             ViewBag.Categories =
                 cats.Select(entry => new SelectListItem() { Text = entry.Name, Value = entry.Id }).ToList();
 

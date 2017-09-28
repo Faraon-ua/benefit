@@ -22,6 +22,10 @@ namespace Benefit.Domain.Models
         public string ProductId { get; set; }
         public string ProductName { get; set; }
         public double ProductPrice { get; set; }
+        [NotMapped]
+        public double? WholesaleProductPrice { get; set; }
+        [NotMapped]
+        public double? WholesaleFrom { get; set; }
         public double Amount { get; set; }
         public int Index { get; set; }
         [NotMapped]
@@ -30,6 +34,19 @@ namespace Benefit.Domain.Models
         public bool IsWeightProduct { get; set; }
         [NotMapped]
         public ICollection<OrderProductOption> OrderProductOptions { get; set; }
+
+        [NotMapped]
+        public double ActualPrice
+        {
+            get
+            {
+                if (WholesaleFrom.HasValue && WholesaleProductPrice.HasValue && Amount >= WholesaleFrom.Value)
+                {
+                    return WholesaleProductPrice.Value;
+                }
+                return ProductPrice;
+            }
+        }
         [NotMapped]
         public ICollection<OrderProductOption> DbOrderProductOptions
         {

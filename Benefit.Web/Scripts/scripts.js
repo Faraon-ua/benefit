@@ -477,7 +477,11 @@ $(document).ready(function() {
 
     /*product_modal_amount*/
     $('body').on('click', '.product_modal_plus, .product_modal_minus', function () {
+        var tr = $(this).parents("tr");
         var productAmount = $(this).parent().children('.product_modal_amount');
+        var retailPrice = parseFloat(tr.attr('data-original-price'));
+        var wholesalePrice = parseFloat(tr.attr('data-wholesale-price'));
+        var wholesaleAmount = parseFloat(tr.attr('data-wholesale-from'));
         var valueToAdd = 1;
         var isMinus = $(this).hasClass("product_modal_minus");
         var isWeightProduct = false;
@@ -498,6 +502,22 @@ $(document).ready(function() {
             productCurrentValue = productCurrentValue.toFixed(1);
         }
         productAmount.val(productCurrentValue);
+
+        if (wholesaleAmount !== 0) {
+            if (productCurrentValue >= wholesaleAmount) {
+                tr.find(".wholesale-hint").hide();
+                $(".basket_modal_saving").show();
+                tr.find(".actual-product-price").text(wholesalePrice.toFixed(2));
+                tr.find(".old-product-price").show();
+                tr.find(".old-product-total").show();
+            } else {
+                $(".basket_modal_saving").hide();
+                tr.find(".wholesale-hint").show();
+                tr.find(".actual-product-price").text(retailPrice.toFixed(2));
+                tr.find(".old-product-price").hide();
+                tr.find(".old-product-total").hide();
+            }
+        }
         CalculateCartSum();
     });
 

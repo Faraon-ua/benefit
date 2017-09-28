@@ -57,7 +57,12 @@ namespace Benefit.Services.Cart
                         db.Products.Include(entry => entry.Currency)
                             .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
                     orderProduct.ProductName = product.Name;
-                    orderProduct.ProductPrice = (double)(product.Price * product.Currency.Rate);
+                    orderProduct.ProductPrice = product.Price * product.Currency.Rate;
+                    if (product.WholesalePrice.HasValue && product.WholesaleFrom.HasValue)
+                    {
+                        orderProduct.WholesaleProductPrice = product.WholesalePrice.Value * product.Currency.Rate;
+                        orderProduct.WholesaleFrom = product.WholesaleFrom.Value;
+                    }
                     foreach (var orderProductOption in orderProduct.OrderProductOptions)
                     {
                         var productOption = db.ProductOptions.Find(orderProductOption.ProductOptionId);
@@ -105,7 +110,12 @@ namespace Benefit.Services.Cart
                 {
                     result.ProductsNumber += (int)product.Amount;
                 }
-                result.Price += product.ProductPrice*product.Amount + (product.OrderProductOptions.Sum(entry=>entry.ProductOptionPriceGrowth * entry.Amount));
+                var productTotal = (product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue &&
+                                    product.Amount >= product.WholesaleFrom.Value)
+                    ? product.WholesaleProductPrice.Value
+                    : product.ProductPrice;
+
+                result.Price += productTotal * product.Amount + (product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount));
             }
             return result;
         }

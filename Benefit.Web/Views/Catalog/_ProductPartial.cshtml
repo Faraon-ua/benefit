@@ -41,6 +41,10 @@
         <div class="product_price">
             @*            <span class="old_price">80,40</span>*@
             @Model.Product.Price грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
+            @if (Model.Product.WholesalePrice.HasValue)
+            {
+                <span class="green">| @Model.Product.WholesalePrice.Value.ToString() грн/опт</span>
+            }
         </div>
         <div class="product_control_wrap">
             <div class="product_like product_like_red"></div>

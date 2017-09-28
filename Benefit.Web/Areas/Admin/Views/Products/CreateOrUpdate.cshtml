@@ -90,8 +90,8 @@
             $(".chosen-select").chosen({
                 search_contains: true
             });
-            $('#Price').mask("#0.00", { reverse: true });
-            $('#SKU').mask("#");
+            $('#Price, #WholesalePrice').mask("#0.00", { reverse: true });
+            $('#SKU, #WholesaleFrom').mask("#");
             $('#Amount').mask("#");
 
             $("#amountSwitcher").change(function () {

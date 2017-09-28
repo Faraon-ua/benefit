@@ -68,20 +68,28 @@ function deleteCookie(name) {
 
 function CalculateCartSum() {
     var products = $(".basket_modal tr.basket_modal_table_row.product").map(function () {
-        //", tr.basket_modal_table_row.option product-total-price"
-        var price = parseFloat($(this).attr("data-original-price"));
+        var actualPrice = parseFloat($(this).find(".actual-product-price").text());
+        var oldPrice = parseFloat($(this).attr("data-original-price"));
         var amount = parseFloat($(this).find(".product_modal_amount").val());
         var productOptionSum = $(this).nextUntil(".product").map(function () {
             var optionPrice = parseFloat($(this).attr("data-original-price"));
             var optionAmount = parseFloat($(this).find(".product_modal_amount").val());
             return optionPrice * optionAmount;
         }).get();
-        var productSum = price * amount + productOptionSum.reduce(function (pv, cv) { return pv + cv; }, 0);
-        $(this).find(".product-total-price").text(productSum.toFixed(2));
-        return productSum;
+        var actualProductSum = actualPrice * amount + productOptionSum.reduce(function (pv, cv) { return pv + cv; }, 0);
+        var oldProductSum = oldPrice * amount + productOptionSum.reduce(function (pv, cv) { return pv + cv; }, 0);
+        $(this).find(".actual-product-total").text(actualProductSum.toFixed(2));
+        $(this).find(".old-product-total").text(oldProductSum.toFixed(2));
+        return { actual: actualProductSum, old: oldProductSum };
     }).get();
-    var sum = products.reduce(function (pv, cv) { return pv + cv; }, 0);
-    $(".basket_modal_price span").text(sum.toFixed(2));
+    var actualSum = products.reduce(function (pv, cv) {
+        return pv + cv.actual;
+    }, 0);
+    $(".basket_modal_price span").text(actualSum.toFixed(2));
+    var oldSum = products.reduce(function (pv, cv) { return pv + cv.old; }, 0);
+    if (oldSum > actualSum) {
+        $(".basket_modal_saving span").text((oldSum - actualSum).toFixed(2));
+    }
 }
 
 function processRating(ratingStars, e, isClick) {
@@ -147,7 +155,7 @@ $(function () {
 
     $('input:checkbox').prop('checked', false);
 
-    $(document).keyup(function(e) {
+    $(document).keyup(function (e) {
         if (e.keyCode == 27) {
             $(".modal").modal("hide");
         }
