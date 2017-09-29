@@ -34,6 +34,11 @@ namespace Benefit.Services.Domain
             order.Id = Guid.NewGuid().ToString();
             var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
             order.OrderNumber = orderNumber + 1;
+            //handle wholesale prices
+            foreach (var orderProduct in order.OrderProducts)
+            {
+                orderProduct.ProductPrice = orderProduct.ActualPrice;
+            }
 
             order.Sum = order.GetOrderSum();
             order.Description = model.Comment;

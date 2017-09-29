@@ -19,7 +19,7 @@
                 @{
                     var total = Model.Order.OrderProducts.Sum(
                         entry =>
-                            entry.ProductPrice * entry.Amount +
+                            entry.ActualPrice * entry.Amount +
                             entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
                 }
                 <td id="order-total">@total.ToString("F")</td>

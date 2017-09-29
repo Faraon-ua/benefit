@@ -44,7 +44,7 @@
             var options = "";
             @if (Model.Category != null)
             {<text>
-            if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
+            if (lastSegment.toLowerCase().replace('#', '') != '@Model.Category.UrlName.ToLower()') {
                 options = lastSegment;
                 $.each(options.split(";"), function (i, urlSegment) {
                     if (urlSegment === "") return;

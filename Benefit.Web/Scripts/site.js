@@ -196,7 +196,7 @@ $(function () {
     });
 
     $("body").on("click", "#complete-order", function () {
-        var btn = $(this)
+        var btn = $(this);
         btn.attr("disabled", "disabled");
         var products = $("#cart-container tr.basket_modal_table_row.product").map(function () {
             var id = $(this).attr("data-product-id");
