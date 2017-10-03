@@ -17,5 +17,8 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string UserId { get; set; }
         public ApplicationUser User { get; set; }
+        [MaxLength(128)]
+        public string ReferalUserId { get; set; }
+        public ApplicationUser ReferalUser { get; set; }
     }
 }

@@ -100,7 +100,8 @@
             @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
         }
     }
-    else
+
+    @if (!Model.Items.Any() && !Model.CurrentRegionItems.Any())
     {
         <div style="text-align-last: left;">
             @{

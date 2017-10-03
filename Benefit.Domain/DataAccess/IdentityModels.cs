@@ -104,6 +104,14 @@ namespace Benefit.Domain.DataAccess
             modelBuilder.Entity<Category>()
                   .HasOptional<Seller>(s => s.Seller)
                   .WithMany(s => s.MappedCategories).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<BenefitCard>()
+               .HasOptional<ApplicationUser>(s => s.User)
+               .WithMany(s => s.BenefitCards).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<BenefitCard>()
+               .HasOptional<ApplicationUser>(s => s.ReferalUser)
+               .WithMany(s => s.ReferedBenefitCards).WillCascadeOnDelete(false);
         }
 
         public override int SaveChanges()

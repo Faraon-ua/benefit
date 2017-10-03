@@ -1,6 +1,4 @@
-﻿@using System.Web.UI.WebControls
-@using Benefit.Domain.Models
-@model Benefit.Domain.Models.ApplicationUser
+﻿@model Benefit.Domain.Models.ApplicationUser
 
 @{
     ViewBag.Title = "Профіль";
@@ -9,7 +7,7 @@
 }
 @section scripts
 {
-
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
     <script src="~/Scripts/address.js"></script>
     <script>
@@ -45,6 +43,7 @@
         <li><a data-toggle="tab" href="#address">Адреси доставки</a></li>
         <li><a data-toggle="tab" href="#security">Безпека</a></li>
         <li><a data-toggle="tab" href="#change_data">Зміна даних</a></li>
+        <li><a data-toggle="tab" href="#registered-cards">Мої реєстраційні карти</a></li>
     </ul>
 
     <div class="tab-content">
@@ -172,6 +171,9 @@
 Та вкажіть причину зміни." name="message"></textarea>
                 <button class="request_change_data" type="submit">Подати запит на зміну персональних даних</button>
             </form>
+        </div>
+        <div id="registered-cards" class="tab-pane fade">
+            @Html.Action("RegisteredCards", "BenefitFamily", new { id = Model.Id })
         </div>
     </div>
 </div>

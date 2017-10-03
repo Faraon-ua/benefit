@@ -10,7 +10,7 @@
 
     <script>
         var updateWeightProductUrl = '@Url.Action("UpdateWeightProduct")';
-        
+
         $(function () {
             $(".chosen-select").chosen({
                 search_contains: true
@@ -34,7 +34,7 @@
                 {
                     id: id,
                     isWeight: checked
-                }, function() {
+                }, function () {
                     product.removeAttr("disabled");
                 });
             });
@@ -109,6 +109,14 @@
             </div>
 
             @Html.Partial("_ProductsSearch", Model.Products)
+
+            @if (Model.Products.Any())
+            {
+                <div class="page-header">
+                    <h2 class="no-padding-bottom pull-left">Товарів знайдено:</h2>
+                    <h2 class="orange">@Model.TotalProductsCount</h2>
+                </div>
+            }
 
             @Html.Hidden("Page", 1)
             <div class="table-responsive">

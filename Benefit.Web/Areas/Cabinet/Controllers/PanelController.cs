@@ -11,6 +11,7 @@ using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Domain;
+using Benefit.Web.Areas.Cabinet.Models;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 

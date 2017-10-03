@@ -38,7 +38,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             int resultsCount = 0;
             if (filters.HasValues || Seller.CurrentAuthorizedSellerId != null)
             {
-                IQueryable<Product> products = db.Products.AsQueryable();
+                IQueryable<Product> products = db.Products.Include(entry=>entry.Images).AsQueryable();
                 if (!string.IsNullOrEmpty(filters.CategoryId))
                 {
                     var categoryIds = new List<string>();
@@ -60,6 +60,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (filters.IsAvailable)
                 {
                     products = products.Where(entry => entry.AvailableAmount == null || entry.AvailableAmount > 0);
+                }
+                if (filters.HasImage)
+                {
+                    products = products.Where(entry => entry.Images.Any());
                 }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {
@@ -105,6 +109,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
             var productsViewModel = new ProductsViewModel()
             {
+                TotalProductsCount = resultsCount,
                 Products = resultProducts,
                 ProductFilters = new ProductFilters
                 {

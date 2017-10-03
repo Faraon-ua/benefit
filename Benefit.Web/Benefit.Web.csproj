@@ -264,6 +264,7 @@
     <Compile Include="Areas\Cabinet\Controllers\BasePartnerController.cs" />
     <Compile Include="Areas\Cabinet\Controllers\BenefitFamilyController.cs" />
     <Compile Include="Areas\Cabinet\Controllers\PanelController.cs" />
+    <Compile Include="Areas\Cabinet\Models\RegisteredCardsViewModel.cs" />
     <Compile Include="Attributes\CustomAuthorization.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\API\FacebookMessengerController.cs" />
@@ -1188,6 +1189,7 @@
     <Content Include="Areas\Admin\Views\Notifications\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\PromotionDetails.cshtml" />
     <Content Include="Areas\Admin\Views\Users\_StatusPartial.cshtml" />
+    <Content Include="Areas\Cabinet\Views\BenefitFamily\_RegisteredCards.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1662,7 +1664,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Models\ViewModels\" />
-    <Folder Include="Areas\Cabinet\Models\" />
     <Folder Include="Areas\Cabinet\Views\BasePartner\" />
     <Folder Include="Content\UserFiles\" />
     <Folder Include="Images\CategoryLogo\" />

@@ -20,8 +20,14 @@ namespace Benefit.Web.Filters
             }
             else
             {
-                filterContext.Controller.ViewBag.User = userService.GetUserInfoWithRegions(filterContext.RequestContext.HttpContext.User.Identity.GetUserId());
-                filterContext.RouteData.Values.Add(DomainConstants.UserIdKey, filterContext.RequestContext.HttpContext.User.Identity.GetUserId());
+                if (filterContext.RouteData.Values[DomainConstants.UserIdKey] == null)
+                {
+                    filterContext.Controller.ViewBag.User =
+                        userService.GetUserInfoWithRegions(
+                            filterContext.RequestContext.HttpContext.User.Identity.GetUserId());
+                    filterContext.RouteData.Values.Add(DomainConstants.UserIdKey,
+                        filterContext.RequestContext.HttpContext.User.Identity.GetUserId());
+                }
             }
             base.OnActionExecuting(filterContext);
         }

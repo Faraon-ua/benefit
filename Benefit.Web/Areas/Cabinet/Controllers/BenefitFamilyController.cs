@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Web.Areas.Cabinet.Models;
 using Benefit.Web.Filters;
 
 namespace Benefit.Web.Areas.Cabinet.Controllers
@@ -24,7 +25,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
 
         public ActionResult CreateOrUpdate(string id)
         {
-            var card = db.BenefitCards.FirstOrDefault(entry=>entry.Id == id) ?? new BenefitCard();
+            var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == id) ?? new BenefitCard();
             return PartialView(card);
         }
 
@@ -75,6 +76,48 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             db.SaveChanges();
             TempData["SuccessMessage"] = "Учасника успішно видалено";
             return RedirectToAction("Index", new { userId = ViewBag.User.Id });
+        }
+
+        public ActionResult RegisteredCards(string id)
+        {
+            var registeredCards = new RegisteredCardsViewModel()
+            {
+                Available =
+                    db.BenefitCards.Where(
+                        entry =>
+                            entry.ReferalUserId == id && !db.BenefitCards.Select(bc => entry.UserId).Contains(id) &&
+                            !db.Users.Select(us => us.NFCCardNumber).Contains(entry.NfcCode)).ToList(),
+                Registered =
+                    db.BenefitCards.Where(
+                        entry =>
+                            entry.ReferalUserId == id && db.BenefitCards.Select(bc => entry.UserId).Contains(id) &&
+                            db.Users.Select(us => us.NFCCardNumber).Contains(entry.NfcCode)).ToList()
+            };
+            return PartialView("_RegisteredCards", registeredCards);
+        }
+
+        [ValidateAntiForgeryToken]
+        public ActionResult AddRegisteredCard(string cardNumber)
+        {
+            var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == cardNumber);
+            if (card == null) return HttpNotFound();
+            card.ReferalUserId = ViewBag.User.Id;
+            db.Entry(card).State = EntityState.Modified;
+            db.SaveChanges();
+            return RedirectToAction("RegisteredCards", new {id = ViewBag.User.Id});
+        }
+
+        public ActionResult RemoveRegisteredCard(string cardNumber)
+        {
+            var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == cardNumber);
+            if (card != null && card.ReferalUserId == ViewBag.user.Id)
+            {
+                card.ReferalUserId = null;
+                db.Entry(card).State = EntityState.Modified;
+                db.SaveChanges();
+                return new HttpStatusCodeResult(200);
+            }
+            return HttpNotFound();
         }
     }
 }

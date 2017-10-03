@@ -16,6 +16,7 @@
     <script src="~/Scripts/address.js"></script>
     <script>
         var referalUserUrl = '@Url.Action("GetReferalName")';
+        var registeredCardUrl = '@Url.Action("CheckRegisteredCard")';
 
         function GetReferalName() {
             var externalId = $("#ReferalNumber").val();
@@ -36,6 +37,19 @@
 
             $("#ReferalNumber").focusout(function () {
                 GetReferalName();
+            });
+
+            $("#CardNumber").focusout(function () {
+                var cardNumber = $("#CardNumber").val();
+                if (cardNumber !== "") {
+                    $.get(registeredCardUrl + "?id=" + cardNumber, function (data) {
+                        if (data) {
+                            $("#ReferalNumber").val(data.ExternalNumber);
+                            $("#ReferalNumber").attr("readonly", "readonly");
+                            $("#referal-name").text("Наставник: " + data.FullName);
+                        }
+                    });
+                }
             });
         });
     </script>
@@ -109,20 +123,20 @@
     }
 
     @*<div class="enter_right">
-        <p class="enter_title_social">Вхід через</p>
-        <a href="" class="enter_soc enter_fb clearfix">
-            <span class="enter_soc_logo">
-                <i class="fa fa-facebook" aria-hidden="true"></i>
-            </span>
-            <span class="enter_soc_text">Facebook</span>
-        </a>
-        <a href="" class="enter_soc enter_go clearfix">
-            <span class="enter_soc_logo">
-                <i class="fa fa-google" aria-hidden="true"></i>
-            </span>
-            <span class="enter_soc_text">Google</span>
-        </a>
-    </div>*@
+            <p class="enter_title_social">Вхід через</p>
+            <a href="" class="enter_soc enter_fb clearfix">
+                <span class="enter_soc_logo">
+                    <i class="fa fa-facebook" aria-hidden="true"></i>
+                </span>
+                <span class="enter_soc_text">Facebook</span>
+            </a>
+            <a href="" class="enter_soc enter_go clearfix">
+                <span class="enter_soc_logo">
+                    <i class="fa fa-google" aria-hidden="true"></i>
+                </span>
+                <span class="enter_soc_text">Google</span>
+            </a>
+        </div>*@
 </div>
 @*<div class="row">
         <div class="col-md-8">

@@ -17,6 +17,8 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using Benefit.Web.Models;
 using Microsoft.Owin.Security.DataProtection;
+using System.Data.Entity;
+using Newtonsoft.Json;
 
 namespace Benefit.Web.Controllers
 {
@@ -656,6 +658,23 @@ namespace Benefit.Web.Controllers
                     return Content(referal.FullName);
                 }
                 return null;
+            }
+        } 
+
+        [AllowAnonymous]
+        public ActionResult CheckRegisteredCard(string id)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var card = db.BenefitCards.Include(entry=>entry.ReferalUser).FirstOrDefault(entry => entry.Id == id);
+                if (card != null)
+                {
+                    return
+                        Content(
+                            JsonConvert.SerializeObject(new {card.ReferalUser.ExternalNumber, card.ReferalUser.FullName}),
+                            "application/json");
+                }
+                return HttpNotFound();
             }
         }
 
