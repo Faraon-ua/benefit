@@ -12,6 +12,7 @@
     <script src="~/Scripts/address.js"></script>
     <script>
         var deleteAddressUrl = '@Url.Action("DeleteUserAddress")';
+        var deleteCardUrl = '@Url.Action("RemoveRegisteredCard", "BenefitFamily")';
 
         $(function () {
             $("body").on("click", "#partner-referal", function () {
@@ -29,6 +30,17 @@
                 var addressId = $(this).attr("data-address-id");
                 $.post(deleteAddressUrl + "?id=" + addressId, null, function () {
                     addressBlock.remove();
+                });
+            });
+            
+            $(".remove-card").click(function(e) {
+                e.preventDefault();
+                var parent = $(this).parent();
+                var cardNumber = $(this).attr("data-card-number");
+                $.post(deleteCardUrl, {
+                    cardNumber: cardNumber
+                }, function() {
+                    parent.remove();
                 });
             });
         });

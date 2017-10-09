@@ -25,7 +25,8 @@
                         <tbody>
                             @foreach (var product in Model.OrderProducts)
                             {
-                                var showWholesale = (product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue && product.Amount >= product.WholesaleFrom.Value);
+                                var hasWholesale = product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue;
+                                var showWholesale = hasWholesale && product.Amount >= product.WholesaleFrom.Value;
                                 <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
                                     <td class="basket_modal_td">@product.ProductName</td>
                                     <td class="basket_modal_td">
@@ -34,7 +35,8 @@
                                             <input class="product_modal_amount" value="@product.Amount" type="text" data-is-weight-product="@product.IsWeightProduct">
                                             <div class="product_modal_plus">+</div>
                                         </div>
-                                        <div style="display: @(showWholesale ? "none" : "")" class="wholesale-hint">
+                                        
+                                        <div style="display: @(hasWholesale && product.Amount < product.WholesaleFrom.Value ? "" : "none")" class="wholesale-hint">
                                             опт від <span>@product.WholesaleFrom.GetValueOrDefault(0)</span> шт
                                         </div>
                                     </td>

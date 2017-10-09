@@ -89,6 +89,8 @@ function CalculateCartSum() {
     var oldSum = products.reduce(function (pv, cv) { return pv + cv.old; }, 0);
     if (oldSum > actualSum) {
         $(".basket_modal_saving span").text((oldSum - actualSum).toFixed(2));
+    } else {
+        $(".basket_modal_saving").hide();
     }
 }
 
