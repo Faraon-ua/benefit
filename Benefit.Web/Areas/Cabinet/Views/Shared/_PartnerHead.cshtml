@@ -39,10 +39,13 @@
                 @string.Format("{0:0.00}", Math.Truncate(Model.PointsAccount * 100) / 100)
             </span>
         </p>
+        <p class="total-bonuses">
+            <b>Загальний чек:</b><br><span class="bonus_border">@Model.TotalBonusAccount.ToString("F")</span>
+        </p>
     </div>
 
     <p class="card_numb">Номер бонусної картки:<br>@Model.CardNumber</p>
-    <p class="bonus_count">Загальна сума зароблених бонусів:<br><span class="bonus_border">@Model.TotalBonusAccount.ToString("F")</span></p>
+    <p class="bonus_count">Загальний чек:<br><span class="bonus_border">@Model.TotalBonusAccount.ToString("F")</span></p>
     <p class="bonus_available">
         Доступні бонуси:
         <br />

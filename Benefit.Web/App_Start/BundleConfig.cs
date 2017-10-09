@@ -1,4 +1,5 @@
 ﻿using System.Web.Optimization;
+using Benefit.Web.Helpers;
 
 namespace Benefit.Web
 {
@@ -33,16 +34,18 @@ namespace Benefit.Web
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/css/bootstrap.min.css",
-                      "~/Content/css/font-awesome.min.css",
-                      "~/Content/css/owl.carousel.css",
-                      "~/Content/css/jquery-ui.css",
-                      "~/Content/css/main.css",
-                      "~/Content/css/media.css",
-                      "~/Content/css/common.css",
-                      "~/Content/css/validation-errors.css",
-                      "~/Content/css/autocomplete.css"));
+            var cssContentBundle = new StyleBundle("~/Content/css").Include(
+                "~/Content/css/bootstrap.min.css",
+                "~/Content/css/font-awesome.min.css",
+                "~/Content/css/owl.carousel.css",
+                "~/Content/css/jquery-ui.css",
+                "~/Content/css/main.css",
+                "~/Content/css/media.css",
+                "~/Content/css/common.css",
+                "~/Content/css/validation-errors.css",
+                "~/Content/css/autocomplete.css");
+            cssContentBundle.Transforms.Add(new FileVersionTransformer());
+            bundles.Add(cssContentBundle);
         }
     }
 }

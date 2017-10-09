@@ -1390,15 +1390,13 @@
                 }
 
 
-            .partner_menu ul .partner_menu_main a:before
-            {
+            .partner_menu ul .partner_menu_main a:before {
                 background: url(../img/cabinet_menu_sprite.png) 2px 0 no-repeat;
                 background-size: 85px auto;
             }
 
             .partner_menu ul .partner_menu_main.active a:before,
-            .partner_menu ul .partner_menu_main:hover a:before
-            {
+            .partner_menu ul .partner_menu_main:hover a:before {
                 background: url(../img/cabinet_menu_sprite.png) -25px 0 no-repeat;
                 background-size: 85px auto;
             }
@@ -1492,7 +1490,7 @@
                 background-size: 85px auto;
             }
 
-            
+
             .partner_menu ul .partner_menu_zakladu.active a:before,
             .partner_menu ul .partner_menu_zakladu a:before {
                 background: url(../img/cabinet_menu_sprite.png) 0 -214px no-repeat;
@@ -1730,7 +1728,7 @@
         margin-bottom: 1px;
     }
 
-    .structure_submenu {
+    .structure_submenu_filters {
         display: none;
     }
 
@@ -1844,14 +1842,13 @@
     .recall_main {
         font-size: 13px;
         line-height: 15px;
-
     }
 }
 
 @media all and (min-width: 768px) {
     .partner_head .bonus_available.bonus_available_mobile,
     .finance_tab_title,
-    .finance_bonuses_mobile, 
+    .finance_bonuses_mobile,
     .user-balls-mobile {
         display: none !important;
     }
@@ -2240,6 +2237,10 @@
         min-height: auto;
     }
 
+        .partner_head .total-bonuses {
+            display: block;
+        }
+
         .partner_head .ref_code,
         .partner_head .card_numb,
         .partner_head .bonus_personal,
@@ -2279,7 +2280,7 @@
             left: 16px;
         }
 
-    .kabinet_profile .partner_menu ul .partner_menu_zakladu a:before, 
+    .kabinet_profile .partner_menu ul .partner_menu_zakladu a:before,
     .kabinet_profile .partner_menu ul .partner_menu_family a:before {
         left: -3px;
     }
@@ -2508,7 +2509,7 @@
         background-size: 85px auto;
     }
 
-     .kabinet_profile .partner_menu ul .partner_menu_family:hover a:before {
+    .kabinet_profile .partner_menu ul .partner_menu_family:hover a:before {
         left: 0;
         top: 9px;
         margin-left: 0;
