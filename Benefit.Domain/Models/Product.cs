@@ -35,10 +35,10 @@ namespace Benefit.Domain.Models
         [Index(IsUnique = true)]
         public int SKU { get; set; }
         [MaxLength(128)]
-        public string Vendor { get; set; } 
+        public string Vendor { get; set; }
         [MaxLength(64)]
         public string OriginCountry { get; set; }
-        public int? AvarageRating { get; set; } 
+        public int? AvarageRating { get; set; }
         [Required(AllowEmptyStrings = true, ErrorMessage = "Опис обовязковий для заповнення")]
         public string Description { get; set; }
         public double Price { get; set; }
@@ -83,11 +83,12 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Promotion> Promotions { get; set; }
 
         [NotMapped]
-        public virtual ICollection<Review> ApprovedReviews {
+        public virtual ICollection<Review> ApprovedReviews
+        {
             get
             {
                 return Reviews.Where(entry => entry.IsActive && entry.Rating != null).ToList();
-            } 
+            }
         }
 
         private KeyValuePair<bool, string>? _availableForPurchase = null;
@@ -98,19 +99,15 @@ namespace Benefit.Domain.Models
                 return _availableForPurchase.Value;
             }
             string shippingRegions = null;
-            using (var db = new ApplicationDbContext())
+            var isAvailable =
+                Seller.ShippingMethods.Any(
+                    entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
+            if (!isAvailable)
             {
-                var isAvailable =
-                    db.ShippingMethods.Any(
-                        entry => entry.SellerId == SellerId && (entry.RegionId == RegionConstants.AllUkraineRegionId ||
-                                                                 entry.RegionId == regionId));
-                if (!isAvailable)
-                {
-                    shippingRegions = string.Join(",", db.ShippingMethods.Include(entry=>entry.Region).Where(entry=>entry.SellerId == SellerId).Select(entry => entry.Region.Name_ua).Distinct());
-                }
-                _availableForPurchase = new KeyValuePair<bool, string>(isAvailable, shippingRegions);
+                shippingRegions = string.Join(",", Seller.ShippingMethods.Select(entry => entry.Region.Name_ua).Distinct());
             }
-            
+            _availableForPurchase = new KeyValuePair<bool, string>(isAvailable, shippingRegions);
+
             return _availableForPurchase.Value;
         }
     }

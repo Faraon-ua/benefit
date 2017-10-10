@@ -2239,6 +2239,7 @@
 
         .partner_head .total-bonuses {
             display: block;
+            font-size: 15px;
         }
 
         .partner_head .ref_code,

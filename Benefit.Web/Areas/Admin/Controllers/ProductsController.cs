@@ -63,7 +63,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (filters.HasImage)
                 {
-                    products = products.Where(entry => entry.Images.Any());
+                    products = products.Where(entry => !entry.Images.Any());
                 }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {

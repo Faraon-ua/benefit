@@ -198,19 +198,12 @@ namespace Benefit.Services.Domain
         {
             var result = new ProductsWithParametersList();
 
-            var regionId = RegionService.GetRegionId();
             var items = db.Products.Include(entry => entry.Category.ParentCategory.ParentCategory)
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                 .Include(entry => entry.Seller.Addresses)
                 .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
                 .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
-            if (regionId != RegionConstants.AllUkraineRegionId)
-            {
-                items = items.Where(entry => entry.Seller.Addresses.Any(addr => addr.RegionId == regionId) ||
-                                entry.Seller.ShippingMethods.Select(sm => sm.Region.Id).Contains(RegionConstants.AllUkraineRegionId) ||
-                                entry.Seller.ShippingMethods.Select(sm => sm.Region.Id).Contains(regionId));
-            }
 
             if (!string.IsNullOrEmpty(categoryId))
             {
