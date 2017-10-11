@@ -27,6 +27,10 @@
         });
     </script>
 }
+@if (Model.SellerId != null)
+{
+    <input type="hidden" id="seller-id" value="@Model.SellerId" />
+}
 @if (Model.CurrentRegionSellers.Any() || Model.Sellers.Any())
 {
     <p>

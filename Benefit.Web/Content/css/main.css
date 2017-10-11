@@ -764,12 +764,11 @@ header {
             position: absolute;
         }
 
-    .search_block .input-group-btn > .btn:last-child {
+    .search_block .input-group-btn .btn {
         border-radius: 0;
-        border: none;
+        border: 1px solid #990000;
         height: 34px;
-        background: #990000;
-        color: #fff;
+        width: 150px;
     }
 
 

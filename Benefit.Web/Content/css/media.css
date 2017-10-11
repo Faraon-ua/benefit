@@ -1971,9 +1971,17 @@
         color: white;
     }
 
+    .search_block .input-group-btn {
+        top: 40px;
+    }
+
+    .search_block #search {
+        position: fixed;
+    }
+
     .search_block, .position_block {
         padding: 5px 22px;
-        height: 41px;
+        height: 81px;
         bottom: -41px;
     }
 

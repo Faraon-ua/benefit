@@ -170,6 +170,15 @@ $(function () {
         }
     });
 
+    $("#search-form button").click(function () {
+        var sellerId = $("#seller-id").val();
+        if ($(this).attr("data-search-seller") && sellerId !== undefined) {
+            $("#search-seller-id").val(sellerId);
+        } else {
+            $("#search-seller-id").val();
+        }
+    });
+
     $("body").on("click", ".parent-category", function () {
         $(this).next("ul").slideToggle();
     });

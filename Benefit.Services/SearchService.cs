@@ -44,7 +44,7 @@ namespace Benefit.Services
             return words;
         }
 
-        public SearchResult SearchProducts(string term, int skip, int take = ListConstants.DefaultTakePerPage, string categoryId = null)
+        public SearchResult SearchProducts(string term, int skip, string searchSellerId = null, int take = ListConstants.DefaultTakePerPage, string categoryId = null)
         {
             var result = new SearchResult()
             {
@@ -53,6 +53,10 @@ namespace Benefit.Services
             term = term.ToLower();
             var translitTerm = term.Translit();
             var productsResult = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
+            if (searchSellerId != null)
+            {
+                productsResult = productsResult.Where(entry => entry.SellerId == searchSellerId);
+            }
             if (categoryId != null)
             {
                 productsResult = productsResult.Where(entry => entry.CategoryId == categoryId);
@@ -71,18 +75,22 @@ namespace Benefit.Services
 
             result.Products = productResult.Select(entry => entry.Item).ToList();
 
-            var sellers =
-                db.Sellers
-                    .Include(entry => entry.Addresses)
-                    .Include(entry => entry.ShippingMethods)
-                    .Include(entry => entry.ShippingMethods.Select(sh => sh.Region))
-                    .Where(entry => entry.IsActive)
-                    .Search(entry => entry.Name, entry => entry.SearchTags)
-                    .Containing(term, translitTerm);
+            if (searchSellerId == null)
+            {
+                var sellers =
+                    db.Sellers
+                        .Include(entry => entry.Addresses)
+                        .Include(entry => entry.ShippingMethods)
+                        .Include(entry => entry.ShippingMethods.Select(sh => sh.Region))
+                        .Where(entry => entry.IsActive)
+                        .Search(entry => entry.Name, entry => entry.SearchTags)
+                        .Containing(term, translitTerm);
 
-            result.CurrentRegionSellers = sellers.Where(entry=>entry.Addresses.Any(addr => addr.RegionId == regionId)).ToList();
-            var currectRegionSellerIds = result.CurrentRegionSellers.Select(entry => entry.Id).ToList();
-            result.Sellers = sellers.Where(entry => !currectRegionSellerIds.Contains(entry.Id)).ToList();
+                result.CurrentRegionSellers =
+                    sellers.Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ToList();
+                var currectRegionSellerIds = result.CurrentRegionSellers.Select(entry => entry.Id).ToList();
+                result.Sellers = sellers.Where(entry => !currectRegionSellerIds.Contains(entry.Id)).ToList();
+            }
 
             return result;
         }

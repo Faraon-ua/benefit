@@ -26,9 +26,9 @@ namespace Benefit.Web.Controllers
 
         public ActionResult News(int page = 0)
         {
-            var news = db.InfoPages.Where(entry => entry.IsNews).OrderByDescending(entry => entry.CreatedOn).Skip(page * ListConstants.NewsTakePerPage).Take(ListConstants.NewsTakePerPage).ToList();
-            ViewBag.PagesCount = db.InfoPages.Count(entry => entry.IsNews)/ListConstants.NewsTakePerPage;
+            var news = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive).OrderByDescending(entry => entry.CreatedOn).Skip(page * ListConstants.NewsTakePerPage).Take(ListConstants.NewsTakePerPage).ToList();
+            ViewBag.PagesCount = db.InfoPages.Count(entry => entry.IsNews) / ListConstants.NewsTakePerPage;
             return View(news);
         }
-	}
+    }
 }

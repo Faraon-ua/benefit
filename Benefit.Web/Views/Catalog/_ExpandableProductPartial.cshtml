@@ -7,7 +7,7 @@
             <div class="product_img_wrap">
                 @{
                     var image = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = Model.CategoryUrl, sellerUrl = Model.SellerUrl, productUrl = Model.Product.UrlName });
+                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = Model.CategoryUrl, sellerUrl = Model.SellerUrl, productUrl = Model.Product.UrlName });
                 }
 
                 <a href="@productDetailsUrl" title="@Model.Product.Name">

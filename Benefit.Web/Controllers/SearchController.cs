@@ -28,9 +28,11 @@ namespace Benefit.Web.Controllers
                 JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Index(string term)
+        public ActionResult Index(string term, string searchSellerId = null)
         {
-            var result = SearchService.SearchProducts(term, 0);
+            searchSellerId = searchSellerId == string.Empty ? null : searchSellerId;
+            var result = SearchService.SearchProducts(term, 0, searchSellerId);
+            result.SellerId = searchSellerId;
             return View(result);
         }
 

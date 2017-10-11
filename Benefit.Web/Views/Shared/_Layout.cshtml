@@ -44,6 +44,11 @@
                 window.location.href = searchUrl + "?term=" + suggestion.data;
             }
         });
+        if ($("#seller-id").length === 0) {
+            $("#search-by-seller").hide();
+        } else {
+            $("#search-by-seller").show();
+        }
 
         $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
         $('.login_links').load('@Url.Action("MobileLoginPartial", "Home")');
