@@ -28,7 +28,8 @@
         @if (Model.Seller != null && Model.IsInfoPage)
         {
             <li>
-                &gt; <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new { action = "Info", id=Model.Seller.UrlName })">@Model.Seller.Name</a>
+                <input type="hidden" id="seller-id" value="@Model.Seller.Id" />
+                &gt; <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new {action = "Info", id = Model.Seller.UrlName})">@Model.Seller.Name</a>
             </li>
         }
         @if (Model.Product != null)
