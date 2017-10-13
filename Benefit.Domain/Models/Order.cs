@@ -83,6 +83,10 @@ namespace Benefit.Domain.Models
         public bool IsRepeating { get; set; }
         [NotMapped]
         public string SellerPhone { get; set; }
+        [NotMapped]
+        public double SumWithDiscount{
+            get { return Sum - SellerDiscount.GetValueOrDefault(0); }
+        }
         public double GetOrderSum()
         {
             var sum = OrderProducts.Sum(

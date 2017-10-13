@@ -191,6 +191,7 @@
                 $.get(getPromotionFormUrl + "?sellerId=@Model.Seller.Id", function (data) {
                     $(".new-promotions").prepend(data);
                     SetDatePickers();
+                    SetNumberMasks();
                 });
             });
 
@@ -201,8 +202,11 @@
                     Name: parent.find("#Promotion_Name").val(),
                     Start: parent.find("#Promotion_Start").val(),
                     End: parent.find("#Promotion_End").val(),
+                    StartTime: parent.find("#Promotion_StartTime").val(),
+                    EndTime: parent.find("#Promotion_EndTime").val(),
                     DiscountFrom: parent.find("#Promotion_DiscountFrom").val(),
                     DiscountValue: parent.find("#Promotion_DiscountValue").val(),
+                    IsValuePercent: parent.find("#Promotion_IsValuePercent").val(),
                     IsActive: parent.find("#Promotion_IsActive:checked").length > 0,
                     IsBonusDiscount: parent.find("#Promotion_IsBonusDiscount:checked").length > 0,
                     ShouldBeVisibleInStructure: parent.find("#Promotion_ShouldBeVisibleInStructure:checked").length > 0,

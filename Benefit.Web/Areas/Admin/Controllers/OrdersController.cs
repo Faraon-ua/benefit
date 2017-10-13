@@ -109,7 +109,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 orders = groupedOrders.SelectMany(entry => entry.OrderByDescending(grp => grp.Time)).AsQueryable();
             }
             var ordersTotal = orders.Count();
-            ordersFilters.Sum = orders.Select(l => l.Sum).DefaultIfEmpty(0).Sum();
+            ordersFilters.Sum = orders.ToList().Select(l => l.SumWithDiscount).DefaultIfEmpty(0).Sum();
             ordersFilters.Number = orders.Count();
             orders = orders.Skip(page * takePerPage).Take(takePerPage);
 

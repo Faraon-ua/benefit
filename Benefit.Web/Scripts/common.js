@@ -81,6 +81,10 @@ function SetDatePickers() {
     $(".date-picker").datepicker();
 }
 
+function SetNumberMasks() {
+    $('.number-input').mask("#");
+}
+
 function ReAssignIndexesToChildren(id, itemSelector) {
     var container = $("#" + id);
     var rows = container.find("." + itemSelector);

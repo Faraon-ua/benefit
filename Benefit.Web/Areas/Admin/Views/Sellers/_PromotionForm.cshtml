@@ -20,17 +20,28 @@
     </div>
     <div class="row padding-top-5">
         <label class="col-md-4 padding-top-5">Дата закінчення</label>
-        @Html.TextBox("Promotion.End", Model.End, new { @class = "date-picker col-md-7" })
+        @Html.TextBox("Promotion.End", Model.End, new {@class = "date-picker col-md-7"})
     </div>
-
+    <div class="row padding-top-5">
+        <label class="col-md-4">Час початку</label>
+        @Html.TextBox("Promotion.StartTime", Model.StartTime, new { @class = "number-input col-md-1" })
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Час закінчення</label>
+        @Html.TextBox("Promotion.EndTime", Model.EndTime, new { @class = "number-input col-md-1" })
+    </div>
     <div class="row padding-top-5">
         <label class="col-md-4 padding-top-5">Винагрода від</label>
         @Html.TextBox("Promotion.DiscountFrom", Model.DiscountFrom, new { @class = "col-md-7" }) грн/чол
     </div>
     <div class="row padding-top-5">
         <label class="col-md-4 padding-top-5">Винагрода</label>
-        @Html.TextBox("Promotion.DiscountValue", Model.DiscountValue, new { @class = "col-md-7" })
+        @Html.TextBox("Promotion.DiscountValue", Model.DiscountValue, new {@class = "col-md-7"})
         <span class="col-md-1">грн</span>
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Винагорода в процентах</label>
+        @Html.CheckBox("Promotion.IsValuePercent", Model.IsValuePercent)
     </div>
     <div class="row padding-top-5">
         <label class="col-md-4 padding-top-5">Винагорода бонусами</label>

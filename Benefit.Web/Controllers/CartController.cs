@@ -5,6 +5,7 @@ using System.Linq;
 using System.Data.Entity;
 using System.Threading.Tasks;
 using Benefit.Common.Constants;
+using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -82,14 +83,41 @@ namespace Benefit.Web.Controllers
                 //promotions
                 var now = DateTime.UtcNow;
                 var currentPromotion =
-                    seller.Promotions.FirstOrDefault(entry => entry.Start < now && entry.End > now && !entry.IsBonusDiscount && entry.IsActive);
+                    seller.Promotions.FirstOrDefault(
+                        entry => entry.Start < now && entry.End > now && !entry.IsBonusDiscount && entry.IsActive);
+
                 if (currentPromotion != null)
                 {
-                    model.Order.Sum = model.Order.GetOrderSum();
-                    if (currentPromotion != null && model.Order.Sum >= currentPromotion.DiscountFrom)
+                    if (currentPromotion.StartTime.HasValue && currentPromotion.EndTime.HasValue)
                     {
-                        model.Order.SellerDiscount = currentPromotion.DiscountValue;
-                        model.Order.SellerDiscountName = currentPromotion.Name;
+                        currentPromotion.StartTimeDt =
+                            DateTime.Now.ToLocalTime().StartOfDay().AddHours(currentPromotion.StartTime.Value);
+                        currentPromotion.EndTimeDt =
+                            DateTime.Now.ToLocalTime().StartOfDay().AddHours(currentPromotion.EndTime.Value);
+
+                        if (DateTime.Now.ToLocalTime() > currentPromotion.StartTimeDt &&
+                            DateTime.Now.ToLocalTime() < currentPromotion.EndTimeDt)
+                        {
+                            model.Order.Sum = model.Order.GetOrderSum();
+                            if (model.Order.Sum >= currentPromotion.DiscountFrom)
+                            {
+                                model.Order.SellerDiscount = currentPromotion.IsValuePercent
+                                    ? model.Order.Sum*currentPromotion.DiscountValue/100
+                                    : currentPromotion.DiscountValue;
+                                model.Order.SellerDiscountName = currentPromotion.Name;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        model.Order.Sum = model.Order.GetOrderSum();
+                        if (model.Order.Sum >= currentPromotion.DiscountFrom)
+                        {
+                            model.Order.SellerDiscount = currentPromotion.IsValuePercent
+                                ? model.Order.Sum*currentPromotion.DiscountValue/100
+                                : currentPromotion.DiscountValue;
+                            model.Order.SellerDiscountName = currentPromotion.Name;
+                        }
                     }
                 }
 

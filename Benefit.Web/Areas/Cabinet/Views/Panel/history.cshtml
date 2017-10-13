@@ -70,7 +70,7 @@
                                 <td>@order.Time.ToLocalTimeWithDateFormat()</td>
                                 <td>@order.SellerName</td>
                                 <td>
-                                    @order.Sum.ToString("F")
+                                    @order.SumWithDiscount.ToString("F")
                                     @if (order.PaymentType == PaymentType.Bonuses)
                                     {
                                         <span>бонусів</span>

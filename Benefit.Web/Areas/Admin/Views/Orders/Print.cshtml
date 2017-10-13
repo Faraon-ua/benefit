@@ -90,6 +90,13 @@
                 <td style="width: 30%;">Загальна сума замовлення</td>
                 <td style="width: 70%;">@Model.Sum.ToString("F")</td>
             </tr>
+            @if (Model.SellerDiscount != null)
+            {
+                <tr>
+                    <td style="width: 30%;">@Model.SellerDiscountName</td>
+                    <td style="width: 70%;">@Model.SellerDiscount.Value.ToString("F")</td>
+                </tr>
+            }
             <tr>
                 <td style="width: 30%;">Нараховано балів</td>
                 <td style="width: 70%;">@Model.PointsSum</td>
@@ -137,26 +144,38 @@
 
         <br />
         <div class="row">
-
-            <h2 class="pull-right">
-                До сплати:
-                @if (Model.PaymentType == PaymentType.Bonuses)
-                {
-                    var doSplatu = Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses);
-                    if (doSplatu < 0.00)
+            <div class="pull-right clearfix width-50 margin-right-20">
+                <table>
+                    <tr>
+                        <td>Сума замовлення:</td>
+                        @{
+                            var total = Model.OrderProducts.Sum(
+                                entry =>
+                                    entry.ActualPrice * entry.Amount +
+                                    entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+                        }
+                        <td id="order-total">@total.ToString("F")</td>
+                    </tr>
+                    <tr id="discount-row" style="display: none;">
+                        <td>Знижка:</td>
+                        <td id="discount"></td>
+                    </tr>
+                    <tr>
+                        <td>Доставка:</td>
+                        <td id="shipping-cost">@Model.ShippingCost</td>
+                    </tr>
+                    @if (Model.SellerDiscount != null)
                     {
-                        doSplatu = 0.00;
+                        <tr>
+                            <td>@Model.SellerDiscountName:</td>
+                            <td id="promotion">@Model.SellerDiscount.Value.ToString("F")</td>
+                        </tr>
                     }
-                    doSplatu += Model.ShippingCost + 0.01;
-                    <span>
-                        @(doSplatu.ToString("F"))
-                    </span>
-                }
-                else
-                {
-                    <span>@((Model.Sum + Model.ShippingCost).ToString("F"))</span>
-                }
-            </h2>
+                    <tr>
+                        <td>До сплати:</td>
+                        <td id="pay-total">@((Model.Sum + Model.ShippingCost).ToString("F"))</td>
+                    </tr>
+                </table>
         </div>
         
         <br/>

@@ -4,6 +4,4 @@ Disallow: /pages/benefit_tv
 
 Disallow: /pages/faq
 
-Disallow: /pages/news
-
-Sitemap: http://benefit-company.com/sitemap.xml
+Sitemap: https://benefit-company.com/sitemap.xml

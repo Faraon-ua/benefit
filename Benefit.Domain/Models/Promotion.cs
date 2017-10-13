@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Benefit.Domain.Models
 {
@@ -13,6 +15,8 @@ namespace Benefit.Domain.Models
         public DateTime? Start { get; set; }
         [Required]
         public DateTime? End { get; set; }
+        public short? StartTime { get; set; }
+        public short? EndTime { get; set; }
         public string ProductId { get; set; }
         public Product Product { get; set; }
         public string SellerId { get; set; }
@@ -21,11 +25,17 @@ namespace Benefit.Domain.Models
         public double? DiscountFrom { get; set; }
         [Required]
         public double? DiscountValue { get; set; }
+        public bool IsValuePercent { get; set; }
         public bool IsActive { get; set; }
         public bool IsBonusDiscount { get; set; }
         public bool ShouldBeVisibleInStructure { get; set; }
         public int Level { get; set; }
 
         public ICollection<PromotionAccomplishment> PromotionAccomplishments { get; set; } 
+
+        [NotMapped]
+        public DateTime StartTimeDt { get; set; }
+        [NotMapped]
+        public DateTime EndTimeDt { get; set; }
     }
 }
