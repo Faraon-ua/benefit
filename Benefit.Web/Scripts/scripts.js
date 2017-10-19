@@ -48,7 +48,7 @@ window.onload = function () {
     }
 }
 
-$(document).ready(function() {
+$(document).ready(function () {
     $.fn.isolatedScroll = function () {
         this.bind('touchmove touchstart mousewheel DOMMouseScroll', function (e) {
             var delta = e.wheelDelta || (e.originalEvent && e.originalEvent.wheelDelta) || -e.detail,
@@ -239,7 +239,7 @@ $(document).ready(function() {
         $('.position_block').removeClass('visible');
         $('.lmenu_block').removeClass('visible');
         $('.vertical_menu').toggleClass('visible');
-        
+
         over4menu();
     });
 
@@ -554,7 +554,13 @@ $(document).ready(function() {
         CalculateCartSum();
     });
 
-    $("body").on("click", ".product_modal_form input[type=checkbox], .product_modal_form input[type=radio], .product_modal_form div.product_modal_minus, .product_modal_form div.product_modal_plus", function () {
+    $("body").on("click", ".product_modal_form input[type=checkbox], .product_modal_form input[type=radio]", function () {
+        var id = $(this).attr("id");
+        $(".product_modal_form input[data-binded-option-id=" + id + "]").prop('checked', true);
+        CalculateProductPrice();
+    });
+
+    $("body").on("click", ".product_modal_form div.product_modal_minus, .product_modal_form div.product_modal_plus", function () {
         CalculateProductPrice();
     });
 
@@ -569,7 +575,7 @@ $(document).ready(function() {
         var productId = $(this).attr("data-product-id");
         $.post(deleteProductFromCartUrl + productId, function (data) {
             setCartSummary(data);
-           
+
             parentRow.remove();
             CalculateCartSum();
         });
@@ -596,32 +602,32 @@ $(document).ready(function() {
     $('.header_categories_wrap .header_categories').on('click', function (e) {
         e.preventDefault();
     });
-    
-    
-    /*kabinet partnera finance mobile*/
-$('.finance .profile_menu').on('click', function() {
-    $('.partner_menu, .profile_menu, .finance_bonuses_mobile').addClass('finance_mobile_hidden');
-    $('.tab-content').removeClass('finance_mobile_hidden');
-});
 
-$('.finance_tab_title').on('click', function() {
-    $('.partner_menu, .profile_menu, .finance_bonuses_mobile').removeClass('finance_mobile_hidden');
-    $('.tab-content').addClass('finance_mobile_hidden');
-});
+
+    /*kabinet partnera finance mobile*/
+    $('.finance .profile_menu').on('click', function () {
+        $('.partner_menu, .profile_menu, .finance_bonuses_mobile').addClass('finance_mobile_hidden');
+        $('.tab-content').removeClass('finance_mobile_hidden');
+    });
+
+    $('.finance_tab_title').on('click', function () {
+        $('.partner_menu, .profile_menu, .finance_bonuses_mobile').removeClass('finance_mobile_hidden');
+        $('.tab-content').addClass('finance_mobile_hidden');
+    });
 
 
     /*bootstrap carousel swipe*/
-    try{
-        $(".carousel-inner").swipe( {
-            swipeLeft:function(event, direction, distance, duration, fingerCount) {
-                $(this).parent().carousel('next'); 
+    try {
+        $(".carousel-inner").swipe({
+            swipeLeft: function (event, direction, distance, duration, fingerCount) {
+                $(this).parent().carousel('next');
             },
-            swipeRight: function() {
-                $(this).parent().carousel('prev'); 
+            swipeRight: function () {
+                $(this).parent().carousel('prev');
             },
             //Default is 75px, set to 0 for demo so any distance triggers swipe
-            threshold:0
+            threshold: 0
         });
     }
-    catch(exception){}
+    catch (exception) { }
 });

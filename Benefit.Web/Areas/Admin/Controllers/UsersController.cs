@@ -106,6 +106,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 StatusCompletionMonths = user.StatusCompletionMonths,
                 IsActive = user.IsActive,
                 IsCardVerified = user.IsCardVerified,
+                EmailConfirmed = user.EmailConfirmed,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
                 RegisteredOn = user.RegisteredOn,
@@ -174,6 +175,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     existingUser.Status = user.Status;
                 }
                 existingUser.IsCardVerified = user.IsCardVerified;
+                existingUser.EmailConfirmed = user.EmailConfirmed;
                 existingUser.Email = user.Email;
                 existingUser.UserName = user.Email;
                 existingUser.PhoneNumber = user.PhoneNumber;

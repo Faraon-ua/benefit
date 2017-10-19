@@ -1,4 +1,8 @@
-﻿.x-pseudo-link {
+﻿.no-list-style {
+    list-style-type: none;
+}
+
+.x-pseudo-link {
     display: inline;
     color: #0670eb;
     border-bottom: 1px dashed;

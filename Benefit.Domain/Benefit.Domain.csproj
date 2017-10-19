@@ -401,6 +401,10 @@
     <Compile Include="Migrations\201710121218101_AddTimeToPromotion.Designer.cs">
       <DependentUpon>201710121218101_AddTimeToPromotion.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710170937490_AddOrderAndBindToProductOoption.cs" />
+    <Compile Include="Migrations\201710170937490_AddOrderAndBindToProductOoption.Designer.cs">
+      <DependentUpon>201710170937490_AddOrderAndBindToProductOoption.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -696,6 +700,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710121218101_AddTimeToPromotion.resx">
       <DependentUpon>201710121218101_AddTimeToPromotion.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710170937490_AddOrderAndBindToProductOoption.resx">
+      <DependentUpon>201710170937490_AddOrderAndBindToProductOoption.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

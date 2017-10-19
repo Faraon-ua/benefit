@@ -28,7 +28,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(productId))
             {
                 product =
-                    db.Products.Include(entry => entry.ProductOptions)
+                    db.Products
+                        .Include(entry => entry.ProductOptions)
+                        .Include(entry => entry.ProductOptions.Select(cd => cd.BindedProductOptions))
                         .Include(entry => entry.Category)
                         .FirstOrDefault(entry => entry.Id == productId);
                 productOptions = product.ProductOptions.Where(entry => entry.ParentProductOptionId == null).ToList();
@@ -41,15 +43,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             else
             {
-                productOptions = db.ProductOptions.Include(entry=>entry.ChildProductOptions).Where(
-                entry =>
-                    entry.CategoryId == categoryId && entry.SellerId == sellerId && entry.ParentProductOptionId == null).ToList();
+                productOptions = db.ProductOptions
+                    .Include(entry => entry.ChildProductOptions)
+                    .Include(entry => entry.BindedProductOptions)
+                    .Where(
+                        entry =>
+                            entry.CategoryId == categoryId && entry.SellerId == sellerId &&
+                            entry.ParentProductOptionId == null).ToList();
                 productOptions.ForEach(entry => entry.Editable = true);
             }
             return View(new ProductOptionsViewModel
             {
                 Product = product,
-                ProductId =  productId,
+                ProductId = productId,
                 CategoryId = categoryId,
                 CategoryName = category == null ? null : category.Name,
                 SellerId = sellerId,
@@ -66,7 +72,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult ProductOptionValue(string parentId, string categoryId = null, string sellerId = null, string productId = null)
         {
-            var productParameter = new ProductOption() { ParentProductOptionId = parentId, CategoryId = categoryId, SellerId = sellerId, ProductId = productId, EditableAmount =  true };
+            var productParameter = new ProductOption() { ParentProductOptionId = parentId, CategoryId = categoryId, SellerId = sellerId, ProductId = productId, EditableAmount = true };
             return PartialView("_ProductOptionValue", productParameter);
         }
 
@@ -91,6 +97,20 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(productparameter);
         }
 
+        [HttpPost]
+        public ActionResult Index(List<string> sortedOptions)
+        {
+            var options = db.ProductOptions.Where(entry => sortedOptions.Contains(entry.Id)).ToList();
+            for (var i = 0; i < sortedOptions.Count; i++)
+            {
+                var option = options.FirstOrDefault(entry => entry.Id == sortedOptions[i]);
+                option.Order = i;
+                db.Entry(option).State = EntityState.Modified;
+            }
+            db.SaveChanges();
+            return Json("Сортування опцій збережено");
+        }
+
         public ActionResult Delete(string id, string categoryId = null, string sellerId = null, string productId = null)
         {
             var productOption = db.ProductOptions.Include("ChildProductOptions").FirstOrDefault(entry => entry.Id == id);
@@ -98,6 +118,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.ProductOptions.Remove(productOption);
             db.SaveChanges();
             return RedirectToAction("Index", new { categoryId, sellerId, productId });
+        }
+        public ActionResult Connect(string optionId, string connectToOptionId)
+        {
+            var option = db.ProductOptions.Find(optionId);
+            if (option != null)
+            {
+                option.BindedProductOptionId = connectToOptionId;
+            }
+            db.SaveChanges();
+            return new HttpStatusCodeResult(200);
         }
 
         protected override void Dispose(bool disposing)
@@ -108,5 +138,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             base.Dispose(disposing);
         }
+
+
     }
 }

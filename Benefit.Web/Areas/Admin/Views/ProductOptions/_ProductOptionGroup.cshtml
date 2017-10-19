@@ -1,14 +1,18 @@
 ﻿@model Benefit.Domain.Models.ProductOption
-<div id="dialog" title="Додати групу опцій" class="hide">
+<div id="dialog" title="Група опцій" class="hide">
     <div class="ui-dialog-content ui-widget-content" id="dialog-confirm" style="width: auto; min-height: 27px; max-height: none; height: auto;">
         @using (Html.BeginForm("CreateOrUpdate", "ProductOptions"))
         {
             @Html.AntiForgeryToken()
             @Html.TextBoxFor(m => m.Name, new { placeholder = "Назва групи", @class = "col-sm-12" })
             <br />
+            <br />
             <div class="padding-10">
                 @Html.EditorFor(m => m.MultipleSelection)
-                <label for="MultipleSelection" class="control-label ">Можливість вибирати багато опцій</label>
+                <label for="MultipleSelection" class="control-label ">Можливість обирати декілька опцій</label>
+            </div>
+            <div class="padding-10">
+                @Html.TextBoxFor(m => m.Order, new  { placeholder="Порядок", @class="number-input" })
             </div>
             @Html.HiddenFor(m => m.CategoryId)
             @Html.HiddenFor(m => m.SellerId)

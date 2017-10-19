@@ -33,6 +33,7 @@ namespace Benefit.Web.Models.Admin
         public int? StatusCompletionMonths { get; set; }
         public bool IsActive { get; set; }
         public bool IsCardVerified { get; set; }
+        public bool EmailConfirmed { get; set; }
         [Required]
         public string Email { get; set; }
         [Required]

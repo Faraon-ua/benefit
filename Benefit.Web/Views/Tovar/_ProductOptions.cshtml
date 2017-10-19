@@ -25,7 +25,7 @@
                                             @{
                                                 var editableAmountClass = option.EditableAmount ? "editable-amount" : "";
                                             }
-                                            <input class="hidden @editableAmountClass" type="checkbox" id="@option.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" />
+                                            <input class="hidden @editableAmountClass" type="checkbox" id="@option.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" data-binded-option-id="@option.BindedProductOptionId" />
                                             <label class="label_for_check" for="@option.Id">
                                                 @option.Name ( +@option.PriceGrowth.ToString("F"))
                                             </label>
@@ -41,7 +41,7 @@
                                 {
                                     foreach (var option in optionsGroup.ChildProductOptions)
                                     {
-                                        <input class="hidden" type="radio" id="@option.Id" name="@optionsGroup.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" />
+                                        <input class="hidden" type="radio" id="@option.Id" name="@optionsGroup.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" data-binded-option-id="@option.BindedProductOptionId" />
                                         <label class="label_for_radio" for="@option.Id">@option.Name ( +@option.PriceGrowth.ToString("F"))</label>
                                     }
                                 }

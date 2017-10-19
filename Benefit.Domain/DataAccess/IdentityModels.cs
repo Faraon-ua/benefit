@@ -112,6 +112,14 @@ namespace Benefit.Domain.DataAccess
             modelBuilder.Entity<BenefitCard>()
                .HasOptional<ApplicationUser>(s => s.ReferalUser)
                .WithMany(s => s.ReferedBenefitCards).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ProductOption>()
+              .HasOptional<ProductOption>(s => s.ParentProductOption)
+              .WithMany(s => s.ChildProductOptions).WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<ProductOption>()
+               .HasOptional<ProductOption>(s => s.BindedProductOption)
+               .WithMany(s => s.BindedProductOptions).WillCascadeOnDelete(false);
         }
 
         public override int SaveChanges()

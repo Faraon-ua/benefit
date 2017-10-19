@@ -53,9 +53,10 @@
             });
         }
 
-        var productOptionsUrl = '@Html.Raw(Url.Action("Index", new { categoryId = Model.CategoryId, productId = Model.ProductId, sellerId = Model.SellerId}))';
-
         $(function () {
+            var saveOptionsOrderUrl = '@Url.Action("Index")';
+            var connectOptionsUrl = '@Url.Action("Connect")';
+
             $(".chosen-select").chosen({
                 search_contains: true
             });
@@ -64,47 +65,134 @@
                 var sellerId = this.value;
                 location.href = insertUrlParam("sellerId", sellerId);
             });
+
+            $(".options-list").sortable();
+            $(".options-list").disableSelection();
+
+            $(".show-connect-section").click(function (e) {
+                e.preventDefault();
+                var li = $(this).parent();
+                var section = $(".options-select-container").eq(0).clone();
+                $(this).after(section);
+                li.find(".options-select-container").show();
+            });
+
+            $("body").on("click", ".btn-connect-option", function () {
+                var optionId = $(this).parents("li").attr("data-option-id");
+                var connectToOptionId = $(this).prev("select").val();
+                $.post(connectOptionsUrl, { optionId: optionId, connectToOptionId: connectToOptionId }, function() {
+                    location.reload();
+                });
+            });
+
+            $("#save-ordering").click(function () {
+                $("#save-ordering").prop("disabled", true);
+                var groupsList = [];
+                $("#product-options-container ul").each(function () {
+                    var groupId = $(this).attr("data-option-id");
+                    groupsList.push(groupId);
+                    var currentListContaner = $(this);
+                    var sortedCats = [];
+                    currentListContaner.find("li").each(function () {
+                        var catId = $(this).attr("data-option-id");
+                        sortedCats.push(catId);
+                    });
+                    $.ajax({
+                        type: 'Post',
+                        dataType: 'json',
+                        url: saveOptionsOrderUrl,
+                        data: JSON.stringify({ sortedOptions: sortedCats }),
+                        contentType: 'application/json; charset=utf-8',
+                        async: true
+                    });
+                });
+
+                $.ajax({
+                    type: 'Post',
+                    dataType: 'json',
+                    url: saveOptionsOrderUrl,
+                    data: JSON.stringify({ sortedOptions: groupsList }),
+                    contentType: 'application/json; charset=utf-8',
+                    async: true,
+                    success: function (data) {
+                        flashMessage(data);
+                        $("#save-ordering").removeAttr("disabled");
+                    },
+                    error: function (data) {
+                        console.debug(data);
+                    }
+                });
+            });
         });
     </script>
 }
-
-<a class="btn btn-purple btn-sm" onclick="ProductOptionGroup('')" href="#">Додати групу опцій</a>
-<br />
-@Html.DropDownList("SellerId", Model.Sellers as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select" })
+<div class="options-select-container clearfix" style="display: none;">
+    <select class="form-control width-70 pull-left">
+        @foreach (var group in Model.ProductOptions.OrderBy(entry => entry.Order))
+        {
+            <optgroup label="@group.Name">
+                @foreach (var child in group.ChildProductOptions.OrderBy(entry => entry.Order))
+                {
+                    <option value="@child.Id">@child.Name</option>
+                }
+            </optgroup>
+        }
+    </select>
+    <button class="btn-connect-option btn btn-sm btn-success pull-left">Прив’язати</button>
+</div>
+<div class="row">
+    <div class="col-md-3">
+        @Html.DropDownList("SellerId", Model.Sellers as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select" })
+    </div>
+    <div class="col-md-3">
+        <a class="btn btn-purple btn-sm" onclick="ProductOptionGroup('')" href="#">Додати групу опцій</a>
+        <a class="btn btn-success btn-sm" href="#" id="save-ordering">Зберегти сортування</a>
+    </div>
+</div>
 <br />
 
 <div id="groupEditContainer" class="margin-top-10">
-
 </div>
-@foreach (var group in Model.ProductOptions)
-{
-    <div class="margin-top-10">
-        <h3 class="pull-left">@group.Name</h3>
-        @if (group.Editable)
-        {
-            <a class="btn btn-success btn-sm margin-right-10 pull-left" onclick="ProductOptionValue('@group.Id')" title=" додати опцію">
-                <i class="icon-plus"></i>
-            </a>
-            <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" target="_blank" title="Редагувати" onclick="ProductOptionGroup('@group.Id')">
-                <i class="icon-edit"></i>
-            </a>
-            <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
-                <i class="icon-trash"></i>
-            </a>
-        }
-        <div class="clearfix"></div>
-    </div>
-    <hr class="margin-top-0" />
-    foreach (var child in group.ChildProductOptions)
+<div id="product-options-container">
+    @foreach (var group in Model.ProductOptions.OrderBy(entry => entry.Order))
     {
-        <div>
-            @child.Name (+@child.PriceGrowth)
+        <div class="margin-top-10">
+            <h3 class="pull-left">@group.Name</h3>
             @if (group.Editable)
             {
-                <a href="@Url.Action("Delete", new { id = child.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
-                    <i class="icon-remove red"></i>
+                <a class="btn btn-success btn-sm margin-right-10 pull-left" onclick="ProductOptionValue('@group.Id')" title=" додати опцію">
+                    <i class="icon-plus"></i>
+                </a>
+                <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Редагувати" onclick="ProductOptionGroup('@group.Id')">
+                    <i class="icon-edit"></i>
+                </a>
+                <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
+                    <i class="icon-trash"></i>
                 </a>
             }
+            <div class="clearfix"></div>
         </div>
+        <hr class="margin-top-0" />
+        <ul class="options-list no-list-style" data-option-id="@group.Id">
+            @foreach (var child in group.ChildProductOptions.OrderBy(entry => entry.Order))
+            {
+                <li class="well well-sm clearfix width-30 margin-bottom-5" data-option-id="@child.Id">
+                    @child.Name (+@child.PriceGrowth)
+                    @if (child.BindedProductOption != null)
+                    {
+                        <span>(-> @child.BindedProductOption.Name)</span>
+                    }
+                    @if (group.Editable)
+                    {
+                        <a href="@Url.Action("Delete", new {id = child.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId})" onclick=" return confirm('Ви впевненні?') ">
+                            <i class="icon-remove red"></i>
+                        </a>
+                    }
+                    <a href="#" class="show-connect-section">
+                        <i class="icon-exchange green"></i>
+                    </a>
+                </li>
+            }
+        </ul>
     }
-}
+</div>

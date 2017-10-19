@@ -18,11 +18,16 @@ namespace Benefit.Domain.Models
         public string Name { get; set; }
         public bool MultipleSelection { get; set; }
         public bool EditableAmount { get; set; }
+        public int Order { get; set; }
         public double PriceGrowth { get; set; }
         [MaxLength(128)]
         public string ParentProductOptionId { get; set; }
         public ProductOption ParentProductOption { get; set; }
+        [MaxLength(128)]
+        public string BindedProductOptionId { get; set; }
+        public ProductOption BindedProductOption { get; set; }
         public ICollection<ProductOption> ChildProductOptions { get; set; }
+        public ICollection<ProductOption> BindedProductOptions { get; set; }
         [MaxLength(128)]
         public string ProductId { get; set; }
         public Product Product { get; set; }

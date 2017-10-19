@@ -58,7 +58,8 @@ namespace Benefit.Services.Domain
                     entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId &&
                     entry.ParentProductOptionId == null).ToList();
             productOptions.InsertRange(0, categoryProductOptions);
-            return productOptions;
+            productOptions.ForEach(entry=>entry.ChildProductOptions = entry.ChildProductOptions.OrderBy(po=>po.Order).ToList());
+            return productOptions.OrderBy(entry => entry.Order).ToList();
         }
 
         public int ProcessImportedProductPrices(IEnumerable<XmlProductPrice> xmlProductPrices)
