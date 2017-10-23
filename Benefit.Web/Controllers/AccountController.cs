@@ -37,7 +37,10 @@ namespace Benefit.Web.Controllers
             var provider = new DpapiDataProtectionProvider("Sample");
             UserManager.EmailService = new EmailService();
             UserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(
-                provider.Create("EmailConfirmation"));
+                provider.Create("EmailConfirmation"))
+            {
+                TokenLifespan = TimeSpan.FromDays(30)
+            };
             UserManager.UserValidator = new UserValidator<ApplicationUser>(UserManager)
             {
                 AllowOnlyAlphanumericUserNames = false
@@ -659,19 +662,19 @@ namespace Benefit.Web.Controllers
                 }
                 return null;
             }
-        } 
+        }
 
         [AllowAnonymous]
         public ActionResult CheckRegisteredCard(string id)
         {
             using (var db = new ApplicationDbContext())
             {
-                var card = db.BenefitCards.Include(entry=>entry.ReferalUser).FirstOrDefault(entry => entry.Id == id);
+                var card = db.BenefitCards.Include(entry => entry.ReferalUser).FirstOrDefault(entry => entry.Id == id);
                 if (card != null)
                 {
                     return
                         Content(
-                            JsonConvert.SerializeObject(new {card.ReferalUser.ExternalNumber, card.ReferalUser.FullName}),
+                            JsonConvert.SerializeObject(new { card.ReferalUser.ExternalNumber, card.ReferalUser.FullName }),
                             "application/json");
                 }
                 return HttpNotFound();
