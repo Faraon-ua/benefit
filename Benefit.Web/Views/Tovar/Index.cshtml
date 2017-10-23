@@ -1,4 +1,5 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Common.Helpers
 @using Benefit.Domain.Models
 @using Benefit.Services
 @using Benefit.Services.Domain
@@ -154,21 +155,15 @@
                     <span class="rating_star @CommonConstants.RatingToClass[Model.Product.AvarageRating ?? default(int)]"></span>
                 </div>
                 <p class="product_description_in_stock">
-                    @if (Model.Product.AvailableAmount == null)
+                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.Available)
                     {
-                        <span>
-                            В наявності
-                        </span>
-                    }
-                    else if (Model.Product.AvailableAmount == 0)
-                    {
-                        <span>
-                            Немає в наявності
-                        </span>
+                        <span>В наявності: <span id="available-amount">@Model.Product.AvailableAmount</span> @(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
                     }
                     else
                     {
-                        <span>В наявності: <span id="available-amount">@Model.Product.AvailableAmount</span> @(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                        <span>
+                            @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+                        </span>
                     }
                 </p>
                 <p class="product_description_price">
@@ -187,15 +182,15 @@
 
                 }
 
-               @* <div class="product_description">
-                    <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>
-                    <a href="#product_descr_tab">Детальніше</a>
-                </div>*@
+                @* <div class="product_description">
+                        <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>
+                        <a href="#product_descr_tab">Детальніше</a>
+                    </div>*@
 
                 <div class="product_description_control_wrap pull-right">
                     @*<div class="product_description_like"></div>
                         <div class="product_description_scale"></div>*@
-                    @if (Model.Product.AvailableAmount == 0)
+                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock)
                     {
                         <a class="product_description_buy bg-grey" href="#">Купити</a>
                     }
@@ -205,7 +200,6 @@
                         if (availableForPurchase.Key)
                         {
                             <a id="buy-product" class="product_description_buy" href="#">Купити</a>
-
                         }
                         else
                         {

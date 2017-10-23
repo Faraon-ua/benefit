@@ -4,12 +4,21 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
-using System.Data.Entity;
 using Benefit.Common.Constants;
-using Benefit.Domain.DataAccess;
 
 namespace Benefit.Domain.Models
 {
+    public enum ProductAvailabilityState
+    {
+        [Display(Name = "В наявності")]
+        Available,
+        [Display(Name = "Завжди в наявності")]
+        AlwaysAvailable,
+        [Display(Name = "Немає в наявності")]
+        NotInStock,
+        [Display(Name = "Під замовлення")]
+        OnDemand
+    }
     public class Product
     {
         public Product()
@@ -45,6 +54,7 @@ namespace Benefit.Domain.Models
         public double? WholesalePrice { get; set; }
         public int? WholesaleFrom { get; set; }
         public bool IsWeightProduct { get; set; }
+        public ProductAvailabilityState AvailabilityState { get; set; }
         public int? AvailableAmount { get; set; }
         #region advertisement
         public bool IsFeatured { get; set; }

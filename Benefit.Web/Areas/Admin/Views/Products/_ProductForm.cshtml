@@ -38,7 +38,7 @@
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Оптова Ціна</label>
         <div class="col-md-9">
-            @Html.TextBox("WholesalePrice", Model.WholesalePrice == null ? null : Model.WholesalePrice.Value.ToString("F"), new {@class = "col-sm-1 pull-left"})
+            @Html.TextBox("WholesalePrice", Model.WholesalePrice == null ? null : Model.WholesalePrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
             @Html.ValidationMessageFor(model => model.WholesalePrice)
         </div>
     </div>
@@ -51,20 +51,16 @@
     </div>
 
     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Статус доступності</label>
+        <div class="col-md-9">
+            @Html.EnumDropDownListFor(m => m.AvailabilityState)
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Доступна кількість</label>
         <div class="col-md-9">
-            @{
-                var htmlAttributes = new Dictionary<string, object>();
-                if (Model.AvailableAmount == null)
-                {
-                    htmlAttributes.Add("disabled", "disabled");
-                }
-            }
-            @Html.EditorFor(entry => entry.AvailableAmount, new { htmlAttributes })
-            <label>
-                <input type="checkbox" class="ace" id="amountSwitcher" @(Model.AvailableAmount == null ? "checked" : "")>
-                <span class="lbl"> Завжди в наявності</span>
-            </label>
+            @Html.EditorFor(entry => entry.AvailableAmount)
         </div>
     </div>
 

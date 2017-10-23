@@ -87,14 +87,18 @@
             </p>
             @foreach (var fb in Model.Where(entry => entry.ChannelType == NotificationChannelType.Facebook))
             {
-            <div class="well well-sm clearfix">
-                <span class="col-sm-11">
-                    @fb.Address
-                </span>
-                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = fb.Id})" class="pull-right">
-                    <i class="icon-remove red"></i>
-                </a>
-            </div>
+                <div class="well well-sm clearfix">
+                    <span class="col-sm-11">
+                        @if (!string.IsNullOrEmpty(fb.Name))
+                        {
+                            <span>@fb.Name -</span>
+                        }
+                        <span>@fb.Address</span>
+                    </span>
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = fb.Id})" class="pull-right">
+                        <i class="icon-remove red"></i>
+                    </a>
+                </div>
             }
         </div>
     </div>
@@ -115,14 +119,18 @@
         <div>
             @foreach (var email in Model.Where(entry => entry.ChannelType == NotificationChannelType.Email))
             {
-            <div class="well well-sm clearfix">
-                <span class="col-sm-11">
-                    @email.Address
-                </span>
-                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = email.Id })" class="pull-right">
-                    <i class="icon-remove red"></i>
-                </a>
-            </div>
+                <div class="well well-sm clearfix">
+                    <span class="col-sm-11">
+                        @if (!string.IsNullOrEmpty(email.Name))
+                        {
+                            <span>@email.Name -</span>
+                        }
+                        <span>@email.Address</span>
+                    </span>
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = email.Id })" class="pull-right">
+                        <i class="icon-remove red"></i>
+                    </a>
+                </div>
             }
         </div>
     </div>
@@ -143,14 +151,18 @@
         <div>
             @foreach (var phone in Model.Where(entry => entry.ChannelType == NotificationChannelType.Phone))
             {
-            <div class="well well-sm clearfix">
-                <span class="col-sm-11">
-                    @phone.Address
-                </span>
-                <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = phone.Id})" class="pull-right">
-                    <i class="icon-remove red"></i>
-                </a>
-            </div>
+                <div class="well well-sm clearfix">
+                    <span class="col-sm-11">
+                        @if (!string.IsNullOrEmpty(phone.Name))
+                        {
+                            <span>@phone.Name -</span>
+                        }
+                        <span>@phone.Address</span>
+                    </span>
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = phone.Id})" class="pull-right">
+                        <i class="icon-remove red"></i>
+                    </a>
+                </div>
             }
         </div>
     </div>
@@ -180,7 +192,11 @@
             {
                 <div class="well well-sm clearfix">
                     <span class="col-sm-11">
-                        @telegram.Address
+                        @if (!string.IsNullOrEmpty(telegram.Name))
+                        {
+                            <span>@telegram.Name -</span>
+                        }
+                        <span>@telegram.Address</span>
                     </span>
                     <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = telegram.Id })" class="pull-right">
                         <i class="icon-remove red"></i>

@@ -94,15 +94,6 @@
             $('#SKU, #WholesaleFrom').mask("#");
             $('#Amount').mask("#");
 
-            $("#amountSwitcher").change(function () {
-                if (this.checked) {
-                    $("#AvailableAmount").val("");
-                    $("#AvailableAmount").prop("disabled", true);
-                } else {
-                    $("#AvailableAmount").prop("disabled", false);
-                }
-            });
-
             CKEDITOR.replace('Description', {
                 //                filebrowserImageBrowseUrl: '/home/uploadPartial',
                 //                filebrowserImageUploadUrl: '/home/uploadnow'

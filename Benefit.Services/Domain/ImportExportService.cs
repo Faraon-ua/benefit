@@ -201,7 +201,7 @@ namespace Benefit.Services.Domain
                     IsWeightProduct = false,
                     Price = double.Parse(xmlProduct.Element("price").Value),
                     CurrencyId = currencies.First(entry => entry.Name == currencyId).Id,
-                    AvailableAmount = xmlProduct.Attribute("available").Value == "true" ? null : (int?)0,
+                    AvailabilityState = xmlProduct.Attribute("available").Value == "true" ? ProductAvailabilityState.Available : ProductAvailabilityState.OnDemand,
                     IsActive = true,
                     IsImported = true,
                     DoesCountForShipping = true,
@@ -259,13 +259,13 @@ namespace Benefit.Services.Domain
                 var currencyId = xmlProduct.Element("currencyId").Value;
 
                 product.Name = name;
-                product.UrlName = string.Format("{0}_{1}",product.SKU ,name.Translit()).Truncate(128);
+                product.UrlName = string.Format("{0}_{1}", product.SKU, name.Translit()).Truncate(128);
                 product.CategoryId = xmlProduct.Element("categoryId").Value;
                 product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                 product.Price = double.Parse(xmlProduct.Element("price").Value);
                 product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
 
-                product.AvailableAmount = xmlProduct.Attribute("available").Value == "true" ? null : (int?)0;
+                product.AvailabilityState = xmlProduct.Attribute("available").Value == "true" ? ProductAvailabilityState.Available : ProductAvailabilityState.OnDemand;
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = "PromUaImport";
                 product.AltText = name.Truncate(100);
