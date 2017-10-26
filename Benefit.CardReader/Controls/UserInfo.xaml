@@ -14,7 +14,7 @@
             </Border.Effect>
             <StackPanel Orientation="Vertical" Margin="25,15">
                 <Grid>
-                    <Button Name="CloseUserInfo" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ToggleButtonWindowClose}" Click="CloseUserInfo_OnClick" />
+                    <Button Name="CloseUserInfo" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ToggleButtonWindowClose}" Click="CloseUserInfo_OnClick" ToolTip="Закрити (Esc)" />
 
                     <StackPanel Orientation="Vertical"  HorizontalAlignment="Left">
                         <TextBlock Foreground="#333333" FontSize="20">Клієнт:</TextBlock>

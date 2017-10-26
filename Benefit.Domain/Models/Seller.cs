@@ -52,6 +52,7 @@ namespace Benefit.Domain.Models
         public SellerStatus Status { get; set; }
         public bool TerminalOrderNotification { get; set; }
         public bool TerminalBillEnabled { get; set; }
+        public bool TerminalBonusesPaymentActive { get; set; }
         [MaxLength(32)]
         public string TerminalLogin { get; set; }
         [MaxLength(32)]

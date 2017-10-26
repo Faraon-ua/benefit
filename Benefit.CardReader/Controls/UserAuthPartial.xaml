@@ -33,7 +33,7 @@
                 <DropShadowEffect Opacity="0.2" ShadowDepth="3" />
             </Border.Effect>
             <StackPanel Orientation="Vertical">
-                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontSize="30" LineHeight="36" Margin="0,10,0,0" LineStackingStrategy="BlockLineHeight" Foreground="#990100">Для авторизації <LineBreak/> клієнта піднесіть картку</TextBlock>
+                <TextBlock HorizontalAlignment="Center" TextAlignment="Center" FontSize="30" LineHeight="36" Margin="0,10,0,0" LineStackingStrategy="BlockLineHeight" Foreground="#990100">Піднесіть картку клієнта</TextBlock>
                 <Image Source="/Images/card.png" Width="430" Margin="10"></Image>
             </StackPanel>
         </Border>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -10,14 +11,21 @@ namespace Benefit.Domain.Models
 {
     public enum ProductAvailabilityState
     {
+        [Description("#73d36a")]
         [Display(Name = "В наявності")]
         Available,
         [Display(Name = "Завжди в наявності")]
+        [Description("#73d36a")]
         AlwaysAvailable,
         [Display(Name = "Немає в наявності")]
+        [Description("#333333")]
         NotInStock,
         [Display(Name = "Під замовлення")]
-        OnDemand
+        [Description("#fe6600")]
+        OnDemand,
+        [Display(Name = "Закінчується")]
+        [Description("#fe6600")]
+        Ending
     }
     public class Product
     {

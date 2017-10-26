@@ -32,7 +32,7 @@
                         <Image Source="/Images/logo.png" HorizontalAlignment="Left" Height="54" VerticalAlignment="Top"></Image>
                         <TextBlock Foreground="White" Margin="15, 5" FontSize="20" LineHeight="22" FontWeight="Thin" LineStackingStrategy="BlockLineHeight">Benefit NFC <LineBreak/> Reader Software</TextBlock>
                     </StackPanel>
-                    <Button Name="CloseButton" Height="30" VerticalAlignment="Top" Margin="10" HorizontalAlignment="Right" Click="CloseButton_OnClick" Style="{StaticResource ToggleButtonWindowClose}" />
+                    <Button Name="CloseButton" Height="30" VerticalAlignment="Top" Margin="10" HorizontalAlignment="Right" Click="CloseButton_OnClick" Style="{StaticResource ToggleButtonWindowClose}" ToolTip="Щоб закрити вікно натисніть Esc" />
                 </Grid>
             </Border>
             <StackPanel Name="Header" Orientation="Horizontal">
@@ -67,7 +67,7 @@
                 <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="40,0" HorizontalAlignment="Left">
                     <Hyperlink Name="SiteHyperlink" NavigateUri="https://benefit-company.com" TextDecorations="None" Foreground="White" RequestNavigate="Hyperlink_OnRequestNavigate">www.benefit-company.com</Hyperlink>
                 </TextBlock>
-                <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="40,0" HorizontalAlignment="Right">Гаряча лінія: (095) 913 34 44</TextBlock>
+                <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center" Margin="40,0" HorizontalAlignment="Right">Гаряча лінія: +380959133444</TextBlock>
             </Grid>
         </Border>
     </DockPanel>

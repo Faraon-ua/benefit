@@ -8,5 +8,6 @@
         public string UserName { get; set; }
         public string UserCard { get; set; }
         public string SellerName { get; set; }
+        public bool ShowChargeBonuses { get; set; }
     }
 }

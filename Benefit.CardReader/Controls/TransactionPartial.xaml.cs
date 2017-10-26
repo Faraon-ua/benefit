@@ -38,8 +38,6 @@ namespace Benefit.CardReader.Controls
 
         private void ProcessPayment(bool chargeBonuses = false)
         {
-            defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
-
             var billNumber = txtBillNumber.Text == txtBillNumber.Tag.ToString() ? null : txtBillNumber.Text;
             double paymentSum = 0;
             try
@@ -48,9 +46,10 @@ namespace Benefit.CardReader.Controls
             }
             catch
             {
-                defaultWindow.ShowErrorMessage("Невірний формат суми");
+                defaultWindow.ShowErrorMessage("Введіть суму чека");
                 return;
             }
+            defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
             var paymentIngest = new PaymentIngest
             {
                 CashierNfc = app.AuthInfo.CashierNfc,
@@ -107,7 +106,7 @@ namespace Benefit.CardReader.Controls
             });
         }
 
-        private void BtnUserInfo_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        public void BtnUserInfo_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             apiService.AuthToken = app.Token;
             var user = apiService.GetUserInfo(app.AuthInfo.UserNfc);
@@ -160,17 +159,19 @@ namespace Benefit.CardReader.Controls
             }
         }
 
-        private void BtnPayBonuses_OnClick(object sender, RoutedEventArgs e)
+        public void BtnPayBonuses_OnClick(object sender, RoutedEventArgs e)
         {
+            btnPayBonuses.Focus();
             ProcessPayment();
         }
 
-        private void BtnChargeBonuses_OnClick(object sender, RoutedEventArgs e)
+        public void BtnChargeBonuses_OnClick(object sender, RoutedEventArgs e)
         {
+            btnChargeBonuses.Focus();
             ProcessPayment(true);
         }
 
-        private void TransactionOk_OnClick(object sender, RoutedEventArgs e)
+        public void TransactionOk_OnClick(object sender, RoutedEventArgs e)
         {
             TransactionResult.Visibility = Visibility.Hidden;
             TransactionPanel.Visibility = Visibility.Visible;

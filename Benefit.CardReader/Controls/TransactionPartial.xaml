@@ -80,7 +80,7 @@
                             <TextBlock Name="UserCard" Foreground="#990100" FontSize="25" Margin="10,0" LineStackingStrategy="BlockLineHeight" LineHeight="40"></TextBlock>
                         </StackPanel>
                     </StackPanel>
-                    <Image Name="btnUserInfo" Source="/Images/info.png" Width="61" Height="62" HorizontalAlignment="Right" Cursor="Hand" MouseLeftButtonDown="BtnUserInfo_OnMouseLeftButtonDown"></Image>
+                    <Image Name="btnUserInfo" Source="/Images/info.png" Width="61" Height="62" HorizontalAlignment="Right" Cursor="Hand" MouseLeftButtonDown="BtnUserInfo_OnMouseLeftButtonDown" ToolTip="Інформація клієнта (F4)"></Image>
                 </Grid>
             </StackPanel>
         </Border>
@@ -92,12 +92,24 @@
                 <StackPanel Orientation="Vertical" Name="TransactionPanel" Visibility="Visible">
                     <TextBlock HorizontalAlignment="Center" Margin="5" FontSize="25">Нарахування</TextBlock>
                     <Grid Margin="25,5,25,0">
-                        <TextBox Name="txtPaymentSum" Width="300" Height="65" FlowDirection="LeftToRight" PreviewTextInput="PaymentSum_OnPreviewTextInput" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="25" TextAlignment="Center" Padding="13" HorizontalAlignment="Left" Tag="Сума">Сума</TextBox>
-                        <TextBox Name="txtBillNumber" Width="300" Height="65" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="25" TextAlignment="Center" Padding="13" HorizontalAlignment="Right" Tag="Номер чеку">Номер чеку</TextBox>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <TextBox Name="txtPaymentSum" Width="300" Height="50" FlowDirection="LeftToRight" PreviewTextInput="PaymentSum_OnPreviewTextInput" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="20" TextAlignment="Center" Padding="10" Tag="Сума чеку">Сума чеку</TextBox>
+                            <Label HorizontalContentAlignment="Center" Foreground="#999999">Щоб ввести суму чеку натисніть F1</Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
+                            <TextBox Name="txtBillNumber" Width="300" Height="50" GotFocus="OnGotFocus" LostFocus="OnLostFocus" Background="#F7F7F7" Foreground="#333333" FontSize="20" TextAlignment="Center" Padding="10" HorizontalAlignment="Right" Tag="Номер чеку">Номер чеку</TextBox>
+                            <Label Name="lblBillNumber" HorizontalContentAlignment="Center" Foreground="#999999">Щоб ввести номер чеку натисніть F2</Label>
+                        </StackPanel>
                     </Grid>
-                    <Grid Margin="25,15">
-                        <Button Name="btnPayBonuses" Click="BtnPayBonuses_OnClick" Cursor="Hand" Width="300" Height="75" HorizontalAlignment="Left" FontSize="26" Style="{StaticResource PayBonuses}">Нарахувати бонуси</Button>
-                        <Button Name="btnChargeBonuses" Click="BtnChargeBonuses_OnClick" Cursor="Hand" Width="300" Height="75" HorizontalAlignment="Right" FontSize="26" Style="{StaticResource ChargeBonuses}">Списати бонуси</Button>
+                    <Grid Margin="25,5,25,15">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <Button Name="btnPayBonuses" Click="BtnPayBonuses_OnClick" Cursor="Hand" Width="300" Height="65" HorizontalAlignment="Left" FontSize="26" Style="{StaticResource PayBonuses}">Нарахувати бонуси</Button>
+                            <Label HorizontalContentAlignment="Center" Foreground="#999999">Щоб нарахувати бонуси натисніть F3</Label>
+                        </StackPanel>
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
+                            <Button Name="btnChargeBonuses" Click="BtnChargeBonuses_OnClick" Cursor="Hand" Width="300" Height="65" HorizontalAlignment="Right" FontSize="26" Style="{StaticResource ChargeBonuses}">Списати бонуси</Button>
+                            <Label Name="lblBonusesPayment" HorizontalContentAlignment="Center" Foreground="#999999">Щоб списати бонуси натисніть F12</Label>
+                        </StackPanel>
                     </Grid>
                 </StackPanel>
                 <StackPanel Orientation="Vertical" Name="TransactionResult" Visibility="Collapsed">

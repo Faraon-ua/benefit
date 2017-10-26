@@ -6,6 +6,7 @@ using System.Windows.Threading;
 using Benefit.CardReader.Services;
 using Benefit.CardReader.Services.Factories;
 using Benefit.HttpClient;
+using System.Windows.Input;
 
 namespace Benefit.CardReader
 {
@@ -17,7 +18,8 @@ namespace Benefit.CardReader
         private TimeSpan _minLoadTime = new TimeSpan(0, 0, 5);//sec
 
         private const int CheckConnectionPeriod = 15; //seconds
-        private const int CheckDevicePeriod = 60; //seconds
+        private const int minCheckDevicePeriod = 5; //seconds
+        private const int maxCheckDevicePeriod = 60; //seconds
         private DispatcherTimer onlineCheckTimer;
         private DispatcherTimer deviceCheckTimer;
 
@@ -49,7 +51,7 @@ namespace Benefit.CardReader
 
             deviceCheckTimer = new DispatcherTimer();
             deviceCheckTimer.Tick += DeviceCheck;
-            deviceCheckTimer.Interval = new TimeSpan(0, 0, CheckDevicePeriod);
+            deviceCheckTimer.Interval = new TimeSpan(0, 0, app.IsDeviceConnected ? maxCheckDevicePeriod : minCheckDevicePeriod);
             deviceCheckTimer.Start();
         }
 
@@ -72,6 +74,7 @@ namespace Benefit.CardReader
                 app.AuthInfo.CashierNfc = nfcCode;
                 app.AuthInfo.CashierName = cashierSeller.CashierName;
                 app.AuthInfo.SellerName = cashierSeller.SellerName;
+                app.AuthInfo.ShowChargeBonuses = cashierSeller.ShowBonusesPayment;
 
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -79,9 +82,12 @@ namespace Benefit.CardReader
                     defaultWindow.UserAuthPartial.CashierName.Text = cashierSeller.CashierName;
                     defaultWindow.ShowSingleControl(ViewType.UserAuthPartial);
                     defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
-                    defaultWindow.TransactionPartial.txtBillNumber.Visibility = cashierSeller.ShowBill
+                    defaultWindow.TransactionPartial.txtBillNumber.Visibility = defaultWindow.TransactionPartial.lblBillNumber.Visibility = cashierSeller.ShowBill
                         ? Visibility.Visible
-                        : Visibility.Collapsed;
+                        : Visibility.Hidden;
+                    defaultWindow.TransactionPartial.btnChargeBonuses.Visibility = defaultWindow.TransactionPartial.lblBonusesPayment.Visibility = cashierSeller.ShowBonusesPayment
+                        ? Visibility.Visible
+                        : Visibility.Hidden;
                 }));
                 return true;
             }
@@ -98,24 +104,27 @@ namespace Benefit.CardReader
 
         #endregion
 
-        
-
         void CheckConnection(object sender, EventArgs e)
         {
             var isconnected = httpClient.CheckForInternetConnection();
-            ((App)Application.Current).IsConnected = isconnected;
+            app.IsConnected = isconnected;
 
             if (isconnected)
             {
                 OfflineService.ProcessStoredPayments(app.LicenseKey);
-                defaultWindow.TransactionPartial.btnChargeBonuses.Visibility = Visibility.Visible;
+                if (app.AuthInfo.ShowChargeBonuses)
+                {
+                    defaultWindow.TransactionPartial.btnChargeBonuses.Visibility =
+                        defaultWindow.TransactionPartial.lblBonusesPayment.Visibility = Visibility.Visible;
+                }
                 defaultWindow.TransactionPartial.btnUserInfo.Visibility = Visibility.Visible;
                 defaultWindow.ConnectionEsteblished.Visibility = Visibility.Visible;
                 defaultWindow.NoConnection.Visibility = Visibility.Collapsed;
             }
             else
             {
-                defaultWindow.TransactionPartial.btnChargeBonuses.Visibility = Visibility.Hidden;
+                defaultWindow.TransactionPartial.btnChargeBonuses.Visibility =
+                        defaultWindow.TransactionPartial.lblBonusesPayment.Visibility = Visibility.Hidden;
                 defaultWindow.TransactionPartial.btnUserInfo.Visibility = Visibility.Hidden;
                 defaultWindow.ConnectionEsteblished.Visibility = Visibility.Collapsed;
                 defaultWindow.NoConnection.Visibility = Visibility.Visible;
@@ -153,6 +162,9 @@ namespace Benefit.CardReader
                     defaultWindow.ShowSingleControl();
                 }
             }
+            deviceCheckTimer.Stop();
+            deviceCheckTimer.Interval = new TimeSpan(0, 0, app.IsDeviceConnected ? maxCheckDevicePeriod : minCheckDevicePeriod);
+            deviceCheckTimer.Start();
         }
 
         public void CloseComPort()
@@ -194,6 +206,11 @@ namespace Benefit.CardReader
 
                         Dispatcher.Invoke(new Action(() =>
                         {
+                            defaultWindow.TransactionPartial.TransactionResult.Visibility = Visibility.Hidden;
+                            defaultWindow.TransactionPartial.TransactionPanel.Visibility = Visibility.Visible;
+                            defaultWindow.TransactionPartial.txtBillNumber.Text = defaultWindow.TransactionPartial.txtBillNumber.Tag.ToString();
+                            defaultWindow.TransactionPartial.txtPaymentSum.Text = defaultWindow.TransactionPartial.txtPaymentSum.Tag.ToString();
+
                             defaultWindow.TransactionPartial.SellerName.Text = app.AuthInfo.SellerName;
                             defaultWindow.TransactionPartial.CashierName.Text = app.AuthInfo.CashierName;
                             defaultWindow.TransactionPartial.UserName.Text = user.Name;

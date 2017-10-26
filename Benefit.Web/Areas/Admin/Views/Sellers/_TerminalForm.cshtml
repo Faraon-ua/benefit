@@ -14,6 +14,13 @@
             @Html.CheckBoxFor(m => m.Seller.TerminalBillEnabled)
         </div>
     </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right" for="Seller_TerminalBonusesPaymentActive">Розрахунок бонусами</label>
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.Seller.TerminalBonusesPaymentActive)
+        </div>
+    </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right" for="Seller_IsObsoleteTerminal">Старий термінал (планшет)</label>
         <div class="col-xs-10 col-sm-5">

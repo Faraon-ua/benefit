@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -409,6 +410,10 @@
     <Compile Include="Migrations\201710230816553_AddNameToNotificationChannel.Designer.cs">
       <DependentUpon>201710230816553_AddNameToNotificationChannel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710260954563_AddTerminalBonusesPaymentFlag.cs" />
+    <Compile Include="Migrations\201710260954563_AddTerminalBonusesPaymentFlag.Designer.cs">
+      <DependentUpon>201710260954563_AddTerminalBonusesPaymentFlag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -710,6 +715,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710230816553_AddNameToNotificationChannel.resx">
       <DependentUpon>201710230816553_AddNameToNotificationChannel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710260954563_AddTerminalBonusesPaymentFlag.resx">
+      <DependentUpon>201710260954563_AddTerminalBonusesPaymentFlag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

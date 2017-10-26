@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
@@ -28,7 +30,15 @@ namespace Benefit.CardReader
             timer.Interval = new TimeSpan(0, PingOnlinePeriod, 0);
             timer.Start();
             AuthInfo = new BenefitAuthInfo();
+            CheckForMultipleLaunches();
 //            InstallMeOnStartUp();
+        }
+
+        void CheckForMultipleLaunches()
+        {
+            var thisprocessname = Process.GetCurrentProcess().ProcessName;
+            if (Process.GetProcesses().Count(p => p.ProcessName == thisprocessname) > 1)
+                Current.Shutdown();
         }
         void InstallMeOnStartUp()
         {

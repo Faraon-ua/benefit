@@ -177,6 +177,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             if (product.AvailableAmount != null && product.AvailableAmount > 0)
                             {
                                 product.AvailableAmount = product.AvailableAmount - (int)orderProduct.Amount;
+                                if (product.AvailabilityState == ProductAvailabilityState.Available && product.AvailableAmount <= ProductConstants.EndingNumber)
+                                {
+                                    product.AvailabilityState = ProductAvailabilityState.Ending;
+                                }
                             }
                             db.Entry(product).State = EntityState.Modified;
                         }

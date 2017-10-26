@@ -14,7 +14,7 @@
             </Border.Effect>
             <StackPanel Orientation="Vertical" Margin="25,15">
                 <Grid>
-                    <Button Name="CloseErrorMessage" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ToggleButtonWindowClose}" Click="CloseErrorMessage_OnClick" />
+                    <Button Name="CloseErrorMessage" Height="30" HorizontalAlignment="Right" VerticalAlignment="Top" Style="{StaticResource ToggleButtonWindowClose}" Click="CloseErrorMessage_OnClick" ToolTip="Закрити (Esc)" />
                     <StackPanel Orientation="Horizontal">
                         <Image Source="/Images/exclamation.png" Height="80"></Image>
                         <TextBlock FontSize="30" Name="txtError" Margin="50,25"></TextBlock>

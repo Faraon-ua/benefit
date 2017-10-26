@@ -155,15 +155,13 @@
                     <span class="rating_star @CommonConstants.RatingToClass[Model.Product.AvarageRating ?? default(int)]"></span>
                 </div>
                 <p class="product_description_in_stock">
-                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+                    <span style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
+                        @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+                    </span>
+                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending)
                     {
-                        <span>В наявності: <span id="available-amount">@Model.Product.AvailableAmount</span> @(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
-                    }
-                    else
-                    {
-                        <span>
-                            @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
-                        </span>
+                        <span id="available-amount">@Model.Product.AvailableAmount</span>
+                        @(@Model.Product.IsWeightProduct ? "кг" : "шт")
                     }
                 </p>
                 <p class="product_description_price">
@@ -190,7 +188,7 @@
                 <div class="product_description_control_wrap pull-right">
                     @*<div class="product_description_like"></div>
                         <div class="product_description_scale"></div>*@
-                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock)
+                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
                     {
                         <a class="product_description_buy bg-grey" href="#">Купити</a>
                     }

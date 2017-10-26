@@ -5,6 +5,7 @@ using System.Windows.Navigation;
 using Benefit.CardReader.Services;
 using System.IO.Ports;
 using System.Linq;
+using System.Windows.Input;
 
 namespace Benefit.CardReader
 {
@@ -44,6 +45,57 @@ namespace Benefit.CardReader
             _controls.Add(ViewType.TransactionPartial, TransactionPartial);
             _controls.Add(ViewType.DeviceNotConnected, DeviceNotConnected);
             _controls.Add(ViewType.DeviceNotAuthorized, DeviceNotAuthorized);
+
+            KeyDown += DefaultWindow_KeyDown;
+        }
+
+        void DefaultWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.F1)
+            {
+                TransactionPartial.txtPaymentSum.Focus();
+            }
+            if (e.Key == Key.F2)
+            {
+                if (TransactionPartial.txtBillNumber.Visibility == Visibility.Visible)
+                {
+                    TransactionPartial.txtBillNumber.Focus();
+                }
+            }
+            if (e.Key == Key.F3)
+            {
+                TransactionPartial.BtnPayBonuses_OnClick(null, null);
+            }
+            if (e.Key == Key.F12)
+            {
+                if (TransactionPartial.btnChargeBonuses.Visibility == Visibility.Visible)
+                {
+                    TransactionPartial.BtnChargeBonuses_OnClick(null, null);
+                }
+            }
+            if (e.Key == Key.F4)
+            {
+                TransactionPartial.BtnUserInfo_OnMouseLeftButtonDown(null, null);
+            }
+            if (e.Key == Key.Escape)
+            {
+                if (ErrorMessage.Visibility == Visibility.Visible || UserInfo.Visibility == Visibility.Visible)
+                {
+                    ErrorMessage.Visibility = Visibility.Hidden;
+                    UserInfo.Visibility = Visibility.Hidden;
+                }
+                else
+                {
+                    Hide();
+                }
+            }
+            if (e.Key == Key.Enter)
+            {
+                if (TransactionPartial.TransactionResult.Visibility == Visibility.Visible)
+                {
+                    TransactionPartial.TransactionOk_OnClick(null, null);
+                }
+            }
         }
 
         public void ShowErrorMessage(string errorMessage)
@@ -54,6 +106,7 @@ namespace Benefit.CardReader
 
         public void ShowSingleControl(ViewType? viewType = null, bool track = true)
         {
+            ErrorMessage.Visibility = Visibility.Hidden;
             var view = viewType.GetValueOrDefault(ActiveView);
             _controls.Select(entry => entry.Value).ToList().ForEach(entry => entry.Visibility = Visibility.Hidden);
             _controls[view].Visibility = Visibility.Visible;

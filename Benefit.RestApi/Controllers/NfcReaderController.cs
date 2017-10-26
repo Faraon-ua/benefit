@@ -33,7 +33,8 @@ namespace Benefit.RestApi.Controllers
                 {
                     SellerName = cashier.Seller.Name,
                     CashierName = cashier.Name,
-                    ShowBill = cashier.Seller.TerminalBillEnabled
+                    ShowBill = cashier.Seller.TerminalBillEnabled,
+                    ShowBonusesPayment = cashier.Seller.TerminalBonusesPaymentActive
                 });
             }
             return NotFound();

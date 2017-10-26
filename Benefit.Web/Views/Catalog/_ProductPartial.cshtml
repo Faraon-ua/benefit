@@ -1,4 +1,7 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Common.Helpers
+@using Benefit.Domain.Models
+@using Benefit.Services.Domain
 @model Benefit.DataTransfer.ViewModels.ProductPartialViewModel
 
 <div class="product_container" id="@Model.Product.Id">
@@ -33,7 +36,9 @@
                 <span>@Model.Product.Name</span>
             </a>
         </p>
-
+        <span style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
+            @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+        </span>
         <div class="rating_wrap">
             <div class="perelik_rating @CommonConstants.RatingToClass[Model.Product.AvarageRating ?? default(int)]"></div>
             <p class="rating_reviews">@Model.Product.ApprovedReviews.Count відгуків</p>
@@ -49,9 +54,15 @@
         <div class="product_control_wrap">
             <div class="product_like product_like_red"></div>
             <div class="product_scale"></div>
-            @if (Model.Product.AvailableAmount != 0)
+
+            @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
             {
-                if (Model.AvailableForPurchase.Key)
+                <a class="product_buy bg-grey" href="#" disabled="disabled">Відсутній</a>
+            }
+            else
+            {
+                var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+                if (availableForPurchase.Key)
                 {
                     <a class="product_buy" href="#" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId" data-is-weight-product="@Model.Product.IsWeightProduct" disabled>Купити</a>
                 }
@@ -59,10 +70,6 @@
                 {
                     <a class="product_buy bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @Model.AvailableForPurchase.Value">Купити</a>
                 }
-            }
-            else
-            {
-                <a class="product_buy bg-grey" href="#" disabled="disabled">Відсутній</a>
             }
         </div>
         @*        todo: add seller label and promotion*@
