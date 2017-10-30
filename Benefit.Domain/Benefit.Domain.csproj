@@ -414,6 +414,10 @@
     <Compile Include="Migrations\201710260954563_AddTerminalBonusesPaymentFlag.Designer.cs">
       <DependentUpon>201710260954563_AddTerminalBonusesPaymentFlag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201710301239182_AddTerminalLicense.cs" />
+    <Compile Include="Migrations\201710301239182_AddTerminalLicense.Designer.cs">
+      <DependentUpon>201710301239182_AddTerminalLicense.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -718,6 +722,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710260954563_AddTerminalBonusesPaymentFlag.resx">
       <DependentUpon>201710260954563_AddTerminalBonusesPaymentFlag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201710301239182_AddTerminalLicense.resx">
+      <DependentUpon>201710301239182_AddTerminalLicense.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

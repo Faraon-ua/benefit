@@ -80,7 +80,10 @@
                             <TextBlock Name="UserCard" Foreground="#990100" FontSize="25" Margin="10,0" LineStackingStrategy="BlockLineHeight" LineHeight="40"></TextBlock>
                         </StackPanel>
                     </StackPanel>
-                    <Image Name="btnUserInfo" Source="/Images/info.png" Width="61" Height="62" HorizontalAlignment="Right" Cursor="Hand" MouseLeftButtonDown="BtnUserInfo_OnMouseLeftButtonDown" ToolTip="Інформація клієнта (F4)"></Image>
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Right">
+                        <Image Name="btnUserInfo" Source="/Images/info.png" Width="61" Height="62" Cursor="Hand" MouseLeftButtonDown="BtnUserInfo_OnMouseLeftButtonDown" ToolTip="Інформація клієнта (F4)"></Image>
+                        <Label Foreground="#999999">Інформація клієнта (F4)</Label>
+                    </StackPanel>
                 </Grid>
             </StackPanel>
         </Border>

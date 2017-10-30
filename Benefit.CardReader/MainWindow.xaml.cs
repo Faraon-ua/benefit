@@ -211,6 +211,10 @@ namespace Benefit.CardReader
                             defaultWindow.TransactionPartial.txtBillNumber.Text = defaultWindow.TransactionPartial.txtBillNumber.Tag.ToString();
                             defaultWindow.TransactionPartial.txtPaymentSum.Text = defaultWindow.TransactionPartial.txtPaymentSum.Tag.ToString();
 
+                            defaultWindow.TransactionPartial.btnPayBonuses.Focusable = true;
+                            defaultWindow.TransactionPartial.btnPayBonuses.Focus();
+                            Keyboard.Focus(defaultWindow.TransactionPartial.btnPayBonuses);
+
                             defaultWindow.TransactionPartial.SellerName.Text = app.AuthInfo.SellerName;
                             defaultWindow.TransactionPartial.CashierName.Text = app.AuthInfo.CashierName;
                             defaultWindow.TransactionPartial.UserName.Text = user.Name;

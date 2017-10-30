@@ -75,6 +75,7 @@ namespace Benefit.CardReader
             }
             if (e.Key == Key.F4)
             {
+                TransactionPartial.btnUserInfo.Focus();
                 TransactionPartial.BtnUserInfo_OnMouseLeftButtonDown(null, null);
             }
             if (e.Key == Key.Escape)

@@ -40,7 +40,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult DownloadIntelHexFile(string id)
         {
             var seller = db.Sellers.Find(id);
-            var fileContent = SellerService.GenerateIntelHexFile(seller.TerminalPassword);
+            var fileContent = SellerService.GenerateIntelHexFile(seller.TerminalLicense);
             return File(fileContent, System.Net.Mime.MediaTypeNames.Application.Octet, seller.UrlName + ".hex");
         }
 

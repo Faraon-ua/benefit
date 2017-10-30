@@ -20,7 +20,7 @@ namespace Benefit.RestApi.Providers
             Seller seller = null;
             using (var db = new ApplicationDbContext())
             {
-                seller = await db.Sellers.FirstOrDefaultAsync(entry=>entry.TerminalPassword == context.UserName);
+                seller = await db.Sellers.FirstOrDefaultAsync(entry=>entry.TerminalLicense == context.UserName);
 
                 if (seller == null)
                 {
