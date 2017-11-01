@@ -25,7 +25,6 @@ namespace Benefit.Web.Filters
                 }
                 else
                 {
-
                     filterContext.Controller.ViewBag.User =
                         userService.GetUserInfoWithRegions(
                             filterContext.RequestContext.HttpContext.User.Identity.GetUserId());

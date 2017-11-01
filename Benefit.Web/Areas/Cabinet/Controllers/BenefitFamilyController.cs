@@ -97,20 +97,29 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         }
 
         [ValidateAntiForgeryToken]
-        public ActionResult AddRegisteredCard(string cardNumber)
+        [Authorize(Roles = DomainConstants.AdminRoleName)]
+        public ActionResult AddRegisteredCard(string userId, string cardNumber)
         {
             var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == cardNumber);
             if (card == null) return HttpNotFound();
-            card.ReferalUserId = ViewBag.User.Id;
-            db.Entry(card).State = EntityState.Modified;
-            db.SaveChanges();
-            return RedirectToAction("RegisteredCards", new {id = ViewBag.User.Id});
+            if (card.ReferalUserId == null && !db.Users.Any(entry => entry.CardNumber == cardNumber))
+            {
+                card.ReferalUserId = userId;
+                db.Entry(card).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            else
+            {
+                return Json(new { error = "Ця картка не може бути задіяна" });
+            }
+            return RedirectToAction("RegisteredCards", new { id = userId });
         }
 
+        [Authorize(Roles = DomainConstants.AdminRoleName)]
         public ActionResult RemoveRegisteredCard(string cardNumber)
         {
             var card = db.BenefitCards.FirstOrDefault(entry => entry.Id == cardNumber);
-            if (card != null && card.ReferalUserId == ViewBag.user.Id)
+            if (card != null)
             {
                 card.ReferalUserId = null;
                 db.Entry(card).State = EntityState.Modified;
