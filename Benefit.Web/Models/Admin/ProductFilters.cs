@@ -12,6 +12,7 @@ namespace Benefit.Web.Models.Admin
         public ProductSortOption? Sorting{ get; set; }
         public bool IsAvailable { get; set; }
         public bool HasImage { get; set; }
+        public bool IsActive { get; set; }
         public int Page { get; set; }
         public bool HasValues
         {
@@ -24,6 +25,7 @@ namespace Benefit.Web.Models.Admin
         public IEnumerable<SelectListItem> Sellers { get; set; }
         public IEnumerable<SelectListItem> Sorting { get; set; }
         public bool IsAvailable { get; set; }
+        public bool IsActive{ get; set; }
         public bool HasImage { get; set; }
         public string Search { get; set; }
         public int PagesCount { get; set; }

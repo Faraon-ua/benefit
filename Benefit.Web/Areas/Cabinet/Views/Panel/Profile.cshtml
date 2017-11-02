@@ -7,6 +7,7 @@
 }
 @section scripts
 {
+    <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
     <script src="~/Scripts/address.js"></script>
@@ -32,14 +33,14 @@
                     addressBlock.remove();
                 });
             });
-            
-            $(".remove-card").click(function(e) {
+
+            $("body").on("click", ".remove-card", function (e) {
                 e.preventDefault();
                 var parent = $(this).parent();
                 var cardNumber = $(this).attr("data-card-number");
                 $.post(deleteCardUrl, {
                     cardNumber: cardNumber
-                }, function() {
+                }, function () {
                     parent.remove();
                     flashMessage("Реєстраційну картку видалено");
                 });

@@ -109,6 +109,9 @@ namespace Benefit.Domain.Models
             }
         }
 
+        [NotMapped]
+        public ICollection<Localization> Localizations { get; set; }
+
         private KeyValuePair<bool, string>? _availableForPurchase = null;
         public KeyValuePair<bool, string> AvailableForPurchase(int regionId)
         {

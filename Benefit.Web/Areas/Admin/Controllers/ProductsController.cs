@@ -59,11 +59,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (filters.IsAvailable)
                 {
-                    products = products.Where(entry => entry.AvailableAmount == null || entry.AvailableAmount > 0);
+                    products = products.Where(entry => entry.AvailabilityState != ProductAvailabilityState.NotInStock || entry.AvailableAmount > 0);
                 }
                 if (filters.HasImage)
                 {
                     products = products.Where(entry => !entry.Images.Any());
+                } 
+                if (filters.IsActive)
+                {
+                    products = products.Where(entry => entry.IsActive);
                 }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {
