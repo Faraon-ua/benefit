@@ -72,8 +72,7 @@
                     }))
                     {
                         @Html.AntiForgeryToken()
-                        var userId = (string)ViewContext.RouteData.Values[DomainConstants.UserIdKey];
-                        @Html.Hidden("UserId", userId)
+                        @Html.Hidden("UserId", (string)ViewBag.UserId)
                         @Html.TextBox("CardNumber", null, new {placeholder = "Номер картки", @class = "form-control"})<br/>
                         <input type="submit" value="Додати" class="btn btn-success" onclick="$('#add-card-modal').modal('hide');"/>
                         <button type="button" class="btn btn-default" data-dismiss="modal">Скасувати</button>

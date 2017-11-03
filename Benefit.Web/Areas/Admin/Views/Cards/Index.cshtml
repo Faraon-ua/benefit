@@ -8,7 +8,7 @@
 @section scripts
 {
     <script>
-        $(function() {
+        $(function () {
             $(".pagination a").click(function () {
                 $("#page").val($(this).attr("data-page-number"));
                 $("form").submit();
@@ -69,6 +69,12 @@
         <th>
             Брелок
         </th>
+        <th>
+            Benefit Family
+        </th>
+        <th>
+            Реєстраційна картка
+        </th>
         <th></th>
     </tr>
 
@@ -89,8 +95,20 @@
                 }
             </td>
             <td>
+                @if (item.User != null)
+                {
+                    @Html.ActionLink(item.User.FullName, "Edit", "Users", new { id = item.UserId }, new { target = "_blank" })
+                }
+            </td>
+            <td>
+                @if (item.ReferalUser != null)
+                {
+                    @Html.ActionLink(item.ReferalUser.FullName, "Edit", "Users", new { id = item.ReferalUserId }, new { target="_blank" })
+                }
+            </td>
+            <td>
                 @Html.ActionLink("Редагувати", "CreateOrUpdate", new { id = item.Id }) |
-                @Html.ActionLink("Видалити", "Delete", new { id = item.Id }, new { onclick="return confirm('Ви впевенні?');" })
+                @Html.ActionLink("Видалити", "Delete", new { id = item.Id }, new { onclick = "return confirm('Ви впевенні?');" })
             </td>
         </tr>
     }

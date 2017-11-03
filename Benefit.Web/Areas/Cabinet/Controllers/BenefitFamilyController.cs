@@ -93,6 +93,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                             entry.ReferalUserId == id && db.BenefitCards.Select(bc => entry.UserId).Contains(id) &&
                             db.Users.Select(us => us.NFCCardNumber).Contains(entry.NfcCode)).ToList()
             };
+            ViewBag.UserId = id;
             return PartialView("_RegisteredCards", registeredCards);
         }
 

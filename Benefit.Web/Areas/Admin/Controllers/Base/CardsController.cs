@@ -20,7 +20,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
         // GET: /Admin/Cards/
         public ActionResult Index(string CardNumber, int page = 0)
         {
-            var benefitcards = db.BenefitCards.Include(b => b.User);
+            var benefitcards = db.BenefitCards.Include(b => b.User).Include(b => b.ReferalUser);
             if (!string.IsNullOrEmpty(CardNumber))
             {
                 benefitcards = benefitcards.Where(entry => entry.Id == CardNumber);
