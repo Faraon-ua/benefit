@@ -8,7 +8,7 @@
     var title = new StringBuilder();
     if (Model.Category != null)
     {
-        title.Append(Model.Category.Name + " - ");
+        title.Append(Model.Category.Title ?? Model.Category.Name + " - ");
     }
     if (Model.Seller != null)
     {

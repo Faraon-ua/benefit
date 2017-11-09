@@ -1,7 +1,7 @@
 ﻿@model Benefit.Domain.Models.InfoPage
 
 @{
-    ViewBag.Title = Model.Name;
+    ViewBag.Title = Model.Title ?? Model.Name;
 }
 @section LeftAside{
     <div class="vertical_menu" id="right-menu">

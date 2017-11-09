@@ -5,7 +5,7 @@
 }
 else
 {
-    foreach (var parameter in Model.Category.ProductParameters)
+    foreach (var parameter in Model.Category.ProductParameters.OrderBy(entry=>entry.Order))
     {
         <div class="row">
             @{

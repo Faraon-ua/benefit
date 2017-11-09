@@ -4,10 +4,10 @@
 @using Benefit.Services
 @using Benefit.Services.Domain
 @using Benefit.DataTransfer.ViewModels;
-@model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
+@model ProductDetailsViewModel
 
 @{
-    ViewBag.Title = @Model.Product.Name;
+    ViewBag.Title = Model.Product.Title ?? Model.Product.Name;
 }
 @{
     var image_src = Model.Product.Images.FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);

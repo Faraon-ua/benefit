@@ -1,7 +1,7 @@
 ﻿@model Benefit.DataTransfer.ViewModels.NavigationEntities.SellersViewModel
 
 @{
-    ViewBag.Title = Model.Category.Name;
+    ViewBag.Title = Model.Category.Title ?? Model.Category.Name;
     ViewBag.SellerUrl = Model.Category.UrlName;
     ViewBag.MainContainerClass = "full_content full_content_provider";
 }

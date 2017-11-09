@@ -25,11 +25,25 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult Index(List<string> sortedParameters)
+        {
+            var parameters = db.ProductParameterValues.Where(entry => sortedParameters.Contains(entry.Id)).ToList();
+            for (var i = 0; i < sortedParameters.Count; i++)
+            {
+                var parameter = parameters.FirstOrDefault(entry => entry.Id == sortedParameters[i]);
+                parameter.Order = i;
+                db.Entry(parameter).State = EntityState.Modified;
+            }
+            db.SaveChanges();
+            return Json("Сортування параметрів збережено");
+        }
+
         public ActionResult GetProductParameterDefinedValues(string parameterId, int? amount = null, string selectedValue = null, string selectedText = null)
         {
             var parameter = db.ProductParameters.Find(parameterId);
             var values =
-                parameter.ProductParameterValues.Select(
+                parameter.ProductParameterValues.OrderBy(entry=>entry.Order).Select(
                     entry =>
                         new SelectListItem()
                         {
@@ -125,6 +139,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             return View();
         }
+
+
 
         public ActionResult Delete(string id, string categoryId)
         {

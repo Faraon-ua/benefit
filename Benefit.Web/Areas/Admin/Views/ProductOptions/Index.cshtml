@@ -80,7 +80,7 @@
             $("body").on("click", ".btn-connect-option", function () {
                 var optionId = $(this).parents("li").attr("data-option-id");
                 var connectToOptionId = $(this).prev("select").val();
-                $.post(connectOptionsUrl, { optionId: optionId, connectToOptionId: connectToOptionId }, function() {
+                $.post(connectOptionsUrl, { optionId: optionId, connectToOptionId: connectToOptionId }, function () {
                     location.reload();
                 });
             });
@@ -176,7 +176,7 @@
         <ul class="options-list no-list-style" data-option-id="@group.Id">
             @foreach (var child in group.ChildProductOptions.OrderBy(entry => entry.Order))
             {
-                <li class="well well-sm clearfix width-30 margin-bottom-5" data-option-id="@child.Id">
+                <li class="well well-sm clearfix width-30 margin-bottom-5 cursor-move" data-option-id="@child.Id">
                     @child.Name (+@child.PriceGrowth)
                     @if (child.BindedProductOption != null)
                     {
