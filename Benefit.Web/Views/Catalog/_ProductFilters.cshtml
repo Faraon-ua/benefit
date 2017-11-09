@@ -24,7 +24,7 @@
                             foreach (var filterValue in filter.ProductParameterValues.OrderBy(entry=>entry.Order))
                             {
                                 <input id="@filterValue.ParameterValueUrl" class="hidden" type="checkbox">
-                                <label class="label_for_check" for="@filterValue.ParameterValueUrl">@filterValue.ParameterValue</label>
+                                <label class="label_for_check" for="@filterValue.ParameterValueUrl">@filterValue.ParameterValue @filter.MeasureUnit</label>
                             }
                         }
                     </div>

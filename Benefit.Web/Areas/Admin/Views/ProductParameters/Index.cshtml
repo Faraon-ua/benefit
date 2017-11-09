@@ -40,8 +40,8 @@
             });
         });
 
-        function ProductParameterValue(parameterId) {
-            $("#dialogContainer").load(routePrefix + "/Admin/ProductParameters/ProductParameterValue?parameterId=" + parameterId + "&categoryId=@Model.Key.Id", function (response, status, xhr) {
+        function ProductParameterValue(parameterId, valueId) {
+            $("#dialogContainer").load(routePrefix + "/Admin/ProductParameters/ProductParameterValue?parameterId=" + parameterId + "&categoryId=@Model.Key.Id&valueId=" + valueId, function (response, status, xhr) {
                 $("#dialog").removeClass('hide').dialog({
                     buttons: [
                         {
@@ -91,6 +91,10 @@
             {
                 <li class="well well-sm clearfix margin-bottom-5 cursor-move" data-parameter-value-id="@prParValue.Id">
                     @prParValue.ParameterValue
+                    <a onclick="ProductParameterValue('@parameter.Id','@prParValue.Id')" href="#">
+                        <i class="icon-edit blue"></i>
+
+                    </a>
                     <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("DeleteValue", new {id = prParValue.Id, categoryId = Model.Key.Id})">
                         <i class="icon-remove red"></i>
                     </a>

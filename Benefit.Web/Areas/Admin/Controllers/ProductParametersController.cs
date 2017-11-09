@@ -66,9 +66,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var productParameter = db.ProductParameters.Find(id) ?? new ProductParameter() { CategoryId = categoryId };
             return PartialView("_ProductParameterGroup", productParameter);
         }
-        public ActionResult ProductParameterValue(string parameterId, string categoryId)
+        public ActionResult ProductParameterValue(string valueId, string parameterId, string categoryId)
         {
-            var productParameter = new ProductParameterValue() { ProductParameterId = parameterId };
+            var productParameter = db.ProductParameterValues.Find(valueId) ?? new ProductParameterValue() { ProductParameterId = parameterId };
             ViewBag.CategoryId = categoryId;
             return PartialView("_ProductParameterValue", productParameter);
         }
@@ -132,9 +132,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                productParameterValue.Id = Guid.NewGuid().ToString();
-                db.ProductParameterValues.Add(productParameterValue);
+                if (productParameterValue.Id == null)
+                {
+                    productParameterValue.Id = Guid.NewGuid().ToString();
+                    db.ProductParameterValues.Add(productParameterValue);
+                }
+                else
+                {
+                    db.Entry(productParameterValue).State = EntityState.Modified;
+                }
                 db.SaveChanges();
+                TempData["SuccessMessage"] = "Зміни збережено";
                 return RedirectToAction("Index", new { categoryId });
             }
             return View();

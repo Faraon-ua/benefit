@@ -2,7 +2,7 @@
 @model Benefit.DataTransfer.ViewModels.NavigationEntities.CategoriesViewModel
 @{
     ViewBag.SellerUrlName = Model.Seller.UrlName;
-    ViewBag.Title = string.Format("{0} - {1}", Model.Category.Title ?? Model.Category.Name, Model.Seller.Name);
+    ViewBag.Title = string.Format("{0} - {1}", Model.Category == null ? Model.Seller.CatalogButtonName : (Model.Category.Title ?? Model.Category.Name), Model.Seller.Name);
     ViewBag.SellerUrl = Model.Seller.UrlName;
     ViewBag.MainContainerClass = "full_content full_content_provider";
 }
