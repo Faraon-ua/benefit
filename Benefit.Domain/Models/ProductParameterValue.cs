@@ -27,6 +27,7 @@ namespace Benefit.Domain.Models
         public bool IsVerified { get; set; }
         [MaxLength(128)]
         public string AddedBy { get; set; }
+        public int Order { get; set; }
         [MaxLength(128)]
         public string ProductParameterId { get; set; }
         public ProductParameter ProductParameter { get; set; }

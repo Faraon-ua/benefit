@@ -42,6 +42,9 @@
         }
         <div class="col-sm-4">
             @parameter.Name (@type)
+            <a href="@Url.Action("CreateOrUpdate", new { id = parameter.Id })">
+                <i class="icon-edit blue"></i>
+            </a>
             <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = parameter.Id, categoryId = Model.Key.Id })">
                 <i class="icon-remove red"></i>
             </a>
@@ -51,7 +54,7 @@
             }
         </div>
         <div class="col-sm-3">
-            @foreach (var prParValue in @parameter.ProductParameterValues)
+            @foreach (var prParValue in @parameter.ProductParameterValues.OrderBy(entry=>entry.Order))
             {
                 <div>
                     @prParValue.ParameterValue

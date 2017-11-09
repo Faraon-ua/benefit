@@ -4,6 +4,7 @@ using System.Data.Entity.Core.Objects;
 using System.Linq;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services.Files;
 
 namespace Benefit.Services
 {
@@ -51,7 +52,20 @@ namespace Benefit.Services
             db.SaveChanges();
             db.Localizations.AddRange(localizations);
             db.SaveChanges();
-        } 
+        }
+
+        public byte[] ExportProducts(string sellerId)
+        {
+            var fileService = new FilesExportService();
+            var products = db.Products.Where(entry => entry.SellerId == sellerId).ToList();
+            var productIds = products.Select(pr => pr.Id).ToList();
+            var localizations = db.Localizations.Where(entry => productIds.Contains(entry.ResourceId)).OrderBy(entry=>entry.ResourceId).ThenBy(entry=>entry.ResourceField).ToList();
+            foreach (var localization in localizations)
+            {
+                localization.ResourceName = products.FirstOrDefault(entry => entry.Id == localization.ResourceId).Name;
+            }
+            return fileService.CreateCSVFromGenericList(localizations); 
+        }
 
         public void Delete(string resourceId)
         {

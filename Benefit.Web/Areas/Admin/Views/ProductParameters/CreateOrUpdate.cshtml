@@ -33,6 +33,14 @@
         </div>
 
         <div class="form-group">
+            <label class="col-sm-2 control-label no-padding-right">Опис</label>
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
             <label class="col-sm-2 control-label no-padding-right">Показувати в фільтрах</label>
 
             <div class="col-md-10">
@@ -53,8 +61,17 @@
         <div class="form-group">
             <label class="col-sm-2 control-label no-padding-right">Тип заповнення</label>
             <div class="col-md-10">
-                @Html.DropDownList("Type", String.Empty)
+                @Html.DropDownList("Type")
                 @Html.ValidationMessageFor(model => model.Type)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-2 control-label no-padding-right">Порядковий номер</label>
+
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.Order, new { type="number", @class="number-input" })
+                @Html.ValidationMessageFor(model => model.Order)
             </div>
         </div>
     </div>

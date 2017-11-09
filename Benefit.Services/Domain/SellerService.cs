@@ -261,6 +261,7 @@ namespace Benefit.Services.Domain
             {
                 result.ProductParameters =
                     items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue)).ToList();
+                var item = items.FirstOrDefault(entry => entry.Id == "8e5f6e7d-5c2e-11e5-87f8-e03f49eb1351");
             }
             switch (sort)
             {

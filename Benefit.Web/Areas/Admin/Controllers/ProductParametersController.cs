@@ -20,7 +20,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (categoryId == null) return HttpNotFound();
             var category = db.Categories.Find(categoryId);
-            var productparameters = db.ProductParameters.Include(p => p.Category).Where(entry => entry.CategoryId == categoryId).ToList();
+            var productparameters = db.ProductParameters.Include(p => p.Category).Where(entry => entry.CategoryId == categoryId).OrderBy(entry=>entry.Order).ToList();
             var model = new KeyValuePair<Category, IEnumerable<ProductParameter>>(category, productparameters);
             return View(model);
         }
@@ -59,18 +59,24 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return PartialView("_ProductParameterValue", productParameter);
         }
 
-        public ActionResult CreateOrUpdate(string categoryId, string parentId = null)
+        public ActionResult CreateOrUpdate(string categoryId, string id = null)
         {
             ViewBag.Type = new List<SelectListItem>()
             {
-                new SelectListItem() {Text = "Текст", Value = typeof (string).ToString()},
+                new SelectListItem()
+                {
+                    Text = "Текст (задане значення)",
+                    Value = typeof (string).ToString(),
+                    Selected = true
+                },
                 new SelectListItem() {Text = "Ціле число", Value = typeof (int).ToString()},
                 new SelectListItem() {Text = "Десятичне число", Value = typeof (double).ToString()}
             };
-            var productParameter = new ProductParameter()
-            {
-                CategoryId = categoryId
-            };
+            var productParameter = db.ProductParameters.FirstOrDefault(entry => entry.Id == id) ??
+                                   new ProductParameter()
+                                   {
+                                       CategoryId = categoryId
+                                   };
             return View(productParameter);
         }
 
@@ -95,7 +101,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             ViewBag.Type = new List<SelectListItem>()
             {
-                new SelectListItem() {Text = "Текст", Value = typeof (string).ToString()},
+                new SelectListItem()
+                {
+                    Text = "Текст (задане значення)",
+                    Value = typeof (string).ToString(),
+                    Selected = true
+                },
                 new SelectListItem() {Text = "Ціле число", Value = typeof (int).ToString()},
                 new SelectListItem() {Text = "Десятичне число", Value = typeof (double).ToString()}
             };

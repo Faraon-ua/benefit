@@ -7,7 +7,7 @@
 <div id="productFilters">
     @if (Model.ProductParameters.Any())
     {
-        foreach (var filter in Model.ProductParameters)
+        foreach (var filter in Model.ProductParameters.OrderBy(entry=>entry.Order))
         {
             if (filter.ProductParameterValues.Any())
             {
@@ -21,7 +21,7 @@
                     <div>
                         @if (filter.Type == typeof (string).ToString())
                         {
-                            foreach (var filterValue in filter.ProductParameterValues)
+                            foreach (var filterValue in filter.ProductParameterValues.OrderBy(entry=>entry.Order))
                             {
                                 <input id="@filterValue.ParameterValueUrl" class="hidden" type="checkbox">
                                 <label class="label_for_check" for="@filterValue.ParameterValueUrl">@filterValue.ParameterValue</label>

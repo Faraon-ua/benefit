@@ -19,10 +19,10 @@ namespace Benefit.Services.Files
         /// <param name="csvNameWithExt">Name of CSV (w/ path) w/ file ext.</param>;
         public byte[] CreateCSVFromGenericList<T>(List<T> list)
         {
-            if (list == null || list.Count == 0) return new byte[0];
+//            if (list == null || list.Count == 0) return new byte[0];
 
             //get type from 0th member
-            Type t = list[0].GetType();
+            var t = typeof(T);
             string newLine = Environment.NewLine;
 
             var sw = new StringBuilder();

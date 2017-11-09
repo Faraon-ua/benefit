@@ -1,5 +1,4 @@
 ﻿@using Benefit.Common.Constants
-@using Benefit.Domain.Models
 @model Benefit.Web.Models.Admin.ProductFilters
 
 <label>Категорія</label>
@@ -18,7 +17,15 @@
         </div>
     </div>
 }
+<br/>
+<label>Характеристики</label>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        @Html.DropDownList("HasParameters", Model.HasParameters, "Не обрано", new { @class = "width-90" })
+    </div>
+</div>
 <br />
+
 <div class="row">
     <div class="col-xs-8 col-sm-11">
         <label>
@@ -33,6 +40,15 @@
         <label>
             @Html.CheckBoxFor(m => m.IsActive, new { @class = "ace" })
             <span class="lbl"> Активні</span>
+        </label>
+    </div>
+</div>
+<br/>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        <label>
+            @Html.CheckBoxFor(m => m.HasImage, new { @class = "ace" })
+            <span class="lbl"> Без зображення</span>
         </label>
     </div>
 </div>

@@ -418,6 +418,10 @@
     <Compile Include="Migrations\201710301239182_AddTerminalLicense.Designer.cs">
       <DependentUpon>201710301239182_AddTerminalLicense.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201711081029395_AddDescriptionToProductParameter.cs" />
+    <Compile Include="Migrations\201711081029395_AddDescriptionToProductParameter.Designer.cs">
+      <DependentUpon>201711081029395_AddDescriptionToProductParameter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -725,6 +729,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201710301239182_AddTerminalLicense.resx">
       <DependentUpon>201710301239182_AddTerminalLicense.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201711081029395_AddDescriptionToProductParameter.resx">
+      <DependentUpon>201711081029395_AddDescriptionToProductParameter.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

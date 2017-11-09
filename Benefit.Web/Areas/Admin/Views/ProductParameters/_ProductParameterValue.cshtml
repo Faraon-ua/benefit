@@ -4,13 +4,15 @@
         @using (Html.BeginForm("CreateOrUpdateValue", "ProductParameters"))
         {
             @Html.AntiForgeryToken()
-            
+
             @Html.HiddenFor(m => m.Id)
             @Html.HiddenFor(m => m.ProductParameterId)
             @Html.Hidden("categoryId", (string)ViewBag.CategoryId)
-            
-            @Html.TextBoxFor(m => m.ParameterValue, new { placeholder = "Значення", @class = "col-sm-12 name" })
-            @Html.TextBoxFor(m => m.ParameterValueUrl, new { placeholder = "Url назва", @class = "col-sm-12 urlName" })
+
+            <label class="col-sm-5">Значення </label>@Html.TextBoxFor(m => m.ParameterValue, new { @class = "col-sm-7 name" })
+            <label class="col-sm-5">URL</label>@Html.TextBoxFor(m => m.ParameterValueUrl, new { placeholder = "Url назва", @class = "col-sm-7 urlName" })
+            <label class="col-sm-5">Порядковий номер</label>
+                        @Html.TextBoxFor(m => m.Order, new { placeholder = "Порядковий номер", @class = "col-sm-7" })
         }
     </div>
 </div>

@@ -16,6 +16,8 @@ namespace Benefit.Domain.Models
         [MaxLength(64)]
         [Required]
         public string Name { get; set; }
+        [MaxLength(160)]
+        public string Description { get; set; }
         [MaxLength(64)]
         [Required]
         [Index]

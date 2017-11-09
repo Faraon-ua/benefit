@@ -176,7 +176,11 @@ namespace Benefit.CardReader
             //reset timer
             deviceCheckTimer.Stop();
             deviceCheckTimer.Start();
-            Dispatcher.Invoke(new Action(() => defaultWindow.Show()));
+            Dispatcher.Invoke(new Action(() =>
+            {
+                defaultWindow.Show();
+                defaultWindow.Activate();
+            }));
 
             //auth user
             if (app.AuthInfo.CashierNfc != null)

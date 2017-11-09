@@ -38,15 +38,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
             int resultsCount = 0;
             if (filters.HasValues || Seller.CurrentAuthorizedSellerId != null)
             {
-                IQueryable<Product> products = db.Products.Include(entry=>entry.Images).AsQueryable();
+                IQueryable<Product> products =
+                    db.Products
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.ProductParameterProducts)
+                        .AsQueryable();
                 if (!string.IsNullOrEmpty(filters.CategoryId))
                 {
                     var categoryIds = new List<string>();
-                    var category = db.Categories.Include(entry=>entry.MappedCategories).FirstOrDefault(entry => entry.Id == filters.CategoryId);
+                    var category = db.Categories.Include(entry => entry.MappedCategories).FirstOrDefault(entry => entry.Id == filters.CategoryId);
                     var children = category.GetAllChildrenRecursively().ToList();
                     categoryIds.Add(category.Id);
                     categoryIds.AddRange(children.Select(cat => cat.Id));
-                    categoryIds.AddRange(category.MappedCategories.Select(entry=>entry.Id));
+                    categoryIds.AddRange(category.MappedCategories.Select(entry => entry.Id));
                     products = products.Where(entry => categoryIds.Contains(entry.CategoryId));
                 }
                 if (!string.IsNullOrEmpty(filters.SellerId))
@@ -64,10 +68,21 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (filters.HasImage)
                 {
                     products = products.Where(entry => !entry.Images.Any());
-                } 
+                }
                 if (filters.IsActive)
                 {
                     products = products.Where(entry => entry.IsActive);
+                }
+                if (filters.HasParameters.HasValue)
+                {
+                    if (filters.HasParameters.Value)
+                    {
+                        products = products.Where(entry => entry.ProductParameterProducts.Any());
+                    }
+                    else
+                    {
+                        products = products.Where(entry => !entry.ProductParameterProducts.Any());
+                    }
                 }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {
@@ -148,6 +163,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Categories.Where(entry => !entry.IsSellerCategory).OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
                         .Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
             }
+            productsViewModel.ProductFilters.HasParameters = new List<SelectListItem>()
+            {
+                new SelectListItem() {Text = "Мають", Value = "true"},
+                new SelectListItem() {Text = "Не мають", Value = "false"}
+            };
             return PartialView(productsViewModel);
         }
 

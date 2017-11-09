@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
@@ -8,10 +9,12 @@ namespace Benefit.Domain.Models
         public string Id { get; set; }
         [Required]
         [MaxLength(128)]
-        public string ResourceType { get; set; }
+        public string ResourceId { get; set; }
+        [NotMapped]
+        public string ResourceName { get; set; }
         [Required]
         [MaxLength(128)]
-        public string ResourceId { get; set; }
+        public string ResourceType { get; set; }
         [Required]
         [MaxLength(32)]
         public string ResourceField { get; set; }

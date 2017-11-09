@@ -32,7 +32,10 @@
                         <Image Source="/Images/logo.png" HorizontalAlignment="Left" Height="54" VerticalAlignment="Top"></Image>
                         <TextBlock Foreground="White" Margin="15, 5" FontSize="20" LineHeight="22" FontWeight="Thin" LineStackingStrategy="BlockLineHeight">Benefit NFC <LineBreak/> Reader Software</TextBlock>
                     </StackPanel>
-                    <Button Name="CloseButton" Height="30" VerticalAlignment="Top" Margin="10" HorizontalAlignment="Right" Click="CloseButton_OnClick" Style="{StaticResource ToggleButtonWindowClose}" ToolTip="Щоб закрити вікно натисніть Esc" />
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Right" Orientation="Vertical">
+                        <Button Name="CloseButton" Height="30" Margin="7,2,7,0" Click="CloseButton_OnClick" Style="{StaticResource ToggleButtonWindowClose}" ToolTip="Щоб закрити вікно натисніть Esc" />
+                        <Label Foreground="#cccccc">Закрити вікно (ESC)</Label>
+                    </StackPanel>
                 </Grid>
             </Border>
             <StackPanel Name="Header" Orientation="Horizontal">
