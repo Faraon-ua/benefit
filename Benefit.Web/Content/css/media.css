@@ -381,6 +381,10 @@
             display: none;
         }
 
+        .left_sidebar {
+            display: none;
+        }
+
     .lmenu_block {
         color: #fff;
         max-height: 356px;

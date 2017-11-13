@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
 using Benefit.CardReader.Services;
 using System.IO.Ports;
 using System.Linq;
+using System.ServiceModel;
 using System.Windows.Input;
+using System.Windows.Interop;
+using Benefit.CardReader.Communication;
+using System.ServiceModel.Description;
 
 namespace Benefit.CardReader
 {
@@ -30,6 +35,7 @@ namespace Benefit.CardReader
         private char[] _readSymbols;
         private Dictionary<ViewType, Control> _controls = new Dictionary<ViewType, Control>();
         private ViewType ActiveView { get; set; }
+        private ServiceHost communicationServiceHost = null;
         public DefaultWindow()
         {
             InitializeComponent();
@@ -47,6 +53,23 @@ namespace Benefit.CardReader
             _controls.Add(ViewType.DeviceNotAuthorized, DeviceNotAuthorized);
 
             KeyDown += DefaultWindow_KeyDown;
+            Loaded += DefaultWindow_Loaded;
+        }
+
+        void DefaultWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            var source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
+            source.AddHook(new HwndSourceHook(WndProc));
+        }
+
+        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
+        {
+            if (msg == 0x000C)
+            {
+                TransactionPartial.txtPaymentSum.Text = wParam.ToString();
+            }
+            handled = true;
+            return IntPtr.Zero;
         }
 
         void DefaultWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

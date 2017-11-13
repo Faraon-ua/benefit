@@ -7,6 +7,8 @@ using Benefit.CardReader.Services;
 using Benefit.CardReader.Services.Factories;
 using Benefit.HttpClient;
 using System.Windows.Input;
+using System.Windows.Interop;
+using Benefit.CardReader.Controls;
 
 namespace Benefit.CardReader
 {
@@ -53,6 +55,7 @@ namespace Benefit.CardReader
             deviceCheckTimer.Tick += DeviceCheck;
             deviceCheckTimer.Interval = new TimeSpan(0, 0, app.IsDeviceConnected ? maxCheckDevicePeriod : minCheckDevicePeriod);
             deviceCheckTimer.Start();
+
         }
 
         #region helper methods

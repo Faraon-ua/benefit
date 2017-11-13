@@ -27,7 +27,7 @@
     <InstallUrl>http://benefit-company.com/data/</InstallUrl>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>32</ApplicationRevision>
+    <ApplicationRevision>33</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -86,6 +86,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -230,6 +231,10 @@
     <Resource Include="Images\connected.png" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Benefit.CardReader.Communication\Benefit.CardReader.Communication.csproj">
+      <Project>{6989cc94-098d-454b-b123-e62aef54fbc6}</Project>
+      <Name>Benefit.CardReader.Communication</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Benefit.CardReader.DataTransfer\Benefit.CardReader.DataTransfer.csproj">
       <Project>{0df88f7f-0819-4b37-a207-592381429c89}</Project>
       <Name>Benefit.CardReader.DataTransfer</Name>

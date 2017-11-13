@@ -68,7 +68,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, SuperAdmin")]
         public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
-            var category = db.Categories.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).Include(entry => entry.Products).FirstOrDefault(entry => entry.Id == id) ??
+            var category = db.Categories.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.Id == id) ??
                            new Category()
                            {
                                Id = Guid.NewGuid().ToString(),

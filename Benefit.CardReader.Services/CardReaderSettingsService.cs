@@ -39,5 +39,20 @@ namespace Benefit.CardReader.Services
                 return ConfigurationManager.AppSettings["OfflineFileSalt"];
             }
         }
+        public static string EnviromentVariableName
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["EnviromentVariableName"];
+            }
+        }
+
+        public static uint WindowsMessageId
+        {
+            get
+            {
+                return 0x000C;
+            }
+        }
     }
 }

@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benefit.CardReader.DataTran
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benefit.CardReader.Services", "Benefit.CardReader.Services\Benefit.CardReader.Services.csproj", "{E650D207-1422-45AF-8660-7C29198DD974}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benefit.CardReader.Communication", "Benefit.CardReader.Communication\Benefit.CardReader.Communication.csproj", "{6989CC94-098D-454B-B123-E62AEF54FBC6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +92,12 @@ Global
 		{E650D207-1422-45AF-8660-7C29198DD974}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E650D207-1422-45AF-8660-7C29198DD974}.Staging|Any CPU.ActiveCfg = Release|Any CPU
 		{E650D207-1422-45AF-8660-7C29198DD974}.Staging|Any CPU.Build.0 = Release|Any CPU
+		{6989CC94-098D-454B-B123-E62AEF54FBC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6989CC94-098D-454B-B123-E62AEF54FBC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6989CC94-098D-454B-B123-E62AEF54FBC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6989CC94-098D-454B-B123-E62AEF54FBC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6989CC94-098D-454B-B123-E62AEF54FBC6}.Staging|Any CPU.ActiveCfg = Release|Any CPU
+		{6989CC94-098D-454B-B123-E62AEF54FBC6}.Staging|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

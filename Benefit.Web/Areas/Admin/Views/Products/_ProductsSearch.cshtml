@@ -48,9 +48,7 @@ else
                             @product.SKU
                         </td>
                         <td>
-                            @Html.RouteLink(product.Name, RouteConstants.ProductRouteWithSellerName,
-                                new {productUrl = product.UrlName, categoryUrl = product.Category.UrlName, sellerUrl = product.Seller.UrlName},
-                                new {target = "_blank"})
+                            @Html.ActionLink(product.Name, "CreateOrUpdate", new { id = product.Id }, new { target="_blank" })
                         </td>
                         <td>
                             @product.Order
@@ -83,8 +81,9 @@ else
                         </td>
                         <td>
                             <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
-                                <a class="btn btn-xs btn-info" href="@Url.Action("CreateOrUpdate", new { id = product.Id })" target="_blank">
-                                    <i class="icon-edit bigger-120"></i>
+                                <a class="btn btn-xs btn-info" href="@Url.RouteUrl(RouteConstants.ProductRouteWithSellerName,
+                                                                         new {productUrl = product.UrlName, categoryUrl = product.Category.UrlName, sellerUrl = product.Seller.UrlName})" target="_blank">
+                                    <i class="icon-eye-open bigger-120"></i>
                                 </a>
                                 @{
                                     var lockClassName = product.IsActive ? "unlock" : "lock";

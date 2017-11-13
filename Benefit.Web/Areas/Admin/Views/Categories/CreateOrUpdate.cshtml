@@ -203,14 +203,7 @@
             </div>
 
             <div id="products" class="tab-pane">
-                <ul>
-                    @foreach (var product in @Model.Products)
-                    {
-                        <li>
-                            @Html.ActionLink(product.Name, "CreateOrUpdate", "Products", new { id = product.Id }, new { target = "_blank" })
-                        </li>
-                    }
-                </ul>
+                @Html.ActionLink("Переглянути товари категорії", "Index", "Products", new { CategoryId = Model.Id }, new { target="_blank" })
             </div>
         </div>
         <div class="control-group">
