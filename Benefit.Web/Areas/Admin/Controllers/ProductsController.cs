@@ -84,6 +84,28 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         products = products.Where(entry => !entry.ProductParameterProducts.Any());
                     }
                 }
+                if (filters.HasVendor.HasValue)
+                {
+                    if (filters.HasVendor.Value)
+                    {
+                        products = products.Where(entry => entry.Vendor != null);
+                    }
+                    else
+                    {
+                        products = products.Where(entry => entry.Vendor == null);
+                    }
+                }
+                if (filters.HasOriginCountry.HasValue)
+                {
+                    if (filters.HasOriginCountry.Value)
+                    {
+                        products = products.Where(entry => entry.OriginCountry != null);
+                    }
+                    else
+                    {
+                        products = products.Where(entry => entry.OriginCountry == null);
+                    }
+                }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {
                     filters.Search = filters.Search.ToLower();
@@ -167,6 +189,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 new SelectListItem() {Text = "Мають", Value = "true"},
                 new SelectListItem() {Text = "Не мають", Value = "false"}
+            };
+            productsViewModel.ProductFilters.HasVendor = new List<SelectListItem>()
+            {
+                new SelectListItem() {Text = "Задано", Value = "true"},
+                new SelectListItem() {Text = "Не задано", Value = "false"}
+            };
+            productsViewModel.ProductFilters.HasOriginCountry = new List<SelectListItem>()
+            {
+                new SelectListItem() {Text = "Задано", Value = "true"},
+                new SelectListItem() {Text = "Не задано", Value = "false"}
             };
             return PartialView(productsViewModel);
         }

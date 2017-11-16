@@ -15,6 +15,8 @@ namespace Benefit.Web.Models.Admin
         public bool IsActive { get; set; }
         public int Page { get; set; }
         public bool? HasParameters { get; set; }
+        public bool? HasVendor { get; set; }
+        public bool? HasOriginCountry { get; set; }
         public bool HasValues
         {
             get { return (Search != null || CategoryId != null || SellerId != null); }
@@ -26,6 +28,8 @@ namespace Benefit.Web.Models.Admin
         public IEnumerable<SelectListItem> Sellers { get; set; }
         public IEnumerable<SelectListItem> Sorting { get; set; }
         public IEnumerable<SelectListItem> HasParameters { get; set; }
+        public IEnumerable<SelectListItem> HasVendor { get; set; }
+        public IEnumerable<SelectListItem> HasOriginCountry { get; set; }
         public bool IsAvailable { get; set; }
         public bool IsActive{ get; set; }
         public bool HasImage { get; set; }

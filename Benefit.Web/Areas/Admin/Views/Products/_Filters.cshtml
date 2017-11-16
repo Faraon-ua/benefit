@@ -25,7 +25,20 @@
     </div>
 </div>
 <br />
-
+<label>Виробник</label>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        @Html.DropDownList("HasVendor", Model.HasVendor, "Не обрано", new { @class = "width-90" })
+    </div>
+</div>
+<br/>
+<label>Країна вирбник</label>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        @Html.DropDownList("HasOriginCountry", Model.HasOriginCountry, "Не обрано", new { @class = "width-90" })
+    </div>
+</div>
+<br />
 <div class="row">
     <div class="col-xs-8 col-sm-11">
         <label>
