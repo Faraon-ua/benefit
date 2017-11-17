@@ -36,7 +36,7 @@ namespace Benefit.CardReader.Controls
             defaultWindow = Window.GetWindow(this) as DefaultWindow;
         }
 
-        private void ProcessPayment(bool chargeBonuses = false)
+        public void ProcessPayment(bool chargeBonuses = false)
         {
             var billNumber = txtBillNumber.Text == txtBillNumber.Tag.ToString() ? null : txtBillNumber.Text;
             double paymentSum = 0;

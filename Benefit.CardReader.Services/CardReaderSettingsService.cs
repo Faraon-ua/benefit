@@ -47,11 +47,26 @@ namespace Benefit.CardReader.Services
             }
         }
 
-        public static uint WindowsMessageId
+        public static int SetPriceWindowsMessageId
         {
             get
             {
                 return 0x000C;
+            }
+        }
+
+        public static int SetBillWindowsMessageId
+        {
+            get
+            {
+                return 0x000F;
+            }
+        }
+        public static int SetChargeBonusesWindowsMessageId
+        {
+            get
+            {
+                return 0x001A;
             }
         }
     }

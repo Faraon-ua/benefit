@@ -48,24 +48,41 @@ namespace Benefit.CardReader
                 var arg = args[index].Replace("--", "").Replace("-", "");
                 arguments.Add(arg, args[index + 1]);
             }
-            // check for price and bill number
             if (arguments.Any())
             {
-                var price = new IntPtr(int.Parse(arguments["price"]));
                 var CommunicationService = new CommunicationService();
                 var proc = Process.GetCurrentProcess();
                 var processes = Process.GetProcessesByName(proc.ProcessName);
-
+                IntPtr price = IntPtr.Zero, bill = IntPtr.Zero, chargeBonuses = IntPtr.Zero;
+                if (arguments.ContainsKey("price"))
+                {
+                    price = new IntPtr(int.Parse(arguments["price"]));
+                }
+                if (arguments.ContainsKey("bill"))
+                {
+                    bill = new IntPtr(int.Parse(arguments["bill"]));
+                }
+                if (arguments.ContainsKey("chargebonuses"))
+                {
+                    chargeBonuses = new IntPtr(int.Parse(arguments["chargebonuses"]));
+                }
                 if (processes.Length > 1)
                 {
                     foreach (var p in processes)
                     {
                         if (p.Id != proc.Id)
                         {
-                            CommunicationService.SendMessage(p.MainWindowHandle, 0x000C, price, IntPtr.Zero);
+                            if (bill != IntPtr.Zero)
+                            {
+                                CommunicationService.SendMessage(p.MainWindowHandle,
+                                    CardReaderSettingsService.SetBillWindowsMessageId, bill, IntPtr.Zero);
+                            }
+                            CommunicationService.SendMessage(p.MainWindowHandle, CardReaderSettingsService.SetChargeBonusesWindowsMessageId, chargeBonuses, IntPtr.Zero);
+                            CommunicationService.SendMessage(p.MainWindowHandle, CardReaderSettingsService.SetPriceWindowsMessageId, price, IntPtr.Zero);
                         }
                     }
                 }
+                Current.Shutdown();
             }
         }
 

@@ -9,8 +9,6 @@ using System.Linq;
 using System.ServiceModel;
 using System.Windows.Input;
 using System.Windows.Interop;
-using Benefit.CardReader.Communication;
-using System.ServiceModel.Description;
 
 namespace Benefit.CardReader
 {
@@ -60,15 +58,30 @@ namespace Benefit.CardReader
         {
             var source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
             source.AddHook(new HwndSourceHook(WndProc));
+            Hide();
         }
 
+        private bool _chargeBonuses;
         private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
         {
-            if (msg == 0x000C)
+            if (msg == CardReaderSettingsService.SetChargeBonusesWindowsMessageId)
             {
-                TransactionPartial.txtPaymentSum.Text = wParam.ToString();
+                _chargeBonuses = wParam == (IntPtr)1;
             }
-            handled = true;
+            if (msg == CardReaderSettingsService.SetPriceWindowsMessageId)
+            {
+                int tmpPrice = wParam.ToInt32();
+                double price = tmpPrice / 100;
+                price += (double)(tmpPrice % 100) / 100;
+                TransactionPartial.txtPaymentSum.Text = price.ToString();
+                TransactionPartial.btnPayBonuses.Focus();
+                _chargeBonuses = _chargeBonuses && (TransactionPartial.btnChargeBonuses.Visibility == Visibility.Visible);
+                TransactionPartial.ProcessPayment(_chargeBonuses);
+            }
+            if (TransactionPartial.txtBillNumber.Visibility == Visibility.Visible && msg == CardReaderSettingsService.SetBillWindowsMessageId)
+            {
+                TransactionPartial.txtBillNumber.Text = wParam.ToString();
+            }
             return IntPtr.Zero;
         }
 
