@@ -8,6 +8,7 @@ using Benefit.CardReader.Services.Factories;
 using Benefit.HttpClient;
 using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
 using Benefit.CardReader.Controls;
 
 namespace Benefit.CardReader
@@ -77,6 +78,7 @@ namespace Benefit.CardReader
                 app.AuthInfo.CashierNfc = nfcCode;
                 app.AuthInfo.CashierName = cashierSeller.CashierName;
                 app.AuthInfo.SellerName = cashierSeller.SellerName;
+                app.AuthInfo.ShowBill = cashierSeller.ShowBill;
                 app.AuthInfo.ShowChargeBonuses = cashierSeller.ShowBonusesPayment;
 
                 Dispatcher.Invoke(new Action(() =>
@@ -85,12 +87,14 @@ namespace Benefit.CardReader
                     defaultWindow.UserAuthPartial.CashierName.Text = cashierSeller.CashierName;
                     defaultWindow.ShowSingleControl(ViewType.UserAuthPartial);
                     defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
-                    defaultWindow.TransactionPartial.txtBillNumber.Visibility = defaultWindow.TransactionPartial.lblBillNumber.Visibility = cashierSeller.ShowBill
-                        ? Visibility.Visible
-                        : Visibility.Hidden;
-                    defaultWindow.TransactionPartial.btnChargeBonuses.Visibility = defaultWindow.TransactionPartial.lblBonusesPayment.Visibility = cashierSeller.ShowBonusesPayment
-                        ? Visibility.Visible
-                        : Visibility.Hidden;
+                    defaultWindow.TransactionPartial.txtBillNumber.IsEnabled = cashierSeller.ShowBill;
+                    defaultWindow.TransactionPartial.txtBillNumber.Background = cashierSeller.ShowBill
+                        ? new SolidColorBrush(Color.FromRgb(255, 255, 255))
+                        : new SolidColorBrush(Color.FromRgb(153, 153, 153));
+                    defaultWindow.TransactionPartial.btnChargeBonuses.IsEnabled = cashierSeller.ShowBonusesPayment;
+                    defaultWindow.TransactionPartial.btnChargeBonuses.Background = cashierSeller.ShowBonusesPayment
+                        ? new SolidColorBrush(Color.FromRgb(255, 254, 0))
+                        : new SolidColorBrush(Color.FromRgb(153, 153, 153));
                 }));
                 return true;
             }
@@ -117,8 +121,8 @@ namespace Benefit.CardReader
                 OfflineService.ProcessStoredPayments(app.LicenseKey);
                 if (app.AuthInfo.ShowChargeBonuses)
                 {
-                    defaultWindow.TransactionPartial.btnChargeBonuses.Visibility =
-                        defaultWindow.TransactionPartial.lblBonusesPayment.Visibility = Visibility.Visible;
+                    defaultWindow.TransactionPartial.btnChargeBonuses.IsEnabled = true;
+                    defaultWindow.TransactionPartial.btnChargeBonuses.Background = new SolidColorBrush(Color.FromRgb(255, 254, 0));
                 }
                 defaultWindow.TransactionPartial.btnUserInfo.Visibility = Visibility.Visible;
                 defaultWindow.ConnectionEsteblished.Visibility = Visibility.Visible;
@@ -126,8 +130,8 @@ namespace Benefit.CardReader
             }
             else
             {
-                defaultWindow.TransactionPartial.btnChargeBonuses.Visibility =
-                        defaultWindow.TransactionPartial.lblBonusesPayment.Visibility = Visibility.Hidden;
+                defaultWindow.TransactionPartial.btnChargeBonuses.IsEnabled = false;
+                defaultWindow.TransactionPartial.btnChargeBonuses.Background = new SolidColorBrush(Color.FromRgb(153, 153, 153));
                 defaultWindow.TransactionPartial.btnUserInfo.Visibility = Visibility.Hidden;
                 defaultWindow.ConnectionEsteblished.Visibility = Visibility.Collapsed;
                 defaultWindow.NoConnection.Visibility = Visibility.Visible;

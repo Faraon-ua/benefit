@@ -24,7 +24,6 @@
             </Style.Triggers>
         </Style>
         <Style x:Key="ChargeBonuses" TargetType="{x:Type Button}">
-            <Setter Property="Background" Value="#FFCC00"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Button}">

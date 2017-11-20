@@ -40,6 +40,11 @@ namespace Benefit.CardReader.Controls
         {
             var billNumber = txtBillNumber.Text == txtBillNumber.Tag.ToString() ? null : txtBillNumber.Text;
             double paymentSum = 0;
+            if (txtBillNumber.IsEnabled && (string.IsNullOrEmpty(txtBillNumber.Text) || txtBillNumber.Text == txtBillNumber.Tag.ToString()))
+            {
+                defaultWindow.ShowErrorMessage("Введіть номер чека");
+                return;
+            }
             try
             {
                 paymentSum = double.Parse(txtPaymentSum.Text, CultureInfo.InvariantCulture);
@@ -167,8 +172,11 @@ namespace Benefit.CardReader.Controls
 
         public void BtnChargeBonuses_OnClick(object sender, RoutedEventArgs e)
         {
-            btnChargeBonuses.Focus();
-            ProcessPayment(true);
+            if (app.AuthInfo.ShowChargeBonuses)
+            {
+                btnChargeBonuses.Focus();
+                ProcessPayment(true);
+            }
         }
 
         public void TransactionOk_OnClick(object sender, RoutedEventArgs e)
@@ -181,6 +189,8 @@ namespace Benefit.CardReader.Controls
             var parent = Window.GetWindow(this) as DefaultWindow;
             parent.ShowSingleControl(ViewType.UserAuthPartial);
             app.ClearUserAndSellerInfo();
+
+            defaultWindow.Hide();
         }
     }
 }

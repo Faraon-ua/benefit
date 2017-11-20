@@ -75,10 +75,10 @@ namespace Benefit.CardReader
                 price += (double)(tmpPrice % 100) / 100;
                 TransactionPartial.txtPaymentSum.Text = price.ToString();
                 TransactionPartial.btnPayBonuses.Focus();
-                _chargeBonuses = _chargeBonuses && (TransactionPartial.btnChargeBonuses.Visibility == Visibility.Visible);
+                _chargeBonuses = _chargeBonuses && TransactionPartial.btnChargeBonuses.IsEnabled;
                 TransactionPartial.ProcessPayment(_chargeBonuses);
             }
-            if (TransactionPartial.txtBillNumber.Visibility == Visibility.Visible && msg == CardReaderSettingsService.SetBillWindowsMessageId)
+            if (TransactionPartial.txtBillNumber.IsEnabled && msg == CardReaderSettingsService.SetBillWindowsMessageId)
             {
                 TransactionPartial.txtBillNumber.Text = wParam.ToString();
             }
@@ -93,7 +93,7 @@ namespace Benefit.CardReader
             }
             if (e.Key == Key.F2)
             {
-                if (TransactionPartial.txtBillNumber.Visibility == Visibility.Visible)
+                if (TransactionPartial.txtBillNumber.IsEnabled)
                 {
                     TransactionPartial.txtBillNumber.Focus();
                 }
@@ -104,10 +104,7 @@ namespace Benefit.CardReader
             }
             if (e.Key == Key.F12)
             {
-                if (TransactionPartial.btnChargeBonuses.Visibility == Visibility.Visible)
-                {
-                    TransactionPartial.BtnChargeBonuses_OnClick(null, null);
-                }
+                TransactionPartial.BtnChargeBonuses_OnClick(null, null);
             }
             if (e.Key == Key.F4)
             {
