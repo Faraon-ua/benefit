@@ -187,6 +187,7 @@ namespace Benefit.CardReader
             {
                 defaultWindow.Show();
                 defaultWindow.Activate();
+                defaultWindow.Focus();
             }));
 
             //auth user
