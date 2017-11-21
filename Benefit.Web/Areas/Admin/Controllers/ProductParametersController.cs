@@ -148,8 +148,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View();
         }
 
-
-
         public ActionResult Delete(string id, string categoryId)
         {
             var productService = new ProductsService();

@@ -269,6 +269,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
                 db.ProductParameterProducts.RemoveRange(
                    db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
+                product.ProductParameterProducts = product.ProductParameterProducts.Distinct(new ProductParameterProductComparer()).ToList();
                 db.ProductParameterProducts.AddRange(product.ProductParameterProducts);
                 if (db.Products.Any(entry => entry.Id == product.Id))
                 {

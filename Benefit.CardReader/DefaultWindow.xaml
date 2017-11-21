@@ -12,7 +12,8 @@
         BorderBrush="#333333"
         Width="800"
         Height="650"
-        Icon="favicon.ico">
+        Icon="favicon.ico"
+        Topmost="True">
     <DockPanel Background="#F0F0F0">
         <tb:TaskbarIcon Name="Taskbar" ToolTipText="Benefit NFC Reader" MenuActivation="LeftOrRightClick" TrayMouseDoubleClick="Taskbar_OnTrayMouseDoubleClick">
             <tb:TaskbarIcon.ContextMenu>
