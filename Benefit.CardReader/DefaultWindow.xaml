@@ -54,6 +54,7 @@
                 </Border>
             </StackPanel>
             <Grid Name="Container" Height="514">
+                <controls:KeyboardPartial x:Name="KeyboardPartial" Visibility="Hidden" Grid.ZIndex="1000"></controls:KeyboardPartial>
                 <controls:UserInfo x:Name="UserInfo" Visibility="Hidden" Grid.ZIndex="1000"></controls:UserInfo>
                 <controls:ErrorPartial x:Name="ErrorMessage" Visibility="Hidden" Grid.ZIndex="1000"></controls:ErrorPartial>
                 <controls:Loading x:Name="LoadingSpinner" Visibility="Hidden" Grid.ZIndex="1000"></controls:Loading>

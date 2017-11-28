@@ -34,7 +34,8 @@ namespace Benefit.RestApi.Controllers
                     SellerName = cashier.Seller.Name,
                     CashierName = cashier.Name,
                     ShowBill = cashier.Seller.TerminalBillEnabled,
-                    ShowBonusesPayment = cashier.Seller.TerminalBonusesPaymentActive
+                    ShowBonusesPayment = cashier.Seller.TerminalBonusesPaymentActive,
+                    ShowKeyboard = cashier.Seller.TerminalKeyboardEnabled
                 });
             }
             return NotFound();

@@ -80,6 +80,7 @@ namespace Benefit.CardReader
                 app.AuthInfo.SellerName = cashierSeller.SellerName;
                 app.AuthInfo.ShowBill = cashierSeller.ShowBill;
                 app.AuthInfo.ShowChargeBonuses = cashierSeller.ShowBonusesPayment;
+                app.AuthInfo.ShowKeyboard = cashierSeller.ShowKeyboard;
 
                 Dispatcher.Invoke(new Action(() =>
                 {

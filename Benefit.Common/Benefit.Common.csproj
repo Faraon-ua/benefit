@@ -65,6 +65,7 @@
     <Compile Include="Constants\RegionConstants.cs" />
     <Compile Include="Constants\RouteConstants.cs" />
     <Compile Include="Constants\UserConstants.cs" />
+    <Compile Include="CustomEventArgs\TextEventArgs.cs" />
     <Compile Include="CustomEventArgs\NfcEventArgs.cs" />
     <Compile Include="Exceptions\ServiceException.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />

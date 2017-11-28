@@ -55,7 +55,8 @@ namespace Benefit.CardReader.Services
                         CardNfc = cashierNfc,
                         Name = cashierResult.Data.CashierName,
                         SellerName = cashierResult.Data.SellerName,
-                        SellerShowBill = cashierResult.Data.ShowBill
+                        SellerShowBill = cashierResult.Data.ShowBill,
+                        SellerShowKeyboard = cashierResult.Data.ShowKeyboard
                     }));
                 }
                 return cashierResult.Data;

@@ -113,10 +113,11 @@ namespace Benefit.CardReader
             }
             if (e.Key == Key.Escape)
             {
-                if (ErrorMessage.Visibility == Visibility.Visible || UserInfo.Visibility == Visibility.Visible)
+                if (ErrorMessage.Visibility == Visibility.Visible || UserInfo.Visibility == Visibility.Visible || KeyboardPartial.Visibility == Visibility.Visible)
                 {
                     ErrorMessage.Visibility = Visibility.Hidden;
                     UserInfo.Visibility = Visibility.Hidden;
+                    KeyboardPartial.Visibility = Visibility.Hidden;
                 }
                 else
                 {
@@ -125,6 +126,10 @@ namespace Benefit.CardReader
             }
             if (e.Key == Key.Enter)
             {
+                if (KeyboardPartial.Visibility == Visibility.Visible)
+                {
+                    KeyboardPartial.OkKey_OnClick(null, null);
+                }
                 if (TransactionPartial.TransactionResult.Visibility == Visibility.Visible)
                 {
                     TransactionPartial.TransactionOk_OnClick(null, null);

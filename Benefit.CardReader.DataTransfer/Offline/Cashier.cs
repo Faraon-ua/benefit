@@ -9,6 +9,7 @@ namespace Benefit.CardReader.DataTransfer.Offline
         public string Name { get; set; }
         public string SellerName { get; set; }
         public bool SellerShowBill { get; set; }
+        public bool SellerShowKeyboard { get; set; }
 
         public override bool Equals(object obj)
         {

@@ -10,5 +10,6 @@
         public string SellerName { get; set; }
         public bool ShowBill { get; set; }
         public bool ShowChargeBonuses { get; set; }
+        public bool ShowKeyboard { get; set; }
     }
 }

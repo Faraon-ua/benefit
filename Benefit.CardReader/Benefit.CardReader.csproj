@@ -124,6 +124,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\KeyboardPartial.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Loading.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -166,6 +170,9 @@
     </Compile>
     <Compile Include="Controls\ErrorPartial.xaml.cs">
       <DependentUpon>ErrorPartial.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\KeyboardPartial.xaml.cs">
+      <DependentUpon>KeyboardPartial.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Loading.xaml.cs">
       <DependentUpon>Loading.xaml</DependentUpon>

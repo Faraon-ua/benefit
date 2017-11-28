@@ -30,10 +30,16 @@ namespace Benefit.CardReader.Controls
             apiService = new ApiService();
             Loaded += TransactionPartial_Loaded;
         }
+        void KeyboardPartial_OkKeyPressed(object sender, Common.CustomEventArgs.ButtonEventArgs e)
+        {
+            var control = (TextBox)FindName(e.Name);
+            control.Text = e.Text;
+        }
 
         void TransactionPartial_Loaded(object sender, RoutedEventArgs e)
         {
             defaultWindow = Window.GetWindow(this) as DefaultWindow;
+            defaultWindow.KeyboardPartial.OkKeyPressed += KeyboardPartial_OkKeyPressed;
         }
 
         public void ProcessPayment(bool chargeBonuses = false)
@@ -148,6 +154,11 @@ namespace Benefit.CardReader.Controls
 
         private void OnGotFocus(object sender, RoutedEventArgs e)
         {
+            if (app.AuthInfo.ShowKeyboard)
+            {
+                var control = (TextBox)sender;
+                ShowKeyboard(control.Name, control.Tag.ToString());    
+            }
             var textBox = sender as TextBox;
             if (textBox.Text == textBox.Tag.ToString())
             {
@@ -191,6 +202,14 @@ namespace Benefit.CardReader.Controls
             app.ClearUserAndSellerInfo();
 
             defaultWindow.Hide();
+        }
+
+        public void ShowKeyboard(string controlName, string controlLabel)
+        {
+            defaultWindow.KeyboardPartial.Visibility = Visibility.Visible;
+            defaultWindow.KeyboardPartial.ControlName = controlName;
+            defaultWindow.KeyboardPartial.lblValue.Content = controlLabel;
+            defaultWindow.KeyboardPartial.txtValue.Focus();
         }
     }
 }
