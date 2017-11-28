@@ -88,7 +88,7 @@
                 <hr class="col-md-12" />
 
                 @Html.ValidationSummary()
-                <p class="profile_title">Номер картки</p>
+                <p class="profile_title">Номер картки або брелока (без BC)</p>
                 <p class="profile_title">
                     @if (string.IsNullOrEmpty(Model.CardNumber))
                     {
@@ -119,7 +119,7 @@
                 }
                 else
                 {
-                    <p class="verification_data">Для отримання можливості взяти участь у плані винагород<br> необхідно пройти процедуру верифікації бонусної картки</p>
+                    <p class="verification_data">Для отримання можливості взяти участь у плані винагород<br> необхідно пройти процедуру верифікації бонусної картки або брелоку</p>
                     <a class="profile_verification" href="@Url.Action("VerifyCard")">Верифікація картки</a>
                 }
 

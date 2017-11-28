@@ -36,21 +36,32 @@ namespace Benefit.Services.Domain
         public void AddPromotionBonusesPayment(string userId, Promotion promotion, ApplicationDbContext transactionDb)
         {
             var user = transactionDb.Users.Find(userId);
-            if(!user.IsCardVerified) return;
+            if (promotion.IsMentorPromotion)
+            {
+                user = transactionDb.Users.Find(user.ReferalId);
+            }
+            if (!user.IsCardVerified) return;
             var bonuses = promotion.DiscountValue.GetValueOrDefault(0);
             var transaction = new Transaction()
             {
                 Id = Guid.NewGuid().ToString(),
                 Bonuses = bonuses,
-                BonusesBalans = user.BonusAccount + bonuses,
+                BonusesBalans = (promotion.IsCurrentAccountBonusPromotion ? user.CurrentBonusAccount : user.BonusAccount) + bonuses,
                 Description = promotion.Name,
-                PayeeId = userId,
+                PayeeId = user.Id,
                 Time = DateTime.UtcNow,
                 Type = TransactionType.Promotion
             };
             transactionDb.Transactions.Add(transaction);
-            user.BonusAccount = transaction.BonusesBalans;
-            user.TotalBonusAccount += bonuses;
+            if (promotion.IsCurrentAccountBonusPromotion)
+            {
+                user.CurrentBonusAccount = transaction.BonusesBalans;
+            }
+            else
+            {
+                user.BonusAccount = transaction.BonusesBalans;
+                user.TotalBonusAccount += bonuses;    
+            }
             transactionDb.Entry(user).State = EntityState.Modified;
         }
 
@@ -228,6 +239,7 @@ namespace Benefit.Services.Domain
             model.Personal =
                 user.Transactions.Where(
                     entry =>
+                        entry.Type == TransactionType.Promotion ||
                         entry.Type == TransactionType.PersonalSiteBonus ||
                         entry.Type == TransactionType.PersonalBenefitCardBonus)
                     .Where(entry => entry.Time >= start && entry.Time <= end)

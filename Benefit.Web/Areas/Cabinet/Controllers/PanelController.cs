@@ -80,7 +80,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                 var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == userId);
                 user.Region = db.Regions.FirstOrDefault(entry => entry.Id == profile.RegionId);
 
-                if (!string.IsNullOrEmpty(profile.CardNumber) && (db.Users.Any(entry => entry.CardNumber == profile.CardNumber && entry.Id != user.Id) || !db.BenefitCards.Any(entry => entry.Id == profile.CardNumber && !entry.IsTrinket)))
+                if (!string.IsNullOrEmpty(profile.CardNumber) && (db.Users.Any(entry => entry.CardNumber == profile.CardNumber && entry.Id != user.Id) || !db.BenefitCards.Any(entry => entry.Id == profile.CardNumber)))
                 {
                     ModelState.AddModelError("CardNumber", "Не можливо підвязати цей номер карти до вашого акаунту");
                 }

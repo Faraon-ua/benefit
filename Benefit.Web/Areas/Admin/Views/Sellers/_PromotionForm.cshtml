@@ -48,6 +48,14 @@
         @Html.CheckBox("Promotion.IsBonusDiscount", Model.IsBonusDiscount)
     </div>
     <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Бонуси на поточний період</label>
+        @Html.CheckBox("Promotion.IsCurrentAccountBonusPromotion", Model.IsCurrentAccountBonusPromotion)
+    </div>
+    <div class="row padding-top-5">
+        <label class="col-md-4 padding-top-5">Винагорода наставнику</label>
+        @Html.CheckBox("Promotion.IsMentorPromotion", Model.IsMentorPromotion)
+    </div>
+    <div class="row padding-top-5">
         <label class="col-md-4 padding-top-5">Відображати у структурі</label>
         @Html.CheckBox("Promotion.ShouldBeVisibleInStructure", Model.ShouldBeVisibleInStructure)
     </div>

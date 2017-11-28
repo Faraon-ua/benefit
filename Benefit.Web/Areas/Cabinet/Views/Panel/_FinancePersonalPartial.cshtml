@@ -31,6 +31,13 @@
         {
         <tr>
             <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
+            @if (transaction.Type == TransactionType.Promotion)
+            {
+                <td>
+                    Нарахування по акції "@transaction.Description"
+                </td>
+            }
+            
             @if (transaction.Type == TransactionType.PersonalBenefitCardBonus)
                 {
                 <td>@string.Format("Користування карткою в закладі \"{0}\"", transaction.Order.SellerName)</td>
@@ -44,8 +51,12 @@
                     <div class="details_button" data-order-id="@transaction.Order.Id"></div>
                 </td>
                 }
-            <td>@transaction.Order.PointsSum.ToDoubleDigits()</td>
-            <td>@transaction.Order.PersonalBonusesSum.ToDoubleDigits()</td>
+            <td>
+                @((transaction.Order == null ? 0 : transaction.Order.PointsSum).ToDoubleDigits())
+            </td>
+            <td>
+                @transaction.Bonuses.ToDoubleDigits()
+            </td>
         </tr>
         }
         </table>

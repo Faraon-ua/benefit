@@ -28,6 +28,8 @@ namespace Benefit.Domain.Models
         public bool IsValuePercent { get; set; }
         public bool IsActive { get; set; }
         public bool IsBonusDiscount { get; set; }
+        public bool IsCurrentAccountBonusPromotion { get; set; }
+        public bool IsMentorPromotion { get; set; }
         public bool ShouldBeVisibleInStructure { get; set; }
         public int Level { get; set; }
 

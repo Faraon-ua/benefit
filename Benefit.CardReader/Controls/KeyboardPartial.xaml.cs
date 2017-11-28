@@ -59,6 +59,7 @@ namespace Benefit.CardReader.Controls
         public void OkKey_OnClick(object sender, RoutedEventArgs e)
         {
             SendOkKeyPressed();
+            txtValue.Text = string.Empty;
             Visibility = Visibility.Hidden;
         }
     }

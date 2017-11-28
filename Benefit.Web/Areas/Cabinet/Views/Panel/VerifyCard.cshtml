@@ -1,7 +1,7 @@
 ﻿@model Benefit.Domain.Models.ApplicationUser
 
 @{
-    ViewBag.Title = "Верифікація карти";
+    ViewBag.Title = "Верифікація карти/брелока";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
 @section scripts
@@ -19,7 +19,7 @@
 
     @using (Html.BeginForm("VerifyCard", "Panel", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        <p>Будь ласка завантажте вашу фотографію разом із карткою на ній. Номер картки повинно бути чітко видно.</p>
+        <p>Будь ласка завантажте вашу фотографію разом із карткою (або брелоком) на ній. Номер картки повинно бути чітко видно.</p>
         <input type="file" accept="image/*" name="cardImage" />
         <br />
         <input type="submit" class="btn btn-success" id="verify-card" value="Відіслати запит на верифікацію" />
