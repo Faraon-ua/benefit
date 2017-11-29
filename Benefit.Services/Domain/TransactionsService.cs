@@ -40,7 +40,6 @@ namespace Benefit.Services.Domain
             {
                 user = transactionDb.Users.Find(user.ReferalId);
             }
-            if (!user.IsCardVerified) return;
             var bonuses = promotion.DiscountValue.GetValueOrDefault(0);
             var transaction = new Transaction()
             {
@@ -50,7 +49,7 @@ namespace Benefit.Services.Domain
                 Description = promotion.Name,
                 PayeeId = user.Id,
                 Time = DateTime.UtcNow,
-                Type = TransactionType.Promotion
+                Type = promotion.IsCurrentAccountBonusPromotion ? TransactionType.MentorBonus : TransactionType.Promotion
             };
             transactionDb.Transactions.Add(transaction);
             if (promotion.IsCurrentAccountBonusPromotion)
@@ -239,14 +238,15 @@ namespace Benefit.Services.Domain
             model.Personal =
                 user.Transactions.Where(
                     entry =>
-                        entry.Type == TransactionType.Promotion ||
                         entry.Type == TransactionType.PersonalSiteBonus ||
                         entry.Type == TransactionType.PersonalBenefitCardBonus)
                     .Where(entry => entry.Time >= start && entry.Time <= end)
                     .OrderByDescending(entry => entry.Time)
                     .ToList();
 
-            model.Referals = user.Transactions.Where(entry => entry.Type == TransactionType.MentorBonus || entry.Type == TransactionType.BusinessLevel)
+            model.Referals = user.Transactions.Where(entry =>
+                entry.Type == TransactionType.MentorBonus ||
+                entry.Type == TransactionType.BusinessLevel)
                 .Where(entry => entry.Time >= start && entry.Time <= end)
                 .OrderByDescending(entry => entry.Time)
                 .ToList();

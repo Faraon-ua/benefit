@@ -9,6 +9,7 @@ using System.Windows.Threading;
 using Benefit.CardReader.Communication;
 using Benefit.CardReader.DataTransfer.Reader;
 using Benefit.CardReader.Services;
+using NLog;
 
 namespace Benefit.CardReader
 {
@@ -38,6 +39,14 @@ namespace Benefit.CardReader
             timer.Interval = new TimeSpan(0, PingOnlinePeriod, 0);
             timer.Start();
             AuthInfo = new BenefitAuthInfo();
+            DispatcherUnhandledException += App_DispatcherUnhandledException;
+        }
+
+        void App_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            var _logger = LogManager.GetCurrentClassLogger();
+            _logger.Fatal(e.Exception.ToString);
+            e.Handled = true;
         }
 
         void ProcessArguments()
