@@ -24,27 +24,36 @@
         <table class="bonuses_invitation_table main_table">
             <tr>
                 <th>Дата</th>
-                <th>Запрошений партнер</th>
+                <th>Запрошений партнер/Опис</th>
                 @*            <th>Лінія <br>структури</th>*@
                 <th>Бонуси</th>
             </tr>
             @foreach (var transaction in Model.Referals)
-        {
-        <tr>
-            <td>
-                @transaction.Time.ToLocalTimeWithDateFormat()
-            </td>
-            <td>
-                @transaction.Payer.FullName
-                @if (transaction.Type == TransactionType.BusinessLevel)
-                {
-                    <span> (Додаткове нарахування за бізнес комплект)</span>
-                }
-            </td>
-            @*                <td class="structureLine">1</td>*@
-            <td>@transaction.Bonuses.ToDoubleDigits()</td>
-        </tr>
-        }
+            {
+                <tr>
+                    <td>
+                        @transaction.Time.ToLocalTimeWithDateFormat()
+                    </td>
+                    <td>
+                        @if (transaction.Payer != null)
+                        {
+                            <span>@transaction.Payer.FullName</span>
+                        }
+                        @if (!string.IsNullOrEmpty(transaction.Description))
+                        {
+                            <span>
+                                @transaction.Description
+                    </span>
+                        }
+                        @if (transaction.Type == TransactionType.BusinessLevel)
+                        {
+                            <span> (Додаткове нарахування за бізнес комплект)</span>
+                        }
+                    </td>
+                    @*                <td class="structureLine">1</td>*@
+                    <td>@transaction.Bonuses.ToDoubleDigits()</td>
+                </tr>
+            }
         </table>
     </div>
 </div>
