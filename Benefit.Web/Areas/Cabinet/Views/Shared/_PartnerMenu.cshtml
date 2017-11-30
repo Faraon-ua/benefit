@@ -25,7 +25,7 @@
                 <a href="@Url.Action("Profile", "Panel")">Профіль</a>
             </li>
             @{
-        if (ViewBag.User.CardNumber != null && ViewBag.User.IsCardVerified)
+        if (ViewBag.User.CardNumber != null)
         {
             active = ViewContext.RouteData.GetRequiredString("controller") == "BenefitFamily" ? ActiveStatus.Active : ActiveStatus.None;
         }

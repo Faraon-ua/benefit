@@ -245,6 +245,7 @@ namespace Benefit.Services.Domain
                     .ToList();
 
             model.Referals = user.Transactions.Where(entry =>
+                entry.Type == TransactionType.PromotionCurrentPeriod ||
                 entry.Type == TransactionType.MentorBonus ||
                 entry.Type == TransactionType.BusinessLevel)
                 .Where(entry => entry.Time >= start && entry.Time <= end)
