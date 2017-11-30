@@ -39,11 +39,11 @@
                         {
                             <span>@transaction.Payer.FullName</span>
                         }
-                        @if (!string.IsNullOrEmpty(transaction.Description))
+                        @if (transaction.Type == TransactionType.PromotionCurrentPeriod)
                         {
                             <span>
-                                @transaction.Description
-                    </span>
+                                Нарахування по акції "@transaction.Description"
+                            </span>
                         }
                         @if (transaction.Type == TransactionType.BusinessLevel)
                         {

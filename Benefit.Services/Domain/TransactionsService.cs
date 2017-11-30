@@ -49,7 +49,7 @@ namespace Benefit.Services.Domain
                 Description = promotion.Name,
                 PayeeId = user.Id,
                 Time = DateTime.UtcNow,
-                Type = promotion.IsCurrentAccountBonusPromotion ? TransactionType.MentorBonus : TransactionType.Promotion
+                Type = promotion.IsCurrentAccountBonusPromotion ? TransactionType.PromotionCurrentPeriod : TransactionType.Promotion
             };
             transactionDb.Transactions.Add(transaction);
             if (promotion.IsCurrentAccountBonusPromotion)

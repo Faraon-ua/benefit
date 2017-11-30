@@ -36,7 +36,9 @@ namespace Benefit.Domain.Models
         [Description("Розрахунок бонусами через Benefit Card")]
         BenefitCardBonusesPayment,
         [Description("Комісія за користування системою Benefit")]
-        Comission
+        Comission,
+        [Description("Бонуси по акції за поточний період")]
+        PromotionCurrentPeriod,
     }
     public class Transaction
     {
