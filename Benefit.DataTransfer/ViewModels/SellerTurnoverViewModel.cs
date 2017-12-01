@@ -9,7 +9,8 @@ namespace Benefit.DataTransfer.ViewModels
         public double SiteTurnover { get; set; }
         public double SiteTurnoverWithoutBonuses { get; set; }
         public double CardsTurnover { get; set; }
-        public double BonusesTurnover { get; set; }
+        public double BonusesOnlineTurnover { get; set; }
+        public double BonusesOffineTurnover { get; set; }
         public double BCcomission { get; set; }
 }
     public class SellerTurnoverViewModel

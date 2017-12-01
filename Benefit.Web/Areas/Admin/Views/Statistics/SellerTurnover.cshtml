@@ -80,7 +80,10 @@
                 Комісія BC
             </th>
             <th>
-                Сплачено бонусами
+                Сплачено бонусами Online
+            </th>
+            <th>
+                Сплачено бонусами Offline
             </th>
             <th>
                 До сплати
@@ -96,9 +99,10 @@
                 <td>@turnover.CardsTurnover.ToString("F")</td>
                 <td>@((turnover.CardsTurnover + turnover.SiteTurnover).ToString("F"))</td>
                 <td>@turnover.BCcomission.ToString("F")</td>
-                <td>@turnover.BonusesTurnover.ToString("F")</td>
+                <td>@turnover.BonusesOnlineTurnover.ToString("F")</td>
+                <td>@turnover.BonusesOffineTurnover.ToString("F")</td>
                 @{
-                    var toPay = turnover.BCcomission - turnover.BonusesTurnover;
+                    var toPay = turnover.BCcomission - turnover.BonusesOnlineTurnover - turnover.BonusesOffineTurnover;
                 }
                 <td>@toPay.ToString("F")</td>
             </tr>
@@ -133,13 +137,19 @@
             </td>
             <td>
                 @{
-                    var totalBonuses = Model.SellerTurnovers.Select(entry => entry.BonusesTurnover).Sum();
+                    var totalOnlineBonuses = Model.SellerTurnovers.Select(entry => entry.BonusesOnlineTurnover).Sum();
                 }
-                @totalBonuses.ToString("F")
+                @totalOnlineBonuses.ToString("F")
             </td>
             <td>
                 @{
-                    var totalToPay = totalComission - totalBonuses;
+                    var totalOfflineBonuses = Model.SellerTurnovers.Select(entry => entry.BonusesOffineTurnover).Sum();
+                }
+                @totalOfflineBonuses.ToString("F")
+            </td>
+            <td>
+                @{
+                    var totalToPay = totalComission - totalOnlineBonuses - totalOfflineBonuses;
                 }
                 @totalToPay.ToString("F")
             </td>

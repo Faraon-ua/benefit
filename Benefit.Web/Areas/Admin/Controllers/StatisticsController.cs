@@ -73,14 +73,26 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             .Select(entry => entry.Sum)
                             .DefaultIfEmpty(0)
                             .Sum(),
-                    BonusesTurnover =
+                    BonusesOnlineTurnover =
                         orders.Where(
                             entry =>
-                                entry.SellerId == seller.Id && entry.PaymentType == PaymentType.Bonuses &&
-                                entry.OrderStatusStamps.FirstOrDefault(
+                                entry.SellerId == seller.Id 
+                                && entry.PaymentType == PaymentType.Bonuses 
+                                && entry.OrderType == OrderType.BenefitSite 
+                                && entry.OrderStatusStamps.FirstOrDefault(
                                     stamp => stamp.OrderStatus == OrderStatus.Finished).Time >= startDate &&
                                 entry.OrderStatusStamps.FirstOrDefault(
                                     stamp => stamp.OrderStatus == OrderStatus.Finished).Time <= endDate)
+                            .Select(entry => entry.Sum)
+                            .DefaultIfEmpty(0)
+                            .Sum(),
+                    BonusesOffineTurnover =
+                        orders.Where(
+                            entry =>
+                                entry.SellerId == seller.Id 
+                                && entry.PaymentType == PaymentType.Bonuses
+                                && entry.OrderType == OrderType.BenefitCard
+                                && entry.Time > startDate && entry.Time < endDate)
                             .Select(entry => entry.Sum)
                             .DefaultIfEmpty(0)
                             .Sum()
