@@ -229,9 +229,18 @@ namespace Benefit.RestApi.Controllers
 
         [Route("PingOnline")]
         [HttpGet]
-        public IHttpActionResult PingOnline()
+        public IHttpActionResult PingOnline(string licenseKey)
         {
-            var seller = db.Sellers.Find(User.Identity.Name);
+            Seller seller = null;
+            if (licenseKey != null)
+            {
+                seller = db.Sellers.FirstOrDefault(entry => entry.TerminalLicense == licenseKey);
+            }
+            if (seller == null)
+            {
+                seller = db.Sellers.Find(User.Identity.Name);
+            }
+                         
             if (seller == null)
                 return NotFound();
             seller.TerminalLastOnline = DateTime.UtcNow;

@@ -90,9 +90,10 @@ namespace Benefit.CardReader.Services
             return paymentResult;
         }
 
-        public void PingOnline(string authorizationToken)
+        public void PingOnline(string authorizationToken, string licenseKey)
         {
-            var pingUrl = CardReaderSettingsService.ApiHost + CardReaderSettingsService.ApiPrefix + "PingOnline";
+            var pingUrl = string.Format("{0}{1}PingOnline?licenseKey={2}", CardReaderSettingsService.ApiHost,
+                CardReaderSettingsService.ApiPrefix, licenseKey);
             _httpClient.Get<string>(pingUrl, authorizationToken);
         }
     }

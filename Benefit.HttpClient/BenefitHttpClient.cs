@@ -52,7 +52,7 @@ namespace Benefit.HttpClient
             }
             catch (WebException ex)
             {
-                _logger.Fatal(ex.ToString);
+                _logger.Fatal(url + Environment.NewLine + ex);
                 result.StatusCode = ((HttpWebResponse)ex.Response).StatusCode;
             }
             if (result.StatusCode == HttpStatusCode.OK)
@@ -92,7 +92,7 @@ namespace Benefit.HttpClient
                     }
                 }
 
-                _logger.Fatal(ex + Environment.NewLine + result.ErrorMessage);
+                _logger.Fatal(url + Environment.NewLine + ex + Environment.NewLine + result.ErrorMessage);
             }
             if (result.StatusCode == HttpStatusCode.OK)
             {

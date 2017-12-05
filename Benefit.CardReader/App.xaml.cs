@@ -133,7 +133,7 @@ namespace Benefit.CardReader
         {
             if (Token == null || !IsConnected || !IsDeviceConnected) return;
             var apiService = new ApiService();
-            apiService.PingOnline(Token);
+            apiService.PingOnline(Token, LicenseKey);
         }
 
         public void ClearUserAndSellerInfo()
