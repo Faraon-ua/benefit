@@ -104,7 +104,7 @@ namespace Benefit.CardReader
                 Dispatcher.Invoke(new Action(() =>
                 {
                     defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
-                    defaultWindow.ShowErrorMessage("Картка касира не активована");
+                    defaultWindow.ShowErrorMessage("Піднесіть картку касира \n а потім картку клієнта");
                 }));
             }
             return false;
