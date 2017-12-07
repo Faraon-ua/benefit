@@ -18,7 +18,8 @@ namespace Benefit.Web.Models.Routing
 
             var host = httpContext.Request.Url.Host;
             var index = host.IndexOf(".");
-            string[] segments = httpContext.Request.Url.PathAndQuery.TrimStart('/').Split('/');
+            var segments = httpContext.Request.Url.PathAndQuery.TrimStart('/').Split('/').ToList();
+            segments.Remove("Benefit.Web");
 
             if (index < 0)
             {
@@ -33,8 +34,8 @@ namespace Benefit.Web.Models.Routing
                 return null;
             }
 
-            string controller = (segments.Length > 0) ? segments[0] : "Home";
-            string action = (segments.Length > 1) ? segments[1] : "Index";
+            string controller = (segments.Count > 0) ? segments[0] : "Home";
+            string action = (segments.Count > 1) ? segments[1] : "Index";
 
             var routeData = new RouteData(this, new MvcRouteHandler());
             routeData.Values.Add("controller", controller); //Goes to the relevant Controller  class
