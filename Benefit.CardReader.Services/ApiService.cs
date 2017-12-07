@@ -9,6 +9,7 @@ using Benefit.CardReader.Services.Factories;
 using Benefit.Common.Helpers;
 using Benefit.HttpClient;
 using Newtonsoft.Json;
+using NLog;
 
 namespace Benefit.CardReader.Services
 {
@@ -16,7 +17,9 @@ namespace Benefit.CardReader.Services
     {
         private BenefitHttpClient _httpClient = new BenefitHttpClient();
         public string AuthToken { get; set; }
+        public string SellerName { get; set; }
         private DataService dataService = new DataService();
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public string GetAuthToken(string licenseKey)
         {
@@ -41,6 +44,15 @@ namespace Benefit.CardReader.Services
             return null;
         }
 
+        public string GetSellerName(string licenseKey)
+        {
+            var getSellerNameUrl = CardReaderSettingsService.ApiHost + CardReaderSettingsService.ApiPrefix + "GetSellerName?licenseKey=" + licenseKey;
+            var sellerNameResult = _httpClient.Get<string>(getSellerNameUrl, AuthToken);
+            if (sellerNameResult.StatusCode == HttpStatusCode.OK)
+                return sellerNameResult.Data;
+            return null;
+        }
+
         public SellerCashierAuthDto AuthCashier(string cashierNfc)
         {
             var authCashierUrl = CardReaderSettingsService.ApiHost + CardReaderSettingsService.ApiPrefix + "AuthCashier?nfc=" + cashierNfc;
@@ -61,6 +73,7 @@ namespace Benefit.CardReader.Services
                 }
                 return cashierResult.Data;
             }
+            _logger.Error(SellerName + Environment.NewLine + authCashierUrl + Environment.NewLine + cashierResult.StatusCode + Environment.NewLine + cashierResult.ErrorMessage);
             return null;
         }
 
@@ -94,7 +107,11 @@ namespace Benefit.CardReader.Services
         {
             var pingUrl = string.Format("{0}{1}PingOnline?licenseKey={2}", CardReaderSettingsService.ApiHost,
                 CardReaderSettingsService.ApiPrefix, licenseKey);
-            _httpClient.Get<string>(pingUrl, authorizationToken);
+            var result = _httpClient.Get<string>(pingUrl, authorizationToken);
+            if (result.StatusCode != HttpStatusCode.OK)
+            {
+                _logger.Fatal(SellerName + Environment.NewLine + licenseKey + Environment.NewLine + pingUrl + Environment.NewLine + result.StatusCode + Environment.NewLine + result.ErrorMessage);
+            }
         }
     }
 }

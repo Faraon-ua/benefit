@@ -59,7 +59,6 @@ namespace Benefit.CardReader
             }
             if (arguments.Any())
             {
-                var CommunicationService = new CommunicationService();
                 var proc = Process.GetCurrentProcess();
                 var processes = Process.GetProcessesByName(proc.ProcessName);
                 IntPtr price = IntPtr.Zero, bill = IntPtr.Zero, chargeBonuses = IntPtr.Zero;
@@ -132,7 +131,10 @@ namespace Benefit.CardReader
         void timer_Tick(object sender, EventArgs e)
         {
             if (Token == null || !IsConnected || !IsDeviceConnected) return;
-            var apiService = new ApiService();
+            var apiService = new ApiService()
+            {
+                SellerName = AuthInfo.SellerName
+            };
             apiService.PingOnline(Token, LicenseKey);
         }
 

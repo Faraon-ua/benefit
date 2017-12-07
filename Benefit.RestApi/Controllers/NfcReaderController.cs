@@ -23,6 +23,15 @@ namespace Benefit.RestApi.Controllers
         static Logger _logger = LogManager.GetCurrentClassLogger();
 
         [HttpGet]
+        [Route("GetSellerName")]
+        public IHttpActionResult GetSellerName(string licenseKey)
+        {
+            var seller = db.Sellers.FirstOrDefault(entry => entry.TerminalLicense.ToLower() == licenseKey.ToLower());
+            if (seller == null) return NotFound();
+            return Ok(seller.Name);
+        }
+
+        [HttpGet]
         [Route("AuthCashier")]
         public IHttpActionResult AuthCashier(string nfc)
         {
@@ -49,12 +58,12 @@ namespace Benefit.RestApi.Controllers
             if (user == null)
             {
                 var benefitCard =
-                      db.BenefitCards.Include(entry=>entry.User).FirstOrDefault(
+                      db.BenefitCards.Include(entry => entry.User).FirstOrDefault(
                           entry => entry.NfcCode.ToLower() == nfc.ToLower());
                 if (benefitCard != null)
                 {
                     user = benefitCard.User;
-                }    
+                }
             }
             if (user != null)
             {
@@ -82,7 +91,7 @@ namespace Benefit.RestApi.Controllers
                     user = benefitCard.User;
                 }
             }
-            
+
             if (user != null)
             {
                 var lastCardOrder =
@@ -128,7 +137,7 @@ namespace Benefit.RestApi.Controllers
                 if (user == null)
                 {
                     benefitCard =
-                        db.BenefitCards.Include(entry=>entry.User).FirstOrDefault(
+                        db.BenefitCards.Include(entry => entry.User).FirstOrDefault(
                             entry => entry.NfcCode.ToLower() == paymentIngest.UserNfc.ToLower());
                     if (benefitCard == null)
                     {
@@ -211,7 +220,7 @@ namespace Benefit.RestApi.Controllers
 
                 db.Entry(user).State = EntityState.Modified;
                 db.SaveChangesAsync();
-                
+
                 return Request.CreateResponse(HttpStatusCode.OK,
                     new PaymentResultDto()
                     {
@@ -240,7 +249,6 @@ namespace Benefit.RestApi.Controllers
             {
                 seller = db.Sellers.Find(User.Identity.Name);
             }
-                         
             if (seller == null)
                 return NotFound();
             seller.TerminalLastOnline = DateTime.UtcNow;

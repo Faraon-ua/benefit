@@ -158,7 +158,9 @@ namespace Benefit.CardReader
             {
                 ((App)Application.Current).IsDeviceConnected = true;
                 //get license key from device;
-                app.Token = ReaderFactory.GetReaderManager(app.IsConnected).GetAuthToken(handShake.LicenseKey);
+                var readerManager = ReaderFactory.GetReaderManager(app.IsConnected);
+                app.Token = readerManager.GetAuthToken(handShake.LicenseKey);
+                readerManager.SellerName = app.AuthInfo.SellerName = readerManager.GetSellerName(handShake.LicenseKey);
                 app.LicenseKey = handShake.LicenseKey;
                 if (app.Token == null)
                 {

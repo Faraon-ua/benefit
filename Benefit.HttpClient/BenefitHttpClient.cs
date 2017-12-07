@@ -1,17 +1,16 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Text;
 using Benefit.CardReader.DataTransfer.Dto.Base;
 using Newtonsoft.Json;
 using System.IO;
-using NLog;
 
 namespace Benefit.HttpClient
 {
     public class BenefitHttpClient
     {
         private WebClient client;
-        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public BenefitHttpClient()
         {
@@ -52,8 +51,26 @@ namespace Benefit.HttpClient
             }
             catch (WebException ex)
             {
-                _logger.Fatal(url + Environment.NewLine + ex);
                 result.StatusCode = ((HttpWebResponse)ex.Response).StatusCode;
+
+                var responseStream = ex.Response == null ? null : ex.Response.GetResponseStream();
+                if (responseStream != null)
+                {
+                    using (var reader = new StreamReader(responseStream))
+                    {
+                        var definition = new { Message = "" };
+                        var json = reader.ReadToEnd();
+                        try
+                        {
+                            var jsonResult = JsonConvert.DeserializeAnonymousType(json, definition);
+                            result.ErrorMessage = jsonResult == null ? null : jsonResult.Message;
+                        }
+                        catch (Exception exc)
+                        {
+                            Debug.WriteLine(exc.Message);
+                        }
+                    }
+                }
             }
             if (result.StatusCode == HttpStatusCode.OK)
             {
@@ -91,8 +108,6 @@ namespace Benefit.HttpClient
                         result.ErrorMessage = jsonResult.Message;
                     }
                 }
-
-                _logger.Fatal(url + Environment.NewLine + ex + Environment.NewLine + result.ErrorMessage);
             }
             if (result.StatusCode == HttpStatusCode.OK)
             {

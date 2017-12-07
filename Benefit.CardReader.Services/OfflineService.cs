@@ -18,9 +18,17 @@ namespace Benefit.CardReader.Services
         {
             _dataService = new DataService();
         }
+
+        public string SellerName { get; set; }
+
         public string GetAuthToken(string licenseKey)
         {
             return _dataService.Get<string>().FirstOrDefault();
+        }
+
+        public string GetSellerName(string licenseKey)
+        {
+            return string.Empty;
         }
 
         public SellerCashierAuthDto AuthCashier(string cashierNfc)
