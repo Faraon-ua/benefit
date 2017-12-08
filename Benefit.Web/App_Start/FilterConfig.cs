@@ -9,6 +9,7 @@ namespace Benefit.Web
         {
             filters.Add(new HandleErrorAttribute());
             filters.Add(new UserFilterAttribute());
+            filters.Add(new SubdomainFilterAttribute());
         }
     }
 }

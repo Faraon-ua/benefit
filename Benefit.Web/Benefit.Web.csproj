@@ -288,6 +288,7 @@
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\CabinetFilterAttribute.cs" />
     <Compile Include="Filters\CustomKeyAuthAttribute.cs" />
+    <Compile Include="Filters\SubdomainFilterAttribute.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
