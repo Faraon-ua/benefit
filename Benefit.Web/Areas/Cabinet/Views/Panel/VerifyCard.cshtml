@@ -1,7 +1,7 @@
 ﻿@model Benefit.Domain.Models.ApplicationUser
 
 @{
-    ViewBag.Title = "Верифікація карти/брелока";
+    ViewBag.Title = "Верифікація акаунту";
     Layout = "~/Areas/Cabinet/Views/Shared/_CabinetLayout.cshtml";
 }
 @section scripts
@@ -15,7 +15,7 @@
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
 
-    <h2>Верифікація карти</h2>
+    <h2>Верифікація акаунту</h2>
 
     @using (Html.BeginForm("VerifyCard", "Panel", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {

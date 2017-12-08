@@ -119,42 +119,12 @@
                 }
                 else
                 {
-                    <p class="verification_data">Для отримання можливості взяти участь у плані винагород<br> необхідно пройти процедуру верифікації бонусної картки або брелоку</p>
-                    <a class="profile_verification" href="@Url.Action("VerifyCard")">Верифікація картки</a>
+                    <p class="verification_data">Для отримання можливості взяти участь у плані винагород<br> необхідно пройти процедуру верифікації акаунту</p>
+                    <a class="btn btn-danger font-white centered" href="@Url.Action("VerifyCard")">Верифікація акаунту</a>
                 }
-
-                <p class="verification_data">Для операцій по перерахунку бонусів чи виведення їх в готівку<br> в цілях безпеки та згідно чинного законодавства України<br> вам потрібно пройти верифікацію акаунту</p>
-
-                <button type="button" class="profile_verification">Верифікація акаунту</button>
             }
 
         </div>
-
-        @*<div id="addition" class="addition tab-pane fade">
-                <form class="profile_addition_form">
-                    <label for="profile_birthday">Дата народження</label>
-                    <input onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" id="profile_birthday" type="text" placeholder="18.04.1994">
-
-                    <label for="profile_sex">Стать</label>
-                    <select name="profile_sex" id="profile_sex">
-                        <option selected>жіноча</option>
-                        <option>чоловіча</option>
-                    </select>
-
-                    <label for="profile_aducation">Освіта</label>
-                    <input id="profile_aducation" type="text" placeholder="базова вища">
-
-                    <label for="profile_job">Професія</label>
-                    <input id="profile_job" type="text" placeholder="викладач">
-
-                    <label for="profile_family">Сімейний статус</label>
-                    <input id="profile_family" type="text" placeholder="Заміжня">
-
-                    <label for="profile_children">Діти</label>
-                    <input id="profile_children" type="text" placeholder="1">
-
-                </form>
-            </div>*@
 
         <div id="address" class="address tab-pane fade">
             <p class="profile_adress_title">Адреси доставки</p>
@@ -183,9 +153,6 @@
                 </div>
 
             }
-            @*<button class="change_pin">змінити пін-код</button>
-                <p class="security_description">Пін-код використовується під час проведення будь-яких фінансових операцій, які пов’язані із використанням бонусів.</p>
-                <p class="security_description">При зміні паролю чи пін-коду необхідно перейти за посиланням, яке буде відправлено компанією на вашу електронну пошту.</p>*@
         </div>
 
         <div id="change_data" class="change_data tab-pane fade">
