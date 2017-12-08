@@ -288,6 +288,7 @@
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\CabinetFilterAttribute.cs" />
     <Compile Include="Filters\CustomKeyAuthAttribute.cs" />
+    <Compile Include="Filters\SubdomainFilterAttribute.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -307,7 +308,6 @@
     <Compile Include="Models\ImagesViewModel.cs" />
     <Compile Include="Models\Admin\SellerViewModel.cs" />
     <Compile Include="Models\ProductOptionsViewModel.cs" />
-    <Compile Include="Models\Routing\SubdomainRoute.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
