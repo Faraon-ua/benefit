@@ -54,6 +54,7 @@ namespace Benefit.CardReader.Controls
             try
             {
                 paymentSum = double.Parse(txtPaymentSum.Text, CultureInfo.InvariantCulture);
+                paymentSum = Math.Abs(paymentSum);
             }
             catch
             {

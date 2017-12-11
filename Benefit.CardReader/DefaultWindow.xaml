@@ -57,8 +57,8 @@
                 <controls:KeyboardPartial x:Name="KeyboardPartial" Visibility="Hidden" Grid.ZIndex="1000"></controls:KeyboardPartial>
                 <controls:UserInfo x:Name="UserInfo" Visibility="Hidden" Grid.ZIndex="1000"></controls:UserInfo>
                 <controls:ErrorPartial x:Name="ErrorMessage" Visibility="Hidden" Grid.ZIndex="1000"></controls:ErrorPartial>
-                <controls:Loading x:Name="LoadingSpinner" Visibility="Hidden" Grid.ZIndex="1000"></controls:Loading>
-                <controls:CashierPartial x:Name="CashierPartial" Visibility="Visible" Grid.ZIndex="0"></controls:CashierPartial>
+                <controls:Loading x:Name="LoadingSpinner" Visibility="Visible" Grid.ZIndex="1000"></controls:Loading>
+                <controls:CashierPartial x:Name="CashierPartial" Visibility="Hidden" Grid.ZIndex="0"></controls:CashierPartial>
                 <controls:UserAuthPartial x:Name="UserAuthPartial" Visibility="Hidden" Grid.ZIndex="0"></controls:UserAuthPartial>
                 <controls:TransactionPartial x:Name="TransactionPartial" Visibility="Hidden" Grid.ZIndex="0"></controls:TransactionPartial>
                 <controls:DeviceNotConnected x:Name="DeviceNotConnected" Visibility="Hidden" Grid.ZIndex="0"></controls:DeviceNotConnected>
