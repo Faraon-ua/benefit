@@ -2,11 +2,11 @@
               xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:fa="http://schemas.fontawesome.io/icons/"
-    Height="545" Width="800">
+    Height="545" Width="800" IsVisibleChanged="Loading_OnIsVisibleChanged">
 
     <Grid>
         <Grid Background="Black" Opacity="0.5">
         </Grid>
-        <fa:ImageAwesome Icon="Refresh" Spin="True" Height="200" Width="200" Foreground="Red" VerticalAlignment="Center"></fa:ImageAwesome>
+        <fa:ImageAwesome Name="LoadImg" Icon="Refresh" Spin="False" Height="200" Width="200" Foreground="Red" VerticalAlignment="Center"></fa:ImageAwesome>
     </Grid>
 </UserControl>
