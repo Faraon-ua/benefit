@@ -7,23 +7,24 @@
 <div id="productFilters">
     @if (Model.ProductParameters.Any())
     {
-        foreach (var filter in Model.ProductParameters.OrderBy(entry=>entry.Order))
+        foreach (var filter in Model.ProductParameters.OrderBy(entry => entry.Order))
         {
             if (filter.ProductParameterValues.Any())
             {
                 <div class="filter-section" data-filter-name="@filter.UrlName">
-                    <hr/>
+                    <hr />
                     <div class="margin-bottom-5">
                         <strong>
                             @filter.Name
                         </strong>
                     </div>
                     <div>
-                        @if (filter.Type == typeof (string).ToString())
+                        @if (filter.Type == typeof(string).ToString())
                         {
-                            foreach (var filterValue in filter.ProductParameterValues.OrderBy(entry=>entry.Order))
+                            foreach (var filterValue in filter.ProductParameterValues.OrderBy(entry => entry.Order))
                             {
-                                <input id="@filterValue.ParameterValueUrl" class="hidden" type="checkbox">
+                                var name = filterValue.ParameterValueUrl == null ? string.Empty : filterValue.ParameterValueUrl.Replace(" ", string.Empty);
+                                <input id="@filterValue.ParameterValueUrl" name="@name" class="hidden" type="checkbox">
                                 <label class="label_for_check" for="@filterValue.ParameterValueUrl">@filterValue.ParameterValue @filter.MeasureUnit</label>
                             }
                         }

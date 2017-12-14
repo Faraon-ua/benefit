@@ -49,6 +49,7 @@
                     } else {
                         $.each(optionValues, function (j, optValue) {
                             $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue)).prop('checked', true);
+                            $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]").prop('checked', true);
                         });
                     }
                 });
