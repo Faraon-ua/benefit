@@ -226,6 +226,36 @@ namespace Benefit.Services.Domain
             {
                 items = items.Where(entry => entry.SellerId == sellerId);
             }
+            //fetch product parameters
+            if (categoryId != null && fetchParameters)
+            {
+                var productParameters = db.ProductParameters.Where(entry => entry.CategoryId == categoryId && entry.DisplayInFilters).ToList();
+                if (sellerId != null)
+                {
+                    var mappedCategories = db.Categories.Include(
+                        entry => entry.MappedCategories.Select(mc => mc.ProductParameters))
+                        .Where(
+                            entry =>
+                                entry.SellerId == sellerId && entry.MappedParentCategoryId == categoryId &&
+                                entry.IsActive).ToList();
+                    var mappedCategoriesParameters = mappedCategories
+                        .SelectMany(entry => entry.ProductParameters)
+                        .Where(entry => entry.DisplayInFilters).ToList();
+                    productParameters = productParameters.Union(mappedCategoriesParameters).ToList();
+                }
+                var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
+                foreach (var productParameterName in productParameterNames)
+                {
+                    var parameters = productParameters.Where(entry => entry.UrlName == productParameterName).ToList();
+                    var parameter = parameters.First();
+                    parameter.ProductParameterValues =
+                        parameters.SelectMany(entry => entry.ProductParameterValues).Distinct(new ProductParameterValueComparer()).ToList();
+                    result.ProductParameters.Add(parameter);
+                }
+
+                productParameters.InsertRange(0, FetchGeneralProductParameters(items, sellerId == null));
+                result.ProductParameters = productParameters;
+            }
             //todo: instead all products show recomendations
             var sort = ProductSortOption.Order;
             if (options != null)
@@ -237,9 +267,25 @@ namespace Benefit.Services.Domain
                     var optionKeyValue = optionSegment.Split('=');
                     var optionKey = optionKeyValue.First();
                     var optionValues = optionKeyValue.Last().Split(',');
-                    if (optionKey != "sort")
+                    switch (optionKey)
                     {
-                        items =
+                        case "sort":
+                            sort = (ProductSortOption)Enum.Parse(typeof(ProductSortOption), optionValues.First());
+                            break;
+                        case "seller":
+                            var sellerIds =
+                                db.Sellers.Where(entry => optionValues.Contains(entry.UrlName))
+                                    .Select(entry => entry.Id);
+                            items = items.Where(entry => sellerIds.Contains(entry.SellerId));
+                            break;
+                        case "vendor":
+                            items = items.Where(entry => optionValues.Contains(entry.Vendor));
+                            break;
+                        case "country":
+                            items = items.Where(entry => optionValues.Contains(entry.OriginCountry));
+                            break;
+                        default:
+                            items =
                             items.Where(
                                 entry =>
                                     entry.ProductParameterProducts.Any(pr => pr.ProductParameter.UrlName == optionKey) &&
@@ -247,21 +293,9 @@ namespace Benefit.Services.Domain
                                         optValue =>
                                             entry.ProductParameterProducts.Select(pr => pr.StartValue)
                                                 .Contains(optValue)));
-                    }
-                    else
-                    {
-                        if (optionKey == "sort")
-                        {
-                            sort = (ProductSortOption)Enum.Parse(typeof(ProductSortOption), optionValues.First());
-                        }
+                            break;
                     }
                 }
-            }
-            if (fetchParameters)
-            {
-                result.ProductParameters =
-                    items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue)).ToList();
-                var item = items.FirstOrDefault(entry => entry.Id == "8e5f6e7d-5c2e-11e5-87f8-e03f49eb1351");
             }
             switch (sort)
             {
@@ -299,6 +333,62 @@ namespace Benefit.Services.Domain
             return result;
         }
 
+        public List<ProductParameter> FetchGeneralProductParameters(IQueryable<Product> items, bool fetchSellers)
+        {
+            var productParametersList = new List<ProductParameter>();
+            if (fetchSellers)
+            {
+                var sellersParams =
+                    items.Select(entry => entry.Seller).Distinct().ToList().Select(entry => new ProductParameterValue()
+                    {
+                        ParameterValue = entry.Name,
+                        ParameterValueUrl = entry.UrlName
+                    }).OrderBy(entry => entry.ParameterValue).ToList();
+                productParametersList.Add(new ProductParameter()
+                {
+                    Name = "Постачальник",
+                    UrlName = "seller",
+                    Type = typeof(string).ToString(),
+                    ProductParameterValues = sellersParams
+                });
+            }
+
+            var vendorParams =
+                   items.Select(entry => entry.Vendor).Distinct().ToList().Select(entry => new ProductParameterValue()
+                   {
+                       ParameterValue = entry,
+                       ParameterValueUrl = entry
+                   }).OrderBy(entry => entry.ParameterValue).ToList();
+            if (vendorParams.Count > 1)
+            {
+                productParametersList.Add(new ProductParameter()
+                {
+                    Name = "Виробник",
+                    UrlName = "vendor",
+                    Type = typeof(string).ToString(),
+                    ProductParameterValues = vendorParams
+                });
+            }
+
+            var originCountryParams =
+                 items.Select(entry => entry.OriginCountry).Distinct().ToList().Select(entry => new ProductParameterValue()
+                 {
+                     ParameterValue = entry,
+                     ParameterValueUrl = entry
+                 }).OrderBy(entry => entry.ParameterValue).ToList();
+            if (originCountryParams.Count > 1)
+            {
+                productParametersList.Add(new ProductParameter()
+                {
+                    Name = "Країна виробник",
+                    UrlName = "country",
+                    Type = typeof(string).ToString(),
+                    ProductParameterValues = originCountryParams
+                });
+            }
+            return productParametersList;
+        }
+
         public NavigationEntitiesViewModel<Product> GetSellerCatalog(string sellerUrl, string categoryUrl, string options)
         {
             var categoriesService = new CategoriesService();
@@ -311,40 +401,8 @@ namespace Benefit.Services.Domain
             var categoryId = category == null ? null : category.Id;
             var catalog = GetSellerCatalogProducts(seller == null ? null : seller.Id, categoryId, options);
             result.Items = catalog.Products.ToList();
+            result.ProductParameters = catalog.ProductParameters;
 
-            //product parameters
-            if (category != null)
-            {
-                var productParameters = category.ProductParameters.Where(entry => entry.DisplayInFilters).ToList();
-                if (seller != null)
-                {
-                    var mappedCategories = db.Categories.Include(
-                        entry => entry.MappedCategories.Select(mc => mc.ProductParameters))
-                        .Where(
-                            entry =>
-                                entry.SellerId == seller.Id && entry.MappedParentCategoryId == category.Id &&
-                                entry.IsActive).ToList();
-                    var mappedCategoriesParameters = mappedCategories
-                        .SelectMany(entry => entry.ProductParameters)
-                        .Where(entry => entry.DisplayInFilters).ToList();
-                    productParameters = productParameters.Union(mappedCategoriesParameters).ToList();
-                }
-                foreach (var productParameter in productParameters)
-                {
-                    productParameter.ProductParameterValues =
-                        productParameter.ProductParameterValues.Where(
-                            entry => catalog.ProductParameters.Contains(entry.ParameterValueUrl)).ToList();
-                }
-                var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
-                foreach (var productParameterName in productParameterNames)
-                {
-                    var parameters = productParameters.Where(entry => entry.UrlName == productParameterName).ToList();
-                    var parameter = parameters.First();
-                    parameter.ProductParameterValues =
-                        parameters.SelectMany(entry => entry.ProductParameterValues).Distinct(new ProductParameterValueComparer()).ToList();
-                    result.ProductParameters.Add(parameter);
-                }
-            }
             //todo: add breadcrumbs
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {

@@ -48,7 +48,7 @@
                         $("select#provider_sort_select").val(optionValues[0]);
                     } else {
                         $.each(optionValues, function (j, optValue) {
-                            $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).prop('checked', true);
+                            $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue)).prop('checked', true);
                         });
                     }
                 });
