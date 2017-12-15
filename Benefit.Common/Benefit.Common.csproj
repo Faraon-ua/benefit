@@ -62,6 +62,7 @@
     <Compile Include="Constants\FilterAndSortingConstants.cs" />
     <Compile Include="Constants\ListConstants.cs" />
     <Compile Include="Constants\ProductConstants.cs" />
+    <Compile Include="Constants\ReaderConstants.cs" />
     <Compile Include="Constants\RegionConstants.cs" />
     <Compile Include="Constants\RouteConstants.cs" />
     <Compile Include="Constants\UserConstants.cs" />

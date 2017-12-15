@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using Benefit.CardReader.DataTransfer.Reader;
 using Benefit.Common.CustomEventArgs;
@@ -67,8 +69,9 @@ namespace Benefit.CardReader.Services
         public HandShakeResult HandShake()
         {
             var result = new HandShakeResult();
-            var allComPorts = SerialPort.GetPortNames();
-            foreach (var comPort in allComPorts)
+            var definedPortName = CardReaderSettingsService.DefinedNfcReaderPortName;
+            var ports = definedPortName == null ? SerialPort.GetPortNames() : new[] {definedPortName};
+            foreach (var comPort in ports)
             {
                 try
                 {
