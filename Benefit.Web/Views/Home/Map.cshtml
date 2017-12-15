@@ -55,7 +55,8 @@
                 var content = "<strong>" + data[i].Name + "</strong><br/>" +
                     "<span>" + data[i].Specialization + "</span><br/>" +
                     "<span>Бонус: " + data[i].UserDiscount + "%</span><br/>" +
-                    "<a target='_blank' href='" + data[i].Url + "'>" + data[i].Url + "</a><br/>";
+                    "<a target='_blank' href='" + data[i].Url + "'>" + data[i].Url + "</a><br/>" +
+                    "<a href='https://www.google.com/maps/dir/?api=1&destination="+data[i].Latitude + "," + data[i].Longitude + "'>Прокласти маршрут</a><br/>";
                 var infowindow = new google.maps.InfoWindow();
                 var marker = new google.maps.Marker({
                     position: { lat: data[i].Latitude, lng: data[i].Longitude },

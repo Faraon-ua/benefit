@@ -145,7 +145,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 TempData["SuccessMessage"] = "Зміни збережено";
                 return RedirectToAction("Index", new { categoryId });
             }
-            return View();
+            TempData["ErrorMessage"] = "Невірно задані дані";
+            return RedirectToAction("Index", new { categoryId });
         }
 
         public ActionResult Delete(string id, string categoryId)

@@ -302,6 +302,7 @@
     <Compile Include="Models\Admin\OrdersFilters.cs" />
     <Compile Include="Models\Admin\ProductFilters.cs" />
     <Compile Include="Models\Admin\ProductsViewModel.cs" />
+    <Compile Include="Models\Admin\UserFilters.cs" />
     <Compile Include="Models\Admin\SellerFilters.cs" />
     <Compile Include="Models\Admin\UserViewModels.cs" />
     <Compile Include="Models\FacebookAccountModel.cs" />
@@ -1195,6 +1196,7 @@
     <Content Include="Areas\Admin\Views\Users\_StatusPartial.cshtml" />
     <Content Include="Areas\Cabinet\Views\BenefitFamily\_RegisteredCards.cshtml" />
     <Content Include="Areas\Admin\Views\Localizations\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Users\_Filters.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

@@ -59,11 +59,20 @@
         function SetMarker(map, center) {
             map.setCenter(center);
             map.setZoom(18);
+            var content = "<strong>@Model.Seller.Name</strong><br/>" +
+                  "<a href='https://www.google.com/maps/dir/?api=1&destination=" + center.lat + "," + center.lng + "'>Прокласти маршрут</a><br/>";
+            var infowindow = new google.maps.InfoWindow();
             var marker = new google.maps.Marker({
                 position: center,
                 map: map,
                 title: "@Model.Seller.Name"
             });
+            google.maps.event.addListener(marker, 'click', (function (marker, content, infowindow) {
+                return function () {
+                    infowindow.setContent(content);
+                    infowindow.open(map, marker);
+                };
+            })(marker, content, infowindow));
         }
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0Ryf-Uk4SouHzTJPPuUXAVSmaAQ5X-oM&callback=initMap" async defer></script>

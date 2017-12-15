@@ -434,6 +434,10 @@
     <Compile Include="Migrations\201711281359596_AddMentorPromotionOption.Designer.cs">
       <DependentUpon>201711281359596_AddMentorPromotionOption.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712141902376_AddRequiredProductValues.cs" />
+    <Compile Include="Migrations\201712141902376_AddRequiredProductValues.Designer.cs">
+      <DependentUpon>201712141902376_AddRequiredProductValues.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -753,6 +757,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201711281359596_AddMentorPromotionOption.resx">
       <DependentUpon>201711281359596_AddMentorPromotionOption.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712141902376_AddRequiredProductValues.resx">
+      <DependentUpon>201712141902376_AddRequiredProductValues.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,0 +1,26 @@
+﻿<label for="id-date-range-picker-1">Дата реєстрації</label>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        <div class="input-group">
+            <span class="input-group-addon">
+                <i class="icon-calendar bigger-110"></i>
+            </span>
+
+            <input type="text" id="id-date-range-picker-1" name="DateRange" class="form-control">
+        </div>
+    </div>
+</div>
+<br />
+<label>Кількість місяців підтврдження статусу</label>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        @Html.TextBox("MinStatusCompletions")
+    </div>
+</div>
+<br />
+<div class="row">
+    <button type="submit" class="btn btn-purple btn-sm">
+        Фільтрувати
+        <i class="icon-search icon-on-right bigger-110"></i>
+    </button>
+</div>

@@ -48,18 +48,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json(new { user.Id, user.FullName, user.PhoneNumber }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult UsersSearch(string search, string dateRange = null)
+        public ActionResult UsersSearch(UserFilterValues filters)
         {
             var users = db.Users.Include(entry => entry.Referal).Include(entry => entry.BenefitCards).AsQueryable();
-            if (!string.IsNullOrEmpty(dateRange))
+            if (!string.IsNullOrEmpty(filters.DateRange))
             {
-                var dateRangeValues = dateRange.Split('-');
+                var dateRangeValues = filters.DateRange.Split('-');
                 var startDate = DateTime.Parse(dateRangeValues.First());
                 var endDate = DateTime.Parse(dateRangeValues.Last());
                 users = users.Where(entry => entry.RegisteredOn >= startDate && entry.RegisteredOn <= endDate);
             }
-            else
+            if (filters.MinStatusCompletions.HasValue)
             {
+                users = users.Where(entry => entry.StatusCompletionMonths >= filters.MinStatusCompletions.Value);
+            }
+            if(!string.IsNullOrEmpty(filters.Search))
+            {
+                var search = filters.Search;
                 search = search.ToLower();
                 users = users.Where(entry => entry.FullName.ToLower().Contains(search) ||
                                              entry.Email.ToLower().Contains(search) ||

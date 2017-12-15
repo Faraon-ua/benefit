@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
@@ -21,8 +20,10 @@ namespace Benefit.Domain.Models
         [Key]
         public string Id { get; set; }
         [MaxLength(64)]
+        [Required]
         public string ParameterValue { get; set; }
         [MaxLength(64)]
+        [Required]
         public string ParameterValueUrl { get; set; }
         public bool IsVerified { get; set; }
         [MaxLength(128)]
