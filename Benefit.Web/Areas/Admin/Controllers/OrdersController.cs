@@ -10,11 +10,13 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models.Enums;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Helpers;
 using Benefit.Web.Models.Admin;
 using NLog;
+using Benefit.Common.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -44,7 +46,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
             var orders =
                 db.Orders.Include(o => o.User)
-                    .OrderByDescending(entry => entry.Time)
                     .Where(entry => entry.OrderType == ordersFilters.NavigationType);
 
             if (Seller.CurrentAuthorizedSellerId != null)
@@ -105,8 +106,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             if (ordersFilters.ClientGrouping)
             {
-                var groupedOrders = orders.GroupBy(entry => entry.UserId).OrderByDescending(entry => entry.Count()).ToList();
+                var groupedOrders =
+                    orders.GroupBy(entry => entry.UserId).OrderByDescending(entry => entry.Count()).ToList();
                 orders = groupedOrders.SelectMany(entry => entry.OrderByDescending(grp => grp.Time)).AsQueryable();
+            }
+            else
+            {
+                switch (ordersFilters.Sort)
+                {
+                    case OrderSortOption.DateAsc:
+                        orders = orders.OrderBy(entry => entry.Time);
+                        break;
+                    case OrderSortOption.DateDesc:
+                        orders = orders.OrderByDescending(entry => entry.Time);
+                        break;
+                    case OrderSortOption.SumAsc:
+                        orders = orders.OrderBy(entry => entry.Sum);
+                        break;
+                    case OrderSortOption.SumDesc:
+                        orders = orders.OrderByDescending(entry => entry.Sum);
+                        break;
+                }
             }
             var ordersTotal = orders.Count();
             ordersFilters.Sum = orders.ToList().Select(l => l.SumWithDiscount).DefaultIfEmpty(0).Sum();
@@ -119,6 +139,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Pages = ordersTotal / takePerPage + 1,
                 ActivePage = page
             };
+            ordersFilters.Sorting = (from OrderSortOption sortOption in Enum.GetValues(typeof (OrderSortOption))
+                select
+                    new SelectListItem()
+                    {
+                        Text = Enumerations.GetEnumDescription(sortOption),
+                        Value = sortOption.ToString(),
+                        Selected = sortOption == ordersFilters.Sort
+                    }).ToList();
             ordersFilters.Sellers =
                 db.Sellers.OrderBy(entry => entry.Name)
                     .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
