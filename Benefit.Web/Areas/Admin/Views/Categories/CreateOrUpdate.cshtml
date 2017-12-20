@@ -73,8 +73,19 @@
 
                     @Html.ValidationSummary(true)
 
-                    @Html.HiddenFor(model => model.Id)
                     @Html.HiddenFor(model => model.Order)
+
+                    <br />
+                    <div class="form-group">
+                        <div class="col-md-1">
+
+                            <label class="text-left control-label" for="Name">ID</label>
+                        </div>
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(model => model.Id, new { @class="col-sm-6" })
+                            @Html.ValidationMessageFor(model => model.Id)
+                        </div>
+                    </div>
 
                     <br />
                     <div class="form-group">
