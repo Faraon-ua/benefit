@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
-using Benefit.CardReader.Communication;
 using Benefit.CardReader.DataTransfer.Reader;
 using Benefit.CardReader.Services;
 using NLog;
@@ -59,36 +58,39 @@ namespace Benefit.CardReader
             }
             if (arguments.Any())
             {
-                var proc = Process.GetCurrentProcess();
-                var processes = Process.GetProcessesByName(proc.ProcessName);
-                IntPtr price = IntPtr.Zero, bill = IntPtr.Zero, chargeBonuses = IntPtr.Zero;
+                double? price = null;
+                string bill = null;
+                var chargeBonuses = false;
+                var flashSum = false;
                 if (arguments.ContainsKey("price"))
                 {
-                    price = new IntPtr(int.Parse(arguments["price"]));
+                    price = double.Parse(arguments["price"]);
                 }
                 if (arguments.ContainsKey("bill"))
                 {
-                    bill = new IntPtr(int.Parse(arguments["bill"]));
+                    bill = arguments["bill"];
                 }
                 if (arguments.ContainsKey("chargebonuses"))
                 {
-                    chargeBonuses = new IntPtr(int.Parse(arguments["chargebonuses"]));
+                    chargeBonuses =  int.Parse(arguments["chargebonuses"]) == 1;
                 }
-                if (processes.Length > 1)
+                if (arguments.ContainsKey("flashprice"))
                 {
-                    foreach (var p in processes)
+                    flashSum = int.Parse(arguments["flashprice"]) == 1;
+                }
+                if (price.HasValue)
+                {
+                    var billInfo = new BillInfo()
                     {
-                        if (p.Id != proc.Id)
-                        {
-                            if (bill != IntPtr.Zero)
-                            {
-                                CommunicationService.SendMessage(p.MainWindowHandle,
-                                    CardReaderSettingsService.SetBillWindowsMessageId, bill, IntPtr.Zero);
-                            }
-                            CommunicationService.SendMessage(p.MainWindowHandle, CardReaderSettingsService.SetChargeBonusesWindowsMessageId, chargeBonuses, IntPtr.Zero);
-                            CommunicationService.SendMessage(p.MainWindowHandle, CardReaderSettingsService.SetPriceWindowsMessageId, price, IntPtr.Zero);
-                        }
-                    }
+                        Sum = price.Value,
+                        Number = bill,
+                        ChargeBonuses = chargeBonuses
+                    };
+                    FileService.XmlSerialize(CardReaderSettingsService.BillInfoFilePath, billInfo);
+                }
+                if (flashSum)
+                {
+                    FileService.XmlSerialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath, null, true);
                 }
                 Current.Shutdown();
             }

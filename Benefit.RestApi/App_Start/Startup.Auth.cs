@@ -24,7 +24,6 @@ namespace Benefit.RestApi
                 AuthorizeEndpointPath = new PathString("/api/Account/ExternalLogin"),
                 AccessTokenExpireTimeSpan = TimeSpan.FromDays(14),
                 AllowInsecureHttp = true,
-
             };
         }
 
