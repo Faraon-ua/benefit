@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -19,6 +20,7 @@ namespace Benefit.CardReader
     {
         private Dictionary<string, string> arguments = new Dictionary<string, string>();
         private const int PingOnlinePeriod = 15;//minutes
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public bool IsConnected { get; set; }
         public bool IsDeviceConnected { get; set; }
@@ -64,7 +66,7 @@ namespace Benefit.CardReader
                 var flashSum = false;
                 if (arguments.ContainsKey("price"))
                 {
-                    price = double.Parse(arguments["price"]);
+                    price = double.Parse(arguments["price"], CultureInfo.InvariantCulture);
                 }
                 if (arguments.ContainsKey("bill"))
                 {
@@ -72,7 +74,7 @@ namespace Benefit.CardReader
                 }
                 if (arguments.ContainsKey("chargebonuses"))
                 {
-                    chargeBonuses =  int.Parse(arguments["chargebonuses"]) == 1;
+                    chargeBonuses = int.Parse(arguments["chargebonuses"]) == 1;
                 }
                 if (arguments.ContainsKey("flashprice"))
                 {
@@ -132,10 +134,18 @@ namespace Benefit.CardReader
 
         void timer_Tick(object sender, EventArgs e)
         {
-            if (Token == null || !IsConnected || !IsDeviceConnected) return;
+            if (Token == null || !IsConnected || !IsDeviceConnected)
+            {
+                if (AuthInfo.LogRequests)
+                {
+                    var message = string.Format("[PingFail] Token: {0}\nIsConnected: {1}\n IsDeviceConnected: {2}\n\n", Token, IsConnected, IsDeviceConnected);
+                    _logger.Info(message);
+                }
+                return;
+            }
             var apiService = new ApiService()
             {
-                SellerName = AuthInfo.SellerName
+                LogRequests = AuthInfo.LogRequests
             };
             apiService.PingOnline(Token, LicenseKey);
         }

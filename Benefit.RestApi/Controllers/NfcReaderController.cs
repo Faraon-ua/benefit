@@ -44,7 +44,8 @@ namespace Benefit.RestApi.Controllers
                     CashierName = cashier.Name,
                     ShowBill = cashier.Seller.TerminalBillEnabled,
                     ShowBonusesPayment = cashier.Seller.TerminalBonusesPaymentActive,
-                    ShowKeyboard = cashier.Seller.TerminalKeyboardEnabled
+                    ShowKeyboard = cashier.Seller.TerminalKeyboardEnabled,
+                    LogRequests = cashier.Seller.LogRequests
                 });
             }
             return NotFound();
@@ -127,7 +128,6 @@ namespace Benefit.RestApi.Controllers
                         .FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == paymentIngest.CashierNfc.ToLower());
                 if (cashier == null || cashier.Seller.Id != User.Identity.Name)
                 {
-                    _logger.Error("cashier not found, nfc: " + paymentIngest.CashierNfc);
                     return Request.CreateErrorResponse(HttpStatusCode.NotFound, "cashier not found");
                 }
                 var seller = cashier.Seller;
@@ -141,7 +141,6 @@ namespace Benefit.RestApi.Controllers
                             entry => entry.NfcCode.ToLower() == paymentIngest.UserNfc.ToLower());
                     if (benefitCard == null)
                     {
-                        _logger.Error("User not found, nfc: " + paymentIngest.UserNfc);
                         return Request.CreateErrorResponse(HttpStatusCode.NotFound, "User not found");
                     }
                     user = benefitCard.User;

@@ -6,7 +6,7 @@ namespace Benefit.CardReader.Services.Factories
 {
     public interface IReaderManager
     {
-        string SellerName { get; set; }
+        bool LogRequests { get; set; }
         string GetAuthToken(string licenseKey);
         string GetSellerName(string licenseKey);
         SellerCashierAuthDto AuthCashier(string cashierNfc);

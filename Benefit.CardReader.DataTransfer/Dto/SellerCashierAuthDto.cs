@@ -7,5 +7,6 @@
         public bool ShowBill { get; set; }
         public bool ShowBonusesPayment { get; set; }
         public bool ShowKeyboard { get; set; }
+        public bool LogRequests { get; set; }
     }
 }

@@ -72,7 +72,8 @@ namespace Benefit.CardReader
             {
                 defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
             }));
-            var cashierSeller = ReaderFactory.GetReaderManager(app.IsConnected).AuthCashier(nfcCode);
+            var readerManager = ReaderFactory.GetReaderManager(app.IsConnected);
+            var cashierSeller = readerManager.AuthCashier(nfcCode);
             if (cashierSeller != null)
             {
                 app.AuthInfo.CashierNfc = nfcCode;
@@ -81,6 +82,7 @@ namespace Benefit.CardReader
                 app.AuthInfo.ShowBill = cashierSeller.ShowBill;
                 app.AuthInfo.ShowChargeBonuses = cashierSeller.ShowBonusesPayment;
                 app.AuthInfo.ShowKeyboard = cashierSeller.ShowKeyboard;
+                readerManager.LogRequests = app.AuthInfo.LogRequests = cashierSeller.LogRequests;
 
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -160,7 +162,6 @@ namespace Benefit.CardReader
                 //get license key from device;
                 var readerManager = ReaderFactory.GetReaderManager(app.IsConnected);
                 app.Token = readerManager.GetAuthToken(handShake.LicenseKey);
-                readerManager.SellerName = app.AuthInfo.SellerName = readerManager.GetSellerName(handShake.LicenseKey);
                 app.LicenseKey = handShake.LicenseKey;
                 if (app.Token == null)
                 {

@@ -72,7 +72,7 @@ namespace Benefit.Services
                     localizations.FirstOrDefault(
                         entry =>
                             entry.ResourceId == product.Id && entry.ResourceType == product.GetType().ToString() &&
-                            entry.ResourceField == "Name" && entry.LanguageCode == "ru");
+                            entry.ResourceField == "Description" && entry.LanguageCode == "ru");
                 productLocalizations.AddRange(new List<Localization>()
                 {
                     new Localization()
@@ -90,9 +90,9 @@ namespace Benefit.Services
                         Id = ruDescLocalization == null ? Guid.NewGuid().ToString() : ruDescLocalization.Id,
                         ResourceField = "Description",
                         ResourceId = product.Id,
-                        ResourceOriginalValue = product.Description,
+                        ResourceOriginalValue = product.Description.Replace("\r", string.Empty).Replace("\n",string.Empty),
                         ResourceType = typeof(Product).ToString(),
-                        ResourceValue = ruDescLocalization == null ? string.Empty : ruDescLocalization.ResourceValue,
+                        ResourceValue = ruDescLocalization == null ? string.Empty : ruDescLocalization.ResourceValue.Replace("\r", string.Empty).Replace("\n",string.Empty),
                         LanguageCode = "ru"
                     }
                 });

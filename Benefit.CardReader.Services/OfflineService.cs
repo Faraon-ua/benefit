@@ -19,6 +19,7 @@ namespace Benefit.CardReader.Services
             _dataService = new DataService();
         }
 
+        public bool LogRequests { get; set; }
         public string SellerName { get; set; }
 
         public string GetAuthToken(string licenseKey)
