@@ -221,6 +221,7 @@
     <None Include="benefit.pfx" />
     <None Include="config\ports.config">
       <SubType>Designer</SubType>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <Content Include="NLog.config">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
