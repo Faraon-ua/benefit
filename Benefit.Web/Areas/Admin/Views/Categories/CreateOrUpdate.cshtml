@@ -79,6 +79,17 @@
                     <br />
                     <div class="form-group">
                         <div class="col-md-1">
+                            <label class="text-left control-label" for="Name">Зовнішній ID</label>
+                        </div>
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(model => model.ExternalId, new { @class="col-sm-6" })
+                            @Html.ValidationMessageFor(model => model.ExternalId)
+                        </div>
+                    </div>
+
+                    <br />
+                    <div class="form-group">
+                        <div class="col-md-1">
 
                             <label class="text-left control-label" for="Name">Назва</label>
                         </div>

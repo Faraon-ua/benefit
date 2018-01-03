@@ -19,4 +19,16 @@ namespace Benefit.Domain.Models.Enums
         [Description("Ціна &#8595;")]
         PriceDesc
     }
+
+    public enum OrderSortOption
+    {
+        [Description("Час &#8595;")]
+        DateDesc,
+        [Description("Час &#8593;")]
+        DateAsc,
+        [Description("Сума &#8595;")]
+        SumDesc,
+        [Description("Сума &#8593;")]
+        SumAsc
+    }
 }

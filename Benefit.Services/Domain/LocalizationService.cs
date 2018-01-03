@@ -60,11 +60,45 @@ namespace Benefit.Services
             var products = db.Products.Where(entry => entry.SellerId == sellerId).ToList();
             var productIds = products.Select(pr => pr.Id).ToList();
             var localizations = db.Localizations.Where(entry => productIds.Contains(entry.ResourceId)).OrderBy(entry=>entry.ResourceId).ThenBy(entry=>entry.ResourceField).ToList();
-            foreach (var localization in localizations)
+            var productLocalizations = new List<Localization>();
+            foreach (var product in products)
             {
-                localization.ResourceName = products.FirstOrDefault(entry => entry.Id == localization.ResourceId).Name;
+                var ruNameLocalization =
+                    localizations.FirstOrDefault(
+                        entry =>
+                            entry.ResourceId == product.Id && entry.ResourceType == product.GetType().ToString() &&
+                            entry.ResourceField == "Name" && entry.LanguageCode == "ru");
+                var ruDescLocalization =
+                    localizations.FirstOrDefault(
+                        entry =>
+                            entry.ResourceId == product.Id && entry.ResourceType == product.GetType().ToString() &&
+                            entry.ResourceField == "Description" && entry.LanguageCode == "ru");
+                productLocalizations.AddRange(new List<Localization>()
+                {
+                    new Localization()
+                    {
+                        Id = ruNameLocalization == null ? Guid.NewGuid().ToString() : ruNameLocalization.Id,
+                        ResourceField = "Name",
+                        ResourceId = product.Id,
+                        ResourceOriginalValue = product.Name,
+                        ResourceType = typeof(Product).ToString(),
+                        ResourceValue = ruNameLocalization == null ? string.Empty : ruNameLocalization.ResourceValue,
+                        LanguageCode = "ru"
+                    },
+                    new Localization()
+                    {
+                        Id = ruDescLocalization == null ? Guid.NewGuid().ToString() : ruDescLocalization.Id,
+                        ResourceField = "Description",
+                        ResourceId = product.Id,
+                        ResourceOriginalValue = product.Description.Replace("\r", string.Empty).Replace("\n",string.Empty),
+                        ResourceType = typeof(Product).ToString(),
+                        ResourceValue = ruDescLocalization == null ? string.Empty : ruDescLocalization.ResourceValue.Replace("\r", string.Empty).Replace("\n",string.Empty),
+                        LanguageCode = "ru"
+                    }
+                });
             }
-            return fileService.CreateCSVFromGenericList(localizations); 
+
+            return fileService.CreateCSVFromGenericList(productLocalizations); 
         }
 
         public void Delete(string resourceId)

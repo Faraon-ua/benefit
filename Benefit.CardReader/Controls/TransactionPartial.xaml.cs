@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Globalization;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Benefit.CardReader.DataTransfer.Dto;
-using Benefit.CardReader.DataTransfer.Dto.Base;
 using Benefit.CardReader.DataTransfer.Ingest;
 using Benefit.CardReader.Services;
 using Benefit.CardReader.Services.Factories;

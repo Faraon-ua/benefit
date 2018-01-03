@@ -14,7 +14,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpGet]
         public ActionResult OnlineStatus(string search)
         {
-            var sellers = db.Sellers.Where(entry => entry.IsBenefitCardActive && entry.IsActive);
+            var sellers = db.Sellers.Where(entry => entry.IsBenefitCardActive);
             if (!string.IsNullOrEmpty(search))
             {
                 sellers = sellers.Where(entry => entry.Name.ToLower().Contains(search.ToLower()));

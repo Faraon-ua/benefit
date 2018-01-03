@@ -10,6 +10,7 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using Benefit.CardReader.Controls;
+using Benefit.CardReader.DataTransfer.Reader;
 
 namespace Benefit.CardReader
 {
@@ -56,7 +57,6 @@ namespace Benefit.CardReader
             deviceCheckTimer.Tick += DeviceCheck;
             deviceCheckTimer.Interval = new TimeSpan(0, 0, app.IsDeviceConnected ? maxCheckDevicePeriod : minCheckDevicePeriod);
             deviceCheckTimer.Start();
-
         }
 
         #region helper methods
@@ -72,7 +72,8 @@ namespace Benefit.CardReader
             {
                 defaultWindow.LoadingSpinner.Visibility = Visibility.Visible;
             }));
-            var cashierSeller = ReaderFactory.GetReaderManager(app.IsConnected).AuthCashier(nfcCode);
+            var readerManager = ReaderFactory.GetReaderManager(app.IsConnected);
+            var cashierSeller = readerManager.AuthCashier(nfcCode);
             if (cashierSeller != null)
             {
                 app.AuthInfo.CashierNfc = nfcCode;
@@ -81,6 +82,7 @@ namespace Benefit.CardReader
                 app.AuthInfo.ShowBill = cashierSeller.ShowBill;
                 app.AuthInfo.ShowChargeBonuses = cashierSeller.ShowBonusesPayment;
                 app.AuthInfo.ShowKeyboard = cashierSeller.ShowKeyboard;
+                readerManager.LogRequests = app.AuthInfo.LogRequests = cashierSeller.LogRequests;
 
                 Dispatcher.Invoke(new Action(() =>
                 {
@@ -160,7 +162,6 @@ namespace Benefit.CardReader
                 //get license key from device;
                 var readerManager = ReaderFactory.GetReaderManager(app.IsConnected);
                 app.Token = readerManager.GetAuthToken(handShake.LicenseKey);
-                readerManager.SellerName = app.AuthInfo.SellerName = readerManager.GetSellerName(handShake.LicenseKey);
                 app.LicenseKey = handShake.LicenseKey;
                 if (app.Token == null)
                 {
@@ -236,6 +237,22 @@ namespace Benefit.CardReader
                             defaultWindow.TransactionPartial.UserCard.Text = user.AvailableBonuses;
                             defaultWindow.ShowSingleControl(ViewType.TransactionPartial);
                             defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
+
+                            //if bill saved - process
+                            var billInfo =
+                                FileService.XmlDeserialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath);
+                            if (billInfo != null)
+                            {
+                                defaultWindow.TransactionPartial.txtPaymentSum.Text = billInfo.Sum.ToString();
+                                if (app.AuthInfo.ShowBill)
+                                {
+                                    defaultWindow.TransactionPartial.txtBillNumber.Text = billInfo.Number;
+                                }
+                                defaultWindow.TransactionPartial.btnPayBonuses.Focus();
+                                var _chargeBonuses = billInfo.ChargeBonuses && app.AuthInfo.ShowChargeBonuses;
+                                defaultWindow.TransactionPartial.ProcessPayment(_chargeBonuses);
+                                FileService.XmlSerialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath, null, true);
+                            }
                         }));
                     }
                     else

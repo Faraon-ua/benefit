@@ -50,6 +50,7 @@ namespace Benefit.Domain.Models
         public string UrlName { get; set; }
         public int? AvarageRating { get; set; }
         public SellerStatus Status { get; set; }
+        #region Terminal
         public bool TerminalOrderNotification { get; set; }
         public bool TerminalBillEnabled { get; set; }
         public bool TerminalKeyboardEnabled { get; set; }
@@ -59,9 +60,13 @@ namespace Benefit.Domain.Models
         [MaxLength(32)]
         public string TerminalPassword { get; set; }
         [MaxLength(32)]
-        public string TerminalLicense{ get; set; }
+        public string TerminalLicense { get; set; }
         public DateTime? TerminalLastOnline { get; set; }
         public bool IsObsoleteTerminal { get; set; }
+        #endregion
+        #region Statistics
+        public bool LogRequests { get; set; }
+        #endregion
         //hours
         public int? RepeatingTransactionInterval { get; set; }
         [Required]

@@ -438,6 +438,14 @@
     <Compile Include="Migrations\201712141902376_AddRequiredProductValues.Designer.cs">
       <DependentUpon>201712141902376_AddRequiredProductValues.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201712211112042_AddExternalCategoryId.cs" />
+    <Compile Include="Migrations\201712211112042_AddExternalCategoryId.Designer.cs">
+      <DependentUpon>201712211112042_AddExternalCategoryId.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201712221319378_AddLogRequestsToSellers.cs" />
+    <Compile Include="Migrations\201712221319378_AddLogRequestsToSellers.Designer.cs">
+      <DependentUpon>201712221319378_AddLogRequestsToSellers.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -760,6 +768,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712141902376_AddRequiredProductValues.resx">
       <DependentUpon>201712141902376_AddRequiredProductValues.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712211112042_AddExternalCategoryId.resx">
+      <DependentUpon>201712211112042_AddExternalCategoryId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201712221319378_AddLogRequestsToSellers.resx">
+      <DependentUpon>201712221319378_AddLogRequestsToSellers.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

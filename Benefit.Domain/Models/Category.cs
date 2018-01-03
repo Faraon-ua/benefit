@@ -25,6 +25,8 @@ namespace Benefit.Domain.Models
 
         [Key]
         public string Id { get; set; }
+        [MaxLength(128)]
+        public string ExternalId { get; set; }
         [Required]
         [MaxLength(64)]
         [Index]

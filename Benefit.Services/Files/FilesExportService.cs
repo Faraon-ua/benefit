@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Benefit.Services.Files
 {
@@ -34,13 +31,13 @@ namespace Benefit.Services.Files
 
             //foreach of the properties in class above, write out properties
             //this is the header row
-            sw.Append(string.Join(",", props.Select(d => d.Name).ToArray()) + newLine);
+            sw.Append(string.Join("$", props.Select(d => d.Name).ToArray()) + newLine);
 
             //this acts as datarow
             foreach (T item in list)
             {
                 //this acts as datacolumn
-                var row = string.Join(",", props.Select(d =>
+                var row = string.Join("$", props.Select(d =>
                 {
                     var strValue =
                         item.GetType()

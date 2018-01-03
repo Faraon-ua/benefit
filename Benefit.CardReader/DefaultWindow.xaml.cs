@@ -9,6 +9,7 @@ using System.Linq;
 using System.ServiceModel;
 using System.Windows.Input;
 using System.Windows.Interop;
+using Benefit.CardReader.DataTransfer.Reader;
 
 namespace Benefit.CardReader
 {
@@ -56,33 +57,7 @@ namespace Benefit.CardReader
 
         void DefaultWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var source = HwndSource.FromHwnd(new WindowInteropHelper(this).Handle);
-            source.AddHook(new HwndSourceHook(WndProc));
             Hide();
-        }
-
-        private bool _chargeBonuses;
-        private IntPtr WndProc(IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled)
-        {
-            if (msg == CardReaderSettingsService.SetChargeBonusesWindowsMessageId)
-            {
-                _chargeBonuses = wParam == (IntPtr)1;
-            }
-            if (msg == CardReaderSettingsService.SetPriceWindowsMessageId)
-            {
-                int tmpPrice = wParam.ToInt32();
-                double price = tmpPrice / 100;
-                price += (double)(tmpPrice % 100) / 100;
-                TransactionPartial.txtPaymentSum.Text = price.ToString();
-                TransactionPartial.btnPayBonuses.Focus();
-                _chargeBonuses = _chargeBonuses && TransactionPartial.btnChargeBonuses.IsEnabled;
-                TransactionPartial.ProcessPayment(_chargeBonuses);
-            }
-            if (TransactionPartial.txtBillNumber.IsEnabled && msg == CardReaderSettingsService.SetBillWindowsMessageId)
-            {
-                TransactionPartial.txtBillNumber.Text = wParam.ToString();
-            }
-            return IntPtr.Zero;
         }
 
         void DefaultWindow_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)

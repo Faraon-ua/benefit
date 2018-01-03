@@ -11,7 +11,7 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string ResourceId { get; set; }
         [NotMapped]
-        public string ResourceName { get; set; }
+        public string ResourceOriginalValue { get; set; }
         [Required]
         [MaxLength(128)]
         public string ResourceType { get; set; }

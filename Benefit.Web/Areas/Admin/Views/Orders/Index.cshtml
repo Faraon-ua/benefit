@@ -184,6 +184,22 @@
                 </ul>
             </div>
         }
+        <div class="col-md-3">
+            <div class="page-header no-padding-bottom">
+                <h1 class="no-padding-bottom">Сортування</h1>
+            </div>
+            <ul style="list-style-type: none; margin: 0;">
+                @foreach (var item in Model.Sorting)
+                {
+                    <li>
+                        <label>
+                            @Html.RadioButtonFor(m => m.Sort, item.Value)
+                            @Html.Raw(item.Text)
+                        </label>
+                    </li>
+                }
+            </ul>
+        </div>
     </div>
 }
 

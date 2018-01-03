@@ -52,29 +52,13 @@ namespace Benefit.CardReader.Services
             }
         }
 
-        public static int SetPriceWindowsMessageId
+        public static string BillInfoFilePath
         {
             get
             {
-                return 0x000C;
+                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "billinfo.xml");
             }
         }
-
-        public static int SetBillWindowsMessageId
-        {
-            get
-            {
-                return 0x000F;
-            }
-        }
-        public static int SetChargeBonusesWindowsMessageId
-        {
-            get
-            {
-                return 0x001A;
-            }
-        }
-
         public static string DefinedNfcReaderPortName
         {
             get
@@ -85,7 +69,6 @@ namespace Benefit.CardReader.Services
                 if(!configValues.ContainsKey(ReaderConstants.ComPortSettingName)) return null;
                 return configValues[ReaderConstants.ComPortSettingName];
             }
-
         }
 
         private static Dictionary<string, string> GetConfigValues(string configFilePath)

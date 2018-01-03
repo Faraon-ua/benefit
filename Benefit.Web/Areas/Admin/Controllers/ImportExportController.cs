@@ -172,7 +172,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     foreach (var dbCategory in sellerDbCategories)
                     {
-                        var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Name == dbCategory.Name);
+                        var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Id == dbCategory.ExternalId);
                         if (xmlCategory != null)
                         {
                             if (!xmlToDbCategoriesMapping.ContainsKey(xmlCategory.Id))
