@@ -1,17 +1,26 @@
 ﻿@using Benefit.Common.Constants
-<div class="sub_header_right_links">
+<div class="sub_header_right_links pull-right">
     @if (Request.IsAuthenticated)
     {
-        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-        {
-            @Html.AntiForgeryToken()
-            @Html.ActionLink(HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value), "Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName }, htmlAttributes: new { title = "Manage", @class = "sub_header_user_name" })
-            <a href="javascript:document.getElementById('logoutForm').submit()"><img src="~/Content/img/logout.png" /> </a>
-        }
+        <div class="wrap_icon inner-table-block">
+            <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
+                <i class="svg svg-cabinet lg" aria-hidden="true"></i>
+                <span class="wrap">
+                    <span class="name">Кабінет</span>
+                    <span class="title">@HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)</span>
+                </span>
+            </a>
+        </div>
     }
     else
     {
-        <a href="@Url.Action("Login", "Account")">Вхід</a>
-        <a href="@Url.Action("Register", "Account")">Реєстрація</a>
+        <div class="wrap_icon inner-table-block">
+            <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("Login", "Account")">
+                <i class="svg svg-cabinet-login lg" aria-hidden="true"></i>
+                <span class="wrap">
+                    <span class="name">Увійти</span>
+                </span>
+            </a>
+        </div>
     }
 </div>

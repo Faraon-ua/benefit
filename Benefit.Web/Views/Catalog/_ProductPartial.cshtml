@@ -1,78 +1,189 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Common.Helpers
-@using Benefit.Domain.Models
-@using Benefit.Services.Domain
 @model Benefit.DataTransfer.ViewModels.ProductPartialViewModel
 
-<div class="product_container" id="@Model.Product.Id">
-    <div class="product">
-        <div class="product_img_wrap">
-            @{
-                var image = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = Model.CategoryUrl ?? Model.Product.Category.UrlName, sellerUrl = Model.SellerUrl ?? Model.Product.Seller.UrlName, productUrl = Model.Product.UrlName });
-            }
-
-            <a href="@productDetailsUrl" title="@Model.Product.Name">
-                @if (image == null)
-                {
-                    <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Name">
+@*<div class="product_container" id="@Model.Product.Id">
+        <div class="product">
+            <div class="product_img_wrap">
+                @{
+                    var image = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = Model.CategoryUrl ?? Model.Product.Category.UrlName, sellerUrl = Model.SellerUrl ?? Model.Product.Seller.UrlName, productUrl = Model.Product.UrlName });
                 }
-                else
-                {
-                    if (image.IsAbsoluteUrl)
+
+                <a href="@productDetailsUrl" title="@Model.Product.Name">
+                    @if (image == null)
                     {
-                        <img src="@image.ImageUrl" alt="@Model.Product.Name">
+                        <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Name">
                     }
                     else
                     {
-                        <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
+                        if (image.IsAbsoluteUrl)
+                        {
+                            <img src="@image.ImageUrl" alt="@Model.Product.Name">
+                        }
+                        else
+                        {
+                            <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Name">
+                        }
                     }
-                }
-            </a>
-        </div>
+                </a>
+            </div>
 
-        <p class="product_name">
-            <a href="@productDetailsUrl" title="@Model.Product.Name">
-                <span>@Model.Product.Name</span>
-            </a>
-        </p>
-        <span style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
-            @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
-        </span>
-        <div class="rating_wrap">
-            <div class="perelik_rating @CommonConstants.RatingToClass[Model.Product.AvarageRating ?? default(int)]"></div>
-            <p class="rating_reviews">@Model.Product.ApprovedReviews.Count відгуків</p>
-        </div>
-        <div class="product_price">
-            @*            <span class="old_price">80,40</span>*@
-            @Model.Product.Price грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
-            @if (Model.Product.WholesalePrice.HasValue)
-            {
-                <span class="green">| @Model.Product.WholesalePrice.Value.ToString() грн/опт</span>
-            }
-        </div>
-        <div class="product_control_wrap">
-            <div class="product_like product_like_red"></div>
-            <div class="product_scale"></div>
-
-            @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
-            {
-                <a class="product_buy bg-grey" href="#" disabled="disabled">Відсутній</a>
-            }
-            else
-            {
-                var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
-                if (availableForPurchase.Key)
+            <p class="product_name">
+                <a href="@productDetailsUrl" title="@Model.Product.Name">
+                    <span>@Model.Product.Name</span>
+                </a>
+            </p>
+            <span style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
+                @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+            </span>
+            <div class="rating_wrap">
+                <div class="perelik_rating @CommonConstants.RatingToClass[Model.Product.AvarageRating ?? default(int)]"></div>
+                <p class="rating_reviews">@Model.Product.ApprovedReviews.Count відгуків</p>
+            </div>
+            <div class="product_price">
+                @Model.Product.Price грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
+                @if (Model.Product.WholesalePrice.HasValue)
                 {
-                    <a class="product_buy" href="#" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId" data-is-weight-product="@Model.Product.IsWeightProduct" disabled>Купити</a>
+                    <span class="green">| @Model.Product.WholesalePrice.Value.ToString() грн/опт</span>
+                }
+            </div>
+            <div class="product_control_wrap">
+                <div class="product_like product_like_red"></div>
+                <div class="product_scale"></div>
+
+                @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
+                {
+                    <a class="product_buy bg-grey" href="#" disabled="disabled">Відсутній</a>
                 }
                 else
                 {
-                    <a class="product_buy bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @Model.AvailableForPurchase.Value">Купити</a>
+                    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+                    if (availableForPurchase.Key)
+                    {
+                        <a class="product_buy" href="#" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId" data-is-weight-product="@Model.Product.IsWeightProduct" disabled>Купити</a>
+                    }
+                    else
+                    {
+                        <a class="product_buy bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @Model.AvailableForPurchase.Value">Купити</a>
+                    }
+                }
+            </div>
+        </div>
+    </div>*@
+
+@{
+    var image = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = Model.CategoryUrl ?? Model.Product.Category.UrlName, sellerUrl = Model.SellerUrl ?? Model.Product.Seller.UrlName, productUrl = Model.Product.UrlName });
+    var sellerUrl = Url.RouteUrl(Benefit.Common.Constants.RouteConstants.SellersRouteName, new { id = Model.Product.Seller.UrlName, action = string.Empty });
+}
+
+<div class="item">
+    <div class="stickers">
+        @*<div><div class="sticker_sovetuem">Советуем</div></div>
+            <div><div class="sticker_aktsiya">Акция</div></div>*@
+    </div>
+    <div class="img shine" style="">
+        <a href="#" class="thumb">
+            @if (image == null)
+            {
+                <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Title" title="@Model.Product.Title">
+            }
+            else
+            {
+                if (image.IsAbsoluteUrl)
+                {
+                    <img src="@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
+                }
+                else
+                {
+                    <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
                 }
             }
+        </a>
+    </div>
+    <div class="name">
+        <a href="@productDetailsUrl" class="dark_link">@Model.Product.Name</a>
+    </div>
+    <div class="rating" style="width: 50%; float: left;">
+        <div class="iblock-vote small">
+            <table class="table-no-border">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="star-active star-voted" title="1"></div>
+                        </td>
+                        <td>
+                            <div class="star-active star-voted" title="2"></div>
+                        </td>
+                        <td>
+                            <div class="star-active star-voted" title="3"></div>
+                        </td>
+                        <td>
+                            <div class="star-active star-voted" title="4"></div>
+                        </td>
+                        <td>
+                            <div class="star-active star-voted" title="5"></div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-        @*        todo: add seller label and promotion*@
-        @*        <div class="product_stock">Акція</div>*@
+    </div>
+    <div class="sa_block" style="width: 50%; float: left; padding-top: 5px;">
+        <div class="item-stock">
+            <span class="icon stock"></span>
+            <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
+                @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+            </span>
+        </div>
+        <div class="article_block"></div>
+    </div>
+    <div class="cost prices clearfix">
+        <div class="price_matrix_block">
+            <div class="price_matrix_wrapper ">
+                <div class="price">
+                    <span>
+                        <span class="values_wrapper">
+                            <span class="price_value">
+                                @Model.Product.Price
+                            </span>
+                            <span class="small"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                            @if (Model.Product.WholesalePrice.HasValue)
+                            {
+                                <span class="green">| @Model.Product.WholesalePrice.Value.ToString() <span class="small">грн/опт</span></span>
+                            }
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="counter_wrapp ">
+        @*<div class="product_description_amount_wrap pull-right" data-weight-product="@Model.Product.IsWeightProduct">
+            <div class="product_description_amount_minus">-</div>
+            @if (Model.Product.IsWeightProduct)
+            {
+                <input type="text" class="product_description_amount" value="0.1" data-is-weight-product="true">
+            }
+            else
+            {
+                <input type="text" class="product_description_amount" value="1" data-is-weight-product="false">
+            }
+            <div class="product_description_amount_plus">+</div>
+        </div>*@
+        <div class="counter_block hidden-xs">
+            <span class="minus">-</span>
+            <input type="text" class="text" name="quantity" value="1">
+            <span class="plus">+</span>
+        </div>
+        <div class="button_block ">
+            <span class="small to-cart btn btn-default transition_bg animate-load"><i></i><span>Купити</span></span>
+        </div>
+        <br>
+        <div class="item-stock" style="margin-top: 20px;">
+            <a href="@sellerUrl">@Model.Product.Seller.Name</a><br>
+            м. Постачальника
+        </div>
     </div>
 </div>

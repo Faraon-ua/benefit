@@ -14,7 +14,7 @@ namespace Benefit.Domain.Models
         [Description("#73d36a")]
         [Display(Name = "В наявності")]
         Available,
-        [Display(Name = "Завжди в наявності")]
+        [Display(Name = "В наявності")]
         [Description("#73d36a")]
         AlwaysAvailable,
         [Display(Name = "Немає в наявності")]

@@ -1,0 +1,881 @@
+﻿@using Benefit.Common.Constants
+<div id="mobileheader" class="visible-xs visible-sm" style="position: fixed; width: 100%">
+    <div class="mobileheader-v1">
+        <div class="burger pull-left">
+            <i class="svg svg-burger mask"></i>
+            <i class="svg svg-close black"></i>
+        </div>
+        <div class="logo-block pull-left">
+            <div class="logo">
+                <a href="#"><img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company"></a>
+            </div>
+        </div>
+        <div class="right-icons pull-right">
+
+            <div class="pull-right">
+                <div class="wrap_icon wrap_basket">
+                    <!--'start_frame_cache_header-basket-with-compare-block3'-->
+                    @*<a class="basket-link compare lg " href="#" title="Список сравниваемых элементов">
+                            <span class="js-basket-block">
+                                <i class="svg svg-compare " aria-hidden="true"></i>
+                                <span class="title dark_link">Сравнение</span><span class="count">0</span>
+                            </span>
+                        </a>
+                        <a rel="nofollow" class="basket-link delay  lg " href="#" title="Список отложенных товаров пуст">
+                            <span class="js-basket-block">
+                                <i class="svg svg-wish" aria-hidden="true"></i>
+                                <span class="title dark_link">Отложенные</span>
+                                <span class="count">0</span>
+                            </span>
+                        </a>*@
+
+                    <a rel="nofollow" class="basket-link basket   lg " href="#" title="Корзина пуста">
+                        <span class="js-basket-block">
+                            <i class="svg svg-basket" aria-hidden="true"></i>
+                            <span class="title dark_link">Корзина</span>
+                            <span class="count">0</span>
+                        </span>
+                    </a>
+
+
+                    <!--'end_frame_cache_header-basket-with-compare-block3'-->
+                </div>
+            </div>
+
+            <div class="pull-right">
+                <div class="wrap_icon">
+                    <button class="top-btn inline-search-show twosmallfont">
+                        <i class="svg svg-search lg" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="pull-right">
+                <div class="wrap_icon">
+                    <a rel="nofollow" title="особистий кабінет" class="personal-link dark-color " href="@Url.Action("Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
+                        <i class="svg svg-cabinet lg" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+
+
+    <div id="mobilemenu" class="dropdown">
+        <div class="mobilemenu-v2 downdrop scroller">
+            <div class="wrap">
+                <div class="menu top">
+                    <ul class="top">
+                        <li>
+                            <a class="dark-color parent" href="#" title="Каталог">
+                                <span>Каталог товарів та послуг</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                <li class="menu_title">Каталог товаров</li>
+                                <li>
+                                    <a class="dark-color parent" href="#" title="Автоэлектроника">
+                                        <span>Автоэлектроника</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Автоэлектроника</li>
+                                        <li>
+                                            <a class="dark-color" href="#" title="GPS-навигаторы">
+                                                <span>GPS-навигаторы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#" title="Видеорегистраторы">
+                                                <span>Видеорегистраторы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color parent" href="#/catalog/avtoelektronika/avtozvuk/" title="Автозвук">
+                                                <span>Автозвук</span>
+                                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                            </a>
+                                            <ul class="dropdown">
+                                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                                <li class="menu_title">Автозвук</li>
+                                                <li>
+                                                    <a class="dark-color" href="#/catalog/avtoelektronika/avtozvuk/magnitoly/" title="Магнитолы">
+                                                        <span>Магнитолы</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dark-color" href="#/catalog/avtoelektronika/avtozvuk/akustika/" title="Акустика">
+                                                        <span>Акустика</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/avtoelektronika/radary_detektory/" title="Радары-детекторы">
+                                                <span>Радары-детекторы</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/bytovaya_tekhnika/" title="Бытовая техника">
+                                        <span>Бытовая техника</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Бытовая техника</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/bytovaya_tekhnika/kholodilniki/" title="Холодильники">
+                                                <span>Холодильники</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/bytovaya_tekhnika/mikrovolnovye_pechi/" title="Микроволновые печи">
+                                                <span>Микроволновые печи</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/bytovaya_tekhnika/vodonagrevateli/" title="Водонагреватели">
+                                                <span>Водонагреватели</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/napolnye_pokrytiya/" title="Напольные покрытия">
+                                        <span>Напольные покрытия</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Напольные покрытия</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/napolnye_pokrytiya/laminat/" title="Ламинат">
+                                                <span>Ламинат</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/napolnye_pokrytiya/parketnaya_doska/" title="Паркетная доска">
+                                                <span>Паркетная доска</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/napolnye_pokrytiya/plitka/" title="Плитка">
+                                                <span>Плитка</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/napolnye_pokrytiya/podlozhki_osnovaniya/" title="Подложки, основания">
+                                                <span>Подложки, основания</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/sadovaya_tekhnika/" title="Садовая техника">
+                                        <span>Садовая техника</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Садовая техника</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/sadovaya_tekhnika/kultivatory/" title="Культиваторы">
+                                                <span>Культиваторы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/sadovaya_tekhnika/motobloki/" title="Мотоблоки">
+                                                <span>Мотоблоки</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/santekhnika/" title="Сантехника">
+                                        <span>Сантехника</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Сантехника</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/vanny/" title="Ванны">
+                                                <span>Ванны</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/dushevye_kabiny/" title="Душевые кабины">
+                                                <span>Душевые кабины</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/rakoviny_umyvalniki/" title="Раковины, умывальники">
+                                                <span>Раковины, умывальники</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/smesiteli/" title="Смесители">
+                                                <span>Смесители</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/unitazy/" title="Унитазы">
+                                                <span>Унитазы</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/stroitelnye_materialy/" title="Строительные материалы">
+                                        <span>Строительные материалы</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Строительные материалы</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/stroitelnye_materialy/klei/" title="Клеи">
+                                                <span>Клеи</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/stroitelnye_materialy/lakokrasochnye_materialy/" title="Лакокрасочные материалы">
+                                                <span>Лакокрасочные материалы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/stroitelnye_materialy/sukhie_stroitelnye_smesi/" title="Сухие строительные смеси">
+                                                <span>Сухие строительные смеси</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/foto_i_video/" title="Фото и видео">
+                                        <span>Фото и видео</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Фото и видео</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/foto_i_video/videokamery/" title="Видеокамеры">
+                                                <span>Видеокамеры</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/foto_i_video/obektivy/" title="Объективы">
+                                                <span>Объективы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/foto_i_video/fotoapparaty/" title="Фотоаппараты">
+                                                <span>Фотоаппараты</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/foto_i_video/tsifrovye_fotoramki/" title="Цифровые фоторамки">
+                                                <span>Цифровые фоторамки</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/kosmetika/" title="Косметика">
+                                        <span>Косметика</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Косметика</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/kosmetika/gubnaya_pomada/" title="Губная помада">
+                                                <span>Губная помада</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/kosmetika/lak_dlya_nogtey/" title="Лак для ногтей">
+                                                <span>Лак для ногтей</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/kosmetika/pudra/" title="Пудра">
+                                                <span>Пудра</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/kosmetika/teni/" title="Тени">
+                                                <span>Тени</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/odezhda/" title="Одежда">
+                                        <span>Одежда</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Одежда</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/odezhda/zhenskaya_odezhda/" title="Женская одежда">
+                                                <span>Женская одежда</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/odezhda/muzhskaya_odezhda/" title="Мужская одежда">
+                                                <span>Мужская одежда</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/odezhda/detskaya_dlya_devochek/" title="Детская для девочек">
+                                                <span>Детская для девочек</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/odezhda/dlya_malchikov/" title="Детская для мальчиков">
+                                                <span>Детская для мальчиков</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/sport/" title="Спортивные товары">
+                                        <span>Спортивные товары</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Спортивные товары</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/sport/veloryukzaki/" title="Велорюкзаки">
+                                                <span>Велорюкзаки</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/sport/velosipedy/" title="Велосипеды">
+                                                <span>Велосипеды</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/elektroinstrument/" title="Электроинструмент">
+                                        <span>Электроинструмент</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Электроинструмент</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/elektroinstrument/dreli/" title="Дрели">
+                                                <span>Дрели</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/elektroinstrument/perforatory/" title="Перфораторы">
+                                                <span>Перфораторы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/elektroinstrument/shurupoverty/" title="Шуруповерты">
+                                                <span>Шуруповерты</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/elektroinstrument/akkumulyatory/" title="Аккумуляторы">
+                                                <span>Аккумуляторы</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color" href="#/catalog/novogodnyaya_rasprodazha/" title="Новогодняя распродажа">
+                                        <span>Новогодняя распродажа</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/tovary_dlya_sobak/" title="Товары для собак">
+                                        <span>Товары для собак</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Товары для собак</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/tovary_dlya_sobak/sukhie_korma/" title="Сухие корма">
+                                                <span>Сухие корма</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="dark-color parent" href="#" title="">
+                                <span>Каталог постачальників</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                <li class="menu_title">Каталог товаров</li>
+                                <li>
+                                    <a class="dark-color parent" href="#" title="Автоэлектроника">
+                                        <span>Автоэлектроника</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Автоэлектроника</li>
+                                        <li>
+                                            <a class="dark-color" href="#" title="GPS-навигаторы">
+                                                <span>GPS-навигаторы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#" title="Видеорегистраторы">
+                                                <span>Видеорегистраторы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color parent" href="#/catalog/avtoelektronika/avtozvuk/" title="Автозвук">
+                                                <span>Автозвук</span>
+                                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                            </a>
+                                            <ul class="dropdown">
+                                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                                <li class="menu_title">Автозвук</li>
+                                                <li>
+                                                    <a class="dark-color" href="#/catalog/avtoelektronika/avtozvuk/magnitoly/" title="Магнитолы">
+                                                        <span>Магнитолы</span>
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a class="dark-color" href="#/catalog/avtoelektronika/avtozvuk/akustika/" title="Акустика">
+                                                        <span>Акустика</span>
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/avtoelektronika/radary_detektory/" title="Радары-детекторы">
+                                                <span>Радары-детекторы</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/bytovaya_tekhnika/" title="Бытовая техника">
+                                        <span>Бытовая техника</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Бытовая техника</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/bytovaya_tekhnika/kholodilniki/" title="Холодильники">
+                                                <span>Холодильники</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/bytovaya_tekhnika/mikrovolnovye_pechi/" title="Микроволновые печи">
+                                                <span>Микроволновые печи</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/bytovaya_tekhnika/vodonagrevateli/" title="Водонагреватели">
+                                                <span>Водонагреватели</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/napolnye_pokrytiya/" title="Напольные покрытия">
+                                        <span>Напольные покрытия</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Напольные покрытия</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/napolnye_pokrytiya/laminat/" title="Ламинат">
+                                                <span>Ламинат</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/napolnye_pokrytiya/parketnaya_doska/" title="Паркетная доска">
+                                                <span>Паркетная доска</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/napolnye_pokrytiya/plitka/" title="Плитка">
+                                                <span>Плитка</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/napolnye_pokrytiya/podlozhki_osnovaniya/" title="Подложки, основания">
+                                                <span>Подложки, основания</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/sadovaya_tekhnika/" title="Садовая техника">
+                                        <span>Садовая техника</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Садовая техника</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/sadovaya_tekhnika/kultivatory/" title="Культиваторы">
+                                                <span>Культиваторы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/sadovaya_tekhnika/motobloki/" title="Мотоблоки">
+                                                <span>Мотоблоки</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/santekhnika/" title="Сантехника">
+                                        <span>Сантехника</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Сантехника</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/vanny/" title="Ванны">
+                                                <span>Ванны</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/dushevye_kabiny/" title="Душевые кабины">
+                                                <span>Душевые кабины</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/rakoviny_umyvalniki/" title="Раковины, умывальники">
+                                                <span>Раковины, умывальники</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/smesiteli/" title="Смесители">
+                                                <span>Смесители</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/santekhnika/unitazy/" title="Унитазы">
+                                                <span>Унитазы</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/stroitelnye_materialy/" title="Строительные материалы">
+                                        <span>Строительные материалы</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Строительные материалы</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/stroitelnye_materialy/klei/" title="Клеи">
+                                                <span>Клеи</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/stroitelnye_materialy/lakokrasochnye_materialy/" title="Лакокрасочные материалы">
+                                                <span>Лакокрасочные материалы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/stroitelnye_materialy/sukhie_stroitelnye_smesi/" title="Сухие строительные смеси">
+                                                <span>Сухие строительные смеси</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/foto_i_video/" title="Фото и видео">
+                                        <span>Фото и видео</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Фото и видео</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/foto_i_video/videokamery/" title="Видеокамеры">
+                                                <span>Видеокамеры</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/foto_i_video/obektivy/" title="Объективы">
+                                                <span>Объективы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/foto_i_video/fotoapparaty/" title="Фотоаппараты">
+                                                <span>Фотоаппараты</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/foto_i_video/tsifrovye_fotoramki/" title="Цифровые фоторамки">
+                                                <span>Цифровые фоторамки</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/kosmetika/" title="Косметика">
+                                        <span>Косметика</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Косметика</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/kosmetika/gubnaya_pomada/" title="Губная помада">
+                                                <span>Губная помада</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/kosmetika/lak_dlya_nogtey/" title="Лак для ногтей">
+                                                <span>Лак для ногтей</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/kosmetika/pudra/" title="Пудра">
+                                                <span>Пудра</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/kosmetika/teni/" title="Тени">
+                                                <span>Тени</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/odezhda/" title="Одежда">
+                                        <span>Одежда</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Одежда</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/odezhda/zhenskaya_odezhda/" title="Женская одежда">
+                                                <span>Женская одежда</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/odezhda/muzhskaya_odezhda/" title="Мужская одежда">
+                                                <span>Мужская одежда</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/odezhda/detskaya_dlya_devochek/" title="Детская для девочек">
+                                                <span>Детская для девочек</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/odezhda/dlya_malchikov/" title="Детская для мальчиков">
+                                                <span>Детская для мальчиков</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/sport/" title="Спортивные товары">
+                                        <span>Спортивные товары</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Спортивные товары</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/sport/veloryukzaki/" title="Велорюкзаки">
+                                                <span>Велорюкзаки</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/sport/velosipedy/" title="Велосипеды">
+                                                <span>Велосипеды</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/elektroinstrument/" title="Электроинструмент">
+                                        <span>Электроинструмент</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Электроинструмент</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/elektroinstrument/dreli/" title="Дрели">
+                                                <span>Дрели</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/elektroinstrument/perforatory/" title="Перфораторы">
+                                                <span>Перфораторы</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/elektroinstrument/shurupoverty/" title="Шуруповерты">
+                                                <span>Шуруповерты</span>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/elektroinstrument/akkumulyatory/" title="Аккумуляторы">
+                                                <span>Аккумуляторы</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a class="dark-color" href="#/catalog/novogodnyaya_rasprodazha/" title="Новогодняя распродажа">
+                                        <span>Новогодняя распродажа</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dark-color parent" href="#/catalog/tovary_dlya_sobak/" title="Товары для собак">
+                                        <span>Товары для собак</span>
+                                        <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                    </a>
+                                    <ul class="dropdown">
+                                        <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                        <li class="menu_title">Товары для собак</li>
+                                        <li>
+                                            <a class="dark-color" href="#/catalog/tovary_dlya_sobak/sukhie_korma/" title="Сухие корма">
+                                                <span>Сухие корма</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "partnerska_programa"})" title="Партнерська програма">
+                                <span>Партнерська програма</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "stati_postachalnikom"})" title="Співпраця">
+                                <span>Співпраця</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "faq"})" title="FAQ">
+                                <span>FAQ</span>
+                            </a>
+                    </li> 
+                    <li>
+                            <a class="dark-color" href="@Url.RouteUrl("newsRoute")" title="Новини">
+                                <span>Новини</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--'start_frame_cache_mobile-region-block1'--> <!-- noindex -->
+                <div class="menu middle mobile_regions">
+                    <ul>
+                        <li>
+                            <a rel="nofollow" href="" class="dark-color parent">
+                                <i class="svg svg-address black"></i>
+                                <span>Челябинск</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                <li class="menu_title">Города</li>
+                                <li><a rel="nofollow" href="https://next.aspro-demo.ru/" class="dark-color city_item" data-id="3213">Челябинск</a></li>
+                                <li><a rel="nofollow" href="https://ekb.next.aspro-demo.ru/" class="dark-color city_item" data-id="3214">Екатеринбург</a></li>
+                                <li><a rel="nofollow" href="https://magnitogorsk.next.aspro-demo.ru/" class="dark-color city_item" data-id="3215">Магнитогорск</a></li>
+                                <li><a rel="nofollow" href="https://msk.next.aspro-demo.ru/" class="dark-color city_item" data-id="3212">Москва</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="menu middle">
+                    <ul>
+                        <li>
+                            <a rel="nofollow" class="dark-color" href="/personal/"><i class="svg svg-cabinet-login"></i><span>Мой кабинет</span></a>
+                        </li>
+                    </ul>
+                </div>
+             
+                <div class="menu middle">
+                    <ul>
+                        <li>
+                            <a rel="nofollow" href="" class="dark-color parent">
+                                <i class="svg svg-phone"></i>
+                                <span>+38 (050) 035 45 55</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                <li class="menu_title">Телефони</li>
+                                <li><a rel="nofollow" href="tel:+380500354555" class="dark-color">+38 (050) 035 45 55</a></li>
+                                <li><a rel="nofollow" href="tel:+380630354555" class="dark-color">+38 (063) 035 45 55</a></li>
+                                <li><a rel="nofollow" href="tel:+380970354555" class="dark-color">+38 (097) 035 45 55</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="contacts">
+                    <div class="title">Контактная информация</div>
+                    <div class="address">
+                        <i class="svg svg-address"></i>
+                        Челябинск, ул. Лермонтова 21, 3 этаж, офис 4
+                    </div>
+                </div>
+                <div class="social-icons">
+                    <ul>
+                        <li class="facebook">
+                            <a href="2" class="dark-color" target="_blank" rel="nofollow" title="Facebook">
+                                <i class="svg svg-social-fb"></i>Facebook
+                            </a>
+                        </li>
+                        <li class="twitter">
+                            <a href="3" class="dark-color" target="_blank" rel="nofollow" title="Twitter">
+                                <i class="svg svg-social-twitter"></i>Twitter
+                            </a>
+                        </li>
+                        <li class="instagram">
+                            <a href="4" class="dark-color" target="_blank" rel="nofollow" title="Instagram">
+                                <i class="svg svg-social-instagram"></i>Instagram
+                            </a>
+                        </li>
+                        <li class="ytb">
+                            <a href="5" class="dark-color" target="_blank" rel="nofollow" title="YouTube">
+                                <i class="svg svg-social-ytb"></i>YouTube
+                            </a>
+                        </li>
+                        <li class="gplus">
+                            <a href="7" class="dark-color" target="_blank" rel="nofollow" title="Google Plus">
+                                <i class="svg svg-social-gplus"></i>Google Plus
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -67,7 +67,7 @@ $(document).ready(function () {
      * Owl Carousel slider
      *
      */
-    $('.top_slider').owlCarousel({
+   /* $('.top_slider').owlCarousel({
         loop: true,
         margin: 0,
         dots: true,
@@ -85,7 +85,7 @@ $(document).ready(function () {
         smartSpeed: 1000
     });
 
-    /*organization slider*/
+    /*organization slider#1#
     $('.organization_slider').owlCarousel({
         loop: true,
         margin: 0,
@@ -106,7 +106,7 @@ $(document).ready(function () {
     /*
      * Owl Carousel products
      *
-     */
+     #1#
     $('.product_carousel').owlCarousel({
         loop: true,
         items: 2,
@@ -160,7 +160,7 @@ $(document).ready(function () {
                 nav: true
             }
         }
-    });
+    });*/
 
 
     /*

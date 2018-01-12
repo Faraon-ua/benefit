@@ -1,14 +1,7 @@
 ﻿@model Benefit.DataTransfer.ViewModels.MainPageViewModel
-@using Benefit.Common.Constants
 
 @{
     ViewBag.Title = "Головна";
-    ViewBag.MainPageClass = "main_page";
-    ViewBag.MainContentClass = "main_content";
-}
-@section LeftAside{
-    <div class="vertical_menu" id="right-menu">
-    </div>
 }
 @section meta
 {
@@ -16,84 +9,375 @@
 }
 @section scripts
 {
+    <script src="~/Scripts/owl.carousel.min.js"></script>
     <script>
-        $(function () {
-            $("#short_text_show_link").click(function (e) {
-                e.preventDefault();
-                $("#short_text").removeClass("box-hide");
-                $(".text-description-more").remove();
-            });
-        })
+        $('.slider').owlCarousel({
+            loop: true,
+            margin: 0,
+            dots: true,
+            responsiveClass: true,
+            nav: true,
+            navText: [
+                "<i class='fa fa-angle-left' aria-hidden='true'></i>",
+                "<i class='fa fa-angle-right' aria-hidden='true'></i>"
+            ],
+            items: 1,
+            autoplay: true,
+            autoplayTimeout: 7000,
+            startPosition: '0',
+            fluidSpeed: true,
+            smartSpeed: 1000
+        });
     </script>
 }
-<div class="top_slider">
-    @foreach (var banner in Model.Banners)
-    {
-        <a href="@banner.NavigationUrl">
-            <img class="item" src="~/Images/@banner.BannerType/@banner.ImageUrl">
-        </a>
-    }
-</div>
-<!-- product carousel -->
-<p class="center_p">Хіти продажу</p>
-<div class="product_carousel">
-    @foreach (var hit in Model.FeaturedProducts)
-    {
-        var image = hit.Images.FirstOrDefault();
-        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = hit.Category.UrlName, sellerUrl = hit.Seller.UrlName, productUrl = hit.UrlName });
-        <a class="item product_item" href="@productDetailsUrl">
-            @* <div class="product_special">
-                    <div class="special red">-45%</div>
-                    <div class="special orange">бонус 15%</div>
-                </div>*@
-            @if (image == null)
-            {
-                <div class="img" style="background-image: url('../../Images/ProductGallery/default_product_thumbnail.png');"></div>
-            }
-            else
-            {
-                <div class="img" style="background-image: url('../../Images/ProductGallery/@hit.Id/@image.ImageUrl');"></div>
-            }
-            <p>@hit.Name</p>
-            @*            <span class="price old">3999,00 грн</span>*@
-            <span class="price new">@hit.Price грн</span>
-        </a>
-    }
-</div>
-<!-- .product carousel -->
-<!-- product carousel -->
-<p class="center_p center_p_s">Новинки</p>
-<div class="product_carousel recomend_slider">
-    <!-- product item -->
-    @foreach (var newProd in Model.NewProducts)
-    {
-        var image = newProd.Images.FirstOrDefault();
-        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = newProd.Category.UrlName, sellerUrl = newProd.Seller.UrlName, productUrl = newProd.UrlName });
-        <a class="item product_item" href="@productDetailsUrl">
-            @* <div class="product_special">
-                    <div class="special red">-45%</div>
-                    <div class="special orange">бонус 15%</div>
-                </div>*@
-            <div class="img" style="background-image: url('../../Images/ProductGallery/@newProd.Id/@image.ImageUrl');"></div>
-            <p>@newProd.Name</p>
-            @*            <span class="price old">3999,00 грн</span>*@
-            <span class="price new">@newProd.Price грн</span>
-        </a>
-    }
-</div>
-<!-- .product carousel -->
+@section styles
+{
+    <style>
+        .desctop-slider img {
+            height: 250px !important;
+        }
 
-@*<div id="text-description-page" class="text-description-page">
-    <div class="body-layout">
-        <div class="wrap">
-            <div id="short_text" class="text-description-content box-hide">
-                @Html.Action("Content", "Pages", new { id = "32b21ab3-79ae-45c2-8a5a-bd85d5f0db23", area = string.Empty })
-            </div>
-            <div class="text-description-more">
-                <a href="#" id="short_text_show_link" class="novisited arrow-link text-description-more-link">
-                    <span class="xhr arrow-link-inner">Читать полностью</span>&nbsp;→
-                </a>
+        .product_carousel .owl-stage {
+            padding: 18px 0;
+        }
+
+        .owl-prev {
+            float: left;
+            position: absolute;
+            top: 50%;
+            margin-top: -15.5px;
+            left: 0;
+            font-size: 22px;
+        }
+
+        .owl-next {
+            float: right;
+            position: absolute;
+            top: 50%;
+            margin-top: -15.5px;
+            right: 0;
+            font-size: 22px;
+        }
+
+        .slider .owl-prev {
+            left: 5px;
+            font-size: 42px;
+            margin-top: -30px;
+            color: #9d9a95;
+        }
+
+        .slider .owl-next {
+            right: 5px;
+            font-size: 42px;
+            margin-top: -30px;
+            color: #9d9a95;
+        }
+
+            .slider .owl-prev:hover, .slider .owl-next:hover {
+                color: #fff;
+            }
+
+        .slider .owl-dots .owl-dot span {
+            width: 18px;
+            height: 18px;
+            background: #fff;
+            border: 1px solid #cdcbca;
+            box-sizing: border-box;
+        }
+
+        .slider .owl-dots .owl-dot.active span, .slider .owl-dots .owl-dot:hover span {
+            background: #990000;
+            border-color: #990000;
+        }
+
+        .slider .owl-dots {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+        }
+    </style>
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/css/owl.carousel.css" rel="stylesheet" />
+}
+
+@*<div class="top_slider">
+        @foreach (var banner in Model.Banners)
+        {
+            <a href="@banner.NavigationUrl">
+                <img class="item" src="~/Images/@banner.BannerType/@banner.ImageUrl">
+            </a>
+        }
+    </div>
+    <!-- product carousel -->
+    <p class="center_p">Хіти продажу</p>
+    <div class="product_carousel">
+        @foreach (var hit in Model.FeaturedProducts)
+        {
+            var image = hit.Images.FirstOrDefault();
+            var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = hit.Category.UrlName, sellerUrl = hit.Seller.UrlName, productUrl = hit.UrlName });
+            <a class="item product_item" href="@productDetailsUrl">
+                $1$ <div class="product_special">
+                        <div class="special red">-45%</div>
+                        <div class="special orange">бонус 15%</div>
+                    </div>#1#
+                @if (image == null)
+                {
+                    <div class="img" style="background-image: url('../../Images/ProductGallery/default_product_thumbnail.png');"></div>
+                }
+                else
+                {
+                    <div class="img" style="background-image: url('../../Images/ProductGallery/@hit.Id/@image.ImageUrl');"></div>
+                }
+                <p>@hit.Name</p>
+                $1$            <span class="price old">3999,00 грн</span>#1#
+                <span class="price new">@hit.Price грн</span>
+            </a>
+        }
+    </div>
+    <!-- .product carousel -->
+    <!-- product carousel -->
+    <p class="center_p center_p_s">Новинки</p>
+    <div class="product_carousel recomend_slider">
+        <!-- product item -->
+        @foreach (var newProd in Model.NewProducts)
+        {
+            var image = newProd.Images.FirstOrDefault();
+            var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteWithSellerName, new { categoryUrl = newProd.Category.UrlName, sellerUrl = newProd.Seller.UrlName, productUrl = newProd.UrlName });
+            <a class="item product_item" href="@productDetailsUrl">
+                $1$ <div class="product_special">
+                        <div class="special red">-45%</div>
+                        <div class="special orange">бонус 15%</div>
+                    </div>#1#
+                <div class="img" style="background-image: url('../../Images/ProductGallery/@newProd.Id/@image.ImageUrl');"></div>
+                <p>@newProd.Name</p>
+                $1$            <span class="price old">3999,00 грн</span>#1#
+                <span class="price new">@newProd.Price грн</span>
+            </a>
+        }
+    </div>
+    <!-- .product carousel -->
+
+    $1$<div id="text-description-page" class="text-description-page">
+        <div class="body-layout">
+            <div class="wrap">
+                <div id="short_text" class="text-description-content box-hide">
+                    @Html.Action("Content", "Pages", new { id = "32b21ab3-79ae-45c2-8a5a-bd85d5f0db23", area = string.Empty })
+                </div>
+                <div class="text-description-more">
+                    <a href="#" id="short_text_show_link" class="novisited arrow-link text-description-more-link">
+                        <span class="xhr arrow-link-inner">Читать полностью</span>&nbsp;→
+                    </a>
+                </div>
             </div>
         </div>
+    </div>#1#*@
+
+<div class="wraps hover_shine" id="content">
+    <div class="wrapper_inner front">
+@*        <div style="position:absolute; width: 95%; height:600px; top: -10px; background-color: #f5f5f5;" class="hidden-xs"></div>*@
+        <div class="right_block wide_">
+
+            <div class="middle">
+                @Html.Partial("_ImageSlider", Model)
+
+                <div class="wrapper_inner1 wides float_banners hidden-xs">
+                    <div class="start_promo other row margin0">
+                        <div class="item s_1 hover normal">
+                            <a href="#" class="opacity_block1 dark_block_animate" title=""></a>
+                            <div class="scale_block_animate img_block" style="background-image: url('images/bonus.jpg')"></div>
+                        </div>
+                        <div class="item s_2 hover normal">
+                            <a href="#" class="opacity_block1 dark_block_animate" title=""></a>
+                            <div class="scale_block_animate img_block" style="background-image: url('images/map.jpg')"></div>
+                        </div>
+                        <div class="item s_3 hover normal">
+                            <a href="#" class="opacity_block1 dark_block_animate" title=""></a>
+                            <div class="scale_block_animate img_block" style="background-image: url('images/benefit.jpg')"></div>
+                        </div>
+                        <div class="item s_4 hover normal">
+                            <a href="#" class="opacity_block1 dark_block_animate" title="Мебель для дома"></a>
+                            <div class="scale_block_animate img_block" style="background-image: url('images/bonus.jpg')"></div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+
+                <div class="sections_wrapper">
+                    <div class="top_block">
+                        <h3 class="title_block">Рекомендовані товари</h3>
+                    </div>
+                    <div class="list items">
+                        <div class="row margin0">
+                            @foreach (var product in Model.FeaturedProducts)
+                            {
+                                <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
+                                    @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.FirstRowBanner != null)
+                {
+                    <div class="adv_bottom_block hover_blink">
+                        <div class="item">
+                            <div class="img shine">
+                                <div class="img_inner">
+                                    <a href="@Model.FirstRowBanner.NavigationUrl" title="@Model.FirstRowBanner.Title">
+                                        <span style="background-image: url(Images/FirstRowMainPage/@Model.FirstRowBanner.ImageUrl)"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!--
+                <div class="tizers_block">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <div id="bx_3218110189_2398" class="item">
+                                <div class="img">
+                                    <img src="images/a970a7b4269ae431dd116d89f1e81fdb.png" alt="Подарочные  сертификаты" title="Подарочные  сертификаты">
+                                </div>
+                                <div class="title">Подарочные сертификаты</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <div id="bx_3218110189_2399" class="item">
+                                <div class="img">
+                                    <img src="images/5919a535332800567dd2816811239c25.png" alt="Весь товар сертифицирован" title="Весь товар сертифицирован">
+                                </div>
+                                <div class="title">Весь товар сертифицирован</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <div id="bx_3218110189_2400" class="item">
+                                <div class="img">
+                                    <img src="images/e5df9380338e4e6f2d047ed55918af4b.png" alt="30 дней на обмен и возврат" title="30 дней на обмен и возврат">
+                                </div>
+                                <div class="title">30 дней на обмен и возврат</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <div id="bx_3218110189_2401" class="item">
+                                <div class="img">
+                                    <img src="images/15cb3aab3d8da3702fe6130bb00d0cbe.png" alt="Удобная и быстрая  доставка" title="Удобная и быстрая  доставка">
+                                </div>
+                                <div class="title">Удобная и быстрая доставка</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                -->
+
+
+                <div class="sections_wrapper">
+                    <div class="top_block">
+                        <h3 class="title_block">Акційні товари</h3>
+                    </div>
+                    <div class="list items">
+                        <div class="row margin0">
+                            @foreach (var product in Model.NewProducts)
+                            {
+                                <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
+                                    @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="news_akc_block clearfix">
+                    <div class="top_block">
+                        <h3 class="title_block">Новини та акції</h3>
+                        <a href="@Url.RouteUrl("newsRoute")">Всі новини</a>
+                    </div>
+                    <div class="news_wrapp">
+                        <div class="flexslider loading_state shadow border custom_flex top_right" data-lg_count="5" data-plugin-options='{"animation": "slide", "directionNav": true, "itemMargin":30, "controlNav" :false, "animationLoop": true, "slideshow": false, "counts": [4,3,3,2,1]}'>
+                            <ul class="items slides">
+                                @foreach (var news in Model.News)
+                                {
+                                    @Html.Partial("_NewsPartial", news)
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.SecondRowBanner != null)
+                {
+                    <div class="adv_bottom_block hover_blink">
+                        <div class="item">
+                            <div class="img shine">
+                                <div class="img_inner">
+                                    <a href="@Model.SecondRowBanner.NavigationUrl" title="@Model.SecondRowBanner.Title">
+                                        <span style="background-image: url(Images/SecondRowMainPage/@Model.SecondRowBanner.ImageUrl)"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="company_bottom_block">
+                    <div class="row wrap_md">
+                        <div class="col-md-3 col-sm-3 hidden-xs img">
+                            <img alt="companypic.png" src="images/company.png" title="companypic.png">
+                        </div>
+                        <div class="col-md-9 col-sm-9 big">
+                            <h1 class="title_block lg">Онлайн торговий центр Benefit-Company</h1>
+                            <p>
+                                Сайт, торгующий товарами в Челябинске. Позволяет пользователям
+                                сформировать заказ на покупку, выбрать способ оплаты и доставки заказа в
+                                сети Интернет. Выбрав необходимые товары или услуги, пользователь
+                                обычно имеет возможность тут же на сайте выбрать метод оплаты и
+                                доставки.
+                            </p>
+                            <p>
+                                Основное отличие Интернет-магазина от традиционного — в типе торговой площадки.
+                            </p>
+                            <a href="#" class="btn btn-default">Подробнее</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="brand_main_wrapper">
+                    <div class="brands_slider_wrapp flexslider loading_state clearfix" data-plugin-options='{"animation": "slide", "directionNav": true, "itemMargin":30, "controlNav" :false, "animationLoop": true, "slideshow": true, "slideshowSpeed": 5000, "animationSpeed": 600, "counts": [5,4,3,2,1]}'>
+                        <ul class="brands_slider slides">
+                            <li class="visible" id="bx_1373509569_2440">
+                                <a href="#"><img class="noborder" src="images/26c07b2a4e9ee5d69ad54ad2401806bf.jpg" alt="Panasonic" title="Panasonic" /></a>
+                            </li>
+                            <li class="visible" id="bx_1373509569_2441">
+                                <a href="#"><img class="noborder" src="images/76c6af8ccc57ec1998f9247381d96144.jpg" alt="Canon" title="Canon" /></a>
+                            </li>
+                            <li class="visible" id="bx_1373509569_2444">
+                                <a href="#"><img class="noborder" src="images/2b5dea95b6fc932b0c8790fa47d04a7e.jpg" alt="Sony" title="Sony" /></a>
+                            </li>
+                            <li class="visible" id="bx_1373509569_2442">
+                                <a href="#"><img class="noborder" src="images/6afa08c47c1d0277c85de3d2dc477e37.jpg" alt="Nikon" title="Nikon" /></a>
+                            </li>
+                            <li class="visible" id="bx_1373509569_2430">
+                                <a href="#"><img class="noborder" src="images/4a3de8cbe76a4cb6c04bf0094b9f08c4.jpg" alt="BOSCH" title="BOSCH" /></a>
+                            </li>
+                            <li class="visible" id="bx_1373509569_2456">
+                                <a href="#"><img class="noborder" src="images/d7c6f3348005b265a59880b1a30b278d.jpg" alt="Maybelline" title="Maybelline" /></a>
+                            </li>
+                            <li class="visible" id="bx_1373509569_2455">
+                                <a href="#"><img class="noborder" src="images/71cb528b435689ab72b97b346fae5929.jpg" alt="L'Oreal" title="L'Oreal" /></a>
+                            </li>
+                            <li class="visible" id="bx_1373509569_2454">
+                                <a href="#"><img class="noborder" src="images/30f5154e3185fa2af9eb33ff63397006.jpg" alt="Inglot" title="Inglot" /></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="left_block">
+        </div>
     </div>
-</div>*@
+</div>

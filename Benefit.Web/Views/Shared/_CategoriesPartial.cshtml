@@ -1,36 +1,1111 @@
-﻿@using Benefit.Common.Constants
-@model Benefit.DataTransfer.ViewModels.CategoriesListViewModel
+﻿@model Benefit.DataTransfer.ViewModels.CategoriesListViewModel
 
-<ul id="@(Model.ParentName == null ? "categories":"")" class="@(ViewBag.IsDropDown ? "" : "nav navbar-nav") padding-top-15">
-    @if (Model.ParentName != null)
-    {
-        <li>
-            <a class="bold">@Model.ParentName</a>
-        </li>
-    }
-    @foreach (var category in Model.Items)
-    {
-        <li>
-            <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new { id = category.UrlName })" title="@category.Description">@category.Name</a>
+<div class="left_catalog">
+    <table>
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/logo_1.png" alt="Продукти харчування" />Товари компанії
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+        </td>
 
-            @if (Model.ParentName == null && category.ChildCategories.Any())
-            {
-                <ul>
-                    @foreach (var subCategory in category.ChildCategories.OrderBy(entry => entry.Order))
-                    {
-                        <li>
-                            <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = subCategory.UrlName})" title="@subCategory.Description">@subCategory.Name</a>
-                        </li>
-                    }
-                </ul>
-            }
-        </li>
-    }
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/0.png" alt="Продукти харчування" />Доставки їжі
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
 
-    @if (Model.ParentName == null)
-    {
-        <li>
-            <a href="@Url.RouteUrl("AllSellers")" title="Всі постачальники">Всі постачальники</a>
-        </li>
-    }
-</ul>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/1.png" alt="Продукти харчування" />Продукти харчування
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/2.png" alt="Чистота і порядок" />Чистота і порядок
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/4.png" alt="Красота і здоров'я" />Красота і здоров'я
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/3.png" alt="Одяг та взуття" />Одяг та взуття
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/5.png" alt="Для дому та саду" />Для дому та саду
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/6.png" alt="Техніка та електроніка" />Техніка та електроніка
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/7.png" alt="Будівництво та ремонт" />Будівництво та ремонт
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/8.png" alt="Авто та мото" />Авто та мото
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/9.png" alt="Для дітей та мам" />Для дітей та мам
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/10.png" alt="Квіти та подарунки" />Квіти та подарунки
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/11.png" alt="Книги та канцтовари" />Книги та канцтовари
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/12.png" alt="Для тварин" />Для тварин
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <td class="parent">
+            <a class="" href="#">
+                <img src="images/13.png" alt="Послуги та розваги" />Бронювання готелів
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+        <td class="parent" style="border-bottom: 1px solid rgb(229, 229, 229);">
+            <a class="" href="#">
+                <img src="images/14.png" alt="Послуги та розваги" />Послуги та розваги
+                <i class="angle_icon hidden_small">
+                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                        <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                    </svg>
+                </i>
+            </a>
+            <table class="submenu">
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Хліб, кондитерські вироби
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="parent">
+                        <a class="" href="#">
+                            Овочі, фрукти, зелень
+                            <i class="angle_icon hidden_small">
+                                <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="9" height="14" viewBox="0 0 9 14">
+                                    <path fill="currentColor" d="M8.398 5.75q0 0.102-0.078 0.18l-3.641 3.641q-0.078 0.078-0.18 0.078t-0.18-0.078l-3.641-3.641q-0.078-0.078-0.078-0.18t0.078-0.18l0.391-0.391q0.078-0.078 0.18-0.078t0.18 0.078l3.070 3.070 3.070-3.070q0.078-0.078 0.18-0.078t0.18 0.078l0.391 0.391q0.078 0.078 0.078 0.18z"></path>
+                                </svg>
+                            </i>
+                        </a>
+                        <table class="submenu">
+                            <tr>
+                                <td><a class="" href="catalog/tretij-uroven-vlozhennosti_2">Третий уровень вложенности</a></td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </td>
+
+    </table>
+
+
+    @RenderBody()
+    <div class="news_blocks front">
+        <div class="top_block">
+            <div class="title_block">Відгуки</div>
+            <a href="#">Всі відгуки</a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="info_block">
+            <div class="news_items">
+                <div class="item box-sizing dl">
+                    <div class="info">
+                        <div class="date">22 Июня 2017</div>
+                        <a class="name dark_link" href="#">Триумфальное возвращение Nokia 3310 </a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div class="item box-sizing dl">
+                    <div class="info">
+                        <div class="date">5 Июня 2016</div>
+                        <a class="name dark_link" href="#">Новое восприятие мира от Google</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div id="bx_3099439860_2475" class="item box-sizing dl">
+                    <div class="info">
+                        <div class="date">1 Мая 2016</div>
+                        <a class="name dark_link" href="#">Переводчик с кошачьего – это реально</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="news_blocks front">
+        <div class="top_block">
+            <div class="title_block">Статьи</div>
+            <a href="#">Все статьи</a>
+            <div class="clearfix"></div>
+        </div>
+        <div class="info_block">
+            <div class="news_items">
+                <div id="bx_565502798_3260" class="item box-sizing dl">
+                    <div class="info">
+                        <a class="name dark_link" href="#">Обзор 10 лучших велосипедных брендов</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div id="bx_565502798_3257" class="item box-sizing dl">
+                    <div class="info">
+                        <a class="name dark_link" href="#">5 ожидаемых техноновинок, которые изменят мир</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div id="bx_565502798_3258" class="item box-sizing dl">
+                    <div class="info">
+                        <a class="name dark_link" href="#">Фантастические изобретения, которые уже стали реальностью</a>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

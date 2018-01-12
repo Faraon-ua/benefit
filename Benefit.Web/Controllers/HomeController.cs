@@ -20,7 +20,7 @@ namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
+        //        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
             var mainPageViewModel = new MainPageViewModel();
@@ -30,16 +30,42 @@ namespace Benefit.Web.Controllers
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList();
+                    .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList()
+                    .Select(entry => new ProductPartialViewModel()
+                    {
+                        Product = entry
+                    }).ToList();
                 mainPageViewModel.NewProducts = db.Products
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList();
-                mainPageViewModel.Banners =
-                    db.Banners.Where(entry => entry.BannerType == BannerType.MainPageBanners)
+                    .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList()
+                    .Select(entry => new ProductPartialViewModel()
+                    {
+                        Product = entry
+                    }).ToList();
+                mainPageViewModel.News = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive)
+                    .OrderByDescending(entry => entry.CreatedOn).Take(5).ToList();
+                mainPageViewModel.News.ForEach(entry =>
+                    entry.Name = entry.Name.Length > 75 ? entry.Name.Substring(0, 75) + "..." : entry.Name);
+                mainPageViewModel.PrimaryBanners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage)
                         .OrderBy(entry => entry.Order)
                         .ToList();
+                mainPageViewModel.MobileBanners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.MobileMainPage)
+                        .OrderBy(entry => entry.Order)
+                        .ToList();
+                mainPageViewModel.TopSideBanners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.SideTopMainPage)
+                        .OrderBy(entry => entry.Order)
+                        .ToList();
+                mainPageViewModel.BottomSideBanners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.SideBottomMainPage)
+                        .OrderBy(entry => entry.Order)
+                        .ToList();
+                mainPageViewModel.FirstRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.FirstRowMainPage);
+                mainPageViewModel.SecondRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.SecondRowMainPage);
             }
             return View(mainPageViewModel);
         }
@@ -60,74 +86,84 @@ namespace Benefit.Web.Controllers
         }
 
         [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;sellerUrl;isDropDown;")]
-        public ActionResult CategoriesPartial(string parentCategoryId, string sellerUrl, bool? isDropDown = null)
+        public ActionResult CategoriesPartial(string sellerUrl, bool? isDropDown = null)
         {
-            if (string.IsNullOrEmpty(parentCategoryId))
-                parentCategoryId = null;
             if (string.IsNullOrEmpty(sellerUrl))
                 sellerUrl = null;
             using (var db = new ApplicationDbContext())
             {
-                var parent = db.Categories.Find(parentCategoryId);
-                var parentName = parent == null ? null : parent.Name;
-                var categories = db.Categories.Include(entry => entry.ParentCategory).Include(entry => entry.ChildCategories).Include(entry=>entry.Products).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive && !entry.IsSellerCategory && (entry.ChildCategories.Any() || entry.Products.Any())).OrderBy(entry => entry.Order).ToList();
-                categories.ForEach(entry => entry.ChildCategories = db.Categories.Where(cat => cat.ParentCategoryId == entry.Id && cat.IsActive).ToList());
-                if (sellerUrl != null)
+                var categories = db.Categories
+                    .Include(entry => entry.ChildCategories.Select(cat => cat.ChildCategories))
+                    .Include(entry => entry.Products)
+                    .Where(
+                        entry =>
+                            entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory &&
+                            (entry.ChildCategories.Any() || entry.Products.Any()))
+                    .OrderBy(entry => entry.Order)
+                    .ToList();
+                categories.ForEach(entry =>
                 {
-                    var sellersService = new SellerService();
-                    var sellerCategories = sellersService.GetAllSellerCategories(sellerUrl).ToList();
-                    var sellerCategoriesIds = sellerCategories.Select(entry => entry.Id).ToList();
-                    if (parent == null || parent.ParentCategoryId == null)
+                    entry.ChildCategories = entry.ChildCategories.Where(cat => cat.IsActive).ToList();
+                    entry.ChildCategories.ForEach(child =>
                     {
-                        categories =
-                            sellerCategories.Where(entry => entry.ParentCategoryId == null)
-                                .OrderBy(entry => entry.Order)
-                                .ToList();
-                        foreach (var category in categories)
-                        {
-                            category.ChildCategories = category.ChildCategories.OrderBy(entry => entry.Order).ToList();
-                        }
-                        if (parent == null)
-                        {
-                            parentName = categories.FirstOrDefault() == null ? null : categories.FirstOrDefault().Name;
-                        }
-                    }
-                    else
-                    {
-                        categories = categories.Where(entry => sellerCategoriesIds.Contains(entry.Id)).ToList();
-                        while (categories.Count == 1)
-                        {
-                            var catId = categories.First().Id;
-                            parentName = categories.First().Name;
-                            var childCategories =
-                                db.Categories.Include(entry => entry.ParentCategory)
-                                    .Where(
-                                        entry =>
-                                            entry.ParentCategoryId == catId && entry.IsActive &&
-                                            sellerCategoriesIds.Contains(entry.Id))
-                                    .OrderBy(entry => entry.Order)
-                                    .ToList();
-                            if (childCategories.Count == 0) break;
-                            categories = childCategories;
-                        }
-                    }
-                    var sellerCatsModel = new CategoriesListViewModel()
-                    {
-                        ParentName = parentName,
-                        SellerUrlName = sellerUrl,
-                        Items = categories.ToList()
-                    };
-                    return PartialView((parent == null || parent.ParentCategoryId == null) ? "_SellerCategoriesPartial" : "_SellerChildCategoriesPartial", sellerCatsModel);
-                }
-                if (parent != null)
+                        child.ChildCategories = child.ChildCategories.Where(cat => cat.IsActive).ToList();
+                    });
+                });
+                /*  if (sellerUrl != null)
+                  {
+                      var sellersService = new SellerService();
+                      var sellerCategories = sellersService.GetAllSellerCategories(sellerUrl).ToList();
+                      var sellerCategoriesIds = sellerCategories.Select(entry => entry.Id).ToList();
+                      if (parent == null || parent.ParentCategoryId == null)
+                      {
+                          categories =
+                              sellerCategories.Where(entry => entry.ParentCategoryId == null)
+                                  .OrderBy(entry => entry.Order)
+                                  .ToList();
+                          foreach (var category in categories)
+                          {
+                              category.ChildCategories = category.ChildCategories.OrderBy(entry => entry.Order).ToList();
+                          }
+                          if (parent == null)
+                          {
+                              parentName = categories.FirstOrDefault() == null ? null : categories.FirstOrDefault().Name;
+                          }
+                      }
+                      else
+                      {
+                          categories = categories.Where(entry => sellerCategoriesIds.Contains(entry.Id)).ToList();
+                          while (categories.Count == 1)
+                          {
+                              var catId = categories.First().Id;
+                              parentName = categories.First().Name;
+                              var childCategories =
+                                  db.Categories.Include(entry => entry.ParentCategory)
+                                      .Where(
+                                          entry =>
+                                              entry.ParentCategoryId == catId && entry.IsActive &&
+                                              sellerCategoriesIds.Contains(entry.Id))
+                                      .OrderBy(entry => entry.Order)
+                                      .ToList();
+                              if (childCategories.Count == 0) break;
+                              categories = childCategories;
+                          }
+                      }
+                      var sellerCatsModel = new CategoriesListViewModel()
+                      {
+                          ParentName = parentName,
+                          SellerUrlName = sellerUrl,
+                          Items = categories.ToList()
+                      };
+                      return PartialView((parent == null || parent.ParentCategoryId == null) ? "_SellerCategoriesPartial" : "_SellerChildCategoriesPartial", sellerCatsModel);
+                  }*/
+                /*if (parent != null)
                 {
                     categories = categories.Where(entry => !entry.ParentCategory.ChildAsFilters).ToList();
-                }
+                }*/
 
                 ViewBag.IsDropDown = isDropDown ?? false;
                 var model = new CategoriesListViewModel()
                 {
-                    ParentName = parentName,
                     Items = categories.ToList()
                 };
 
@@ -224,31 +260,31 @@ namespace Benefit.Web.Controllers
 
         public ActionResult Map()
         {
-/*
-            using (var db = new ApplicationDbContext())
-            {
-                var regionId = RegionService.GetRegionId();
-                var cats =
-                    db.Sellers
-                        .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                        .Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId))
-                        .Select(entry => entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category)
-                         .OrderBy(
-                            entry =>
-                                entry.ParentCategory == null
-                                    ? 1000
-                                    : entry.ParentCategory.ParentCategory == null
-                                        ? 1000
-                                        : entry.ParentCategory.ParentCategory.Order)
-                        .ThenBy(
-                            entry => entry.ParentCategory == null ? 1000 : entry.ParentCategory.Order)
-                        .ThenBy(entry => entry.Order)
-                        .Where(entry => entry != null)
-                        .Distinct()
-                        .ToList();
-                return View(cats);
-            }
-*/
+            /*
+                        using (var db = new ApplicationDbContext())
+                        {
+                            var regionId = RegionService.GetRegionId();
+                            var cats =
+                                db.Sellers
+                                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                                    .Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId))
+                                    .Select(entry => entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category)
+                                     .OrderBy(
+                                        entry =>
+                                            entry.ParentCategory == null
+                                                ? 1000
+                                                : entry.ParentCategory.ParentCategory == null
+                                                    ? 1000
+                                                    : entry.ParentCategory.ParentCategory.Order)
+                                    .ThenBy(
+                                        entry => entry.ParentCategory == null ? 1000 : entry.ParentCategory.Order)
+                                    .ThenBy(entry => entry.Order)
+                                    .Where(entry => entry != null)
+                                    .Distinct()
+                                    .ToList();
+                            return View(cats);
+                        }
+            */
             return View();
         }
 
@@ -260,7 +296,7 @@ namespace Benefit.Web.Controllers
                 var sellers =
                     db.Sellers
                     .Include(entry => entry.SellerCategories.Select(cat => cat.Category))
-                    .Where(entry =>entry.IsActive && entry.Longitude != null && entry.Latitude != null && entry.IsBenefitCardActive)
+                    .Where(entry => entry.IsActive && entry.Longitude != null && entry.Latitude != null && entry.IsBenefitCardActive)
                     .ToList();
 
                 var result = sellers.Select(entry => new SellerMapLocation()
@@ -391,7 +427,7 @@ namespace Benefit.Web.Controllers
                 return Content("ok");
             }
 
-        #endregion
+            #endregion
         }
     }
 }

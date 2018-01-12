@@ -1,22 +1,53 @@
-﻿<ul>
-    <li class="login_links show_on_tablet">
-    </li>
-    <li class="margin-left-0">
-        <a href="@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })">Партнерська програма</a>
-    </li>
-    <li>
-        <a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })">Співпраця</a>
-    </li>
-    <li>
-        <a href="@Url.RouteUrl("pagesRoute", new { id = "benefit_tv" })">Benefit TV</a>
-    </li>
-    <li>
-        <a href="@Url.RouteUrl("pagesRoute", new { id = "faq" })">FAQ</a>
-    </li>
-    <li>
-        <a href="@Url.RouteUrl("newsRoute")">Новини</a>
-    </li>
-    <li class="show_on_tablet show_on_mobile">
-        <a href="@Url.Action("Map", "Home")">Мапа закладів Benefit Card</a>
-    </li>
-</ul>
+﻿<td class="menu-item" style="visibility: visible;">
+    <div class="wrap">
+        <a class="" href="@Url.RouteUrl("pagesRoute", new {id = "partnerska_programa"})">
+            <div>Партнерська програма<div class="line-wrapper"><span class="line"></span></div></div>
+        </a>
+    </div>
+</td>
+<td class="menu-item" style="visibility: visible;">
+    <div class="wrap">
+        <a class="" href="@Url.RouteUrl("pagesRoute", new {id = "stati_postachalnikom"})">
+            <div>Співпраця<div class="line-wrapper"><span class="line"></span></div></div>
+        </a>
+    </div>
+</td>
+<td class="menu-item" style="visibility: visible;">
+    <div class="wrap">
+        <a class="" href="@Url.RouteUrl("pagesRoute", new {id = "faq"})">
+            <div>FAQ<div class="line-wrapper"><span class="line"></span></div></div>
+        </a>
+    </div>
+</td>
+<td class="menu-item" style="visibility: visible;">
+    <div class="wrap">
+        <a class="" href="@Url.RouteUrl("newsRoute")">
+            <div>Новини<div class="line-wrapper"><span class="line"></span></div></div>
+        </a>
+    </div>
+</td>
+<td class="menu-item" style="visibility: visible;">
+    <div class="wrap">
+        <a class="" href="#">
+            <div>Контакти<div class="line-wrapper"><span class="line"></span></div></div>
+        </a>
+    </div>
+</td>
+<td class="menu-item" style="visibility: visible;">
+    <div class="wrap">
+        <a class="" href="#">
+            <div>
+                Акції<div class="line-wrapper"><span class="line"></span></div>
+            </div>
+        </a>
+    </div>
+</td>
+<td class="menu-item dropdown js-dropdown nosave" style="display: none; visibility: visible;">
+    <div class="wrap">
+        <a class="dropdown-toggle more-items" href="#">
+            <span>Ещё</span>
+        </a>
+        <span class="tail"></span>
+        <ul class="dropdown-menu"></ul>
+    </div>
+</td>

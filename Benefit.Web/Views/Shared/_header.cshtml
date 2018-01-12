@@ -1,122 +1,116 @@
 ﻿@using Benefit.Web.Helpers
 
 @*<header>
-    <div class="container">
-        <div class="container_table topheader_content position-relative">
-            <div class="position-absolute logo-container">
-                @{
-                    var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("Index", "Home", new { area = string.Empty }, Request.Url.Scheme);
-                }
-                <a class="logo" href='@href'></a>
-                <div class="show_on_tablet logo_region select_place_container">
-                    <i class="icn location"></i>
-                    <span class="inside"></span>
-                </div>
-                <div class="logo_slogan">Онлайн торговий центр</div>
-            </div>
-            <div class="menu-container">
-                <div class="menu lmenu_block" id="left-menu">
-                    @Html.Partial("_MenuPartial")
-                    <div class="f_soc_p">
-                        <a href="https://www.youtube.com/channel/UC2YbFBSzjxW_ji2_mDBeWpw" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                        <a href="https://www.facebook.com/groups/benefitcompany" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="https://plus.google.com/+BenefitCompanyTV" class="gp"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
-                        <a href="https://twitter.com/benefitcompany" class="tw"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="https://www.instagram.com/benefitcompany/" class="ig"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                        <a href="viber://chat?number=%2B380500354555" class="viber" title="Viber"><i class="fa fa-volume-control-phone " aria-hidden="true"></i></a>
-                        <a href="whatsapp://send?phone=%2B380500354555" class="whatsapp" title="Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
-                        <a href="skype:live:info_706852?chat" class="skype" title="Skype"><i class="fa fa-skype" aria-hidden="true"></i></a>
+        <div class="container">
+            <div class="container_table topheader_content position-relative">
+                <div class="position-absolute logo-container">
+                    @{
+                        var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("Index", "Home", new { area = string.Empty }, Request.Url.Scheme);
+                    }
+                    <a class="logo" href='@href'></a>
+                    <div class="show_on_tablet logo_region select_place_container">
+                        <i class="icn location"></i>
+                        <span class="inside"></span>
                     </div>
-                    <div class="lmenu_contact">
-                        <span>Служба підтримки:</span>
-                        <a href="tel:+380500354555">
+                    <div class="logo_slogan">Онлайн торговий центр</div>
+                </div>
+                <div class="menu-container">
+                    <div class="menu lmenu_block" id="left-menu">
+                        @Html.Partial("_MenuPartial")
+                        <div class="f_soc_p">
+                            <a href="https://www.youtube.com/channel/UC2YbFBSzjxW_ji2_mDBeWpw" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
+                            <a href="https://www.facebook.com/groups/benefitcompany" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
+                            <a href="https://plus.google.com/+BenefitCompanyTV" class="gp"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
+                            <a href="https://twitter.com/benefitcompany" class="tw"><i class="fa fa-twitter" aria-hidden="true"></i></a>
+                            <a href="https://www.instagram.com/benefitcompany/" class="ig"><i class="fa fa-instagram" aria-hidden="true"></i></a>
+                            <a href="viber://chat?number=%2B380500354555" class="viber" title="Viber"><i class="fa fa-volume-control-phone " aria-hidden="true"></i></a>
+                            <a href="whatsapp://send?phone=%2B380500354555" class="whatsapp" title="Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
+                            <a href="skype:live:info_706852?chat" class="skype" title="Skype"><i class="fa fa-skype" aria-hidden="true"></i></a>
+                        </div>
+                        <div class="lmenu_contact">
+                            <span>Служба підтримки:</span>
+                            <a href="tel:+380500354555">
+                                <span>(050) 035 45 55</span>
+                            </a>
+                            <a href="tel:+380630354555">
+                                <span>(063) 035 45 55</span>
+                            </a>
+                            <a href="tel:+380970354555">
+                                <span>(097) 035 45 55</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="position-absolute top-right contacts-container">
+                    <div class="top_right_selectors">
+                        <div class="dropdown dropdown_inline margin-left-10">
+                            <a title="Viber" href="viber://chat?number=%2B380500354555">
+                                <img src="~/Content/img/viber_png.png" />
+                            </a>
+                            <a title="Whatsapp" href="whatsapp://send?phone=%2B380500354555">
+                                <img src="~/Content/img/whatsapp_png.png" />
+                            </a>
+                            <a title="Skype" href="skype:live:info_706852?chat">
+                                <img src="~/Content/img/skype_png.png" />
+                            </a>
+                        </div>
+                        <div class="dropdown dropdown_inline">
+                            <button class="btn btn-default dropdown-toggle" type="button" id="select_language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                <i class="icn flag ua"></i>
+                                УКР
+                                $1$                                <span class="caret"></span>#1#
+                            </button>
+                            $1$//todo:add language select <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="select_language">
+                                    <li><a href="#"><i class="icn flag ua"></i> РУС</a></li>
+                                </ul>#1#
+                        </div>
+                        @Html.Partial("_SelectRegionPartial")
+                    </div>
+                    <div class="top_right_phone">
+                        <div>
+                            <i class="icn phone"></i>
+                        </div>
+                        <div>
                             <span>(050) 035 45 55</span>
-                        </a>
-                        <a href="tel:+380630354555">
                             <span>(063) 035 45 55</span>
-                        </a>
-                        <a href="tel:+380970354555">
                             <span>(097) 035 45 55</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="position-absolute top-right contacts-container">
-                <div class="top_right_selectors">
-                    <div class="dropdown dropdown_inline margin-left-10">
-                        <a title="Viber" href="viber://chat?number=%2B380500354555">
-                            <img src="~/Content/img/viber_png.png" />
-                        </a>
-                        <a title="Whatsapp" href="whatsapp://send?phone=%2B380500354555">
-                            <img src="~/Content/img/whatsapp_png.png" />
-                        </a>
-                        <a title="Skype" href="skype:live:info_706852?chat">
-                            <img src="~/Content/img/skype_png.png" />
-                        </a>
-                    </div>
-                    <div class="dropdown dropdown_inline">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="select_language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <i class="icn flag ua"></i>
-                            УКР
-                            $1$                                <span class="caret"></span>#1#
-                        </button>
-                        $1$//todo:add language select <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="select_language">
-                                <li><a href="#"><i class="icn flag ua"></i> РУС</a></li>
-                            </ul>#1#
-                    </div>
-                    @Html.Partial("_SelectRegionPartial")
-                </div>
-                <div class="top_right_phone">
-                    <div>
-                        <i class="icn phone"></i>
-                    </div>
-                    <div>
-                        <span>(050) 035 45 55</span>
-                        <span>(063) 035 45 55</span>
-                        <span>(097) 035 45 55</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</header>*@
+    </header>*@
 
 <header id="header" class="header-v4 header-wrapper">
     <div class="logo_and_menu-row">
         <div class="logo-row">
             <div class="maxwidth-theme">
                 <div class="row">
-                    <div class="logo-block col-md-2 col-sm-3">
+                    <div class="logo-block pull-left">
                         <div class="logo ">
                             @{
                                 var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("Index", "Home", new { area = string.Empty }, Request.Url.Scheme);
                             }
-                            <a href="@href"><img src="images/logo.jpg"></a>
+                            <a href="@href"><img src="~/Content/img/logo.png"></a>
                         </div>
                     </div>
                     <div class="inline-block pull-left">
-                        <div class="top-description">
-                            <div class="region_wrapper">
-                                <div class="city_title">Ваше місто</div>
-                                <div class="js_city_chooser colored select_place_container">
-                                    <span class="inside"></span><span class="arrow"><i></i></span>
-                                </div>
-                            </div>
-                        </div>
+                        @Html.Partial("_SelectRegionPartial")
                     </div>
-                    <div class="col-md-2 col-lg-2 search_wrap">
+                    <div class="col-md-3 col-lg-3 search_wrap">
                         <div class="search-block inner-table-block">
                             <div class="search-wrapper">
                                 <div id="title-search_fixed">
-                                    <form action="#" class="search">
+                                    @using (Html.BeginForm("Index", "Search", new { area = "" }, FormMethod.Get, new { id = "search-form", @class = "search" }))
+                                    {
                                         <div class="search-input-div">
-                                            <input class="search-input" id="title-search-input_fixed" placeholder="Пошук товарів" size="20" maxlength="50" autocomplete="off">
+                                            <input class="search-input" id="search" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
                                         </div>
                                         <div class="search-button-div">
-                                            <button class="btn btn-search" type="submit" name="s" value="Поиск"><i class="svg svg-search svg-black"></i></button>
+                                            <button class="btn btn-search" type="submit" name="s" value="Пошук"><i class="svg svg-search svg-black"></i></button>
                                             <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
                                         </div>
-                                    </form>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -124,49 +118,29 @@
                     <div class="right-icons pull-right">
                         <div class="pull-right block-link">
                             <div class="wrap_icon inner-table-block baskets">
-                                <a class="basket-link compare  with_price lg " href="#" title="Список сравниваемых элементов">
-                                    <span class="js-basket-block">
-                                        <i class="svg svg-compare "></i>
-                                        <span class="title dark_link">Порівняння</span><span class="count">0</span>
-                                    </span>
-                                </a>
-                            </div>
-                            <div class="wrap_icon inner-table-block baskets">
-                                <a rel="nofollow" class="basket-link delay with_price lg " href="#" title="Список отложенных товаров пуст">
-                                    <span class="js-basket-block">
-                                        <i class="svg svg-wish "></i>
-                                        <span class="title dark_link">Улюблене</span><span class="count">1</span>
-                                    </span>
-                                </a>
-                            </div>
-                            <div class="wrap_icon inner-table-block baskets">
-                                <a rel="nofollow" class="basket-link basket has_prices with_price  " href="#/basket/" title="Корзина пуста">
+                                <a rel="nofollow" class="basket-link basket has_prices with_price" href="#/basket/" title="Корзина пуста">
                                     <span class="js-basket-block">
                                         <i class="svg svg-basket "></i>
-                                        <span class="wrap"><span class="title dark_link">Кошик покупок</span><span class="prices">порожній</span></span>
-                                        <span class="count">0</span>
+                                        <span class="wrap">
+                                            <span class="title dark_link">Кошик</span>
+                                            <span id="cart-items-price" class="prices">порожній</span>
+                                        </span>
+                                        <span class="count cart-items-number">0</span>
                                     </span>
                                 </a>
                             </div>
                         </div>
-                        <div class="pull-right">
-                            <div class="wrap_icon inner-table-block">
-                                <a rel="nofollow" title="Мой кабинет" class="personal-link dark-color animate-load" href="#">
-                                    <i class="svg svg-cabinet-login lg" aria-hidden="true"></i>
-                                    <span class="wrap"><span class="name">Увійти</span><span class="title">Кабінет</span></span>
-                                </a>
-                            </div>
-                        </div>
+                        @Html.Partial("_LoginPartial")
                         <div class="pull-right">
                             <div class="wrap_icon inner-table-block">
                                 <div class="phone-block">
                                     <div class="phone with_dropdown">
                                         <i class="svg svg-phone"></i>
-                                        <a rel="nofollow" href="tel:+70000000010">+38 (050) 000-00-10</a>
+                                        <a rel="nofollow" href="tel:+380500354555">+38 (050) 035 45 55</a>
                                         <div class="dropdown">
                                             <div class="wrap">
-                                                <div class="more_phone"><a href="tel:+70000000011">+38 (000) 000-00-11</a></div>
-                                                <div class="more_phone"><a href="tel:+70000000012">+38 (000) 000-00-12</a></div>
+                                                <div class="more_phone"><a href="tel:+380630354555">+38 (063) 035 45 55</a></div>
+                                                <div class="more_phone"><a href="tel:+380970354555">+38 (097) 035 45 55</a></div>
                                             </div>
                                         </div>
                                     </div>
@@ -189,8 +163,6 @@
                                 <table>
                                     <tbody>
                                         <tr>
-
-
                                             <td class="menu-item dropdown catalog ">
                                                 <div class="wrap">
                                                     <a class="dropdown-toggle" href="#" style="padding-top: 10px;">
@@ -416,61 +388,7 @@
                                                     </ul>
                                                 </div>
                                             </td>
-
-                                            <td class="menu-item" style="visibility: visible;">
-                                                <div class="wrap">
-                                                    <a class="" href="#">
-                                                        <div>Партнерська програма<div class="line-wrapper"><span class="line"></span></div></div>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="menu-item" style="visibility: visible;">
-                                                <div class="wrap">
-                                                    <a class="" href="#">
-                                                        <div>Співпраця<div class="line-wrapper"><span class="line"></span></div></div>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="menu-item" style="visibility: visible;">
-                                                <div class="wrap">
-                                                    <a class="" href="#">
-                                                        <div>FAQ<div class="line-wrapper"><span class="line"></span></div></div>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="menu-item" style="visibility: visible;">
-                                                <div class="wrap">
-                                                    <a class="" href="#">
-                                                        <div>Новини<div class="line-wrapper"><span class="line"></span></div></div>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="menu-item" style="visibility: visible;">
-                                                <div class="wrap">
-                                                    <a class="" href="#">
-                                                        <div>Контакти<div class="line-wrapper"><span class="line"></span></div></div>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                            <td class="menu-item" style="visibility: visible;">
-                                                <div class="wrap">
-                                                    <a class="" href="#/contacts/">
-                                                        <div>
-                                                            Акції<div class="line-wrapper"><span class="line"></span></div>
-                                                        </div>
-                                                    </a>
-                                                </div>
-                                            </td>
-
-                                            <td class="menu-item dropdown js-dropdown nosave" style="display: none; visibility: visible;">
-                                                <div class="wrap">
-                                                    <a class="dropdown-toggle more-items" href="#">
-                                                        <span>Ещё</span>
-                                                    </a>
-                                                    <span class="tail"></span>
-                                                    <ul class="dropdown-menu"></ul>
-                                                </div>
-                                            </td>
+                                            @Html.Partial("_MenuPartial")
                                         </tr>
                                     </tbody>
                                 </table>
