@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -243,7 +244,7 @@ namespace Benefit.CardReader
                                 FileService.XmlDeserialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath);
                             if (billInfo != null)
                             {
-                                defaultWindow.TransactionPartial.txtPaymentSum.Text = billInfo.Sum.ToString();
+                                defaultWindow.TransactionPartial.txtPaymentSum.Text = billInfo.Sum.ToString(CultureInfo.InvariantCulture);
                                 if (app.AuthInfo.ShowBill)
                                 {
                                     defaultWindow.TransactionPartial.txtBillNumber.Text = billInfo.Number;
