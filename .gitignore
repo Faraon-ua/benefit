@@ -26,6 +26,7 @@ _UpgradeReport_Files/
 ###############
 # Directories #
 ###############
+.vs/
 bin/
 FTP/
 logs/

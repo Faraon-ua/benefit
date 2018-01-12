@@ -66,7 +66,8 @@ namespace Benefit.CardReader
                 var flashSum = false;
                 if (arguments.ContainsKey("price"))
                 {
-                    price = double.Parse(arguments["price"], CultureInfo.InvariantCulture);
+                    var priceVal = arguments["price"].Replace(',', '.');
+                    price = double.Parse(priceVal, NumberStyles.Any, CultureInfo.InvariantCulture);
                 }
                 if (arguments.ContainsKey("bill"))
                 {

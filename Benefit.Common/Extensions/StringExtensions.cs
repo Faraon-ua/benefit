@@ -5,6 +5,13 @@ namespace Benefit.Common.Extensions
 {
     public static class StringExtensions
     {
+        public static bool IsJson(this string strInput)
+        {
+            strInput = strInput.Trim();
+            return strInput.StartsWith("{") && strInput.EndsWith("}") ||
+                   strInput.StartsWith("[") && strInput.EndsWith("]");
+        }
+
         public static string Truncate(this string value, int maxLength)
         {
             if (value == null) return null;

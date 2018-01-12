@@ -62,6 +62,10 @@
       <Project>{0df88f7f-0819-4b37-a207-592381429c89}</Project>
       <Name>Benefit.CardReader.DataTransfer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Benefit.Common\Benefit.Common.csproj">
+      <Project>{3946539e-a45a-46cd-be25-4e420e468082}</Project>
+      <Name>Benefit.Common</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

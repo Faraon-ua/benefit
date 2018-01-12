@@ -5,6 +5,7 @@ using System.Text;
 using Benefit.CardReader.DataTransfer.Dto.Base;
 using Newtonsoft.Json;
 using System.IO;
+using Benefit.Common.Extensions;
 
 namespace Benefit.HttpClient
 {
@@ -104,8 +105,12 @@ namespace Benefit.HttpClient
                     using (var reader = new StreamReader(responseStream))
                     {
                         var definition = new { Message = "" };
-                        var jsonResult = JsonConvert.DeserializeAnonymousType(reader.ReadToEnd(), definition);
-                        result.ErrorMessage = jsonResult.Message;
+                        var content = reader.ReadToEnd();
+                        if (content.IsJson())
+                        {
+                            var jsonResult = JsonConvert.DeserializeAnonymousType(content, definition);
+                            result.ErrorMessage = jsonResult.Message;
+                        }
                     }
                 }
             }
