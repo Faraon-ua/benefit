@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -8,9 +9,7 @@ using Benefit.CardReader.Services;
 using Benefit.CardReader.Services.Factories;
 using Benefit.HttpClient;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
-using Benefit.CardReader.Controls;
 using Benefit.CardReader.DataTransfer.Reader;
 
 namespace Benefit.CardReader
@@ -240,19 +239,23 @@ namespace Benefit.CardReader
                             defaultWindow.LoadingSpinner.Visibility = Visibility.Hidden;
 
                             //if bill saved - process
-                            var billInfo =
-                                FileService.XmlDeserialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath);
-                            if (billInfo != null)
+                            if (File.Exists(CardReaderSettingsService.BillInfoFilePath))
                             {
-                                defaultWindow.TransactionPartial.txtPaymentSum.Text = billInfo.Sum.ToString(CultureInfo.InvariantCulture);
-                                if (app.AuthInfo.ShowBill)
+                                var billInfo =
+                                    FileService.XmlDeserialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath);
+                                if (billInfo != null)
                                 {
-                                    defaultWindow.TransactionPartial.txtBillNumber.Text = billInfo.Number;
+                                    defaultWindow.TransactionPartial.txtPaymentSum.Text = billInfo.Sum.ToString(CultureInfo.InvariantCulture);
+                                    if (app.AuthInfo.ShowBill)
+                                    {
+                                        defaultWindow.TransactionPartial.txtBillNumber.Text = billInfo.Number;
+                                    }
+                                    defaultWindow.TransactionPartial.btnPayBonuses.Focus();
+                                    var _chargeBonuses = billInfo.ChargeBonuses && app.AuthInfo.ShowChargeBonuses;
+                                    defaultWindow.TransactionPartial.ProcessPayment(_chargeBonuses);
+                                    FileService.XmlSerialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath, null,
+                                        true);
                                 }
-                                defaultWindow.TransactionPartial.btnPayBonuses.Focus();
-                                var _chargeBonuses = billInfo.ChargeBonuses && app.AuthInfo.ShowChargeBonuses;
-                                defaultWindow.TransactionPartial.ProcessPayment(_chargeBonuses);
-                                FileService.XmlSerialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath, null, true);
                             }
                         }));
                     }
