@@ -562,7 +562,7 @@
                                                     </div>
                                                 </td>
                                                 <td colspan="8" style="min-width: 450px;">
-                                                    
+
                                                     <div class="search-block">
                                                         <div class="search-wrapper">
                                                             <div id="title-search_fixed">
@@ -717,7 +717,7 @@
 
         <script type="text/javascript">
 
-            $(function () {
+            $(function() {
                 var categoriesUrl = '@Url.Action("CategoriesPartial", "Home")';
                 $(".left-block").load(categoriesUrl);
 
@@ -727,10 +727,21 @@
                     width: 300,
                     minChars: 3,
                     serviceUrl: searchWordsUrl,
-                    onSelect: function (suggestion) {
+                    onSelect: function(suggestion) {
                         window.location.href = searchUrl + "?term=" + suggestion.data;
                     }
                 });
+
+                $(".region_wrapper, .burger").popover({
+                    content: $(".region-popover").html(),
+                    html: true,
+                    placement: "bottom",
+                    trigger: "manual"
+                });
+
+                if (!getCookie("regionName")) {
+                    $(".region_wrapper, .burger").popover('show');
+                }
             });
 
             var arNextOptions = ({

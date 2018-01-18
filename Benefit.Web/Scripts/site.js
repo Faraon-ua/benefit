@@ -4,7 +4,7 @@
 // возвращает cookie с именем name, если есть, если нет, то undefined
 function getCookie(name) {
     var matches = document.cookie.match(new RegExp(
-      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
     ));
     return matches ? decodeURIComponent(matches[1]) : undefined;
 }
@@ -202,6 +202,19 @@ $(function () {
         location.reload();
     });
 
+    $("body").on("click", ".region-popover-content button",
+        function () {
+            if ($(this).attr("data-region-id")) {
+                var regionId = $(this).attr("data-region-id");
+                var regionName = $(this).attr("data-region-name");
+                setCookie("regionName", regionName, { expires: 31536000, path: "/" }); //year
+                setCookie("regionId", regionId, { expires: 31536000, path: "/" }); //year
+                location.reload();
+            } else {
+                $(".select_place_container").click();
+            }
+        });
+
     $("body").on("click", ".goto_back", function () {
         $("#basket_modal").modal('hide');
     });
@@ -282,9 +295,6 @@ $(function () {
         );
     });
 
-    if (!getCookie("regionName")) {
-        $(".region_modal").modal();
-    }
     $(".select_place_container").click(function () {
         $(".region_modal").modal();
     });

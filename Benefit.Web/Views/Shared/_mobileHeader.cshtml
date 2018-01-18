@@ -783,8 +783,8 @@
                             <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "faq"})" title="FAQ">
                                 <span>FAQ</span>
                             </a>
-                    </li> 
-                    <li>
+                        </li>
+                        <li>
                             <a class="dark-color" href="@Url.RouteUrl("newsRoute")" title="Новини">
                                 <span>Новини</span>
                             </a>
@@ -795,20 +795,12 @@
                 <!--'start_frame_cache_mobile-region-block1'--> <!-- noindex -->
                 <div class="menu middle mobile_regions">
                     <ul>
-                        <li>
+                        <li class="select_place_container">
                             <a rel="nofollow" href="" class="dark-color parent">
                                 <i class="svg svg-address black"></i>
-                                <span>Челябинск</span>
+                                <span class="inside"></span>
                                 <span class="arrow"><i class="svg svg_triangle_right"></i></span>
                             </a>
-                            <ul class="dropdown">
-                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
-                                <li class="menu_title">Города</li>
-                                <li><a rel="nofollow" href="https://next.aspro-demo.ru/" class="dark-color city_item" data-id="3213">Челябинск</a></li>
-                                <li><a rel="nofollow" href="https://ekb.next.aspro-demo.ru/" class="dark-color city_item" data-id="3214">Екатеринбург</a></li>
-                                <li><a rel="nofollow" href="https://magnitogorsk.next.aspro-demo.ru/" class="dark-color city_item" data-id="3215">Магнитогорск</a></li>
-                                <li><a rel="nofollow" href="https://msk.next.aspro-demo.ru/" class="dark-color city_item" data-id="3212">Москва</a></li>
-                            </ul>
                         </li>
                     </ul>
                 </div>
@@ -816,11 +808,11 @@
                 <div class="menu middle">
                     <ul>
                         <li>
-                            <a rel="nofollow" class="dark-color" href="/personal/"><i class="svg svg-cabinet-login"></i><span>Мой кабинет</span></a>
+                            <a rel="nofollow" class="dark-color" href="@Url.Action("Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName })"><i class="svg svg-cabinet-login"></i><span>Особистий кабінет</span></a>
                         </li>
                     </ul>
                 </div>
-             
+
                 <div class="menu middle">
                     <ul>
                         <li>

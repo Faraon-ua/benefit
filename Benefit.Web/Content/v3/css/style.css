@@ -1,3 +1,18 @@
+.banner-nav {
+    border-radius: 50%;
+    height: 42px;
+    width: 42px;
+    display: inline-block;
+    padding: 3px 0 0 14px;
+    color: #000;
+    background: rgba(255, 255, 255, 0.5);
+    font-size: 0.8em;
+}
+.banner-nav:hover {
+    color: #fff;
+    background-color: #9e1414;
+}
+
 .product_description_amount_wrap {
     margin-bottom: 15px;
     text-align: right;
