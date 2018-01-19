@@ -129,7 +129,7 @@ namespace Benefit.Services.Domain
             //delete products which are not in xml
             var productIdsToDelete = dbProductsIds.Except(xmlProductIds).ToList();
             result.ProductsRemoved = productIdsToDelete.Count;
-            db.Products.Where(entry => productIdsToDelete.Contains(entry.Id))
+            db.Products.Where(entry => productIdsToDelete.Contains(entry.Id) && entry.IsActive)
                 .ToList()
                 .ForEach(entry =>
                 {

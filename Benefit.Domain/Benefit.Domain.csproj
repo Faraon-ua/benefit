@@ -446,6 +446,10 @@
     <Compile Include="Migrations\201712221319378_AddLogRequestsToSellers.Designer.cs">
       <DependentUpon>201712221319378_AddLogRequestsToSellers.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801181345519_CategoryExternalIds.cs" />
+    <Compile Include="Migrations\201801181345519_CategoryExternalIds.Designer.cs">
+      <DependentUpon>201801181345519_CategoryExternalIds.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -774,6 +778,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201712221319378_AddLogRequestsToSellers.resx">
       <DependentUpon>201712221319378_AddLogRequestsToSellers.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801181345519_CategoryExternalIds.resx">
+      <DependentUpon>201801181345519_CategoryExternalIds.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

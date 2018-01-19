@@ -164,27 +164,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 xmlCategories = resultXmlCategories.Select(entry => new XmlCategory(entry)).ToList();
 
                 var sellerDbCategories =
-                    seller.SellerCategories.Where(entry => !entry.IsDefault)
+                    seller.SellerCategories
+                        .Where(entry => !entry.IsDefault)
                         .Select(entry => entry.Category)
+                        .Where(entry => entry.ExternalIds != null)
                         .ToList();
 
                 try
                 {
                     foreach (var dbCategory in sellerDbCategories)
                     {
-                        var xmlCategory = xmlCategories.FirstOrDefault(entry => entry.Id == dbCategory.ExternalId);
-                        if (xmlCategory != null)
+                        var dbToxmlCategories = xmlCategories.Where(entry => dbCategory.ExternalIds.Contains(entry.Id));
+                        if (dbToxmlCategories.Any())
                         {
-                            if (!xmlToDbCategoriesMapping.ContainsKey(xmlCategory.Id))
+                            foreach (var dbToxmlCategory in dbToxmlCategories)
                             {
-                                xmlToDbCategoriesMapping.Add(xmlCategory.Id, dbCategory.Id);
+                                xmlToDbCategoriesMapping.Add(dbToxmlCategory.Id, dbCategory.Id);
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    return Json(new { message = "Категорії постачалника на сайті мають повтори в назві" });
+                    return Json("Ошибка імпорту файлів");
                 }
 
                 xmlProducts =

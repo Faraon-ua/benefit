@@ -79,11 +79,11 @@
                     <br />
                     <div class="form-group">
                         <div class="col-md-1">
-                            <label class="text-left control-label" for="Name">Зовнішній ID</label>
+                            <label class="text-left control-label" for="Name">Зовнішні ID</label>
                         </div>
                         <div class="col-md-10">
-                            @Html.TextBoxFor(model => model.ExternalId, new { @class="col-sm-6" })
-                            @Html.ValidationMessageFor(model => model.ExternalId)
+                            @Html.TextAreaFor(model => model.ExternalIds, new { @class="col-sm-9" })
+                            @Html.ValidationMessageFor(model => model.ExternalIds)
                         </div>
                     </div>
 
