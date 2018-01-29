@@ -1206,7 +1206,7 @@ div[class^=bx-] button,div[class^=bx-] input[type=button],div[class^=bx-] input[
 .catalog_detail .tabs_content h4{margin:10px 0 15px}
 #bx-composite-banner{text-align:center;margin:10px 0 0}
 .m16{margin:0;padding:0 0 18px;color:green}
-#content{position:relative;zoom:1;z-index:3}
+#content{zoom:1;}
 #content.main{margin-bottom:0}
 .catalog_detail .extended_info.open_stores .availability-row .value,.pseudo{text-decoration:none;border-bottom:1px dotted;cursor:pointer}
 .specials_slider_wrapp ul.tabs li{text-transform:uppercase}
@@ -2917,7 +2917,7 @@ body .nav li{padding:0;margin:0}
 .url-block:hover{color:#222}
 .bx-firefox .back-url i,.bx-ie .back-url i{line-height:24px}
 div.blog-comment-hidden .blog-comment-cont-white,div.blog-comment-hidden .blog-comment-date{background:#fff}
-.wrapper,.wrapper_inner,.wrapp,.wrapper1 > div{box-sizing:border-box;-moz-box-sizing:border-box;-o-box-sizing:border-box;-webkit-box-sizing:border-box;position:relative;zoom:1;z-index:2}
+.wrapper,.wrapper_inner,.wrapp,.wrapper1 > div{box-sizing:border-box;-moz-box-sizing:border-box;-o-box-sizing:border-box;-webkit-box-sizing:border-box;zoom:1}
 .wrapper1 .header_wrap{z-index:4}
 .wrapper1 .header_wrap.zindexed{z-index:3000}
 .inline-block{display:inline-block;vertical-align:top}
@@ -3857,7 +3857,7 @@ form.search{position:relative}
 .inline-search-block:not(.fixed) .search .btn-search{border-radius:0 3px 3px 0}
 .top-block .search .fa-close{color:#c2cbd2;display:block;float:left;font-size:24px;margin-top:4px;margin-left:6px;cursor:pointer}
 body.fill_bg_y .header_wrap header .header-wrapper{border:none}
-.menu-row{position:static}
+.menu-row{ position: relative;z-index: 999;}
 .menu-row > .maxwidth-theme{background:none}
 .logo-row .menu-row.maxwidth-theme:before,.logo-row .menu-row.maxwidth-theme:after{display:none}
 .menu-only{position:relative}

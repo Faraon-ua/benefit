@@ -61,6 +61,7 @@ namespace Benefit.Domain.Models
         [Required(AllowEmptyStrings = true, ErrorMessage = "Опис обовязковий для заповнення")]
         public string Description { get; set; }
         public double Price { get; set; }
+        public double? OldPrice { get; set; }
         public double? WholesalePrice { get; set; }
         public int? WholesaleFrom { get; set; }
         public bool IsWeightProduct { get; set; }

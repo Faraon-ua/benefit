@@ -78,10 +78,113 @@
     var sellerUrl = Url.RouteUrl(Benefit.Common.Constants.RouteConstants.SellersRouteName, new { id = Model.Product.Seller.UrlName, action = string.Empty });
 }
 
-<div class="item">
+<div class="item" style="height: 585px;">
+    <div class="img shine" style="text-align: left;">
+        <a href="#" class="thumb">
+            @if (image == null)
+            {
+                <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Title" title="@Model.Product.Title">
+            }
+            else
+            {
+                if (image.IsAbsoluteUrl)
+                {
+                    <img src="@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
+                }
+                else
+                {
+                    <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
+                }
+            }
+        </a>
+
+        <div class="stickers">
+            @if (Model.Product.Seller.UserDiscount > 0)
+            {
+                <div class="sticker_sale_text">@Model.Product.Seller.UserDiscount %</div>
+            }
+            @*<div class="sticker_khit">Хит</div>*@
+            @*<div class="sticker_aktsiya">Сове</div>*@
+        </div>
+
+        <a href="#" class="dark_link" style="font-size: 16px; font-weight: bold">@Model.Product.Name</a>
+
+        <div class="rating" style="width:100%; ">
+            <div class="iblock-vote small">
+                <table class="table-no-border">
+                    <tbody>
+                    <tr>
+                        @if (Model.Product.AvarageRating.HasValue)
+                        {
+                            for (int i = 1; i <= Model.Product.AvarageRating; i++)
+                            {
+                                <td>
+                                    <div class="star-active star-voted" title="@i"></div>
+                                </td>
+                            }
+                            <td><a href="#" style="padding-left: 20px;">@Model.Product.Reviews.Count відгуків</a></td>
+                        }
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="sa_block" style="width:100%; float: left; ">
+            <div class="item-stock">
+                <span class="icon stock"></span>
+                <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
+                    @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+                </span>
+            </div>
+            <div class="article_block"></div>
+        </div>
+
+        <div class="cost prices clearfix">
+            <div class="price_matrix_block">
+                <div class="price_matrix_wrapper ">
+                    <div class="price">
+                        @if (Model.Product.OldPrice.HasValue)
+                        {
+                            <span style="font-size: 14px; color: grey; text-decoration: line-through; margin-right: 10px;">@Model.Product.OldPrice грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                            <br><br>
+                        }
+                        <span class="price_value">@Model.Product.Price грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                        @if (Model.Product.WholesalePrice.HasValue)
+                        {
+                            <span class="green">| @Model.Product.WholesalePrice.Value.ToString() <span class="small">грн/опт</span></span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="counter_wrapp ">
+            <div class="counter_block">
+                <span class="minus">-</span>
+                <input class="text" name="quantity" value="1" type="text">
+                <span class="plus">+</span>
+            </div>
+            <div class="button_block ">
+                <span class="small to-cart btn btn-default transition_bg animate-load">
+                    @*<img src="images/cart.png" class="visible-xs" width="20">*@
+                    <i class="visible-xs fa fa-shopping-cart" style="width: 20px;"></i>
+                    <i></i><span class="hidden-xs">Купити</span>
+                </span>
+            </div>
+            <div class="button_block hidden-lg"></div>
+            <br>
+            <div class="item-stock" style="margin-top: 20px; text-align: left;">
+                <a href="@sellerUrl">@Model.Product.Seller.Name</a><br>
+                м. Постачальника
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@*<div class="item">
     <div class="stickers">
-        @*<div><div class="sticker_sovetuem">Советуем</div></div>
-            <div><div class="sticker_aktsiya">Акция</div></div>*@
     </div>
     <div class="img shine" style="">
         <a href="#" class="thumb">
@@ -160,18 +263,18 @@
         </div>
     </div>
     <div class="counter_wrapp ">
-        @*<div class="product_description_amount_wrap pull-right" data-weight-product="@Model.Product.IsWeightProduct">
-            <div class="product_description_amount_minus">-</div>
-            @if (Model.Product.IsWeightProduct)
-            {
-                <input type="text" class="product_description_amount" value="0.1" data-is-weight-product="true">
-            }
-            else
-            {
-                <input type="text" class="product_description_amount" value="1" data-is-weight-product="false">
-            }
-            <div class="product_description_amount_plus">+</div>
-        </div>*@
+        <div class="product_description_amount_wrap pull-right" data-weight-product="@Model.Product.IsWeightProduct">
+                <div class="product_description_amount_minus">-</div>
+                @if (Model.Product.IsWeightProduct)
+                {
+                    <input type="text" class="product_description_amount" value="0.1" data-is-weight-product="true">
+                }
+                else
+                {
+                    <input type="text" class="product_description_amount" value="1" data-is-weight-product="false">
+                }
+                <div class="product_description_amount_plus">+</div>
+            </div>
         <div class="counter_block hidden-xs">
             <span class="minus">-</span>
             <input type="text" class="text" name="quantity" value="1">
@@ -186,4 +289,4 @@
             м. Постачальника
         </div>
     </div>
-</div>
+</div>*@

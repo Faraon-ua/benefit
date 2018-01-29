@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers.Base
 {
+    [FetchCategories]
     public class BaseController : Controller
     {
     

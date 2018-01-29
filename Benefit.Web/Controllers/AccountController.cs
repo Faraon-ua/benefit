@@ -18,12 +18,13 @@ using Microsoft.Owin.Security;
 using Benefit.Web.Models;
 using Microsoft.Owin.Security.DataProtection;
 using System.Data.Entity;
+using Benefit.Web.Controllers.Base;
 using Newtonsoft.Json;
 
 namespace Benefit.Web.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         public AccountController()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))

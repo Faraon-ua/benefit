@@ -450,6 +450,10 @@
     <Compile Include="Migrations\201801101114346_AddTitleDescriptionToBanner.Designer.cs">
       <DependentUpon>201801101114346_AddTitleDescriptionToBanner.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801291059204_AddOldPriceToProduct.cs" />
+    <Compile Include="Migrations\201801291059204_AddOldPriceToProduct.Designer.cs">
+      <DependentUpon>201801291059204_AddOldPriceToProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -781,6 +785,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801101114346_AddTitleDescriptionToBanner.resx">
       <DependentUpon>201801101114346_AddTitleDescriptionToBanner.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801291059204_AddOldPriceToProduct.resx">
+      <DependentUpon>201801291059204_AddOldPriceToProduct.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
