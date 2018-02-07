@@ -11,6 +11,7 @@ using Benefit.HttpClient;
 using System.Windows.Input;
 using System.Windows.Media;
 using Benefit.CardReader.DataTransfer.Reader;
+using NLog;
 
 namespace Benefit.CardReader
 {
@@ -35,6 +36,8 @@ namespace Benefit.CardReader
 
         private DateTime startTime;
         private DateTime endTime;
+
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public MainWindow()
         {
@@ -252,6 +255,10 @@ namespace Benefit.CardReader
                                     }
                                     defaultWindow.TransactionPartial.btnPayBonuses.Focus();
                                     var _chargeBonuses = billInfo.ChargeBonuses && app.AuthInfo.ShowChargeBonuses;
+                                    if (app.AuthInfo.LogRequests)
+                                    {
+                                        _logger.Info("[ProcessPayment]" + billInfo);
+                                    }
                                     defaultWindow.TransactionPartial.ProcessPayment(_chargeBonuses);
                                     FileService.XmlSerialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath, null,
                                         true);

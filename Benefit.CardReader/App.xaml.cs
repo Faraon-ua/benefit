@@ -89,10 +89,12 @@ namespace Benefit.CardReader
                         Number = bill,
                         ChargeBonuses = chargeBonuses
                     };
+                    _logger.Info("[PriceImport]" + billInfo);
                     FileService.XmlSerialize(CardReaderSettingsService.BillInfoFilePath, billInfo);
                 }
                 if (flashSum)
                 {
+                    _logger.Info("[FlashPrice]");
                     FileService.XmlSerialize<BillInfo>(CardReaderSettingsService.BillInfoFilePath, null, true);
                 }
                 Current.Shutdown();
