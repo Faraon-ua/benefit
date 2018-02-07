@@ -3,11 +3,12 @@ using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Services.Domain;
+using Benefit.Web.Controllers.Base;
 using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Controllers
 {
-    public class CatalogController : Controller
+    public class CatalogController : BaseController
     {
         CategoriesService CategoriesService { get; set; }
         SellerService SellerService { get; set; }
@@ -27,19 +28,16 @@ namespace Benefit.Web.Controllers
         public ActionResult Index(string categoryUrl, string options)
         {
             var catalog = SellerService.GetSellerCatalog(null, categoryUrl, options);
-            if (catalog.Items.Any())
-            {
-                return View("ProductsCatalog", catalog);
-            }
-            var sellers = CategoriesService.GetCategorySellers(categoryUrl);
-            if (sellers == null) return HttpNotFound();
-            return View("SellersCatalog", sellers);
+            return View("ProductsCatalog", catalog);
+            //var sellers = CategoriesService.GetCategorySellers(categoryUrl);
+            //if (sellers == null) return HttpNotFound();
+            //return View("SellersCatalog", sellers);
         }
 
         public ActionResult GetProducts(string categoryId, string sellerId, string options, int skip, int take = ListConstants.DefaultTakePerPage)
         {
             var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, take, false).Products;
-            var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("_ProductPartial",new ProductPartialViewModel
+            var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("_ProductPartial", new ProductPartialViewModel
             {
                 Product = entry,
                 CategoryUrl = entry.Category.UrlName,

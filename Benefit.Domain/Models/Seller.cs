@@ -34,6 +34,9 @@ namespace Benefit.Domain.Models
         [Index]
         public string Name { get; set; }
         public string Description { get; set; }
+        [MaxLength(50)]
+        public string PrimaryRegionName { get; set; }
+        public int PrimaryRegionId { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         [MaxLength(160)]
@@ -119,6 +122,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Promotion> Promotions { get; set; }
         public virtual ICollection<NotificationChannel> NotificationChannels { get; set; }
+
         [NotMapped]
         public virtual ICollection<Review> ApprovedReviews
         {

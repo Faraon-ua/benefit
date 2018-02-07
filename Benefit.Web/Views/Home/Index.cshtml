@@ -111,7 +111,6 @@
             text-align: center;
         }
     </style>
-    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/css/owl.carousel.css" rel="stylesheet" />
 }
 
@@ -148,384 +147,75 @@
                 </div>
                 <div class="clearfix"></div>
 
-                @*<div class="sections_wrapper">
-            <div class="top_block">
-                <h3 class="title_block">Рекомендовані товари</h3>
-            </div>
-            <div class="list items">
-                <div class="row margin0">
-                    @foreach (var product in Model.FeaturedProducts)
-                    {
-                        <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
-                            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>*@
-
                 <div class="sections_wrapper">
                     <div class="top_block">
                         <h3 class="title_block">Рекомендовані товари</h3>
                     </div>
                     <div class="list items">
                         <div class="row margin0">
-
-                            <!-- товар-->
-                            <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
-                                <div class="item">
-                                    <div class="img shine">
-                                        <a href="#" class="thumb"><img src="images/tovar.jpg" alt="" title="" /></a>
-
-                                        <div class="stickers">
-                                            <div class="sticker_sale_text">6%</div>
-                                            <div class="sticker_khit">Хит</div>
-                                            <div class="sticker_aktsiya">Сове</div>
-                                        </div>
-
-                                        <a href="#" class="dark_link" style="font-size: 16px; font-weight: bold">Хліб бездрож.сірий 0,5кг Антоніо</a>
-
-                                        <div class="rating" style="width:100%; margin:0 auto;">
-                                            <div class="iblock-vote small">
-                                                <table class="table-no-border">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><div class="star-active star-voted" title="1"></div></td>
-                                                            <td><div class="star-active star-voted" title="2"></div></td>
-                                                            <td><div class="star-active star-voted" title="3"></div></td>
-                                                            <td><div class="star-active star-voted" title="4"></div></td>
-                                                            <td><div class="star-active star-voted" title="5"></div></td>
-                                                            <td><a href="#" style="padding-left:20px;">1563 відгуків</a></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="sa_block" style="width:100%; float: left; margin:0 auto;">
-                                            <div class="item-stock"><span class="icon stock"></span><span class="value">В наявності</span></div>
-                                            <div class="article_block"></div>
-                                        </div>
-
-                                        <div class="cost prices clearfix">
-                                            <div class="price_matrix_block">
-                                                <div class="price_matrix_wrapper ">
-                                                    <div class="price">
-
-                                                        <span style="font-size: 14px;color: grey;text-decoration: line-through; margin-right: 10px;">560 грн./шт.</span>
-                                                        <br>
-                                                        <span class="price_value">374 грн./шт.</span>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="counter_wrapp ">
-                                            <div class="counter_block">
-                                                <span class="minus">-</span>
-                                                <input type="text" class="text" name="quantity" value="1">
-                                                <span class="plus">+</span>
-                                            </div>
-                                            <div class="button_block ">
-                                                <span class="small to-cart btn btn-default transition_bg animate-load">
-                                                    <img src="images/cart.png" class="visible-xs" width="20">
-
-                                                    <i></i><span class="hidden-xs">Купити</span>
-                                                </span>
-                                            </div>
-                                            <div class="button_block hidden-lg">
-                                            </div>
-                                            <br>
-                                            <div class="item-stock" style="margin-top: 20px;">
-                                                <a href="">Магазин Кошик24</a><br>
-                                                м. Мукачево
-                                            </div>
-                                        </div>
-                                    </div>
+                            @foreach (var product in Model.FeaturedProducts)
+                            {
+                                <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
+                                    @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
                                 </div>
-                            </div>
-                            <!-- товар-->
-                            <!-- товар-->
-                            <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
-                                <div class="item">
-                                    <div class="img shine">
-                                        <a href="#" class="thumb"><img src="images/tovar.jpg" alt="" title="" /></a>
-
-                                        <div class="stickers">
-                                            <div class="sticker_sale_text">6%</div>
-                                            <div class="sticker_khit">Хит</div>
-                                            <div class="sticker_aktsiya">Сове</div>
-                                        </div>
-
-                                        <a href="#" class="dark_link" style="font-size: 16px; font-weight: bold">Хліб бездрож.сірий 0,5кг Антоніо</a>
-
-                                        <div class="rating" style="width:100%; margin:0 auto;">
-                                            <div class="iblock-vote small">
-                                                <table class="table-no-border">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><div class="star-active star-voted" title="1"></div></td>
-                                                            <td><div class="star-active star-voted" title="2"></div></td>
-                                                            <td><div class="star-active star-voted" title="3"></div></td>
-                                                            <td><div class="star-active star-voted" title="4"></div></td>
-                                                            <td><div class="star-active star-voted" title="5"></div></td>
-                                                            <td><a href="#" style="padding-left:20px;">1563 відгуків</a></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="sa_block" style="width:100%; float: left; margin:0 auto;">
-                                            <div class="item-stock"><span class="icon stock"></span><span class="value">В наявності</span></div>
-                                            <div class="article_block"></div>
-                                        </div>
-
-                                        <div class="cost prices clearfix">
-                                            <div class="price_matrix_block">
-                                                <div class="price_matrix_wrapper ">
-                                                    <div class="price">
-
-                                                        <span style="font-size: 14px;color: grey;text-decoration: line-through; margin-right: 10px;">560 грн./шт.</span>
-                                                        <br>
-                                                        <span class="price_value">374 грн./шт.</span>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="counter_wrapp ">
-                                            <div class="counter_block">
-                                                <span class="minus">-</span>
-                                                <input type="text" class="text" name="quantity" value="1">
-                                                <span class="plus">+</span>
-                                            </div>
-                                            <div class="button_block ">
-                                                <span class="small to-cart btn btn-default transition_bg animate-load">
-                                                    <img src="images/cart.png" class="visible-xs" width="20">
-
-                                                    <i></i><span class="hidden-xs">Купити</span>
-                                                </span>
-                                            </div>
-                                            <div class="button_block hidden-lg">
-                                            </div>
-                                            <br>
-                                            <div class="item-stock" style="margin-top: 20px;">
-                                                <a href="">Магазин Кошик24</a><br>
-                                                м. Мукачево
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- товар-->
-                            <!-- товар-->
-                            <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
-                                <div class="item">
-                                    <div class="img shine">
-                                        <a href="#" class="thumb"><img src="images/tovar.jpg" alt="" title="" /></a>
-
-                                        <div class="stickers">
-                                            <div class="sticker_sale_text">6%</div>
-                                            <div class="sticker_khit">Хит</div>
-                                            <div class="sticker_aktsiya">Сове</div>
-                                        </div>
-
-                                        <a href="#" class="dark_link" style="font-size: 16px; font-weight: bold">Хліб бездрож.сірий 0,5кг Антоніо</a>
-
-                                        <div class="rating" style="width:100%; margin:0 auto;">
-                                            <div class="iblock-vote small">
-                                                <table class="table-no-border">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><div class="star-active star-voted" title="1"></div></td>
-                                                            <td><div class="star-active star-voted" title="2"></div></td>
-                                                            <td><div class="star-active star-voted" title="3"></div></td>
-                                                            <td><div class="star-active star-voted" title="4"></div></td>
-                                                            <td><div class="star-active star-voted" title="5"></div></td>
-                                                            <td><a href="#" style="padding-left:20px;">1563 відгуків</a></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="sa_block" style="width:100%; float: left; margin:0 auto;">
-                                            <div class="item-stock"><span class="icon stock"></span><span class="value">В наявності</span></div>
-                                            <div class="article_block"></div>
-                                        </div>
-
-                                        <div class="cost prices clearfix">
-                                            <div class="price_matrix_block">
-                                                <div class="price_matrix_wrapper ">
-                                                    <div class="price">
-
-                                                        <span style="font-size: 14px;color: grey;text-decoration: line-through; margin-right: 10px;">560 грн./шт.</span>
-                                                        <br>
-                                                        <span class="price_value">374 грн./шт.</span>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="counter_wrapp ">
-                                            <div class="counter_block">
-                                                <span class="minus">-</span>
-                                                <input type="text" class="text" name="quantity" value="1">
-                                                <span class="plus">+</span>
-                                            </div>
-                                            <div class="button_block ">
-                                                <span class="small to-cart btn btn-default transition_bg animate-load">
-                                                    <img src="images/cart.png" class="visible-xs" width="20">
-
-                                                    <i></i><span class="hidden-xs">Купити</span>
-                                                </span>
-                                            </div>
-                                            <div class="button_block hidden-lg">
-                                            </div>
-                                            <br>
-                                            <div class="item-stock" style="margin-top: 20px;">
-                                                <a href="">Магазин Кошик24</a><br>
-                                                м. Мукачево
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- товар-->
-                            <!-- товар-->
-                            <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
-                                <div class="item">
-                                    <div class="img shine">
-                                        <a href="#" class="thumb"><img src="images/tovar.jpg" alt="" title="" /></a>
-
-                                        <div class="stickers">
-                                            <div class="sticker_sale_text">6%</div>
-                                            <div class="sticker_khit">Хит</div>
-                                            <div class="sticker_aktsiya">Сове</div>
-                                        </div>
-
-                                        <a href="#" class="dark_link" style="font-size: 16px; font-weight: bold">Хліб бездрож.сірий 0,5кг Антоніо</a>
-
-                                        <div class="rating" style="width:100%; margin:0 auto;">
-                                            <div class="iblock-vote small">
-                                                <table class="table-no-border">
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><div class="star-active star-voted" title="1"></div></td>
-                                                            <td><div class="star-active star-voted" title="2"></div></td>
-                                                            <td><div class="star-active star-voted" title="3"></div></td>
-                                                            <td><div class="star-active star-voted" title="4"></div></td>
-                                                            <td><div class="star-active star-voted" title="5"></div></td>
-                                                            <td><a href="#" style="padding-left:20px;">1563 відгуків</a></td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                        <div class="sa_block" style="width:100%; float: left; margin:0 auto;">
-                                            <div class="item-stock"><span class="icon stock"></span><span class="value">В наявності</span></div>
-                                            <div class="article_block"></div>
-                                        </div>
-
-                                        <div class="cost prices clearfix">
-                                            <div class="price_matrix_block">
-                                                <div class="price_matrix_wrapper ">
-                                                    <div class="price">
-
-                                                        <span style="font-size: 14px;color: grey;text-decoration: line-through; margin-right: 10px;">560 грн./шт.</span>
-                                                        <br>
-                                                        <span class="price_value">374 грн./шт.</span>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="counter_wrapp ">
-                                            <div class="counter_block">
-                                                <span class="minus">-</span>
-                                                <input type="text" class="text" name="quantity" value="1">
-                                                <span class="plus">+</span>
-                                            </div>
-                                            <div class="button_block ">
-                                                <span class="small to-cart btn btn-default transition_bg animate-load">
-                                                    <img src="images/cart.png" class="visible-xs" width="20">
-
-                                                    <i></i><span class="hidden-xs">Купити</span>
-                                                </span>
-                                            </div>
-                                            <div class="button_block hidden-lg">
-                                            </div>
-                                            <br>
-                                            <div class="item-stock" style="margin-top: 20px;">
-                                                <a href="">Магазин Кошик24</a><br>
-                                                м. Мукачево
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- товар-->
-
-
+                            }
                         </div>
                     </div>
                 </div>
 
                 @if (Model.FirstRowBanner != null)
-    {
-            <div class="adv_bottom_block hover_blink">
-                <div class="item">
-                    <div class="img shine">
-                        <div class="img_inner">
-                            <a href="@Model.FirstRowBanner.NavigationUrl" title="@Model.FirstRowBanner.Title">
-                                <span style="background-image: url(Images/FirstRowMainPage/@Model.FirstRowBanner.ImageUrl)"></span>
-                            </a>
+                {
+                    <div class="adv_bottom_block hover_blink">
+                        <div class="item">
+                            <div class="img shine">
+                                <div class="img_inner">
+                                    <a href="@Model.FirstRowBanner.NavigationUrl" title="@Model.FirstRowBanner.Title">
+                                        <span style="background-image: url(Images/FirstRowMainPage/@Model.FirstRowBanner.ImageUrl)"></span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <!--
+                <div class="tizers_block">
+                    <div class="row">
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <div id="bx_3218110189_2398" class="item">
+                                <div class="img">
+                                    <img src="images/a970a7b4269ae431dd116d89f1e81fdb.png" alt="Подарочные  сертификаты" title="Подарочные  сертификаты">
+                                </div>
+                                <div class="title">Подарочные сертификаты</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <div id="bx_3218110189_2399" class="item">
+                                <div class="img">
+                                    <img src="images/5919a535332800567dd2816811239c25.png" alt="Весь товар сертифицирован" title="Весь товар сертифицирован">
+                                </div>
+                                <div class="title">Весь товар сертифицирован</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <div id="bx_3218110189_2400" class="item">
+                                <div class="img">
+                                    <img src="images/e5df9380338e4e6f2d047ed55918af4b.png" alt="30 дней на обмен и возврат" title="30 дней на обмен и возврат">
+                                </div>
+                                <div class="title">30 дней на обмен и возврат</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-3 col-xs-6">
+                            <div id="bx_3218110189_2401" class="item">
+                                <div class="img">
+                                    <img src="images/15cb3aab3d8da3702fe6130bb00d0cbe.png" alt="Удобная и быстрая  доставка" title="Удобная и быстрая  доставка">
+                                </div>
+                                <div class="title">Удобная и быстрая доставка</div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-}
-
-                <!--
-    <div class="tizers_block">
-        <div class="row">
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div id="bx_3218110189_2398" class="item">
-                    <div class="img">
-                        <img src="images/a970a7b4269ae431dd116d89f1e81fdb.png" alt="Подарочные  сертификаты" title="Подарочные  сертификаты">
-                    </div>
-                    <div class="title">Подарочные сертификаты</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div id="bx_3218110189_2399" class="item">
-                    <div class="img">
-                        <img src="images/5919a535332800567dd2816811239c25.png" alt="Весь товар сертифицирован" title="Весь товар сертифицирован">
-                    </div>
-                    <div class="title">Весь товар сертифицирован</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div id="bx_3218110189_2400" class="item">
-                    <div class="img">
-                        <img src="images/e5df9380338e4e6f2d047ed55918af4b.png" alt="30 дней на обмен и возврат" title="30 дней на обмен и возврат">
-                    </div>
-                    <div class="title">30 дней на обмен и возврат</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-sm-3 col-xs-6">
-                <div id="bx_3218110189_2401" class="item">
-                    <div class="img">
-                        <img src="images/15cb3aab3d8da3702fe6130bb00d0cbe.png" alt="Удобная и быстрая  доставка" title="Удобная и быстрая  доставка">
-                    </div>
-                    <div class="title">Удобная и быстрая доставка</div>
-                </div>
-            </div>
-        </div>
-    </div>
-    -->
+                -->
 
 
                 <div class="sections_wrapper">
@@ -535,11 +225,11 @@
                     <div class="list items">
                         <div class="row margin0">
                             @foreach (var product in Model.NewProducts)
-                {
-                    <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
-                        @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
-                    </div>
-    }
+                            {
+                                <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
+                                    @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>
@@ -553,28 +243,28 @@
                         <div class="flexslider loading_state shadow border custom_flex top_right" data-lg_count="5" data-plugin-options='{"animation": "slide", "directionNav": true, "itemMargin":30, "controlNav" :false, "animationLoop": true, "slideshow": false, "counts": [4,3,3,2,1]}'>
                             <ul class="items slides">
                                 @foreach (var news in Model.News)
-                    {
-                        @Html.Partial("_NewsPartial", news)
-        }
+                                {
+                                    @Html.Partial("_NewsPartial", news)
+                                }
                             </ul>
                         </div>
                     </div>
                 </div>
 
                 @if (Model.SecondRowBanner != null)
-    {
-            <div class="adv_bottom_block hover_blink">
-                <div class="item">
-                    <div class="img shine">
-                        <div class="img_inner">
-                            <a href="@Model.SecondRowBanner.NavigationUrl" title="@Model.SecondRowBanner.Title">
-                                <span style="background-image: url(Images/SecondRowMainPage/@Model.SecondRowBanner.ImageUrl)"></span>
-                            </a>
+                {
+                    <div class="adv_bottom_block hover_blink">
+                        <div class="item">
+                            <div class="img shine">
+                                <div class="img_inner">
+                                    <a href="@Model.SecondRowBanner.NavigationUrl" title="@Model.SecondRowBanner.Title">
+                                        <span style="background-image: url(Images/SecondRowMainPage/@Model.SecondRowBanner.ImageUrl)"></span>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
-}
+                }
 
                 <div class="company_bottom_block">
                     <div class="row wrap_md">

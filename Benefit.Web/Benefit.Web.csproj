@@ -1368,7 +1368,7 @@
     <Content Include="Views\Shared\_header.cshtml" />
     <Content Include="Views\Shared\_MobileApplications.cshtml" />
     <Content Include="Areas\Cabinet\Views\Shared\_CabinetLayout.cshtml" />
-    <Content Include="Views\Catalog\ProductsCatalog.cshtml" />
+    <Content Include="Views\Catalog\ProductsCatalogOld.cshtml" />
     <Content Include="Views\Catalog\_ProductPartial.cshtml" />
     <Content Include="Views\Tovar\Index.cshtml" />
     <Content Include="Views\Tovar\_ProductOptions.cshtml" />
@@ -1409,6 +1409,7 @@
     <Content Include="Views\Home\_ImageSlider.cshtml" />
     <Content Include="Views\Home\_NewsPartial.cshtml" />
     <Content Include="Views\Shared\_mobileHeader.cshtml" />
+    <Content Include="Views\Catalog\ProductsCatalog.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

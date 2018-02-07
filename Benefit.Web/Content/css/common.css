@@ -45,6 +45,10 @@
     color: #69aa46 !important;
 }
 
+.black {
+    color: #000 !important;
+}
+
 .bg-site-red {
     background: #990000;
 }
@@ -453,7 +457,7 @@
         left: -200px;
         width: 200px;
         height: 4px;
-        background-color: #cb2728;
+        background-color: #0A84FF;
         animation: loading 2s linear infinite;
     }
 

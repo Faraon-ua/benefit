@@ -167,39 +167,39 @@
                             <div class="table-menu">
                                 <table>
                                     <tbody>
-                                        <tr>
-                                            <td class="menu-item dropdown catalog ">
-                                                <div class="wrap">
-                                                    <a class="dropdown-toggle" href="#" style="padding-top: 10px;">
-                                                        <div>КАТАЛОГ<br>ТОВАРІВ ТА ПОСЛУГ<div class="line-wrapper"><span class="line"></span></div></div>
-                                                    </a>
-                                                </div>
-                                            </td>
+                                    <tr>
+                                        <td class="menu-item dropdown catalog ">
+                                            <div class="wrap">
+                                                <a class="dropdown-toggle" href="#" style="padding-top: 10px;">
+                                                    <div>КАТАЛОГ<br>ТОВАРІВ ТА ПОСЛУГ<div class="line-wrapper"><span class="line"></span></div></div>
+                                                </a>
+                                            </div>
+                                        </td>
 
-                                            <td class="menu-item dropdown catalog wide_menu">
-                                                <div class="wrap">
-                                                    <a class="dropdown-toggle" href="#" style="padding-top: 10px;">
-                                                        <div>
-                                                            КАТАЛОГ<br>ПОСТАЧАЛЬНИКІВ<div class="line-wrapper"><span class="line"></span></div>
-                                                        </div>
-                                                    </a>
-                                                    <ul class="dropdown-menu">
-                                                        @foreach (var cat in categories)
-                                                        {
-                                                            <div class="dropdown-submenu" style="width: 20%; float: left; text-align: center; padding-bottom: 20px;">
-                                                                <div class="menu_img">
-                                                                    <a href="#" title="@cat.Name">
-                                                                        <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" title="@cat.Name">
-                                                                    </a>
-                                                                    <a href="#" title="Продукти харчування">Продукти харчування</a>
-                                                                </div>
+                                        <td class="menu-item dropdown catalog wide_menu">
+                                            <div class="wrap">
+                                                <a class="dropdown-toggle" href="#" style="padding-top: 10px;">
+                                                    <div>
+                                                        КАТАЛОГ<br>ПОСТАЧАЛЬНИКІВ<div class="line-wrapper"><span class="line"></span></div>
+                                                    </div>
+                                                </a>
+                                                <ul class="dropdown-menu">
+                                                    @foreach (var cat in categories)
+                                                    {
+                                                        <div class="dropdown-submenu" style="width: 20%; float: left; text-align: center; padding-bottom: 20px;">
+                                                            <div class="menu_img">
+                                                                <a href="#" title="@cat.Name" class="dark_link">
+                                                                    <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" title="@cat.Name">
+                                                                </a>
+                                                                <a href="#" title="Продукти харчування" class="dark_link">Продукти харчування</a>
                                                             </div>
-                                                        }
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                            @Html.Partial("_MenuPartial")
-                                        </tr>
+                                                        </div>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </td>
+                                        @Html.Partial("_MenuPartial")
+                                    </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -211,3 +211,4 @@
     </div>
     <div class="line-row visible-xs"></div>
 </header>
+<div class="loader" style="display: none;"></div>
