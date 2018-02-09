@@ -354,7 +354,7 @@ namespace Benefit.Services.Domain
             }
 
             var vendorParams =
-                   items.Select(entry => entry.Vendor).Distinct().ToList().Select(entry => new ProductParameterValue()
+                   items.Select(entry => entry.Vendor).Distinct().ToList().Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
                    {
                        ParameterValue = entry,
                        ParameterValueUrl = entry
@@ -371,7 +371,7 @@ namespace Benefit.Services.Domain
             }
 
             var originCountryParams =
-                 items.Select(entry => entry.OriginCountry).Distinct().ToList().Select(entry => new ProductParameterValue()
+                 items.Select(entry => entry.OriginCountry).Distinct().ToList().Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
                  {
                      ParameterValue = entry,
                      ParameterValueUrl = entry

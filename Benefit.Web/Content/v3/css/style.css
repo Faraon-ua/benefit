@@ -1,3 +1,47 @@
+.counter {
+    box-sizing: border-box;
+    background: #f3f3f5;
+    font-size: 0;
+    width: 100px;
+    margin: 0 10px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 2px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    height: 36px;
+}
+.counter > div,
+.counter > .quantity {
+    display: inline-block;
+    width: 31px;
+    height: 36px;
+    opacity: 0.7;
+    text-align: center;
+    font-size: 19px;
+    vertical-align: center;
+    cursor: pointer;
+}
+
+.counter > div:hover {
+    opacity: 1;
+    font-weight: bold;
+}
+
+.counter > .quantity {
+    font-size: 13px;
+    line-height: 25px;
+    cursor: auto;
+    width: 40px;
+    padding: 0px;
+}
+
+
 .banner-nav {
     border-radius: 50%;
     height: 42px;
@@ -4241,7 +4285,7 @@ body .logo_and_menu-row .basket-link.delay{padding-right:26px}
 .counter_block > span:before{opacity:.7;display:inline-block;content:"";width:24px;height:34px;background:url(../images/ai.png) -80px -191px no-repeat;vertical-align:middle}
 .counter_block.big_basket > span.minus:before{background-position:-18px -189px}
 .counter_block.big_basket > span.plus:before{background-position:1px -189px}
-.counter_block > span.plus:before{background-position:-61px -191px}
+.counter_block > span.plus:before{background-position:-55px -191px}
 .counter_block > span:hover:before{opacity:1}
 .counter_block input[type="text"]{padding:7px 3px}
 .counter_wrapp{font-size:0;padding:15px 0 0;white-space:nowrap}

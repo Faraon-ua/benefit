@@ -113,18 +113,18 @@
             <div class="iblock-vote small">
                 <table class="table-no-border">
                     <tbody>
-                    <tr>
-                        @if (Model.Product.AvarageRating.HasValue)
-                        {
-                            for (int i = 1; i <= Model.Product.AvarageRating; i++)
+                        <tr>
+                            @if (Model.Product.AvarageRating.HasValue)
                             {
-                                <td>
-                                    <div class="star-active star-voted" title="@i"></div>
-                                </td>
+                                for (int i = 1; i <= Model.Product.AvarageRating; i++)
+                                {
+                                    <td>
+                                        <div class="star-active star-voted" title="@i"></div>
+                                    </td>
+                                }
+                                <td><a href="#" style="padding-left: 20px;">@Model.Product.Reviews.Count відгуків</a></td>
                             }
-                            <td><a href="#" style="padding-left: 20px;">@Model.Product.Reviews.Count відгуків</a></td>
-                        }
-                    </tr>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -159,14 +159,20 @@
         </div>
 
         <div class="counter_wrapp ">
-            <div class="counter_block">
-                <span class="minus">-</span>
-                <input class="text" name="quantity" value="1" type="text">
-                <span class="plus">+</span>
+            <div class="counter">
+                <div class="minus">-</div>
+                @if (Model.Product.IsWeightProduct)
+                {
+                    <input class="text quantity" name="quantity" type="text" value="0.1" data-weight-product="true" />
+                }
+                else
+                {
+                    <input class="text quantity" name="quantity" type="text" value="1" data-weight-product="false" />
+                }
+                <div class="plus">+</div>
             </div>
-            <div class="button_block ">
+            <div class="button_block product_buy" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.Seller.Id" data-is-weight-product="@Model.Product.IsWeightProduct">
                 <span class="small to-cart btn btn-default transition_bg animate-load">
-                    @*<img src="images/cart.png" class="visible-xs" width="20">*@
                     <i class="visible-xs fa fa-shopping-cart" style="width: 20px;"></i>
                     <i></i><span class="hidden-xs">Купити</span>
                 </span>
@@ -180,113 +186,3 @@
         </div>
     </div>
 </div>
-
-
-
-@*<div class="item">
-    <div class="stickers">
-    </div>
-    <div class="img shine" style="">
-        <a href="#" class="thumb">
-            @if (image == null)
-            {
-                <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Title" title="@Model.Product.Title">
-            }
-            else
-            {
-                if (image.IsAbsoluteUrl)
-                {
-                    <img src="@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
-                }
-                else
-                {
-                    <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
-                }
-            }
-        </a>
-    </div>
-    <div class="name">
-        <a href="@productDetailsUrl" class="dark_link">@Model.Product.Name</a>
-    </div>
-    <div class="rating" style="width: 50%; float: left;">
-        <div class="iblock-vote small">
-            <table class="table-no-border">
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="star-active star-voted" title="1"></div>
-                        </td>
-                        <td>
-                            <div class="star-active star-voted" title="2"></div>
-                        </td>
-                        <td>
-                            <div class="star-active star-voted" title="3"></div>
-                        </td>
-                        <td>
-                            <div class="star-active star-voted" title="4"></div>
-                        </td>
-                        <td>
-                            <div class="star-active star-voted" title="5"></div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="sa_block" style="width: 50%; float: left; padding-top: 5px;">
-        <div class="item-stock">
-            <span class="icon stock"></span>
-            <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
-                @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
-            </span>
-        </div>
-        <div class="article_block"></div>
-    </div>
-    <div class="cost prices clearfix">
-        <div class="price_matrix_block">
-            <div class="price_matrix_wrapper ">
-                <div class="price">
-                    <span>
-                        <span class="values_wrapper">
-                            <span class="price_value">
-                                @Model.Product.Price
-                            </span>
-                            <span class="small"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
-                            @if (Model.Product.WholesalePrice.HasValue)
-                            {
-                                <span class="green">| @Model.Product.WholesalePrice.Value.ToString() <span class="small">грн/опт</span></span>
-                            }
-                        </span>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="counter_wrapp ">
-        <div class="product_description_amount_wrap pull-right" data-weight-product="@Model.Product.IsWeightProduct">
-                <div class="product_description_amount_minus">-</div>
-                @if (Model.Product.IsWeightProduct)
-                {
-                    <input type="text" class="product_description_amount" value="0.1" data-is-weight-product="true">
-                }
-                else
-                {
-                    <input type="text" class="product_description_amount" value="1" data-is-weight-product="false">
-                }
-                <div class="product_description_amount_plus">+</div>
-            </div>
-        <div class="counter_block hidden-xs">
-            <span class="minus">-</span>
-            <input type="text" class="text" name="quantity" value="1">
-            <span class="plus">+</span>
-        </div>
-        <div class="button_block ">
-            <span class="small to-cart btn btn-default transition_bg animate-load"><i></i><span>Купити</span></span>
-        </div>
-        <br>
-        <div class="item-stock" style="margin-top: 20px;">
-            <a href="@sellerUrl">@Model.Product.Seller.Name</a><br>
-            м. Постачальника
-        </div>
-    </div>
-</div>*@

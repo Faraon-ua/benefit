@@ -521,14 +521,6 @@ $(document).ready(function () {
         CalculateCartSum();
     });
 
-    $("body").on("focus", ".product_modal_amount", function () {
-        if ($(this).attr("data-is-weight-product").toLowerCase() == "true") {
-            $(this).mask("#9.99", { reverse: true });
-        } else {
-            $(this).mask("#00");
-        }
-    });
-
     $('.product_description_amount_plus, .product_description_amount_minus').on('click', function () {
         var valueToAdd = 1;
         var isMinus = $(this).hasClass("product_description_amount_minus");

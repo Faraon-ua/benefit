@@ -43,17 +43,11 @@ function setCookie(name, value, options) {
 function setCartSummary(data) {
     setCookie("cartNumber", data.ProductsNumber, { expires: 36000, path: "/" });
     setCookie("cartPrice", data.Price.toFixed(2), { expires: 36000, path: "/" });
-    $("#cart-items-number").text(data.ProductsNumber + " шт.");
+    $(".cart-items-number").text(data.ProductsNumber);
     $("#cart-items-price").text(data.Price.toFixed(2) + " грн");
-    /*if (data.IsFreeShipping) {
-        $("#cart-items-price").removeClass();
-        $("#cart-items-price").addClass("text-success");
-    } else {
-        $("#cart-items-price").removeClass();
-        $("#cart-items-price").addClass("text-danger");
-    }*/
     $(".cart-summary").show();
-
+    $(".basket-link .svg").css("opacity", "1");
+    $(".cart-items-number").css("background-color", "#e52929");
     if (data.ProductsNumber == 0) {
         $(".cart-summary").hide();
     }
@@ -315,8 +309,10 @@ $(function () {
     });
 
     if (getCookie("cartNumber")) {
-        $("#cart-items-number").text(getCookie("cartNumber") + " шт.");
+        $(".cart-items-number").text(getCookie("cartNumber") + " шт.");
         $("#cart-items-price").text(getCookie("cartPrice") + " грн");
+        $(".basket-link .svg").css("opacity", "1");
+        $(".cart-items-number").css("background-color", "#e52929");
         $(".cart-summary").show();
     }
 
