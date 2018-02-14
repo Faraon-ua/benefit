@@ -122,6 +122,8 @@ function processRating(ratingStars, e, isClick) {
 }
 
 $(function () {
+    $('.battery, .title-to-tooltip').tooltip();
+
     $("#review-rating").mousemove(function (e) {
         processRating($(this), e);
     });

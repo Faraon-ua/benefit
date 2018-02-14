@@ -29,6 +29,10 @@
     list-style-type: none;
 }
 
+.no-before-content:before {
+    content: none !important;
+}
+
 .x-pseudo-link {
     display: inline;
     color: #0670eb;

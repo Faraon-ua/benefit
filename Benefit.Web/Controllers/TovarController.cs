@@ -7,6 +7,7 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
+using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
 
@@ -24,6 +25,8 @@ namespace Benefit.Web.Controllers
             ProductsService = new ProductsService();
             SellerService = new SellerService();
         }
+
+        [FetchCategories]
         public ActionResult Index(string productUrl, string categoryUrl, string sellerUrl)
         {
             var productResult = ProductsService.GetProductDetails(productUrl, sellerUrl, categoryUrl,

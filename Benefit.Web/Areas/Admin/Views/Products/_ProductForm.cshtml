@@ -43,6 +43,13 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Стара Ціна</label>
+        <div class="col-md-9">
+            @Html.TextBox("OldPrice", Model.OldPrice == null ? null : Model.OldPrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
+            @Html.ValidationMessageFor(model => model.WholesalePrice)
+        </div>
+    </div> 
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Оптова Ціна</label>
         <div class="col-md-9">
             @Html.TextBox("WholesalePrice", Model.WholesalePrice == null ? null : Model.WholesalePrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
