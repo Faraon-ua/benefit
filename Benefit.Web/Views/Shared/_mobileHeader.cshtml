@@ -62,8 +62,6 @@
                     </a>
                 </div>
             </div>
-
-
         </div>
     </div>
 
@@ -117,7 +115,7 @@
                                                                 @foreach (var childCat in subCat.ChildCategories)
                                                                 {
                                                                     <li>
-                                                                        <a class="dark-color" href="#" title="@childCat.Name">
+                                                                        <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" title="@childCat.Name">
                                                                             <span>@childCat.Name</span>
                                                                         </a>
                                                                     </li>
@@ -165,7 +163,7 @@
                             </a>
                         </li>
                         <li>
-                            <a class="dark-color" href="@Url.RouteUrl("newsRoute")" title="Новини">
+                            <a class="dark-color" href="@Url.Action("Index","News")" title="Новини">
                                 <span>Новини</span>
                             </a>
                         </li>

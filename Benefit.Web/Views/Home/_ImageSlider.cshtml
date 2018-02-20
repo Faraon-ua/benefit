@@ -11,38 +11,17 @@
 </div>
 <div class="top_slider_wrapp maxwidth-banner hidden-xs">
     <div class="row">
-        <div class="col-md-6">
-            <div class="flexslider">
-                <ul class="slides">
-                    @foreach (var banner in Model.PrimaryBanners)
-                    { 
-                        <li class="box dark left" data-nav_color="lite" style="background-image: url('Images/@banner.BannerType/@banner.ImageUrl') !important;">
-                            <div class="wrapper_inner">
-                                <table class="table-no-border">
-                                    <tbody>
-                                        <tr>
-                                            <td class="text left">
-                                                <div class="banner_title">
-                                                    <span>@banner.Title</span>
-                                                </div>
-                                                <div class="banner_text">@banner.Description</div>
-                                                <div class="banner_buttons">
-                                                    @*<a href="#" class="btn btn-default btn-lg">Узнать подробнее</a>*@
-                                                </div>
-                                            </td>
-                                            <td class="img">
-@*                                                <img class="plaxy" src="http://test.xl-studio.uz.ua/999/images/03730f2502127da5bc54b807041b85ef.png" alt="" title="" />*@
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </li>
-                    }
-                </ul>
+        <div class="col-md-8">
+            <div class="slider" style="max-height: 466px;">
+                @foreach (var banner in Model.PrimaryBanners)
+                {
+                    <a href="@banner.NavigationUrl">
+                        <img class="item" src="~/Images/@banner.BannerType/@banner.ImageUrl">
+                    </a>
+                }
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <div class="row">
                 <div class="slider desctop-slider">
                     @foreach (var banner in Model.TopSideBanners)

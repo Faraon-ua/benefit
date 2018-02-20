@@ -1,0 +1,29 @@
+﻿@using Benefit.Common.Extensions
+@model Benefit.Domain.Models.InfoPage
+
+<div class="col-md-4 col-sm-6 news-block">
+    <div class="item shadow slice-item noborder wdate" id="bx_651765591_3254">
+        <div class="image shine">
+            <a href="@Url.RouteUrl("pagesRoute", new {id = Model.UrlName})">
+                <img src="~/Images/NewsLogo/@Model.ImageUrl" alt="@Model.Title" title="@Model.Title" class="img-responsive" style="width: 100%;">
+            </a>
+        </div>
+        <div class="body-info">
+            <div class="title" style="height: 60px; overflow: hidden;">
+                <a href="@Url.RouteUrl("pagesRoute", new {id = Model.UrlName})" class="dark-color">
+                    @Model.Name
+                </a>
+            </div>
+            <div class="period">
+                <span class="date">
+                    @Model.CreatedOn.ToLocalTimeWithDateFormat()
+                </span>
+            </div>
+            <div class="previewtext" style="height: 120px;">
+                <p>
+                    @Model.ShortContent
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

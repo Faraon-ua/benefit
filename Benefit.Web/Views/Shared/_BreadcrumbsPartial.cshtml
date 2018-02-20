@@ -1,7 +1,7 @@
 ﻿@using Benefit.Common.Constants
 @model Benefit.DataTransfer.ViewModels.BreadCrumbsViewModel
 
-<div class="breadcrumbs" id="navigation" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+<div class="breadcrumbs hidden-xs" id="navigation" itemscope="" itemtype="http://schema.org/BreadcrumbList">
     <div class="bx-breadcrumb-item" id="bx_breadcrumb_0" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
         <a href="@Url.Action("Index", "Home")" title="Головна" itemprop="item">
             <span itemprop="name">
@@ -10,6 +10,25 @@
             <meta itemprop="position" content="1">
         </a>
     </div>
+    @if (Model.IsNews)
+    {
+        var newsUrl = Model.Page == null ? string.Empty : Url.Action("Index", "News");
+        <span class="separator">-</span>
+        <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <a href="@newsUrl" title="Новини Benefit" itemprop="item">
+                <span itemprop="name">Новини</span>
+            </a>
+        </div>
+    }
+    @if (Model.Page != null)
+    {
+        <span class="separator">-</span>
+        <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <a href="#" title="@Model.Page.Title" itemprop="item">
+                <span itemprop="name">@Model.Page.Name</span>
+            </a>
+        </div>
+    }
     @if (Model.Seller != null && !Model.IsInfoPage)
     {
         <input type="hidden" id="seller-id" value="@Model.Seller.Id" />
@@ -20,23 +39,26 @@
             </a>
         </div>
     }
-    @foreach (var breadCrumb in Model.Categories)
+    @if (Model.Categories != null)
     {
-        <span class="separator">-</span>
-        <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-            @if (Model.Seller == null || (Model.Seller != null && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "info"))
-            {
-                <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
-                    <span itemprop="name">@breadCrumb.Name</span>
-                </a>
-            }
-            else
-            {
-                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { sellerUrl = Model.Seller.UrlName, categoryUrl = breadCrumb.UrlName })" title="@breadCrumb.Name" itemprop="item">
-                    <span itemprop="name">@breadCrumb.Name</span>
-                </a>
-            }
-        </div>
+        foreach (var breadCrumb in Model.Categories)
+        {
+            <span class="separator">-</span>
+            <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+                @if (Model.Seller == null || (Model.Seller != null && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "info"))
+                {
+                    <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
+                        <span itemprop="name">@breadCrumb.Name</span>
+                    </a>
+                }
+                else
+                {
+                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = Model.Seller.UrlName, categoryUrl = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
+                        <span itemprop="name">@breadCrumb.Name</span>
+                    </a>
+                }
+            </div>
+        }
     }
     @if (Model.Seller != null && Model.IsInfoPage)
     {

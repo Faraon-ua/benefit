@@ -78,17 +78,11 @@ namespace Benefit.Web
                 );
 
             routes.MapRoute(
-                name: "newsRoute",
-                url: "pages/news",
-                defaults: new { controller = "Pages", action = "News", id = UrlParameter.Optional }
-                );
-
-            routes.MapRoute(
                 name: "pagesRoute",
                 url: "pages/{id}",
                 defaults: new { controller = "Pages", action = "Index", id = UrlParameter.Optional }
                 );
-            
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

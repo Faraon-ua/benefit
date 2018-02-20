@@ -281,6 +281,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\CatalogController.cs" />
     <Compile Include="Controllers\LayoutController.cs" />
+    <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="Controllers\PagesController.cs" />
     <Compile Include="Controllers\PostachalnykController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
@@ -1377,7 +1378,7 @@
     <Content Include="Views\Cart\_CartPartial.cshtml" />
     <Content Include="Views\Catalog\_ProductFilters.cshtml" />
     <Content Include="Views\Pages\Index.cshtml" />
-    <Content Include="Views\Pages\Content.cshtml" />
+    <Content Include="Views\Pages\PageContent.cshtml" />
     <Content Include="Views\Email\_SellerApplication.cshtml" />
     <Content Include="Views\Cart\Order.cshtml" />
     <Content Include="Views\Error\NotFound.cshtml" />
@@ -1387,7 +1388,7 @@
     <Content Include="Views\Catalog\_BaseCategoriesPartial.cshtml" />
     <Content Include="Views\Catalog\_ExpandableProductPartial.cshtml" />
     <Content Include="Views\Home\GettingBetter.cshtml" />
-    <Content Include="Views\Pages\News.cshtml" />
+    <Content Include="Views\News\Index.cshtml" />
     <Content Include="Views\Helper\Chat.cshtml" />
     <Content Include="Views\Helper\Comments.cshtml" />
     <Content Include="Views\Cart\_ShippingAddresses.cshtml" />
@@ -1412,6 +1413,7 @@
     <Content Include="Views\Home\_NewsPartial.cshtml" />
     <Content Include="Views\Shared\_mobileHeader.cshtml" />
     <Content Include="Views\Catalog\ProductsCatalog.cshtml" />
+    <Content Include="Views\News\_PageBlock.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
