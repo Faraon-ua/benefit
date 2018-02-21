@@ -1,3 +1,7 @@
+.sections_wrapper .list .item img {
+    height: 250px;
+}
+
 .counter {
     box-sizing: border-box;
     background: #f3f3f5;
@@ -3501,7 +3505,7 @@ body .top-block .info-text .search-block{text-align:center;height:auto;padding-t
 .logo_and_menu-row .basket-link:not(.has_prices) .title{font-size:0}
 .logo_and_menu-row .basket-link .wrap{margin:2px 0 0 24px;display:inline-block;vertical-align:top}
 .logo_and_menu-row .basket-link .wrap .title{margin:0 0 5px;display:block}
-.logo_and_menu-row .basket-link .wrap .prices{display:block;font-size:.8em;line-height:1.2em;color:#999;max-width:62px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}
+.logo_and_menu-row .basket-link .wrap .prices{display:block;font-size:.8em;line-height:1.2em;color:#999;max-width:62px;white-space:nowrap;overflow:hidden}
 .logo_and_menu-row .personal-link{display:block}
 .logo_and_menu-row .personal-link .wrap{margin:2px 0 0 14px;display:inline-block;vertical-align:top;white-space:nowrap;max-width:180px}
 .logo_and_menu-row .personal-link .wrap > span{text-overflow:ellipsis;overflow:hidden}
@@ -3907,7 +3911,7 @@ form.search{position:relative}
 .inline-search-block:not(.fixed) .search .btn-search{border-radius:0 3px 3px 0}
 .top-block .search .fa-close{color:#c2cbd2;display:block;float:left;font-size:24px;margin-top:4px;margin-left:6px;cursor:pointer}
 body.fill_bg_y .header_wrap header .header-wrapper{border:none}
-.menu-row{ position: relative;z-index: 1;}
+.menu-row{ position: relative;z-index: 998;}
 .menu-row > .maxwidth-theme{background:none}
 .logo-row .menu-row.maxwidth-theme:before,.logo-row .menu-row.maxwidth-theme:after{display:none}
 .menu-only{position:relative}

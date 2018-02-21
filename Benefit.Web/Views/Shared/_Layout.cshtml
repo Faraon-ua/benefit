@@ -1,97 +1,4 @@
-﻿@*<!DOCTYPE html>
-    <html lang="uk">
-    <head>
-        <title>@ViewBag.Title - Benefit</title>
-        @Html.Partial("_head")
-        @RenderSection("meta", required: false)
-        @RenderSection("image_src", required: false)
-        @RenderSection("styles", required: false)
-        @RenderSection("headscripts", required: false)
-    </head>
-    <body class="@ViewBag.MainPageClass">
-        <div class="darker hidden"></div>
-        @Html.Partial("_header")
-        @Html.Partial("_ControlPanelPartial")
-        <!-- overlay -->
-        <div class="login_box_over hidden"></div>
-        <div class="empty_over hidden"></div>
-        <div class="container container_provider container_padding">
-            <div class="container_table clearfix @ViewBag.MainContentClass">
-                <aside class="left_sidebar left_sidebar_main">
-                    @RenderSection("LeftAside", false)
-                </aside>
-                <main class="@(ViewBag.MainContainerClass ?? "col-8 full_content")">
-                    @RenderBody()
-                </main>
-                <aside class="right_sidebar right_sidebar_main">
-                    @Html.Partial("_SocialGroups")
-                </aside>
-            </div>
-        </div>
-        <footer>
-            @Html.Partial("_FooterPartial")
-        </footer>
-        @Scripts.Render("~/bundles/master")
-        @RenderSection("scripts", required: false)
-        <script>
-            var searchWordsUrl = '@Url.Action("SearchWords", "Search")';
-            var searchUrl = '@Url.Action("Index", "Search")';
-            $("#search").devbridgeAutocomplete({
-                width: 300,
-                minChars: 3,
-                serviceUrl: searchWordsUrl,
-                onSelect: function (suggestion) {
-                    window.location.href = searchUrl + "?term=" + suggestion.data;
-                }
-            });
-            if ($("#seller-id").length === 0) {
-                $("#search-by-seller").hide();
-            } else {
-                $("#search-by-seller").show();
-            }
-
-            $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
-            $('.login_links').load('@Url.Action("MobileLoginPartial", "Home")');
-            var categoriesUrl = '@Url.Action("CategoriesPartial", "Home")';
-
-            var categoryId = $('#right-menu').attr("data-category-id");
-            if (!categoryId) {
-                categoryId = "";
-            }
-            categoriesUrl = categoriesUrl + "?parentCategoryId=" + categoryId;
-
-            var sellerUrl = $('#right-menu').attr("data-seller-url");
-            if (!sellerUrl) {
-                sellerUrl = "";
-            }
-            categoriesUrl = categoriesUrl + "&sellerUrl=" + sellerUrl;
-
-            //load left menu
-            $('#right-menu').load(categoriesUrl);
-
-            //load dropdown Категорії меню
-            if ($(".categories_drop").length > 0) {
-                $.get('@Url.Action("CategoriesPartial"
-                 , "Home")?isDropDown=true',
-                    function (data) {
-                        $(".categories_drop").after(data);
-                    });
-            }
-
-            $("#order-cart, .deliveri_edit").click(function () {
-                var cartUrl = '@Url.Action("GetCart","Cart")';
-                $("#cart-container").load(cartUrl, function () {
-                    $("#basket_modal").modal('show');
-                });
-            });
-
-        </script>
-        @Html.Partial("_RegionModal")
-        <div id="cart-container"></div>
-    </body>
-    </html>*@
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head lang="uk">
     <title>@ViewBag.Title - Benefit</title>
@@ -408,15 +315,15 @@
                                                         <div class="search-wrapper">
                                                             <div id="title-search_fixed">
                                                                 @using (Html.BeginForm("Index", "Search", new { area = "" }, FormMethod.Get, new { id = "search-form", @class = "search" }))
-                                                                {
-                                                                    <div class="search-input-div">
-                                                                        <input class="search-input" id="search" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
-                                                                    </div>
-                                                                    <div class="search-button-div">
-                                                                        <button class="btn btn-search" type="submit" name="s" value="Пошук"><i class="svg svg-search svg-black"></i></button>
-                                                                        <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
-                                                                    </div>
-                                                                }
+                                                            {
+                                                                <div class="search-input-div">
+                                                                    <input class="search-input" id="search" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
+                                                                </div>
+                                                                <div class="search-button-div">
+                                                                    <button class="btn btn-search" type="submit" name="s" value="Пошук"><i class="svg svg-search svg-black"></i></button>
+                                                                    <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
+                                                                </div>
+                                                        }
                                                             </div>
                                                         </div>
                                                     </div>
@@ -461,10 +368,10 @@
                     </a>
 
                     <!--
-                    <div class="inner-table-block small-block nopadding inline-search-show" data-type_search="fixed">
-                        <div class="search-block top-btn"><i class="svg svg-search lg"></i></div>
-                    </div>
-                    -->
+                <div class="inner-table-block small-block nopadding inline-search-show" data-type_search="fixed">
+                    <div class="search-block top-btn"><i class="svg svg-search lg"></i></div>
+                </div>
+                -->
                 </div>
             </div>
         </div>
@@ -495,8 +402,8 @@
             </div>
         </div>
         <!--
-        <script type="text/javascript">if(!window.BX)window.BX={};if(!window.BX.message)window.BX.message=function(mess){if(typeof mess=='object') for(var i in mess) BX.message[i]=mess[i]; return true;};</script>
-        -->
+    <script type="text/javascript">if(!window.BX)window.BX={};if(!window.BX.message)window.BX.message=function(mess){if(typeof mess=='object') for(var i in mess) BX.message[i]=mess[i]; return true;};</script>
+    -->
         <script type="text/javascript" src="~/Scripts/v3/kernel_main.js"></script>
         <script type="text/javascript" src="~/Scripts/jquery-2.2.3.min.js"></script>
         <script type="text/javascript" src="~/Scripts/jquery.autocomplete.min.js"></script>
@@ -505,6 +412,7 @@
         <script type="text/javascript" src="~/Scripts/v3/default_84b0f0da7abeae3ee8bdab600a51e10a.js"></script>
         <script type="text/javascript" src="~/Scripts/v3/default_34abd663f55e3f30e482309b7ae729af.js"></script>
         <script type="text/javascript" src="~/Scripts/site.js"></script>
+        <script src="~/Scripts/v3/menu.js"></script>
         @RenderSection("scripts", required: false)
 
         <script type="text/javascript">

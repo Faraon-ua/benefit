@@ -11,7 +11,13 @@
 }
 @section scripts
 {
-    <script src="~/Scripts/v3/menu.js"></script>
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+        var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
+    </script>
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
     <script src="~/Scripts/owl.carousel.min.js"></script>
     <script>
         $(function () {
@@ -48,7 +54,7 @@
     <link href="~/Content/v3/css/menu.css" rel="stylesheet" />
     <style>
         .desctop-slider img {
-            height: 250px !important;
+            height: 212px !important;
         }
 
         .product_carousel .owl-stage {

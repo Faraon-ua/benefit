@@ -21,13 +21,16 @@
     <meta name="description" content="@(Model.Category == null?  Model.Seller.ShortSescription : Model.Category.Description)">
 }
 @section scripts{
-    <script src="~/Scripts/v3/products.js"></script>
-    <script src="~/Scripts/jquery.mask.min.js"></script>
     <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
         var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
-        var skip = parseInt('@ListConstants.DefaultTakePerPage');
+    </script>
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
+    <script>
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
+        var skip = parseInt('@ListConstants.DefaultTakePerPage');
         @{
             var categoryId = Model.Category == null ? "" : Model.Category.Id;
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
@@ -95,36 +98,6 @@
                 });
             });
 
-            var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
-            $("body").on("click", ".product_buy", function (e) {
-                e.preventDefault();
-                var productId = $(this).attr("data-product-id");
-                var isWeightProduct = $(this).attr("data-is-weight-product").toLowerCase() === 'true';
-                var sellerId = $(this).attr("data-seller-id");
-                var amount = $(this).prev(".counter").find(".quantity").val();
-                $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
-                    if (isAnotherSeller) {
-                        if (!confirm("Увага! У кошику є товари від іншого постачальника. Вони будуть видалені, якщо Ви продовжите цю дію.")) {
-                            return;
-                        }
-                    }
-                    $.get(productOptionsUrl + "?productId=" + productId, function (data) {
-                        if (data) {
-                            $("#product-options-wrap").html(data);
-                            $("#product_modal").modal('show');
-                        } else {
-                            AddOrderProduct(amount, productId, sellerId, false, isWeightProduct);
-                        }
-                    });
-                });
-            });
-
-            $("body").on('click', "#buy-product-with-options", function () {
-                var productId = $(this).attr("data-product-id");
-                var sellerId = $(this).attr("data-seller-id");
-                AddOrderProduct(productId, sellerId, true, false);
-            });
-
             @if (Model.Category != null)
             {
                 <text>
@@ -182,48 +155,6 @@
                 </text>
             }
         });
-
-        function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduct) {
-            var productAmount = amount;
-            var productOptions;
-            if (hasOptions) {
-                productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
-                    var id = $(this).attr("id");
-                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
-                    if (!amount) {
-                        amount = 1;
-                    }
-                    return {
-                        ProductOptionId: id,
-                        Amount: amount
-                    };
-                }).get();
-            } else {
-                productOptions = [];
-            }
-
-            var product = {
-                ProductId: productId,
-                Amount: productAmount,
-                IsWeightProduct: isWeightProduct,
-                OrderProductOptions: productOptions
-            };
-
-            var order = {
-                product: product,
-                amount: productAmount
-            };
-            $.post(addToCartUrl + "?sellerId=" + sellerId,
-                order,
-                function (data) {
-                    $(".product_buy").removeClass("loadings");
-                    $('#product_modal').modal('hide');
-                    setTimeout(function () {
-                        $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                        setCartSummary(data);
-                    }, 1000);
-                });
-        }
     </script>
 }
 
