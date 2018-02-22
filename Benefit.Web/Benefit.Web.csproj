@@ -1416,6 +1416,7 @@
     <Content Include="Views\Catalog\ProductsCatalog.cshtml" />
     <Content Include="Views\News\_PageBlock.cshtml" />
     <Content Include="Views\News\_LastNewsPartial.cshtml" />
+    <Content Include="Views\Shared\_headerFixed.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
