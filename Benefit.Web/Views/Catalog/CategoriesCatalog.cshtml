@@ -1,71 +1,60 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
 @model Benefit.DataTransfer.ViewModels.NavigationEntities.CategoriesViewModel
 @{
-    ViewBag.SellerUrlName = Model.Seller.UrlName;
-    ViewBag.Title = string.Format("{0} - {1}", Model.Category == null ? Model.Seller.CatalogButtonName : (Model.Category.Title ?? Model.Category.Name), Model.Seller.Name);
-    ViewBag.SellerUrl = Model.Seller.UrlName;
-    ViewBag.MainContainerClass = "full_content full_content_provider";
+    //ViewBag.SellerUrlName = Model.Seller.UrlName;
+    //ViewBag.Title = string.Format("{0} - {1}", Model.Category == null ? Model.Seller.CatalogButtonName : (Model.Category.Title ?? Model.Category.Name), Model.Seller.Name);
+    ViewBag.Title = Model.Category.Name;
+    //ViewBag.SellerUrl = Model.Seller.UrlName;
 }
 @section meta
 {
     <meta name="description" content="@(Model.Category == null ? string.Empty : Model.Category.Description)">
 }
-@section LeftAside
-{
-    <div class="vertical_menu padding-bottom-15 clear-fix" id="right-menu" data-seller-url="@(Model.Seller == null ? "" : Model.Seller.UrlName)" data-category-id="@(Model.Category == null ? "" : Model.Category.Id)">
-    </div>
-}
-@{
-    var closingDivRendered = false;
-}
-<div class="clearfix categories-catalog">
-    @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+<div class="wraps hover_shine">
+    <div class="wrapper_inner front">
+        <section>
+            @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+        </section>
 
-    <header class="title-page">
-        <h1 class="pab-h1">
-            @string.Format("{0} - {1}", Model.Seller.Name, Model.Category == null ? Model.Seller.CatalogButtonName : Model.Category.Name)
-        </h1>
-    </header>
-
-    @if (Model.Items.Any())
-    {
-        @:<div class="clearfix">
-        foreach (var category in Model.Items)
-        {
-            if (category.ChildCategories.Any())
-            {
-                if (!closingDivRendered)
-                {
-                    @:</div>
-                    closingDivRendered = true;
-                }
-                <div class="clearfix">
-                    @{
-                var counter = 0;
-                var childCount = category.ChildCategories.Count;
-                    }
-                    <h2 class="pab-h2 padding-bottom-15">
-                        @if (Model.Category != null && Model.Category.Id == category.Id)
-                        {
-                            <span>@category.Name</span>
-                        }
-                        else
-                        {
-                            <a class="pab-h2-link" href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = ViewBag.SellerUrlName, categoryUrl = category.UrlName})" title="@category.Description">
-                                @category.Name
-                            </a>
-                        }
-                    </h2>
-                    @foreach (var child in category.ChildCategories)
-                    {
-                        @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", child)
-                    }
+        <div class="right_block  wide_">
+            <div class="middle ">
+                <div class="container">
+                    <div class="catalog_section_list row items visible-xs" style="margin-top: 30px;"></div>
+                    <div class="catalog_section_list row items">
+                        <div class="section_block">
+                            <div class="sections_wrapper">
+                                <div class="list items">
+                                    <div class="row margin0">
+                                        <h1>@Model.Category.Name</h1>
+                                        @foreach (var cat in Model.Items)
+                                        {
+                                            <div class="col-md-25 col-sm-4 col-xs-6">
+                                                <div class="item" style="height: 230px;">
+                                                    <div class="img shine">
+                                                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" class="thumb">
+                                                            <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Title" title="@cat.Title">
+                                                        </a>
+                                                        <div class="name">
+                                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" class="dark_link">@cat.Name</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            }
-            else
-            {
-                @Html.Partial("~/Views/Catalog/_CategoryPartial.cshtml", category)
-            }
-        }
-    }
+            </div>
+        </div>
+
+        <div class="left_block">
+            <div class="left_catalog">
+                @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", ViewBag.LastNews as IEnumerable<InfoPage>)
+            </div>
+        </div>
+    </div>
 </div>

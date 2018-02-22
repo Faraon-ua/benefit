@@ -117,29 +117,7 @@
                             </div>
                         </div>
                         <div class="left_block">
-                            <div class="news_blocks front">
-                                <div class="top_block">
-                                    <div class="title_block">Новини</div>
-                                    <a href='@Url.Action("Index", "News")'>Всі новини</a>
-                                    <div class="clearfix"></div>
-                                </div>
-                                <div class="info_block">
-                                    <div class="news_items">
-                                        @foreach (var item in lastNews)
-                                    {
-                                        <div class="item box-sizing dl">
-                                            <div class="info">
-                                                <div class="date">
-                                                    @Model.CreatedOn.ToLocalTimeWithDateFormat()
-                                                </div>
-                                                <a class="name dark_link" href="@Url.RouteUrl("pagesRoute", new {id = item.UrlName})">@item.Name</a>
-                                            </div>
-                                            <div class="clearfix"></div>
-                                        </div>
-                                }
-                                    </div>
-                                </div>
-                            </div>
+                            @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", lastNews)
                         </div>
                     </div>
                 </div>

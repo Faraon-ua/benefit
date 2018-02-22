@@ -54,6 +54,28 @@ namespace Benefit.Services.Domain
             return resultList;
         }
 
+        public CategoriesViewModel GetCategoriesCatalog(Category parent)
+        {
+            var categories =
+                db.Categories.Where(entry => entry.ParentCategoryId == parent.Id && entry.IsActive && !entry.IsSellerCategory)
+                    .OrderBy(entry => entry.Order)
+                    .ToList();
+            if (categories.Count == 1)
+            {
+                categories = categories.SelectMany(entry => entry.ChildCategories).ToList();
+            }
+            var catsModel = new CategoriesViewModel()
+            {
+                Category = parent,
+                Items = categories.OrderBy(entry => entry.ChildCategories.Any()).ThenByDescending(entry => entry.Id == parent.Id).ToList(),
+                Breadcrumbs = new BreadCrumbsViewModel()
+                {
+                    Categories = GetBreadcrumbs(parent.Id)
+                }
+            };
+            return catsModel;
+        }
+
         public CategoriesViewModel GetSellerCategoriesCatalog(Category parent, string sellerUrl)
         {
             var seller = db.Sellers.FirstOrDefault(entry => entry.UrlName.ToLower() == sellerUrl.ToLower());
@@ -89,7 +111,7 @@ namespace Benefit.Services.Domain
             var catsModel = new CategoriesViewModel()
             {
                 Category = parent,
-                Items = categories.OrderBy(entry=>entry.ChildCategories.Any()).ThenByDescending(entry=>entry.Id == parentId).ToList(),
+                Items = categories.OrderBy(entry => entry.ChildCategories.Any()).ThenByDescending(entry => entry.Id == parentId).ToList(),
                 Seller = seller,
                 Breadcrumbs = new BreadCrumbsViewModel()
                 {
@@ -183,7 +205,7 @@ namespace Benefit.Services.Domain
                     items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
             }
             var currentRegionItemsIds = sellersDto.CurrentRegionItems.Select(sc => sc.Id).ToList();
-            sellersDto.Items = items.Where(entry=>!currentRegionItemsIds.Contains(entry.Id)).
+            sellersDto.Items = items.Where(entry => !currentRegionItemsIds.Contains(entry.Id)).
                 OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
 
             sellersDto.Items.ForEach(entry =>

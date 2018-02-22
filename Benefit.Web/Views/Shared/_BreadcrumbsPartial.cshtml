@@ -1,7 +1,8 @@
 ﻿@using Benefit.Common.Constants
 @model Benefit.DataTransfer.ViewModels.BreadCrumbsViewModel
 
-<div class="breadcrumbs" id="navigation" itemscope="" itemtype="http://schema.org/BreadcrumbList">
+<div style="height: 50px; width: 100%;" class="visible-xs"></div>
+<div class="breadcrumbs hidden-xs" id="navigation" itemscope="" itemtype="http://schema.org/BreadcrumbList">
     <div class="bx-breadcrumb-item" id="bx_breadcrumb_0" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
         <a href="@Url.Action("Index", "Home")" title="Головна" itemprop="item">
             <span itemprop="name">

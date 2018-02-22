@@ -4,6 +4,7 @@ using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
+using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Controllers
@@ -25,8 +26,20 @@ namespace Benefit.Web.Controllers
             return PartialView("_BaseCategoriesPartial", categories);
         }
 
+        [FetchCategories]
+        [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {
+            var category = CategoriesService.GetByUrlWithChildren(categoryUrl);
+            if (category == null)
+            {
+                return HttpNotFound();
+            }
+            if (category.ChildCategories.Any())
+            {
+                var catsModel = CategoriesService.GetCategoriesCatalog(category);
+                return View("CategoriesCatalog", catsModel);
+            }
             var catalog = SellerService.GetSellerCatalog(null, categoryUrl, options);
             return View("ProductsCatalog", catalog);
             //var sellers = CategoriesService.GetCategorySellers(categoryUrl);

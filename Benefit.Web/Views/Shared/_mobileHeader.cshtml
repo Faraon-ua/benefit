@@ -81,7 +81,7 @@
                                 @foreach (var cat in categories)
                                 {
                                     <li>
-                                        <a class="dark-color parent" href="#" title="@cat.Name">
+                                        <a class="dark-color parent" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" title="@cat.Name">
                                             <span>@cat.Name</span>
                                             @if (cat.ChildCategories.Any())
                                             {
@@ -100,7 +100,7 @@
                                                 @foreach (var subCat in cat.ChildCategories)
                                                 {
                                                     <li>
-                                                        <a class="dark-color parent" href="#" title="@subCat.Name">
+                                                        <a class="dark-color parent" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" title="@subCat.Name">
                                                             <span>@subCat.Name</span>
                                                             @if (subCat.ChildCategories.Any())
                                                             {

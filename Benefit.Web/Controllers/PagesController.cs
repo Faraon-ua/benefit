@@ -1,9 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Web.Filters;
-using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Controllers
 {
@@ -11,11 +9,11 @@ namespace Benefit.Web.Controllers
     {
         ApplicationDbContext db = new ApplicationDbContext();
         [FetchCategories]
+        [FetchLastNews]
         public ActionResult Index(string id)
         {
             var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id);
             if (page == null) return HttpNotFound();
-            ViewBag.LastNews = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive).OrderByDescending(entry => entry.CreatedOn).Take(3).ToList();
             return View(page);
         }
 

@@ -14,7 +14,7 @@ namespace Benefit.Common.Extensions
         }
         public static string ToLocalTimeWithDateFormat(this DateTime dateTime)
         {
-            return dateTime.ToLocalTime().ToString("d.M.yyyy");
+            return dateTime.ToLocalTime().ToString("d.MM.yyyy");
         }
 
         public static DateTime StartOfDay(this DateTime theDate)

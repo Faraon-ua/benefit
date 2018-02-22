@@ -290,6 +290,7 @@
     <Compile Include="Controllers\TovarController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\CabinetFilterAttribute.cs" />
+    <Compile Include="Filters\FetchLastNewsAttribute.cs" />
     <Compile Include="Filters\FetchCategoriesAttribute.cs" />
     <Compile Include="Filters\CustomKeyAuthAttribute.cs" />
     <Compile Include="Filters\SubdomainFilterAttribute.cs" />
@@ -1414,6 +1415,7 @@
     <Content Include="Views\Shared\_mobileHeader.cshtml" />
     <Content Include="Views\Catalog\ProductsCatalog.cshtml" />
     <Content Include="Views\News\_PageBlock.cshtml" />
+    <Content Include="Views\News\_LastNewsPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
