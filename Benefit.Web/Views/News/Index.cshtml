@@ -1,50 +1,9 @@
-﻿@using Benefit.Common.Extensions
-@using Benefit.DataTransfer.ViewModels
+﻿@using Benefit.DataTransfer.ViewModels
 @model List<Benefit.Domain.Models.InfoPage>
 
 @{
     ViewBag.Title = "Новини";
 }
-
-@*<h2>Новини</h2>
-    @foreach (var page in Model)
-    {
-        <div class="content margin-top-10">
-            <div class="row">
-                <div class="col-md-3">
-                    <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })">
-                        <img src="~/Images/NewsLogo/@page.ImageUrl" style="width:100%;" />
-                    </a>
-                </div>
-                <div class="col-md-9">
-                    <div class="margin-left-10">
-                        <h3 class="margin-top-0">
-                            <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })" class="font-red">
-                                @page.Name
-                            </a>
-                        </h3>
-                        <p>
-                            @page.ShortContent
-                        </p>
-                        <p>
-                            <i class="icon-time"></i>
-                            @page.CreatedOn.ToLocalTimeWithDateFormat()
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    }
-    <div>
-        <ul class="pagination">
-            @for (var i = 0; i < ViewBag.PagesCount; i++)
-            {
-                <li>
-                    <a href="@Url.Action("News", new { page = i })">@(i + 1)</a>
-                </li>
-            }
-        </ul>
-    </div>*@
 @section scripts{
     <script>
         var fetchNewsUrl = '@Url.Action("FetchNews")';

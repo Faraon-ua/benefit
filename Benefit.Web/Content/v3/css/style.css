@@ -1,13 +1,15 @@
 .sections_wrapper .list .product-item img {
     height: 250px;
 }
+.sections_wrapper .list .category-item img {
+    height: 150px;
+}
 
 .counter {
     box-sizing: border-box;
     background: #f3f3f5;
     font-size: 0;
     width: 100px;
-    margin: 0 10px;
     display: inline-block;
     vertical-align: top;
     border-radius: 2px;
@@ -3777,7 +3779,7 @@ body .soc-avt .row a{display:inline-block;margin:5px 11px 5px 0}
 .soc-avt a i.yandex{background-position:-400px -50px;background-position:-400px -50px}
 .soc-avt a i.blogger{background-position:-200px -50px}
 .rounded_block .social-icons li a,.soc-avt .row a{border-radius:100%;margin:5px 10px 5px 0}
-@media not print{header.fixed,#headerfixed.fixed{position:fixed;margin:0;width:100%;top:0;z-index:996;right:0;left:0}
+@media not print{header.fixed,#headerfixed.fixed{position:fixed;margin:0;width:100%;top:0;z-index:391;right:0;left:0}
 .inline-search-block.fixed{position:fixed;z-index:997;background:#fff!important}
 .inline-search-block.fixed .search-wrapper{padding:0;display:inline-block;width:100%}
 .inline-search-block.fixed .search-wrapper #title-search{padding:14px 0 15px}

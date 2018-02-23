@@ -30,7 +30,7 @@
                                         @foreach (var cat in Model.Items)
                                         {
                                             <div class="col-md-25 col-sm-4 col-xs-6">
-                                                <div class="item" style="height: 230px;">
+                                                <div class="item category-item" style="height: 230px;">
                                                     <div class="img shine">
                                                         <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" class="thumb">
                                                             <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Title" title="@cat.Title">

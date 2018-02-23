@@ -29,13 +29,28 @@
     <script src="~/Scripts/jquery.mask.min.js"></script>
     <script src="~/Scripts/v3/products.js"></script>
     <script>
+        var options = "";
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
-        var skip = parseInt('@ListConstants.DefaultTakePerPage');
         @{
             var categoryId = Model.Category == null ? "" : Model.Category.Id;
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
         }
         $(function () {
+            $(".ajax_load_btn").click(function (e) {
+                e.preventDefault();
+                var moreBtn = $(this);
+                var currentPage = parseInt(moreBtn.attr("data-page"));
+                $(".loader").show();
+                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&page=" + (currentPage + 1)  + "&options=" + options, function (data) {
+                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                        moreBtn.hide();
+                    }
+                    $(".product-item:last").after(data.products);
+                    moreBtn.attr("data-page", currentPage + 1);
+                    $(".loader").hide();
+                });
+            });
+
             $(".bx_filter_parameters_box_title").click(function() {
                 $(this).parent().toggleClass("active");
                 $(this).next().slideToggle();
@@ -49,7 +64,6 @@
             //select all checkboxes from url
             var parts = location.href.split('/');
             var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
-            var options = "";
             @if (Model.Category != null)
             {<text>
                  if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
@@ -84,19 +98,6 @@
                  }
              </text>
             }
-
-            $("#add-more-products").click(function (e) {
-                e.preventDefault();
-                $(".loader").show();
-                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&skip=" + skip + "&options=" + options, function (data) {
-                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                        $("#more-products").hide();
-                    }
-                    $("#more-products").before(data.products);
-                    skip += data.number;
-                    $(".loader").hide();
-                });
-            });
 
             @if (Model.Category != null)
             {
@@ -213,23 +214,28 @@
                                         {
                                             var regionId = RegionService.GetRegionId();
                                             var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
-                                            <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
-                                                @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
-                                            </div>
+                                            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
                                         }
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="ajax_load block">
-                                <div class="bottom_nav block"></div>
-
-                                <div class="group_description_block bottom">
-                                    <div>
-                                        @Model.Category.Description
+                                <div class="bottom_nav margin-top-20">
+                                    <div class="ajax_load_btn" data-page="0">
+                                        <span class="more_text_ajax">Показати ще</span>
                                     </div>
+                                    <div class="group_description_block bottom">
+                                        <div>
+                                            @Model.Category.Description
+                                        </div>
+                                    </div>
+                                    @*<div class="module-pagination">
+                                            <div class="nums">
+                                                @for (int i = 0; i < Model.; i++)
+                                                {
+                                                    <a href="#" class="dark_link" id="page-">@(i + 1)</a>
+                                                }
+                                            </div>
+                                        </div>*@
                                 </div>
-                                <div class="clear"></div>
                             </div>
                         </div>
                     </div>

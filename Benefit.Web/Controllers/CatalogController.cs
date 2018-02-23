@@ -47,10 +47,11 @@ namespace Benefit.Web.Controllers
             //return View("SellersCatalog", sellers);
         }
 
-        public ActionResult GetProducts(string categoryId, string sellerId, string options, int skip, int take = ListConstants.DefaultTakePerPage)
+        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page)
         {
-            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, take, false).Products;
-            var productsHtml = string.Join("", products.Select(entry => ControllerContext.RenderPartialToString("_ProductPartial", new ProductPartialViewModel
+            var skip = page * ListConstants.DefaultTakePerPage;
+            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, ListConstants.DefaultTakePerPage, false).Products;
+            var productsHtml =  string.Join("", products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString("_ProductPartial", new ProductPartialViewModel
             {
                 Product = entry,
                 CategoryUrl = entry.Category.UrlName,

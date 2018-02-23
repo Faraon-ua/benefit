@@ -300,18 +300,7 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case ProductSortOption.Order:
-                    items = items
-                        .OrderBy(
-                            entry =>
-                                entry.Category.ParentCategory == null
-                                    ? 1000
-                                    : entry.Category.ParentCategory.ParentCategory == null
-                                        ? 1000
-                                        : entry.Category.ParentCategory.ParentCategory.Order)
-                        .ThenBy(
-                            entry => entry.Category.ParentCategory == null ? 1000 : entry.Category.ParentCategory.Order)
-                        .ThenBy(entry => entry.Category.Order)
-                        .ThenByDescending(entry => entry.Images.Any());
+                    items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry=>entry.Name);
                     break;
                 case ProductSortOption.NameAsc:
                     items = items.OrderBy(entry => entry.Name);
@@ -327,6 +316,7 @@ namespace Benefit.Services.Domain
                     break;
             }
 
+            //var a = items.ToList();
             result.Products = items.Skip(skip).Take(take + 1).ToList();
             result.Products.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
 
