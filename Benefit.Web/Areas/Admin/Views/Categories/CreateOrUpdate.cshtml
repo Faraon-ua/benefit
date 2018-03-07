@@ -118,6 +118,16 @@
                             @Html.ValidationMessageFor(model => model.Title)
                         </div>
                     </div>
+                    
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <label class="text-left control-label" for="MetaDescription">Meta Description</label>
+                        </div>
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.MetaDescription)
+                            @Html.ValidationMessageFor(model => model.MetaDescription)
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <div class="col-md-1">
@@ -125,7 +135,7 @@
                         </div>
 
                         <div class="col-md-10">
-                            @Html.TextAreaFor(model => model.Description)
+                            @Html.TextAreaFor(model => model.Description, new { @class = "col-sm-9" })
                             @Html.ValidationMessageFor(model => model.Description)
                         </div>
                     </div>

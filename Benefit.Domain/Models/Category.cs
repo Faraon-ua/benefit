@@ -42,6 +42,7 @@ namespace Benefit.Domain.Models
         public bool ChildAsFilters { get; set; }
         [Required]
         [MaxLength(256)]
+        public string MetaDescription { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
         public int Order { get; set; }
