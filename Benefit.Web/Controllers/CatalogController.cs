@@ -30,16 +30,12 @@ namespace Benefit.Web.Controllers
         [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {
-            var category = CategoriesService.GetByUrlWithChildren(categoryUrl);
-            if (category == null)
+            var catsModel = CategoriesService.GetCategoriesCatalog(categoryUrl);
+            if (catsModel != null)
             {
-                return HttpNotFound();
-            }
-            if (category.ChildCategories.Any())
-            {
-                var catsModel = CategoriesService.GetCategoriesCatalog(category);
                 return View("CategoriesCatalog", catsModel);
             }
+
             var catalog = SellerService.GetSellerCatalog(null, categoryUrl, options);
             return View("ProductsCatalog", catalog);
             //var sellers = CategoriesService.GetCategorySellers(categoryUrl);
@@ -51,7 +47,7 @@ namespace Benefit.Web.Controllers
         {
             var skip = page * ListConstants.DefaultTakePerPage;
             var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, ListConstants.DefaultTakePerPage, false).Products;
-            var productsHtml =  string.Join("", products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString("_ProductPartial", new ProductPartialViewModel
+            var productsHtml = string.Join("", products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString("_ProductPartial", new ProductPartialViewModel
             {
                 Product = entry,
                 CategoryUrl = entry.Category.UrlName,

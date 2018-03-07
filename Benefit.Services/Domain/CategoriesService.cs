@@ -54,8 +54,22 @@ namespace Benefit.Services.Domain
             return resultList;
         }
 
-        public CategoriesViewModel GetCategoriesCatalog(Category parent)
+        public CategoriesViewModel GetCategoriesCatalog(string categoryUrl)
         {
+            var parent = db.Categories.Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            if (parent != null && !parent.ChildCategories.Any())
+            {
+                return null;
+            }
+
+            if (parent == null)
+            {
+                parent = new Category()
+                {
+                    Name = "Каталог"
+                };
+            }
+
             var categories =
                 db.Categories.Where(entry => entry.ParentCategoryId == parent.Id && entry.IsActive && !entry.IsSellerCategory)
                     .OrderBy(entry => entry.Order)

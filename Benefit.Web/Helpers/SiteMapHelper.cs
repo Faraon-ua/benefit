@@ -15,7 +15,7 @@ namespace Benefit.Web.Helpers
 {
     public class SiteMapHelper
     {
-        public int Generate(UrlHelper urlHelper)
+        public int Generate(UrlHelperExtension urlHelper)
         {
             using (var db = new ApplicationDbContext())
             {
@@ -33,27 +33,27 @@ namespace Benefit.Web.Helpers
                     urlSet.Add(url);
                     count++;
                 }
-                foreach (var seller in db.Sellers)
-                {
-                    var url = new XElement(ns + "url");
-                    var loc = new XElement(ns + "loc",
-                        string.Concat(
-                            SettingsService.BaseHostName,
-                            urlHelper.RouteUrl(RouteConstants.SellersRouteName, new { id = seller.UrlName, action = string.Empty })
-                            ));
-                    var lastmod = new XElement(ns + "lastmod", XmlConvert.ToString(seller.LastModified));
-                    url.Add(loc);
-                    url.Add(lastmod);
-                    urlSet.Add(url);
-                    count++;
-                }
+                //foreach (var seller in db.Sellers)
+                //{
+                //    var url = new XElement(ns + "url");
+                //    var loc = new XElement(ns + "loc",
+                //        string.Concat(
+                //            SettingsService.BaseHostName,
+                //            urlHelper.RouteUrl(RouteConstants.SellersRouteName, new { id = seller.UrlName, action = string.Empty })
+                //            ));
+                //    var lastmod = new XElement(ns + "lastmod", XmlConvert.ToString(seller.LastModified));
+                //    url.Add(loc);
+                //    url.Add(lastmod);
+                //    urlSet.Add(url);
+                //    count++;
+                //}
                 foreach (var cat in db.Categories.Include(entry => entry.Products).Where(entry => entry.Products.Any() && entry.IsActive).ToList())
                 {
                     var url = new XElement(ns + "url");
                     var loc = new XElement(ns + "loc",
                         string.Concat(
                             SettingsService.BaseHostName,
-                            urlHelper.RouteUrl(RouteConstants.CategoriesRouteName,
+                            urlHelper.RouteUrl(RouteConstants.CatalogRouteName,
                                 new
                                 {
                                     id = cat.UrlName

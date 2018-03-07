@@ -1,8 +1,8 @@
 .sections_wrapper .list .product-item img {
-    height: 250px;
+    max-height: 250px !important;
 }
 .sections_wrapper .list .category-item img {
-    height: 150px;
+    max-height: 150px;
 }
 
 .counter {

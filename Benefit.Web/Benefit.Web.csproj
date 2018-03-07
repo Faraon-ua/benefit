@@ -302,6 +302,7 @@
     <Compile Include="Helpers\PartialToString.cs" />
     <Compile Include="Helpers\RouteDataHelper.cs" />
     <Compile Include="Helpers\SiteMapHelper.cs" />
+    <Compile Include="Helpers\UrlHelperExtension.cs" />
     <Compile Include="Helpers\VersionedFileHtmlHelper.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Admin\OrdersFilters.cs" />
@@ -1372,7 +1373,6 @@
     <Content Include="Views\Shared\_header.cshtml" />
     <Content Include="Views\Shared\_MobileApplications.cshtml" />
     <Content Include="Areas\Cabinet\Views\Shared\_CabinetLayout.cshtml" />
-    <Content Include="Views\Catalog\ProductsCatalogOld.cshtml" />
     <Content Include="Views\Catalog\_ProductPartial.cshtml" />
     <Content Include="Views\Tovar\Index.cshtml" />
     <Content Include="Views\Tovar\_ProductOptions.cshtml" />

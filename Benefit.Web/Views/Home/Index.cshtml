@@ -230,9 +230,7 @@
                         <div class="row margin0">
                             @foreach (var product in Model.NewProducts)
                             {
-                                <div class="col-m-25 col-md-3 col-sm-4 col-xs-6">
-                                    @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
-                                </div>
+                                @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
                             }
                         </div>
                     </div>

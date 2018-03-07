@@ -4,8 +4,8 @@
 
 @{
     var image = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { categoryUrl = Model.CategoryUrl ?? Model.Product.Category.UrlName, productUrl = Model.Product.UrlName });
-    var sellerUrl = Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.Product.Seller.UrlName, action = string.Empty });
+    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = Model.Product.UrlName });
+    var sellerUrl = "";//Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.Product.Seller.UrlName, action = string.Empty });
 }
 
 <div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6" @(Model.PageMark == null ? "" : "id=" + Model.PageMark)>

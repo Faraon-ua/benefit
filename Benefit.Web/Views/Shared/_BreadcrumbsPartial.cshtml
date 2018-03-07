@@ -48,13 +48,13 @@
             <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                 @if (Model.Seller == null || (Model.Seller != null && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "info"))
                 {
-                    <a href="@Url.RouteUrl(RouteConstants.CategoriesRouteName, new {id = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
+                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {id = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
                         <span itemprop="name">@breadCrumb.Name</span>
                     </a>
                 }
                 else
                 {
-                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {sellerUrl = Model.Seller.UrlName, categoryUrl = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
+                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {sellerUrl = Model.Seller.UrlName, categoryUrl = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
                         <span itemprop="name">@breadCrumb.Name</span>
                     </a>
                 }
