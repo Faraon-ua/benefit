@@ -90,7 +90,7 @@
                                         <tr>
                                             <td class="menu-item dropdown catalog @(isMainPage ? "" : "active")">
                                                 <div class="wrap">
-                                                    <a class="dropdown-toggle" href="#" style="padding-top: 10px;">
+                                                    <a class="dropdown-toggle" href="@Url.Action("Index","Catalog", new { categoryUrl = string.Empty })" style="padding-top: 10px;">
                                                         <div>КАТАЛОГ<br>ТОВАРІВ ТА ПОСЛУГ<div class="line-wrapper"><span class="line"></span></div></div>
                                                     </a>
                                                     @if (!isMainPage)
@@ -163,10 +163,10 @@
                                                         {
                                                             <div class="dropdown-submenu" style="width: 20%; float: left; text-align: center; padding-bottom: 20px;">
                                                                 <div class="menu_img">
-                                                                    <a href="#" title="@cat.Name" class="dark_link">
+                                                                    <a href="@HttpUtility.UrlDecode(Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options="nav=sellers;/" }))" title="@cat.Name" class="dark_link">
                                                                         <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" title="@cat.Name">
                                                                     </a>
-                                                                    <a href="#" title="@cat.Name" class="dark_link">@cat.Name</a>
+                                                                    <a href="@HttpUtility.UrlDecode(Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options="nav=sellers;/" }))" title="@cat.Name" class="dark_link">@cat.Name</a>
                                                                 </div>
                                                             </div>
                                                         }

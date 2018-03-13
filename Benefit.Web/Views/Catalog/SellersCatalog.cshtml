@@ -2,153 +2,322 @@
 
 @{
     ViewBag.Title = Model.Category.Title ?? Model.Category.Name;
-    ViewBag.SellerUrl = Model.Category.UrlName;
-    ViewBag.MainContainerClass = "full_content full_content_provider";
 }
 @section meta
 {
-    <meta name="description" content="@Model.Category.Description">
+    @*<meta name="description" content="@Model.Category.Description">*@
 }
 @section scripts{
     <script>
+        var options = "";
         $(function () {
-            $("#sellerFilters input[type=checkbox]").change(function () {
-                //if none selected - show all
-                if ($("#sellerFilters input[type=checkbox]:checked").length == 0) {
-                    $(".provider_container").removeClass("hidden");
-                } else {
-                    //hide all
-                    $(".provider_container").addClass("hidden");
-
-                    var allCheckedFilters = $("#sellerFilters input[type=checkbox]:checked");
-                    var allFilterNames = allCheckedFilters.map(function () { return $(this).attr("name"); }).get();
-                    //distinct
-                    allFilterNames = jQuery.unique(allFilterNames);
-                    for (var i = 0; i < allFilterNames.length; i++) {
-                        allCheckedFilters.filter(
-                            function () {
-                                return $(this).attr("name") == allFilterNames[i];
-                            }).map(function () { return $(this).val(); }).each(function () {
-                                //show selected
-                                var currentValue = this.toString();
-                                $(".provider_container").filter(function () {
-                                    return $(this).attr("data-" + allFilterNames[i]).indexOf(currentValue) >= 0;
-                                }).removeClass("hidden");
-                            });
-                    }
-                }
+            $(".bx_filter_parameters_box_title").click(function() {
+                $(this).parent().toggleClass("active");
+                $(this).next().slideToggle();
             });
 
+            $(".filter_opener").click(function(){
+                $(this).toggleClass("opened");
+                $(".bx_filter_vertical, .bx_filter").slideToggle(333);
+            });
+
+            //select all checkboxes from url
             var parts = location.href.split('/');
-            var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
-            var options = "";
+            var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
             @if (Model.Category != null)
             {<text>
-            if (lastSegment.toLowerCase().replace('#', '') != '@Model.Category.UrlName.ToLower()') {
-                options = lastSegment;
-                $.each(options.split(";"), function (i, urlSegment) {
-                    if (urlSegment === "") return;
-                    urlSegment = decodeURIComponent(urlSegment);
-                    var optKeyValue = urlSegment.split("=");
-                    var optionName = optKeyValue[0];
-                    var optionValues = optKeyValue[1].split(",");
-                    $.each(optionValues, function (j, optValue) {
-                        $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue).click();
-                    });
-                });
+                 if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
+                     options = lastSegment;
+                     $.each(options.split(";"), function (i, urlSegment) {
+                         if (urlSegment === "") return;
+                         var optKeyValue = urlSegment.split("=");
+                         if (optKeyValue.length < 2) return;
+                         var optionName = optKeyValue[0];
+                         var optionValues = optKeyValue[1].split(",");
+                         if (optionName === "sort") {
+                             var optionValue = optionValues[0].replace("Asc", "").replace("Desc", "");
+                             var optionType = optionValues[0].replace(optionValue, "");
+                             var sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
+                             $(".sort_btn").removeClass("current");
+                             sortControl.addClass("current");
+                             if (optionType === "Asc") {
+                                 sortControl.removeClass("desc");
+                                 sortControl.addClass("asc");
+                                 sortControl.attr("data-sort-type", "Desc");
+                             } else {
+                                 sortControl.removeClass("asc");
+                                 sortControl.addClass("desc");
+                                 sortControl.attr("data-sort-type", "Asc");
+                             }
+                         } else {
+                             $.each(optionValues, function (j, optValue) {
+                                 $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue)).prop('checked', true);
+                                 $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]").prop('checked', true);
+                             });
+                         }
+                     });
+                 }
+             </text>
             }
-            </text>
+
+            @if (Model.Category != null)
+            {
+                <text>
+                    $('body').on('change click', "#sellerFilters input[type=checkbox], .sort_btn", function (e) {
+                        e.preventDefault();
+                        $(".loader").show();
+                        var parts = location.href.split('/');
+                        var lastSegment = (parts.pop() || parts.pop()).replace("#",""); // handle potential trailing slash
+                        var options = "";
+
+                        if (lastSegment != '@Model.Category.UrlName') {
+                            options = lastSegment;
+                        }
+
+                        var parent = $(this).parents(".filter-section");
+                        var optionName = parent.attr("data-filter-name");
+                        var optionNameIndex = options.indexOf(optionName);
+
+                        var currentOption = '';
+                        var selectedValues = parent.find("input[type=checkbox]:checked").map(function () {
+                            return $(this).attr("id");
+                        }).get();
+
+                        if ($(this).attr("class").indexOf("sort_btn") >= 0) {
+                            var val = $(this).attr("data-sort-value") + $(this).attr("data-sort-type");
+                            selectedValues.push(val);
+                        }
+                        if (selectedValues.length > 0) {
+                            currentOption = optionName;
+                            currentOption += "=";
+                            currentOption += selectedValues.join();
+                            currentOption += ";";
+                        }
+
+                        if (optionNameIndex >= 0) {
+                            var ending = options.indexOf(";", optionNameIndex);
+                            var oldOption = options.substring(optionNameIndex, ending + 1);
+                            options = options.replace(oldOption, currentOption);
+                        } else {
+                            options += currentOption;
+                        }
+                        if (lastSegment !== '@Model.Category.UrlName') {
+                            var locBuilder = location.href.replace(lastSegment + "/", "") + options;
+                            if (options.length > 0)
+                                locBuilder += "/";
+                            location.href = locBuilder;
+                        } else {
+                            var locBuilder = location.href;
+                            if (location.href[location.href.length - 1] !== "/") {
+                                locBuilder += "/";
+                            }
+                            window.location.href = locBuilder + options + "/";
+                        }
+                    });
+                </text>
             }
         });
     </script>
 }
-@section LeftAside{
-    @Html.Partial("~/Views/Catalog/_SellerFilters.cshtml", Model)
-}
-
-<div class="provider_row clearfix">
-    @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
-    <div class="list_filter_wrap show_on_tablet clearfix">
-        <div class="list_filter" data-toggle="modal" data-target="#filter_modal">Фільтрувати</div>
-        <div class="list_sort" data-toggle="modal" data-target="#sort_modal">Сортувати</div>
-    </div>
-
-    @if (Model.CurrentRegionItems.Any())
-    {
-        <div>
-            <h3 style="display: inline-block;">Постачальники з мого міста</h3>
-        </div>
-        <br />
-        foreach (var seller in Model.CurrentRegionItems)
-        {
-            @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
-        }
-    }
-
-    @if (Model.Items.Any())
-    {
-        if (Model.CurrentRegionItems.Any())
-        {
-            <div>
-                <h3 style="display: inline-block;">Інші міста України</h3>
+<div class="wraps hover_shine" id="content">
+    <!--title_content-->
+    <div class="top_inner_block_wrapper maxwidth-theme" style="height: 80px;">
+        <section class="page-top maxwidth-theme ">
+            @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+            <div class="page-top-main">
+                <h1 id="pagetitle">Каталог постачальників</h1>
             </div>
-            <br />
-        }
+        </section>
+    </div>					<!--end-title_content-->
 
-        foreach (var seller in Model.Items)
-        {
-            @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
-        }
-    }
+    <div class="wrapper_inner " style="margin-top: 10px;">
 
-    @if (!Model.Items.Any() && !Model.CurrentRegionItems.Any())
-    {
-        <div style="text-align-last: left;">
-            @{
-        var regionName = HttpContext.Current.Request.Cookies["regionName"];
-            }
-            <b style="font-size: 1em;">
-                В категорії <span style="color: #cb2728; ">@Model.Category.Name</span>
-                @if (regionName != null)
-                {
-                    <span>
-                        для населеного пункту
-                        <span style="color: #cb2728; ">@HttpUtility.UrlDecode(regionName.Value)</span>
-                    </span>
-                }
-                постачальників поки що немає.
-                <br />
-                Якщо ви хочете зробити нам ділову пропозицію, чекаємо на вашу заявку.
-                <br />
-                <a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })">
-                    <img style="width: 100%;" src="~/Content/img/spivpracia.jpg" />
-                </a>
-            </b>
+        <div class="right_block  wide_N">
+            <div class="middle ">
+                <div class="container">
+
+                    <div class="right_block1 clearfix catalog vertical" id="right_block_ajax">
+                        <div class="js_filter filter_horizontal">
+                            <div class="bx_filter bx_filter_vertical"></div>
+                        </div>
+                        <div class="inner_wrapper">
+                            <div class="adaptive_filter">
+                                <a class="filter_opener"><i></i><span>Фільтр</span></a>
+                            </div>
+
+                            <!--'start_frame_cache_viewtype-block'-->
+                            <div class="sort_header view_block">
+                                <!--noindex-->
+                                <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
+                                    <a href="" data-sort-value="Name" data-sort-type="Asc" class="sort_btn asc NAME" rel="nofollow">
+                                        <i class="icon" title="По алфавіту"></i><span>По алфавіту</span><i class="arr icons_fa"></i>
+                                    </a>
+                                    <a href="" data-sort-value="Bonus" data-sort-type="Asc" class="sort_btn asc BONUS" rel="nofollow">
+                                        <i class="icon" title="За відсотком бонуса"></i><span>За відсотком бонуса</span><i class="arr icons_fa"></i>
+                                    </a>
+                                </div>
+
+                                <div class="clearfix"></div>
+                                <!--/noindex-->
+                            </div>
+
+                            <div class="ajax_load list">
+                                <div class="display_list show_un_props">
+                                    @foreach (var seller in Model.Items)
+                                    {
+                                        @Html.Partial("_SellerPartial", seller)
+                                    }
+                                </div>
+                                <div class="group_description_block bottom">
+                                    <div>Опис каталогу постачальників</div>
+                                </div>
+                                <div class="clear"></div>
+                            </div>
+                            <!--'end_frame_cache_viewtype-block'-->
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    }
 
+        <div class="left_block">
+            <div class="bx_filter bx_filter_vertical">
+                <div class="bx_filter_section" id="sellerFilters">
+                    <div class="bx_filter_parameters_box title">
+                        <div class="bx_filter_parameters_box_title">
+                            Фільтри по параметрам
+                            <div class="sort_header view_block hidden-lg" style="float: right">
+                                <!--noindex-->
+                                <div class="sort_filter filter-section" data-filter-name="sort">
+                                    <a href="" data-sort-value="Name" data-sort-type="Asc" class="sort_btn asc NAME" rel="nofollow">
+                                        <span class="icon" title="По алфавіту">A</span>
+                                        <span>По алфавіту</span>
+                                        <i class="arr icons_fa"></i>
+                                    </a>
+                                    <a href="" data-sort-value="Bonus" data-sort-type="Asc" class="sort_btn asc BONUS" rel="nofollow">
+                                        <span class="icon" title="За відсотком бонуса">&#36;</span>
+                                        <span>За відсотком бонуса</span><i class="arr icons_fa"></i>
+                                    </a>
+                                </div>
+                                <!--/noindex-->
+                            </div>
+                        </div>
+                    </div>
+                    @if (Model.Category.ChildAsFilters)
+                    {
+                        <div class="bx_filter_parameters_box active filter-section" data-expanded="Y" data-filter-name="specification">
+                            <span class="bx_filter_container_modef"></span>
+                            <div class="bx_filter_parameters_box_title icons_fa">
+                                <div>
+                                    Категорія
+                                    <div class="char_name">
+                                        <div class="props_list">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bx_filter_parameters_box_container">
+                                @foreach (var subcat in Model.Category.ChildCategories)
+                                {
+                                    <div class="bx_filter_block limited_block">
+                                        <div class="bx_filter_parameters_box_container">
+                                            <input type="checkbox" id="@subcat.UrlName" name="@subcat.UrlName" class="hidden">
+                                            <label class="bx_filter_param_label  last" for="@subcat.UrlName">
+                                                <span class="bx_filter_input_checkbox">
+                                                    <span class="bx_filter_param_text">@subcat.Name</span>
+                                                </span>
+                                            </label>
+                                        </div>
+                                        <div class="clb"></div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    <div class="bx_filter_parameters_box active filter-section" data-expanded="Y" data-filter-name="filter">
+                        <span class="bx_filter_container_modef"></span>
+                        <div class="bx_filter_parameters_box_title icons_fa">
+                            <div>
+                                Критерії
+                                <div class="char_name">
+                                    <div class="props_list">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bx_filter_parameters_box_container">
+                            <div class="bx_filter_block limited_block">
+                                <div class="bx_filter_parameters_box_container">
+                                    <input type="checkbox" id="mycity" name="mycity" class="hidden">
+                                    <label class="bx_filter_param_label  last" for="mycity">
+                                        <span class="bx_filter_input_checkbox">
+                                            <span class="bx_filter_param_text">Тільки моє місто</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="clb"></div>
+                            </div>
+                            <div class="bx_filter_block limited_block">
+                                <div class="bx_filter_parameters_box_container">
+                                    <input type="checkbox" id="paymentcard" name="paymentcard" class="hidden">
+                                    <label class="bx_filter_param_label  last" for="paymentcard">
+                                        <span class="bx_filter_input_checkbox">
+                                            <span class="bx_filter_param_text">Оплата банківською картою</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="clb"></div>
+                            </div>
+                            <div class="bx_filter_block limited_block">
+                                <div class="bx_filter_parameters_box_container">
+                                    <input type="checkbox" id="paymentbonuses" name="paymentbonuses" class="hidden">
+                                    <label class="bx_filter_param_label  last" for="paymentbonuses">
+                                        <span class="bx_filter_input_checkbox">
+                                            <span class="bx_filter_param_text">Використати бонуси</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="clb"></div>
+                            </div>
+                            <div class="bx_filter_block limited_block">
+                                <div class="bx_filter_parameters_box_container">
+                                    <input type="checkbox" id="freeshipping" name="freeshipping" class="hidden">
+                                    <label class="bx_filter_param_label  last" for="freeshipping">
+                                        <span class="bx_filter_input_checkbox">
+                                            <span class="bx_filter_param_text">Бескоштовна доставка</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="clb"></div>
+                            </div>
+                            <div class="bx_filter_block limited_block">
+                                <div class="bx_filter_parameters_box_container">
+                                    <input type="checkbox" id="benefitcard" name="benefitcard" class="hidden">
+                                    <label class="bx_filter_param_label  last" for="benefitcard">
+                                        <span class="bx_filter_input_checkbox">
+                                            <span class="bx_filter_param_text">Benefit Card</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="clb"></div>
+                            </div>
+                            <div class="bx_filter_block limited_block">
+                                <div class="bx_filter_parameters_box_container">
+                                    <input type="checkbox" id="benefitonline" name="benefitonline" class="hidden">
+                                    <label class="bx_filter_param_label  last" for="benefitonline">
+                                        <span class="bx_filter_input_checkbox">
+                                            <span class="bx_filter_param_text">Benefit Online</span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="clb"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="clear: both;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-@*  //todo: Add easy loadingsn
-         <div class="bottom_control clearfix">
-        <div class="pagination_wrap">
-            <div class="pagination_prew">&lt;</div>
-            <ul class="pagination">
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-                <li class="active">4</li>
-                <li>5</li>
-                <li>6</li>
-                <li>...</li>
-                <li>54</li>
-            </ul>
-            <div class="pagination_next">&gt;</div>
-        </div>
-        <div class="show_more">
-            <label for="more_providers">Показати</label>
-            <select id="more_providers" class="orders_org_choice">
-                <option>16</option>
-                <option>32</option>
-            </select>
-        </div>
-    </div>*@
+

@@ -8,7 +8,6 @@ namespace Benefit.DataTransfer.ViewModels.NavigationEntities
     {
         public SellersViewModel()
         {
-            CurrentRegionItems = new List<Seller>();
             Items = new List<Seller>();
         }
     }

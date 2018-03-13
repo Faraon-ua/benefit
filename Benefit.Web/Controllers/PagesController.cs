@@ -8,6 +8,7 @@ namespace Benefit.Web.Controllers
     public class PagesController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
+
         [FetchCategories]
         [FetchLastNews]
         public ActionResult Index(string id)

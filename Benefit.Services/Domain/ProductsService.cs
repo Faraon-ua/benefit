@@ -16,31 +16,28 @@ namespace Benefit.Services.Domain
     public class ProductsService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        private SellerService SellerService = new SellerService();
-        public ProductDetailsViewModel GetProductDetails(string urlName, string sellerUrl, string categoryUrl, string userId)
+        public ProductDetailsViewModel GetProductDetails(string urlName, string userId)
         {
+            var delimeterPos = urlName.LastIndexOf("-")+1;
+            var sku = urlName.Substring(delimeterPos, urlName.Length - delimeterPos);
             var product = db.Products
+                .Include(entry => entry.Seller.ShippingMethods.Select(addr=>addr.Region))
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Currency)
                 .Include(entry => entry.ProductParameterProducts.Select(pr=>pr.ProductParameter))
                 .Include(entry => entry.Reviews.Select(rev=>rev.ChildReviews))
-                .FirstOrDefault(entry => entry.UrlName == urlName);
+                .FirstOrDefault(entry => entry.SKU.ToString() == sku);
             if (product == null) return null;
             product.Price = product.Price*product.Currency.Rate;
-            var seller = SellerService.GetSellerWithShippingMethods(sellerUrl);
 
-            product.Seller = seller;
             var categoriesService = new CategoriesService();
-
             var result = new ProductDetailsViewModel()
             {
                 Product = product,
-                CategoryUrl = categoryUrl,
                 ProductOptions = GetProductOptions(product.Id),
                 Breadcrumbs = new BreadCrumbsViewModel()
                 {
-                    Seller = seller,
-                    Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrl),
+                    Categories = categoriesService.GetBreadcrumbs(urlName: product.Category.UrlName),
                     Product = product,
                 },
                 CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == userId && entry.OrderProducts.Any(pr => pr.ProductId == product.Id))

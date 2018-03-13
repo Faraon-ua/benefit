@@ -140,7 +140,7 @@
                                 @foreach (var cat in categories)
                                 {
                                     <li>
-                                        <a class="dark-color" href="#" title="@cat.Name">
+                                        <a class="dark-color" href="@HttpUtility.UrlDecode(Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options="nav=sellers;/" }))" title="@cat.Name">
                                             <span>@cat.Name</span>
                                         </a>
                                     </li>

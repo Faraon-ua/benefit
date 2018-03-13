@@ -1,11 +1,13 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Common.Helpers
+@using Benefit.Web.Helpers
 @model Benefit.DataTransfer.ViewModels.ProductPartialViewModel
 
 @{
     var image = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = Model.Product.UrlName });
-    var sellerUrl = "";//Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.Product.Seller.UrlName, action = string.Empty });
+    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.Product.UrlName, Model.Product.SKU) });
+    var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);
+    var reviewsCount = Model.Product.Reviews.Count;
 }
 
 <div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6" @(Model.PageMark == null ? "" : "id=" + Model.PageMark)>
@@ -45,16 +47,13 @@
                     <table class="table-no-border">
                         <tbody>
                             <tr>
-                                @if (Model.Product.AvarageRating.HasValue)
+                                @for (int i = 1; i <= 5; i++)
                                 {
-                                    for (int i = 1; i <= Model.Product.AvarageRating; i++)
-                                    {
-                                        <td>
-                                            <div class="star-active star-voted" title="@i"></div>
-                                        </td>
-                                    }
-                                    <td><a href="#" style="padding-left: 20px;">@Model.Product.Reviews.Count відгуків</a></td>
+                                    <td>
+                                        <div class="star-@(i<=Model.Product.AvarageRating.GetValueOrDefault(0)?"active":"empty") star-voted" title="@i"></div>
+                                    </td>
                                 }
+                                <td><a href="@productDetailsUrl#reviews" style="padding-left: 20px;">@reviewsCount відгуків</a></td>
                             </tr>
                         </tbody>
                     </table>

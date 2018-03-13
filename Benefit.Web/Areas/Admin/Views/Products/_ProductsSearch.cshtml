@@ -48,14 +48,14 @@ else
                             @product.SKU
                         </td>
                         <td>
-                            @Html.ActionLink(product.Name, "CreateOrUpdate", new { id = product.Id }, new { target="_blank" })
+                            @Html.ActionLink(product.Name, "CreateOrUpdate", new { id = product.Id }, new { target = "_blank" })
                         </td>
                         <td>
                             @product.Order
                         </td>
                         <td>
                             @product.Category.Name
-                        </td> 
+                        </td>
                         <td>
                             @product.Seller.Name
                         </td>
@@ -81,8 +81,7 @@ else
                         </td>
                         <td>
                             <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
-                                <a class="btn btn-xs btn-info" href="@Url.RouteUrl(RouteConstants.ProductRouteWithSellerName,
-                                                                         new {productUrl = product.UrlName, categoryUrl = product.Category.UrlName, sellerUrl = product.Seller.UrlName})" target="_blank">
+                                <a class="btn btn-xs btn-info" href="@Url.Action("Index","Tovar", new {area = ""})" target="_blank">
                                     <i class="icon-eye-open bigger-120"></i>
                                 </a>
                                 @{

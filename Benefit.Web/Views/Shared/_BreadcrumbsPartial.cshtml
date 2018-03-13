@@ -1,4 +1,5 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Web.Helpers
 @model Benefit.DataTransfer.ViewModels.BreadCrumbsViewModel
 
 <div style="height: 50px; width: 100%;" class="visible-xs"></div>
@@ -35,7 +36,7 @@
         <input type="hidden" id="seller-id" value="@Model.Seller.Id" />
         <span class="separator">-</span>
         <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-            <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new {action = "Info", id = Model.Seller.UrlName})" title="@Model.Seller.Name" itemprop="item">
+            <a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null)" title="@Model.Seller.Name" itemprop="item">
                 <span itemprop="name">@Model.Seller.Name</span>
             </a>
         </div>
@@ -65,7 +66,7 @@
     {
         <span class="separator">-</span>
         <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-            <a href="@Url.RouteUrl(RouteConstants.SellersRouteName, new {action = "Info", id = Model.Seller.UrlName})" title="@Model.Seller.Name" itemprop="item">
+            <a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null)" title="@Model.Seller.Name" itemprop="item">
                 <span itemprop="name">@Model.Seller.Name</span>
             </a>
         </div>

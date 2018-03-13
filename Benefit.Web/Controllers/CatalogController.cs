@@ -30,6 +30,19 @@ namespace Benefit.Web.Controllers
         [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {
+            if (options != null && options.Contains("sellers"))
+            {
+                var sellers = SellerService.GetSellersCatalog(categoryUrl, options);
+                if (sellers == null)
+                {
+                    return HttpNotFound();
+                }
+                sellers.Breadcrumbs = new BreadCrumbsViewModel()
+                {
+                    Categories = CategoriesService.GetBreadcrumbs(urlName: categoryUrl)
+                };
+                return View("SellersCatalog", sellers);
+            }
             var catsModel = CategoriesService.GetCategoriesCatalog(categoryUrl);
             if (catsModel != null)
             {

@@ -4,6 +4,7 @@
 @using Benefit.Services
 @using Benefit.Services.Domain
 @using Benefit.DataTransfer.ViewModels;
+@using Benefit.Web.Helpers
 @model ProductDetailsViewModel
 
 @{
@@ -12,7 +13,7 @@
 @{
     var image_src = Model.Product.Images.FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
     var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
-    var sellerUrl = Url.RouteUrl(RouteConstants.SellersRouteName, new { id = Model.Product.Seller.UrlName, action = string.Empty });
+    var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index","Home", null);
     var sellerLogo = Model.Product.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
 }
 @section image_src
@@ -296,14 +297,14 @@
                             <div class="x-company-info__parts">
                                 <div class="x-company-info__logo">
                                     <!-- лого постачальника -->
-                                    <a href="#" target="_blank">
+                                    <a href="@sellerUrl" target="_blank">
                                         <img class="x-company-info__logo-img" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" />
                                     </a>
                                     <!-- лого постачальника -->
                                 </div>
                                 Продавець товару:
                                 <div class="x-company-info__title">
-                                    <a class="x-company-info__name" href="#" target="_blank" class="dark_link">@Model.Product.Seller.Name</a>
+                                    <a class="x-company-info__name" href="@sellerUrl" target="_blank" class="dark_link">@Model.Product.Seller.Name</a>
                                 </div>
                                 <div class="x-company-info__item">
                                     <div class="x-iconed-text">
@@ -314,7 +315,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="x-company-info__item"><a href="@sellerUrl" class="dark_link">Всі товари постачальника</a></div>
+                                <div class="x-company-info__item"><a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Catalog")" class="dark_link">Всі товари постачальника</a></div>
                             </div><div class="x-company-info__parts">
                                 <div class="x-company-info__title">Рейтинг постачальника</div>
                                 <div class="x-rating">
@@ -343,8 +344,8 @@
                 <li class=" active">
                     <a href="#descr" data-toggle="tab"><span>Опис</span></a>
                 </li>
-                <li class="product_ask_tab ">
-                    <a href="#ask" data-toggle="tab"><span>Відгуки про товар</span></a>
+                <li class="product_ask_tab">
+                    <a href="#reviews" data-toggle="tab"><span>Відгуки про товар</span></a>
                 </li>
                 <li class="stores_tab">
                     <a href="#stores" data-toggle="tab"><span>Характеристики</span></a>
@@ -365,7 +366,7 @@
                 <div class="tab-pane " id="review">
 
                 </div>
-                <div class="tab-pane" id="ask">
+                <div class="tab-pane" id="reviews">
                     <div class="title-tab-heading visible-xs">Задать вопрос</div>
                     <div class="row">
                         <div class="col-md-3 hidden-sm text_block">

@@ -102,6 +102,94 @@ namespace Benefit.Services.Domain
             };
         }
 
+        public SellersViewModel GetSellersCatalog(string categoryUrl, string options)
+        {
+            var category = db.Categories.Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            if (category == null) return null;
+            var categoryIds = category.ChildCategories.Select(entry => entry.Id).ToList();
+            categoryIds.Add(category.Id);
+            var sellers = db.Sellers
+                .Include(entry => entry.SellerCategories)
+                .Include(entry => entry.Addresses.Select(addr => addr.Region))
+                .Where(entry =>entry.SellerCategories.Select(sc => sc.CategoryId).Intersect(categoryIds).Any());
+
+            var sort = SellerSortOption.Rating;
+
+            if (options != null)
+            {
+                var optionSegments = options.Split(';');
+                foreach (var optionSegment in optionSegments)
+                {
+                    if (optionSegment == string.Empty) continue;
+                    var optionKeyValue = optionSegment.Split('=');
+                    var optionKey = optionKeyValue.First();
+                    var optionValues = optionKeyValue.Last().Split(',');
+                    switch (optionKey)
+                    {
+                        case "sort":
+                            sort = (SellerSortOption)Enum.Parse(typeof(SellerSortOption), optionValues.First());
+                            break;
+                        case "filter":
+                            if (optionValues.Contains("mycity"))
+                            {
+                                var regionId = RegionService.GetRegionId();
+                                sellers = sellers.Where(entry =>
+                                    entry.Addresses.Select(addr => addr.RegionId).Contains(regionId));
+                            }
+                            if (optionValues.Contains("paymentcard"))
+                            {
+                                sellers = sellers.Where(entry => entry.IsAcquiringActive);
+                            }
+                            if (optionValues.Contains("paymentbonuses"))
+                            {
+                                sellers = sellers.Where(entry => entry.IsBonusesPaymentActive || entry.TerminalBonusesPaymentActive);
+                            }
+                            if (optionValues.Contains("freeshipping"))
+                            {
+                                sellers = sellers.Where(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom.HasValue));
+                            }
+                            if (optionValues.Contains("benefitcard"))
+                            {
+                                sellers = sellers.Where(entry => entry.IsBenefitCardActive);
+                            }
+                            if (optionValues.Contains("benefitonline"))
+                            {
+                                sellers = sellers.Where(entry => entry.HasEcommerce);
+                            }
+                            break;
+                        case "specification":
+                            var specCats = db.Categories.Where(entry=>optionValues.Contains(entry.UrlName)).Select(entry=>entry.Id).ToList();
+                            sellers = sellers.Where(entry =>
+                                entry.SellerCategories.Select(sc => sc.CategoryId).Intersect(specCats).Any());
+                            break;
+                    }
+                }
+            }
+            switch (sort)
+            {
+                case SellerSortOption.Rating:
+                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry=>entry.Reviews.Count);
+                    break;
+                case SellerSortOption.NameAsc:
+                    sellers = sellers.OrderBy(entry => entry.Name);
+                    break;
+                case SellerSortOption.NameDesc:
+                    sellers = sellers.OrderByDescending(entry => entry.Name);
+                    break;
+                case SellerSortOption.BonusAsc:
+                    sellers = sellers.OrderBy(entry => entry.UserDiscount);
+                    break;
+                case SellerSortOption.BonusDesc:
+                    sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
+                    break;
+            }
+            return new SellersViewModel()
+            {
+                Category = category,
+                Items = sellers.ToList()
+            };
+        }
+
         public Seller GetSellerWithShippingMethods(string urlName)
         {
             return db.Sellers.Include(entry => entry.ShippingMethods.Select(sh => sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
@@ -202,6 +290,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                 .Include(entry => entry.Seller.Addresses)
+                .Include(entry => entry.Reviews)
                 .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
                 .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
 
@@ -300,7 +389,7 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case ProductSortOption.Order:
-                    items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry=>entry.Name);
+                    items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.Name);
                     break;
                 case ProductSortOption.NameAsc:
                     items = items.OrderBy(entry => entry.Name);

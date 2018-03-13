@@ -15,7 +15,7 @@ namespace Benefit.Web.Helpers
 {
     public class SiteMapHelper
     {
-        public int Generate(UrlHelperExtension urlHelper)
+        public int Generate(UrlHelper urlHelper)
         {
             using (var db = new ApplicationDbContext())
             {

@@ -27,10 +27,9 @@ namespace Benefit.Web.Controllers
         }
 
         [FetchCategories]
-        public ActionResult Index(string productUrl, string categoryUrl, string sellerUrl)
+        public ActionResult Index(string productUrl)
         {
-            var productResult = ProductsService.GetProductDetails(productUrl, sellerUrl, categoryUrl,
-                User.Identity.GetUserId());
+            var productResult = ProductsService.GetProductDetails(productUrl, User.Identity.GetUserId());
             if (productResult == null) return HttpNotFound();
 
             return View(productResult);

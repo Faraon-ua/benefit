@@ -4,8 +4,6 @@
     {
         public const string AdminAreaName = "Admin";
 
-        public const string SellersRouteName = "SellersRoute";
-
         public const string CatalogRouteName = "CatalogRoute";
         public const string CatalogRoutePrefix = "catalog";
 

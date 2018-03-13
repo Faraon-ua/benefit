@@ -13,6 +13,8 @@ using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
+using Benefit.Web.Filters;
+using Benefit.Web.Helpers;
 using Benefit.Web.Models;
 using WebGrease.Css.Extensions;
 
@@ -20,13 +22,15 @@ namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        //        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
-        public async Task<ActionResult> Index()
+        [FetchCategories]
+        //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
+        public async Task<ActionResult> Index(string subdomain)
         {
             var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())
             {
                 mainPageViewModel.FeaturedProducts = db.Products
+                    .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
@@ -36,6 +40,7 @@ namespace Benefit.Web.Controllers
                         Product = entry
                     }).ToList();
                 mainPageViewModel.NewProducts = db.Products
+                    .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
@@ -216,7 +221,7 @@ namespace Benefit.Web.Controllers
                 var result = sellers.Select(entry => new SellerMapLocation()
                 {
                     Name = entry.Name,
-                    Url = Url.RouteUrl(RouteConstants.SellersRouteName, new RouteValueDictionary(new { id = entry.UrlName, action = string.Empty }), Request.Url.Scheme, Request.Url.Host),
+                    Url = Url.SubdomainAction(entry.UrlName, "Index", "Home"),
                     Specialization = entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault) == null ? "" : entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category.Name,
                     UserDiscount = entry.UserDiscount,
                     Latitude = entry.Latitude.Value,
