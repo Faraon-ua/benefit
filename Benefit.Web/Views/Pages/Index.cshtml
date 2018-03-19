@@ -66,62 +66,62 @@
 }
 
 <!--end-title_content-->
-    <div class="wraps hover_shine" id="content">
-        <section class="page-top maxwidth-theme">
-            @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() {IsNews = true, Page = Model})
-            <h1 id="pagetitle" class="no-padding no-margin">@Model.Name</h1>
-        </section>
-        <div class="wrapper_inner wide_page">
-            <div class="middle ">
-                <div class="container">
-                    <div class="maxwidth-theme">
-                        <div class="head-block top">
-                            <div class="bottom_border"></div>
-                        </div>
-                        <div class="wrapper_inner ">
-                            <div class="right_block  wide_">
-                                <div class="middle ">
-                                    <div class="container">
-                                        <div class="detail services">
-                                            <div class="line_block share top ">
-                                                <div class="share_wrapp">
-                                                    <div class="text btn transparent">Поделиться</div>
-                                                    <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
-                                                </div>
+<div class="wraps hover_shine" id="content">
+    <section class="page-top maxwidth-theme">
+        @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { IsNews = true, Page = Model })
+        <h1 id="pagetitle" class="no-padding no-margin">@Model.Name</h1>
+    </section>
+    <div class="wrapper_inner wide_page">
+        <div class="middle ">
+            <div class="container">
+                <div class="maxwidth-theme">
+                    <div class="head-block top">
+                        <div class="bottom_border"></div>
+                    </div>
+                    <div class="wrapper_inner ">
+                        <div class="right_block  wide_">
+                            <div class="middle ">
+                                <div class="container">
+                                    <div class="detail services">
+                                        <div class="line_block share top ">
+                                            <div class="share_wrapp">
+                                                <div class="text btn transparent">Поделиться</div>
+                                                <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
                                             </div>
-                                            <div class="content">
-                                                @Html.Raw(Model.Content)
-                                            </div>
-                                            <div class="wraps goods-block with-padding">
-                                                <div style="clear: both"></div>
+                                        </div>
+                                        <div class="content">
+                                            @Html.Raw(Model.Content)
+                                        </div>
+                                        <div class="wraps goods-block with-padding">
+                                            <div style="clear: both"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="clear: both"></div>
+                                <hr class="bottoms">
+                                <div class="row">
+                                    <div class="col-md-6 share">
+                                        <div class="line_block">
+                                            <div class="share_wrapp">
+                                                <div class="text btn transparent">Поделиться</div>
+                                                <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div style="clear: both"></div>
-                                    <hr class="bottoms">
-                                    <div class="row">
-                                        <div class="col-md-6 share">
-                                            <div class="line_block">
-                                                <div class="share_wrapp">
-                                                    <div class="text btn transparent">Поделиться</div>
-                                                    <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <a class="back-url url-block" href="@Url.Action("Index", "News")"><i class="fa fa-angle-left"></i><span>Назад до новин</span></a>
-                                        </div>
+                                    <div class="col-md-6">
+                                        <a class="back-url url-block" href="@Url.Action("Index", "News")"><i class="fa fa-angle-left"></i><span>Назад до новин</span></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="left_block">
-                            @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", lastNews)
-                        </div>
+                    </div>
+                    <div class="left_block">
+                        @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", lastNews)
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 <div id="seller-application-container"></div>

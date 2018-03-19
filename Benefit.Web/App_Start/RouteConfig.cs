@@ -11,11 +11,6 @@ namespace Benefit.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
-               name: "OldRegister",
-               url: "partner/{id}",
-               defaults: new { controller = "Account", action = "Register", id = UrlParameter.Optional });
-
-            routes.MapRoute(
                 name: RouteConstants.CatalogRouteName,
                 url: RouteConstants.CatalogRoutePrefix + "/{categoryUrl}/{options}",
                 defaults: new

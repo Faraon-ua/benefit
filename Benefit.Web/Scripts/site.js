@@ -61,6 +61,7 @@ function deleteCookie(name) {
 }
 
 function CalculateCartSum() {
+    var userDiscount = parseFloat($(".basket_modal").attr("data-seller-userdiscount"));
     var products = $(".basket_modal tr.basket_modal_table_row.product").map(function () {
         var actualPrice = parseFloat($(this).find(".actual-product-price").text());
         var oldPrice = parseFloat($(this).attr("data-original-price"));
@@ -79,6 +80,7 @@ function CalculateCartSum() {
     var actualSum = products.reduce(function (pv, cv) {
         return pv + cv.actual;
     }, 0);
+    $(".basket_modal_bonus span").text((actualSum*userDiscount/100).toFixed(2));
     $(".basket_modal_price span").text(actualSum.toFixed(2));
     var oldSum = products.reduce(function (pv, cv) { return pv + cv.old; }, 0);
     if (oldSum > actualSum) {
@@ -122,6 +124,81 @@ function processRating(ratingStars, e, isClick) {
 }
 
 $(function () {
+    $('body').on('click', '.basket_modal .plus, .basket_modal .minus', function () {
+        var tr = $(this).parents("tr");
+        var productAmount = $(this).parent().children('.quantity');
+        var retailPrice = parseFloat(tr.attr('data-original-price'));
+        var wholesalePrice = parseFloat(tr.attr('data-wholesale-price'));
+        var wholesaleAmount = parseFloat(tr.attr('data-wholesale-from'));
+        var valueToAdd = 1;
+        var isMinus = $(this).hasClass("minus");
+        var isWeightProduct = false;
+        if ($(this).parent().attr("data-weight-product")) {
+            isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+        }
+        if (isWeightProduct) {
+            valueToAdd = 0.1;
+        }
+        var productCurrentValue = parseFloat(productAmount.val());
+        if (isMinus && productCurrentValue > valueToAdd) {
+            productCurrentValue = (productCurrentValue - valueToAdd);
+        }
+        if (!isMinus) {
+            productCurrentValue = (productCurrentValue + valueToAdd);
+        }
+        if (isWeightProduct) {
+            productCurrentValue = productCurrentValue.toFixed(1);
+        }
+        productAmount.val(productCurrentValue);
+
+        if (wholesaleAmount !== 0) {
+            if (productCurrentValue >= wholesaleAmount) {
+                tr.find(".wholesale-hint").hide();
+                $(".basket_modal_saving").show();
+                tr.find(".actual-product-price").text(wholesalePrice.toFixed(2));
+                tr.find(".old-product-price").show();
+                tr.find(".old-product-total").show();
+            } else {
+                $(".basket_modal_saving").hide();
+                tr.find(".wholesale-hint").show();
+                tr.find(".actual-product-price").text(retailPrice.toFixed(2));
+                tr.find(".old-product-price").hide();
+                tr.find(".old-product-total").hide();
+            }
+        }
+        CalculateCartSum();
+    });
+
+    $('body').on("blur", ".basket_modal .quantity", function () {
+        CalculateCartSum();
+    });
+
+    $("body").on("focus",
+        ".quantity",
+        function () {
+            if ($(this).attr("data-weight-product").toLowerCase() === "true") {
+                $(this).mask("#9.99", { reverse: true });
+            } else {
+                $(this).mask("#00");
+            }
+        });
+
+    var deleteProductFromCartUrl = routePrefix + '/Cart/RemoveProduct?productId=';
+    $('body').on('click', '.delete_product', function () {
+        var parentRow = $(this).parents('.basket_modal_table_row');
+        if (parentRow.hasClass("product")) {
+            var productOptions = parentRow.nextUntil(".product");
+            productOptions.remove();
+        }
+        var productId = $(this).attr("data-product-id");
+        $.post(deleteProductFromCartUrl + productId, function (data) {
+            setCartSummary(data);
+
+            parentRow.remove();
+            CalculateCartSum();
+        });
+    });
+
     $('.battery, .title-to-tooltip').tooltip();
 
     $("#review-rating").mousemove(function (e) {
@@ -183,9 +260,6 @@ $(function () {
     if (url.match('#')) {
         $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
     }
-    $('.nav-tabs a').on('shown.bs.tab', function (e) {
-        window.location.hash = e.target.hash;
-    });
 
     $("#predefinedRegions a").click(function () {
         var regionName = $(this).text();

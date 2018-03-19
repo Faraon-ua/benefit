@@ -54,9 +54,16 @@ namespace Benefit.Services.Cart
                 using (var db = new ApplicationDbContext())
                 {
                     var product =
-                        db.Products.Include(entry => entry.Currency)
+                        db.Products
+                            .Include(entry => entry.Seller)
+                            .Include(entry => entry.Currency)
+                            .Include(entry => entry.Images)
                             .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
                     orderProduct.ProductName = product.Name;
+                    orderProduct.ProductUrlName = product.UrlName;
+                    orderProduct.ProductSku = product.SKU;
+                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                    orderProduct.ProductImageUrl = image == null ? null : image.ImageUrl;
                     orderProduct.ProductPrice = product.Price * product.Currency.Rate;
                     if (product.WholesalePrice.HasValue && product.WholesaleFrom.HasValue)
                     {
@@ -70,6 +77,10 @@ namespace Benefit.Services.Cart
                         orderProductOption.ProductOptionPriceGrowth = productOption.PriceGrowth;
                         orderProductOption.EditableAmount = productOption.EditableAmount;
                     }
+                    Order.SellerUrlName = product.Seller.UrlName;
+                    Order.SellerName = product.Seller.Name;
+                    Order.SellerPrimaryRegionName = product.Seller.PrimaryRegionName;
+                    Order.SellerUserDiscount = product.Seller.UserDiscount;
                 }
                 Order.SellerId = sellerId;
                 Order.OrderProducts.Add(orderProduct);
@@ -82,7 +93,7 @@ namespace Benefit.Services.Cart
         {
             var productToRemove = Order.OrderProducts.FirstOrDefault(entry => entry.ProductId == id);
             Order.OrderProducts.Remove(productToRemove);
-            HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);            
+            HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
             return GetOrderProductsCountAndPrice();
         }
 

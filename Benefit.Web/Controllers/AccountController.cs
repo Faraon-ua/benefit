@@ -19,6 +19,7 @@ using Benefit.Web.Models;
 using Microsoft.Owin.Security.DataProtection;
 using System.Data.Entity;
 using Benefit.Web.Controllers.Base;
+using Benefit.Web.Filters;
 using Newtonsoft.Json;
 
 namespace Benefit.Web.Controllers
@@ -53,6 +54,8 @@ namespace Benefit.Web.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
+        [FetchLastNews]
+        [FetchCategories]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -64,7 +67,7 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +81,14 @@ namespace Benefit.Web.Controllers
                     else
                     {
                         await SignInAsync(user, model.RememberMe);
-                        return RedirectToLocal(returnUrl);
+                        if (isAjaxRequest)
+                        {
+                            return Json(new { returnUrl }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            return RedirectToLocal(returnUrl);
+                        }
                     }
                 }
                 else
@@ -87,8 +97,14 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            if (isAjaxRequest)
+            {
+                return Json(new { error = ModelState.ModelStateErrors() }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         //
@@ -127,7 +143,7 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
             ApplicationUser referal;
             var externalNumber = SettingsService.MinUserExternalNumber;
@@ -195,7 +211,14 @@ namespace Benefit.Web.Controllers
                        + callbackUrl + "\">це посилання</a>");
 
                     TempData["RegisteredEmail"] = user.Email;
-                    return RedirectToAction("PostRegister", "Account");
+                    if (isAjaxRequest)
+                    {
+                        return Json(new { returnUrl }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return RedirectToAction("PostRegister", "Account");
+                    }
                 }
                 else
                 {
@@ -203,7 +226,14 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            return View(model);
+            if (isAjaxRequest)
+            {
+                return Json(new { error = ModelState.ModelStateErrors() }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         [HttpGet]

@@ -1,5 +1,17 @@
-﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
-<p class="delivery_basket_title">Товари в кошику</p>
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+@foreach (var product in Model.Order.OrderProducts)
+{
+    <div class="row" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
+        <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) })">
+            <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+            @product.ProductName
+        </a>
+        <p>@product.Amount x @product.ActualPrice.ToString("F") грн.</p>
+    </div>
+}
+
+@*<p class="delivery_basket_title">Товари в кошику</p>
 <table class="basket_modal_table">
     <thead>
         <tr class="basket_modal_table_row">
@@ -40,5 +52,5 @@
             }
         }
     </tbody>
-</table>
+</table>*@
 

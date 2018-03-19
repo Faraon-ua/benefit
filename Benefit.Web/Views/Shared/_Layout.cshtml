@@ -44,8 +44,8 @@
             </div>
         </div>
         <!--
-    <script type="text/javascript">if(!window.BX)window.BX={};if(!window.BX.message)window.BX.message=function(mess){if(typeof mess=='object') for(var i in mess) BX.message[i]=mess[i]; return true;};</script>
-    -->
+        <script type="text/javascript">if(!window.BX)window.BX={};if(!window.BX.message)window.BX.message=function(mess){if(typeof mess=='object') for(var i in mess) BX.message[i]=mess[i]; return true;};</script>
+        -->
         <script type="text/javascript" src="~/Scripts/v3/kernel_main.js"></script>
         <script type="text/javascript" src="~/Scripts/jquery-2.2.3.min.js"></script>
         <script type="text/javascript" src="~/Scripts/jquery.autocomplete.min.js"></script>
@@ -54,6 +54,7 @@
         <script type="text/javascript" src="~/Scripts/v3/default_84b0f0da7abeae3ee8bdab600a51e10a.js"></script>
         <script type="text/javascript" src="~/Scripts/v3/default_34abd663f55e3f30e482309b7ae729af.js"></script>
         <script type="text/javascript" src="~/Scripts/site.js"></script>
+        <script src="~/Scripts/jquery.mask.min.js"></script>
         <script src="~/Scripts/v3/menu.js"></script>
         @RenderSection("scripts", required: false)
 
@@ -69,6 +70,14 @@
                     onSelect: function(suggestion) {
                         window.location.href = searchUrl + "?term=" + suggestion.data;
                     }
+                });
+
+                $(".basket-link, #order-cart, .order-edit").click(function (e) {
+                    e.preventDefault();
+                    var cartUrl = '@Url.Action("GetCart", "Cart", new { area = string.Empty })';
+                    $("#cart-container").load(cartUrl, function () {
+                        $("#basket_modal").modal('show');
+                    });
                 });
 
                 $(".region_wrapper, .burger").popover({
@@ -210,6 +219,6 @@
         <a class="scroll-to-top ROUND_COLOR PADDING" href="#" id="scrollToTop"></a>
     </div>
     @Html.Partial("_RegionModal")
-<div id="cart-container"></div>
+    <div id="cart-container"></div>
 </body>
 </html>

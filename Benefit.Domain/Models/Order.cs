@@ -60,6 +60,12 @@ namespace Benefit.Domain.Models
         public string SellerId { get; set; }
         [MaxLength(128)]
         public string SellerName { get; set; }
+        [NotMapped]
+        public string SellerUrlName { get; set; }
+        [NotMapped]
+        public string SellerPrimaryRegionName { get; set; }
+        [NotMapped]
+        public double SellerUserDiscount { get; set; }
         public string SellerDiscountName { get; set; }
         public double? SellerDiscount { get; set; }
         [MaxLength(128)]

@@ -12,6 +12,7 @@ using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Cart;
 using Benefit.Services.Domain;
+using Benefit.Web.Filters;
 using Microsoft.AspNet.Identity;
 using NLog;
 
@@ -68,7 +69,7 @@ namespace Benefit.Web.Controllers
             return Json(new { redirectUrl = Url.Action("Order"), orderSummary.ProductsNumber, orderSummary.Price });
         }
 
-        [Authorize]
+        [FetchCategories]
         public ActionResult Order()
         {
             var model = new CompleteOrderViewModel();
@@ -138,6 +139,7 @@ namespace Benefit.Web.Controllers
             return View(model);
         }
 
+        [FetchCategories]
         public ActionResult OrderCompleted(string number)
         {
             return View(model: number);

@@ -1,6 +1,6 @@
 ﻿$(function () {
     $("body").on('click',
-        ".counter .plus, .counter .minus",
+        ".product-item .plus, .product-item .minus",
         function () {
             var quantity = $(this).parent().find('input[name=quantity]');
             var valueToAdd = 1;
@@ -20,16 +20,6 @@
                 productCurrentValue = productCurrentValue.toFixed(1);
             }
             quantity.val(productCurrentValue);
-        });
-
-    $("body").on("focus",
-        ".quantity",
-        function () {
-            if ($(this).attr("data-weight-product").toLowerCase() === "true") {
-                $(this).mask("#9.99", { reverse: true });
-            } else {
-                $(this).mask("#00");
-            }
         });
 
     $("body").on('click', "#buy-product-with-options", function () {
