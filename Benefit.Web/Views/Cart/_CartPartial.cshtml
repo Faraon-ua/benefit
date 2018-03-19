@@ -46,7 +46,7 @@
                                 <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
                                     <td class="basket_modal_td">
                                         <img height="24" src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" />
-                                        @Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) })
+                                        <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) })">@product.ProductName</a>
                                     </td>
                                     <td class="basket_modal_td">
 
@@ -55,7 +55,7 @@
                                             <input class="product_modal_amount quantity" name="quantity" value="@product.Amount" type="text" data-weight-product="@product.IsWeightProduct">
                                             <div class="plus">+</div>
                                         </div>
-                                      
+
                                         <div style="display: @(hasWholesale && product.Amount < product.WholesaleFrom.Value ? "" : "none")" class="wholesale-hint">
                                             опт від <span>@product.WholesaleFrom.GetValueOrDefault(0)</span> шт
                                         </div>
