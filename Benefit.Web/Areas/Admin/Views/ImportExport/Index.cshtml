@@ -12,10 +12,11 @@
                 type: "POST",
                 url: routePrefix + '/Admin/ImportExport/OneCCommerceMLImport?id=@Model.Id',
                 success: function (result) {
-                    flashMessage(result.message, false, true);
-                },
-                error: function (xhr) {
-                    flashMessage(xhr.responseJSON, true, true);
+                    if (result.error) {
+                        flashMessage(result.error, true, true);
+                    } else {
+                        flashMessage(result.message, false, true);
+                    }
                 }
             });
         });

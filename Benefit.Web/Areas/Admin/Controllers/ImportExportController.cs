@@ -129,7 +129,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
             List<XmlCategory> xmlCategories = null;
             List<XmlProduct> xmlProducts = null;
-            var xmlToDbCategoriesMapping = new Dictionary<string, string>();
+            var xmlToDbCategoriesMapping = new List<KeyValuePair<string, string>>();
 
             var seller = db.Sellers.Find(id);
             if (seller == null)
@@ -179,14 +179,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         {
                             foreach (var dbToxmlCategory in dbToxmlCategories)
                             {
-                                xmlToDbCategoriesMapping.Add(dbToxmlCategory.Id, dbCategory.Id);
+                                xmlToDbCategoriesMapping.Add(new KeyValuePair<string, string>(dbToxmlCategory.Id, dbCategory.Id));
                             }
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    return Json("Ошибка імпорту файлів");
+                    return Json(new { error = "Ошибка імпорту файлів" }, JsonRequestBehavior.AllowGet);
                 }
 
                 xmlProducts =
@@ -194,8 +194,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 xmlProducts =
                     xmlProducts.Where(
                         entry =>
-                            xmlToDbCategoriesMapping.Keys.Contains(entry.CategoryId)).ToList();
-                xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping[entry.CategoryId]);
+                            xmlToDbCategoriesMapping.Select(cat => cat.Key).Contains(entry.CategoryId)).ToList();
+                xmlProducts.ForEach(entry => entry.CategoryId = xmlToDbCategoriesMapping.First(cat => cat.Key == entry.CategoryId).Value);
                 results = ProductService.ProcessImportedProducts(xmlProducts, seller.Id, seller.UrlName);
 
                 Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
@@ -206,7 +206,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         .FirstOrDefault();
                 if (filesPath == null)
                 {
-                    return Json("Імпорт файлу import.xml успішно виконаний, але не було знайдено каталог зображень");
+                    return Json(new { message = "Імпорт файлу import.xml успішно виконаний, але не було знайдено каталог зображень" }, JsonRequestBehavior.AllowGet);
                 }
                 var ftpImagesPath = filesPath.Parent.FullName;
 
@@ -245,13 +245,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
             catch (XmlException)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json("Завантажений файл має невірну структуру");
+                return Json(new { errror = "Завантажений файл має невірну структуру" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
                 Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 _logger.Error(ex);
-                return Json("Помилка імпорту файлу: " + ex.InnerException.Message);
+                return Json(new { error = "Помилка імпорту файлу: " + ex.InnerException.Message }, JsonRequestBehavior.AllowGet);
             }
         }
     }
