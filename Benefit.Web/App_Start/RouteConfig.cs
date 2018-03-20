@@ -11,6 +11,12 @@ namespace Benefit.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+              name: RouteConstants.CatalogRouteName + "GetProducts",
+              url: RouteConstants.CatalogRoutePrefix + "/GetProducts",
+              defaults: new { controller = "Catalog", action = "GetProducts" }
+              );
+
+            routes.MapRoute(
                 name: RouteConstants.CatalogRouteName,
                 url: RouteConstants.CatalogRoutePrefix + "/{categoryUrl}/{options}",
                 defaults: new
@@ -33,12 +39,6 @@ namespace Benefit.Web
                     productUrl = UrlParameter.Optional
                 }
             );
-            
-            //routes.MapRoute(
-            //    name: RouteConstants.CatalogRouteName + "GetProducts",
-            //    url: RouteConstants.CatalogRoutePrefix + "/GetProducts/{id}",
-            //    defaults: new { controller = "Catalog", action = "GetProducts", id = UrlParameter.Optional }
-            //    );
 
             routes.MapRoute(
                 name: "pagesRoute",
