@@ -179,9 +179,6 @@ namespace Benefit.Services.Domain
                 Parallel.ForEach(dbProductsToUpdate, (dbProduct) =>
                 {
                     var xmlProductToUpdate = xmlProductsToUpdate.First(entry => entry.Id == dbProduct.Id);
-                    dbProduct.Name = xmlProductToUpdate.Name;
-                    dbProduct.UrlName = xmlProductToUpdate.Name.Translit();
-                    dbProduct.Description = xmlProductToUpdate.Description;
                     dbProduct.LastModified = DateTime.UtcNow;
                     dbProduct.LastModifiedBy = "1CImport";
                     dbProduct.CategoryId = xmlProductToUpdate.CategoryId;
