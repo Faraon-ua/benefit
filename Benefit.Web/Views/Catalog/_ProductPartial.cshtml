@@ -13,23 +13,27 @@
 <div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6" @(Model.PageMark == null ? "" : "id=" + Model.PageMark)>
     <div class="item" style="height: 585px;">
         <div class="img shine" style="text-align: left;">
-            <a href="@productDetailsUrl" class="thumb">
-                @if (image == null)
-                {
-                    <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Title" title="@Model.Product.Title">
-                }
-                else
-                {
-                    if (image.IsAbsoluteUrl)
-                    {
-                        <img src="@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
-                    }
-                    else
-                    {
-                        <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
-                    }
-                }
-            </a>
+            <div class="row">
+                <div class="span2">
+                    <a href="@productDetailsUrl" class="thumb">
+                        @if (image == null)
+                        {
+                            <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Title" title="@Model.Product.Title">
+                        }
+                        else
+                        {
+                            if (image.IsAbsoluteUrl)
+                            {
+                                <img src="@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
+                            }
+                            else
+                            {
+                                <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
+                            }
+                        }
+                    </a>
+                </div>
+            </div>
 
             <div class="stickers">
                 @if (Model.Product.Seller.UserDiscount > 0)
@@ -42,7 +46,7 @@
 
             <a href="@productDetailsUrl" class="dark_link" style="font-size: 16px; font-weight: bold">@Model.Product.Name</a>
 
-            <div class="rating" style="width:100%; ">
+            <div class="rating" style="width: 100%;">
                 <div class="iblock-vote small">
                     <table class="table-no-border">
                         <tbody>
@@ -50,7 +54,7 @@
                                 @for (int i = 1; i <= 5; i++)
                                 {
                                     <td>
-                                        <div class="star-@(i<=Model.Product.AvarageRating.GetValueOrDefault(0)?"active":"empty") star-voted" title="@i"></div>
+                                        <div class="star-@(i <= Model.Product.AvarageRating.GetValueOrDefault(0) ? "active" : "empty") star-voted" title="@i"></div>
                                     </td>
                                 }
                                 <td><a href="@productDetailsUrl#reviews" style="padding-left: 20px;">@reviewsCount відгуків</a></td>
@@ -59,7 +63,7 @@
                     </table>
                 </div>
             </div>
-            <div class="sa_block" style="width:100%; float: left; ">
+            <div class="sa_block" style="width: 100%; float: left;">
                 <div class="item-stock">
                     <span class="icon stock"></span>
                     <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
@@ -75,13 +79,13 @@
                         <div class="price">
                             @if (Model.Product.OldPrice.HasValue)
                             {
-                                <span style="font-size: 14px; color: grey; text-decoration: line-through; margin-right: 10px;">@Model.Product.OldPrice грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                                <span style="font-size: 14px; color: grey; text-decoration: line-through; margin-right: 10px;">@Model.Product.OldPrice.Value.ToString("F") грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
                                 <br><br>
                             }
-                            <span class="price_value">@Model.Product.Price грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                            <span class="price_value">@Model.Product.Price.ToString("F") грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
                             @if (Model.Product.WholesalePrice.HasValue)
                             {
-                                <span class="green">| @Model.Product.WholesalePrice.Value.ToString() <span class="small">грн/опт</span></span>
+                                <span class="green">| @Model.Product.WholesalePrice.Value.ToString("F") <span class="small">грн/опт</span></span>
                             }
                         </div>
                     </div>
@@ -108,11 +112,10 @@
                     </span>
                 </div>
                 <div class="button_block hidden-lg"></div>
-                <br>
-                <div class="item-stock" style="margin-top: 20px; text-align: left;">
-                    <a href="@sellerUrl">@Model.Product.Seller.Name</a><br>
-                    @Model.Product.Seller.PrimaryRegionName
-                </div>
+            </div>
+            <div class="item-stock" style="padding-top: 10px; text-align: left;">
+                <a href="@sellerUrl">@Model.Product.Seller.Name</a><br>
+                @Model.Product.Seller.PrimaryRegionName
             </div>
         </div>
     </div>

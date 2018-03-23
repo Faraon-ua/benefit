@@ -3,7 +3,7 @@
     @if (Request.IsAuthenticated)
     {
         <div class="wrap_icon inner-table-block">
-            <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
+            <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("index", "panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
                 <i class="svg svg-cabinet lg" aria-hidden="true"></i>
                 <span class="wrap">
                     <span class="name">Кабінет</span>
@@ -15,7 +15,7 @@
     else
     {
         <div class="wrap_icon inner-table-block">
-            <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("Login", "Account")">
+            <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("login", "account")">
                 <i class="svg svg-cabinet-login lg" aria-hidden="true"></i>
                 <span class="wrap">
                     <span class="name">Увійти</span>

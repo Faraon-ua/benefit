@@ -1,3 +1,11 @@
+.row .span2 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 185px;
+    overflow: hidden;
+}
+
 .basket_modal_saving {
     margin-bottom: 5px;
     text-align: right;
@@ -204,6 +212,7 @@ basket_modal_table td:nth-child(4) {
 }
 
 .counter {
+    float: left;
     box-sizing: border-box;
     background: #f3f3f5;
     font-size: 0;
@@ -4494,7 +4503,7 @@ body .logo_and_menu-row .basket-link.delay{padding-right:26px}
 .counter_block input[type="text"]{padding:7px 3px}
 .counter_wrapp{font-size:0;padding:15px 0 0;white-space:nowrap}
 .counter_wrapp .counter_block{margin:0 10px 0 0}
-.button_block{display:inline-block;vertical-align:top}
+.button_block{display:inline-block;vertical-align: top;float: right;}
 .counter_wrapp .button_block.wide{display:block;margin:0;width:100%}
 .counter_wrapp .button_block.wide .button{display:block}
 .button.in-cart i,.btn.in-cart i{display:inline-block;width:11px;height:13px;background:url(../images/icons_wish.png) -49px -5px no-repeat;vertical-align:middle;margin:0 8px 0 0}

@@ -232,7 +232,7 @@
                                             {
                                                 <div class="x-product-price__discount">
                                                     <div class="x-product-price__discount-value" data-qaid="price_without_discount">
-                                                        @Model.Product.OldPrice грн
+                                                        @Model.Product.OldPrice.Value.ToString("F") грн
                                                     </div>
                                                 </div>
                                             }
@@ -241,7 +241,7 @@
                                                 <div class="x-product-price__discount-info">
                                                     <a href="#" class="dark_link wholesalePices">Гуртові ціни</a>
                                                     <p style="display: none;">
-                                                        <span>@Model.Product.WholesalePrice грн</span>
+                                                        <span>@Model.Product.WholesalePrice.Value.ToString("F") грн</span>
                                                         <span>.........................</span>
                                                         <span>від @Model.Product.WholesaleFrom шт.</span>
                                                     </p>
