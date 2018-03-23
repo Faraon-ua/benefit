@@ -59,6 +59,7 @@
 });
 
 function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduct) {
+    $("#" + productId).css("opacity", 0.3);
     var productAmount = amount;
     var productOptions;
     if (hasOptions) {
@@ -91,10 +92,11 @@ function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduc
     $.post(addToCartUrl + "?sellerId=" + sellerId,
         order,
         function (data) {
-            $(".product_buy").removeClass("loadings");
             $('#product_modal').modal('hide');
             setTimeout(function () {
                 $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                $("#" + productId).css("opacity", 1);
+                $(".product_buy").removeClass("loadings");
                 setCartSummary(data);
             }, 1000);
         });

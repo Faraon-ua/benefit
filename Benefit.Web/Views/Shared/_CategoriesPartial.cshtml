@@ -34,13 +34,16 @@
                                                 </g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
                                             </span>
                                             <div class="child-menu child-menu-3 hidden">
-                                                <div style="padding: 15px; clear: both;">
+                                                <div style="padding: 5px; clear: both;">
                                                     @foreach (var childCat in subCat.ChildCategories)
                                                     {
-                                                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" class="pull-left child-category">
-                                                            <img src="~/Images/CategoryLogo/@childCat.ImageUrl" style="width: 100%;" />
+                                                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" class="pull-left child-category">
+                                                        <img src="~/Images/CategoryLogo/@childCat.ImageUrl" style="width: 100%;" />
+                                                        <div style="height: 50px; overflow: hidden;
+                                                                                                                                                                                                                                                                                                                                                     ">
                                                             @childCat.Name
-                                                        </a>
+                                                        </div>
+                                                    </a>
                                                     }
                                                 </div>
                                             </div>

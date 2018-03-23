@@ -22,6 +22,7 @@ namespace Benefit.Services.Domain
             var sku = urlName.Substring(delimeterPos, urlName.Length - delimeterPos);
             var product = db.Products
                 .Include(entry => entry.Seller.ShippingMethods.Select(addr=>addr.Region))
+                .Include(entry => entry.Seller.Addresses.Select(addr=>addr.Region))
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Currency)
                 .Include(entry => entry.ProductParameterProducts.Select(pr=>pr.ProductParameter))

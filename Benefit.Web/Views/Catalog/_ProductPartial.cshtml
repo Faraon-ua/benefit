@@ -11,7 +11,7 @@
 }
 
 <div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6" @(Model.PageMark == null ? "" : "id=" + Model.PageMark)>
-    <div class="item" style="height: 585px;">
+    <div class="item" style="height: 585px;" id="@Model.Product.Id">
         <div class="img shine" style="text-align: left;">
             <div class="row">
                 <div class="span2">
@@ -44,7 +44,7 @@
                 @*<div class="sticker_aktsiya">Сове</div>*@
             </div>
 
-            <a href="@productDetailsUrl" class="dark_link" style="font-size: 16px; font-weight: bold">@Model.Product.Name</a>
+            <a href="@productDetailsUrl" class="dark_link" style="font-size: 16px; font-weight: bold; height: 66px; display: block; overflow: hidden;">@Model.Product.Name</a>
 
             <div class="rating" style="width: 100%;">
                 <div class="iblock-vote small">
@@ -108,10 +108,12 @@
                 <div class="button_block product_buy" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.Seller.Id" data-is-weight-product="@Model.Product.IsWeightProduct">
                     <span class="small to-cart btn btn-default transition_bg animate-load" style="height: 36px; padding: 10px;">
                         <i class="visible-xs fa fa-shopping-cart" style="width: 20px;"></i>
-                        <i></i><span class="hidden-xs">Купити</span>
+                        <i></i>
+                        <span class="hidden-xs" style="font-weight:bold;">Купити</span>
                     </span>
                 </div>
                 <div class="button_block hidden-lg"></div>
+                <br class="clear" />
             </div>
             <div class="item-stock" style="padding-top: 10px; text-align: left;">
                 <a href="@sellerUrl">@Model.Product.Seller.Name</a><br>

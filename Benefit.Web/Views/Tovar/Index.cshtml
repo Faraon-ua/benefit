@@ -13,8 +13,10 @@
 @{
     var image_src = Model.Product.Images.FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
     var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
-    var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index","Home", null);
+    var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);
     var sellerLogo = Model.Product.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+    var sellerAddress = @Model.Product.Seller.Addresses.FirstOrDefault();
+    var sellerAddressStr = sellerAddress == null ? "" : string.Format("{0}, {1}", sellerAddress.Region.Name_ua, sellerAddress.AddressLine);
 }
 @section image_src
 {
@@ -36,6 +38,7 @@
 {
     <link href="~/Content/v3/css/product.css" rel="stylesheet" />
     <link href="~/Content/v3/css/ubislider.min.css" rel="stylesheet" />
+    <link href="~/Content/css/fontawesome.min.css" rel="stylesheet" />
 }
 @section scripts
 {
@@ -63,7 +66,7 @@
             var sellerId = '@Model.Product.SellerId';
 
             $("#buy-product, #buy-product-with-options").click(function () {
-                var buttonId = $(this).attr("id");
+               var buttonId = $(this).attr("id");
                 $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
                     //if купить баттон
                     if (buttonId == "buy-product") {
@@ -154,7 +157,7 @@
             <tbody>
                 <tr>
                     <td class="x-product-page__main-content">
-                        <div class="x-product-page__main-info">
+                        <div class="x-product-page__main-info product_info_wrap">
                             <div class="x-product-info">
                                 <div class="x-product-info__images">
                                     <div class="ubislider-image-container left" data-ubislider="slider2"></div>
@@ -182,12 +185,16 @@
                                         </div>
                                     </div>
                                     <p style="float: right;">
-                                        <a href="#" class="sb gradient glossy twitter">Twitter</a>
-                                        <a href="#" class="sb gradient glossy blue twitter">Twitter</a>
-                                        <a href="#" class="sb gradient glossy purple twitter">Twitter</a>
-                                        <a href="#" class="sb gradient glossy red twitter">Twitter</a>
-                                        <a href="#" class="sb gradient glossy green twitter">Twitter</a>
-                                        <a href="#" class="sb gradient glossy orange twitter">Twitter</a>
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u=@shareUrl" target="_blank" style="color: #3B5998;">
+                                            <i class="fa fa-facebook-square" style="font-size: 3em;"></i>
+                                        </a>
+                                        <a href="https://twitter.com/share?url=@shareUrl&text=@Model.Product.Name" target="_blank" style="color: #28AEDB;">
+                                            <i class="fa fa-twitter-square" style="font-size: 3em;"></i>
+                                        </a>
+                                        <a href="https://plus.google.com/share?url=@shareUrl"
+                                           onclick=" javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false; " style="color: #DC4E40;">
+                                            <i class="fa fa-google-plus-square" style="font-size: 3em;"></i>
+                                        </a>
                                     </p>
 
                                     <div class="x-product-info__item">
@@ -308,7 +315,7 @@
                                     <div class="x-iconed-text">
                                         <div class="x-iconed-text__text">
                                             <span class="dark_link">
-                                                @Model.Product.Seller.PrimaryRegionName
+                                                @sellerAddressStr
                                             </span>
                                         </div>
                                     </div>
@@ -550,7 +557,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                              
+
                                             </div>
                                         </div>
                                         @if (Model.Product.WholesalePrice.HasValue && Model.Product.WholesaleFrom.HasValue)
