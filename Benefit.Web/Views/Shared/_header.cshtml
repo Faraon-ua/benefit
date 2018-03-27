@@ -91,7 +91,12 @@
                                             <td class="menu-item dropdown catalog @(isMainPage ? "" : "active")">
                                                 <div class="wrap">
                                                     <a class="dropdown-toggle" href="@Url.Action("Index","Catalog", new { categoryUrl = string.Empty })" style="padding-top: 10px;">
-                                                        <div>КАТАЛОГ<br>ТОВАРІВ ТА ПОСЛУГ<div class="line-wrapper"><span class="line"></span></div></div>
+                                                        <div class="no-hover-underline">
+                                                            КАТАЛОГ<br>ТОВАРІВ ТА ПОСЛУГ
+                                                            <div class="line-wrapper">
+                                                                <span class="line"></span>
+                                                            </div>
+                                                        </div>
                                                     </a>
                                                     @if (!isMainPage)
                                                     {
@@ -154,11 +159,11 @@
                                             <td class="menu-item dropdown catalog wide_menu">
                                                 <div class="wrap">
                                                     <a class="dropdown-toggle" href="#" style="padding-top: 10px;">
-                                                        <div>
+                                                        <div class="no-hover-underline">
                                                             КАТАЛОГ<br>ПОСТАЧАЛЬНИКІВ<div class="line-wrapper"><span class="line"></span></div>
                                                         </div>
                                                     </a>
-                                                    <ul class="dropdown-menu">
+                                                    @*<ul class="dropdown-menu">
                                                         @foreach (var cat in categories)
                                                         {
                                                             <div class="dropdown-submenu" style="width: 20%; float: left; text-align: center; padding-bottom: 20px;">
@@ -170,7 +175,7 @@
                                                                 </div>
                                                             </div>
                                                         }
-                                                    </ul>
+                                                    </ul>*@
                                                 </div>
                                             </td>
                                             @Html.Partial("_MenuPartial")

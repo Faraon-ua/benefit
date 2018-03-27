@@ -15,23 +15,21 @@
         <div class="img shine" style="text-align: left;">
             <div class="row">
                 <div class="span2">
-                    <a href="@productDetailsUrl" class="thumb">
-                        @if (image == null)
+                    @if (image == null)
+                    {
+                        <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Title" title="@Model.Product.Title">
+                    }
+                    else
+                    {
+                        if (image.IsAbsoluteUrl)
                         {
-                            <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Title" title="@Model.Product.Title">
+                            <img src="@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
                         }
                         else
                         {
-                            if (image.IsAbsoluteUrl)
-                            {
-                                <img src="@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
-                            }
-                            else
-                            {
-                                <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
-                            }
+                            <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
                         }
-                    </a>
+                    }
                 </div>
             </div>
 
@@ -106,8 +104,8 @@
                     <div class="plus">+</div>
                 </div>
                 <div class="button_block product_buy" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.Seller.Id" data-is-weight-product="@Model.Product.IsWeightProduct">
-                    <span class="small to-cart btn btn-default transition_bg animate-load" style="height: 36px; padding: 10px;">
-                        <i class="visible-xs fa fa-shopping-cart" style="width: 20px;"></i>
+                    <span class="small to-cart btn btn-default transition_bg animate-load" style="height: 36px; padding: 10px; margin-right: 15px;">
+                        <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
                         <i></i>
                         <span class="hidden-xs" style="font-weight:bold;">Купити</span>
                     </span>

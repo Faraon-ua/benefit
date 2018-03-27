@@ -124,6 +124,14 @@ function processRating(ratingStars, e, isClick) {
 }
 
 $(function () {
+    $(".section-menu").hover(function () {
+        $("#bg").css("background", "rgba(0, 0, 0, 0.3)");
+        $("#bg").css("z-index", "100");
+    }, function () {
+        $("#bg").css("background", "rgba(0, 0, 0, 0)");
+        $("#bg").css("z-index", "-1");
+    });
+
     $('body').on('click', '.basket_modal .plus, .basket_modal .minus', function () {
         var tr = $(this).parents("tr");
         var productAmount = $(this).parent().children('.quantity');
