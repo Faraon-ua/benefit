@@ -53,13 +53,12 @@
                 {
                     if (Model.Categories.Last().Key.Id == breadCrumb.Key.Id)
                     {
-                        <a href="#" itemprop="item">
-                            <span itemprop="name">@breadCrumb.Key.Name</span>
-                            @if (hasDrop)
-                            {
-                                <span class="separator"></span>
-                            }
-                        </a>
+                        <span itemprop="name" itemprop="item">@breadCrumb.Key.Name
+                        @if (hasDrop)
+                        {
+                            <span class="separator"></span>
+                        }
+                        </span>
                     }
                     else
                     {
@@ -105,9 +104,7 @@
     {
         <span class="separator">-</span>
         <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-            <a href="#" title="@Model.Product.Name" itemprop="item">
-                <span itemprop="name">@Model.Product.Name</span>
-            </a>
+            <span itemprop="item">@Model.Product.Name</span>
         </div>
     }
 </div>
