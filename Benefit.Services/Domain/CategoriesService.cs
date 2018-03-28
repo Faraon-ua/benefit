@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
+using System.Web.Caching;
 using Benefit.DataTransfer.ViewModels.Base;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
@@ -32,31 +34,38 @@ namespace Benefit.Services.Domain
         {
             return db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order).ToList();
         }
-        public List<Category> GetBreadcrumbs(string categoryId = null, string urlName = null)
+        public Dictionary<Category,List<Category>> GetBreadcrumbs(string categoryId = null, string urlName = null)
         {
             var cacheKey = string.Format("{0}{1}{2}", CacheConstants.BreadCrumbsKey, categoryId, urlName);
             if (HttpRuntime.Cache[cacheKey] != null)
             {
-                return HttpRuntime.Cache[CacheConstants.BreadCrumbsKey] as List<Category>;
+                return HttpRuntime.Cache[CacheConstants.BreadCrumbsKey] as Dictionary<Category, List<Category>>;
             }
-            var resultList = new List<Category>();
+            var result = new Dictionary<Category, List<Category>>();
             var category = db.Categories.Include(entry => entry.ParentCategory).FirstOrDefault(entry => entry.Id == categoryId || entry.UrlName == urlName);
             if (category != null)
             {
-                resultList.Add(category);
                 while (category.ParentCategory != null)
                 {
-                    resultList.Add(category.ParentCategory);
+                    var nextCats = db.Categories
+                        .Where(entry =>
+                            entry.ParentCategoryId == category.ParentCategory.Id && entry.IsActive && entry.Id != category.Id).ToList();
+                    result.Add(category, nextCats);
                     category = category.ParentCategory;
                 }
             }
-            resultList.Reverse();
-            return resultList;
+            if (category != null)
+            {
+                result.Add(category, new List<Category>());
+            }
+            result = result.Reverse().ToDictionary(x => x.Key, x => x.Value);
+            HttpRuntime.Cache.Add(CacheConstants.BreadCrumbsKey, result, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(3), CacheItemPriority.Default, null);
+            return result;
         }
 
         public CategoriesViewModel GetCategoriesCatalog(string categoryUrl)
         {
-            var parent = db.Categories.Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            var parent = db.Categories.Include(entry => entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
             if (parent != null && !parent.ChildCategories.Any())
             {
                 return null;

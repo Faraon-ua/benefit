@@ -14,7 +14,7 @@
     </div>
     @if (Model.IsNews)
     {
-        var newsUrl = Model.Page == null ? string.Empty : Url.Action("Index", "News");
+        var newsUrl = Model.Page == null ? string.Empty : Url.Action("index", "news");
         <span class="separator">-</span>
         <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
             <a href="@newsUrl" title="Новини Benefit" itemprop="item">
@@ -45,28 +45,49 @@
     {
         foreach (var breadCrumb in Model.Categories)
         {
+            var hasDrop = breadCrumb.Value.Any();
+            var dropClass = hasDrop ? "drop" : "";
             <span class="separator">-</span>
-            <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <div class="bx-breadcrumb-item @dropClass" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                 @if (Model.Seller == null || (Model.Seller != null && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "info"))
                 {
-                    if (Model.Categories.Last().Id == breadCrumb.Id)
+                    if (Model.Categories.Last().Key.Id == breadCrumb.Key.Id)
                     {
                         <a href="#" itemprop="item">
-                            <span itemprop="name">@breadCrumb.Name</span>
+                            <span itemprop="name">@breadCrumb.Key.Name</span>
+                            @if (hasDrop)
+                            {
+                                <span class="separator"></span>
+                            }
                         </a>
                     }
                     else
                     {
-                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
-                            <span itemprop="name">@breadCrumb.Name</span>
+                        <a class="number" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = breadCrumb.Key.UrlName})" title="@breadCrumb.Key.Title" itemprop="item">
+                            <span itemprop="name">@breadCrumb.Key.Name</span>
+                            @if (hasDrop)
+                            {
+                                <span class="separator"></span>
+                            }
                         </a>
                     }
                 }
                 else
                 {
-                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {sellerUrl = Model.Seller.UrlName, categoryUrl = breadCrumb.UrlName})" title="@breadCrumb.Name" itemprop="item">
-                        <span itemprop="name">@breadCrumb.Name</span>
+                    <a class="number" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {sellerUrl = Model.Seller.UrlName, categoryUrl = breadCrumb.Key.UrlName})" title="@breadCrumb.Key.Title" itemprop="item">
+                        <span itemprop="name">@breadCrumb.Key.Name</span>
                     </a>
+                }
+                @if (breadCrumb.Value.Any())
+                {
+                    <div class="dropdown_wrapp">
+                        <div class="dropdown">
+                            @foreach (var cat in breadCrumb.Value)
+                            {
+                                <a class="dark_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName})" title="@cat.Title">@cat.Name</a>
+                            }
+                        </div>
+                    </div>
                 }
             </div>
         }

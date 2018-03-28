@@ -204,7 +204,7 @@ namespace Benefit.Web.Controllers
                 if (result.Succeeded)
                 {
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                    var callbackUrl = Url.Action("confirmEmail", "account",
                        new { userId = user.Id, code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id,
                        "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\""
@@ -217,7 +217,7 @@ namespace Benefit.Web.Controllers
                     }
                     else
                     {
-                        return RedirectToAction("PostRegister", "Account");
+                        return RedirectToAction("postregister", "account");
                     }
                 }
                 else
@@ -256,7 +256,7 @@ namespace Benefit.Web.Controllers
             }
 
             string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+            var callbackUrl = Url.Action("resetPassword", "account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(user.Id, "Reset Password", "Для відновлення паролю натисніть <a href=\"" + callbackUrl + "\">ТУТ</a>");
             return View("ForgotPasswordConfirmation");
         }
@@ -352,7 +352,7 @@ namespace Benefit.Web.Controllers
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
             ViewBag.HasLocalPassword = HasPassword();
-            ViewBag.ReturnUrl = Url.Action("Manage");
+            ViewBag.ReturnUrl = Url.Action("manage");
             return View();
         }
 

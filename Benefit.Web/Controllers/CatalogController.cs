@@ -49,7 +49,7 @@ namespace Benefit.Web.Controllers
                 return View("CategoriesCatalog", catsModel);
             }
 
-            var catalog = SellerService.GetSellerCatalog(null, categoryUrl, options);
+            var catalog = SellerService.GetSellerProductsCatalog(null, categoryUrl, options);
             return View("ProductsCatalog", catalog);
             //var sellers = CategoriesService.GetCategorySellers(categoryUrl);
             //if (sellers == null) return HttpNotFound();

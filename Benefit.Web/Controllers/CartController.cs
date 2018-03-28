@@ -66,7 +66,7 @@ namespace Benefit.Web.Controllers
                 Cart.CurrentInstance.AddProduct(orderProduct, sellerId);
             }
             var orderSummary = Cart.CurrentInstance.GetOrderProductsCountAndPrice();
-            return Json(new { redirectUrl = Url.Action("Order"), orderSummary.ProductsNumber, orderSummary.Price });
+            return Json(new { redirectUrl = Url.Action("order", "cart"), orderSummary.ProductsNumber, orderSummary.Price });
         }
 
         [FetchCategories]
@@ -173,7 +173,7 @@ namespace Benefit.Web.Controllers
 
                 //order notifications
                 var NotificationService = new NotificationsService();
-                var orderUrl = Url.Action("Details", "Orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName }, Request.Url.Scheme);
+                var orderUrl = Url.Action("details", "orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName }, Request.Url.Scheme);
                 Task.Run(() =>
                     NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl,
                         completeOrder.Order.SellerId));

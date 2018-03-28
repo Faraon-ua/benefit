@@ -22,17 +22,17 @@ namespace Benefit.Web.Controllers
             return View();
         }
 
-        public ActionResult Vsi(string options)
-        {
-            var model = SellerService.GetAllSellers();
-            model.Category = new Category() { UrlName = "vsi" };
-            model.Category.Name = "Всі постачальники";
-            model.Breadcrumbs = new BreadCrumbsViewModel()
-            {
-                Categories = new List<Category>() { new Category() { Name = "Всі постачальники" } }
-            };
-            return View("~/Views/Catalog/SellersCatalog.cshtml", model);
-        }
+        //public ActionResult Vsi(string options)
+        //{
+        //    var model = SellerService.GetAllSellers();
+        //    model.Category = new Category() { UrlName = "vsi" };
+        //    model.Category.Name = "Всі постачальники";
+        //    model.Breadcrumbs = new BreadCrumbsViewModel()
+        //    {
+        //        Categories = new List<Category>() { new Category() { Name = "Всі постачальники" } }
+        //    };
+        //    return View("~/Views/Catalog/SellersCatalog.cshtml", model);
+        //}
 
         //public ActionResult Info(string id)
         //{
@@ -67,7 +67,7 @@ namespace Benefit.Web.Controllers
                 return View("../Catalog/CategoriesCatalog", catsModel);
                 
             }
-            var model = SellerService.GetSellerCatalog(sellerUrl, categoryUrl, options);
+            var model = SellerService.GetSellerProductsCatalog(sellerUrl, categoryUrl, options);
             return View("../Catalog/ProductsCatalog", model);
         }
 

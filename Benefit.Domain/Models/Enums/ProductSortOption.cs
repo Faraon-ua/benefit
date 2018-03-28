@@ -15,6 +15,8 @@ namespace Benefit.Domain.Models.Enums
     {
         [Description("Порядковий номер")]
         Order,
+        [Description("Рейтинг")]
+        Rating,
         [Description("Назва &#8593;")]
         NameAsc,
         [Description("Назва &#8595;")]

@@ -346,7 +346,7 @@ namespace Benefit.Services.Domain
                 result.ProductParameters = productParameters;
             }
             //todo: instead all products show recomendations
-            var sort = ProductSortOption.Order;
+            var sort = ProductSortOption.Rating;
             if (options != null)
             {
                 var optionSegments = options.Split(';');
@@ -388,6 +388,9 @@ namespace Benefit.Services.Domain
             }
             switch (sort)
             {
+                case ProductSortOption.Rating:
+                    items = items.OrderByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.Name);
+                    break;
                 case ProductSortOption.Order:
                     items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.Name);
                     break;
@@ -468,7 +471,7 @@ namespace Benefit.Services.Domain
             return productParametersList;
         }
 
-        public NavigationEntitiesViewModel<Product> GetSellerCatalog(string sellerUrl, string categoryUrl, string options)
+        public NavigationEntitiesViewModel<Product> GetSellerProductsCatalog(string sellerUrl, string categoryUrl, string options)
         {
             var categoriesService = new CategoriesService();
             var result = new ProductsViewModel();
