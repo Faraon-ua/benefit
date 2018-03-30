@@ -1,6 +1,6 @@
 ﻿$(function () {
     $("body").on('click',
-        ".product-item .plus, .product-item .minus",
+        ".product-item .plus, .product-item .minus, .product-page .plus, .product-page .minus",
         function () {
             var quantity = $(this).parent().find('input[name=quantity]');
             var valueToAdd = 1;

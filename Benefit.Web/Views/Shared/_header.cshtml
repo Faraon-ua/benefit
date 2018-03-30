@@ -12,12 +12,14 @@
         <div class="logo-row">
             <div class="maxwidth-theme">
                 <div class="row">
-                    <div class="logo-block pull-left">
+                    <div class="logo-block pull-left col-md-2 col-sm-3">
                         <div class="logo ">
                             @{
                                 var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
                             }
-                            <a href="@href"><img src="~/Content/img/logo.png"></a>
+                            <a href="@href">
+                                <img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company">
+                            </a>
                         </div>
                     </div>
                     <div class="inline-block pull-left">
@@ -136,8 +138,9 @@
                                                                                                         {
                                                                                                             <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" class="pull-left child-category">
                                                                                                                 <img src="~/Images/CategoryLogo/@childCat.ImageUrl" style="width: 100%;" />
-                                                                                                                <br />
-                                                                                                                @childCat.Name
+                                                                                                                <div style="height: 50px; overflow: hidden;">
+                                                                                                                    @childCat.Name
+                                                                                                                </div>
                                                                                                             </a>
                                                                                                         }
                                                                                                     </div>
@@ -158,7 +161,7 @@
 
                                             <td class="menu-item dropdown catalog wide_menu">
                                                 <div class="wrap">
-                                                    <a class="dropdown-toggle" href="#" style="padding-top: 10px;">
+                                                    <a class="dropdown-toggle" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" style="padding-top: 10px;">
                                                         <div class="no-hover-underline">
                                                             КАТАЛОГ<br>ПОСТАЧАЛЬНИКІВ<div class="line-wrapper"><span class="line"></span></div>
                                                         </div>

@@ -126,6 +126,18 @@ namespace Benefit.Domain.Models
         public virtual ICollection<NotificationChannel> NotificationChannels { get; set; }
 
         [NotMapped]
+        public virtual string Specialization
+        {
+            get
+            {
+                if (SellerCategories == null) return null;
+                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault) == null) return null;
+                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault).Category == null)  return null;
+                return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.Name;
+            }
+        }
+
+        [NotMapped]
         public virtual ICollection<Review> ApprovedReviews
         {
             get

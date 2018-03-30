@@ -1,8 +1,8 @@
-﻿@model Benefit.DataTransfer.ViewModels.NavigationEntities.SellersViewModel
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.SellersViewModel
 
 @{
     ViewBag.Title = "Каталог постачальників - " + (Model.Category.Title ?? Model.Category.Name);
-    ViewBag.SelectedSellerCategoryName = Model.Category.Name;
 }
 @section meta
 {
@@ -10,8 +10,25 @@
 }
 @section scripts{
     <script>
+        var getSellersUrl = '@Url.Action("GetSellers", "Catalog")';
         var options = "";
         $(function () {
+            $(".ajax_load_btn").click(function (e) {
+                e.preventDefault();
+                var moreBtn = $(this);
+                var currentPage = parseInt(moreBtn.attr("data-page"));
+                $(".loader").show();
+                debugger;
+                $.get(getSellersUrl + "?page=" + (currentPage + 1)  + "&options=" + options, function (data) {
+                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                        moreBtn.hide();
+                    }
+                    $(".seller-item:last").after(data.sellers);
+                    moreBtn.attr("data-page", currentPage + 1);
+                    $(".loader").hide();
+                });
+            });
+
             $(".bx_filter_parameters_box_title").click(function() {
                 $(this).parent().toggleClass("active");
                 $(this).next().slideToggle();
@@ -126,7 +143,7 @@
         <section class="page-top maxwidth-theme ">
             @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
             <div class="page-top-main">
-                <h1 id="pagetitle">Каталог постачальників - @Model.Category.Name</h1>
+                <h1 id="pagetitle">Каталог постачальників</h1>
             </div>
         </section>
     </div>					<!--end-title_content-->
@@ -153,7 +170,7 @@
                                     <a href="" data-sort-value="Name" data-sort-type="Asc" class="sort_btn asc NAME" rel="nofollow">
                                         <i class="icon" title="По алфавіту"></i><span>По алфавіту</span><i class="arr icons_fa"></i>
                                     </a>
-                                    <a href="" data-sort-value="Bonus" data-sort-type="Asc" class="sort_btn asc BONUS" rel="nofollow">
+                                    <a href="" data-sort-value="Bonus" data-sort-type="Desc" class="sort_btn desc BONUS" rel="nofollow">
                                         <i class="icon" title="За відсотком бонуса"></i><span>За відсотком бонуса</span><i class="arr icons_fa"></i>
                                     </a>
                                 </div>
@@ -164,10 +181,26 @@
 
                             <div class="ajax_load list">
                                 <div class="display_list show_un_props">
-                                    @foreach (var seller in Model.Items)
+                                    @foreach (var seller in Model.Items.Take(ListConstants.DefaultTakePerPage))
                                     {
                                         @Html.Partial("_SellerPartial", seller)
                                     }
+                                </div>
+                                <div class="bottom_nav margin-top-20">
+                                    @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+                                    {
+                                        <div class="ajax_load_btn" data-page="0">
+                                            <span class="more_text_ajax">Показати ще</span>
+                                        </div>
+                                    }
+                                    @*<div class="module-pagination">
+                                            <div class="nums">
+                                                @for (int i = 0; i < Model.; i++)
+                                                {
+                                                    <a href="#" class="dark_link" id="page-">@(i + 1)</a>
+                                                }
+                                            </div>
+                                        </div>*@
                                 </div>
                                 <div class="group_description_block bottom">
                                     <div>Опис каталогу постачальників</div>
@@ -206,7 +239,7 @@
                     </div>
                     @if (Model.Category.ChildAsFilters)
                     {
-                        <div class="bx_filter_parameters_box active filter-section" data-expanded="Y" data-filter-name="specification">
+                        <div class="bx_filter_parameters_box active filter-section" data-expanded="Y" data-filter-name="category">
                             <span class="bx_filter_container_modef"></span>
                             <div class="bx_filter_parameters_box_title icons_fa">
                                 <div>
@@ -218,7 +251,7 @@
                                 </div>
                             </div>
                             <div class="bx_filter_parameters_box_container">
-                                @foreach (var subcat in Model.Category.ChildCategories)
+                                @foreach (var subcat in Model.Category.ChildCategories.OrderBy(entry => entry.Order))
                                 {
                                     <div class="bx_filter_block limited_block">
                                         <div class="bx_filter_parameters_box_container">

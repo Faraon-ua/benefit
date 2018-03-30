@@ -22,6 +22,7 @@ namespace Benefit.Web.Filters
                 using (var db = new ApplicationDbContext())
                 {
                     var categories = db.Categories
+                        .Include(entry => entry.Products)
                         .Include(entry => entry.ChildCategories.Select(cat => cat.ChildCategories.Select(ch=>ch.Products)))
                         .Where(
                             entry =>
@@ -36,7 +37,7 @@ namespace Benefit.Web.Filters
                         });
                         entry.ChildCategories = entry.ChildCategories.Where(cat => cat.IsActive && cat.ChildCategories.Any()).ToList();
                     });
-                    categories = categories.Where(entry => entry.ChildCategories.Any()).ToList();
+                    categories = categories.Where(entry => entry.ChildCategories.Any() || entry.Products.Any()).ToList();
                     filterContext.Controller.ViewBag.Categories = categories;
                     HttpRuntime.Cache.Insert("Categories", categories, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
                 }

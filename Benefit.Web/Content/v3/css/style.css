@@ -3073,7 +3073,7 @@ a.icon-text:focus{color:#fff}
 .icon-text.s30 .fa{margin-top:0;font-size:15px;margin-right:2px;line-height:13px}
 .icon-text.s25{padding:0 9px;height:25px;font-size:13px;line-height:24px}
 .icon-text.s25 .fa{margin-top:0;font-size:14px;margin-right:2px;line-height:13px}
-.btn{font-size:13px;line-height:18px;font-weight:400;text-transform:none;text-decoration:none;margin:0;border:1px solid;border-radius:2px;padding:7px 18px 9px;overflow:hidden;transition:background-color .3s ease;-moz-transition:background-color .3s ease;-ms-transition:background-color .3s ease;-o-transition:background-color .3s ease;-webkit-transition:background-color .3s ease}
+.btn{font-size:13px;line-height:16px;font-weight:400;text-transform:none;text-decoration:none;margin:0;border:1px solid;border-radius:2px;padding:7px 18px 9px;overflow:hidden;transition:background-color .3s ease;-moz-transition:background-color .3s ease;-ms-transition:background-color .3s ease;-o-transition:background-color .3s ease;-webkit-transition:background-color .3s ease}
 .btn-lg,.btn.bold{font-weight:700}
 .more_page_buttons_block .btn{margin:0 10px 10px 0}
 .btn>*{-moz-transition:background-color .3s;-ms-transition:background-color .3s;-o-transition:background-color .3s;-webkit-transition:background-color .3s;transition:background-color .3s}
@@ -3934,14 +3934,15 @@ ul.mobile_menu .search .search-input-div input{border:0;font-size:13px}
 #mobilemenu .menu.middle a:hover .svg-cabinet{background-color:#222}
 #mobilemenu .contacts .title{font-weight:700;padding:19px 20px 6px 19px}
 #mobilemenu .contacts a{color:#222}
-#mobilemenu .contacts .email,#mobilemenu .contacts .address{padding:12px 20px 0 50px;position:relative;line-height:18px;font-size:13px}
+#mobilemenu .contacts i,#mobilemenu .social-icons a i{ font-size: 2em; margin-right: 10px;}
+#mobilemenu .contacts .email,#mobilemenu .contacts .address{padding:12px 20px 0 20px;position:relative;line-height:18px;font-size:13px}
 #mobilemenu .contacts .svg.svg-address{position:absolute;left:20px;top:14px;width:13px;min-width:initial;height:16px;min-height:initial}
 #mobilemenu .contacts .svg-email{min-width:initial;min-height:initial;height:16px;width:16px;position:absolute;left:20px;top:13px}
 #mobilemenu .social-icons{border-bottom:1px solid #f2f2f2}
 #mobilemenu .social-icons ul{padding:16px 0 30px;margin:0}
 #mobilemenu .social-icons li{list-style:none;display:block}
 #mobilemenu .social-icons ul li:before{display:none}
-#mobilemenu .social-icons li>a{font-size:13px;line-height:20px;background:none;padding:5px 27px 5px 50px;width:100%;opacity:1;position:relative;margin:0;height:auto;border-radius:0}
+#mobilemenu .social-icons li>a{display: flex;align-items: center;font-size:13px;line-height:20px;background:none;padding:5px 27px 5px 20px;width:100%;opacity:1;position:relative;margin:0;height:auto;border-radius:0}
 #mobilemenu .social-icons li>a .svg{position:absolute;width:20px;min-width:20px;height:20px;min-height:20px;left:19px;top:5px}
 #mobilemenu .social-icons a:hover .svg{background-color:#222}
 #mobilemenu .downdrop .menu ul>li .arrow .svg{transform:rotate(0.25turn)}

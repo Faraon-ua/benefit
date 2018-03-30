@@ -38,7 +38,6 @@
 {
     <link href="~/Content/v3/css/product.css" rel="stylesheet" />
     <link href="~/Content/v3/css/ubislider.min.css" rel="stylesheet" />
-    <link href="~/Content/css/fontawesome.min.css" rel="stylesheet" />
 }
 @section scripts
 {
@@ -86,7 +85,7 @@
 
                     $(this).attr("disabled", "disabled");
                     $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
-                    $(".product_info_wrap").css("opacity", 0.3);
+                    $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
 
                     var productAmount = $(".quantity").val();
                     var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
@@ -135,7 +134,8 @@
                             $('#product_modal').modal('hide');
                             setTimeout(function f() {
                                 $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                                $(".product_info_wrap").css("opacity", 1);
+                                $(".product_info_wrap,.item_main_info").css("opacity", 1);
+                                $(".button_block  ").removeClass("loadings");
                                 setCartSummary(data);
                             }, 1000);
                         });
@@ -144,7 +144,7 @@
         });
     </script>
 }
-<div class="wraps hover_shine" id="content">
+<div class="wraps hover_shine product-page" id="content">
     <!--title_content-->
     <div class="top_inner_block_wrapper maxwidth-theme" style="height: 0px;">
         <section class="page-top maxwidth-theme">
@@ -153,7 +153,7 @@
     </div>
     <!--end-title_content-->
     <div class="hidden-xs">
-        <table class="x-product-page__main " style="width: 95%; margin:0 auto">
+        <table class="x-product-page__main" style="width: 95%; margin:0 auto">
             <tbody>
                 <tr>
                     <td class="x-product-page__main-content">
@@ -430,62 +430,7 @@
             </div>
         </div>
     </div>
-    <!---	 Мобильный вариант -->
     <div class="wrapper_inner visible-xs">
-        <!--title_content -->
-        <div class="top_inner_block_wrapper maxwidth-theme" style="padding: 0;">
-            <section class="page-top maxwidth-theme" style="padding-top:10px;">
-                <!--
-                    <div class="breadcrumbs" id="navigation" itemscope="" itemtype="http://schema.org/BreadcrumbList">
-                  <div class="bx-breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a href="#" title="Головна" itemprop="item"><span itemprop="name">Головна</span><meta itemprop="position" content="1"></a>
-                  </div>
-                  <span class="separator">-</span>
-                  <div class="bx-breadcrumb-item" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a href="#" title="Каталог" itemprop="item"><span itemprop="name">Каталог</span><meta itemprop="position" content="2"></a>
-                  </div>
-                  <span class="separator">-</span>
-                  <div class="bx-breadcrumb-item drop" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a class="number" href="#" itemprop="item">
-                      <span itemprop="name">Продукти харчування</span><b class="space"></b><span class="separator"></span>
-                      <meta itemprop="position" content="4">
-                    </a>
-                    <div class="dropdown_wrapp">
-                      <div class="dropdown">
-                        <a class="dark_link" href="#">Видеокамеры</a>
-                        <a class="dark_link" href="#">Объективы</a>
-                        <a class="dark_link" href="#">Цифровые фоторамки</a>
-                      </div>
-                    </div>
-                  </div>
-                  <span class="separator">-</span>
-                  <div class="bx-breadcrumb-item drop" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-                    <a class="number" href="#" itemprop="item">
-                      <span itemprop="name">Хліб та кондитерські вироби</span><b class="space"></b><span class="separator"></span>
-                      <meta itemprop="position" content="4">
-                    </a>
-                    <div class="dropdown_wrapp">
-                      <div class="dropdown">
-                        <a class="dark_link" href="/catalog/foto_i_video/videokamery/">Видеокамеры</a>
-                        <a class="dark_link" href="/catalog/foto_i_video/obektivy/">Объективы</a>
-                        <a class="dark_link" href="/catalog/foto_i_video/tsifrovye_fotoramki/">Цифровые фоторамки</a>
-                      </div>
-                    </div>
-                  </div>
-                  <span class="separator">-</span><span itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem"><span itemprop="item">
-                    <span itemprop="name">Фотоаппарат Canon EOS1100D </span>
-                    <meta itemprop="position" content="5"></span>
-                  </span>
-                </div>
-                -->
-
-                <div class="page-top-main">
-                    <h2 style="padding: 0;">@Model.Product.Name </h2>
-                </div>
-            </section>
-        </div>
-        <!--end-title_content-->
-
         <div class="wrapper_inner ">
             <div class="middle ">
                 <div class="container">
@@ -603,6 +548,7 @@
                                                 }
                                                 <!--/noindex-->
                                             </div>
+                                            <br class="clear" />
                                         </div>
                                         <div style="padding-top: 20px; text-align: left;">
                                             <a href="#" class="dark_link">@Model.Product.Seller.Name</a>

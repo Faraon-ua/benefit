@@ -17,6 +17,12 @@ namespace Benefit.Web
               );
 
             routes.MapRoute(
+              name: RouteConstants.CatalogRouteName + "GetSellers",
+              url: RouteConstants.CatalogRoutePrefix + "/getsellers",
+              defaults: new { controller = "Catalog", action = "GetSellers" }
+              );
+
+            routes.MapRoute(
                 name: RouteConstants.CatalogRouteName,
                 url: RouteConstants.CatalogRoutePrefix + "/{categoryUrl}/{options}",
                 defaults: new

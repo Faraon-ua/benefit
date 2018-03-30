@@ -1,5 +1,6 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Domain.Models
+@using Benefit.Web.Helpers
 
 @{
     var categories = ViewBag.Categories as List<Category>;
@@ -12,7 +13,12 @@
         </div>
         <div class="logo-block pull-left">
             <div class="logo">
-                <a href="#"><img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company"></a>
+                @{
+                    var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
+                }
+                <a href="@href">
+                    <img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company">
+                </a>
             </div>
         </div>
         <div class="right-icons pull-right">
@@ -132,11 +138,10 @@
                             </ul>
                         </li>
                         <li>
-                            <a class="dark-color parent" href="#" title="">
+                            <a class="dark-color parent" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" title="Каталог постачальників">
                                 <span>Каталог постачальників</span>
-                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
                             </a>
-                            <ul class="dropdown">
+                            @*<ul class="dropdown">
                                 @foreach (var cat in categories)
                                 {
                                     <li>
@@ -145,7 +150,7 @@
                                         </a>
                                     </li>
                                 }
-                            </ul>
+                            </ul>*@
                         </li>
                         <li>
                             <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "partnerska_programa"})" title="Партнерська програма">
@@ -212,35 +217,40 @@
                 <div class="contacts">
                     <div class="title">Контактная информация</div>
                     <div class="address">
-                        <i class="svg svg-address"></i>
-                        Челябинск, ул. Лермонтова 21, 3 этаж, офис 4
+                        <i class="fa fa-map-marker"></i>
+                        а/с №8, пл.Кирила Мефодія, 4, м.Ужгород, 88005
                     </div>
                 </div>
                 <div class="social-icons">
                     <ul>
                         <li class="facebook">
-                            <a href="2" class="dark-color" target="_blank" rel="nofollow" title="Facebook">
-                                <i class="svg svg-social-fb"></i>Facebook
+                            <a href="https://www.facebook.com/groups/benefitcompany" class="dark-color" target="_blank" rel="nofollow" title="Facebook">
+                                <i class="fa fa-facebook-square" style="color: #3B5998;"></i>
+                                Facebook
                             </a>
                         </li>
                         <li class="twitter">
-                            <a href="3" class="dark-color" target="_blank" rel="nofollow" title="Twitter">
-                                <i class="svg svg-social-twitter"></i>Twitter
+                            <a href="https://twitter.com/benefitcompany" class="dark-color" target="_blank" rel="nofollow" title="Twitter">
+                                <i class="fa fa-twitter-square" style="color: #28AEDB;"></i>
+                                Twitter
                             </a>
                         </li>
                         <li class="instagram">
-                            <a href="4" class="dark-color" target="_blank" rel="nofollow" title="Instagram">
-                                <i class="svg svg-social-instagram"></i>Instagram
+                            <a href="https://www.instagram.com/benefitcompany/" class="dark-color" target="_blank" rel="nofollow" title="Instagram">
+                                <i class="fa fa-instagram"></i>
+                                Instagram
                             </a>
                         </li>
                         <li class="ytb">
-                            <a href="5" class="dark-color" target="_blank" rel="nofollow" title="YouTube">
-                                <i class="svg svg-social-ytb"></i>YouTube
+                            <a href="https://www.youtube.com/channel/UC2YbFBSzjxW_ji2_mDBeWpw" class="dark-color" target="_blank" rel="nofollow" title="YouTube">
+                                <i class="fa fa-youtube-square" style="color: #990000"></i>
+                                YouTube
                             </a>
                         </li>
                         <li class="gplus">
-                            <a href="7" class="dark-color" target="_blank" rel="nofollow" title="Google Plus">
-                                <i class="svg svg-social-gplus"></i>Google Plus
+                            <a href="https://plus.google.com/+BenefitCompanyTV" class="dark-color" target="_blank" rel="nofollow" title="Google Plus">
+                                <i class="fa fa-google-plus-square" style="color: #DC4E40;"></i>
+                                Google Plus
                             </a>
                         </li>
                     </ul>

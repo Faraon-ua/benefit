@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
@@ -30,9 +31,9 @@ namespace Benefit.Web.Controllers
         [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {
-            if (options != null && options.Contains("sellers"))
+            if (categoryUrl == "postachalnuky")
             {
-                var sellers = SellerService.GetSellersCatalog(categoryUrl, options);
+                var sellers = SellerService.GetSellersCatalog(options);
                 if (sellers == null)
                 {
                     return HttpNotFound();
@@ -51,9 +52,6 @@ namespace Benefit.Web.Controllers
 
             var catalog = SellerService.GetSellerProductsCatalog(null, categoryUrl, options);
             return View("ProductsCatalog", catalog);
-            //var sellers = CategoriesService.GetCategorySellers(categoryUrl);
-            //if (sellers == null) return HttpNotFound();
-            //return View("SellersCatalog", sellers);
         }
 
         public ActionResult GetProducts(string categoryId, string sellerId, string options, int page)
@@ -68,6 +66,13 @@ namespace Benefit.Web.Controllers
                 AvailableForPurchase = entry.AvailableForPurchase(RegionService.GetRegionId())
             })));
             return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetSellers(string options, int page)
+        {
+            var sellers = SellerService.GetSellersCatalog(options, page).Items;
+            var sellersHtml = string.Join("", sellers.Select(entry => ControllerContext.RenderPartialToString("_SellerPartial", entry)));
+            return Json(new { number = sellers.Count, sellers = sellersHtml }, JsonRequestBehavior.AllowGet);
         }
     }
 }
