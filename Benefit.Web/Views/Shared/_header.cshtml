@@ -29,10 +29,10 @@
                         <div class="search-block inner-table-block">
                             <div class="search-wrapper">
                                 <div id="title-search_fixed">
-                                    @using (Html.BeginForm("Index", "Search", new { area = "" }, FormMethod.Get, new { id = "search-form", @class = "search" }))
+                                    @using (Html.BeginForm("Index", "Search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
                                     {
                                         <div class="search-input-div">
-                                            <input class="search-input" id="search" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
+                                            <input class="search-input" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
                                         </div>
                                         <div class="search-button-div">
                                             <button class="btn btn-search" type="submit" name="s" value="Пошук"><i class="svg svg-search svg-black"></i></button>

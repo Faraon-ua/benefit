@@ -18,7 +18,6 @@
                 var moreBtn = $(this);
                 var currentPage = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
-                debugger;
                 $.get(getSellersUrl + "?page=" + (currentPage + 1)  + "&options=" + options, function (data) {
                     if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
                         moreBtn.hide();

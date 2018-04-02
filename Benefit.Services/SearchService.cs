@@ -61,7 +61,7 @@ namespace Benefit.Services
             {
                 productsResult = productsResult.Where(entry => entry.CategoryId == categoryId);
             }
-            var regionId = RegionService.GetRegionId();
+            //var regionId = RegionService.GetRegionId();
             var productResult = productsResult.Search(entry => entry.Name,
                     entry => entry.SearchTags,
                     entry => entry.Category.Name
@@ -75,22 +75,22 @@ namespace Benefit.Services
 
             result.Products = productResult.Select(entry => entry.Item).ToList();
 
-            if (searchSellerId == null)
-            {
-                var sellers =
-                    db.Sellers
-                        .Include(entry => entry.Addresses)
-                        .Include(entry => entry.ShippingMethods)
-                        .Include(entry => entry.ShippingMethods.Select(sh => sh.Region))
-                        .Where(entry => entry.IsActive)
-                        .Search(entry => entry.Name, entry => entry.SearchTags)
-                        .Containing(term, translitTerm);
+            //if (searchSellerId == null)
+            //{
+            //    var sellers =
+            //        db.Sellers
+            //            .Include(entry => entry.Addresses)
+            //            .Include(entry => entry.ShippingMethods)
+            //            .Include(entry => entry.ShippingMethods.Select(sh => sh.Region))
+            //            .Where(entry => entry.IsActive)
+            //            .Search(entry => entry.Name, entry => entry.SearchTags)
+            //            .Containing(term, translitTerm);
 
-                result.CurrentRegionSellers =
-                    sellers.Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ToList();
-                var currectRegionSellerIds = result.CurrentRegionSellers.Select(entry => entry.Id).ToList();
-                result.Sellers = sellers.Where(entry => !currectRegionSellerIds.Contains(entry.Id)).ToList();
-            }
+            //    result.CurrentRegionSellers =
+            //        sellers.Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ToList();
+            //    var currectRegionSellerIds = result.CurrentRegionSellers.Select(entry => entry.Id).ToList();
+            //    result.Sellers = sellers.Where(entry => !currectRegionSellerIds.Contains(entry.Id)).ToList();
+            //}
 
             return result;
         }

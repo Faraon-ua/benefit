@@ -64,7 +64,7 @@
         $(function() {
             var searchWordsUrl = '@Url.Action("SearchWords", "Search")';
             var searchUrl = '@Url.Action("Index", "Search")';
-            $("#search").devbridgeAutocomplete({
+            $(".search-input").devbridgeAutocomplete({
                 width: 300,
                 minChars: 3,
                 serviceUrl: searchWordsUrl,

@@ -136,15 +136,16 @@
                                         <div class="search-block ">
                                             <div class="search-wrapper">
                                                 <div id="title-search_fixed">
-                                                    <form action="#" class="search">
+                                                    @using (Html.BeginForm("Index", "Search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
+                                                    {
                                                         <div class="search-input-div">
-                                                            <input class="search-input" id="title-search-input_fixed" placeholder="Пошук товарів" size="20" maxlength="50" autocomplete="off">
+                                                            <input class="search-input" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
                                                         </div>
                                                         <div class="search-button-div">
-                                                            <button class="btn btn-search" type="submit" name="s" value="Поиск"><i class="svg svg-search svg-black"></i></button>
+                                                            <button class="btn btn-search" type="submit" name="s" value="Пошук"><i class="svg svg-search svg-black"></i></button>
                                                             <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
                                                         </div>
-                                                    </form>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>

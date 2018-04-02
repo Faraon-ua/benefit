@@ -5,6 +5,7 @@ using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.Models.Search;
 using Benefit.Services;
+using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Controllers
@@ -28,6 +29,7 @@ namespace Benefit.Web.Controllers
                 JsonRequestBehavior.AllowGet);
         }
 
+        [FetchCategories]
         public ActionResult Index(string term, string searchSellerId = null)
         {
             searchSellerId = searchSellerId == string.Empty ? null : searchSellerId;
@@ -36,10 +38,10 @@ namespace Benefit.Web.Controllers
             return View(result);
         }
 
-        public ActionResult GetProducts(string term, int skip, int take = ListConstants.DefaultTakePerPage)
+        public ActionResult GetProducts(string term, int page, int take = ListConstants.DefaultTakePerPage)
         {
-            var result = SearchService.SearchProducts(term, skip);
-            var productsHtml = string.Join("", result.Products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ExpandableProductPartial.cshtml", new ProductPartialViewModel
+            var result = SearchService.SearchProducts(term, ListConstants.DefaultTakePerPage * page);
+            var productsHtml = string.Join("", result.Products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ProductPartial.cshtml", new ProductPartialViewModel
             {
                 Product = entry,
                 CategoryUrl = entry.Category.UrlName,

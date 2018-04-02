@@ -244,14 +244,14 @@ $(function () {
         }
     });
 
-    $("#search-form").submit(function (e) {
+    $(".search-form").submit(function (e) {
         if ($("#search").val().length < 3) {
             alert("Для пошуку необхідно мінімум 3 символи");
             e.preventDefault();
         }
     });
 
-    $("#search-form button").click(function () {
+    $(".search-form button").click(function () {
         var sellerId = $("#seller-id").val();
         if ($(this).attr("data-search-seller") && sellerId !== undefined) {
             $("#search-seller-id").val(sellerId);

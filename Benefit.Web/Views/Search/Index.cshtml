@@ -1,4 +1,8 @@
-﻿@using Benefit.Common.Constants
+﻿@using System.Web.Mvc.Html
+@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@using Benefit.Services.Domain
 @model Benefit.Domain.Models.Search.SearchResult
 
 @{
@@ -12,53 +16,77 @@
         var term = '@Model.Term';
 
         $(function () {
-            $("#add-more-products").click(function (e) {
+            $(".ajax_load_btn").click(function (e) {
                 e.preventDefault();
+                var moreBtn = $(this);
+                var currentPage = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
-                $.get(searchProductsUrl + "?term=" + term + "&skip=" + skip, function (data) {
+                $.get(searchProductsUrl + "?term=@Model.Term&sellerId=@Model.SellerId&page=" + (currentPage + 1)//  + "&options=" + options
+                ,function (data) {
                     if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                        $("#more-products").hide();
+                        moreBtn.hide();
                     }
-                    $("#more-products").before(data.products);
-                    skip += data.number;
+                    $(".product-item:last").after(data.products);
+                    moreBtn.attr("data-page", currentPage + 1);
                     $(".loader").hide();
                 });
             });
         });
     </script>
 }
-@if (Model.SellerId != null)
-{
-    <input type="hidden" id="seller-id" value="@Model.SellerId" />
-}
-@if (Model.CurrentRegionSellers.Any() || Model.Sellers.Any())
-{
-    <p>
-        Результати пошуку запиту <strong class="bigger-125">"@Model.Term"</strong> по постачальникам
-    </p>
-    if (Model.CurrentRegionSellers.Any())
-    {
-        <div>
-            <h3 style="display: inline-block;">Постачальники з мого міста</h3>
-        </div>
-        <br />
-        foreach (var seller in Model.CurrentRegionSellers)
-        {
-            @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
-        }
-    }
 
-    if (Model.Sellers.Any())
-    {
-        <div>
-            <h3 style="display: inline-block;">Інші міста України</h3>
+<div class="wraps hover_shine" id="content">
+    <!--title_content-->
+    <div class="top_inner_block_wrapper maxwidth-theme" style="height: 80px;">
+        <section class="page-top maxwidth-theme ">
+            @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel()
+            {
+                Page = new InfoPage()
+                {
+                    Name = "Пошук"
+                }
+            })
+            <div class="page-top-main">
+                Результати пошуку запиту <strong class="bigger-125">"@Model.Term"</strong>
+            </div>
+        </section>
+    </div>
+
+    <div class="wrapper_inner " style=" margin-top: 10px;">
+        <div class="right_block  wide_N">
+            <div class="middle ">
+                <div class="container">
+                    <div class="right_block1 clearfix catalog vertical" id="right_block_ajax">
+
+                        <div class="inner_wrapper">
+                            <div class="sections_wrapper">
+                                <div class="list items">
+                                    <div class="row margin0">
+                                        @foreach (var product in Model.Products.Take(ListConstants.DefaultTakePerPage))
+                                        {
+                                            var regionId = RegionService.GetRegionId();
+                                            var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = null, AvailableForPurchase = product.AvailableForPurchase(regionId) };
+                                            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
+                                        }
+                                    </div>
+                                </div>
+                                <div class="bottom_nav margin-top-20">
+                                    @if (Model.Products.Count > ListConstants.DefaultTakePerPage)
+                                    {
+                                        <div class="ajax_load_btn" data-page="0">
+                                            <span class="more_text_ajax">Показати ще</span>
+                                        </div>
+                                    }
+
+                                 
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <br />
-        foreach (var seller in Model.Sellers)
-        {
-            @Html.Partial("~/Views/Catalog/_ProviderPartial.cshtml", seller)
-        }
-    }
-}
-<p class="margin-top-20">Результати пошуку по запиту <strong class="bigger-125">"@Model.Term"</strong> по товарам</p>
-@Html.Partial("~/Views/Catalog/_ProductsListPartial.cshtml", Model.Products)
+        <div class="left_block">
+        </div>
+    </div>
+</div>
