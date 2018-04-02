@@ -94,32 +94,30 @@ function processRating(ratingStars, e, isClick) {
     var parentOffset = ratingStars.offset();
     var relX = e.pageX - parentOffset.left;
     var percent = relX / ratingStars.width();
-    ratingStars.removeClass();
-    ratingStars.addClass("pointer");
-    ratingStars.addClass("rating_star");
     var intRating = 0;
+    var ratingBar = ratingStars.find(".x-rating__bar");
     if (percent >= 0 && percent <= 0.2) {
-        ratingStars.addClass("very_bed");
+        ratingBar.attr("style", "width: 20%");
         intRating = 1;
     }
     if (percent > 0.2 && percent <= 0.4) {
-        ratingStars.addClass("bed");
+        ratingBar.attr("style", "width: 40%");
         intRating = 2;
     }
     if (percent > 0.4 && percent <= 0.6) {
-        ratingStars.addClass("middle");
+        ratingBar.attr("style", "width: 60%");
         intRating = 3;
     }
     if (percent > 0.6 && percent <= 0.8) {
-        ratingStars.addClass("good");
+        ratingBar.attr("style", "width: 80%");
         intRating = 4;
     }
     if (percent > 0.8 && percent <= 1) {
-        ratingStars.addClass("top");
+        ratingBar.attr("style", "width: 100%");
         intRating = 5;
     }
     if (isClick) {
-        $("#Rating").val(intRating);
+        $(".rating-value").val(intRating);
     }
 }
 
@@ -209,18 +207,19 @@ $(function () {
 
     $('.battery, .title-to-tooltip').tooltip();
 
-    $("#review-rating").mousemove(function (e) {
-        processRating($(this), e);
+    $(".review-rating").mousemove(function (e) {
+        if (!$(".rating-value").val()) {
+            processRating($(this), e);
+        }
     });
 
-    $("#review-rating").mouseout(function () {
-        $(this).removeClass();
-        $(this).addClass("pointer");
-        $(this).addClass("rating_star");
-        $(this).addClass("none");
+    $(".review-rating").mouseout(function () {
+        if (!$(".rating-value").val()) {
+            $(this).find(".x-rating__bar").attr("style", "width: 0;");
+        }
     });
 
-    $("#review-rating").click(function (e) {
+    $(".review-rating").click(function (e) {
         processRating($(this), e, true);
         $("#review-rating").off("mousemove");
         $("#review-rating").off("mouseout");

@@ -1,0 +1,8 @@
+﻿@model Benefit.DataTransfer.ViewModels.ReviewStarsViewModel
+
+<div class="x-rating @(Model.SmallStars? "x-rating_size_small" : "")">
+    <div class="x-rating__progress @(Model.IsActive? "review-rating" : "")">
+        <div class="x-rating__bar" style="width: @(Model.Rating*20)%"></div>
+        <div class="x-rating__mask"></div>
+    </div>
+</div>

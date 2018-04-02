@@ -145,6 +145,7 @@
     </script>
 }
 <div class="wraps hover_shine product-page" id="content">
+    @Html.Partial("_FlashMessage")
     <!--title_content-->
     <div class="top_inner_block_wrapper maxwidth-theme" style="height: 0px;">
         <section class="page-top maxwidth-theme">
@@ -153,7 +154,7 @@
     </div>
     <!--end-title_content-->
     <div class="hidden-xs">
-        <table class="x-product-page__main" style="width: 95%; margin:0 auto">
+        <table class="x-product-page__main" style="width: 95%; margin: 0 auto">
             <tbody>
                 <tr>
                     <td class="x-product-page__main-content">
@@ -222,7 +223,7 @@
                                             <div class="x-product-info__inline">
                                                 <div class="x-rating x-rating_size_small">
                                                     <div class="x-rating__progress">
-                                                        <div class="x-rating__bar" style="width: @(Model.Product.AvarageRating*20)%"></div>
+                                                        <div class="x-rating__bar" style="width: @(Model.Product.AvarageRating * 20)%"></div>
                                                         <div class="x-rating__mask"></div>
                                                     </div>
                                                 </div>
@@ -321,12 +322,13 @@
                                     </div>
                                 </div>
                                 <div class="x-company-info__item"><a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Catalog")" class="dark_link">Всі товари постачальника</a></div>
-                            </div><div class="x-company-info__parts">
+                            </div>
+                            <div class="x-company-info__parts">
                                 <div class="x-company-info__title">Рейтинг постачальника</div>
                                 <div class="x-rating">
 
                                     <div class="x-rating__progress">
-                                        <div class="x-rating__bar" style="width: @(Model.Product.Seller.AvarageRating*20)%"></div>
+                                        <div class="x-rating__bar" style="width: @(Model.Product.Seller.AvarageRating * 20)%"></div>
                                         <div class="x-rating__mask"></div>
                                     </div>
                                     <div class="x-rating__info">
@@ -343,7 +345,7 @@
         </table>
     </div>
 
-    <div class="tabs_section hidden-xs" style="width: 95%; margin:0 auto;">
+    <div class="tabs_section hidden-xs" style="width: 95%; margin: 0 auto;">
         <div class="tabs">
             <ul class="nav nav-tabs no-bottom-underline">
                 <li class=" active">
@@ -363,27 +365,45 @@
                 <div class="tab-pane  active" id="descr">
                     <div class="title-tab-heading visible-xs">Опис</div>
                     <div>
-                        <div class="detail_text">
-                            @Html.Raw(Model.Product.Description)
+                        <div class="col-md-6">
+                            <div class="detail_text">
+                                @Html.Raw(Model.Product.Description)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                            {
+                                CanReview = Model.CanReview,
+                                ProductId = Model.Product.Id,
+                                TargetName = Model.Product.Name,
+                            })
                         </div>
                     </div>
                 </div>
-                <div class="tab-pane " id="review">
-
-                </div>
                 <div class="tab-pane" id="reviews">
-                    <div class="title-tab-heading visible-xs">Задать вопрос</div>
-                    <div class="row">
-                        <div class="col-md-3 hidden-sm text_block">
-                            Вы можете задать любой интересующий вас вопрос по товару или работе магазина.<br /><br />Наши квалифицированные специалисты обязательно вам помогут.
+                    <div class="col-md-6">
+                        <div class="detail_text">
+                            @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                            {
+                                CanReview = Model.CanReview,
+                                ProductId = Model.Product.Id,
+                                TargetName = Model.Product.Name,
+                                Reviews = Model.Product.ApprovedReviews
+                            })
                         </div>
-                        <div class="col-md-9 form_block">
-                            <div id="ask_block"></div>
-                        </div>
+                    </div>
+                    <div class="col-md-6 hidden-xs">
+                        @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                        {
+                            CanReview = true,
+                            //CanReview = Model.CanReview,
+                            ProductId = Model.Product.Id,
+                            TargetName = Model.Product.Name,
+                        })
                     </div>
                 </div>
                 <div class="tab-pane stores_tab" id="stores">
-                    <div class="stores_wrapp" style="width: 40%;">
+                    <div class="stores_wrapp col-md-6">
                         <!--'start_frame_cache_lEnm5l'-->
                         <div class="stores_block_wrap">
                             @foreach (var productParameter in Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null))
@@ -418,6 +438,15 @@
 
                         </div>
                         <!--'end_frame_cache_lEnm5l'-->
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                        {
+                            CanReview = true,
+                            //CanReview = Model.CanReview,
+                            ProductId = Model.Product.Id,
+                            TargetName = Model.Product.Name,
+                        })
                     </div>
                 </div>
 
@@ -472,7 +501,7 @@
                                                 <div class="price_matrix_block">
                                                     <div class="price_matrix_wrapper ">
                                                         <div class="price" style="font-size: 26px;">
-                                                            <span class="values_wrapper">@Model.Product.Price<span class="price_currency">  грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
+                                                            <span class="values_wrapper">@Model.Product.Price<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
                                                         </div>
                                                         @if (Model.Product.OldPrice.HasValue)
                                                         {
@@ -492,12 +521,12 @@
                                                         </div>
                                                         <div class="x-product-info__inline">
                                                             <div class="x-product-info__inline">
-                                                                <div class="x-rating x-rating_size_small">
-                                                                    <div class="x-rating__progress">
-                                                                        <div class="x-rating__bar" style="width: @(Model.Product.AvarageRating*20)%"></div>
-                                                                        <div class="x-rating__mask"></div>
-                                                                    </div>
-                                                                </div>
+                                                                @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
+                                                                {
+                                                                    SmallStars = true,
+                                                                    IsActive = true,
+                                                                    Rating = 0
+                                                                })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -588,7 +617,13 @@
                                 <div class="tab-pane additional_block" id="review">
                                     <div class="title-tab-heading visible-xs">Відгуки про товар</div>
                                     <div class="detail_text">
-                                        список відгуків
+                                        @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                                   {
+                                       CanReview = Model.CanReview,
+                                       ProductId = Model.Product.Id,
+                                       TargetName = Model.Product.Name,
+                                       Reviews = Model.Product.ApprovedReviews
+                                   })
                                     </div>
                                 </div>
 
