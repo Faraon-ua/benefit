@@ -1,4 +1,4 @@
-﻿@model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
+﻿@model ICollection<Benefit.Domain.Models.ProductParameter>
 <div class="bx_filter bx_filter_vertical">
     <div class="bx_filter_section" id="productFilters">
         <div class="bx_filter_parameters_box title">
@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        @foreach (var filter in Model.ProductParameters.OrderBy(entry => entry.Order))
+        @foreach (var filter in Model.OrderBy(entry => entry.Order))
         {
             if (filter.ProductParameterValues.Any())
             {

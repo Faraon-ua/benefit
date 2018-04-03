@@ -10,27 +10,108 @@
 }
 @section scripts
 {
+    <script src="~/Scripts/v3/products.js"></script>
     <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+        var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
+        var options = "";
         var skip = parseInt('@ListConstants.DefaultTakePerPage');
         var searchProductsUrl = '@Url.Action("GetProducts", "Search")';
         var term = '@Model.Term';
 
-        $(function () {
-            $(".ajax_load_btn").click(function (e) {
+        $(function() {
+            $(".ajax_load_btn").click(function(e) {
                 e.preventDefault();
                 var moreBtn = $(this);
                 var currentPage = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
-                $.get(searchProductsUrl + "?term=@Model.Term&sellerId=@Model.SellerId&page=" + (currentPage + 1)//  + "&options=" + options
-                ,function (data) {
-                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                        moreBtn.hide();
-                    }
-                    $(".product-item:last").after(data.products);
-                    moreBtn.attr("data-page", currentPage + 1);
-                    $(".loader").hide();
-                });
+                $.get(searchProductsUrl + "?term=@Model.Term&options="+options+"&sellerId=@Model.SellerId&page=" +
+                    (currentPage + 1) //  + "&options=" + options
+                    ,
+                    function(data) {
+                        if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                            moreBtn.hide();
+                        }
+                        $(".product-item:last").after(data.products);
+                        moreBtn.attr("data-page", currentPage + 1);
+                        $(".loader").hide();
+                    });
             });
+
+            var parts = location.href.split('/');
+            var lastSegmentWithQS = (parts.pop() || parts.pop()).replace('#', '');// handle potential trailing slash
+            var lastSegment = lastSegmentWithQS.substr(0, lastSegmentWithQS.indexOf('?'));
+            var query = lastSegmentWithQS.substr(lastSegmentWithQS.indexOf('?'), lastSegmentWithQS.length);
+            if (lastSegment !== "search") {
+                options = lastSegment;
+                $.each(options.split(";"),
+                    function(i, urlSegment) {
+                        if (urlSegment === "") return;
+                        var optKeyValue = urlSegment.split("=");
+                        var optionName = optKeyValue[0];
+                        var optionValues = optKeyValue[1].split(",");
+
+                        $.each(optionValues,
+                            function(j, optValue) {
+                                $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue))
+                                    .prop('checked', true);
+                                $(".filter-section[data-filter-name=" +
+                                    optionName +
+                                    "] input[name=" +
+                                    decodeURI(optValue).replace(" ", "") +
+                                    "]").prop('checked', true);
+                            });
+                    });
+            }
+            $('body').on('change click',
+                "#productFilters input[type=checkbox], .sort_btn",
+                function(e) {
+                    e.preventDefault();
+                    $(".loader").show();
+                    //var parts = location.href.split('/');
+                    //var lastSegment = (parts.pop() || parts.pop()).replace("#", ""); // handle potential trailing slash
+                    var options = "";
+
+                    if (lastSegment != 'search') {
+                        options = lastSegment;
+                    }
+
+                    var parent = $(this).parents(".filter-section");
+                    var optionName = parent.attr("data-filter-name");
+                    var optionNameIndex = options.indexOf(optionName);
+
+                    var currentOption = '';
+                    var selectedValues = parent.find("input[type=checkbox]:checked").map(function() {
+                        return $(this).attr("id");
+                    }).get();
+
+                    if ($(this).attr("class").indexOf("sort_btn") >= 0) {
+                        var val = $(this).attr("data-sort-value");
+                        selectedValues.push(val);
+                    }
+                    if (selectedValues.length > 0) {
+                        currentOption = optionName;
+                        currentOption += "=";
+                        currentOption += selectedValues.join();
+                        currentOption += ";";
+                    }
+
+                    if (optionNameIndex >= 0) {
+                        var ending = options.indexOf(";", optionNameIndex);
+                        var oldOption = options.substring(optionNameIndex, ending + 1);
+                        options = options.replace(oldOption, currentOption);
+                    } else {
+                        options += currentOption;
+                    }
+                    var locBuilder = "";
+                    if (lastSegment === "search") {
+                        locBuilder = location.href.replace(lastSegmentWithQS, "search/" + options + query);
+                    } else {
+                        locBuilder = location.href.replace(lastSegmentWithQS, options + query);
+                    }
+                    location.href = locBuilder;
+                });
         });
     </script>
 }
@@ -77,8 +158,6 @@
                                             <span class="more_text_ajax">Показати ще</span>
                                         </div>
                                     }
-
-                                 
                                 </div>
                             </div>
                         </div>
@@ -87,6 +166,7 @@
             </div>
         </div>
         <div class="left_block">
+            @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
         </div>
     </div>
 </div>

@@ -29,13 +29,13 @@
                         <div class="search-block inner-table-block">
                             <div class="search-wrapper">
                                 <div id="title-search_fixed">
-                                    @using (Html.BeginForm("Index", "Search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
+                                    @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
                                     {
                                         <div class="search-input-div">
                                             <input class="search-input" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
                                         </div>
                                         <div class="search-button-div">
-                                            <button class="btn btn-search" type="submit" name="s" value="Пошук"><i class="svg svg-search svg-black"></i></button>
+                                            <button class="btn btn-search" type="submit" value="Пошук"><i class="svg svg-search svg-black"></i></button>
                                             <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
                                         </div>
                                     }
@@ -137,7 +137,7 @@
                                                                                                         @foreach (var childCat in subCat.ChildCategories)
                                                                                                         {
                                                                                                             <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" class="pull-left child-category">
-                                                                                                                <img src="~/Images/CategoryLogo/@childCat.ImageUrl" style="width: 100%;" />
+                                                                                                                <img src="~/Images/CategoryLogo/@childCat.ImageUrl" style="width: 85px; height: 85px;" />
                                                                                                                 <div style="height: 50px; overflow: hidden;">
                                                                                                                     @childCat.Name
                                                                                                                 </div>

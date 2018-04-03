@@ -36,6 +36,29 @@ namespace Benefit.Web
             );
 
             routes.MapRoute(
+                name: RouteConstants.SearchRouteName + "Autocomplete",
+                url: RouteConstants.SearchRoutePrefix + "/searchwords",
+                defaults: new
+                {
+                    controller = "Search",
+                    action = "SearchWords",
+                    options = UrlParameter.Optional
+                }
+            );
+
+
+            routes.MapRoute(
+                name: RouteConstants.SearchRouteName,
+                url: RouteConstants.SearchRoutePrefix + "/{options}",
+                defaults: new
+                {
+                    controller = "Search",
+                    action = "Index",
+                    options = UrlParameter.Optional
+                }
+            );
+
+            routes.MapRoute(
                 name: RouteConstants.ProductRouteName,
                 url: RouteConstants.ProductRoutePrefix + "/{productUrl}",
                 defaults: new

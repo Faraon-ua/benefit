@@ -4,6 +4,9 @@
     {
         public const string AdminAreaName = "Admin";
 
+        public const string SearchRouteName = "SearchRoute";
+        public const string SearchRoutePrefix = "search";
+
         public const string CatalogRouteName = "CatalogRoute";
         public const string CatalogRoutePrefix = "catalog";
 

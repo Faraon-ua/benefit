@@ -4,6 +4,7 @@ using System.Linq;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
 using Benefit.Domain.Models.Search;
 using Benefit.Services.Domain;
 using NinjaNye.SearchExtensions;
@@ -44,7 +45,7 @@ namespace Benefit.Services
             return words;
         }
 
-        public SearchResult SearchProducts(string term, int skip, string searchSellerId = null, int take = ListConstants.DefaultTakePerPage, string categoryId = null)
+        public SearchResult SearchProducts(string term, string options, int skip, string searchSellerId = null, int take = ListConstants.DefaultTakePerPage, string categoryId = null)
         {
             var result = new SearchResult()
             {
@@ -52,7 +53,10 @@ namespace Benefit.Services
             };
             term = term.ToLower();
             var translitTerm = term.Translit();
-            var productsResult = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
+            var productsResult = db.Products
+                .Include(entry => entry.Category)
+                .Include(entry => entry.Seller)
+                .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
             if (searchSellerId != null)
             {
                 productsResult = productsResult.Where(entry => entry.SellerId == searchSellerId);
@@ -69,11 +73,111 @@ namespace Benefit.Services
                 .ToRanked()
                 .Where(entry => entry.Item.IsActive)
                 .OrderByDescending(entry => entry.Hits)
-                .Skip(skip)
+                .Select(entry => entry.Item);
+
+            if (options != null)
+            {
+                var optionSegments = options.Split(';');
+                foreach (var optionSegment in optionSegments)
+                {
+                    if (optionSegment == string.Empty) continue;
+                    var optionKeyValue = optionSegment.Split('=');
+                    var optionKey = optionKeyValue.First();
+                    var optionValues = optionKeyValue.Last().Split(',');
+                    switch (optionKey)
+                    {
+                        case "seller":
+                            var sellerIds =
+                                db.Sellers.Where(entry => optionValues.Contains(entry.UrlName))
+                                    .Select(entry => entry.Id);
+                            productResult = productResult.Where(entry => sellerIds.Contains(entry.SellerId));
+                            break;
+                        case "vendor":
+                            productResult = productResult.Where(entry => optionValues.Contains(entry.Vendor));
+                            break;
+                        case "country":
+                            productResult = productResult.Where(entry => optionValues.Contains(entry.OriginCountry));
+                            break;
+                        default:
+                            productResult =
+                                productResult.Where(
+                                entry =>
+                                    entry.ProductParameterProducts.Any(pr => pr.ProductParameter.UrlName == optionKey) &&
+                                    optionValues.Any(
+                                        optValue =>
+                                            entry.ProductParameterProducts.Select(pr => pr.StartValue)
+                                                .Contains(optValue)));
+                            break;
+                    }
+                }
+            }
+
+            //fetch parameters 
+            var sellers = (from seller in productResult.Select(entry => entry.Seller)
+                           group seller by seller.Id into groupResult
+                           select new
+                           {
+                               Count = groupResult.Distinct().Count(),
+                               Seller = (from sel in productResult.Select(entry => entry.Seller)
+                                         where sel.Id == groupResult.Key
+                                         select sel).FirstOrDefault()
+                           }).OrderByDescending(y => y.Count).Select(entry => entry.Seller).ToList();
+            var sellerFilters = sellers.Select(entry => new ProductParameterValue()
+            {
+                ParameterValue = entry.Name,
+                ParameterValueUrl = entry.UrlName
+            }).OrderBy(entry => entry.ParameterValue).ToList();
+            result.ProductParameters.Add(new ProductParameter()
+            {
+                Name = "Постачальник",
+                UrlName = "seller",
+                Type = typeof(string).ToString(),
+                ProductParameterValues = sellerFilters
+            });
+
+            var vendors = (from product in productResult
+                           group product by product.Vendor into groupResult
+                           select new
+                           {
+                               Count = groupResult.Distinct().Count(),
+                               Vendor = groupResult.Key
+                           }).OrderByDescending(y => y.Count).Select(entry => entry.Vendor).Where(entry => entry != null).ToList();
+            var vendorFilters = vendors.Select(entry => new ProductParameterValue()
+            {
+                ParameterValue = entry,
+                ParameterValueUrl = entry
+            }).OrderBy(entry => entry.ParameterValue).ToList();
+            result.ProductParameters.Add(new ProductParameter()
+            {
+                Name = "Виробник",
+                UrlName = "vendor",
+                Type = typeof(string).ToString(),
+                ProductParameterValues = vendorFilters
+            });
+
+            var originCountries = (from product in productResult
+                                   group product by product.OriginCountry into groupResult
+                                   select new
+                                   {
+                                       Count = groupResult.Distinct().Count(),
+                                       OriginCountry = groupResult.Key
+                                   }).OrderByDescending(y => y.Count).Select(entry => entry.OriginCountry).Where(entry => entry != null).ToList();
+            var countryFilters = originCountries.Select(entry => new ProductParameterValue()
+            {
+                ParameterValue = entry,
+                ParameterValueUrl = entry
+            }).OrderBy(entry => entry.ParameterValue).ToList();
+            result.ProductParameters.Add(new ProductParameter()
+            {
+                Name = "Країна виробник",
+                UrlName = "country",
+                Type = typeof(string).ToString(),
+                ProductParameterValues = countryFilters
+            });
+
+            result.Products = productResult.Skip(skip)
                 .Take(take + 1)
                 .ToList();
-
-            result.Products = productResult.Select(entry => entry.Item).ToList();
 
             //if (searchSellerId == null)
             //{

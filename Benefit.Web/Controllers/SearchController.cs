@@ -30,17 +30,17 @@ namespace Benefit.Web.Controllers
         }
 
         [FetchCategories]
-        public ActionResult Index(string term, string searchSellerId = null)
+        public ActionResult Index(string term, string options, string searchSellerId = null)
         {
             searchSellerId = searchSellerId == string.Empty ? null : searchSellerId;
-            var result = SearchService.SearchProducts(term, 0, searchSellerId);
+            var result = SearchService.SearchProducts(term, options, 0, searchSellerId);
             result.SellerId = searchSellerId;
             return View(result);
         }
 
-        public ActionResult GetProducts(string term, int page, int take = ListConstants.DefaultTakePerPage)
+        public ActionResult GetProducts(string term, string options, int page)
         {
-            var result = SearchService.SearchProducts(term, ListConstants.DefaultTakePerPage * page);
+            var result = SearchService.SearchProducts(term, options, ListConstants.DefaultTakePerPage * page);
             var productsHtml = string.Join("", result.Products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ProductPartial.cshtml", new ProductPartialViewModel
             {
                 Product = entry,
