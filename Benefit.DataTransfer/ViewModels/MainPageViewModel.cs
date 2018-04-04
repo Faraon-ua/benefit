@@ -14,5 +14,6 @@ namespace Benefit.DataTransfer.ViewModels
         public List<Banner> BottomSideBanners { get; set; } 
         public Banner FirstRowBanner { get; set; } 
         public Banner SecondRowBanner { get; set; } 
+        public List<Seller> Brands { get; set; }
     }
 }

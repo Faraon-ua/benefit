@@ -1,4 +1,5 @@
 ﻿@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
 @model Benefit.DataTransfer.ViewModels.MainPageViewModel
 
 @{
@@ -283,30 +284,19 @@
                 <div class="brand_main_wrapper">
                     <div class="brands_slider_wrapp flexslider loading_state clearfix" data-plugin-options='{"animation": "slide", "directionNav": true, "itemMargin":30, "controlNav" :false, "animationLoop": true, "slideshow": true, "slideshowSpeed": 5000, "animationSpeed": 600, "counts": [5,4,3,2,1]}'>
                         <ul class="brands_slider slides">
-                            <li class="visible" id="bx_1373509569_2440">
-                                <a href="#"><img class="noborder" src="images/26c07b2a4e9ee5d69ad54ad2401806bf.jpg" alt="Panasonic" title="Panasonic" /></a>
-                            </li>
-                            <li class="visible" id="bx_1373509569_2441">
-                                <a href="#"><img class="noborder" src="images/76c6af8ccc57ec1998f9247381d96144.jpg" alt="Canon" title="Canon" /></a>
-                            </li>
-                            <li class="visible" id="bx_1373509569_2444">
-                                <a href="#"><img class="noborder" src="images/2b5dea95b6fc932b0c8790fa47d04a7e.jpg" alt="Sony" title="Sony" /></a>
-                            </li>
-                            <li class="visible" id="bx_1373509569_2442">
-                                <a href="#"><img class="noborder" src="images/6afa08c47c1d0277c85de3d2dc477e37.jpg" alt="Nikon" title="Nikon" /></a>
-                            </li>
-                            <li class="visible" id="bx_1373509569_2430">
-                                <a href="#"><img class="noborder" src="images/4a3de8cbe76a4cb6c04bf0094b9f08c4.jpg" alt="BOSCH" title="BOSCH" /></a>
-                            </li>
-                            <li class="visible" id="bx_1373509569_2456">
-                                <a href="#"><img class="noborder" src="images/d7c6f3348005b265a59880b1a30b278d.jpg" alt="Maybelline" title="Maybelline" /></a>
-                            </li>
-                            <li class="visible" id="bx_1373509569_2455">
-                                <a href="#"><img class="noborder" src="images/71cb528b435689ab72b97b346fae5929.jpg" alt="L'Oreal" title="L'Oreal" /></a>
-                            </li>
-                            <li class="visible" id="bx_1373509569_2454">
-                                <a href="#"><img class="noborder" src="images/30f5154e3185fa2af9eb33ff63397006.jpg" alt="Inglot" title="Inglot" /></a>
-                            </li>
+                            @foreach (var seller in Model.Brands)
+                            {
+                                var sellerUrl = Url.SubdomainAction(seller.UrlName, "Index", "Home", null);
+                                var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+                                if (sellerLogo != null)
+                                {
+                                    <li class="visible" id="bx_1373509569_2440">
+                                        <a href="@sellerUrl">
+                                            <img class="noborder" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" title="@seller.Name"/>
+                                        </a>
+                                    </li>
+                                }
+                            }
                         </ul>
                     </div>
                 </div>

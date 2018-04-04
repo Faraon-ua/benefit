@@ -458,6 +458,10 @@
     <Compile Include="Migrations\201802141042542_AddSellerTitle.Designer.cs">
       <DependentUpon>201802141042542_AddSellerTitle.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804041010080_AddIsFeaturedToSeller.cs" />
+    <Compile Include="Migrations\201804041010080_AddIsFeaturedToSeller.Designer.cs">
+      <DependentUpon>201804041010080_AddIsFeaturedToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -795,6 +799,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802141042542_AddSellerTitle.resx">
       <DependentUpon>201802141042542_AddSellerTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804041010080_AddIsFeaturedToSeller.resx">
+      <DependentUpon>201804041010080_AddIsFeaturedToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -91,6 +91,7 @@ namespace Benefit.Domain.Models
         [DisplayName("Оплата Готівкою")]
         public bool IsCashPaymentActive { get; set; }
         [DisplayName("Еквайринг")]
+        public bool IsFeatured { get; set; }
         public bool IsAcquiringActive { get; set; }
         public bool HasEcommerce { get; set; }
         public int TotalDiscount { get; set; }

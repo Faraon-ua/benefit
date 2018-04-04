@@ -4184,7 +4184,7 @@ body.fill_bg_y .header_wrap header .header-wrapper{border:none}
 .menu_top_block.catalog_block .dropdown>li.full>.dropdown>li> a{padding-left:0;padding-top:0}
 .menu_top_block.catalog_block .dropdown>li.full>.dropdown>li> .image + a +.dropdown{padding-left:70px}
 .menu_top_block.catalog_block .dropdown>li.full>.dropdown>li>.dropdown{padding-left:0}
-.mega-menu table .dropdown-menu li a{color:#222;padding:6px 6px 6px 6px !important;border-top:1px solid #e5e5e5;font-size:14px}
+.mega-menu table .dropdown-menu li a{color:#222;padding:14px 29px 14px 19px !important;border-top:1px solid #e5e5e5;font-size:14px}
 .mega-menu table td:not(.wide_menu) .dropdown-menu li > a .name{display:block;max-width:200px;overflow:hidden;text-overflow:ellipsis}
 .mega-menu table .wrap > .dropdown-menu li:first-of-type > a{border-top-color:transparent!important}
 .mega-menu table .wrap > .dropdown-menu li:first-of-type > .dropdown-menu{top:1px}
