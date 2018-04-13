@@ -33,9 +33,9 @@ namespace Benefit.Web.Filters
                     {
                         entry.ChildCategories.ForEach(child =>
                         {
-                            child.ChildCategories = child.ChildCategories.Where(cat => cat.IsActive && cat.Products.Any()).ToList();
+                            child.ChildCategories = child.ChildCategories.Where(cat => cat.IsActive && cat.Products.Any()).OrderBy(cat=>cat.Order).ToList();
                         });
-                        entry.ChildCategories = entry.ChildCategories.Where(cat => cat.IsActive && cat.ChildCategories.Any()).ToList();
+                        entry.ChildCategories = entry.ChildCategories.Where(cat => cat.IsActive && cat.ChildCategories.Any()).OrderBy(cat => cat.Order).ToList();
                     });
                     categories = categories.Where(entry => entry.ChildCategories.Any() || entry.Products.Any()).ToList();
                     filterContext.Controller.ViewBag.Categories = categories;

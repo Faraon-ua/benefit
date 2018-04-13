@@ -30,6 +30,22 @@ namespace Benefit.Services.Domain
             return category;
         }
 
+        public Category GetCategoryByFullName(string categoryFullPass)
+        {
+            var parts = categoryFullPass.Split('/');
+            var catName = parts.Last();
+            var categories = db.Categories
+                .AsNoTracking()
+                .Include(entry=>entry.ParentCategory)
+                .Include(entry=>entry.ProductParameters.Select(pp=>pp.ProductParameterValues))
+                .Where(entry => entry.Name == catName).ToList();
+            if (!categories.Any()) return null;
+            if (categories.Count == 1) return categories.First();
+            var parentName = parts[parts.Length - 2];
+            var category = categories.First(entry => entry.ParentCategory.Name == parentName);
+            return category;
+        }
+
         public List<Category> GetBaseCategories()
         {
             return db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order).ToList();
@@ -65,7 +81,8 @@ namespace Benefit.Services.Domain
 
         public CategoriesViewModel GetCategoriesCatalog(string categoryUrl)
         {
-            var parent = db.Categories.Include(entry => entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            //fetch childs so if no nested categories - fetch products
+            var parent = db.Categories.Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
             if (parent != null && !parent.ChildCategories.Any())
             {
                 return null;
@@ -80,7 +97,10 @@ namespace Benefit.Services.Domain
             }
 
             var categories =
-                db.Categories.Where(entry => entry.ParentCategoryId == parent.Id && entry.IsActive && !entry.IsSellerCategory)
+                db.Categories
+                    .Include(entry=>entry.ChildCategories)
+                    .Include(entry=>entry.Products)
+                    .Where(entry => entry.ParentCategoryId == parent.Id && entry.IsActive && !entry.IsSellerCategory && (entry.ChildCategories.Any() || entry.Products.Any()))
                     .OrderBy(entry => entry.Order)
                     .ToList();
             if (categories.Count == 1)

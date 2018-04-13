@@ -131,7 +131,7 @@ namespace Benefit.Services.Domain
                 .ToList()
                 .ForEach(entry =>
                 {
-                    entry.IsActive = false;
+                    entry.AvailabilityState = ProductAvailabilityState.NotInStock;
                     db.Entry(entry).State = EntityState.Modified;
                 });
 

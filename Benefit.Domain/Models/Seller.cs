@@ -139,6 +139,18 @@ namespace Benefit.Domain.Models
         }
 
         [NotMapped]
+        public virtual string SpecializationUrl
+        {
+            get
+            {
+                if (SellerCategories == null) return null;
+                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault) == null) return null;
+                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault).Category == null)  return null;
+                return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.UrlName;
+            }
+        }
+
+        [NotMapped]
         public virtual ICollection<Review> ApprovedReviews
         {
             get

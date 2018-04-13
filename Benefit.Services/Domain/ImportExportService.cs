@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Web.Models.Admin;
 using NLog;
 
 namespace Benefit.Services.Domain
@@ -20,7 +21,8 @@ namespace Benefit.Services.Domain
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         Object lockObj = new Object();
 
-        private void CreateAndUpdatePromUaCategories(List<XElement> xmlCategories, string sellerUrlName, string sellerId, Category parent = null)
+        private void CreateAndUpdatePromUaCategories(List<XElement> xmlCategories, string sellerUrlName,
+            string sellerId, Category parent = null)
         {
             List<XElement> xmlCats = null;
             if (parent == null)
@@ -29,8 +31,10 @@ namespace Benefit.Services.Domain
             }
             else
             {
-                xmlCats = xmlCategories.Where(entry => entry.Attribute("parentId") != null && entry.Attribute("parentId").Value == parent.Id).ToList();
+                xmlCats = xmlCategories.Where(entry =>
+                    entry.Attribute("parentId") != null && entry.Attribute("parentId").Value == parent.Id).ToList();
             }
+
             foreach (var xmlCategory in xmlCats)
             {
                 var catId = xmlCategory.Attribute("id").Value;
@@ -41,7 +45,9 @@ namespace Benefit.Services.Domain
                     dbCategory = new Category()
                     {
                         Id = catId,
-                        ParentCategoryId = xmlCategory.Attribute("parentId") == null ? null : xmlCategory.Attribute("parentId").Value,
+                        ParentCategoryId = xmlCategory.Attribute("parentId") == null
+                            ? null
+                            : xmlCategory.Attribute("parentId").Value,
                         IsSellerCategory = true,
                         SellerId = sellerId,
                         Name = catName.Truncate(64),
@@ -102,7 +108,8 @@ namespace Benefit.Services.Domain
             var imagesToAddList = new List<Image>();
 
             var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
-            var currencies = db.Currencies.Where(entry => entry.SellerId == null || entry.SellerId == sellerId).ToList();
+            var currencies = db.Currencies.Where(entry => entry.SellerId == null || entry.SellerId == sellerId)
+                .ToList();
 
             //parameters
             var productParametersToAdd = new List<ProductParameter>();
@@ -136,11 +143,11 @@ namespace Benefit.Services.Domain
                                 {
                                     Name = entry.Attribute("name").Value.ToLower().Trim(':'),
                                     Unit =
-                                        entry.Attribute("unit") == null
+                                    entry.Attribute("unit") == null
+                                        ? null
+                                        : entry.Attribute("unit").Value.ToLower() == string.Empty
                                             ? null
-                                            : entry.Attribute("unit").Value.ToLower() == string.Empty
-                                                ? null
-                                                : entry.Attribute("unit").Value
+                                            : entry.Attribute("unit").Value
                                 }).Distinct().OrderBy(entry => entry.Name).ToList();
 
                 foreach (var parameter in xmlParameters)
@@ -179,6 +186,7 @@ namespace Benefit.Services.Domain
                     }
                 }
             }
+
             productParametersToAdd = productParametersToAdd.OrderBy(entry => entry.Name).ToList();
 
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
@@ -201,7 +209,9 @@ namespace Benefit.Services.Domain
                     IsWeightProduct = false,
                     Price = double.Parse(xmlProduct.Element("price").Value),
                     CurrencyId = currencies.First(entry => entry.Name == currencyId).Id,
-                    AvailabilityState = xmlProduct.Attribute("available").Value == "true" ? ProductAvailabilityState.Available : ProductAvailabilityState.OnDemand,
+                    AvailabilityState = xmlProduct.Attribute("available").Value == "true"
+                        ? ProductAvailabilityState.Available
+                        : ProductAvailabilityState.OnDemand,
                     IsActive = true,
                     IsImported = true,
                     DoesCountForShipping = true,
@@ -227,6 +237,7 @@ namespace Benefit.Services.Domain
                     };
                     productParams.Add(productParameterValue);
                 }
+
                 productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
                 productParameterProductsToAdd.AddRange(productParams);
 
@@ -234,6 +245,7 @@ namespace Benefit.Services.Domain
                 {
                     productsToAddList.Add(product);
                 }
+
                 var order = 0;
                 lock (lockObj)
                 {
@@ -265,7 +277,9 @@ namespace Benefit.Services.Domain
                 product.Price = double.Parse(xmlProduct.Element("price").Value);
                 product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
 
-                product.AvailabilityState = xmlProduct.Attribute("available").Value == "true" ? ProductAvailabilityState.Available : ProductAvailabilityState.OnDemand;
+                product.AvailabilityState = xmlProduct.Attribute("available").Value == "true"
+                    ? ProductAvailabilityState.Available
+                    : ProductAvailabilityState.OnDemand;
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = "PromUaImport";
                 product.AltText = name.Truncate(100);
@@ -285,6 +299,7 @@ namespace Benefit.Services.Domain
                         ProductId = product.Id
                     }));
                 }
+
                 var productParams = new List<ProductParameterProduct>();
                 foreach (var param in xmlProduct.Elements("param"))
                 {
@@ -302,6 +317,7 @@ namespace Benefit.Services.Domain
                     };
                     productParams.Add(productParameterValue);
                 }
+
                 productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
                 productParameterProductsToAdd.AddRange(productParams);
             });
@@ -323,7 +339,8 @@ namespace Benefit.Services.Domain
 
         private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId, bool delete)
         {
-            var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).Select(entry => entry.Id).ToList();
+            var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
+                .Select(entry => entry.Id).ToList();
             var xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
             var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).ToList();
             foreach (var prodId in productIdsToRemove)
@@ -390,13 +407,169 @@ namespace Benefit.Services.Domain
                 {
                     _logger.Error(ex);
                     importTask.LastUpdateStatus = false;
-                    importTask.LastUpdateMessage = "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
+                    importTask.LastUpdateMessage =
+                        "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
                     importTask.LastSync = DateTime.UtcNow;
                     db.Entry(importTask).State = EntityState.Modified;
                     db.SaveChanges();
                     return;
                 }
             }
+        }
+
+        public async Task<ProductImportResults> ImportFromExcel(string sellerId, string xlsPath)
+        {
+            var result = new ProductImportResults();
+            var catalog = new LinqToExcel.ExcelQueryFactory(xlsPath);
+            var worksheetName = catalog.GetWorksheetNames().FirstOrDefault();
+            if (worksheetName == null) throw new Exception("Файл імпорту не містить листів");
+            var worksheet = catalog.Worksheet(worksheetName);
+
+            var xlsProducts =
+                (from row in worksheet.AsNoTracking()
+                 let item = new Product()
+                 {
+                     ExternalId = row["SKU"].Cast<string>(),
+                     Category = categoriesService.GetCategoryByFullName(row["Category"].Cast<string>()),
+                     Vendor = row["Brand"].Cast<string>(),
+                     Name = row["Product"].Cast<string>(),
+                     Price = row["Price"].Cast<double>(),
+                     OldPrice = row["Old price"].Cast<double>(),
+                     CurrencyId = row["Currency"].Cast<string>(),
+                     IsFeatured = row["Featured"].Cast<bool>(),
+                     Title = row["Meta title"].Cast<string>(),
+                     Description = row["Description"].Cast<string>(),
+                     ShortDescription = row["Meta description"].Cast<string>(),
+                     UrlName = row["URL"].Cast<string>(),
+                     AvailabilityState = row["Visible"].Cast<bool>() ? ProductAvailabilityState.Available : ProductAvailabilityState.NotInStock,
+                     AvailableAmount = row["Stock"].Cast<int>(),
+                     Images = row["Images"].Cast<string>().Split(',').Select(entry=>new Image()
+                     {
+                         Id = Guid.NewGuid().ToString(),
+                         ImageUrl = entry
+                     }).ToList()
+                 }
+                 select item).ToList()
+                .Where(entry => entry.Category != null).ToList();
+
+            var dbProductsIds =
+                db.Products.Where(entry => entry.SellerId == sellerId).Select(entry => entry.ExternalId).Where(entry => entry != null).ToList();
+            var xlsProductIds = xlsProducts.Select(entry => entry.ExternalId).ToList();
+
+            var productIdsToDelete = dbProductsIds.Except(xlsProductIds).ToList();
+            result.ProductsRemoved = productIdsToDelete.Count;
+            db.Products.Where(entry => productIdsToDelete.Contains(entry.ExternalId))
+                .ToList()
+                .ForEach(entry =>
+                {
+                    entry.AvailabilityState = ProductAvailabilityState.NotInStock;
+                    db.Entry(entry).State = EntityState.Modified;
+                });
+
+            var productExternalIdsToAdd = xlsProductIds.Except(dbProductsIds).ToList();
+            List<string> productIdsToAdd = null, productIdsToUpdate = null;
+            if (productExternalIdsToAdd.Any())
+            {
+                result.ProductsAdded = productExternalIdsToAdd.Count;
+                var sku = (db.Products.Max(pr => (int?)pr.SKU) ?? SettingsService.SkuMinValue) + 1;
+                var productsToAdd = new List<Product>();
+                xlsProducts.Where(entry => productExternalIdsToAdd.Contains(entry.ExternalId)).ToList().ForEach(entry =>
+                {
+                    entry.Id = Guid.NewGuid().ToString();
+                    entry.CategoryId = entry.Category.Id;
+                    entry.CurrencyId = db.Currencies.AsNoTracking().First(cur => cur.Name == entry.CurrencyId).Id;
+                    entry.SKU = sku++;
+                    entry.LastModified = DateTime.UtcNow;
+                    entry.LastModifiedBy = "ExcelImport";
+                    entry.SellerId = sellerId;
+                    productsToAdd.Add(entry);
+                });
+                productIdsToAdd = productsToAdd.Select(entry => entry.Id).ToList();
+                db.Products.AddRange(productsToAdd);
+            }
+
+            var productExternalIdsToUpdate = xlsProductIds.Intersect(dbProductsIds).ToList();
+            if (productExternalIdsToUpdate.Any())
+            {
+                result.ProductsUpdated = productExternalIdsToUpdate.Count;
+                var xmlProductsToUpdate = xlsProducts.Where(entry => productExternalIdsToUpdate.Contains(entry.Id)).ToList();
+                var dbProductsToUpdate = db.Products.Where(entry => productExternalIdsToUpdate.Contains(entry.Id));
+                productIdsToUpdate = dbProductsToUpdate.Select(entry => entry.Id).ToList();
+                Parallel.ForEach(dbProductsToUpdate, (dbProduct) =>
+                {
+                    var xlsProductToUpdate = xmlProductsToUpdate.First(entry => entry.Id == dbProduct.Id);
+
+                    dbProduct.CategoryId = xlsProductToUpdate.Category.Id;
+                    dbProduct.Vendor = xlsProductToUpdate.Vendor;
+                    dbProduct.Name = xlsProductToUpdate.Name;
+                    dbProduct.Title = xlsProductToUpdate.Title;
+                    dbProduct.UrlName = xlsProductToUpdate.UrlName;
+                    dbProduct.Price = xlsProductToUpdate.Price;
+                    dbProduct.OldPrice = xlsProductToUpdate.OldPrice;
+                    dbProduct.CurrencyId = db.Currencies.First(cur => cur.Name == dbProduct.Id).Id;
+                    dbProduct.AvailabilityState = xlsProductToUpdate.AvailabilityState;
+                    dbProduct.AvailableAmount = xlsProductToUpdate.AvailableAmount;
+                    dbProduct.ShortDescription = xlsProductToUpdate.ShortDescription;
+                    dbProduct.Description = xlsProductToUpdate.Description;
+                    dbProduct.LastModified = DateTime.UtcNow;
+                    dbProduct.LastModifiedBy = "ExcelImport";
+                    dbProduct.SellerId = sellerId;
+                });
+            }
+
+            var allProductParameters = new List<ProductParameterProduct>();
+            var columnNames = catalog.GetColumnNames(worksheetName).ToList();
+            var parameterNames = columnNames.GetRange(columnNames.IndexOf("URL") + 1, columnNames.Count - columnNames.IndexOf("URL") - 1);
+            foreach (var xlsProduct in xlsProducts.Where(entry => !productIdsToDelete.Contains(entry.ExternalId)))
+            {
+                var productParameters = xlsProduct.Category.ProductParameters
+                    .Where(entry => parameterNames.Contains(entry.Name)).ToList();
+                var row = worksheet.FirstOrDefault(entry => entry["SKU"].Cast<string>() == xlsProduct.ExternalId);
+                foreach (var productParameter in productParameters)
+                {
+                    allProductParameters.Add(new ProductParameterProduct()
+                    {
+                        ProductId = xlsProduct.Id,
+                        ProductParameterId = productParameter.Id,
+                        StartValue = row[productParameter.Name].Cast<string>(),
+                        StartText = row[productParameter.Name].Cast<string>()
+                    });
+                }
+            }
+            db.ProductParameterProducts.RemoveRange(
+                db.ProductParameterProducts.Where(entry => productIdsToUpdate.Contains(entry.ProductId)));
+            db.ProductParameterProducts.AddRange(allProductParameters);
+            db.SaveChanges();
+
+            //images
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var path = new DirectoryInfo(xlsPath);
+            var imagesPath = path.GetDirectories("images", SearchOption.AllDirectories)
+                    .FirstOrDefault();
+            if (imagesPath.Exists)
+            {
+                var imageType = ImageType.ProductGallery;
+                //foreach (var xlsProduct in xlsProducts.Where(entry => entry.Images.Any()))
+                //{
+                //    var destPath = Path.Combine(originalDirectory, "Images", imageType.ToString(), xlsProduct.Id);
+                //    var isExists = Directory.Exists(destPath);
+                //    if (!isExists)
+                //        Directory.CreateDirectory(destPath);
+
+                //    var ftpImage = new FileInfo(Path.Combine(ftpImagesPath, xmlProduct.Image));
+                //    if (ftpImage.Exists)
+                //    {
+                //        ImagesService.DeleteAll(
+                //            db.Images.Where(entry => entry.ProductId == xmlProduct.Id).ToList(), xmlProduct.Id,
+                //            imageType);
+                //        ftpImage.CopyTo(Path.Combine(destPath, ftpImage.Name), true);
+                //        ImagesService.AddImage(xmlProduct.Id, ftpImage.Name, imageType);
+                //    }
+                //}
+            }
+
+
+            return result;
         }
     }
 }

@@ -5005,7 +5005,7 @@ body .wrapper .catalog_item .item_info .buttons_block{margin-top:17px;text-align
 .brands_slider_wrapp .flex-direction-nav >li{position:absolute;top:50%;z-index:2;margin-top:-15px}
 .brands_slider_wrapp .flex-direction-nav >li.flex-nav-prev{left:0}
 .brands_slider_wrapp .flex-direction-nav >li.flex-nav-next{right:0}
-.brands_slider_wrapp.flexslider .slides img{display:inline-block;vertical-align:middle}
+.brands_slider_wrapp.flexslider .slides img{display:inline-block;vertical-align: middle;max-height: 55px;}
 .wrap_md .news_wrap{width:68%;margin:0 0 38px}
 .news_block .news_items{font-size:0}
 .news_block .news_items .item{display:inline-block;width:50%;vertical-align:top;padding:0 20px 17px 0}

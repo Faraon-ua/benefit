@@ -26,6 +26,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         ProductsService ProductService = new ProductsService();
         EmailService EmailService = new EmailService();
         ImagesService ImagesService = new ImagesService();
+        ImportExportService ImportService = new ImportExportService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ActionResult Index()
@@ -120,6 +121,40 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 resultXmlCategories = GetAllFiniteCategories(resultXmlCategories);
             }
             return resultXmlCategories;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> ExceleImport(string id)
+        {
+            try
+            {
+                var seller = db.Sellers.Find(id);
+                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                var ftpDirectory = new DirectoryInfo(originalDirectory).Parent.FullName;
+                var sellerPath = Path.Combine(ftpDirectory, "FTP", seller.UrlName);
+                var importFile = new DirectoryInfo(sellerPath).GetFiles("import.xls", SearchOption.AllDirectories).FirstOrDefault();
+
+                if (importFile == null || importFile.Length == 0)
+                {
+                    return Json(new {error ="Файл import.xml не знайдено"}, JsonRequestBehavior.AllowGet);
+                }
+                var result = await ImportService.ImportFromExcel(id, importFile.FullName);
+
+                Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, result));
+
+                
+            }
+            catch (Exception ex)
+            {
+                _logger.Fatal("[Excele Import] " + ex);
+                return Json(new { error = "Файл імпорту має невірну структуру" });
+            }
+
+            return Json(new
+            {
+                message = "Імпорт з файлу Excel успішно виконаний"
+            });
+
         }
 
         [HttpPost]
