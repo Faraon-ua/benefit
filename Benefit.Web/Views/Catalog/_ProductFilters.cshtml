@@ -4,6 +4,9 @@
         <div class="bx_filter_parameters_box title">
             <div class="bx_filter_parameters_box_title">
                 Фільтри по параметрам
+                <br/>
+                <div class="selected-filters">
+                </div>
                 <div class="sort_header view_block hidden-lg" style="float: right">
                     <!--noindex-->
                     <div class="sort_filter filter-section" data-filter-name="sort">
@@ -11,10 +14,10 @@
                             <span class="icon padding_5" title="По алфавіту">A &#8593;</span>
                         </a>
                         <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
-                            <span class="icon padding_5" title="За ціноб">&#36; &#8593;</span>
+                            <span class="icon padding_5" title="За ціною">&#36; &#8593;</span>
                         </a> 
                         <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
-                            <span class="icon padding_5" title="За ціноб">&#36; &#8595;</span>
+                            <span class="icon padding_5" title="За ціною">&#36; &#8595;</span>
                         </a>
                     </div>
                     <!--/noindex-->
@@ -45,7 +48,7 @@
                                 var name = filterValue.ParameterValueUrl == null ? string.Empty : filterValue.ParameterValueUrl.Replace(" ", string.Empty);
                                 <div class="bx_filter_block limited_block">
                                     <div class="bx_filter_parameters_box_container">
-                                        <input type="checkbox" id="@filterValue.ParameterValueUrl" name="@name" class="hidden">
+                                        <input type="checkbox" id="@filterValue.ParameterValueUrl" name="@name" class="hidden" text="@filterValue.ParameterValue">
                                         <label class="bx_filter_param_label  last" for="@filterValue.ParameterValueUrl">
                                             <span class="bx_filter_input_checkbox">
                                                 <span class="bx_filter_param_text">@filterValue.ParameterValue @filter.MeasureUnit</span>

@@ -30,9 +30,6 @@ $(function () {
 
     if (!getCookie("regionName")) {
         $(".region_wrapper").popover('show');
-        //var popover = $('.popover')[0].outerHTML;
-        //$(".popover").remove();
-        //$("#panel").after(popover);
     }
 });
 

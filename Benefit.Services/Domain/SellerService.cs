@@ -322,6 +322,7 @@ namespace Benefit.Services.Domain
                 items = items.Where(entry => entry.SellerId == sellerId);
             }
 
+            var generalParams = FetchGeneralProductParameters(items, sellerId == null);
             //todo: instead all products show recomendations
             var sort = ProductSortOption.Rating;
             if (options != null)
@@ -406,8 +407,12 @@ namespace Benefit.Services.Domain
                 }
                 var productParametersInItems =
                     items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue))
+                        .Union(items.Select(entry=>entry.Vendor))
+                        .Union(items.Select(entry=>entry.Seller.UrlName))
+                        .Union(items.Select(entry=>entry.OriginCountry))
                         .Distinct()
                         .ToList();
+                productParameters.InsertRange(0, generalParams);
                 var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
                 foreach (var productParameterName in productParameterNames)
                 {
@@ -418,7 +423,7 @@ namespace Benefit.Services.Domain
                             .Distinct(new ProductParameterValueComparer())
                             .ToList();
 
-                    if (options != null && !options.Contains(parameter.UrlName))
+                    if (options == null || !options.Contains(parameter.UrlName))
                     {
                         parameter.ProductParameterValues =
                             parameter.ProductParameterValues.Where(
@@ -428,7 +433,6 @@ namespace Benefit.Services.Domain
                     result.ProductParameters.Add(parameter);
                 }
 
-                productParameters.InsertRange(0, FetchGeneralProductParameters(items, sellerId == null));
                 result.ProductParameters = productParameters;
             }
 
@@ -464,7 +468,7 @@ namespace Benefit.Services.Domain
                        ParameterValue = entry,
                        ParameterValueUrl = entry
                    }).OrderBy(entry => entry.ParameterValue).ToList();
-            if (vendorParams.Count > 1)
+            if (vendorParams.Count >= 1)
             {
                 productParametersList.Add(new ProductParameter()
                 {
@@ -481,7 +485,7 @@ namespace Benefit.Services.Domain
                      ParameterValue = entry,
                      ParameterValueUrl = entry
                  }).OrderBy(entry => entry.ParameterValue).ToList();
-            if (originCountryParams.Count > 1)
+            if (originCountryParams.Count >= 1)
             {
                 productParametersList.Add(new ProductParameter()
                 {

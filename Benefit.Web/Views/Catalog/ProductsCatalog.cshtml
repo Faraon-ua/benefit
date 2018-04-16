@@ -35,6 +35,18 @@
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
         }
         $(function () {
+            $('body').on("click",
+                ".remove-filter",
+                function () {
+                    var optionName = $(this).parent().attr("data-option-name");
+                    var optValue = decodeURI($(this).parent().attr("data-option-value"));
+                    var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
+                    if (checkbox.length === 0) {
+                        checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + optValue.replace(" ", "") + "]")
+                    }
+                    checkbox.click();
+                });
+
             $(".ajax_load_btn").click(function (e) {
                 e.preventDefault();
                 var moreBtn = $(this);
@@ -80,8 +92,15 @@
                              
                          } else {
                              $.each(optionValues, function (j, optValue) {
-                                 $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue)).prop('checked', true);
-                                 $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]").prop('checked', true);
+                                 var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue));
+                                 if (checkbox.length === 0) {
+                                     checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]")
+                                 }
+                                 checkbox.prop('checked', true);
+                                 var optionvalueText = checkbox.attr("text");
+                                 $(".selected-filters").append(
+                                     "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" + optionName + "' data-option-value='" + optValue+"'>" + optionvalueText + " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                 );
                              });
                          }
                      });
