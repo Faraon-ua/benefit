@@ -81,7 +81,7 @@ else
                         </td>
                         <td>
                             <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
-                                <a class="btn btn-xs btn-info" href="@Url.Action("Index","Tovar", new {area = ""})" target="_blank">
+                                <a class="btn btn-xs btn-info" href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) })" target="_blank">
                                     <i class="icon-eye-open bigger-120"></i>
                                 </a>
                                 @{

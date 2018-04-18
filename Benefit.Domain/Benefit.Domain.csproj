@@ -472,6 +472,7 @@
     <Compile Include="Models\CompanyRevenue.cs" />
     <Compile Include="Models\Enums\ProductSortOption.cs" />
     <Compile Include="Models\Enums\SellerStatus.cs" />
+    <Compile Include="Models\Excel\ExcelProduct.cs" />
     <Compile Include="Models\ExportImport.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />

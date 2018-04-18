@@ -141,8 +141,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var result = await ImportService.ImportFromExcel(id, importFile.FullName);
 
                 Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, result));
-
-                
             }
             catch (Exception ex)
             {

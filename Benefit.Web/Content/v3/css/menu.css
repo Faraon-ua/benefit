@@ -261,6 +261,7 @@
             }
 
                 #section-menu li.li-depth-1 a span {
+                    font-weight: 600;
                 }
 
             #section-menu li.li-depth-1:last-child a.a-depth-1 {
