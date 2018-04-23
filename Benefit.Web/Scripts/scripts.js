@@ -478,6 +478,7 @@ $(document).ready(function () {
     /*product_modal_amount*/
     $('body').on('click', '.product_modal_plus, .product_modal_minus', function () {
         var tr = $(this).parents("tr");
+        var sellerId = tr.attr("data-seller-id");
         var productAmount = $(this).parent().children('.product_modal_amount');
         var retailPrice = parseFloat(tr.attr('data-original-price'));
         var wholesalePrice = parseFloat(tr.attr('data-wholesale-price'));
@@ -518,7 +519,7 @@ $(document).ready(function () {
                 tr.find(".old-product-total").hide();
             }
         }
-        CalculateCartSum();
+        CalculateCartSum(sellerId);
     });
 
     $('.product_description_amount_plus, .product_description_amount_minus').on('click', function () {

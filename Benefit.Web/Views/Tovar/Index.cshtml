@@ -61,20 +61,11 @@
             });
 
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
-            var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
             var sellerId = '@Model.Product.SellerId';
 
             $("#buy-product, #buy-product-with-options").click(function () {
                var buttonId = $(this).attr("id");
-                $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
-                    //if купить баттон
                     if (buttonId == "buy-product") {
-                        if (isAnotherSeller) {
-                            if (!confirm("Увага! У кошику є товари від іншого постачальника. Вони будуть видалені, якщо Ви продовжите цю дію.")) {
-                                return;
-                            }
-                        }
-
                         //if there are options to show
                         if ($("#product_modal").length > 0) {
                             //show options
@@ -139,7 +130,6 @@
                                 setCartSummary(data);
                             }, 1000);
                         });
-                });
             });
         });
     </script>

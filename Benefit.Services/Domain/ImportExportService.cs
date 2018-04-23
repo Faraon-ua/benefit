@@ -465,10 +465,18 @@ namespace Benefit.Services.Domain
                     ? entry.Product.ShortDescription.Substring(0, 160) : entry.Product.ShortDescription;
                 product.Name = entry.Product.Name.Length > 256
                     ? entry.Product.Name.Substring(0, 256) : entry.Product.Name;
-                product.OldPrice = product.OldPrice == default(double) ? (double?) null : product.OldPrice.Value;
-                product.AvailabilityState = entry.Visible > 0
-                    ? ProductAvailabilityState.Available
-                    : ProductAvailabilityState.NotInStock;
+                product.OldPrice = product.OldPrice == default(double) ? (double?)null : product.OldPrice.Value;
+                if (entry.Visible > 0)
+                {
+                    product.AvailabilityState = product.AvailableAmount > 0
+                        ? ProductAvailabilityState.Available
+                        : ProductAvailabilityState.AlwaysAvailable;
+                }
+                else
+                {
+                    product.AvailabilityState = ProductAvailabilityState.NotInStock;
+                }
+
                 xlsProducts.Add(product);
             });
 

@@ -12,6 +12,7 @@ namespace Benefit.DataTransfer.ViewModels
             Addresses = new List<Address>();
             PaymentTypes = new List<PaymentType>();
         }
+        public string SellerId { get; set; }
         public List<ShippingMethod> ShippingMethods { get; set; }
         public bool RequireAddress { get; set; }
         public List<Address> Addresses { get; set; }

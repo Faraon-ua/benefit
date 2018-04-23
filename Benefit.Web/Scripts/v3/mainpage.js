@@ -1,7 +1,4 @@
-﻿
-$(function () {
-    var searchWordsUrl = '@Url.Action("SearchWords", "Search")';
-    var searchUrl = '@Url.Action("Index", "Search")';
+﻿$(function () {
     $(".search-input").devbridgeAutocomplete({
         width: 300,
         minChars: 3,
@@ -13,7 +10,6 @@ $(function () {
 
     $(".basket-link, #order-cart, .order-edit").click(function (e) {
         e.preventDefault();
-        var cartUrl = '@Url.Action("GetCart", "Cart", new {area = string.Empty})';
         $("#cart-container").load(cartUrl,
             function () {
                 $("#basket_modal").modal('show');

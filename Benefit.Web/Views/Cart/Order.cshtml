@@ -267,8 +267,8 @@
             </div>
         }
         <div id="order-form-wrap">
-            @using (Html.BeginForm())
-            {
+            <form action="@Url.Action("order", new {id = Model.SellerId})" method="post">
+                <input type="hidden" name="SellerId" value="@Model.SellerId" />
                 <div class="card">
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#delivery" aria-controls="home" role="tab" data-toggle="tab">Способи доставки</a></li>
@@ -321,7 +321,7 @@
                         </div>
                     </div>
                 </div>
-            }
+            </form>
         </div>
     </div>
 

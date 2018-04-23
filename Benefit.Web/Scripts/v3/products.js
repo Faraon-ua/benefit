@@ -36,24 +36,14 @@
             var isWeightProduct = $(this).attr("data-is-weight-product").toLowerCase() === 'true';
             var sellerId = $(this).attr("data-seller-id");
             var amount = $(this).prev(".counter").find(".quantity").val();
-            $.get(checkSellerCartUrl + "?sellerId=" + sellerId,
-                function (isAnotherSeller) {
-                    if (isAnotherSeller) {
-                        if (!confirm(
-                            "Увага! У кошику є товари від іншого постачальника. Вони будуть видалені, якщо Ви продовжите цю дію.")
-                        ) {
-                            return;
-                        }
+            $.get(productOptionsUrl + "?productId=" + productId,
+                function (data) {
+                    if (data) {
+                        $("#product-options-wrap").html(data);
+                        $("#product_modal").modal('show');
+                    } else {
+                        AddOrderProduct(amount, productId, sellerId, false, isWeightProduct);
                     }
-                    $.get(productOptionsUrl + "?productId=" + productId,
-                        function (data) {
-                            if (data) {
-                                $("#product-options-wrap").html(data);
-                                $("#product_modal").modal('show');
-                            } else {
-                                AddOrderProduct(amount, productId, sellerId, false, isWeightProduct);
-                            }
-                        });
                 });
         });
 });
