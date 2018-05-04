@@ -466,6 +466,10 @@
     <Compile Include="Migrations\201804110854488_AddExternalIdToProduct.Designer.cs">
       <DependentUpon>201804110854488_AddExternalIdToProduct.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201804261329181_AddInfoPageSellerRelation.cs" />
+    <Compile Include="Migrations\201804261329181_AddInfoPageSellerRelation.Designer.cs">
+      <DependentUpon>201804261329181_AddInfoPageSellerRelation.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -810,6 +814,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804110854488_AddExternalIdToProduct.resx">
       <DependentUpon>201804110854488_AddExternalIdToProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804261329181_AddInfoPageSellerRelation.resx">
+      <DependentUpon>201804261329181_AddInfoPageSellerRelation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

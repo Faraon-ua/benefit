@@ -23,9 +23,16 @@ namespace Benefit.Web.Controllers
     public class HomeController : BaseController
     {
         [FetchCategories]
+        [FetchSeller]
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
-        public async Task<ActionResult> Index(string subdomain)
+        public async Task<ActionResult> Index()
         {
+            //handle seller subdomain
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                return View("~/views/sellerarea/home.cshtml", seller);
+            }
             var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())
             {
@@ -71,7 +78,7 @@ namespace Benefit.Web.Controllers
                         .ToList();
                 mainPageViewModel.FirstRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.FirstRowMainPage);
                 mainPageViewModel.SecondRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.SecondRowMainPage);
-                mainPageViewModel.Brands = db.Sellers.Include(entry=>entry.Images).Where(entry => entry.IsActive && entry.IsFeatured).ToList();
+                mainPageViewModel.Brands = db.Sellers.Include(entry => entry.Images).Where(entry => entry.IsActive && entry.IsFeatured).ToList();
             }
             return View(mainPageViewModel);
         }
@@ -171,11 +178,16 @@ namespace Benefit.Web.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        [FetchSeller]
+        public ActionResult Contacts()
         {
-            ViewBag.Message = "Your contact page.";
+            return View("~/Views/SellerArea/Contacts.cshtml");
+        }
 
-            return View();
+        [FetchSeller]
+        public ActionResult Reviews()
+        {
+            return View("~/Views/SellerArea/Reviews.cshtml");
         }
 
         public ActionResult Map()

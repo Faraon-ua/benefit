@@ -188,7 +188,7 @@ namespace Benefit.Web.Controllers
                 Task.Run(() =>
                     NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl,
                         completeOrder.Order.SellerId));
-                return RedirectToAction("OrderCompleted", new { number = orderNumber });
+                return RedirectToAction("ordercompleted", new { number = orderNumber });
             }
             using (var db = new ApplicationDbContext())
             {

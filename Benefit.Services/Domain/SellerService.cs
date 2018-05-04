@@ -200,6 +200,18 @@ namespace Benefit.Services.Domain
         {
             return db.Sellers.Include(entry => entry.ShippingMethods.Select(sh => sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
         }
+
+        public Seller GetSeller(string urlName)
+        {
+            var seller = db.Sellers
+                .Include(entry => entry.SellerCategories)
+                .Include(entry => entry.Schedules)
+                .Include(entry => entry.Addresses)
+                .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
+                .FirstOrDefault(entry => entry.UrlName == urlName);
+            return seller;
+        }
+
         public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName, string currentUserId)
         {
             var sellerVM = new SellerDetailsViewModel();

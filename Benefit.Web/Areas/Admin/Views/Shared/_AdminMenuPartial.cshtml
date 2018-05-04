@@ -46,6 +46,12 @@
                 <span class="menu-text"> Дані постачальника </span>
             </a>
         </li>
+        <li>
+            <a href="@Url.Action("SellerCatalog", "Images")">
+                <i class="icon-picture"></i>
+                <span class="menu-text"> Каталог</span>
+            </a>
+        </li>
     }
 
     @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
@@ -54,6 +60,12 @@
             <a href="@Url.Action("Index", "Products")">
                 <i class="icon-barcode"></i>
                 <span class="menu-text"> Товари</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "InfoPages")">
+                <i class="icon-desktop"></i>
+                <span class="menu-text">Інформаційні сторінки</span>
             </a>
         </li>
     }
@@ -79,12 +91,6 @@
             <a href="@Url.Action("SellerTurnover", "Statistics")">
                 <i class="icon-book"></i>
                 <span class="menu-text">Звітність</span>
-            </a>
-        </li>
-        <li>
-            <a href="@Url.Action("Index", "InfoPages")">
-                <i class="icon-desktop"></i>
-                <span class="menu-text">Інформаційні сторінки</span>
             </a>
         </li>
         <li>
@@ -134,7 +140,7 @@
                 <i class="icon-money"></i>
                 <span class="menu">Курси та індекси</span>
             </a>
-        </li> 
+        </li>
         <li>
             <a href="@Url.Action("Index", "Notifications")">
                 <i class="icon-bullhorn"></i>
@@ -150,7 +156,7 @@
                 <span class="menu-text">Статус терміналів</span>
             </a>
         </li>
-         <li>
+        <li>
             <a href="@Url.Action("Index", "Localizations")">
                 <i class="icon-globe"></i>
                 <span class="menu">Локалізація</span>

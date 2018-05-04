@@ -1,20 +1,21 @@
 ﻿@using System.Globalization
+@using Benefit.Domain.Models
 @model Benefit.Domain.Models.InfoPage
 <div class="tabbable">
     <ul class="nav nav-tabs" id="myTab">
-        <li class="active">
-            <a data-toggle="tab" href="#uk">
-                <i class="icon-country icon-uk bigger-110"></i>
-                Українська
-            </a>
-        </li>
+        @*<li class="active">
+                <a data-toggle="tab" href="#uk">
+                    <i class="icon-country icon-uk bigger-110"></i>
+                    Українська
+                </a>
+            </li>
 
-        <li>
-            <a data-toggle="tab" href="#ru">
-                <i class="icon-country icon-ru bigger-110"></i>
-                Русский
-            </a>
-        </li>
+            <li>
+                <a data-toggle="tab" href="#ru">
+                    <i class="icon-country icon-ru bigger-110"></i>
+                    Русский
+                </a>
+            </li>*@
     </ul>
     <div class="tab-content">
         <div id="uk" class="tab-pane in active">
@@ -52,20 +53,23 @@
                     @Html.EditorFor(model => model.IsActive)
                 </div>
             </div>
-            <div class="form-group">
-                <label class="control-label col-md-1" for="IsNews">Новина</label>
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.IsNews)
+            @if (Seller.CurrentAuthorizedSellerId == null)
+            {
+                <div class="form-group">
+                    <label class="control-label col-md-1" for="IsNews">Новина</label>
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.IsNews)
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                <label class="control-label col-md-1" for="Name">Дата створення</label>
-                <div class="col-md-10">
-                    @Html.TextBoxFor(model => model.CreatedOn)
-                    <span>(Формат: 12/23/2016 4:12:05)</span>
-                    @Html.ValidationMessageFor(model => model.CreatedOn)
+                <div class="form-group">
+                    <label class="control-label col-md-1" for="Name">Дата створення</label>
+                    <div class="col-md-10">
+                        @Html.TextBoxFor(model => model.CreatedOn)
+                        <span>(Формат: 12/23/2016 4:12:05)</span>
+                        @Html.ValidationMessageFor(model => model.CreatedOn)
+                    </div>
                 </div>
-            </div>
+            }
             <div class="form-group">
                 <label class="control-label col-md-1" for="Keywords">Ключові слова для пошуку (через кому)</label>
 
@@ -100,37 +104,30 @@
             </div>
         </div>
 
-        <div id="ru" class="tab-pane">
-            @for (var i = 0; i < Model.Localizations.Count; i++)
-            {
-                <div class="form-group">
-                    @Html.HiddenFor(m => m.Localizations[i].Id)
-                    @Html.HiddenFor(m => m.Localizations[i].LanguageCode)
-                    @Html.HiddenFor(m => m.Localizations[i].ResourceField)
-                    @Html.HiddenFor(m => m.Localizations[i].ResourceId)
-                    @Html.HiddenFor(m => m.Localizations[i].ResourceType)
-                    <label class="control-label col-md-1" for="Name">
-                        @HttpContext.GetGlobalResourceObject("Resources", Model.Localizations[i].ResourceField, new CultureInfo("ru-RU"))
-                    </label>
-                    <div class="col-md-10">
-                        @if (Model.Localizations[i].ResourceField == "Content")
-                        {
-                            @Html.TextAreaFor(m => m.Localizations[i].ResourceValue, new { cols = 45, rows = 5 })
-                            @*  <script type="text/javascript">
-                                    CKEDITOR.replace("InfoPage.Localizations[" + i + "].ResourceValue", {
-                                        //                filebrowserImageBrowseUrl: '/home/uploadPartial',
-                                        //                filebrowserImageUploadUrl: '/home/uploadnow'
-                                        filebrowserImageUploadUrl: '/home/UploadImage'
-                                    });
-                                </script>*@
-                        }
-                        else
-                        {
-                            @Html.TextBoxFor(m => m.Localizations[i].ResourceValue)
-                        }
+        @*<div id="ru" class="tab-pane">
+                @for (var i = 0; i < Model.Localizations.Count; i++)
+                {
+                    <div class="form-group">
+                        @Html.HiddenFor(m => m.Localizations[i].Id)
+                        @Html.HiddenFor(m => m.Localizations[i].LanguageCode)
+                        @Html.HiddenFor(m => m.Localizations[i].ResourceField)
+                        @Html.HiddenFor(m => m.Localizations[i].ResourceId)
+                        @Html.HiddenFor(m => m.Localizations[i].ResourceType)
+                        <label class="control-label col-md-1" for="Name">
+                            @HttpContext.GetGlobalResourceObject("Resources", Model.Localizations[i].ResourceField, new CultureInfo("ru-RU"))
+                        </label>
+                        <div class="col-md-10">
+                            @if (Model.Localizations[i].ResourceField == "Content")
+                            {
+                                @Html.TextAreaFor(m => m.Localizations[i].ResourceValue, new { cols = 45, rows = 5 })
+                            }
+                            else
+                            {
+                                @Html.TextBoxFor(m => m.Localizations[i].ResourceValue)
+                            }
+                        </div>
                     </div>
-                </div>
-            }
-        </div>
+                }
+            </div>*@
     </div>
 </div>

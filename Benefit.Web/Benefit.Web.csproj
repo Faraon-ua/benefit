@@ -250,6 +250,7 @@
     <Compile Include="Areas\Admin\Controllers\CategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\CurrenciesController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ImagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImportExportController.cs" />
     <Compile Include="Areas\Admin\Controllers\InfoPagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\LocalizationsController.cs" />
@@ -293,6 +294,7 @@
     <Compile Include="Filters\FetchLastNewsAttribute.cs" />
     <Compile Include="Filters\FetchCategoriesAttribute.cs" />
     <Compile Include="Filters\CustomKeyAuthAttribute.cs" />
+    <Compile Include="Filters\FetchSellerAttribute.cs" />
     <Compile Include="Filters\SubdomainFilterAttribute.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -705,6 +707,8 @@
     <Content Include="Content\img\wrong.png" />
     <Content Include="Content\css\main.css" />
     <Content Include="Content\css\media.css" />
+    <Content Include="Content\seller\css\main.css" />
+    <Content Include="Content\seller\css\style.css" />
     <Content Include="Content\sounds\newOrder.mp3" />
     <Content Include="Content\v3\css\menu.css" />
     <Content Include="Content\v3\css\product.css" />
@@ -939,6 +943,7 @@
     <Content Include="Content\css\fonts\opensans-bold.eot" />
     <Content Include="Content\css\fonts\opensans-bold.ttf" />
     <Content Include="Content\css\fonts\opensans-bold.woff" />
+    <Content Include="Areas\Admin\Views\Images\SellerCatalog.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1311,6 +1316,8 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\owl.carousel.min.js" />
     <Content Include="Scripts\scripts.js" />
+    <Content Include="Scripts\seller\jquery-migrate-1.js" />
+    <Content Include="Scripts\seller\jquery.js" />
     <Content Include="Scripts\site.js" />
     <Content Include="Scripts\sorting-filtering.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
@@ -1419,7 +1426,11 @@
     <Content Include="Views\Catalog\_SellerPartial.cshtml" />
     <Content Include="Views\Account\_LoginForm.cshtml" />
     <Content Include="Views\Shared\_StarsRatingPartial.cshtml" />
-    <Content Include="Views\Tovar\_ReviewFormPartial.cshtml" />
+    <Content Include="Views\Shared\_ReviewFormPartial.cshtml" />
+    <Content Include="Views\SellerArea\_SellerLayout.cshtml" />
+    <Content Include="Views\SellerArea\Home.cshtml" />
+    <Content Include="Views\SellerArea\Contacts.cshtml" />
+    <Content Include="Views\SellerArea\Reviews.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

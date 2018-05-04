@@ -24,6 +24,7 @@ namespace Benefit.Domain.Models
             ProductOptions = new Collection<ProductOption>();
             Personnels = new Collection<Personnel>();
             Promotions = new Collection<Promotion>();
+            InfoPages = new Collection<InfoPage>();
         }
 
         [Key]
@@ -42,7 +43,7 @@ namespace Benefit.Domain.Models
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         [MaxLength(160)]
-        public string ShortSescription { get; set; }
+        public string ShortDescription { get; set; }
         [MaxLength(160)]
         //internal site search
         public string SearchTags { get; set; }
@@ -125,6 +126,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Promotion> Promotions { get; set; }
         public virtual ICollection<NotificationChannel> NotificationChannels { get; set; }
+        public virtual ICollection<InfoPage> InfoPages { get; set; }
 
         [NotMapped]
         public virtual string Specialization
