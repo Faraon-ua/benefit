@@ -47,6 +47,7 @@ namespace Benefit.Services.Domain
                         Name = catName.Truncate(64),
                         UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128),
                         Description = catName,
+                        MetaDescription = catName,
                         NavigationType = CategoryNavigationType.SellersAndProducts.ToString(),
                         IsActive = true,
                         LastModified = DateTime.UtcNow,
