@@ -6,7 +6,6 @@
     ViewBag.Title = "Головна";
 
 }
-
 <section id="slider_main">
     <div id="slider_images">
         @foreach (var image in Model.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
@@ -57,7 +56,7 @@
                             Reviews = Model.ApprovedReviews
                         })
                         <div class="clearfix"></div>
-                        <a class="btn btn-sm btn-info pull-xs-right" href="" target="_blank">Усі відгуки</a>
+                        <a class="btn btn-sm btn-info pull-xs-right" href="@Url.Action("reviews","home")">Усі відгуки</a>
                     </div>
                 </div>
             </div>

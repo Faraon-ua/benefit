@@ -22,9 +22,6 @@
     <link href="~/Content/seller/css/style.css" rel="stylesheet" />
     <link href="~/Content/seller/css/main.css" rel="stylesheet" />
 
-    <script src="~/Scripts/seller/jquery.js"></script>
-    <script src="~/Scripts/seller/jquery-migrate-1.js"></script>
-
     <style type="text/css">
         body {
             padding-top: 25px;
@@ -174,56 +171,9 @@
                     <a class="list_drop b-block btn-primary btn-lg text-center hidden-lg-up"><i class="ico-menu"></i> МЕНЮ/КАТАЛОГ ПОСЛУГ</a>
                     <ul class="lev1">
                         <li>
-                            <a class="cat_index list_drop">МЕНЮ/КАТАЛОГ ПОСЛУГ<i class="f-sm_down"></i></a>
-
-                            <ul id="id000" class="lev2">
-                                <li class="sub ">
-                                    <a href="catalog/mobilnye-telefony">Телефоны и смарт-часы</a>
-                                    <button class="list_drop btn btn-primary pull-right hidden-lg-up" type="button">+</button>
-                                    <ul id="id1" class="lev3">
-                                        <li class="sub "><a href="catalog/smartfony">Смартфоны</a></li>
-                                        <li><a href="catalog/statsionarnye-sotovye-telefony">Стационарные сотовые телефоны</a></li>
-                                        <li><a href="catalog/umnye-chasy">Умные часы</a></li>
-                                        <li><a href="catalog/garnitury">Гарнитуры</a></li>
-                                        <li><a href="catalog/aksessuary-dlya-zaschity-i-perenoski">Аксессуары для защиты и переноски</a></li>
-                                        <li><a href="catalog/dlya-zaryadki-i-podklyucheniya">Для зарядки и подключения</a></li>
-                                        <li><a href="catalog/radiostantsii">Радиостанции</a></li>
-                                        <li><a href="catalog/provodnye-telefony">Проводные телефоны</a></li>
-                                        <li class="hidden"><a href="catalog/faksy">Факсы</a></li>
-                                        <li class="hidden"><a href="catalog/mini-ats">Мини АТС</a></li>
-                                        <li class="hidden"><a href="catalog/radiotelefony">Радиотелефоны</a></li>
-                                        <li class="hidden"><a href="catalog/kategoriya-bez-izobrazheniya">Категория без изображения</a></li>
-                                    </ul>
-                                </li>
-                                <li class="sub ">
-                                    <a href="catalog/bytovaya-tehnika">Бытовая техника</a>
-                                    <button class="list_drop btn btn-primary pull-right hidden-lg-up" type="button">+</button>
-                                    <ul id="id2" class="lev3">
-                                        <li class="sub "><a href="catalog/Техника_для_дома">Техника для дома</a></li>
-                                        <li class="sub "><a href="catalog/krupnaya-tehnika-dlya-kuhni-">Крупная техника для кухни </a></li>
-                                        <li class="sub "><a href="catalog/kofevarki-i-kofemashiny">Кофеварки и кофемашины</a></li>
-                                        <li class="sub "><a href="catalog/vstraivaemaya-tehnika">Встраиваемая техника</a></li>
-                                        <li><a href="catalog/tovary-dlya-kuhni">Товары для кухни</a></li>
-                                        <li><a href="catalog/filtry-dlya-vody">Фильтры для воды</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="catalog/fotoapparaty">Фотоаппараты</a></li>
-                                <li class="sub ">
-                                    <a href="catalog/sport-i-turizm">Спорт и туризм</a>
-                                    <button class="list_drop btn btn-primary pull-right hidden-lg-up" type="button">+</button>
-                                    <ul id="id7" class="lev3">
-                                        <li><a href="catalog/567567567567567">567567567567567</a></li>
-                                        <li><a href="catalog/5675675675675">5675675675675</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="catalog/parfyumeriya">Парфюмерия</a></li>
-                                <li><a href="catalog/noutbuki-i-planshety">Ноутбуки и планшеты</a></li>
-                                <li><a href="catalog/kompyutery-i-periferiya">Компьютеры и периферия</a></li>
-                                <li><a href="catalog/ofisnaya-tehnika-i-mebel">Офисная техника и мебель</a></li>
-                                <li><a href="catalog/ventilyatsiya">Вентиляция</a></li>
-                                <li><a href="catalog/otoplenie">Отопление</a></li>
-                                <li><a href="catalog/vodosnabzhenie">Водоснабжение</a></li>
-                            </ul>
+                            <a class="cat_index list_drop" href="@Url.Action("catalog", "home")">
+                                @seller.CatalogButtonName
+                            </a>
                         </li>
                         <li><a href="#">Про нас</a></li>
                         <li><a href="@Url.Action("reviews", "home")">Відгуки</a></li>
@@ -237,73 +187,17 @@
         @RenderBody()
 
         <footer id="footer">
-            <section class="foo-main">
-                <div class="container p-t-1">
-                    <div class="row">
-                        <div class="col-xs-12 col-lg-8 col-xl-9">
-                            <div class="col-xs-12 p-x-0">
-                                Текст подвала Letraset с образцами Lorem Ipsum в 60-х годах и, в
-                                более недавнее время, программы электронной вёрстки типа Aldus
-                                PageMaker, в шаблонах которых используется Lorem Ipsum.
-                                <hr class="sm">
-                            </div>
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6 col-lg-4 col-xl-3">
-                                    <div class="h4 text-caps text-bold text-xs-left">Информация</div>
-                                    <ul class="list-inline nav-link-line text-xs-left">
-                                        <li><a href="http://demo.simpla-template.ru/simpla_clear/blog">Новости</a></li>
-                                        <li><a href="">Главная</a></li>
-                                        <li><a href="http://demo.simpla-template.ru/simpla_clear/dostavka">Доставка</a></li>
-                                        <li><a href="http://demo.simpla-template.ru/simpla_clear/oplata">Оплата</a></li>
-                                        <li><a href="http://demo.simpla-template.ru/simpla_clear/garantii">Гарантии</a></li>
-                                        <li><a href="http://demo.simpla-template.ru/simpla_clear/contact">Контакты</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-lg-8 col-xl-6">
-                                    <div class="h4 text-caps text-bold text-xs-left">Разделы каталога</div>
-                                    <ul class="row list-inline nav-link-line text-xs-left">
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/mobilnye-telefony" data-category="1">Телефоны и смарт-часы</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/bytovaya-tehnika" data-category="2">Бытовая техника</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/fotoapparaty" data-category="5">Фотоаппараты</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/sport-i-turizm" data-category="7">Спорт и туризм</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/parfyumeriya" data-category="8">Парфюмерия</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/noutbuki-i-planshety" data-category="46">Ноутбуки и планшеты</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/kompyutery-i-periferiya" data-category="47">Компьютеры и периферия</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/ofisnaya-tehnika-i-mebel" data-category="48">Офисная техника и мебель</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/ventilyatsiya" data-category="49">Вентиляция</a></li>
-                                        <li class="col-xs-6 col-sm-12 col-md-6 p-a-0"><a href="http://demo.simpla-template.ru/simpla_clear/catalog/otoplenie" data-category="50">Отопление</a></li>
-                                    </ul>
-                                </div>
-                                <div class="col-xs-12 col-sm-6 col-lg-3 hidden-lg-down">
-                                    <div class="h4 text-caps text-bold text-xs-left">Дополнительно</div>
-                                    <ul class="row list-none">
-                                        <li><a class="" href="">Как выбрать товар</a></li>
-                                        <li><a class="" href="">Гарантия и возврат</a></li>
-                                        <li><a class="" href="">Как получить скидку</a></li>
-                                        <li><a class="" href="">Любая ссылка</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-xs-12 col-lg-4 col-xl-3 text-lg-right">
-                            <div class="text-plus-icon ico-head_phone1 hidden-md-down">
-                                <a class="name" href="tel:+7%20(495)%20504-72-45" target="_blank"><span>+7 (495)</span> 504-72-45</a>
-                                <div class="small">Время работы 9:00-19:00</div>
-                            </div>
-                            <div>
-                                <div class="h4 text-caps text-bold">Понравилось? Делитесь!</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
             <section class="foo-copy">
                 <div class="container">
                     <div class="row">
                         <div class="col-xs-12 col-md-9 col-lg-10 text-xs-center text-sm-left">
-                            <p><b>ООО "Великолепный интернет-магазин" © 2013-2018.</b></p>
+                            <p><b>@seller.Name © 2018.</b></p>
                         </div>
-                        <a class="des_by" title="" target="_blank" href="#">Сайт створено на системі  <img src="images/b.jpg" width="25"></a>
+
+                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 text-xs-center text-lg-right counters">
+                            <a class="des_by" title="Benefit Company" target="_blank" href="https://benefit-company.com">Сайт створено на системі 
+                                <img src="~/Content/seller/images/b.jpg" width="25"></a>	
+                        </div>
                     </div>
                 </div>
             </section>
@@ -311,11 +205,6 @@
     </div>
 
     <a href="#" class="inpage-scroll scrollUp">Наверх</a>
-
-    <script src="~/Scripts/seller/jquery-ui.js"></script>
-    <script src="~/Scripts/seller/main.js"></script>
-    <script src="~/Scripts/seller/custom.js"></script>
-
     <div class="ic-tooltip " data-ic-tooltip>
         <div class="ic-tooltip__logo hidden-md-down">
             <a href="#">
@@ -337,5 +226,12 @@
             </a>
         </div>
     </div>
+
+    <script src="~/Scripts/seller/jquery.js"></script>
+    <script src="~/Scripts/seller/jquery-migrate-1.js"></script>
+    <script src="~/Scripts/seller/jquery-ui.js"></script>
+    <script src="~/Scripts/seller/main.js"></script>
+    <script src="~/Scripts/seller/custom.js"></script>
+    @RenderSection("scripts", false)
 </body>
 </html>

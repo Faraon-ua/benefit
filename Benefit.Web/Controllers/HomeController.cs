@@ -190,6 +190,12 @@ namespace Benefit.Web.Controllers
             return View("~/Views/SellerArea/Reviews.cshtml");
         }
 
+        [FetchSeller]
+        public ActionResult catalog()
+        {
+            return View("~/Views/SellerArea/Catalog.cshtml");
+        }
+
         public ActionResult Map()
         {
             /*
