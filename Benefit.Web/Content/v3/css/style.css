@@ -1,3 +1,45 @@
+.delivery_address_title {
+    margin-bottom: 20px;
+    font-size: 15px;
+}
+
+.delivery_address_item {
+    margin-bottom: 17px;
+    padding: 20px 40px 30px;
+    width: 100%;
+    max-width: 284px;
+    border: 2px solid #cccccc;
+    float: left;
+    margin-right: 15px;
+}
+
+.delivery_address_item.active {
+    border: 2px solid #6ab545;
+}
+
+.delivery_address_item .adress_phone {
+    margin-bottom: 0;
+}
+
+.address_choice_wrap {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #cccccc;
+}
+
+.address_choice_wrap a,
+.address_choice_wrap a:hover,
+.address_choice_wrap a:visited,
+.address_choice_wrap a:active,
+.address_choice_wrap a:focus {
+    font-size: 13px;
+    color: #999999;
+    text-decoration: none;
+}
+
+.add_new_address {
+    margin-right: 40px;
+}
+
 .row .span2 {
     display: flex;
     justify-content: center;

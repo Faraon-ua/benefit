@@ -1,4 +1,5 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+@using Benefit.Common.Constants
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @using Newtonsoft.Json
@@ -8,6 +9,9 @@
 @section scripts
 {
     <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+    <script src="~/Scripts/address.js"></script>
+
     <script>
         var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods))
         var loginUrl = '@Url.Action("Login", "Account")' + '?returnUrl=@HttpUtility.UrlEncode(Url.Action("Order", "Cart"))&isAjaxRequest=true';
@@ -16,6 +20,7 @@
 
         $(function() {
             CalculateSummary();
+            SetRegionsAutocomplete();
 
             $("#save-order").click(function() {
                 if (!isAuthenticated) {
@@ -26,15 +31,16 @@
                             "__RequestVerificationToken": token,
                             "model": registerFormJson
                         },
-                        function(data) {
+                        function (data) {
                             if (data.error) {
                                 flashMessage(data.error, true, true);
                             } else {
+                                debugger;
+                                $("#AddressId").val(data.shippingAddressId);
                                 $("#order-form-wrap form").submit();
                             }
                         });
                 }
-                $("#order-form-wrap form").submit();
             });
 
             $(".btn-ajax-login").click(function() {
@@ -228,28 +234,35 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Місто *</label>
-                                    @Html.TextBox("RegionName", null, new { placeholder = "Місто *", @class = "regionSearch" })
-                                    @Html.Hidden("RegionId")
+                                    @Html.TextBox("RegionName", HttpUtility.UrlDecode(Request.Cookies[RouteConstants.RegionNameCookieName].Value), new { placeholder = "Місто *", @class = "regionSearch" })
+                                    @Html.Hidden("RegionId", HttpUtility.UrlDecode(Request.Cookies[RouteConstants.RegionIdCookieName].Value))
                                     @Html.ValidationMessage("RegionId")
                                 </div>
                                 <div class="col-sm-6">
-                                    <label> Номер картки (за наявності)</label>
-                                    @Html.TextBox("CardNumber", null, new { placeholder = "Номер карти (при наявності)" })
-                                    @Html.ValidationMessage("CardNumber")
+                                    <label> Адреса доставки *</label>
+                                    @Html.TextBox("ShippingAddress", null, new { placeholder = "Адреса доставки" })
+                                    @Html.ValidationMessage("ShippingAddress")
                                 </div>
                             </div>
                             <br>
                             <div class="row">
+                                <div class="col-sm-6">
+                                    <label> Пароль *</label>
+                                    @Html.TextBox("Password", null, new { placeholder = "Пароль *", type = "password" })
+                                    @Html.ValidationMessage("Password")
+                                </div>
                                 <div class="col-sm-6">
                                     <label> Реєстраційний код (за наявності)</label>
                                     @Html.TextBox("ReferalNumber", null, new { placeholder = "Реєстраційний код" })
                                     <p style="text-align: center; font-size: 1.2em;" id="referal-name">
                                     </p>
                                 </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-sm-6">
-                                    <label> Пароль *</label>
-                                    @Html.TextBox("Password", null, new { placeholder = "Пароль *", type = "password" })
-                                    @Html.ValidationMessage("Password")
+                                    <label> Номер картки (за наявності)</label>
+                                    @Html.TextBox("CardNumber", null, new {placeholder = "Номер карти (при наявності)"})
+                                    @Html.ValidationMessage("CardNumber")
                                 </div>
                             </div>
                         </form>
@@ -292,6 +305,22 @@
                         </div>
                     </div>
                 </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="card">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#delivery" aria-controls="home" role="tab" data-toggle="tab">Адреса доставки</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="delivery">
+                                <div class="row">
+                                   @Html.Partial("_ShippingAddresses", Model)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
                 <div class="card">
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#payment" aria-controls="home" role="tab" data-toggle="tab">Методи оплати</a></li>

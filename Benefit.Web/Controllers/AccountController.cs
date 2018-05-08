@@ -199,8 +199,9 @@ namespace Benefit.Web.Controllers
                 {
                     user.ReferalId = referal.Id;
                 }
-                var result = await UserManager.CreateAsync(user, model.Password);
 
+               
+                var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
@@ -210,10 +211,32 @@ namespace Benefit.Web.Controllers
                        "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\""
                        + callbackUrl + "\">це посилання</a>");
 
+                    //if shipping address provided - create db entry
+                    Address shippingAddress = null;
+                    if (!string.IsNullOrEmpty(model.ShippingAddress))
+                    {
+                        shippingAddress = new Address()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            IsDefault = true,
+                            AddressLine = model.ShippingAddress,
+                            FullName = model.FirstName + " " + model.LastName,
+                            Phone = model.PhoneNumber,
+                            RegionId = model.RegionId.Value,
+                            UserId = user.Id
+                        };
+                        using (var db = new ApplicationDbContext())
+                        {
+                            db.Addresses.Add(shippingAddress);
+                            db.SaveChanges();
+                        }
+                    }
+
                     TempData["RegisteredEmail"] = user.Email;
                     if (isAjaxRequest)
                     {
-                        return Json(new { returnUrl }, JsonRequestBehavior.AllowGet);
+                        await SignInAsync(user, isPersistent: true);
+                        return Json(new { returnUrl, shippingAddressId = shippingAddress == null ? string.Empty : shippingAddress.Id }, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {

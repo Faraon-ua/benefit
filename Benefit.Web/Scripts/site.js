@@ -132,7 +132,8 @@ $(function () {
     });
 
     $('body').on('click', '.basket_modal .plus, .basket_modal .minus', function () {
-        $(this).parents(".order-wrap").find(".complete-order").attr("disabled", "disabled");
+        var completeOrderBtn = $(this).parents(".order-wrap").find(".complete-order");
+        completeOrderBtn.attr("disabled", "disabled")
         var tr = $(this).parents("tr");
         var productId = tr.attr("data-product-id");
         var sellerId = tr.attr("data-seller-id");
@@ -185,7 +186,7 @@ $(function () {
                 amount: productCurrentValue
             },
             function (data) {
-                $(this).parents(".order-wrap").find(".complete-order").removeAttr("disabled");
+                completeOrderBtn.removeAttr("disabled");
                 setCartSummary(data);
             });
         CalculateCartSum(sellerId);

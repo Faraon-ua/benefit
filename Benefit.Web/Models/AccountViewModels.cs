@@ -34,6 +34,7 @@ namespace Benefit.Web.Models
         [Required(ErrorMessage = "Місто є обов'язковим для заповнення")]
         public string RegionName { get; set; }
         public int? RegionId { get; set; }
+        public string ShippingAddress { get; set; }
         [Required(ErrorMessage = "Номер телефону є обов'язковим для заповнення")]
         [MaxLength(16)]
         public string PhoneNumber { get; set; }

@@ -17,5 +17,7 @@
         public const string ReferalCookieName = "ReferalNumber";
         public const string SelfReferalCookieName = "SelfReferalNumber";
         public const string FullNameCookieName = "FullName";
+        public const string RegionNameCookieName = "regionName";
+        public const string RegionIdCookieName = "regionId";
     }
 }

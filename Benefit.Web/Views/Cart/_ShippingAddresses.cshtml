@@ -1,7 +1,6 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
 @using Benefit.Common.Constants
 <div class="delivery_address">
-    <p class="delivery_address_title">Адреса доставки</p>
     @{
         var defaultAddress = Model.Addresses.FirstOrDefault(entry => entry.IsDefault);
         defaultAddress = defaultAddress ?? Model.Addresses.FirstOrDefault();
