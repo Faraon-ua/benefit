@@ -60,7 +60,7 @@ namespace Benefit.Web.Controllers
 
         public ActionResult RemoveProduct(string productId, string sellerId)
         {
-            var productsNumber = Cart.CurrentInstance.RemoveProduct(productId, sellerId);
+            var productsNumber = Cart.CurrentInstance.RemoveProduct(sellerId, productId);
             return Json(productsNumber);
         }
 

@@ -81,7 +81,7 @@ function CalculateCartSum(sellerId) {
     var actualSum = products.reduce(function (pv, cv) {
         return pv + cv.actual;
     }, 0);
-    wrap.find(".basket_modal_bonus span").text((actualSum*userDiscount/100).toFixed(2));
+    wrap.find(".basket_modal_bonus span").text((actualSum * userDiscount / 100).toFixed(2));
     wrap.find(".basket_modal_price span").text(actualSum.toFixed(2));
     var oldSum = products.reduce(function (pv, cv) { return pv + cv.old; }, 0);
     if (oldSum > actualSum) {
@@ -184,7 +184,7 @@ $(function () {
                 sellerId: sellerId,
                 amount: productCurrentValue
             },
-            function(data) {
+            function (data) {
                 $(this).parents(".order-wrap").find(".complete-order").removeAttr("disabled");
                 setCartSummary(data);
             });
@@ -216,14 +216,18 @@ $(function () {
         }
         var productId = $(this).attr("data-product-id");
         $.post(deleteProductFromCartUrl,
-         {
-            productId: productId,
-            sellerId: sellerId
-        }, function (data) {
-            setCartSummary(data);
-            parentRow.remove();
-            CalculateCartSum(sellerId);
-        });
+            {
+                productId: productId,
+                sellerId: sellerId
+            }, function (data) {
+                setCartSummary(data);
+                var orderWrap = parentRow.parents(".order-wrap");
+                parentRow.remove();
+                if (orderWrap.find("tbody tr").length === 0) {
+                    orderWrap.remove();
+                }
+                CalculateCartSum(sellerId);
+            });
     });
 
     $('.battery, .title-to-tooltip').tooltip();

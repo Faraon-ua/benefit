@@ -557,24 +557,6 @@ $(document).ready(function () {
         CalculateProductPrice();
     });
 
-    /*basket_modal_table delete product*/
-    var deleteProductFromCartUrl = routePrefix + '/Cart/RemoveProduct?productId=';
-    $('body').on('click', '.delete_product', function () {
-        var parentRow = $(this).parents('.basket_modal_table_row');
-        if (parentRow.hasClass("product")) {
-            var productOptions = parentRow.nextUntil(".product");
-            productOptions.remove();
-        }
-        var productId = $(this).attr("data-product-id");
-        $.post(deleteProductFromCartUrl + productId, function (data) {
-            setCartSummary(data);
-
-            parentRow.remove();
-            CalculateCartSum();
-        });
-
-    });
-
     /*categories darker background*/
 
     //$('#categories li, .header_categories_wrap li').on('mouseenter', function() {
