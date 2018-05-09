@@ -4166,7 +4166,7 @@ body.fill_bg_y .header_wrap header .header-wrapper{border:none}
 .menu-only{position:relative}
 .menu-row .menu-only{position:static}
 .menu-row.bgcolored .menu-only{position:relative}
-.mega-menu{position:relative;z-index:10}
+.mega-menu{position:relative;z-index:10;}
 .menu-row .menu-only .mega-menu{position:static}
 .mega-menu.sliced:not(.ovisible){overflow:hidden}
 .mega-menu ul.nav{padding:0;clear:both;float:none;position:static;display:block;font-size:13px;box-shadow:0 1px 1px 0 rgba(0,0,0,.3)}
@@ -4261,6 +4261,7 @@ body.fill_bg_y .header_wrap header .header-wrapper{border:none}
 .menu-row.middle-block > .maxwidth-theme > .row > .col-md-12{padding:0}
 .menu-row.middle-block .mega-menu table td .wrap > a{padding:20px 18px 25px;height:60px;line-height:1.33em}
 .menu-row.middle-block .mega-menu table td .wrap > a >div{display:inline-block;}
+.menu-row.middle-block .mega-menu table td .wrap > a > div, .menu-row.middle-block .mega-menu table td .wrap > ul > li > a {text-transform: uppercase;}
 .menu-row.middle-block .mega-menu table td .wrap > a > div:hover {text-decoration: underline;}
 .menu-row.middle-block.bglight .mega-menu{border-top:1px solid #f2f2f2}
 .fill_bg_n .menu-row.middle-block.bglight,.fill_bg_y .menu-row.middle-block.bglight .mega-menu{border-bottom:1px solid #f2f2f2}
@@ -4329,7 +4330,7 @@ body.fill_bg_y .header_wrap header .header-wrapper{border:none}
 .mega_fixed_menu .mega-menu table td.unvisible{visibility:visible}
 .mega_fixed_menu .mega-menu table td .wrap > .more-items{display:none!important}
 .mega_fixed_menu .mega-menu table td .wrap > a{padding:0}
-.mega_fixed_menu .mega-menu table .menu-item{padding:0 25px;margin:24px 0;display:inline-block;vertical-align:top;text-align:left}
+.mega_fixed_menu .mega-menu table .menu-item{padding:0 25px;margin:24px 0;display:inline-block;vertical-align:top;text-align: left;}
 .mega_fixed_menu .mega-menu table tbody >tr > .menu-item{width:24.7%}
 body .mega_fixed_menu .mega-menu table .menu-item>.wrap>.dropdown-menu{float:none;position:static;opacity:1;display:block;box-shadow:none;opacity:1;animation:none}
 .mega_fixed_menu .mega-menu table .menu-item>.wrap>a{font-size:1.1333em}

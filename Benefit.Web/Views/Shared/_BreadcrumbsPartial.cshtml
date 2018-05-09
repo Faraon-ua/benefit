@@ -51,7 +51,7 @@
             <div class="bx-breadcrumb-item @dropClass" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
                 @if (Model.Seller == null || (Model.Seller != null && Request.RequestContext.RouteData.Values["action"].ToString().ToLower() == "info"))
                 {
-                    if (Model.Categories.Last().Key.Id == breadCrumb.Key.Id)
+                    if (Model.Categories.Last().Key.Id == breadCrumb.Key.Id && Model.Product == null)
                     {
                         <span itemprop="name" itemprop="item">@breadCrumb.Key.Name
                         @if (hasDrop)
