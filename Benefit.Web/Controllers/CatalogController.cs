@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
@@ -45,7 +46,11 @@ namespace Benefit.Web.Controllers
                 return View("SellersCatalog", sellers);
             }
             var catsModel = CategoriesService.GetCategoriesCatalog(categoryUrl);
-            if (catsModel != null)
+            if (catsModel == null)
+            {
+                return HttpNotFound();
+            }
+            if (catsModel.Items.Any())
             {
                 return View("CategoriesCatalog", catsModel);
             }

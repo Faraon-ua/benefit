@@ -14,6 +14,7 @@ using Benefit.Services;
 using Benefit.Services.Cart;
 using Benefit.Services.Domain;
 using Benefit.Web.Filters;
+using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
 using NLog;
 
@@ -156,7 +157,7 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+        [FetchCategories]
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
             completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
@@ -209,6 +210,8 @@ namespace Benefit.Web.Controllers
                 if (seller.IsBonusesPaymentActive)
                     completeOrder.PaymentTypes.Add(PaymentType.Bonuses);
             }
+
+            TempData["ErrorMessage"] = ModelState.ModelStateErrors();
             return View(completeOrder);
         }
 

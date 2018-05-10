@@ -22,7 +22,10 @@
             CalculateSummary();
             SetRegionsAutocomplete();
 
-            $("#save-order").click(function() {
+            $("#save-order").click(function () {
+                var btn = $(this);
+                btn.attr("disabled", "disabled");
+                showLoader();
                 if (!isAuthenticated) {
                     var registerForm = $("#register-form");
                     var registerFormJson = getFormData(registerForm);
@@ -39,7 +42,10 @@
                                 $("#AddressId").val(data.shippingAddressId);
                                 $("#order-form-wrap form").submit();
                             }
+                            btn.removeAttr("disabled");
                         });
+                } else {
+                    $("#order-form-wrap form").submit();
                 }
             });
 
@@ -261,7 +267,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Номер картки (за наявності)</label>
-                                    @Html.TextBox("CardNumber", null, new {placeholder = "Номер карти (при наявності)"})
+                                    @Html.TextBox("CardNumber", null, new { placeholder = "Номер карти (при наявності)" })
                                     @Html.ValidationMessage("CardNumber")
                                 </div>
                             </div>
@@ -315,7 +321,7 @@
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane active" id="delivery">
                                 <div class="row">
-                                   @Html.Partial("_ShippingAddresses", Model)
+                                    @Html.Partial("_ShippingAddresses", Model)
                                 </div>
                             </div>
                         </div>

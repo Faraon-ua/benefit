@@ -83,11 +83,11 @@ namespace Benefit.Services.Domain
         {
             //fetch childs so if no nested categories - fetch products
             var parent = db.Categories.Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
-            if (parent != null && !parent.ChildCategories.Any())
+            if (!string.IsNullOrEmpty(categoryUrl) && parent == null)
             {
                 return null;
             }
-
+            
             if (parent == null)
             {
                 parent = new Category()
