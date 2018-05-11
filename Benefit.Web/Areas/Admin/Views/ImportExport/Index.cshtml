@@ -21,7 +21,7 @@
                 });
             });
 
-            $("#ExcelImport").click(function() {
+            $("#ExcelImport").click(function () {
                 $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
                 $.ajax({
                     type: "POST",
@@ -68,9 +68,16 @@
                     Excel
                 </h2>
                 <p>1) Завантажте Excel файл (import.xls) та зображення (в папці Images) на наш FTP</p>
+                @using (Html.BeginForm("UploadExcelFile", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" value="Завантажити" />
+                    <input type="hidden" name="sellerUrlName" value="@Model.UrlName"/>
+                    <br />
+                    <input type="submit" value="Завантажити" class="btn btn-default" />
+                }
                 <p>
-                    2) Натисніть кнопку
-                    <button type="button" class="btn btn-success" id="ExcelImport">Завантажити</button>
+                2) Натисніть кнопку
+                <button type="button" class="btn btn-success" id="ExcelImport">Excel Import</button>
                 </p>
             </div>
         </div>

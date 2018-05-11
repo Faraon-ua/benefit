@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
@@ -284,6 +285,28 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 _logger.Error(ex);
                 return Json("Помилка імпорту файлу: " + ex.InnerException.Message);
             }
+        }
+
+        public ActionResult UploadExcelFile(string sellerUrlName, HttpPostedFileBase file)
+        {
+            if (file == null || file.ContentLength == 0)
+            {
+                TempData["ErrorMessage"] = "Невірно вибраний файл";
+            }
+            else
+            {
+                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                var ftpDirectory = new DirectoryInfo(originalDirectory).Parent.FullName;
+                var sellerPath = Path.Combine(ftpDirectory, "FTP", sellerUrlName);
+                if (!Directory.Exists(sellerPath))
+                {
+                    Directory.CreateDirectory(sellerPath);
+                }
+                file.SaveAs(Path.Combine(sellerPath, "import.xls"));
+            }
+            TempData["SuccessMessage"] = "Файл успішно завантажено, тепер можна застосувати імпорт";
+
+            return RedirectToAction("Index");
         }
     }
 }

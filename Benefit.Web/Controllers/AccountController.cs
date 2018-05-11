@@ -66,6 +66,8 @@ namespace Benefit.Web.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
+        [FetchLastNews]
+        [FetchCategories]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool isAjaxRequest = false)
         {

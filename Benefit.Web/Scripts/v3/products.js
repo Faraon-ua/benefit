@@ -35,7 +35,7 @@
             var productId = $(this).attr("data-product-id");
             var isWeightProduct = $(this).attr("data-is-weight-product").toLowerCase() === 'true';
             var sellerId = $(this).attr("data-seller-id");
-            var amount = $(this).prev(".counter").find(".quantity").val();
+            var amount = $(this).parent().find(".counter").find(".quantity").val();
             $.get(productOptionsUrl + "?productId=" + productId,
                 function (data) {
                     if (data) {
