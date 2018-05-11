@@ -41,6 +41,7 @@
             //select all checkboxes from url
             var parts = location.href.split('/');
             var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
+            var sortControl = $(".sort_btn[data-sort-value=Rating]");
             @if (Model.Category != null)
             {<text>
                  if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
@@ -52,30 +53,27 @@
                          var optionName = optKeyValue[0];
                          var optionValues = optKeyValue[1].split(",");
                          if (optionName === "sort") {
-                             var optionValue = optionValues[0].replace("Asc", "").replace("Desc", "");
-                             var optionType = optionValues[0].replace(optionValue, "");
-                             var sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
-                             $(".sort_btn").removeClass("current");
-                             sortControl.addClass("current");
-                             if (optionType === "Asc") {
-                                 sortControl.removeClass("desc");
-                                 sortControl.addClass("asc");
-                                 sortControl.attr("data-sort-type", "Desc");
-                             } else {
-                                 sortControl.removeClass("asc");
-                                 sortControl.addClass("desc");
-                                 sortControl.attr("data-sort-type", "Asc");
-                             }
+                             var optionValue = optionValues[0];
+                             sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
+                             $(".sort_btn span").removeClass("badge");
                          } else {
                              $.each(optionValues, function (j, optValue) {
-                                 $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue)).prop('checked', true);
-                                 $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]").prop('checked', true);
+                                 var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue));
+                                 if (checkbox.length === 0) {
+                                     checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]")
+                                 }
+                                 checkbox.prop('checked', true);
+                                 var optionvalueText = checkbox.attr("text");
+                                 $(".selected-filters").append(
+                                     "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" + optionName + "' data-option-value='" + optValue + "'>" + optionvalueText + " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                 );
                              });
                          }
                      });
                  }
              </text>
             }
+            sortControl.find("span").addClass("badge");
 
             @if (Model.Category != null)
             {
@@ -101,7 +99,7 @@
                         }).get();
 
                         if ($(this).attr("class").indexOf("sort_btn") >= 0) {
-                            var val = $(this).attr("data-sort-value") + $(this).attr("data-sort-type");
+                            var val = $(this).attr("data-sort-value");
                             selectedValues.push(val);
                         }
                         if (selectedValues.length > 0) {
@@ -166,11 +164,15 @@
                             <div class="sort_header view_block">
                                 <!--noindex-->
                                 <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
-                                    <a href="" data-sort-value="Name" data-sort-type="Asc" class="sort_btn asc NAME" rel="nofollow">
-                                        <i class="icon" title="По алфавіту"></i><span>По алфавіту</span><i class="arr icons_fa"></i>
+                                    <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
+                                    <a href="" data-sort-value="Rating" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">За рейтингом</span>
                                     </a>
-                                    <a href="" data-sort-value="Bonus" data-sort-type="Desc" class="sort_btn desc BONUS" rel="nofollow">
-                                        <i class="icon" title="За відсотком бонуса"></i><span>За відсотком бонуса</span><i class="arr icons_fa"></i>
+                                    <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">По алфавіту</span>
+                                    </a>
+                                    <a href="" data-sort-value="BonusDesc" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">За відсотком бонуса</span>
                                     </a>
                                 </div>
 
@@ -222,14 +224,13 @@
                             <div class="sort_header view_block hidden-lg" style="float: right">
                                 <!--noindex-->
                                 <div class="sort_filter filter-section" data-filter-name="sort">
-                                    <a href="" data-sort-value="Name" data-sort-type="Asc" class="sort_btn asc NAME" rel="nofollow">
-                                        <span class="icon" title="По алфавіту">A</span>
-                                        <span>По алфавіту</span>
-                                        <i class="arr icons_fa"></i>
+                                    <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
+
+                                    <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">По алфавіту</span>
                                     </a>
-                                    <a href="" data-sort-value="Bonus" data-sort-type="Asc" class="sort_btn asc BONUS" rel="nofollow">
-                                        <span class="icon" title="За відсотком бонуса">&#36;</span>
-                                        <span>За відсотком бонуса</span><i class="arr icons_fa"></i>
+                                    <a href="" data-sort-value="Bonus" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">За відсотком бонуса</span>
                                     </a>
                                 </div>
                                 <!--/noindex-->
