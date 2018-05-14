@@ -171,26 +171,22 @@ namespace Benefit.Web.Controllers
             return Content(output);
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
         [FetchSeller]
+        [FetchCategories]
         public ActionResult Contacts()
         {
             return View("~/Views/SellerArea/Contacts.cshtml");
         }
 
         [FetchSeller]
+        [FetchCategories]
         public ActionResult Reviews()
         {
             return View("~/Views/SellerArea/Reviews.cshtml");
         }
 
         [FetchSeller]
+        [FetchCategories]
         public ActionResult catalog()
         {
             return View("~/Views/SellerArea/Catalog.cshtml");

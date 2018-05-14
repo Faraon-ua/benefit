@@ -1432,6 +1432,8 @@
     <Content Include="Views\SellerArea\Contacts.cshtml" />
     <Content Include="Views\SellerArea\Reviews.cshtml" />
     <Content Include="Views\SellerArea\Catalog.cshtml" />
+    <Content Include="Views\SellerArea\Product.cshtml" />
+    <Content Include="Views\SellerArea\_BreadcrumbsPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

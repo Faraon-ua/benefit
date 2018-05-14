@@ -463,19 +463,19 @@
                                 <div class="stickers" style="width: 100%">
                                     <div class="sticker_sale_text">@Model.Product.Seller.UserDiscount%</div>
                                     @*<div class="sticker_khit">Хит</div>
-                    <div class="sticker_aktsiya">Сове</div>*@
+                                        <div class="sticker_aktsiya">Сове</div>*@
                                 </div>
                                 <div class="item_slider color-controls flex flexslider" data-plugin-options='{"animation": "slide", "directionNav": false, "controlNav": true, "animationLoop": false, "slideshow": false, "slideshowSpeed": 10000, "animationSpeed": 600}'>
                                     <ul class="slides">
                                         @foreach (var img in Model.Product.Images)
-                    {
-                        <li>
-                            <a href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
-                                <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title" />
-                                <div class="zoom"></div>
-                            </a>
-                        </li>
-}
+                                        {
+                                            <li>
+                                                <a href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
+                                                    <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title" />
+                                                    <div class="zoom"></div>
+                                                </a>
+                                            </li>
+                                        }
                                     </ul>
                                 </div>
                             </div>
@@ -495,29 +495,29 @@
                                                             <span class="values_wrapper">@Model.Product.Price<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
                                                         </div>
                                                         @if (Model.Product.OldPrice.HasValue)
-                                    {
-                                        <div class="price discount" style="font-size: 24px;">
-                                            <span class="values_wrapper">@Model.Product.OldPrice<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
-                                        </div>
-                }
+                                                        {
+                                                            <div class="price discount" style="font-size: 24px;">
+                                                                <span class="values_wrapper">@Model.Product.OldPrice<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
+                                                            </div>
+                                                        }
                                                         <div class="item-stock" style="width: 50%; float: left;">
                                                             <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
                                                                 @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
                                                             </span>
                                                             @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
-                                        {
-                                            <span id="available-amount">@Model.Product.AvailableAmount</span>
-                                            @(@Model.Product.IsWeightProduct ? "кг" : "шт")
-                    }
+                                                            {
+                                                                <span id="available-amount">@Model.Product.AvailableAmount</span>
+                                                                @(@Model.Product.IsWeightProduct ? "кг" : "шт")
+                                                            }
                                                         </div>
                                                         <div class="x-product-info__inline">
                                                             <div class="x-product-info__inline">
                                                                 @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
-                                            {
-                                                SmallStars = true,
-                                                IsActive = true,
-                                                Rating = 0
-                                            })
+                                                                {
+                                                                    SmallStars = true,
+                                                                    IsActive = true,
+                                                                    Rating = 0
+                                                                })
                                                             </div>
                                                         </div>
                                                     </div>
@@ -526,16 +526,16 @@
                                             </div>
                                         </div>
                                         @if (Model.Product.WholesalePrice.HasValue && Model.Product.WholesaleFrom.HasValue)
-                    {
-                        <div class="x-product-price__discount-info">
-                            <a href="#" class="dark_link wholesalePices">Гуртові ціни</a>
-                            <p style="display: none;">
-                                <span>@Model.Product.WholesalePrice грн</span>
-                                <span>.........................</span>
-                                <span>від @Model.Product.WholesaleFrom шт.</span>
-                            </p>
-                        </div>
-}
+                                        {
+                                            <div class="x-product-price__discount-info">
+                                                <a href="#" class="dark_link wholesalePices">Гуртові ціни</a>
+                                                <p style="display: none;">
+                                                    <span>@Model.Product.WholesalePrice грн</span>
+                                                    <span>.........................</span>
+                                                    <span>від @Model.Product.WholesaleFrom шт.</span>
+                                                </p>
+                                            </div>
+                                        }
                                         <div class="counter_wrapp">
                                             <div class="counter big_basket">
                                                 <div class="minus">-</div>
@@ -545,27 +545,27 @@
                                             <div class="button_block ">
                                                 <!--noindex-->
                                                 @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
-                            {
-                                <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey" disabled="disabled">
-                                    <i></i><span>Купити</span>
-                                </span>
-        }
-        else
-        {
-            var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
-            if (availableForPurchase.Key)
-            {
-                    <span id="buy-product" class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load">
-                        <i></i><span>Купити</span>
-                    </span>
-}
-else
-{
-                    <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey title-to-tooltip" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">
-                        <i></i><span>Купити</span>
-                    </span>
-}
-}
+                                                {
+                                                    <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey" disabled="disabled">
+                                                        <i></i><span>Купити</span>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+                                                    if (availableForPurchase.Key)
+                                                    {
+                                                        <span id="buy-product" class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load">
+                                                            <i></i><span>Купити</span>
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey title-to-tooltip" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">
+                                                            <i></i><span>Купити</span>
+                                                        </span>
+                                                    }
+                                                }
                                                 <!--/noindex-->
                                             </div>
                                             <br class="clear" />
@@ -583,7 +583,7 @@ else
                         </div>
 
                         @{
-        var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
+                            var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
                         }
                         <div class="tabs_section">
                             <div class="tabs">
@@ -595,11 +595,11 @@ else
                                         <a href="#review" data-toggle="tab"><span>Відгуки</span><span class="count empty"></span></a>
                                     </li>
                                     @if (parameters.Any())
-                {
-                    <li class="">
-                        <a href="#ask" data-toggle="tab"><span>Характеристики</span></a>
-                    </li>
-}
+                                    {
+                                        <li class="">
+                                            <a href="#ask" data-toggle="tab"><span>Характеристики</span></a>
+                                        </li>
+                                    }
                                     <li class="">
                                         <a href="#stores" data-toggle="tab"><span>Доставка</span></a>
                                     </li>
@@ -615,46 +615,46 @@ else
                                     <div class="title-tab-heading visible-xs">Відгуки про товар</div>
                                     <div class="detail_text">
                                         @Html.Partial("_ReviewsPartial", new ReviewsViewModel
-                    {
-                        CanReview = Model.CanReview,
-                        ProductId = Model.Product.Id,
-                        TargetName = Model.Product.Name,
-                        Reviews = Model.Product.ApprovedReviews
-                    })
+                                        {
+                                            CanReview = Model.CanReview,
+                                            ProductId = Model.Product.Id,
+                                            TargetName = Model.Product.Name,
+                                            Reviews = Model.Product.ApprovedReviews
+                                        })
                                     </div>
                                 </div>
                                 @if (parameters.Any())
-            {
-                    <div class="tab-pane additional_block" id="ask">
-                        <div class="title-tab-heading visible-xs">Характеристики</div>
-                        <div class="detail_text">
-                            @foreach (var productParameter in parameters)
-        {
-                    <div class="stores_block wo_image margin-top-10">
-                        <span class="width-30" style="display: inline-block">
-                            <a class="title_stores">@productParameter.ProductParameter.Name</a>
-                        </span>
-                        <span>.................</span>
-                        <span class="value">
-                            @if (productParameter.Amount.HasValue)
-        {
-                    <span>@(productParameter.Amount.Value)x</span>
-}
-                            @(productParameter.StartText ?? productParameter.StartValue)
-                            @if (!string.IsNullOrEmpty(productParameter.EndValue))
-        {
-                    <span>- @productParameter.EndValue</span>
-}
-                            @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
-        {
-                    <span>@productParameter.ProductParameter.MeasureUnit</span>
-}
-                        </span>
-                    </div>
-}
-                        </div>
-                    </div>
-}
+                                {
+                                    <div class="tab-pane additional_block" id="ask">
+                                        <div class="title-tab-heading visible-xs">Характеристики</div>
+                                        <div class="detail_text">
+                                            @foreach (var productParameter in parameters)
+                                            {
+                                                <div class="stores_block wo_image margin-top-10">
+                                                    <span class="width-30" style="display: inline-block">
+                                                        <a class="title_stores">@productParameter.ProductParameter.Name</a>
+                                                    </span>
+                                                    <span>.................</span>
+                                                    <span class="value">
+                                                        @if (productParameter.Amount.HasValue)
+                                                        {
+                                                            <span>@(productParameter.Amount.Value)x</span>
+                                                        }
+                                                        @(productParameter.StartText ?? productParameter.StartValue)
+                                                        @if (!string.IsNullOrEmpty(productParameter.EndValue))
+                                                        {
+                                                            <span>- @productParameter.EndValue</span>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
+                                                        {
+                                                            <span>@productParameter.ProductParameter.MeasureUnit</span>
+                                                        }
+                                                    </span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
                                 <div class="tab-pane additional_block" id="stores">
                                     <div class="title-tab-heading visible-xs">Доставка та оплата</div>
                                     <div class="detail_text">

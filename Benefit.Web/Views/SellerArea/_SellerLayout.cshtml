@@ -6,6 +6,7 @@
     var seller = ViewBag.Seller as Seller;
     var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
     var todayShedule = seller.Schedules.FirstOrDefault(entry => entry.Day == DateTime.Now.DayOfWeek);
+    var categories = ViewBag.Categories as List<Category>;
 }
 <!DOCTYPE html>
 <html>
@@ -168,12 +169,32 @@
 
             <div id='catMenu'>
                 <nav class="container">
-                    <a class="list_drop b-block btn-primary btn-lg text-center hidden-lg-up"><i class="ico-menu"></i> МЕНЮ/КАТАЛОГ ПОСЛУГ</a>
                     <ul class="lev1">
                         <li>
-                            <a class="cat_index list_drop" href="@Url.Action("catalog", "home")">
-                                @seller.CatalogButtonName
-                            </a>
+                            @if (seller.HasEcommerce)
+                            {
+                                <a class="cat_index list_drop" target="_blank">
+                                    Каталог товарів
+                                    <i class="f-sm_down"></i>
+                                </a>
+                                <ul id="id000" class="lev2">
+                                    @foreach (var cat in categories)
+                                    {
+                                        <li>
+                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })">
+                                                <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="" width="45" style="float: left; margin-right: 10px;" />
+                                                @cat.Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <a class="cat_index list_drop" href="@Url.Action("catalog", "home")">
+                                    @seller.CatalogButtonName
+                                </a>
+                            }
                         </li>
                         <li><a href="#">Про нас</a></li>
                         <li><a href="@Url.Action("reviews", "home")">Відгуки</a></li>
@@ -195,8 +216,10 @@
                         </div>
 
                         <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 text-xs-center text-lg-right counters">
-                            <a class="des_by" title="Benefit Company" target="_blank" href="https://benefit-company.com">Сайт створено на системі 
-                                <img src="~/Content/seller/images/b.jpg" width="25"></a>	
+                            <a class="des_by" title="Benefit Company" target="_blank" href="https://benefit-company.com">
+                                Сайт створено на системі
+                                <img src="~/Content/seller/images/b.jpg" width="25">
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -221,8 +244,8 @@
             </div>
         </div>
         <div class="ic-tooltip__buttons hidden-xs">
-            <a href="#" title="Подробнее о шаблоне" target="_blank">
-                Кошик (0)
+            <a href="#" target="_blank">
+                Кошик (<span class="count cart-items-number">0</span>)
             </a>
         </div>
     </div>

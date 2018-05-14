@@ -26,12 +26,16 @@ namespace Benefit.Web.Controllers
             SellerService = new SellerService();
         }
 
+        [FetchSeller]
         [FetchCategories]
         public ActionResult Index(string productUrl)
         {
             var productResult = ProductsService.GetProductDetails(productUrl, User.Identity.GetUserId());
             if (productResult == null) return HttpNotFound();
-
+            if (ViewBag.Seller is Seller seller)
+            {
+                return View("~/views/sellerarea/product.cshtml", productResult);
+            }
             return View(productResult);
         }
 

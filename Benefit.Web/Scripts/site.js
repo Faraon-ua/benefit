@@ -290,7 +290,7 @@ $(function () {
     });
 
     var url = document.location.toString();
-    if (url.match('#')) {
+    if (url.match('#') && $.fn.tab) {
         $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
     }
 
@@ -375,23 +375,25 @@ $(function () {
         $(".region_modal").modal();
     });
 
-    $(".region-search-txt, .region-modal-search-txt").devbridgeAutocomplete({
-        width: '500',
-        minChars: 3,
-        serviceUrl: routePrefix + '/Home/SearchRegion',
-        onSelect: function (suggestion) {
-            var result = suggestion.value.substring(0, suggestion.value.indexOf(" ("));
-            $(".select_place_container .inside").text(result);
-            $(".region-search-txt").val(result);
-            $(".region_modal").modal("hide");
-            setCookie("regionName", result, { expires: 31536000, path: "/" });//year
-            setCookie("regionId", suggestion.data, { expires: 31536000, path: "/" });//year
-            location.reload();
-        }
-    });
+    if ($.fn.devbridgeAutocomplete) {
+        $(".region-search-txt, .region-modal-search-txt").devbridgeAutocomplete({
+            width: '500',
+            minChars: 3,
+            serviceUrl: routePrefix + '/Home/SearchRegion',
+            onSelect: function(suggestion) {
+                var result = suggestion.value.substring(0, suggestion.value.indexOf(" ("));
+                $(".select_place_container .inside").text(result);
+                $(".region-search-txt").val(result);
+                $(".region_modal").modal("hide");
+                setCookie("regionName", result, { expires: 31536000, path: "/" }); //year
+                setCookie("regionId", suggestion.data, { expires: 31536000, path: "/" }); //year
+                location.reload();
+            }
+        });
+    }
 
     if (getCookie("cartNumber")) {
-        $(".cart-items-number").text(getCookie("cartNumber") + " шт.");
+        $(".cart-items-number").text(getCookie("cartNumber"));
         $("#cart-items-price").text(getCookie("cartPrice") + " грн");
         $(".basket-link .svg").css("opacity", "1");
         $(".cart-items-number").css("background-color", "#e52929");
