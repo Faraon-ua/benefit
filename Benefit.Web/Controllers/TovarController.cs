@@ -32,7 +32,8 @@ namespace Benefit.Web.Controllers
         {
             var productResult = ProductsService.GetProductDetails(productUrl, User.Identity.GetUserId());
             if (productResult == null) return HttpNotFound();
-            if (ViewBag.Seller is Seller seller)
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
             {
                 return View("~/views/sellerarea/product.cshtml", productResult);
             }
