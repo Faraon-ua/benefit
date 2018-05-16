@@ -21,14 +21,14 @@ namespace Benefit.Web.Filters
             {
                 if (HttpRuntime.Cache["Categories" + seller.Id] != null)
                 {
-                    categories = filterContext.Controller.ViewBag.Categories = HttpRuntime.Cache["Categories"];
+                    categories = filterContext.Controller.ViewBag.Categories = HttpRuntime.Cache["Categories" + seller.Id];
                 }
                 else
                 {
                     using (var db = new ApplicationDbContext())
                     {
-                        categories = db.SellerCategories.Include(entry => entry.Category)
-                           .Where(entry => entry.SellerId == seller.Id).Select(entry => entry.Category).ToList();
+                        categories = db.SellerCategories.Include(entry => entry.Category.Products)
+                           .Where(entry => entry.SellerId == seller.Id).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
                         HttpRuntime.Cache.Insert("Categories" + seller.Id, categories, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
                     }
                 }
