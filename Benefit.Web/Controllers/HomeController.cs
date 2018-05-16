@@ -5,13 +5,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
-using Benefit.Common.Constants;
 using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
-using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
@@ -22,8 +19,8 @@ namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {

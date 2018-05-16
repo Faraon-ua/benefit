@@ -196,9 +196,7 @@
                                 </a>
                             }
                         </li>
-                        <li><a href="#">Про нас</a></li>
                         <li><a href="@Url.Action("reviews", "home")">Відгуки</a></li>
-                        <li><a href="#">Фотогалерея</a></li>
                         <li><a href="@Url.Action("contacts", "home")">Контакти</a></li>
                     </ul>
                 </nav>
@@ -244,7 +242,7 @@
             </div>
         </div>
         <div class="ic-tooltip__buttons hidden-xs">
-            <a href="#" target="_blank">
+            <a href="@Url.SubdomainAction(seller.UrlName, "order", "cart", new { id=seller.Id }, true)">
                 Кошик (<span class="count cart-items-number">0</span>)
             </a>
         </div>

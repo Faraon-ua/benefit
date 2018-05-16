@@ -36,6 +36,9 @@
             var isWeightProduct = $(this).attr("data-is-weight-product").toLowerCase() === 'true';
             var sellerId = $(this).attr("data-seller-id");
             var amount = $(this).parent().find(".counter").find(".quantity").val();
+            if (!amount) {
+                amount = 1;
+            }
             $.get(productOptionsUrl + "?productId=" + productId,
                 function (data) {
                     if (data) {
@@ -82,7 +85,9 @@ function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduc
     $.post(addToCartUrl + "?sellerId=" + sellerId,
         order,
         function (data) {
-            $('#product_modal').modal('hide');
+            if ($.fn.modal) {
+                $('#product_modal').modal('hide');
+            }
             setTimeout(function () {
                 $("#buy-product, #buy-product-with-options").removeAttr('disabled');
                 $("#" + productId).css("opacity", 1);

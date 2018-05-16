@@ -13,6 +13,7 @@ namespace Benefit.Web.Filters
                 var sellerService = new SellerService();
                 var seller = sellerService.GetSeller(subdomain.ToString());
                 filterContext.Controller.ViewBag.Seller = seller;
+                filterContext.Controller.ViewBag.SellerUrl = subdomain;
             }
         }
     }

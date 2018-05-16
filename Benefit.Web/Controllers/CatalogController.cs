@@ -28,34 +28,45 @@ namespace Benefit.Web.Controllers
             return PartialView("_BaseCategoriesPartial", categories);
         }
 
+        [FetchSeller]
         [FetchCategories]
         [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {
-            if (categoryUrl == "postachalnuky")
+            if (ViewBag.Seller == null)
             {
-                var sellers = SellerService.GetSellersCatalog(options);
-                if (sellers == null)
+                if (categoryUrl == "postachalnuky")
+                {
+                    var sellers = SellerService.GetSellersCatalog(options);
+                    if (sellers == null)
+                    {
+                        return HttpNotFound();
+                    }
+
+                    sellers.Breadcrumbs = new BreadCrumbsViewModel()
+                    {
+                        Categories = CategoriesService.GetBreadcrumbs(urlName: categoryUrl)
+                    };
+                    return View("SellersCatalog", sellers);
+                }
+
+                var catsModel = CategoriesService.GetCategoriesCatalog(categoryUrl);
+                if (catsModel == null)
                 {
                     return HttpNotFound();
                 }
-                sellers.Breadcrumbs = new BreadCrumbsViewModel()
+
+                if (catsModel.Items.Any())
                 {
-                    Categories = CategoriesService.GetBreadcrumbs(urlName: categoryUrl)
-                };
-                return View("SellersCatalog", sellers);
-            }
-            var catsModel = CategoriesService.GetCategoriesCatalog(categoryUrl);
-            if (catsModel == null)
-            {
-                return HttpNotFound();
-            }
-            if (catsModel.Items.Any())
-            {
-                return View("CategoriesCatalog", catsModel);
+                    return View("CategoriesCatalog", catsModel);
+                }
             }
 
-            var catalog = SellerService.GetSellerProductsCatalog(null, categoryUrl, options);
+            var catalog = SellerService.GetSellerProductsCatalog(ViewBag.SellerUrl, categoryUrl, options);
+            if (ViewBag.Seller != null)
+            {
+                return View("~/views/sellerarea/productscatalog.cshtml", catalog);
+            }
             return View("ProductsCatalog", catalog);
         }
 

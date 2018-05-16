@@ -1,28 +1,34 @@
 ﻿<!-- Bonuses usage Widget -->
-<div class="social_block fb hide_on_tablet bordered sellers-location">
-    <a style="display: block" href="@Html.Raw(Url.Action("Vsi", "Postachalnyk", new { options = "criteria=BonusPayment" }))">
-        <div>
-            <img src="~/Content/img/use_bonuses.jpg" alt="карта закладів Benefit Card" />
-        </div>
-    </a>
-</div>
+@*<div class="social_block fb hide_on_tablet bordered sellers-location">
+        <a style="display: block" href="@Html.Raw(Url.Action("Vsi", "Postachalnyk", new { options = "criteria=BonusPayment" }))">
+            <div>
+                <img src="~/Content/img/use_bonuses.jpg" alt="карта закладів Benefit Card" />
+            </div>
+        </a>
+    </div>*@
 
 <!-- Map Widget -->
-<div class="social_block fb hide_on_tablet bordered sellers-location">
-    <a style="display: block" href="@Url.Action("Map","Home")">
-        <div class="sellers-location-head">
-            Мапа закладів
-            <br />
-            Benefit Card
-        </div>
-        <div>
-            <img src="~/Content/img/map.png" alt="карта закладів Benefit Card" />
-        </div>
-    </a>
-</div>
+@*<div class="social_block fb hide_on_tablet bordered sellers-location">
+        <a style="display: block" href="@Url.Action("Map","Home")">
+            <div class="sellers-location-head">
+                Мапа закладів
+                <br />
+                Benefit Card
+            </div>
+            <div>
+                <img src="~/Content/img/map.png" alt="карта закладів Benefit Card" />
+            </div>
+        </a>
+    </div>*@
+
+@*<div class="social_block fb hide_on_tablet bordered sellers-location">
+        <a style="display: block" href="https://benefit-company.com/postachalnyk/benefit_to_business/catalog/benefit_to_business/tovar/bonusna_kartka">
+            <img src="~/Content/img/katrka_benefit.jpg" alt="Бонусна картка Benefit" />
+        </a>
+    </div>*@
 
 <!-- FB Widget -->
-<div class="social_block fb hide_on_tablet">
+<div class="margin-top-20">
     <div id="fb-root"></div>
     <script>
         (function (d, s, id) {
@@ -34,13 +40,6 @@
             fjs.parentNode.insertBefore(js, fjs);
         }(document, 'script', 'facebook-jssdk'));
     </script>
-    <div class="fb-page" data-href="https://www.facebook.com/benefitcompany/" data-width="285" data-height="600" data-small-header="false" data-adapt-container-width="false" data-hide-cover="false" data-show-facepile="true">
-        <blockquote cite="https://www.facebook.com/benefitcompany/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/benefitcompany/">Global Benefit Network Company</a></blockquote>
-    </div>
+    <div class="fb-page" data-href="https://www.facebook.com/benefitcompany/" data-tabs="timeline" data-width="306" data-height="600" data-small-header="false" data-adapt-container-width="false" data-hide-cover="false" data-show-facepile="true"><blockquote cite="https://www.facebook.com/benefitcompany/" class="fb-xfbml-parse-ignore"><a href="https://www.facebook.com/benefitcompany/">Global Benefit Network Company</a></blockquote></div>
 </div>
 
-<div class="social_block fb hide_on_tablet bordered sellers-location">
-    <a style="display: block" href="https://benefit-company.com/postachalnyk/benefit_to_business/catalog/benefit_to_business/tovar/bonusna_kartka">
-        <img src="~/Content/img/katrka_benefit.jpg" alt="Бонусна картка Benefit" />
-    </a>
-</div>
