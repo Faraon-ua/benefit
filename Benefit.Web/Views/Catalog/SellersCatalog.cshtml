@@ -13,6 +13,18 @@
         var getSellersUrl = '@Url.Action("GetSellers", "Catalog")';
         var options = "";
         $(function () {
+            $('body').on("click",
+                ".remove-filter",
+                function () {
+                    var optionName = $(this).parent().attr("data-option-name");
+                    var optValue = decodeURI($(this).parent().attr("data-option-value"));
+                    var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
+                    if (checkbox.length === 0) {
+                        checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + optValue.replace(" ", "") + "]");
+                    }
+                    checkbox.click();
+                });
+
             $(".ajax_load_btn").click(function (e) {
                 e.preventDefault();
                 var moreBtn = $(this);
@@ -64,6 +76,9 @@
                                  }
                                  checkbox.prop('checked', true);
                                  var optionvalueText = checkbox.attr("text");
+                                 if (!optionvalueText) {
+                                     optionvalueText = optValue;
+                                 }
                                  $(".selected-filters").append(
                                      "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" + optionName + "' data-option-value='" + optValue + "'>" + optionvalueText + " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
                                  );
@@ -221,6 +236,9 @@
                     <div class="bx_filter_parameters_box title">
                         <div class="bx_filter_parameters_box_title">
                             Фільтри по параметрам
+                            <br/>
+                            <div class="selected-filters">
+                            </div>
                             <div class="sort_header view_block hidden-lg" style="float: right">
                                 <!--noindex-->
                                 <div class="sort_filter filter-section" data-filter-name="sort">
@@ -255,7 +273,7 @@
                                 {
                                     <div class="bx_filter_block limited_block">
                                         <div class="bx_filter_parameters_box_container">
-                                            <input type="checkbox" id="@subcat.UrlName" name="@subcat.UrlName" class="hidden">
+                                            <input type="checkbox" id="@subcat.UrlName" name="@subcat.UrlName" text="@subcat.Name" class="hidden">
                                             <label class="bx_filter_param_label  last" for="@subcat.UrlName">
                                                 <span class="bx_filter_input_checkbox">
                                                     <span class="bx_filter_param_text">@subcat.Name</span>
@@ -282,7 +300,7 @@
                         <div class="bx_filter_parameters_box_container">
                             <div class="bx_filter_block limited_block">
                                 <div class="bx_filter_parameters_box_container">
-                                    <input type="checkbox" id="mycity" name="mycity" class="hidden">
+                                    <input type="checkbox" id="mycity" name="mycity" class="hidden" text="моє місто">
                                     <label class="bx_filter_param_label  last" for="mycity">
                                         <span class="bx_filter_input_checkbox">
                                             <span class="bx_filter_param_text">Тільки моє місто</span>
@@ -293,7 +311,7 @@
                             </div>
                             <div class="bx_filter_block limited_block">
                                 <div class="bx_filter_parameters_box_container">
-                                    <input type="checkbox" id="paymentcard" name="paymentcard" class="hidden">
+                                    <input type="checkbox" id="paymentcard" name="paymentcard" class="hidden" text="банківською картою">
                                     <label class="bx_filter_param_label  last" for="paymentcard">
                                         <span class="bx_filter_input_checkbox">
                                             <span class="bx_filter_param_text">Оплата банківською картою</span>
@@ -304,7 +322,7 @@
                             </div>
                             <div class="bx_filter_block limited_block">
                                 <div class="bx_filter_parameters_box_container">
-                                    <input type="checkbox" id="paymentbonuses" name="paymentbonuses" class="hidden">
+                                    <input type="checkbox" id="paymentbonuses" name="paymentbonuses" class="hidden" text="Використати бонуси">
                                     <label class="bx_filter_param_label  last" for="paymentbonuses">
                                         <span class="bx_filter_input_checkbox">
                                             <span class="bx_filter_param_text">Використати бонуси</span>
@@ -315,7 +333,7 @@
                             </div>
                             <div class="bx_filter_block limited_block">
                                 <div class="bx_filter_parameters_box_container">
-                                    <input type="checkbox" id="freeshipping" name="freeshipping" class="hidden">
+                                    <input type="checkbox" id="freeshipping" name="freeshipping" class="hidden" text="Безкоштовна доставка">
                                     <label class="bx_filter_param_label  last" for="freeshipping">
                                         <span class="bx_filter_input_checkbox">
                                             <span class="bx_filter_param_text">Безкоштовна доставка</span>
@@ -326,7 +344,7 @@
                             </div>
                             <div class="bx_filter_block limited_block">
                                 <div class="bx_filter_parameters_box_container">
-                                    <input type="checkbox" id="benefitcard" name="benefitcard" class="hidden">
+                                    <input type="checkbox" id="benefitcard" name="benefitcard" class="hidden" text="Benefit Card">
                                     <label class="bx_filter_param_label  last" for="benefitcard">
                                         <span class="bx_filter_input_checkbox">
                                             <span class="bx_filter_param_text">Benefit Card</span>
@@ -337,7 +355,7 @@
                             </div>
                             <div class="bx_filter_block limited_block">
                                 <div class="bx_filter_parameters_box_container">
-                                    <input type="checkbox" id="benefitonline" name="benefitonline" class="hidden">
+                                    <input type="checkbox" id="benefitonline" name="benefitonline" class="hidden" text="Benefit Online">
                                     <label class="bx_filter_param_label  last" for="benefitonline">
                                         <span class="bx_filter_input_checkbox">
                                             <span class="bx_filter_param_text">Benefit Online</span>

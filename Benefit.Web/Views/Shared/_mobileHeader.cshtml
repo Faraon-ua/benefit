@@ -137,38 +137,44 @@
                             </ul>
                         </li>
                         <li>
-                            <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" title="Каталог постачальників">
-                                <span>Каталог постачальників</span>
+                            <a class="dark-color parent">
+                                <span>Покупцям</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
                             </a>
-                            @*<ul class="dropdown">
-                                @foreach (var cat in categories)
-                                {
-                                    <li>
-                                        <a class="dark-color" href="@HttpUtility.UrlDecode(Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options="nav=sellers;/" }))" title="@cat.Name">
-                                            <span>@cat.Name</span>
-                                        </a>
-                                    </li>
-                                }
-                            </ul>*@
+                            <ul class="dropdown">
+                                <li><a class="dark-color" href="#" title="Відгуки покупців"><span class="name">Відгуки покупців</span></a></li>
+                                <li><a class="dark-color" href="#" title="Правила Benefit Card"><span class="name">Правила Benefit Card</span></a></li>
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })" title="Партнерська програма"><span class="name">Партнерська програма</span></a></li>
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "faq"})" title="Питання та відповіді"><span class="name">Питання та відповіді</span></a></li>
+                            </ul>
                         </li>
                         <li>
-                            <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "partnerska_programa"})" title="Партнерська програма">
-                                <span>Партнерська програма</span>
+                            <a class="dark-color parent">
+                                <span>Постачальникам</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
                             </a>
+                            <ul class="dropdown">
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })" title="Співпраця з компанією"><span class="name">Співпраця з компанією</span></a></li>
+                                <li><a class="dark-color" href="#" title="Тарифи та можливості"><span class="name">Тарифи та можливості</span></a></li>
+                                <li><a class="dark-color" href="#" title="Реєстрація постачальника"><span class="name">Реєстрація постачальника</span></a></li>
+                                <li><a class="dark-color" href="#" title="Система Benefit Card"><span class="name">Система Benefit Card</span></a></li>
+                            </ul>
                         </li>
                         <li>
-                            <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "stati_postachalnikom"})" title="Співпраця">
-                                <span>Співпраця</span>
+                            <a class="dark-color parent">
+                                <span>Про нас</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
                             </a>
+                            <ul class="dropdown">
+                                <li><a class="dark-color" href="#" title="Про компанію Benefit Company"><span class="name">Про компанію Benefit Company</span></a></li>
+                                <li><a class="dark-color" href="@Url.Action("index","news")" title="Новини компанії"><span class="name">Новини компанії</span></a></li>
+                                <li><a class="dark-color" href="#" title="Відгуки про компанію"><span class="name">Відгуки про компанію</span></a></li>
+                                <li><a class="dark-color" href="#" title="Угода користувача"><span class="name">Угода користувача</span></a></li>
+                            </ul>
                         </li>
                         <li>
                             <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "faq"})" title="FAQ">
                                 <span>FAQ</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dark-color" href="@Url.Action("index","news")" title="Новини">
-                                <span>Новини</span>
                             </a>
                         </li>
                     </ul>
