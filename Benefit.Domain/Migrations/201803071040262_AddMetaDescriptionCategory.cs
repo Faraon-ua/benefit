@@ -7,7 +7,7 @@ namespace Benefit.Domain.Migrations
     {
         public override void Up()
         {
-            AddColumn("dbo.Categories", "MetaDescription", c => c.String(nullable: false, maxLength: 256));
+            AddColumn("dbo.Categories", "MetaDescription", c => c.String(maxLength: 256));
             AlterColumn("dbo.Categories", "Description", c => c.String());
         }
         
