@@ -59,6 +59,7 @@ namespace Benefit.Services.Domain
                 {
                     dbCategory.Name = catName.Truncate(64);
                     dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
+                    dbCategory.MetaDescription = catName;
 
                     dbCategory.ParentCategoryId = xmlCategory.Attribute("parentId") == null
                         ? null
