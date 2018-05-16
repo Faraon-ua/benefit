@@ -86,7 +86,7 @@
                                 @foreach (var cat in categories)
                                 {
                                     <li>
-                                        <a class="dark-color parent" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" title="@cat.Name">
+                                        <a class="dark-color @(cat.ChildCategories.Any()? "patent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" title="@cat.Name">
                                             <span>@cat.Name</span>
                                             @if (cat.ChildCategories.Any())
                                             {
@@ -137,7 +137,7 @@
                             </ul>
                         </li>
                         <li>
-                            <a class="dark-color parent" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" title="Каталог постачальників">
+                            <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" title="Каталог постачальників">
                                 <span>Каталог постачальників</span>
                             </a>
                             @*<ul class="dropdown">
@@ -214,7 +214,7 @@
                     </ul>
                 </div>
                 <div class="contacts">
-                    <div class="title">Контактная информация</div>
+                    <div class="title">Контактна інформація</div>
                     <div class="address">
                         <i class="fa fa-map-marker"></i>
                         а/с №8, пл.Кирила Мефодія, 4, м.Ужгород, 88005
