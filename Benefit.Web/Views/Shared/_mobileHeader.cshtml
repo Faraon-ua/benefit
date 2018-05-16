@@ -6,7 +6,7 @@
     var categories = ViewBag.Categories as List<Category>;
 }
 <div id="mobileheader" class="visible-xs visible-sm" style="width: 100%">
-    <div class="mobileheader-v1">
+    <div class="mobileheader-v1" style="height:63px;position:fixed;z-index:9999999999999;background:#f9f9f9">
         <div class="burger pull-left">
             <i class="svg svg-burger mask"></i>
             <i class="svg svg-close black"></i>
@@ -17,7 +17,7 @@
                     var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
                 }
                 <a href="@href">
-                    <img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company">
+                    <img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company" height="35">
                 </a>
             </div>
         </div>
@@ -42,12 +42,11 @@
 
                     <a rel="nofollow" class="basket-link basket   lg " href="#" title="Корзина пуста">
                         <span class="js-basket-block">
-                            <i class="svg svg-basket" aria-hidden="true"></i>
+                            <i class="fa fa-shopping-basket" style="color: #b0b0b0; font-size: 2em;"></i>
                             <span class="title dark_link">Корзина</span>
                             <span class="count cart-items-number">0</span>
                         </span>
                     </a>
-
 
                     <!--'end_frame_cache_header-basket-with-compare-block3'-->
                 </div>
@@ -56,7 +55,7 @@
             <div class="pull-right">
                 <div class="wrap_icon">
                     <button class="top-btn inline-search-show twosmallfont">
-                        <i class="svg svg-search lg" aria-hidden="true"></i>
+                        <i class="fa fa-search" style="color: #b0b0b0; font-size: 2em;" aria-hidden="true"></i>
                     </button>
                 </div>
             </div>
@@ -64,7 +63,7 @@
             <div class="pull-right">
                 <div class="wrap_icon">
                     <a rel="nofollow" title="особистий кабінет" class="personal-link dark-color " href="@Url.Action("Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
-                        <i class="svg svg-cabinet lg" aria-hidden="true"></i>
+                        <i class="fa fa-user" style="color: #b0b0b0; font-size: 2em;" aria-hidden="true"></i>
                     </a>
                 </div>
             </div>

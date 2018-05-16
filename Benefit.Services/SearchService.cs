@@ -15,37 +15,52 @@ namespace Benefit.Services
     {
         public ApplicationDbContext db = new ApplicationDbContext();
 
-        public List<string> SearchKeyWords(string term, string categoryId = null)
+        public List<string> SearchKeyWords(string term, string sellerId = null)
         {
             term = term.ToLower();
             var translitTerm = term.Translit();
+            var products = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller)
+                .Where(entry => entry.IsActive && entry.AvailabilityState != ProductAvailabilityState.NotInStock &&
+                                entry.Seller.IsActive && entry.Category.IsActive);
+            if (!string.IsNullOrEmpty(sellerId))
+            {
+                products = products.Where(entry => entry.SellerId == sellerId);
+            }
             var productResult =
-                db.Products.Include(entry => entry.Category).Include(entry => entry.Seller)
-                .Where(entry => entry.IsActive && entry.Seller.IsActive)
-                    .Select(
+                products.Select(
                         entry =>
                             entry.Name.ToLower() + " " + entry.SearchTags.ToLower() + " " +
                             entry.Category.Name.ToLower())
                     .Where(entry => entry.Contains(term)).ToList();
-            var sellerResults =
-                db.Sellers.Where(entry => entry.Name.ToLower().Contains(term) || entry.Name.ToLower().Contains(translitTerm))
-                    .Select(entry => entry.Name)
-                    .ToList()
-                    .SelectMany(entry => entry.Split(new[] { ',', ' ', '"', '(', ')', '-' }))
-                    .Where(entry => entry.ToLower().Contains(term) || entry.ToLower().Contains(translitTerm))
-                    .Distinct()
-                    .ToList();
+
+            List<string> sellerResults = null;
+            if (!string.IsNullOrEmpty(sellerId))
+            {
+                sellerResults =
+                   db.Sellers.Where(entry =>
+                           entry.Name.ToLower().Contains(term) || entry.Name.ToLower().Contains(translitTerm))
+                       .Select(entry => entry.Name)
+                       .ToList()
+                       .SelectMany(entry => entry.Split(new[] { ',', ' ', '"', '(', ')', '-' }))
+                       .Where(entry => entry.ToLower().Contains(term) || entry.ToLower().Contains(translitTerm))
+                       .Distinct()
+                       .ToList();
+            }
+
             var words =
                 productResult.Select(entry => entry.Split(new[] { ',', ' ', '"', '(', ')', '-' }))
                     .SelectMany(entry => entry)
                     .Where(entry => entry.Contains(term))
                     .GroupBy(entry => entry).Select(entry => new { entry.Key, Count = entry.Count() })
                    .OrderByDescending(entry => entry.Count).Select(entry => entry.Key).ToList();
-            words.InsertRange(0, sellerResults);
+            if (!string.IsNullOrEmpty(sellerId))
+            {
+                words.InsertRange(0, sellerResults);
+            }
             return words;
         }
 
-        public SearchResult SearchProducts(string term, string options, int skip, string searchSellerId = null, int take = ListConstants.DefaultTakePerPage, string categoryId = null)
+        public SearchResult SearchProducts(string term, string options, int skip, string searchSellerId = null, int take = ListConstants.DefaultTakePerPage)
         {
             var result = new SearchResult()
             {
@@ -60,10 +75,6 @@ namespace Benefit.Services
             if (searchSellerId != null)
             {
                 productsResult = productsResult.Where(entry => entry.SellerId == searchSellerId);
-            }
-            if (categoryId != null)
-            {
-                productsResult = productsResult.Where(entry => entry.CategoryId == categoryId);
             }
             //var regionId = RegionService.GetRegionId();
             var productResult = productsResult.Search(entry => entry.Name,
