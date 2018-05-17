@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
 using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers
@@ -9,13 +10,24 @@ namespace Benefit.Web.Controllers
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
+        [FetchSeller]
         [FetchCategories]
         [FetchLastNews]
         public ActionResult Index(string id)
         {
-            var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id);
-            if (page == null) return HttpNotFound();
-            return View(page);
+            if (ViewBag.Seller != null)
+            {
+                var seller = ViewBag.Seller as Seller;
+                var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id && entry.SellerId == seller.Id);
+                if (page == null) return HttpNotFound();
+                return View("~/Views/SellerArea/Page.cshtml", page);
+            }
+            else
+            {
+                var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id);
+                if (page == null) return HttpNotFound();
+                return View(page);
+            }
         }
 
         public ActionResult PageContent(string id)

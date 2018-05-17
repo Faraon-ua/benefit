@@ -28,6 +28,19 @@ namespace Benefit.Web.Controllers
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {
+                using (var db = new ApplicationDbContext())
+                {
+                    seller.FeaturedProducts = db.Products
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Seller)
+                        .Where(entry =>
+                            entry.IsActive && entry.SellerId == seller.Id && entry.IsFeatured).ToList();
+                    seller.PromotionProducts = db.Products
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Seller)
+                        .Where(entry =>
+                            entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).ToList();
+                }
                 return View("~/views/sellerarea/home.cshtml", seller);
             }
             var mainPageViewModel = new MainPageViewModel();

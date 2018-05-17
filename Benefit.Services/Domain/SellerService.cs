@@ -204,6 +204,7 @@ namespace Benefit.Services.Domain
         public Seller GetSeller(string urlName)
         {
             var seller = db.Sellers
+                .Include(entry => entry.Images)
                 .Include(entry => entry.SellerCategories)
                 .Include(entry => entry.Schedules)
                 .Include(entry => entry.Addresses)

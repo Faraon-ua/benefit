@@ -41,7 +41,9 @@
                                 $("#AddressId").val(data.shippingAddressId);
                                 $("#order-form-wrap form").submit();
                             }
+                            $('html,body').animate({ scrollTop: 0 }, 'fast');
                             btn.removeAttr("disabled");
+                            hideLoader();
                         });
                 } else {
                     $("#order-form-wrap form").submit();
@@ -190,11 +192,11 @@
                         <div class="row">
                             <div class="col-sm-6">
                                 <label> Логін </label>
-                                @Html.TextBox("UserName", null, new { @class = "enter_email", placeholder = "E-mail", type = "email" })
+                                @Html.TextBox("UserName", null, new { @class = "enter_email", type = "email" })
                             </div>
                             <div class="col-sm-6">
-                                <label> Пароль </label>
-                                @Html.Password("UserPassword", null, new { @class = "enter_password", placeholder = "Пароль" })
+                                <label> Придумайте свій пароль </label>
+                                @Html.Password("UserPassword", null, new { @class = "enter_password" })
                             </div>
                         </div>
                         <br>
@@ -213,12 +215,12 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Ім'я *</label>
-                                    @Html.TextBox("FirstName", null, new { placeholder = "І’мя *" })
+                                    @Html.TextBox("FirstName", null)
                                     @Html.ValidationMessage("FirstName")
                                 </div>
                                 <div class="col-sm-6">
                                     <label> Прізвище *</label>
-                                    @Html.TextBox("LastName", null, new { placeholder = "Прізвище *" })
+                                    @Html.TextBox("LastName", null)
                                     @Html.ValidationMessage("LastName")
                                 </div>
                             </div>
@@ -226,12 +228,12 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Номер телефону *</label>
-                                    @Html.TextBox("PhoneNumber", null, new { placeholder = "Номер телефону *", type = "tel" })
+                                    @Html.TextBox("PhoneNumber", null, new { type = "tel" })
                                     @Html.ValidationMessage("PhoneNumber")
                                 </div>
                                 <div class="col-sm-6">
                                     <label> E-mail *</label>
-                                    @Html.TextBox("Email", null, new { placeholder = "Email *", type = "email" })
+                                    @Html.TextBox("Email", null, new { type = "email" })
                                     @Html.ValidationMessage("Email")
                                 </div>
                             </div>
@@ -239,13 +241,13 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Місто *</label>
-                                    @Html.TextBox("RegionName", HttpUtility.UrlDecode(Request.Cookies[RouteConstants.RegionNameCookieName].Value), new { placeholder = "Місто *", @class = "regionSearch" })
+                                    @Html.TextBox("RegionName", HttpUtility.UrlDecode(Request.Cookies[RouteConstants.RegionNameCookieName].Value), new { @class = "regionSearch" })
                                     @Html.Hidden("RegionId", HttpUtility.UrlDecode(Request.Cookies[RouteConstants.RegionIdCookieName].Value))
                                     @Html.ValidationMessage("RegionId")
                                 </div>
                                 <div class="col-sm-6">
                                     <label> Адреса доставки</label>
-                                    @Html.TextBox("ShippingAddress", null, new { placeholder = "Адреса доставки" })
+                                    @Html.TextBox("ShippingAddress", null)
                                     @Html.ValidationMessage("ShippingAddress")
                                 </div>
                             </div>
@@ -253,12 +255,12 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Пароль *</label>
-                                    @Html.TextBox("Password", null, new { placeholder = "Пароль *", type = "password" })
+                                    @Html.TextBox("Password", null, new { type = "password" })
                                     @Html.ValidationMessage("Password")
                                 </div>
                                 <div class="col-sm-6">
                                     <label> Реєстраційний код (за наявності)</label>
-                                    @Html.TextBox("ReferalNumber", null, new { placeholder = "Реєстраційний код" })
+                                    @Html.TextBox("ReferalNumber", null)
                                     <p style="text-align: center; font-size: 1.2em;" id="referal-name">
                                     </p>
                                 </div>
@@ -266,7 +268,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Номер картки (за наявності)</label>
-                                    @Html.TextBox("CardNumber", null, new { placeholder = "Номер карти (при наявності)" })
+                                    @Html.TextBox("CardNumber", null)
                                     @Html.ValidationMessage("CardNumber")
                                 </div>
                             </div>
@@ -274,7 +276,7 @@
                         <br>
                         <div class="row">
                             <div class="col-sm-6">
-                                Реєструючись, ви погоджуєтесь з
+                                Натискаючу оформити замовлення, ви погоджуєтесь з
                                 <a href="@Url.RouteUrl("pagesRoute", new {id = "ugoda-korustuvacha"})">угодою користувача</a>
                             </div>
                             <div class="col-sm-6">
@@ -381,7 +383,7 @@
     <!--	SIDEBAR BLOCK	-->
 </div>
 <div class="button_block margin-left-10 pull-left" id="save-order">
-    <span class="small to-cart btn btn-default transition_bg" style="font-size: 17px; font-weight: bold;">
+    <span class="btn pull-right btn btn-default bold height-50px" style="font-size: 17px; line-height: 2em;">
         Оформити замовлення
     </span>
 </div>

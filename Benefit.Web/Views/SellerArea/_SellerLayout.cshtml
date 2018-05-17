@@ -86,27 +86,25 @@
             <div id="top">
                 <div class="container p-x-1">
                     <div class="row">
-                        @*<div class="col-xs-12 col-lg-7 pages_menu overlay-menu">
-                                <div id="toggle" class="hidden-lg-up"><i class="ico-menu"></i> <span>Информация</span></div>
-                                <div class="overlay" id="overlay">
-                                    <nav>
-                                        <ul class="list-inline">
-                                            <li><a href="blog">Новости</a></li>
-                                            <li><a href="dostavka">Доставка</a></li>
-                                            <li><a href="oplata">Оплата</a></li>
-                                            <li><a href="contact">Контакты</a></li>
-                                        </ul>
-                                    </nav>
-                                    <script>
-                                        $('.overlay-menu>#toggle').click(function () {
-                                            $(this).toggleClass('active');
-                                            $('#overlay').toggleClass('open');
-                                        });
-                                    </script>
-                                </div>
-                            </div>*@
+                        <div class="col-xs-12 col-lg-7 pages_menu overlay-menu">
+                            <div id="toggle" class="hidden-lg-up"><i class="ico-menu"></i> <span>Информация</span></div>
+                            <div class="overlay" id="overlay">
+                                <nav>
+                                    <ul class="list-inline">
+                                        @foreach (var page in seller.InfoPages.OrderBy(entry => entry.Order))
+                                        {
+                                            <li>
+                                                <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })">
+                                                    @page.Name
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
                         @Html.Partial("_FlashMessage")
-                        <div class="col-xs-12 col-lg-12 text-xs-right">
+                        <div class="col-xs-12 col-lg-5 text-xs-right">
                             <ul class="list-inline">
                                 <li>
                                     @if (User.Identity.IsAuthenticated)
@@ -134,18 +132,18 @@
                             </a>
                         </div>
 
-                        <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 col-xl-6 p-y-sm hidden-md-down">
+                        <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 @(seller.HasEcommerce ? "col-xl-8" : "col-xl-6") p-y-sm hidden-md-down">
                             @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search", id = "fn-search" }))
                             {
                                 <button class="ico-search" type="submit"></button>
-                                <input type="hidden" name="searchSellerId" value="@seller.Id"/>
+                                <input type="hidden" name="searchSellerId" value="@seller.Id" />
                                 <input class="fn-search search-input" type="text" name="term" value="" placeholder="Пошук" />
                             }
                         </div>
-
-                        @if (!string.IsNullOrEmpty(seller.OnlineOrdersPhone))
+                        @if (seller.IsBenefitCardActive && !string.IsNullOrEmpty(seller.OnlineOrdersPhone))
                         {
                             <div class="col-xs-12 col-sm-4 col-md-8 offset-lg-3 col-lg-6 offset-xl-0 col-xl-4 list-inline text-sm-left text-xl-center">
+                                {
                                 <div class="text-plus-icon ico-head_phone1 info hidden-sm-down">
                                     <a class="name" href="tel:@seller.OnlineOrdersPhone">@seller.OnlineOrdersPhone</a>
                                     <div class="small">
@@ -165,6 +163,19 @@
                                     </div>
                                 </div>
                             </div>
+
+                        }
+                        @if (seller.HasEcommerce)
+                        {
+                            <div class="col-xs-12 col-sm-8 col-md-4 col-lg-4 col-xl-2 p-x-0 list-inline informers2 text-md-right">
+                                <div id="cart_informer">
+                                    <a class="disabled" href="@Url.SubdomainAction(seller.UrlName, "order", "cart", new { id=seller.Id }, true)">
+                                        <span class="count cart-items-number">0</span>
+                                        <i class="ico-head_cart"></i>
+                                        <div>Кошик</div>
+                                    </a>
+                                </div>
+                            </div>
                         }
                     </div>
                 </div>
@@ -172,6 +183,7 @@
 
             <div id='catMenu'>
                 <nav class="container">
+                    <a class="list_drop b-block btn-primary btn-lg text-center hidden-lg-up" target="_blank"><i class="ico-menu"></i> МЕНЮ/КАТАЛОГ ПОСЛУГ</a>
                     <ul class="lev1">
                         <li>
                             @if (seller.HasEcommerce)
@@ -184,7 +196,7 @@
                                     @foreach (var cat in categories)
                                     {
                                         <li>
-                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })">
+                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName})">
                                                 <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="" width="45" style="float: left; margin-right: 10px;" />
                                                 @cat.Name
                                             </a>
@@ -262,7 +274,12 @@
         var searchWordsUrl = '@Url.Action("SearchWords", "Search")';
         var searchUrl = '@Url.Action("Index", "Search")';
 
-        $(function() {
+        $(function () {
+            $('.overlay-menu>#toggle').click(function() {
+                $(this).toggleClass('active');
+                $('#overlay').toggleClass('open');
+            });
+
             $(".search-input").devbridgeAutocomplete({
                 width: 300,
                 minChars: 3,

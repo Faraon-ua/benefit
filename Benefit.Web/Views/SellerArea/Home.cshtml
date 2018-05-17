@@ -4,7 +4,15 @@
 @{
     Layout = "_SellerLayout.cshtml";
     ViewBag.Title = "Головна";
-
+}
+@section scripts
+{
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+    </script>
+    <script src="~/Scripts/site.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
 }
 <section id="slider_main">
     <div id="slider_images">
@@ -28,7 +36,7 @@
                             <img src="~/Images/NewsLogo/@page.ImageUrl" />
                         </div>
                         <div class="col-md-10">
-                            <div class="name">@page.Name</div>
+                            <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })" class="name">@page.Name</a>
                             <div class="small">@page.ShortContent</div>
                         </div>
                     </div>
@@ -64,299 +72,35 @@
 
         @if (Model.HasEcommerce)
         {
-            @*<section class="p-y-1">
+            <section class="p-y-1">
                 <div class="container">
-
-                    <div class="heading1608 dotted">
-                        <div class="h1 title">Наші послуги</div>
-                        <div class="subText">Наши покупатели выбирают популярное</div>
-                    </div>
-                    <div class="slick-products gridBlock">
-
-                        <!-- товар -->
-                        <div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="product fn-product card">
-                                <div class="card-block fn-transfer">
-                                    <a class="card-image image" href="products/bez-fotografii-primer-predlozheniya">
-                                        <img class="fn-img" src="design/CL_STOK_160801_proffbar_ru/images/staticSheets/no_image.png" alt="" />
-                                    </a>
-                                    <div class="card-title h3" data-product="43">
-                                        <a href="products/bez-fotografii-primer-predlozheniya">Без фотографии (пример предложения)</a>
-                                    </div>
-                                    <form class="variants" action="/cart">
-                                        <div class="price text-xs-center">
-                                            <span>555</span> <i>руб</i>
-                                            <strike class="old_price m-l-sm">666</strike>
-                                        </div>
-                                        <div class="input-group">
-                                            <a class="btn btn-primary" href="/products/samsung-s7070-diva">Купить</a>
-                                        </div>
-                                        <!--
-                                        <div class="input-group">
-                                            <button class="ico-btn_2cart fn-is_stock btn " title="" data-language="" type="submit"></button>
-                                        </div>
-                                        -->
-                                        <select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>
-                                    </form>
-                                    <div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>
-                                </div>
-                            </div>
+                    @if (Model.FeaturedProducts.Any())
+                    {
+                        <div class="heading1608 dotted">
+                            <div class="h1 title">Рекомендовані товари</div>
                         </div>
-                        <!-- товар (the end) -->
-                        <!-- товар -->
-                        <div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="product fn-product card">
-                                <div class="card-block fn-transfer">
-                                    <a class="card-image image" href="products/bez-fotografii-primer-predlozheniya">
-                                        <img class="fn-img" src="design/CL_STOK_160801_proffbar_ru/images/staticSheets/no_image.png" alt="" />
-                                    </a>
-                                    <div class="card-title h3" data-product="43">
-                                        <a href="products/bez-fotografii-primer-predlozheniya">Без фотографии (пример предложения)</a>
-                                    </div>
-                                    <form class="variants" action="/cart">
-                                        <div class="price text-xs-center">
-                                            <span>555</span> <i>руб</i>
-                                            <strike class="old_price m-l-sm">666</strike>
-                                        </div>
-                                        <div class="input-group">
-                                            <a class="btn btn-primary" href="/products/samsung-s7070-diva">Купить</a>
-                                        </div>
-                                        <!--
-                                        <div class="input-group">
-                                            <button class="ico-btn_2cart fn-is_stock btn " title="" data-language="" type="submit"></button>
-                                        </div>
-                                        -->
-                                        <select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>
-                                    </form>
-                                    <div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="slick-products gridBlock">
+                            @foreach (var product in Model.FeaturedProducts)
+                            {
+                                @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                            }
                         </div>
-                        <!-- товар (the end) -->
-                        <!-- товар -->
-                        <div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="product fn-product card">
-                                <div class="card-block fn-transfer">
-                                    <a class="card-image image" href="products/bez-fotografii-primer-predlozheniya">
-                                        <img class="fn-img" src="design/CL_STOK_160801_proffbar_ru/images/staticSheets/no_image.png" alt="" />
-                                    </a>
-                                    <div class="card-title h3" data-product="43">
-                                        <a href="products/bez-fotografii-primer-predlozheniya">Без фотографии (пример предложения)</a>
-                                    </div>
-                                    <form class="variants" action="/cart">
-                                        <div class="price text-xs-center">
-                                            <span>555</span> <i>руб</i>
-                                            <strike class="old_price m-l-sm">666</strike>
-                                        </div>
-                                        <div class="input-group">
-                                            <a class="btn btn-primary" href="/products/samsung-s7070-diva">Купить</a>
-                                        </div>
-                                        <!--
-                                        <div class="input-group">
-                                            <button class="ico-btn_2cart fn-is_stock btn " title="" data-language="" type="submit"></button>
-                                        </div>
-                                        -->
-                                        <select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>
-                                    </form>
-                                    <div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <hr />
+                    }
+                    @if (Model.PromotionProducts.Any())
+                    {
+                        <div class="heading1608 dotted">
+                            <div class="h1 title">Акційні товари</div>
                         </div>
-                        <!-- товар (the end) -->
-                        <!-- товар -->
-                        <div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="product fn-product card">
-                                <div class="card-block fn-transfer">
-                                    <a class="card-image image" href="products/bez-fotografii-primer-predlozheniya">
-                                        <img class="fn-img" src="design/CL_STOK_160801_proffbar_ru/images/staticSheets/no_image.png" alt="" />
-                                    </a>
-                                    <div class="card-title h3" data-product="43">
-                                        <a href="products/bez-fotografii-primer-predlozheniya">Без фотографии (пример предложения)</a>
-                                    </div>
-                                    <form class="variants" action="/cart">
-                                        <div class="price text-xs-center">
-                                            <span>555</span> <i>руб</i>
-                                            <strike class="old_price m-l-sm">666</strike>
-                                        </div>
-                                        <div class="input-group">
-                                            <a class="btn btn-primary" href="/products/samsung-s7070-diva">Купить</a>
-                                        </div>
-                                        <!--
-                                        <div class="input-group">
-                                            <button class="ico-btn_2cart fn-is_stock btn " title="" data-language="" type="submit"></button>
-                                        </div>
-                                        -->
-                                        <select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>
-                                    </form>
-                                    <div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>
-                                </div>
-                            </div>
+                        <div class="slick-products gridBlock">
+                            @foreach (var product in Model.PromotionProducts)
+                            {
+                                @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                            }
                         </div>
-                        <!-- товар (the end) -->
-                        <!-- товар -->
-                        <div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="product fn-product card">
-                                <div class="card-block fn-transfer">
-                                    <a class="card-image image" href="products/bez-fotografii-primer-predlozheniya">
-                                        <img class="fn-img" src="design/CL_STOK_160801_proffbar_ru/images/staticSheets/no_image.png" alt="" />
-                                    </a>
-                                    <div class="card-title h3" data-product="43">
-                                        <a href="products/bez-fotografii-primer-predlozheniya">Без фотографии (пример предложения)</a>
-                                    </div>
-                                    <form class="variants" action="/cart">
-                                        <div class="price text-xs-center">
-                                            <span>555</span> <i>руб</i>
-                                            <strike class="old_price m-l-sm">666</strike>
-                                        </div>
-                                        <div class="input-group">
-                                            <a class="btn btn-primary" href="/products/samsung-s7070-diva">Купить</a>
-                                        </div>
-                                        <!--
-                                        <div class="input-group">
-                                            <button class="ico-btn_2cart fn-is_stock btn " title="" data-language="" type="submit"></button>
-                                        </div>
-                                        -->
-                                        <select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>
-                                    </form>
-                                    <div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- товар (the end) -->
-                        <!-- товар -->
-                        <div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="product fn-product card">
-                                <div class="card-block fn-transfer">
-                                    <a class="card-image image" href="products/bez-fotografii-primer-predlozheniya">
-                                        <img class="fn-img" src="design/CL_STOK_160801_proffbar_ru/images/staticSheets/no_image.png" alt="" />
-                                    </a>
-                                    <div class="card-title h3" data-product="43">
-                                        <a href="products/bez-fotografii-primer-predlozheniya">Без фотографии (пример предложения)</a>
-                                    </div>
-                                    <form class="variants" action="/cart">
-                                        <div class="price text-xs-center">
-                                            <span>555</span> <i>руб</i>
-                                            <strike class="old_price m-l-sm">666</strike>
-                                        </div>
-                                        <div class="input-group">
-                                            <a class="btn btn-primary" href="/products/samsung-s7070-diva">Купить</a>
-                                        </div>
-                                        <!--
-                                        <div class="input-group">
-                                            <button class="ico-btn_2cart fn-is_stock btn " title="" data-language="" type="submit"></button>
-                                        </div>
-                                        -->
-                                        <select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>
-                                    </form>
-                                    <div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- товар (the end) -->
-                        <!-- товар -->
-                        <div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="product fn-product card">
-                                <div class="card-block fn-transfer">
-                                    <a class="card-image image" href="products/bez-fotografii-primer-predlozheniya">
-                                        <img class="fn-img" src="design/CL_STOK_160801_proffbar_ru/images/staticSheets/no_image.png" alt="" />
-                                    </a>
-                                    <div class="card-title h3" data-product="43">
-                                        <a href="products/bez-fotografii-primer-predlozheniya">Без фотографии (пример предложения)</a>
-                                    </div>
-                                    <form class="variants" action="/cart">
-                                        <div class="price text-xs-center">
-                                            <span>555</span> <i>руб</i>
-                                            <strike class="old_price m-l-sm">666</strike>
-                                        </div>
-                                        <div class="input-group">
-                                            <a class="btn btn-primary" href="/products/samsung-s7070-diva">Купить</a>
-                                        </div>
-                                        <!--
-                                        <div class="input-group">
-                                            <button class="ico-btn_2cart fn-is_stock btn " title="" data-language="" type="submit"></button>
-                                        </div>
-                                        -->
-                                        <select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>
-                                    </form>
-                                    <div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- товар (the end) -->
-                        <!-- товар -->
-                        <div class="col-xs-12 col-md-6 col-lg-4 col-xl-3">
-                            <div class="product fn-product card">
-                                <div class="card-block fn-transfer">
-                                    <a class="card-image image" href="products/bez-fotografii-primer-predlozheniya">
-                                        <img class="fn-img" src="design/CL_STOK_160801_proffbar_ru/images/staticSheets/no_image.png" alt="" />
-                                    </a>
-                                    <div class="card-title h3" data-product="43">
-                                        <a href="products/bez-fotografii-primer-predlozheniya">Без фотографии (пример предложения)</a>
-                                    </div>
-                                    <form class="variants" action="/cart">
-                                        <div class="price text-xs-center">
-                                            <span>555</span> <i>руб</i>
-                                            <strike class="old_price m-l-sm">666</strike>
-                                        </div>
-                                        <div class="input-group">
-                                            <a class="btn btn-primary" href="/products/samsung-s7070-diva">Купить</a>
-                                        </div>
-                                        <!--
-                                        <div class="input-group">
-                                            <button class="ico-btn_2cart fn-is_stock btn " title="" data-language="" type="submit"></button>
-                                        </div>
-                                        -->
-                                        <select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>
-                                    </form>
-                                    <div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- товар (the end) -->
-
-                    </div>
+                    }
                 </div>
-            </section>*@
+            </section>
         }
     </div>
 </section>

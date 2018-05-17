@@ -1,0 +1,12 @@
+﻿@using Benefit.Domain.Models
+@model InfoPage
+
+@{
+    ViewBag.Title = Model.Name;
+    Layout = "_SellerLayout.cshtml";
+}
+<div class="container" style="margin-top: 10px;">
+    <h1 style="text-align: center;">@Model.Name</h1>
+    <hr/>
+    @Html.Raw(Model.Content)
+</div>

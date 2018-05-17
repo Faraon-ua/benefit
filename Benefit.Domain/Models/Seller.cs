@@ -129,6 +129,11 @@ namespace Benefit.Domain.Models
         public virtual ICollection<InfoPage> InfoPages { get; set; }
 
         [NotMapped]
+        public ICollection<Product> FeaturedProducts { get; set; }
+        [NotMapped]
+        public ICollection<Product> PromotionProducts { get; set; }
+
+        [NotMapped]
         public virtual string Specialization
         {
             get

@@ -71,7 +71,7 @@ namespace Benefit.Services
             var productsResult = db.Products
                 .Include(entry => entry.Category)
                 .Include(entry => entry.Seller)
-                .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
+                .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce && entry.Category.IsActive);
             if (searchSellerId != null)
             {
                 productsResult = productsResult.Where(entry => entry.SellerId == searchSellerId);
