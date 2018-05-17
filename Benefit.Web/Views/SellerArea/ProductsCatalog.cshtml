@@ -57,30 +57,30 @@
                 <span>Быстрый</span> выбор
             </div>
             @*<div class='row filter'>
-                <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm'>
-                    <div class='title'>Торговая марка:</div>
-                    <select onchange="location = this.value+'#content_link';">
-                        <option value="catalog/pylesosy" selected>Все варианты</option>
-                        <option brand_id="7" value="catalog/pylesosy/dyson">Dyson</option>
-                        <option brand_id="8" value="catalog/pylesosy/electrolux">Electrolux</option>
-                    </select>
-                </div>
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm'>
+                        <div class='title'>Торговая марка:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="catalog/pylesosy" selected>Все варианты</option>
+                            <option brand_id="7" value="catalog/pylesosy/dyson">Dyson</option>
+                            <option brand_id="8" value="catalog/pylesosy/electrolux">Electrolux</option>
+                        </select>
+                    </div>
 
-                <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm '>
-                    <div class='title' data-feature="84">Труба всасывания:</div>
-                    <select onchange="location = this.value+'#content_link';">
-                        <option value="/simpla_clear/catalog/pylesosy" selected>Все варианты</option>
-                        <option value="/simpla_clear/catalog/pylesosy?84=%D1%82%D0%B5%D0%BB%D0%B5%D1%81%D0%BA%D0%BE%D0%BF%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F">телескопическая</option>
-                    </select>
-                </div>
-                <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm '>
-                    <div class='title' data-feature="87">Турбощетка в комплекте:</div>
-                    <select onchange="location = this.value+'#content_link';">
-                        <option value="/simpla_clear/catalog/pylesosy" selected>Все варианты</option>
-                        <option value="/simpla_clear/catalog/pylesosy?87=%D0%B5%D1%81%D1%82%D1%8C">есть</option>
-                    </select>
-                </div>
-            </div>*@
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm '>
+                        <div class='title' data-feature="84">Труба всасывания:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="/simpla_clear/catalog/pylesosy" selected>Все варианты</option>
+                            <option value="/simpla_clear/catalog/pylesosy?84=%D1%82%D0%B5%D0%BB%D0%B5%D1%81%D0%BA%D0%BE%D0%BF%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F">телескопическая</option>
+                        </select>
+                    </div>
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm '>
+                        <div class='title' data-feature="87">Турбощетка в комплекте:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="/simpla_clear/catalog/pylesosy" selected>Все варианты</option>
+                            <option value="/simpla_clear/catalog/pylesosy?87=%D0%B5%D1%81%D1%82%D1%8C">есть</option>
+                        </select>
+                    </div>
+                </div>*@
 
             <div class="row m-x-0">
                 <ul class="col-xs-12 col-xl-6 m-b-1 list-inline sort">
@@ -95,53 +95,7 @@
                 <!-- товар -->
                 @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
                 {
-                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
-                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                    <div class="product col-xs-12 col-md-4 col-lg-4 col-xl-3 ">
-                        <div class="product fn-product card">
-                            <div class="card-block fn-transfer">
-                                <a class="card-image image" href="@productDetailsUrl">
-                                    @if (image == null)
-                                    {
-                                        <img class="fn-img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@product.Title" title="@product.Title">
-                                    }
-                                    else
-                                    {
-                                        if (image.IsAbsoluteUrl)
-                                        {
-                                            <img class="fn-img" src="@image.ImageUrl" alt="@product.Title" title="@product.Title">
-                                        }
-                                        else
-                                        {
-                                            <img class="fn-img" src="~/Images/ProductGallery/@product.Id/@image.ImageUrl" alt="@product.Title" title="@product.Title">
-                                        }
-                                    }
-                                </a>
-                                <div class="card-title h3" data-product="43">
-                                    <a href="@productDetailsUrl" title="@product.Title">@product.Name</a>
-                                </div>
-                                <form class="variants" action="/cart">
-                                    <div class="price text-xs-center">
-                                        <span>@product.Price</span> <i>грн</i>
-                                        @if (product.OldPrice.HasValue)
-                                        {
-                                            <strike class="old_price m-l-sm">@product.OldPrice.Value</strike>
-                                        }
-                                    </div>
-                                    <div class="input-group">
-                                        <button class="btn btn-primary product_buy" data-product-id="@product.Id" data-seller-id="@product.Seller.Id" data-is-weight-product="@product.IsWeightProduct">Купити</button>
-                                    </div>
-                                    @*<select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
-                                            <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
-                                        </select>*@
-                                </form>
-                                @*<div class="product-labels">
-                                        <div class="label hits ico-pr_hit">Рекомендуем</div>
-                                        <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
-                                    </div>*@
-                            </div>
-                        </div>
-                    </div>
+                    @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
                 }
             </div>
         </div>

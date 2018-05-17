@@ -14,12 +14,12 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <label> Логін </label>
-                        @Html.TextBox("UserName", null, new { @class = "enter_email", placeholder = "E-mail", type = "email" })
+                        @Html.TextBox("UserName", null, new { @class = "enter_email", type = "email" })
                         @Html.ValidationMessage("UserName")
                     </div>
                     <div class="col-sm-6">
                         <label> Пароль </label>
-                        @Html.Password("Password", null, new { @class = "enter_password", placeholder = "Пароль" })
+                        @Html.Password("Password", null, new { @class = "enter_password" })
                         @Html.ValidationMessage("Password")
                     </div>
                 </div>
@@ -43,12 +43,12 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <label> Ім'я *</label>
-                        @Html.TextBox("FirstName", null, new { placeholder = "І’мя *" })
+                        @Html.TextBox("FirstName", null)
                         @Html.ValidationMessage("FirstName")
                     </div>
                     <div class="col-sm-6">
                         <label> Прізвище *</label>
-                        @Html.TextBox("LastName", null, new { placeholder = "Прізвище *" })
+                        @Html.TextBox("LastName", null)
                         @Html.ValidationMessage("LastName")
                     </div>
                 </div>
@@ -56,12 +56,12 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <label> Номер телефону *</label>
-                        @Html.TextBox("PhoneNumber", null, new { placeholder = "Номер телефону *", type = "tel" })
+                        @Html.TextBox("PhoneNumber", null, new { type = "tel" })
                         @Html.ValidationMessage("PhoneNumber")
                     </div>
                     <div class="col-sm-6">
                         <label> E-mail *</label>
-                        @Html.TextBox("Email", null, new { placeholder = "Email *", type = "email" })
+                        @Html.TextBox("Email", null, new { type = "email" })
                         @Html.ValidationMessage("Email")
                     </div>
                 </div>
@@ -69,13 +69,13 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <label> Місто *</label>
-                        @Html.TextBox("RegionName", null, new { placeholder = "Місто *", @class = "regionSearch" })
+                        @Html.TextBox("RegionName", null, new { @class = "regionSearch" })
                         @Html.Hidden("RegionId")
                         @Html.ValidationMessage("RegionId")
                     </div>
                     <div class="col-sm-6">
                         <label> Номер картки (за наявності)</label>
-                        @Html.TextBox("CardNumber", null, new { placeholder = "Номер карти (при наявності)" })
+                        @Html.TextBox("CardNumber", null)
                         @Html.ValidationMessage("CardNumber")
                     </div>
                 </div>
@@ -83,13 +83,13 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <label> Реєстраційний код (за наявності)</label>
-                        @Html.TextBox("ReferalNumber", null, new { placeholder = "Реєстраційний код" })
+                        @Html.TextBox("ReferalNumber", null)
                         <p style="text-align: center; font-size: 1.2em;" id="referal-name">
                         </p>
                     </div>
                     <div class="col-sm-6">
                         <label> Пароль *</label>
-                        @Html.TextBox("Password", null, new { placeholder = "Пароль *", type = "password" })
+                        @Html.TextBox("Password", null, new { type = "password" })
                         @Html.ValidationMessage("Password")
                     </div>
                 </div>

@@ -1,0 +1,51 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.Domain.Models.Product
+@{
+    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU)});
+    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+}
+<div class="product col-xs-12 col-md-4 col-lg-4 col-xl-3 ">
+    <div class="product fn-product card">
+        <div class="card-block fn-transfer">
+            <a class="card-image image" href="@productDetailsUrl">
+                @if (image == null)
+                {
+                    <img class="fn-img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
+                }
+                else
+                {
+                    if (image.IsAbsoluteUrl)
+                    {
+                        <img class="fn-img" src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                    }
+                    else
+                    {
+                        <img class="fn-img" src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                    }
+                }
+            </a>
+            <div class="card-title h3" data-product="43">
+                <a href="@productDetailsUrl" title="@Model.Title">@Model.Name</a>
+            </div>
+            <form class="variants" action="/cart">
+                <div class="price text-xs-center">
+                    <span>@Model.Price</span> <i>грн</i>
+                    @if (Model.OldPrice.HasValue)
+                    {
+                        <strike class="old_price m-l-sm">@Model.OldPrice.Value</strike>
+                    }
+                </div>
+                <div class="input-group">
+                    <button class="btn btn-primary product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">Купити</button>
+                </div>
+                @*<select name="variant" class="hidden fn-variant okaycms form-control c-select hidden-xs-up">
+                        <option value="59" data-price="555" data-stock="50" data-cprice="666">Без фотографии (пример предложения)</option>
+                    </select>*@
+            </form>
+            @*<div class="product-labels">
+                    <div class="label hits ico-pr_hit">Рекомендуем</div>
+                    <div class="label sale ico-pr_sale text-xs-right">Скидка 111 руб</div>
+                </div>*@
+        </div>
+    </div>
+</div>

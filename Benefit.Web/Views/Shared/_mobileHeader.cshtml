@@ -86,7 +86,7 @@
                                 @foreach (var cat in categories)
                                 {
                                     <li>
-                                        <a class="dark-color @(cat.ChildCategories.Any()? "patent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" title="@cat.Name">
+                                        <a class="dark-color @(cat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" title="@cat.Name">
                                             <span>@cat.Name</span>
                                             @if (cat.ChildCategories.Any())
                                             {
@@ -105,7 +105,7 @@
                                                 @foreach (var subCat in cat.ChildCategories)
                                                 {
                                                     <li>
-                                                        <a class="dark-color parent" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" title="@subCat.Name">
+                                                        <a class="dark-color @(subCat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" title="@subCat.Name">
                                                             <span>@subCat.Name</span>
                                                             @if (subCat.ChildCategories.Any())
                                                             {
@@ -135,6 +135,11 @@
                                     </li>
                                 }
                             </ul>
+                        </li>
+                        <li>
+                            <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" title="Каталог постачальників">
+                                <span>Каталог постачальників</span>
+                            </a>
                         </li>
                         <li>
                             <a class="dark-color parent">
@@ -171,11 +176,6 @@
                                 <li><a class="dark-color" href="#" title="Відгуки про компанію"><span class="name">Відгуки про компанію</span></a></li>
                                 <li><a class="dark-color" href="#" title="Угода користувача"><span class="name">Угода користувача</span></a></li>
                             </ul>
-                        </li>
-                        <li>
-                            <a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "faq"})" title="FAQ">
-                                <span>FAQ</span>
-                            </a>
                         </li>
                     </ul>
                 </div>
