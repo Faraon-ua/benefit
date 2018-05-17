@@ -29,6 +29,12 @@
                         <button class="btn btn-info btn-xs add-mapping-category" id="@cat.Id">
                             <i class="icon-edit"></i>
                         </button>
+                        @if (cat.MappedParentCategory != null)
+                        {
+                            <button class="btn btn-danger btn-xs remove-mapping-category" data-cat-id="@cat.Id">
+                                <i class="icon-remove"></i>
+                            </button>
+                        }
                     </div>
                 }
             </div>

@@ -22,6 +22,12 @@
                 $(".modal").modal();
             });
 
+            $(".remove-mapping-category").click(function () {
+                var catId = $(this).attr("data-cat-id");
+                $.post(mapCatsUrl, { 'sellerCatId': catId });
+                location.reload();
+            });
+
             $("body").on("click", "#category-selector-box li", function () {
                 var currentLi = $(this);
                 currentLi.parent().find("li").removeClass();
