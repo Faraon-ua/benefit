@@ -1,13 +1,12 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
-using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
+using Benefit.DataTransfer.ViewModels.NavigationEntities;
 
 namespace Benefit.Web.Controllers
 {
@@ -33,33 +32,33 @@ namespace Benefit.Web.Controllers
         [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {
-            if (ViewBag.Seller == null)
+            if (categoryUrl == "postachalnuky")
             {
-                if (categoryUrl == "postachalnuky")
-                {
-                    var sellers = SellerService.GetSellersCatalog(options);
-                    if (sellers == null)
-                    {
-                        return HttpNotFound();
-                    }
-
-                    sellers.Breadcrumbs = new BreadCrumbsViewModel()
-                    {
-                        Categories = CategoriesService.GetBreadcrumbs(urlName: categoryUrl)
-                    };
-                    return View("SellersCatalog", sellers);
-                }
-
-                var catsModel = CategoriesService.GetCategoriesCatalog(categoryUrl);
-                if (catsModel == null)
+                var sellers = SellerService.GetSellersCatalog(options);
+                if (sellers == null)
                 {
                     return HttpNotFound();
                 }
 
-                if (catsModel.Items.Any())
+                sellers.Breadcrumbs = new BreadCrumbsViewModel()
                 {
-                    return View("CategoriesCatalog", catsModel);
+                    Categories = CategoriesService.GetBreadcrumbs(urlName: categoryUrl)
+                };
+                return View("SellersCatalog", sellers);
+            }
+
+            CategoriesViewModel catsModel = CategoriesService.GetCategoriesCatalog(categoryUrl, ViewBag.SellerUrl);
+            if (catsModel == null)
+            {
+                return HttpNotFound();
+            }
+            if (catsModel.Items.Any())
+            {
+                if (ViewBag.Seller != null)
+                {
+                    return View("~/views/sellerarea/categoriescatalog.cshtml", catsModel);
                 }
+                return View("CategoriesCatalog", catsModel);
             }
 
             var catalog = SellerService.GetSellerProductsCatalog(ViewBag.SellerUrl, categoryUrl, options);

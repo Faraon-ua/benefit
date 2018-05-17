@@ -7,6 +7,7 @@ using System.Web.Caching;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services.Domain;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Filters
@@ -25,12 +26,21 @@ namespace Benefit.Web.Filters
                 }
                 else
                 {
-                    using (var db = new ApplicationDbContext())
+                    var sellerService = new SellerService();
+                    var sellerCats = sellerService.GetAllSellerCategories(seller.UrlName);
+                    categories = sellerCats.Where(entry => entry.ParentCategoryId == null).ToList();
+                    if (categories.Count == 1)
                     {
-                        categories = db.SellerCategories.Include(entry => entry.Category.Products)
-                           .Where(entry => entry.SellerId == seller.Id).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
-                        HttpRuntime.Cache.Insert("Categories" + seller.Id, categories, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
+                        categories = categories.SelectMany(entry => entry.ChildCategories)
+                            .Where(entry => entry.IsActive && !entry.IsSellerCategory).ToList();
                     }
+                    HttpRuntime.Cache.Insert("Categories" + seller.Id, categories, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
+
+                    //using (var db = new ApplicationDbContext())
+                    //{
+                    //    categories = db.SellerCategories.Include(entry => entry.Category.Products)
+                    //       .Where(entry => entry.SellerId == seller.Id).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
+                    //}
                 }
             }
             else

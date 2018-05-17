@@ -93,7 +93,7 @@
 
             <div class="row m-x-0 gridBlock">
                 <!-- товар -->
-                @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
+                @foreach (var product in Model.Items)
                 {
                     @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
                 }

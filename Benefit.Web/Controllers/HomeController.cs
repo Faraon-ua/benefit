@@ -41,7 +41,12 @@ namespace Benefit.Web.Controllers
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).ToList();
                 }
-                return View("~/views/sellerarea/home.cshtml", seller);
+
+                if (seller.HasEcommerce)
+                {
+                    return View("~/views/sellerarea/home.cshtml", seller);
+                }
+                return View("~/views/sellerareabc/home.cshtml", seller);
             }
             var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())

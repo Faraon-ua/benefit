@@ -79,7 +79,7 @@ namespace Benefit.Services.Domain
             return result;
         }
 
-        public CategoriesViewModel GetCategoriesCatalog(string categoryUrl)
+        public CategoriesViewModel GetCategoriesCatalog(string categoryUrl, string sellerUrl = null)
         {
             //fetch childs so if no nested categories - fetch products
             var parent = db.Categories.Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
@@ -100,9 +100,15 @@ namespace Benefit.Services.Domain
                 db.Categories
                     .Include(entry=>entry.ChildCategories)
                     .Include(entry=>entry.Products)
-                    .Where(entry => entry.ParentCategoryId == parent.Id && entry.IsActive && !entry.IsSellerCategory && (entry.ChildCategories.Any() || entry.Products.Any()))
+                    .Where(entry => entry.ParentCategoryId == parent.Id && entry.IsActive && !entry.IsSellerCategory && (entry.ChildCategories.Any(cat=>cat.IsActive) || entry.Products.Any()))
                     .OrderBy(entry => entry.Order)
                     .ToList();
+            if (sellerUrl != null)
+            {
+                var sellerService = new SellerService();
+                var sellerCats = sellerService.GetAllSellerCategories(sellerUrl);
+                categories = categories.Intersect(sellerCats, new CategoryComparer()).ToList();
+            }
             if (categories.Count == 1)
             {
                 categories = categories.SelectMany(entry => entry.ChildCategories).ToList();
