@@ -165,47 +165,6 @@ namespace Benefit.Services.Domain
             return catsModel;
         }
 
-        //todo: remove comment think about product list
-        /* public List<Product> GetCategoryProductsOnly(string categoryId, string sellerId, int skip, int take = ListConstants.DefaultTakePerPage)
-         {
-             var products = db.Products.Include(entry => entry.Images).Include(entry=>entry.Currency);
-             if (!string.IsNullOrEmpty(categoryId))
-             {
-                 products = products.Where(entry => entry.CategoryId == categoryId);
-             }
-             if (!string.IsNullOrEmpty(sellerId))
-             {
-                 products = products.Where(entry => entry.SellerId == sellerId);
-             }
-             products = products.OrderBy(entry => entry.Category.Order).ThenByDescending(entry => entry.Images.Any());
-             var result = products.Skip(skip).Take(take + 1).ToList();
-             result.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
-             return result;
-         }*/
-
-        /*public ProductsViewModel GetCategoryProducts(string urlName, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage)
-        {
-            var category =
-                db.Categories.Include(entry => entry.Products)
-                    .Include(entry => entry.Products.Select(pr => pr.Images))
-                    .Include(entry => entry.Products.Select(pr => pr.Currency))
-                    .Include(entry => entry.ProductParameters.Select(pr=>pr.ProductParameterValues))
-                    .FirstOrDefault(entry => entry.UrlName == urlName);
-            if (category.Products.Count == 0)
-            {
-                return null;
-            }
-            var products = SellerService.GetSellerCatalogProducts(null, category.Id, options, skip, take);
-            if (!products.Any()) return null;
-            var result = new ProductsViewModel()
-            {
-                Items = products,
-                Category = category,
-                Breadcrumbs = new BreadCrumbsViewModel() { Categories = GetBreadcrumbs(urlName: urlName) }
-            };
-            return result;
-        }*/
-
         public SellersViewModel GetCategorySellers(string urlName)
         {
             //which sellers to display

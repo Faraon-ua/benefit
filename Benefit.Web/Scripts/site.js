@@ -397,7 +397,9 @@ $(function () {
         $(".cart-items-number").parent().removeClass("disabled");
         $("#cart-items-price").text(getCookie("cartPrice") + " грн");
         $(".basket-link .svg").css("opacity", "1");
-        $(".cart-items-number").css("background-color", "#e52929");
+        if (getCookie("cartNumber") !== "0") {
+            $(".cart-items-number").css("background-color", "#e52929");
+        }
         $(".cart-summary").show();
     }
 
