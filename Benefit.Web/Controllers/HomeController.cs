@@ -9,6 +9,8 @@ using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Domain.Models.Enums;
+using Benefit.Services;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
@@ -261,122 +263,25 @@ namespace Benefit.Web.Controllers
             }
         }
 
-        #region tempMethods
-
-        public ActionResult PostExportActions()
+        [FetchLastNews]
+        [FetchCategories]
+        public ActionResult Anketa(SellerStatus status)
         {
-            using (var db = new ApplicationDbContext())
+            return View(new AnketaViewModel { Status = status });
+        }
+
+        [FetchLastNews]
+        [FetchCategories]
+        [HttpPost]
+        public ActionResult Anketa(AnketaViewModel anketa)
+        {
+            if (ModelState.IsValid)
             {
-                //string empty card numbers to null
-                db.Users.Where(entry => entry.CardNumber == "").ForEach(entry =>
-                {
-                    entry.CardNumber = null;
-                    db.Entry(entry).State = EntityState.Modified;
-                });
-
-                //decode seller descriptions
-                foreach (var seller in db.Sellers)
-                {
-                    seller.Description = Server.HtmlDecode(seller.Description);
-                    seller.Name = seller.Name.Replace("&quot;", string.Empty);
-                    db.Entry(seller).State = EntityState.Modified;
-                }
-
-                db.SaveChanges();
-
-                //resave seller images
-
-                #region ftp
-
-                /* using (var ftpClient = new FtpClient())
-                {
-                    ftpClient.Host = "benefit-company.com";
-                    ftpClient.Credentials = new NetworkCredential("test1", "ynYjAQJs");
-                    ftpClient.ReadTimeout = 50000;
-                    ftpClient.DataConnectionConnectTimeout = 50000;
-                    ftpClient.DataConnectionReadTimeout = 50000;
-
-                    var imagesPath = "/www/benefit-company.com/image/";
-                    var destinationDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty),"Images");
-
-                    ftpClient.Connect();
-
-                    foreach (var sellerImage in db.Images.Where(entry => entry.SellerId != null))
-                    {
-                        using (
-                            var ftpStream =
-                                ftpClient.OpenRead(Path.Combine(imagesPath, sellerImage.ImageUrl)))
-                        {
-                            var dotIndex = sellerImage.ImageUrl.LastIndexOf('.');
-                            var fileExt = sellerImage.ImageUrl.Substring(dotIndex,
-                                sellerImage.ImageUrl.Length - dotIndex);
-
-                            var imagePath = string.Empty;
-                            if (sellerImage.ImageType == ImageType.SellerLogo)
-                            {
-                                imagePath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId + fileExt);
-                            }
-                            if (sellerImage.ImageType == ImageType.SellerGallery)
-                            {
-                                imagePath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId, sellerImage.Id + fileExt);
-                            }
-                            using (
-                                var fileStream =
-                                    System.IO.File.Create(imagePath, (int) ftpStream.Length))
-                            {
-                                var buffer = new byte[8*1024];
-                                int count;
-                                while ((count = ftpStream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    fileStream.Write(buffer, 0, count);
-                                }
-                            }
-                            sellerImage.ImageUrl = sellerImage.SellerId + fileExt;
-                            db.Entry(sellerImage).State = EntityState.Modified;
-                        }
-                    }
-
-                    ftpClient.Disconnect();
-                }*/
-
-                #endregion
-
-                #region Images local
-
-                //var imagesPath = "D:/BenefitStuff/images/";
-                //var destinationDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty), "Images");
-                //foreach (var sellerImage in db.Images.Where(entry => entry.SellerId != null))
-                //{
-                //    var dotIndex = sellerImage.ImageUrl.LastIndexOf('.');
-                //    var fileExt = sellerImage.ImageUrl.Substring(dotIndex,
-                //        sellerImage.ImageUrl.Length - dotIndex);
-
-                //    var destPath = string.Empty;
-                //    var sourcePath = Path.Combine(imagesPath, sellerImage.ImageUrl);
-                //    if (sellerImage.ImageType == ImageType.SellerLogo)
-                //    {
-                //        sellerImage.ImageUrl = sellerImage.SellerId + fileExt;
-                //        destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId + fileExt);
-                //    }
-                //    if (sellerImage.ImageType == ImageType.SellerGallery)
-                //    {
-                //        Directory.CreateDirectory(Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId));
-                //        sellerImage.ImageUrl = sellerImage.Id + fileExt;
-                //        destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId, sellerImage.Id + fileExt);
-                //    }
-                //    if (System.IO.File.Exists(sourcePath))
-                //    {
-                //        System.IO.File.Copy(sourcePath, destPath, true);
-                //        db.Entry(sellerImage).State = EntityState.Modified;
-                //    }
-                //}
-                #endregion
-
-                db.SaveChanges();
-                return Content("ok");
+                var emailService = new EmailService();
+                emailService.SendSellerApplication(anketa);
+                TempData["SuccessMessage"] = "Дякуюємо за вашу заявку, в найближчий час з вами зв'яжеться наш менеджер";
             }
-
-            #endregion
+            return View(anketa);
         }
     }
 }

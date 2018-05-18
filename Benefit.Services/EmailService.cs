@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Benefit.Common.Constants;
+using Benefit.Common.Helpers;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
@@ -128,23 +129,26 @@ namespace Benefit.Services
                 new[] { importResults.ProductsAdded.ToString(), importResults.ProductsUpdated.ToString(), importResults.ProductsRemoved.ToString() });
         }
 
-        public void SendLoginFailed(string email, string accontName)
-        {
-            var body = new StringBuilder();
-            body.Append(string.Format("Не удалось залогинится на сайт caribbeanbridge.com под логином {0} с реквизитами, которые вы указали, пожалуйста проверте правильность ввода логина и пароля.", accontName));
-            SendEmail(email, body.ToString(), string.Format("[{0}] Login failed to caribbeanbridge.com", accontName));
-        }
-
-        public void SendSellerApplication(SellerApplicationViewModel sellerApplication)
+        public void SendSellerApplication(AnketaViewModel sellerApplication)
         {
             var body =
                 string.Format(
-                    "Назва компанії або ФОП: {0}</br>ПІБ контактної особи: {1}</br>Телефон: {2}</br>Email: {3}</br>Посилання: {4}</br>",
-                    sellerApplication.CompanyName,
+                    "Вид діяльності: {0} </br> " +
+                    "Інтернет магазин: {1} </br> " +
+                    "Пакет розміщення: {2} </br>" +
+                    "ПІБ контактної особи: {3} </br>" +
+                    "Назва компанії або ФОП: {4}</br>" +
+                    "Телефон: {5}</br>" +
+                    "Email: {6}</br>" +
+                    "Коментар: {7}</br>",
+                    sellerApplication.BusinessType,
+                    sellerApplication.HasEcommerceWebSite ? sellerApplication.WebSiteAddress : "немає",
+                    Enumerations.GetEnumDescription(sellerApplication.Status),
                     sellerApplication.FullName,
+                    sellerApplication.CompanyName,
                     sellerApplication.Phone,
                     sellerApplication.Email,
-                    sellerApplication.Link);
+                    sellerApplication.Comment);
             SendEmail(BenefitBusinessEmail, body, "Нова заявка постачальника");
         }
 
