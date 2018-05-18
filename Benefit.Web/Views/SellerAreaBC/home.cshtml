@@ -145,7 +145,7 @@
                         <div class="col-md-2">
                             <a class="logo" href="/">
                                 <!--LOGO-->
-                                <img src="~/files/seller-bcLogo/@sellerLogo.ImageUrl" alt="@seller.Name" width="160">
+                                <img src="~/files/seller-bc/Logo/@sellerLogo.ImageUrl" alt="@seller.Name" width="160">
                             </a>
                         </div>
                         <div class="col-md-3">
@@ -204,7 +204,7 @@
                                         </button>
                                         <a class="visible-xs visible-sm navbar-brand" href="/">
                                             <!--LOGO-->
-                                            <img src="~/files/seller-bcLogo/@sellerLogo.ImageUrl" alt="@seller.Name" width="100">
+                                            <img src="~/files/seller-bc/Logo/@sellerLogo.ImageUrl" alt="@seller.Name" width="100">
                                         </a>
                                     </div>
                                     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
@@ -247,7 +247,7 @@
             <div class="slider owl-carousel">
                 @foreach (var image in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
                 {
-                <a class="slider-item" href="javascript:void(0)" style='background-image:url(~/files/seller-bcGallery/@seller.Id/@image.ImageUrl);'>
+                <a class="slider-item" href="javascript:void(0)" style='background-image:url(~/files/seller-bc/Gallery/@seller.Id/@image.ImageUrl);'>
                     <span class="item-caption">
                         <span class="item-title">@seller.Name</span>
                         <span class='item-text'></span>
@@ -389,7 +389,7 @@
                         <div class="col-sm-6 col-md-2"></div>
                         <div class="col-sm-6 col-md-2">
                             <!--DEVELOPER-->
-                            <a class="developer" title="Benefit Company" target="_blank" href="https://benefit-company.com">Підключитись<br>до Benefit<span class="logo">B</span></a>
+                            <a class="developer" title="Benefit Company" target="_blank" href="https://benefit-company.com">Підключитись<br>до Benefit <img src="~/Content/seller-bc/files/b.jpg" width="20" class="custom-logo"></a>
                         </div>
                     </div>
                 </div>
