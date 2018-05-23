@@ -944,6 +944,8 @@
     <Content Include="Content\css\fonts\opensans-bold.ttf" />
     <Content Include="Content\css\fonts\opensans-bold.woff" />
     <Content Include="Areas\Admin\Views\Images\SellerCatalog.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Shared\_cabinetHead.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Shared\_cabinetHeader.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

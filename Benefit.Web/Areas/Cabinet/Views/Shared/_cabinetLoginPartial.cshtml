@@ -1,0 +1,17 @@
+﻿@using Benefit.Common.Constants
+<div class="sub_header_right_links">
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ActionLink(HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value), "Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName }, htmlAttributes: new { title = "Manage", @class = "sub_header_user_name" })
+            <a href="javascript:document.getElementById('logoutForm').submit()"><img src="~/Content/img/logout.png" /> </a>
+        }
+    }
+    else
+    {
+        <a href="@Url.Action("Login", "Account")">Вхід</a>
+        <a href="@Url.Action("Register", "Account")">Реєстрація</a>
+    }
+</div>

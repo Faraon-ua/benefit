@@ -26,6 +26,7 @@
     <link href="~/Content/seller-bc/files/css.css" type="text/css" rel="stylesheet">
     <link href="~/Content/seller-bc/files/page_2ea1e9132ff7190bbd3265252e5f7524.css" type="text/css" rel="stylesheet">
     <link href="~/Content/seller-bc/files/template_7db76020cbd8036c92a2dba09d133e0f.css" type="text/css" data-template-style="true" rel="stylesheet">
+    <link href="~/Content/seller-bc/files/template_1024.css" type="text/css" data-template-style="true" rel="stylesheet">
 
     <script type="text/javascript" src="~/Content/seller-bc/files/kernel_main.js"></script>
     <script type="text/javascript" src="~/Content/seller-bc/files/jquery-2.js"></script>
@@ -247,7 +248,7 @@
             <div class="slider owl-carousel">
                 @foreach (var image in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
                 {
-                    <a class="slider-item" href="javascript:void(0)" style='background-image:url(~/Images/SellerGallery/@seller.Id/@image.ImageUrl);'>
+                    <a class="slider-item" href="javascript:void(0)" style='background-image:url(/Images/SellerGallery/@seller.Id/@image.ImageUrl);'>
                         <span class="item-caption">
                             <span class="item-title">@seller.Name</span>
                             <span class='item-text'></span>
@@ -298,7 +299,7 @@
                     {
                         <div class="col-xs-6 col-sm-6 col-md-3">
                             <a class="gallery-item fancyimage" href="~/Images/SellerGallery/@seller.Id/@image.ImageUrl" data-fancybox-group="gallery">
-                                <span class="item-image" style="background-image: url(~/Images/SellerGallery/@seller.Id/@image.ImageUrl); height: 198px;"></span>
+                                <span class="item-image" style="background-image: url(/Images/SellerGallery/@seller.Id/@image.ImageUrl); height: 198px;"></span>
                                 <span class="item-caption-wrap" style="height: 198px;">
                                     <span class="item-caption">
                                         <span class="item-title">@seller.Name</span>
