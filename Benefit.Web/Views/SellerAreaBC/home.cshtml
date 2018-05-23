@@ -145,7 +145,7 @@
                         <div class="col-md-2">
                             <a class="logo" href="/">
                                 <!--LOGO-->
-                                <img src="~/files/seller-bc/Logo/@sellerLogo.ImageUrl" alt="@seller.Name" width="160">
+                                <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" width="160">
                             </a>
                         </div>
                         <div class="col-md-3">
@@ -154,7 +154,7 @@
                                 @seller.Name
                             </p>
                         </div>
-                        
+
                         <div class="col-md-6">
                             <div class="row">
                                 <div class="head-blocks">
@@ -204,7 +204,7 @@
                                         </button>
                                         <a class="visible-xs visible-sm navbar-brand" href="/">
                                             <!--LOGO-->
-                                            <img src="~/files/seller-bc/Logo/@sellerLogo.ImageUrl" alt="@seller.Name" width="100">
+                                            <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" width="100">
                                         </a>
                                     </div>
                                     <div class="collapse navbar-collapse" id="bs-navbar-collapse-1">
@@ -247,12 +247,12 @@
             <div class="slider owl-carousel">
                 @foreach (var image in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
                 {
-                <a class="slider-item" href="javascript:void(0)" style='background-image:url(~/files/seller-bc/Gallery/@seller.Id/@image.ImageUrl);'>
-                    <span class="item-caption">
-                        <span class="item-title">@seller.Name</span>
-                        <span class='item-text'></span>
-                    </span>
-                </a>
+                    <a class="slider-item" href="javascript:void(0)" style='background-image:url(~/Images/SellerGallery/@seller.Id/@image.ImageUrl);'>
+                        <span class="item-caption">
+                            <span class="item-title">@seller.Name</span>
+                            <span class='item-text'></span>
+                        </span>
+                    </a>
                 }
             </div>
         </div>
@@ -262,14 +262,14 @@
                 <div class="row advantages">
                     @foreach (var page in seller.InfoPages.OrderBy(entry => entry.Order).Take(3))
                     {
-                    <div class="col-sm-6 col-md-3">
-                        <div class="adv-caption">
-                            <div class="adv-icon">
-                                <img src="~/files/NewsLogo/@page.ImageUrl" />
+                        <div class="col-sm-6 col-md-3">
+                            <div class="adv-caption">
+                                <div class="adv-icon">
+                                    <img src="~/files/NewsLogo/@page.ImageUrl" />
+                                </div>
+                                <div class="adv-text">@page.Name</div>
                             </div>
-                            <div class="adv-text">@page.Name</div>
                         </div>
-                    </div>
                     }
                 </div>
             </div>
@@ -294,33 +294,27 @@
                         <div class="h1">Фотогалерея</div>
                     </div>
 
-
-
                     @foreach (var image in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
                     {
-
-                    <div class="col-xs-6 col-sm-6 col-md-3">
-                        <a class="gallery-item fancyimage" href="~/files/SellerGallery/@seller.Id/@image.ImageUrl" data-fancybox-group="gallery">
-                            <span class="item-image" style="background-image: url(~/files/SellerGallery/@seller.Id/@image.ImageUrl); height: 198px;"></span>
-                            <span class="item-caption-wrap" style="height: 198px;">
-                                <span class="item-caption">
-                                    <span class="item-title">@seller.Name</span>
-                                    <span class="item-text"></span>
+                        <div class="col-xs-6 col-sm-6 col-md-3">
+                            <a class="gallery-item fancyimage" href="~/Images/SellerGallery/@seller.Id/@image.ImageUrl" data-fancybox-group="gallery">
+                                <span class="item-image" style="background-image: url(~/Images/SellerGallery/@seller.Id/@image.ImageUrl); height: 198px;"></span>
+                                <span class="item-caption-wrap" style="height: 198px;">
+                                    <span class="item-caption">
+                                        <span class="item-title">@seller.Name</span>
+                                        <span class="item-text"></span>
+                                    </span>
                                 </span>
-                            </span>
-                        </a>
-                    </div>
-
+                            </a>
+                        </div>
                     }
-
-
 
                     @Html.Partial("_ReviewsPartial", new ReviewsViewModel
                     {
-                    CanReview = false,
-                    SellerId = seller.Id,
-                    TargetName = Model.Name,
-                    Reviews = seller.ApprovedReviews
+                        CanReview = false,
+                        SellerId = seller.Id,
+                        TargetName = Model.Name,
+                        Reviews = seller.ApprovedReviews
                     })
 
 
@@ -340,13 +334,13 @@
                                 <!--ADDRESS-->
                                 @if (address != null)
                                 {
-                                <p>
-                                    @address.Region.Name_ua
-                                    @if (!string.IsNullOrEmpty(address.AddressLine))
-                                    {
-                                    @address.AddressLine
-                                    }
-                                </p>
+                                    <p>
+                                        @address.Region.Name_ua
+                                        @if (!string.IsNullOrEmpty(address.AddressLine))
+                                        {
+                                            @address.AddressLine
+                                        }
+                                    </p>
                                 }
                             </div>
                             <div class="contacts">
