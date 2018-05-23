@@ -133,7 +133,7 @@ $(function () {
 
     $('body').on('click', '.basket_modal .plus, .basket_modal .minus', function () {
         var completeOrderBtn = $(this).parents(".order-wrap").find(".complete-order");
-        completeOrderBtn.attr("disabled", "disabled")
+        completeOrderBtn.attr("disabled", "disabled");
         var tr = $(this).parents("tr");
         var productId = tr.attr("data-product-id");
         var sellerId = tr.attr("data-seller-id");

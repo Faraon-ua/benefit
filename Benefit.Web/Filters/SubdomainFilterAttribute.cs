@@ -18,7 +18,7 @@ namespace Benefit.Web.Filters
                 return;
             }
             var subdomain = host.Substring(0, index);
-            string[] blacklist = { "www", "benefit", "mail", "benefit-company" };
+            string[] blacklist = { "www", "benefit", "mail", "benefit-company", "uzhgorod" };
             if (blacklist.Contains(subdomain))
             {
                 return;

@@ -1,3 +1,108 @@
+.tarif-tabelle{
+    max-width:100%;
+    min-width: 250px;
+    display:flex;
+    border-right: 1px solid #E8E8E8;
+    font-size: 15px;
+    margin: 0 auto;
+}
+.icon-check {
+    color: #69C7F1;
+}
+.icon-times {
+    color: red;
+}
+.information {
+    background: rgba(22, 191, 255, 0.08);
+    border-radius: 5px;
+    padding: 15px;
+    margin: 30px 0;
+}
+i.icon-info {
+    font-size: 25px;
+    margin: 0 10px;
+    color: deepskyblue;
+}
+.information span {
+    font: 13px 'PT Sans',Arial,Helvetica,sans-serif;
+    color: #8094a2;
+    vertical-align: super;
+    padding: 0 0 0 5px;
+}
+.h2-block, .h3-block{
+    border-top: 1px solid #E8E8E8;
+}
+
+.h-block{
+    padding: 15px;
+}
+.block-1{
+    flex-grow:4;
+    width: 300px;
+    background: #d8ddf1;
+}
+.block-2, .block-3{
+    flex-grow:1;
+    text-align: center;
+}
+.block-1,.block-2,.block-3{
+    border-left: 1px solid #E8E8E8;
+    border-bottom: 1px solid #E8E8E8;
+    color:#808080;
+}
+.h1-block{
+    border-left: 0;
+    background: none;
+}
+.h2-block{
+    background: #69C7F1;
+}
+.h3-block{
+    background: #ed143d;
+}
+.h2-block, .h3-block{
+    color:#fff;
+    text-align: center;
+    font-size: 26px;
+}
+.t-even{
+    background: #f7f7f7;
+}
+.tarif-block{
+    font-size: 18px;
+    color: #545454;
+}
+.tarif-block s{
+    font-size: 14px;
+    color: #808080;
+}
+.font-red{
+    color:red!important;
+    font-weight: bold;
+}
+
+@media only screen and (max-width:600px){
+    .tarif-tabelle{
+        flex-wrap:wrap;
+    }
+    .block-1{
+        width: 100%;
+    }
+    .t-even{
+        background: none;
+    } 
+    .block-1{
+        background: #f7f7f7;
+        text-align: center;
+    }  
+}
+
+@media only screen and (max-width: 600px) {
+    .modal-body {
+        padding: 0 !important;
+    }
+}
+
 @media screen and (min-width: 768px) { 
     .modal:before {
         display: inline-block;
