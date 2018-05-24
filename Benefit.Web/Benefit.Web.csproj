@@ -1446,6 +1446,7 @@
     <Content Include="Views\SellerArea\CategoriesCatalog.cshtml" />
     <Content Include="Views\Home\Anketa.cshtml" />
     <Content Include="Views\SellerArea\About.cshtml" />
+    <Content Include="Views\SellerArea\Gallery.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

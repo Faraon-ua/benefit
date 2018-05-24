@@ -32,9 +32,9 @@
                         <div id="title-search">
                             @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
                             {
-                                <div class="search-input-div">
-                                    <input class="search-input" id="title-search-input" name="q" placeholder="Пошук" size="20" maxlength="50" autocomplete="off" type="text">
-                                </div>
+                            <div class="search-input-div">
+                                <input class="search-input" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
+                            </div>
                                 <div class="search-button-div">
                                     <button class="btn btn-search btn-default bold btn-lg" type="submit">Пошук</button>
                                     <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
