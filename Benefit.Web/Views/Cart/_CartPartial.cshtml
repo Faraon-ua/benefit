@@ -8,7 +8,7 @@
         <div class="modal-content">
             <div class="modal_close" data-dismiss="modal" aria-hidden="true"><span></span></div>
             <div class="modal-body">
-                @if (Model.Count == 0)
+                @if (Model.Any())
                 {
                     <p>Ваш кошик пустий</p>
                 }
@@ -17,10 +17,6 @@
                     <p class="basket_modal_title">Кошик покупок</p>
                     <hr />
                     if (Model.Count == 0)
-                    {
-                        <span>Кошик порожій</span>
-                    }
-                    else
                     {
                         foreach (var order in Model)
                         {
@@ -156,6 +152,11 @@
                             </div>
                             <hr />
                         }
+
+                    }
+                    else
+                    {
+                        <span>Кошик порожій</span>
                     }
                 }
             </div>
