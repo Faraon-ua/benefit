@@ -1,0 +1,12 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+
+@{
+    ViewBag.Title = "Про нас";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+<div class="container" style="margin-top: 10px;">
+    <h2>Про нас</h2>
+    @Html.Raw(seller.Description)
+</div>

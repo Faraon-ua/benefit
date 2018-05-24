@@ -283,5 +283,12 @@ namespace Benefit.Web.Controllers
             }
             return View(anketa);
         }
+
+        [FetchSeller]
+        [FetchCategories]
+        public ActionResult About()
+        {
+            return View("~/Views/SellerArea/About.cshtml");
+        }
     }
 }

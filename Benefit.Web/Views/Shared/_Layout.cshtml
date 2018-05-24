@@ -10,8 +10,8 @@
 </head>
 <body class="fill_bg_n" id="main">
     <div id="bg"></div>
-<div id="panel"></div>
-<div id="popover-here"></div>
+    <div id="panel"></div>
+    <div id="popover-here"></div>
     <div class="wrapper1 with_left_block front_page basket_normal basket_fill_COLOR side_LEFT catalog_icons_Y banner_auto  mheader-v1 header-v3 regions_Y fill_N footer-v2 front-vindex3 title-v3 with_phones">
         <div class="header_wrap visible-lg visible-md title-v3 index">
             @Html.Partial("_header")
@@ -26,19 +26,20 @@
         @Html.Partial("_FooterPartial")
         <div class="bx_areas"></div>
         <div class="inline-search-block fixed with-close big">
-            <div class="maxwidth-theme">
+            <div class="maxwidth-theme" style="background: #f9f9f9;">
                 <div class="col-md-12">
                     <div class="search-wrapper">
                         <div id="title-search">
-                            <form action="#" class="search">
+                            @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
+                            {
                                 <div class="search-input-div">
-                                    <input class="search-input" id="title-search-input" name="q" placeholder="Поиск" size="20" maxlength="50" autocomplete="off" type="text">
+                                    <input class="search-input" id="title-search-input" name="q" placeholder="Пошук" size="20" maxlength="50" autocomplete="off" type="text">
                                 </div>
                                 <div class="search-button-div">
-                                    <button class="btn btn-search btn-default bold btn-lg" type="submit" name="s" value="Поиск">Поиск</button>
+                                    <button class="btn btn-search btn-default bold btn-lg" type="submit" name="s" value="Пошук">Пошук</button>
                                     <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
                                 </div>
-                            </form>
+                            }
                         </div>
                     </div>
                 </div>

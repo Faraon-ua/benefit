@@ -34,12 +34,11 @@ i.icon-info {
 }
 
 .h-block{
-    padding: 15px;
+    padding: 5px;
 }
 .block-1{
     flex-grow:4;
     width: 300px;
-    background: #d8ddf1;
 }
 .block-2, .block-3{
     flex-grow:1;
@@ -99,7 +98,7 @@ i.icon-info {
 
 @media only screen and (max-width: 600px) {
     .modal-body {
-        padding: 0 !important;
+        padding: 5px !important;
     }
 }
 
@@ -203,7 +202,7 @@ i.icon-info {
 
 .basket_modal_title {
     margin-bottom: 25px;
-    font-size: 18px;
+    font-size: 23px;
     text-align: center;
 }
 
@@ -4153,7 +4152,7 @@ body .soc-avt .row a{display:inline-block;margin:5px 11px 5px 0}
 .inline-search-block.fixed.big{background:#fff!important;top:-200px;z-index:3000;transition-duration:.5s}
 .inline-search-block.fixed.big.show{top:0}
 .inline-search-block.fixed.big .search-wrapper #title-search{padding:0}
-.inline-search-block.fixed.big .search .search-input{padding:0 200px 0 25px;font-size:28px;height:132px;background:none;border:none;border-radius:0}
+.inline-search-block.fixed.big .search .search-input{font-size:28px;height:132px;background:none;border:none;border-radius:0}
 .inline-search-block.fixed.big .search .search-button-div{top:45px}
 .inline-search-block.fixed.big .search .btn-search{color:#fff;padding:12px 25px;font-size:1em}
 .inline-search-block.fixed.big .search .close-block{min-width:16px}

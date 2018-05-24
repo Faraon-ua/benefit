@@ -10,7 +10,6 @@
 <body>
     <div class="darker hidden"></div>
     @Html.Partial("_cabinetHeader")
-    @Html.Partial("_ControlPanelPartial")
     <!-- overlay -->
     <div class="login_box_over hidden"></div>
     <div class="empty_over hidden"></div>
@@ -25,9 +24,6 @@
             @RenderBody()
         </div>
     </div>
-    <footer>
-        @Html.Partial("_cabinetFooterPartial")
-    </footer>
     @Scripts.Render("~/bundles/master")
     @RenderSection("scripts", required: false)
     <script>

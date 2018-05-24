@@ -946,6 +946,9 @@
     <Content Include="Areas\Admin\Views\Images\SellerCatalog.cshtml" />
     <Content Include="Areas\Cabinet\Views\Shared\_cabinetHead.cshtml" />
     <Content Include="Areas\Cabinet\Views\Shared\_cabinetHeader.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Shared\_cabinetFooterPartial.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Shared\_cabinetMenuPartial.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Shared\_cabinetLoginPartial.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1369,8 +1372,8 @@
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Account\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\_RegionModal.cshtml" />
-    <Content Include="Views\Shared\_ControlPanelPartial.cshtml" />
-    <Content Include="Views\Shared\_ControlPanelButtons.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Shared\_ControlPanelPartial.cshtml" />
+    <Content Include="Areas\Cabinet\Views\Shared\_ControlPanelButtons.cshtml" />
     <Content Include="Views\Shared\_FooterPartial.cshtml" />
     <Content Include="Views\Shared\_MenuPartial.cshtml" />
     <Content Include="Views\Catalog\SellersCatalog.cshtml" />
@@ -1442,6 +1445,7 @@
     <Content Include="Views\SellerAreaBC\home.cshtml" />
     <Content Include="Views\SellerArea\CategoriesCatalog.cshtml" />
     <Content Include="Views\Home\Anketa.cshtml" />
+    <Content Include="Views\SellerArea\About.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

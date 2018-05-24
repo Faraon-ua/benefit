@@ -36,7 +36,7 @@ namespace Benefit.Web.Controllers
         public AccountController(UserManager<ApplicationUser> userManager)
         {
             UserManager = userManager;
-            var provider = new DpapiDataProtectionProvider("Sample");
+            var provider = new DpapiDataProtectionProvider("ASP.NET IDENTITY");
             UserManager.EmailService = new EmailService();
             UserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(
                 provider.Create("EmailConfirmation"))
