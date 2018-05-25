@@ -1,0 +1,201 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@{
+    var categories = ViewBag.Categories as List<Category>;
+    var isMainPage = ViewContext.RouteData.GetRequiredString("action") == "Index" && ViewContext.RouteData.GetRequiredString("controller") == "Home";
+}
+
+<div id="headerfixed" style="top: 0px;">
+    <div class="maxwidth-theme" style="background: #b41818;">
+        <div class="logo-row v2 row margin0 menu-row">
+
+            <!--<div class="inner-table-block">
+                <div class="logo ">
+                    <a href="#"><img src="images/logo_1.jpg" alt="" title=""></a>
+                </div>
+            </div>-->
+
+            <div class="inner-table-block menu-block">
+                <div class="navs table-menu js-nav opacity1" style="width: 1160px;">
+                    <nav class="mega-menu sliced ovisible initied">
+                        <div class="table-menu">
+                            <table>
+                                <tbody>
+                                <tr>
+                                    <td class="menu-item dropdown catalog" style="visibility: visible;">
+                                        <div class="wrap" style="text-align: left;">
+                                            <div class="logo ">
+                                                <a href="#"><img src="images/logo_1.jpg" alt="" title="" width="30"></a>
+                                            </div>
+                                            <a class="dropdown-toggle" href="#">
+                                                <div style="color: white;">
+                                                    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="12" viewBox="0 0 24.75 24.75" style="enable-background:new 0 0 24.75 24.75;" xml:space="preserve">
+                                                        <g>
+                                                            <path style="fill:#ffffff;" d="M0,3.875c0-1.104,0.896-2,2-2h20.75c1.104,0,2,0.896,2,2s-0.896,2-2,2H2C0.896,5.875,0,4.979,0,3.875z M22.75,10.375H2
+		c-1.104,0-2,0.896-2,2c0,1.104,0.896,2,2,2h20.75c1.104,0,2-0.896,2-2C24.75,11.271,23.855,10.375,22.75,10.375z M22.75,18.875H2
+		c-1.104,0-2,0.896-2,2s0.896,2,2,2h20.75c1.104,0,2-0.896,2-2S23.855,18.875,22.75,18.875z"></path>
+                                                        </g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+                                                    </svg>
+                                                    КАТАЛОГ ТОВАРІВ, ПОСЛУГ
+                                                    <div class="line-wrapper"><span class="line"></span></div>
+                                                </div>
+                                            </a>
+                                            <span class="tail"></span>
+                                            @if (!isMainPage)
+                                            {
+                                                <ul class="dropdown-menu" style="width: 306px;">
+                                                    <li id="section-menu" class="no-select mobile-hid">
+                                                        <ul class="section-menu">
+                                                            @foreach (var cat in categories)
+                                                            {
+                                                                <li class="li-depth-1">
+                                                                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" class="a-depth-1">
+                                                                        <div class="section-icon">
+                                                                            <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" height="30">
+                                                                        </div>
+                                                                        <span>@cat.Name</span>
+                                                                    </a>
+                                                                    @if (cat.ChildCategories.Any())
+                                                                    {
+                                                                        <i class="fa fa-angle-right"></i>
+                                                                        <div class="child-menu child-menu-2 hidden">
+                                                                            <ul>
+                                                                                @foreach (var subCat in cat.ChildCategories)
+                                                                                {
+                                                                                    <li class="li-depth-2">
+                                                                                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" class="a-depth-2">
+                                                                                            <span>@subCat.Name</span>
+                                                                                            @if (subCat.ChildCategories.Any())
+                                                                                            {
+                                                                                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 185.343 185.343" style="enable-background: new 0 0 185.343 185.343;" xml:space="preserve" width="512px" height="512px">
+                                                                                                    <g><g><path d="M51.707,185.343c-2.741,0-5.493-1.044-7.593-3.149c-4.194-4.194-4.194-10.981,0-15.175    l74.352-74.347L44.114,18.32c-4.194-4.194-4.194-10.987,0-15.175c4.194-4.194,10.987-4.194,15.18,0l81.934,81.934    c4.194,4.194,4.194,10.987,0,15.175l-81.934,81.939C57.201,184.293,54.454,185.343,51.707,185.343z" fill="#bababa"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                                            }
+                                                                                        </a>
+                                                                                        <span class="next-level hidden-lg hidden-md hidden-sm">
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 185.343 185.343" style="enable-background: new 0 0 185.343 185.343;" xml:space="preserve" width="512px" height="512px">
+                                                                                                <g>
+                                                                                                    <g><path d="M51.707,185.343c-2.741,0-5.493-1.044-7.593-3.149c-4.194-4.194-4.194-10.981,0-15.175    l74.352-74.347L44.114,18.32c-4.194-4.194-4.194-10.987,0-15.175c4.194-4.194,10.987-4.194,15.18,0l81.934,81.934    c4.194,4.194,4.194,10.987,0,15.175l-81.934,81.939C57.201,184.293,54.454,185.343,51.707,185.343z" fill="#bababa" /></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                                        </span>
+                                                                                        <div class="child-menu child-menu-3 hidden">
+                                                                                            <div style="padding: 5px; clear: both;">
+                                                                                                @foreach (var childCat in subCat.ChildCategories)
+                                                                                                {
+                                                                                                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" class="pull-left child-category">
+                                                                                                        <img src="~/Images/CategoryLogo/@childCat.ImageUrl" style="width: 85px; height: 85px;" />
+                                                                                                        <div style="height: 50px; overflow: hidden;">
+                                                                                                            @childCat.Name
+                                                                                                        </div>
+                                                                                                    </a>
+                                                                                                }
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </li>
+                                                                                }
+                                                                            </ul>
+                                                                        </div>
+                                                                    }
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            }
+                                        </div>
+                                    </td>
+
+                                    <td class="menu-item dropdown  wide_menu" style="visibility: visible;">
+                                        <div class="wrap">
+                                            <a class="dropdown-toggle" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })">
+                                                <div style="color: white;">
+                                                    <svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="12" viewBox="0 0 24.75 24.75" style="enable-background:new 0 0 24.75 24.75;" xml:space="preserve">
+                                                    <g>
+                                                    <path style="fill:#ffffff;" d="M0,3.875c0-1.104,0.896-2,2-2h20.75c1.104,0,2,0.896,2,2s-0.896,2-2,2H2C0.896,5.875,0,4.979,0,3.875z M22.75,10.375H2
+		c-1.104,0-2,0.896-2,2c0,1.104,0.896,2,2,2h20.75c1.104,0,2-0.896,2-2C24.75,11.271,23.855,10.375,22.75,10.375z M22.75,18.875H2
+		c-1.104,0-2,0.896-2,2s0.896,2,2,2h20.75c1.104,0,2-0.896,2-2S23.855,18.875,22.75,18.875z"></path>
+                                                        </g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g>
+                                                    </svg>
+                                                    КАТАЛОГ ПОСТАЧАЛЬНИКІВ
+                                                    <div class="line-wrapper"><span class="line"></span></div>
+                                                </div>
+                                            </a>
+                                            <span class="tail"></span>
+                                            @*<ul class="dropdown-menu">
+                                                @foreach (var cat in categories)
+                                                {
+                                                    <div class="dropdown-submenu" style="width: 20%; float: left; text-align: center; padding-bottom: 20px;">
+                                                        <div class="menu_img">
+                                                            <a href="@HttpUtility.UrlDecode(Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options="nav=sellers;/" }))" title="@cat.Name" class="dark_link">
+                                                                <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" title="@cat.Name">
+                                                            </a>
+                                                            <a href="@HttpUtility.UrlDecode(Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options="nav=sellers;/" }))" title="@cat.Name" class="dark_link">@cat.Name</a>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </ul>*@
+                                        </div>
+                                    </td>
+                                    <td colspan="8" style="min-width: 450px; visibility: visible;">
+
+                                        <div class="search-block ">
+                                            <div class="search-wrapper">
+                                                <div id="title-search_fixed">
+                                                    @using (Html.BeginForm("Index", "Search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
+                                                    {
+                                                        <div class="search-input-div">
+                                                            <input class="search-input" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
+                                                        </div>
+                                                        <div class="search-button-div">
+                                                            <button class="btn btn-search" type="submit" name="s" value="Пошук"><i class="svg svg-search svg-black"></i></button>
+                                                            <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <div class="inner-table-block nopadding small-block">
+                <div class="wrap_icon wrap_cabinet">
+                    @if (Request.IsAuthenticated)
+                    {
+                        <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
+                            <i class="fa fa-user" style="color: #fff; font-size: 2em;" aria-hidden="true"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("Login", "Account")">
+                            <i class="fa fa-lock" style="color: #fff; font-size: 2em;" aria-hidden="true"></i>
+                        </a>
+                    }
+                </div>
+            </div>
+
+            <a rel="nofollow" class="basket-link basket  inner-table-block nopadding lg " href="#">
+                <span class="js-basket-block">
+                    <?xml version="1.0" encoding="iso-8859-1"?>
+                    <i class="fa fa-shopping-cart" style="color: white; font-size: 2em;"></i>
+
+@*                    <i class="svg svg-basket " aria-hidden="true"></i>*@
+                    <span class="title dark_link">Кошик</span>
+                    <span class="count cart-items-number">0</span>
+                </span>
+            </a>
+
+            <!--
+            <div class="inner-table-block small-block nopadding inline-search-show" data-type_search="fixed">
+                <div class="search-block top-btn"><i class="svg svg-search lg"></i></div>
+            </div>
+            -->
+        </div>
+    </div>
+    <div class="loader" style="display: none;"></div>
+</div>

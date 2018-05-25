@@ -7,6 +7,7 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
+using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
 
@@ -24,12 +25,18 @@ namespace Benefit.Web.Controllers
             ProductsService = new ProductsService();
             SellerService = new SellerService();
         }
-        public ActionResult Index(string productUrl, string categoryUrl, string sellerUrl)
-        {
-            var productResult = ProductsService.GetProductDetails(productUrl, sellerUrl, categoryUrl,
-                User.Identity.GetUserId());
-            if (productResult == null) return HttpNotFound();
 
+        [FetchSeller]
+        [FetchCategories]
+        public ActionResult Index(string productUrl)
+        {
+            var productResult = ProductsService.GetProductDetails(productUrl, User.Identity.GetUserId());
+            if (productResult == null) return HttpNotFound();
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                return View("~/views/sellerarea/product.cshtml", productResult);
+            }
             return View(productResult);
         }
 

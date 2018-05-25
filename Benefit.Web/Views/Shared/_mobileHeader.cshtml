@@ -1,0 +1,266 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
+
+@{
+    var categories = ViewBag.Categories as List<Category>;
+}
+<div id="mobileheader" class="visible-xs visible-sm" style="width: 100%">
+    <div class="mobileheader-v1" style="height:63px;position:fixed;z-index:5;background:#f9f9f9">
+        <div class="burger pull-left">
+            <i class="svg svg-burger mask"></i>
+            <i class="svg svg-close black"></i>
+        </div>
+        <div class="logo-block pull-left">
+            <div class="logo">
+                @{
+                    var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
+                }
+                <a href="@href">
+                    <img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company" height="35">
+                </a>
+            </div>
+        </div>
+        <div class="right-icons pull-right">
+
+            <div class="pull-right">
+                <div class="wrap_icon wrap_basket">
+                    <!--'start_frame_cache_header-basket-with-compare-block3'-->
+                    @*<a class="basket-link compare lg " href="#" title="Список сравниваемых элементов">
+                            <span class="js-basket-block">
+                                <i class="svg svg-compare " aria-hidden="true"></i>
+                                <span class="title dark_link">Сравнение</span><span class="count">0</span>
+                            </span>
+                        </a>
+                        <a rel="nofollow" class="basket-link delay  lg " href="#" title="Список отложенных товаров пуст">
+                            <span class="js-basket-block">
+                                <i class="svg svg-wish" aria-hidden="true"></i>
+                                <span class="title dark_link">Отложенные</span>
+                                <span class="count">0</span>
+                            </span>
+                        </a>*@
+
+                    <a rel="nofollow" class="basket-link basket   lg " href="#" title="Корзина пуста">
+                        <span class="js-basket-block">
+                            <i class="fa fa-shopping-basket" style="color: #b0b0b0; font-size: 2em;"></i>
+                            <span class="title dark_link">Корзина</span>
+                            <span class="count cart-items-number">0</span>
+                        </span>
+                    </a>
+
+                    <!--'end_frame_cache_header-basket-with-compare-block3'-->
+                </div>
+            </div>
+
+            <div class="pull-right">
+                <div class="wrap_icon">
+                    <button class="top-btn inline-search-show twosmallfont">
+                        <i class="fa fa-search" style="color: #b0b0b0; font-size: 2em;" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="pull-right">
+                <div class="wrap_icon">
+                    <a rel="nofollow" title="особистий кабінет" class="personal-link dark-color " href="@Url.Action("Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
+                        <i class="fa fa-user" style="color: #b0b0b0; font-size: 2em;" aria-hidden="true"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="mobilemenu" class="dropdown">
+        <div class="mobilemenu-v2 downdrop scroller">
+            <div class="wrap">
+                <div class="menu top">
+                    <ul class="top">
+                        <li>
+                            <a class="dark-color parent" href="#" title="Каталог">
+                                <span>Каталог товарів та послуг</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                <li class="menu_title">Каталог товаров</li>
+                                @foreach (var cat in categories)
+                                {
+                                    <li>
+                                        <a class="dark-color @(cat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" title="@cat.Name">
+                                            <span>@cat.Name</span>
+                                            @if (cat.ChildCategories.Any())
+                                            {
+                                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                            }
+                                        </a>
+                                        @if (cat.ChildCategories.Any())
+                                        {
+                                            <ul class="dropdown">
+                                                <li class="menu_back">
+                                                    <a href="" class="dark-color" rel="nofollow">
+                                                        <i class="svg svg-arrow-right"></i>Назад
+                                                    </a>
+                                                </li>
+                                                <li class="menu_title">@cat.Name</li>
+                                                @foreach (var subCat in cat.ChildCategories)
+                                                {
+                                                    <li>
+                                                        <a class="dark-color @(subCat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" title="@subCat.Name">
+                                                            <span>@subCat.Name</span>
+                                                            @if (subCat.ChildCategories.Any())
+                                                            {
+                                                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                                                            }
+                                                        </a>
+                                                        @if (subCat.ChildCategories.Any())
+                                                        {
+                                                            <ul class="dropdown">
+                                                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                                                <li class="menu_title">@subCat.Name</li>
+                                                                @foreach (var childCat in subCat.ChildCategories)
+                                                                {
+                                                                    <li>
+                                                                        <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" title="@childCat.Name">
+                                                                            <span>@childCat.Name</span>
+                                                                        </a>
+                                                                    </li>
+                                                                }
+                                                            </ul>
+                                                        }
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" title="Каталог постачальників">
+                                <span>Каталог постачальників</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dark-color parent">
+                                <span>Покупцям</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li><a class="dark-color" href="#" title="Відгуки покупців"><span class="name">Відгуки покупців</span></a></li>
+                                <li><a class="dark-color" href="#" title="Правила Benefit Card"><span class="name">Правила Benefit Card</span></a></li>
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })" title="Партнерська програма"><span class="name">Партнерська програма</span></a></li>
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "faq"})" title="Питання та відповіді"><span class="name">Питання та відповіді</span></a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="dark-color parent">
+                                <span>Постачальникам</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })" title="Співпраця з компанією"><span class="name">Співпраця з компанією</span></a></li>
+                                <li><a class="dark-color" href="#" title="Тарифи та можливості"><span class="name">Тарифи та можливості</span></a></li>
+                                <li><a class="dark-color" href="#" title="Реєстрація постачальника"><span class="name">Реєстрація постачальника</span></a></li>
+                                <li><a class="dark-color" href="#" title="Система Benefit Card"><span class="name">Система Benefit Card</span></a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a class="dark-color parent">
+                                <span>Про нас</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li><a class="dark-color" href="#" title="Про компанію Benefit Company"><span class="name">Про компанію Benefit Company</span></a></li>
+                                <li><a class="dark-color" href="@Url.Action("index","news")" title="Новини компанії"><span class="name">Новини компанії</span></a></li>
+                                <li><a class="dark-color" href="#" title="Відгуки про компанію"><span class="name">Відгуки про компанію</span></a></li>
+                                <li><a class="dark-color" href="#" title="Угода користувача"><span class="name">Угода користувача</span></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+
+                <!--'start_frame_cache_mobile-region-block1'--> <!-- noindex -->
+                <div class="menu middle mobile_regions">
+                    <ul>
+                        <li class="select_place_container">
+                            <a rel="nofollow" href="" class="dark-color parent">
+                                <i class="svg svg-address black"></i>
+                                <span class="inside"></span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="menu middle">
+                    <ul>
+                        <li>
+                            <a rel="nofollow" class="dark-color" href="@Url.Action("Index", "Panel", routeValues: new { area = DomainConstants.CabinetAreaName })"><i class="svg svg-cabinet-login"></i><span>Особистий кабінет</span></a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="menu middle">
+                    <ul>
+                        <li>
+                            <a rel="nofollow" href="" class="dark-color parent">
+                                <i class="svg svg-phone"></i>
+                                <span>+38 (050) 035 45 55</span>
+                                <span class="arrow"><i class="svg svg_triangle_right"></i></span>
+                            </a>
+                            <ul class="dropdown">
+                                <li class="menu_back"><a href="" class="dark-color" rel="nofollow"><i class="svg svg-arrow-right"></i>Назад</a></li>
+                                <li class="menu_title">Телефони</li>
+                                <li><a rel="nofollow" href="tel:+380500354555" class="dark-color">+38 (050) 035 45 55</a></li>
+                                <li><a rel="nofollow" href="tel:+380630354555" class="dark-color">+38 (063) 035 45 55</a></li>
+                                <li><a rel="nofollow" href="tel:+380970354555" class="dark-color">+38 (097) 035 45 55</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="contacts">
+                    <div class="title">Контактна інформація</div>
+                    <div class="address">
+                        <i class="fa fa-map-marker"></i>
+                        а/с №8, пл.Кирила Мефодія, 4, м.Ужгород, 88005
+                    </div>
+                </div>
+                <div class="social-icons">
+                    <ul>
+                        <li class="facebook">
+                            <a href="https://www.facebook.com/groups/benefitcompany" class="dark-color" target="_blank" rel="nofollow" title="Facebook">
+                                <i class="fa fa-facebook-square" style="color: #3B5998;"></i>
+                                Facebook
+                            </a>
+                        </li>
+                        <li class="twitter">
+                            <a href="https://twitter.com/benefitcompany" class="dark-color" target="_blank" rel="nofollow" title="Twitter">
+                                <i class="fa fa-twitter-square" style="color: #28AEDB;"></i>
+                                Twitter
+                            </a>
+                        </li>
+                        <li class="instagram">
+                            <a href="https://www.instagram.com/benefitcompany/" class="dark-color" target="_blank" rel="nofollow" title="Instagram">
+                                <i class="fa fa-instagram"></i>
+                                Instagram
+                            </a>
+                        </li>
+                        <li class="ytb">
+                            <a href="https://www.youtube.com/channel/UC2YbFBSzjxW_ji2_mDBeWpw" class="dark-color" target="_blank" rel="nofollow" title="YouTube">
+                                <i class="fa fa-youtube-square" style="color: #990000"></i>
+                                YouTube
+                            </a>
+                        </li>
+                        <li class="gplus">
+                            <a href="https://plus.google.com/+BenefitCompanyTV" class="dark-color" target="_blank" rel="nofollow" title="Google Plus">
+                                <i class="fa fa-google-plus-square" style="color: #DC4E40;"></i>
+                                Google Plus
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -4,8 +4,20 @@ namespace Benefit.Domain.Models
 {
     public enum BannerType
     {
-        MainPageBanners,
-        PartnerPageBanners
+        [Display(Name = "Головна сторінка - основний")]
+        PrimaryMainPage,
+        [Display(Name = "Особистий кабінет")]
+        PartnerPageBanners,
+        [Display(Name = "Головна сторінка - верхній правий")]
+        SideTopMainPage,
+        [Display(Name = "Головна сторінка - нижній правий")]
+        SideBottomMainPage,
+        [Display(Name = "Головна сторінка - перша полоса")]
+        FirstRowMainPage,
+        [Display(Name = "Головна сторінка - друга полоса")]
+        SecondRowMainPage,
+        [Display(Name = "Мобільна версія")]
+        MobileMainPage
     }
     public class Banner
     {
@@ -18,5 +30,9 @@ namespace Benefit.Domain.Models
         public string NavigationUrl { get; set; }
         public BannerType BannerType { get; set; }
         public int Order { get; set; }
+        [MaxLength(100)]
+        public string Title { get; set; }
+        [MaxLength(100)]
+        public string Description { get; set; }
     }
 }

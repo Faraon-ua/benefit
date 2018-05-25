@@ -7,11 +7,13 @@ namespace Benefit.Domain.Models.Search
         public SearchResult()
         {
             Products = new List<Product>();
+            ProductParameters = new List<ProductParameter>();
             CurrentRegionSellers = new List<Seller>();
             Sellers = new List<Seller>();
         }
         public string Term { get; set; }
         public string SellerId { get; set; }
+        public List<ProductParameter> ProductParameters { get; set; } 
         public List<Product> Products { get; set; } 
         public List<Seller> CurrentRegionSellers { get; set; } 
         public List<Seller> Sellers { get; set; } 

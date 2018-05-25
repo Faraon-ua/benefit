@@ -16,8 +16,7 @@ namespace Benefit.Web
                         "~/Scripts/jquery.mask.min.js",
                         "~/Scripts/bootstrap.min.js",
                         "~/Scripts/owl.carousel.min.js",
-                        "~/Scripts/site.js",
-                        "~/Scripts/scripts.js"));
+                        "~/Scripts/site.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                                    "~/Scripts/jquery-{version}.js"));

@@ -4,6 +4,7 @@
 @using Benefit.Services
 @using Benefit.Services.Domain
 @using Benefit.DataTransfer.ViewModels;
+@using Benefit.Web.Helpers
 @model ProductDetailsViewModel
 
 @{
@@ -12,6 +13,11 @@
 @{
     var image_src = Model.Product.Images.FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
     var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
+    //var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);
+    var sellerUrl = "#";
+    var sellerLogo = Model.Product.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+    var sellerAddress = @Model.Product.Seller.Addresses.FirstOrDefault();
+    var sellerAddressStr = sellerAddress == null ? "" : string.Format("{0}, {1}", sellerAddress.Region.Name_ua, sellerAddress.AddressLine);
 }
 @section image_src
 {
@@ -29,46 +35,38 @@
     <meta property="og:description" content="@Model.Product.ShortDescription" />
     <meta property="og:image" content="@(image_src == null ? "" : SettingsService.BaseHostName + "/Images/ProductGallery/" +Model.Product.Id+"/"+image_src.ImageUrl)" />
 }
-@section LeftAside{
-
-}
 @section styles
 {
-    <link href="~/Content/css/jquery.fancybox.css" rel="stylesheet" />
+    <link href="~/Content/v3/css/product.css" rel="stylesheet" />
+    <link href="~/Content/v3/css/ubislider.min.css" rel="stylesheet" />
 }
 @section scripts
 {
-    <script src="~/Scripts/jquery.fancybox.js"></script>
-    <script src="~/Scripts/jquery.touchSwipe.js"></script>
-
+    <script src="~/Scripts/v3/ubislider.min.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
     <script>
         $(function () {
-            $(".fancybox").fancybox();
-
-            $('.carousel').carousel({
-                interval: 3000
-            });
-
-            $("#wholesalePices").click(function () {
+            $(".wholesalePices").click(function (e) {
+                e.preventDefault();
                 $(this).next("p").show();
                 $(this).hide();
             });
 
+            $('#slider2').ubislider({
+                arrowsToggle: true,
+                type: 'ecommerce',
+                hideArrows: false,
+                autoSlideOnLastClick: true,
+                modalOnClick: true,
+                position: 'vertical'
+            });
+
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
-            var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
             var sellerId = '@Model.Product.SellerId';
 
             $("#buy-product, #buy-product-with-options").click(function () {
-                var buttonId = $(this).attr("id");
-                $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
-                    //if купить баттон
+               var buttonId = $(this).attr("id");
                     if (buttonId == "buy-product") {
-                        if (isAnotherSeller) {
-                            if (!confirm("Увага! У кошику є товари від іншого постачальника. Вони будуть видалені, якщо Ви продовжите цю дію.")) {
-                                return;
-                            }
-                        }
-
                         //if there are options to show
                         if ($("#product_modal").length > 0) {
                             //show options
@@ -79,9 +77,9 @@
 
                     $(this).attr("disabled", "disabled");
                     $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
-                    $(".product_info_wrap").css("opacity", 0.3);
+                    $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
 
-                    var productAmount = $("#product_amount").val();
+                    var productAmount = $(".quantity").val();
                     var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
                         var id = $(this).attr("id");
                         var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
@@ -95,7 +93,7 @@
                     }).get();
 
                     var available = $("#available-amount");
-                    var amount = $(".product_description_amount").val();
+                    var amount = $(".quantity").val();
 
                     if (available.length > 0) {
                         available = parseFloat(available.text());
@@ -128,240 +126,552 @@
                             $('#product_modal').modal('hide');
                             setTimeout(function f() {
                                 $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                                $(".product_info_wrap").css("opacity", 1);
+                                $(".product_info_wrap,.item_main_info").css("opacity", 1);
+                                $(".button_block  ").removeClass("loadings");
                                 setCartSummary(data);
                             }, 1000);
                         });
-                });
             });
         });
     </script>
 }
-<main class="full_content product_content">
-    <div class="clearfix">
-        @Html.Partial("_FlashMessage")
-        @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
-        <div class="product_info_wrap clearfix">
-            @Html.Partial("_GalleryPartial", Model)
-            <div class="product_description_wrap">
-                @Html.HiddenFor(m => m.Product.Id)
-                <h1 id="Product_Name" class="product_description_title margin-top-0">@Model.Product.Name</h1>
-                <p class="margin-bottom-5">
-                    Перейти до
-                    <a href="@Url.RouteUrl(Benefit.Common.Constants.RouteConstants.SellersRouteName, new {id = Model.Product.Seller.UrlName, action = string.Empty})" target="_blank">@Model.Product.Seller.Name</a>
-                </p>
-                <p id="Product_SKU" class="product_description_code">Код товару @Model.Product.SKU</p>
-                <div class="product_description_rating">
-                    <span class="rating_star @CommonConstants.RatingToClass[Model.Product.AvarageRating ?? default(int)]"></span>
-                </div>
-                <p class="product_description_in_stock">
-                    <span style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
-                        @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
-                    </span>
-                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending)
+<div class="wraps hover_shine product-page" id="content">
+    @Html.Partial("_FlashMessage")
+    <!--title_content-->
+    <div class="top_inner_block_wrapper maxwidth-theme hidden-xs" style="height: 0px;">
+        <section class="page-top maxwidth-theme">
+            @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+        </section>
+    </div>
+    <!--end-title_content-->
+    <div class="hidden-xs">
+        <table class="x-product-page__main" style="width: 95%; margin: 0 auto">
+            <tbody>
+                <tr>
+                    <td class="x-product-page__main-content">
+                        <div class="x-product-page__main-info product_info_wrap">
+                            <div class="x-product-info">
+                                <div class="x-product-info__images">
+                                    <div class="ubislider-image-container left" data-ubislider="slider2"></div>
+                                    <div id="slider2" class="ubislider left">
+                                        <a class="arrow prev"></a>
+                                        <a class="arrow next"></a>
+                                        <ul id="gal1" class="ubislider-inner">
+                                            @foreach (var img in Model.Product.Images)
+                                            {
+                                                <li class="no-before-content">
+                                                    <a>
+                                                        <img class="product-v-img" src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl">
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="x-product-info__content">
+                                    <h1 class="x-title">@Model.Product.Name</h1>
+                                    <span style="color:white; background:red;padding:3px;">Бонус: @Model.Product.Seller.UserDiscount%</span>
+                                    <div class="x-product-info__identity">
+                                        <div class="x-product-info__identity-item">
+                                            <span>Код:&nbsp;</span>
+                                            <span data-qaid="product-sku" itemprop="sku">@Model.Product.SKU</span>
+                                        </div>
+                                    </div>
+                                    <p style="float: right;">
+                                        <a href="https://www.facebook.com/sharer/sharer.php?u=@shareUrl" target="_blank" style="color: #3B5998;">
+                                            <i class="fa fa-facebook-square" style="font-size: 3em;"></i>
+                                        </a>
+                                        <a href="https://twitter.com/share?url=@shareUrl&text=@Model.Product.Name" target="_blank" style="color: #28AEDB;">
+                                            <i class="fa fa-twitter-square" style="font-size: 3em;"></i>
+                                        </a>
+                                        <a href="https://plus.google.com/share?url=@shareUrl"
+                                           onclick=" javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false; " style="color: #DC4E40;">
+                                            <i class="fa fa-google-plus-square" style="font-size: 3em;"></i>
+                                        </a>
+                                    </p>
+
+                                    <div class="x-product-info__item">
+                                        <div class="x-product-info__inline">
+                                            <a href="#" class="dark_link">Этот товар на сайте компании</a>
+                                        </div>
+                                    </div>
+                                    <div class="x-product-info__item">
+                                        <div class="x-product-info__inline">
+                                            <div class="x-product-presence" data-qaid="product_presence">
+                                                <div class="item-stock" style="width: 50%; float: left;">
+                                                    <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
+                                                        @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+                                                    </span>
+                                                    @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
                     {
-                        <span id="available-amount">@Model.Product.AvailableAmount</span>
-                        @(@Model.Product.IsWeightProduct ? "кг" : "шт")
-                    }
-                </p>
-                <p class="product_description_price">
-                    <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
-                </p>
-                @if (Model.Product.WholesalePrice.HasValue)
+                                <span id="available-amount">@Model.Product.AvailableAmount</span>
+                                @(@Model.Product.IsWeightProduct ? "кг" : "шт")
+}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="x-product-info__inline">
+                                            <span class="x-product-info__rating-text">Оцінка товару</span>
+                                            <div class="x-product-info__inline">
+                                                <div class="x-rating x-rating_size_small">
+                                                    <div class="x-rating__progress">
+                                                        <div class="x-rating__bar" style="width: @(Model.Product.AvarageRating * 20)%"></div>
+                                                        <div class="x-rating__mask"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="x-product-info__item" data-qaid="product-labels"></div>
+                                    <div class="x-product-info__item" style="width: 50%; margin-top: 30px;">
+                                        <div class="x-product-price">
+                                            <div class="x-product-price__value" data-qaid="product_price">
+                                                <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
+                                            </div>
+                                            @if (Model.Product.OldPrice.HasValue)
+            {
+                                <div class="x-product-price__discount">
+                                    <div class="x-product-price__discount-value" data-qaid="price_without_discount">
+                                        @Model.Product.OldPrice.Value.ToString("F") грн
+                                    </div>
+                                </div>
+}
+                                            @if (Model.Product.WholesalePrice.HasValue && Model.Product.WholesaleFrom.HasValue)
+            {
+                                <div class="x-product-price__discount-info">
+                                    <a href="#" class="dark_link wholesalePices">Гуртові ціни</a>
+                                    <p style="display: none;">
+                                        <span>@Model.Product.WholesalePrice.Value.ToString("F") грн</span>
+                                        <span>.........................</span>
+                                        <span>від @Model.Product.WholesaleFrom шт.</span>
+                                    </p>
+                                </div>
+}
+                                        </div>
+                                    </div>
+
+                                    <div class="x-product-info__item counter_wrapp" style="width: 30%; float: left; margin-top: 25px;">
+                                        <div class="counter big_basket">
+                                            <div class="minus">-</div>
+                                            <input type="text" class="text quantity" name="quantity" value="1" data-weight-product="@Model.Product.IsWeightProduct" />
+                                            <div class="plus">+</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="x-product-conversion" style="width: 30%; float: left; margin-top: 30px;">
+                                        <div class="x-product-conversion__col">
+                                            <div class="x-product-conversion__item">
+                                                @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
                 {
+                                <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey" href="#" disabled="disabled">
+                                    <span class="x-button__text js-buy-button__text">Купити</span>
+                                </a>
+}
+else
+{
+var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+if (availableForPurchase.Key)
+{
+                                <a id="buy-product" class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#" style="background: #8f1b0a; color: white">
+                                    <span class="x-button__text js-buy-button__text">Купити</span>
+                                </a>
+}
+else
+{
+                                <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">
+                                    <span class="x-button__text js-buy-button__text">Купити</span>
+                                </a>
+}
+}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td rowspan="2" class="x-product-page__main-company">
+                        <div class="x-company-info" data-qaid="company_info">
+                            <div class="x-company-info__parts">
+                                <div class="x-company-info__logo">
+                                    <!-- лого постачальника -->
+                                    <a href="@sellerUrl" target="_blank">
+                                        <img class="x-company-info__logo-img" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" />
+                                    </a>
+                                    <!-- лого постачальника -->
+                                </div>
+                                Продавець товару:
+                                <div class="x-company-info__title">
+                                    <a class="x-company-info__name" href="@sellerUrl" target="_blank" class="dark_link">@Model.Product.Seller.Name</a>
+                                </div>
+                                <div class="x-company-info__item">
+                                    <div class="x-iconed-text">
+                                        <div class="x-iconed-text__text">
+                                            <span class="dark_link">
+                                                @sellerAddressStr
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="x-company-info__item"><a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Catalog")" class="dark_link">Всі товари постачальника</a></div>
+                            </div>
+                            <div class="x-company-info__parts">
+                                <div class="x-company-info__title">Рейтинг постачальника</div>
+                                <div class="x-rating">
+
+                                    <div class="x-rating__progress">
+                                        <div class="x-rating__bar" style="width: @(Model.Product.Seller.AvarageRating * 20)%"></div>
+                                        <div class="x-rating__mask"></div>
+                                    </div>
+                                    <div class="x-rating__info">
+                                        <a href="@sellerUrl" data-qaid="company_rating"> @Model.Product.Seller.Reviews.Count відгуків про @Model.Product.Seller.Name</a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </td>
+                </tr>
+                <tr></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="tabs_section hidden-xs" style="width: 95%; margin: 0 auto;">
+        <div class="tabs">
+            <ul class="nav nav-tabs no-bottom-underline">
+                <li class=" active">
+                    <a href="#descr" data-toggle="tab"><span>Опис</span></a>
+                </li>
+                <li class="product_ask_tab">
+                    <a href="#reviews" data-toggle="tab"><span>Відгуки про товар</span></a>
+                </li>
+                <li class="stores_tab">
+                    <a href="#stores" data-toggle="tab"><span>Характеристики</span></a>
+                </li>
+                <li class="">
+                    <a href="#dops" data-toggle="tab"><span>Доставка та оплата</span></a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane  active" id="descr">
+                    <div class="title-tab-heading visible-xs">Опис</div>
                     <div>
-                        <a class="x-pseudo-link" id="wholesalePices">Оптові ціни</a>
-                        <p style="display: none;">
-                            <span>@Model.Product.WholesalePrice грн</span>
-                            <span>.........................</span>
-                            <span>від @Model.Product.WholesaleFrom шт.</span>
-                        </p>
+                        <div class="col-md-6">
+                            <div class="detail_text">
+                                @Html.Raw(Model.Product.Description)
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                            {
+                                CanReview = Model.CanReview,
+                                ProductId = Model.Product.Id,
+                                TargetName = Model.Product.Name,
+                            })
+                        </div>
                     </div>
-
-                }
-
-                @* <div class="product_description">
-                        <div class="text-length-140">@Html.Raw(Model.Product.Description)</div>
-                        <a href="#product_descr_tab">Детальніше</a>
-                    </div>*@
-
-                <div class="product_description_control_wrap pull-right">
-                    @*<div class="product_description_like"></div>
-                        <div class="product_description_scale"></div>*@
-                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
-                    {
-                        <a class="product_description_buy bg-grey" href="#">Купити</a>
-                    }
-                    else
-                    {
-                        var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
-                        if (availableForPurchase.Key)
+                </div>
+                <div class="tab-pane" id="reviews">
+                    <div class="col-md-6">
+                        <div class="detail_text">
+                            @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                            {
+                                CanReview = Model.CanReview,
+                                ProductId = Model.Product.Id,
+                                TargetName = Model.Product.Name,
+                                Reviews = Model.Product.ApprovedReviews
+                            })
+                        </div>
+                    </div>
+                    <div class="col-md-6 hidden-xs">
+                        @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
                         {
-                            <a id="buy-product" class="product_description_buy" href="#">Купити</a>
-                        }
-                        else
+                            CanReview = true,
+                            //CanReview = Model.CanReview,
+                            ProductId = Model.Product.Id,
+                            TargetName = Model.Product.Name,
+                        })
+                    </div>
+                </div>
+                <div class="tab-pane stores_tab" id="stores">
+                    <div class="stores_wrapp col-md-6">
+                        <!--'start_frame_cache_lEnm5l'-->
+                        <div class="stores_block_wrap">
+                            @foreach (var productParameter in Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null))
+                            {
+                                <div class="stores_block wo_image">
+                                    <div class="stores_text_wrapp ">
+                                        <div class="main_info">
+                                            <span>
+                                                <a class="title_stores">@productParameter.ProductParameter.Name</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="item-stock">
+                                        <span class="value">
+                                            @if (productParameter.Amount.HasValue)
+                                            {
+                                                <span>@(productParameter.Amount.Value)x</span>
+                                            }
+                                            @(productParameter.StartText ?? productParameter.StartValue)
+                                            @if (!string.IsNullOrEmpty(productParameter.EndValue))
+                                            {
+                                                <span>- @productParameter.EndValue</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
+                                            {
+                                                <span>@productParameter.ProductParameter.MeasureUnit</span>
+                                            }
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                        <!--'end_frame_cache_lEnm5l'-->
+                    </div>
+                    <div class="col-md-6">
+                        @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
                         {
-                            <a class="product_description_buy bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">Купити</a>
-                        }
-                    }
+                            CanReview = true,
+                            //CanReview = Model.CanReview,
+                            ProductId = Model.Product.Id,
+                            TargetName = Model.Product.Name,
+                        })
+                    </div>
                 </div>
-                <div class="product_description_amount_wrap pull-right" data-weight-product="@Model.Product.IsWeightProduct">
-                    <div class="product_description_amount_minus">-</div>
-                    @if (Model.Product.IsWeightProduct)
-                    {
-                        <input type="text" class="product_description_amount" value="0.1" data-is-weight-product="true">
-                    }
-                    else
-                    {
-                        <input type="text" class="product_description_amount" value="1" data-is-weight-product="false">
-                    }
-                    <div class="product_description_amount_plus">+</div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="product_description_share_title">
-                    <div class="product_description_share_icon"></div>
-                    <div class="product_description_share_text">Поділитись</div>
-                </div>
-                <div class="product_description_share_wrap">
-                    <ul>
-                        <li class="facebook">
-                            <a href="https://www.facebook.com/sharer/sharer.php?u=@shareUrl" target="_blank"></a>
-                        </li>
-                        <li>
-                            <a class="twitter" href="https://twitter.com/share?url=@shareUrl&text=@Model.Product.Name"></a>
-                        </li>
 
-                        @* <li><a class="ok" href=""></a></li>
-                            <li><a class="sml" href=""></a></li>
-                            <li><a class="instagram" href=""></a></li>*@
-                        <li class="google">
-                            <a href="https://plus.google.com/share?url=@shareUrl"
-                               onclick=" javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false; ">
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        <ul class="tab_menu nav nav-tabs">
-            <li class="active"><a data-toggle="tab" href="#product_descr_tab">Опис</a></li>
-            <li><a data-toggle="tab" href="#product_charachters_tab">Характеристики</a></li>
-            <li>
-                <a data-toggle="tab" href="#prodact_recall">
-                    Відгуки
-                    @if (Model.Product.Reviews.Any())
-                    {
-                        <span class="badge badge-danger">
-                            @Model.Product.Reviews.Count(entry => entry.ReviewId == null && entry.IsActive)
-                        </span>
-                    }
-                </a>
-            </li>
-            <li><a data-toggle="tab" href="#product_shipping">Доставка</a></li>
-        </ul>
-
-        <div class="tab-content">
-            <div id="product_descr_tab" class="product_descr_tab tab-pane fade in active">
-                @Html.Raw(Model.Product.Description)
-            </div>
-
-            <div id="product_charachters_tab" class="product_descr_tab tab-pane fade in">
-                <table>
-                    @foreach (var productParameter in Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null))
-                    {
-                        <tr>
-                            <td>@productParameter.ProductParameter.Name</td>
-                            <td>
-                                @if (productParameter.Amount.HasValue)
-                                {
-                                    <span>@(productParameter.Amount.Value)x</span>
-                                }
-                                @(productParameter.StartText ?? productParameter.StartValue)
-                                @if (!string.IsNullOrEmpty(productParameter.EndValue))
-                                {
-                                    <span>- @productParameter.EndValue</span>
-                                }
-                                @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
-                                {
-                                    <span>@productParameter.ProductParameter.MeasureUnit</span>
-                                }
-                            </td>
-                        </tr>
-                    }
-                </table>
-            </div>
-
-            <div id="prodact_recall" class="prodact_recall tab-pane fade">
-                @Html.Partial("_ReviewsPartial", new ReviewsViewModel
-                {
-                    AvarageRating = Model.Product.AvarageRating ?? default(int),
-                    //                    CanReview = Model.CanReview,
-                    CanReview = true,
-                    ProductId = Model.Product.Id,
-                    TargetName = Model.Product.Name,
-                    Reviews = Model.Product.ApprovedReviews
-                })
-            </div>
-            <div id="product_shipping" class="tab-pane fade">
-                <h3>Умови доставки постачальника @Model.Product.Seller.Name</h3>
-                <div>
+                <div class="tab-pane additional_block" id="dops">
                     @Html.Raw(Model.Product.Seller.ShippingDescription)
                 </div>
+                <div class="tab-pane media_review product_reviews_tab visible-xs">
+                    <div class="title-tab-heading visible-xs">Отзывы<span class="count empty"></span></div>
+                </div>
             </div>
         </div>
-
-        @*  <p class="product_recomendation_title">Рекомендовані товари</p>
-            <div class="product_recomendation">
-                <div class="product_recomendation_item">
-                    <div class="product_recomendation_img_wrap">
-                        <img src="assets/img/cola.jpg" alt="cola">
-                    </div>
-                    <p class="product_recomendation_name">Coca-cola, 1л</p>
-                    <div class="product_recomendation_rating">
-                        <span class="rating_star good"></span>
-                        <span class="rating_all">35 відгуків</span>
-                    </div>
-                    <p class="product_recomendation_price">18,50 грн</p>
-                </div>
-
-                <div class="product_recomendation_item">
-                    <div class="product_recomendation_img_wrap">
-                        <img src="assets/img/nestea.jpg" alt="nestea">
-                    </div>
-                    <p class="product_recomendation_name">Nestea, 1л</p>
-                    <div class="product_recomendation_rating">
-                        <span class="rating_star good"></span>
-                        <span class="rating_all">8 відгуків</span>
-                    </div>
-                    <p class="product_recomendation_price">28,50 грн</p>
-                </div>
-
-                <div class="product_recomendation_item">
-                    <div class="product_recomendation_img_wrap">
-                        <img src="assets/img/plate_01.jpg" alt="cezar">
-                    </div>
-                    <p class="product_recomendation_name">Салат Цезар, 350 гр.</p>
-                    <div class="product_recomendation_rating">
-                        <span class="rating_star middle"></span>
-                        <span class="rating_all">18 відгуків</span>
-                    </div>
-                    <p class="product_recomendation_price">94,00 грн</p>
-                </div>
-
-                <div class="product_recomendation_item">
-                    <div class="product_recomendation_img_wrap">
-                        <img src="assets/img/plate_02.jpg" alt="spring_salad">
-                    </div>
-                    <p class="product_recomendation_name">Салат весняний, 220 гр</p>
-                    <div class="product_recomendation_rating">
-                        <span class="rating_star good"></span>
-                        <span class="rating_all">15 відгуків</span>
-                    </div>
-                    <p class="product_recomendation_price">69,00 грн</p>
-                </div>
-            </div>*@
     </div>
-</main>
+    <div class="wrapper_inner visible-xs" style="padding:0;">
+        <div class="wrapper_inner ">
+            <div class="middle ">
+                <div class="container">
+                    <div class="catalog_detail detail" itemscope itemtype="http://schema.org/Product">
+                        <meta itemprop="name" content="@Model.Product.Name" />
+                        <meta itemprop="category" content="@Model.Product.Category.Name" />
+                        <meta itemprop="description" content="@Model.Product.ShortDescription" />
+                        <h1 id="pagetitle">@Model.Product.Name</h1>
+                        <div class="item_main_info noffer show_un_props">
+                            <div class="img_wrapper">
+                                <div class="stickers" style="width: 100%">
+                                    <div class="sticker_sale_text">@Model.Product.Seller.UserDiscount%</div>
+                                    @*<div class="sticker_khit">Хит</div>
+                                        <div class="sticker_aktsiya">Сове</div>*@
+                                </div>
+                                <div class="item_slider color-controls flex flexslider" data-plugin-options='{"animation": "slide", "directionNav": false, "controlNav": true, "animationLoop": false, "slideshow": false, "slideshowSpeed": 10000, "animationSpeed": 600}'>
+                                    <ul class="slides">
+                                        @foreach (var img in Model.Product.Images)
+                                        {
+                                            <li>
+                                                <a href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
+                                                    <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title" />
+                                                    <div class="zoom"></div>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="right_info">
+                                <div class="info_item">
+                                    <div class="middle_info main_item_wrapper">
+                                        <div class="prices_block">
+                                            <div class="cost prices clearfix">
+                                                <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                                                    <meta itemprop="price" content="@Model.Product.Price" />
+                                                    <meta itemprop="priceCurrency" content="UAH" />
+                                                    <link itemprop="availability" href="http://schema.org/InStock" />
+                                                </div>
+                                                <div class="price_matrix_block">
+                                                    <div class="price_matrix_wrapper ">
+                                                        <div class="price" style="font-size: 26px;">
+                                                            <span class="values_wrapper">@Model.Product.Price<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
+                                                        </div>
+                                                        @if (Model.Product.OldPrice.HasValue)
+                                                        {
+                                                            <div class="price discount" style="font-size: 24px;">
+                                                                <span class="values_wrapper">@Model.Product.OldPrice<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
+                                                            </div>
+                                                        }
+                                                        <div class="item-stock" style="width: 50%; float: left;">
+                                                            <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
+                                                                @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+                                                            </span>
+                                                            @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
+                                                            {
+                                                                <span id="available-amount">@Model.Product.AvailableAmount</span>
+                                                                @(@Model.Product.IsWeightProduct ? "кг" : "шт")
+                                                            }
+                                                        </div>
+                                                        <div class="x-product-info__inline">
+                                                            <div class="x-product-info__inline">
+                                                                @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
+                                                                {
+                                                                    SmallStars = true,
+                                                                    IsActive = true,
+                                                                    Rating = 0
+                                                                })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        @if (Model.Product.WholesalePrice.HasValue && Model.Product.WholesaleFrom.HasValue)
+                                        {
+                                            <div class="x-product-price__discount-info">
+                                                <a href="#" class="dark_link wholesalePices">Гуртові ціни</a>
+                                                <p style="display: none;">
+                                                    <span>@Model.Product.WholesalePrice грн</span>
+                                                    <span>.........................</span>
+                                                    <span>від @Model.Product.WholesaleFrom шт.</span>
+                                                </p>
+                                            </div>
+                                        }
+                                        <div class="counter_wrapp">
+                                            <div class="counter big_basket">
+                                                <div class="minus">-</div>
+                                                <input type="text" class="text quantity" name="quantity" value="1" data-weight-product="@Model.Product.IsWeightProduct" />
+                                                <div class="plus">+</div>
+                                            </div>
+                                            <div class="button_block ">
+                                                <!--noindex-->
+                                                @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
+                                                {
+                                                    <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey" disabled="disabled">
+                                                        <i></i><span>Купити</span>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+                                                    if (availableForPurchase.Key)
+                                                    {
+                                                        <span id="buy-product" class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load">
+                                                            <i></i><span>Купити</span>
+                                                        </span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey title-to-tooltip" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">
+                                                            <i></i><span>Купити</span>
+                                                        </span>
+                                                    }
+                                                }
+                                                <!--/noindex-->
+                                            </div>
+                                            <br class="clear" />
+                                        </div>
+                                        <div style="padding-top: 20px; text-align: left;">
+                                            <a href="#" class="dark_link">@Model.Product.Seller.Name</a>
+                                            <br>@Model.Product.Seller.PrimaryRegionName<br>
+                                            <a href="@sellerUrl" class="dark_link">Всі товари постачальника</a>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="clearleft"></div>
+                        </div>
+
+                        @{
+                            var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
+                        }
+                        <div class="tabs_section">
+                            <div class="tabs">
+                                <ul class="nav nav-tabs">
+                                    <li class=" active">
+                                        <a href="#descr" data-toggle="tab"><span>Опис</span></a>
+                                    </li>
+                                    <li class="">
+                                        <a href="#review" data-toggle="tab"><span>Відгуки</span><span class="count empty"></span></a>
+                                    </li>
+                                    @if (parameters.Any())
+                                    {
+                                        <li class="">
+                                            <a href="#ask" data-toggle="tab"><span>Характеристики</span></a>
+                                        </li>
+                                    }
+                                    <li class="">
+                                        <a href="#stores" data-toggle="tab"><span>Доставка</span></a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-pane  active" id="descr">
+                                    <div class="title-tab-heading visible-xs">Опис товару</div>
+                                    <div class="detail_text">
+                                        @Html.Raw(Model.Product.Description)
+                                    </div>
+                                </div>
+                                <div class="tab-pane additional_block" id="review">
+                                    <div class="title-tab-heading visible-xs">Відгуки про товар</div>
+                                    <div class="detail_text">
+                                        @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                                        {
+                                            CanReview = Model.CanReview,
+                                            ProductId = Model.Product.Id,
+                                            TargetName = Model.Product.Name,
+                                            Reviews = Model.Product.ApprovedReviews
+                                        })
+                                    </div>
+                                </div>
+                                @if (parameters.Any())
+                                {
+                                    <div class="tab-pane additional_block" id="ask">
+                                        <div class="title-tab-heading visible-xs">Характеристики</div>
+                                        <div class="detail_text">
+                                            @foreach (var productParameter in parameters)
+                                            {
+                                                <div class="stores_block wo_image margin-top-10">
+                                                    <span class="width-30" style="display: inline-block">
+                                                        <a class="title_stores">@productParameter.ProductParameter.Name</a>
+                                                    </span>
+                                                    <span>.................</span>
+                                                    <span class="value">
+                                                        @if (productParameter.Amount.HasValue)
+                                                        {
+                                                            <span>@(productParameter.Amount.Value)x</span>
+                                                        }
+                                                        @(productParameter.StartText ?? productParameter.StartValue)
+                                                        @if (!string.IsNullOrEmpty(productParameter.EndValue))
+                                                        {
+                                                            <span>- @productParameter.EndValue</span>
+                                                        }
+                                                        @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
+                                                        {
+                                                            <span>@productParameter.ProductParameter.MeasureUnit</span>
+                                                        }
+                                                    </span>
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                                <div class="tab-pane additional_block" id="stores">
+                                    <div class="title-tab-heading visible-xs">Доставка та оплата</div>
+                                    <div class="detail_text">
+                                        @Html.Raw(Model.Product.Seller.ShippingDescription)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @if (Model.ProductOptions.Any())
 {
     @Html.Partial("_ProductOptions", Model)

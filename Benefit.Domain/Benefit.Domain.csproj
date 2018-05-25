@@ -446,13 +446,29 @@
     <Compile Include="Migrations\201712221319378_AddLogRequestsToSellers.Designer.cs">
       <DependentUpon>201712221319378_AddLogRequestsToSellers.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801181345519_CategoryExternalIds.cs" />
-    <Compile Include="Migrations\201801181345519_CategoryExternalIds.Designer.cs">
-      <DependentUpon>201801181345519_CategoryExternalIds.cs</DependentUpon>
+    <Compile Include="Migrations\201801101114346_AddTitleDescriptionToBanner.cs" />
+    <Compile Include="Migrations\201801101114346_AddTitleDescriptionToBanner.Designer.cs">
+      <DependentUpon>201801101114346_AddTitleDescriptionToBanner.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201803071040262_AddMetaDescriptionCategory.cs" />
-    <Compile Include="Migrations\201803071040262_AddMetaDescriptionCategory.Designer.cs">
-      <DependentUpon>201803071040262_AddMetaDescriptionCategory.cs</DependentUpon>
+    <Compile Include="Migrations\201801291059204_AddOldPriceToProduct.cs" />
+    <Compile Include="Migrations\201801291059204_AddOldPriceToProduct.Designer.cs">
+      <DependentUpon>201801291059204_AddOldPriceToProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201802141042542_AddSellerTitle.cs" />
+    <Compile Include="Migrations\201802141042542_AddSellerTitle.Designer.cs">
+      <DependentUpon>201802141042542_AddSellerTitle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804041010080_AddIsFeaturedToSeller.cs" />
+    <Compile Include="Migrations\201804041010080_AddIsFeaturedToSeller.Designer.cs">
+      <DependentUpon>201804041010080_AddIsFeaturedToSeller.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804110854488_AddExternalIdToProduct.cs" />
+    <Compile Include="Migrations\201804110854488_AddExternalIdToProduct.Designer.cs">
+      <DependentUpon>201804110854488_AddExternalIdToProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201804261329181_AddInfoPageSellerRelation.cs" />
+    <Compile Include="Migrations\201804261329181_AddInfoPageSellerRelation.Designer.cs">
+      <DependentUpon>201804261329181_AddInfoPageSellerRelation.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
@@ -460,6 +476,7 @@
     <Compile Include="Models\CompanyRevenue.cs" />
     <Compile Include="Models\Enums\ProductSortOption.cs" />
     <Compile Include="Models\Enums\SellerStatus.cs" />
+    <Compile Include="Models\Excel\ExcelProduct.cs" />
     <Compile Include="Models\ExportImport.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
@@ -783,11 +800,23 @@
     <EmbeddedResource Include="Migrations\201712221319378_AddLogRequestsToSellers.resx">
       <DependentUpon>201712221319378_AddLogRequestsToSellers.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201801181345519_CategoryExternalIds.resx">
-      <DependentUpon>201801181345519_CategoryExternalIds.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801101114346_AddTitleDescriptionToBanner.resx">
+      <DependentUpon>201801101114346_AddTitleDescriptionToBanner.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201803071040262_AddMetaDescriptionCategory.resx">
-      <DependentUpon>201803071040262_AddMetaDescriptionCategory.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801291059204_AddOldPriceToProduct.resx">
+      <DependentUpon>201801291059204_AddOldPriceToProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201802141042542_AddSellerTitle.resx">
+      <DependentUpon>201802141042542_AddSellerTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804041010080_AddIsFeaturedToSeller.resx">
+      <DependentUpon>201804041010080_AddIsFeaturedToSeller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804110854488_AddExternalIdToProduct.resx">
+      <DependentUpon>201804110854488_AddExternalIdToProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201804261329181_AddInfoPageSellerRelation.resx">
+      <DependentUpon>201804261329181_AddInfoPageSellerRelation.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,6 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
 @using Benefit.Common.Constants
 <div class="delivery_address">
-    <p class="delivery_address_title">Адреса доставки</p>
     @{
         var defaultAddress = Model.Addresses.FirstOrDefault(entry => entry.IsDefault);
         defaultAddress = defaultAddress ?? Model.Addresses.FirstOrDefault();
@@ -19,7 +18,7 @@
     <div class="clearfix"></div>
     <div class="address_choice_wrap">
         <a href="#" class="chose_new_address">+ Обрати іншу адресу</a>
-        <a href="@Url.Action("UserAddress", "Panel", new { area = DomainConstants.CabinetAreaName })" class="add_new_address margin-left-10">+ Додати нову адресу</a>
+        <a href="@Url.Action("useraddress", "panel", new { area = DomainConstants.CabinetAreaName })" class="add_new_address margin-left-10">+ Додати нову адресу</a>
     </div>
     @Html.Hidden("AddressId", Model.AddressId ?? defaultAddressId)
 </div>

@@ -1,48 +1,50 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
 <div class="row">
-    <div class="pull-left dlivery_price" id="bonuses-summary" style="display: none;">
-        <table>
-            <tr>
-                <td>Знижка бонусами:</td>
-                <td id="bonuses-discount"></td>
-            </tr>
-            <tr>
-                <td>Використано бонусів:</td>
-                <td id="bonuses-total"></td>
-            </tr>
-        </table>
-    </div>
-    <div class="pull-right dlivery_price" id="payment-summary" style="display: none;">
-        <table>
-            <tr>
-                <td>Сума замовлення:</td>
-                @{
-                    var total = Model.Order.OrderProducts.Sum(
-                        entry =>
-                            entry.ActualPrice * entry.Amount +
-                            entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-                }
-                <td id="order-total">@total.ToString("F")</td>
-            </tr>
-            <tr id="discount-row" style="display: none;">
-                <td>Знижка:</td>
-                <td id="discount"></td>
-            </tr>
-            <tr>
-                <td>Доставка:</td>
-                <td id="shipping-cost"></td>
-            </tr>
-            @if (Model.Order.SellerDiscount != null)
-            {
+    <div class="col-md-12">
+        <div class="pull-left dlivery_price" id="bonuses-summary" style="display: none;">
+            <table>
                 <tr>
-                    <td>@Model.Order.SellerDiscountName:</td>
-                    <td id="promotion">@Model.Order.SellerDiscount.Value.ToString("F")</td>
+                    <td>Знижка бонусами:</td>
+                    <td id="bonuses-discount"></td>
                 </tr>
-            }
-            <tr>
-                <td>До сплати:</td>
-                <td id="pay-total"></td>
-            </tr>
-        </table>
+                <tr>
+                    <td>Використано бонусів:</td>
+                    <td id="bonuses-total"></td>
+                </tr>
+            </table>
+        </div>
+        <div class="pull-right dlivery_price padding-10" id="payment-summary" style="display: none;">
+            <table>
+                <tr>
+                    <td>Сума замовлення:</td>
+                    @{
+                        var total = Model.Order.OrderProducts.Sum(
+                            entry =>
+                                entry.ActualPrice * entry.Amount +
+                                entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+                    }
+                    <td id="order-total">@total.ToString("F")</td>
+                </tr>
+                <tr id="discount-row" style="display: none;">
+                    <td>Знижка:</td>
+                    <td id="discount"></td>
+                </tr>
+                <tr>
+                    <td>Доставка:</td>
+                    <td id="shipping-cost"></td>
+                </tr>
+                @if (Model.Order.SellerDiscount != null)
+                {
+                    <tr>
+                        <td>@Model.Order.SellerDiscountName:</td>
+                        <td id="promotion">@Model.Order.SellerDiscount.Value.ToString("F")</td>
+                    </tr>
+                }
+                <tr>
+                    <td>До сплати:</td>
+                    <td id="pay-total"></td>
+                </tr>
+            </table>
+        </div>
     </div>
 </div>

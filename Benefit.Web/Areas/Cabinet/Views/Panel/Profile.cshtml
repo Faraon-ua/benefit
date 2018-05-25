@@ -83,7 +83,7 @@
             {
                 <p class="profile_title">Реєстраційне посилання</p>
                 <p class="profile_title">
-                    <input id="partner-referal" type="text" value="@Url.RouteUrl("OldRegister", new { id = Model.ExternalNumber }, Request.Url.Scheme)" readonly />
+                    <input id="partner-referal" type="text" value="@Url.Action("Login","Account", new { id = Model.ExternalNumber, area ="" }, Request.Url.Scheme)" readonly />
                 </p>
                 <hr class="col-md-12" />
 

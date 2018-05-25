@@ -84,7 +84,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var pathString = Path.Combine(originalDirectory, "Images", banner.BannerType.ToString(), banner.ImageUrl);
             var file = new FileInfo(pathString);
-            file.Delete();
+            if (file.Exists)
+            {
+                file.Delete();
+            }
             db.Banners.Remove(banner);
             db.SaveChanges();
             return RedirectToAction("Index");

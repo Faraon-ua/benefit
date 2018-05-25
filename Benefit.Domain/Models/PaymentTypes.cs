@@ -7,7 +7,7 @@ namespace Benefit.Domain.Models
     {
         [Description("Передоплата")]
         PrePaid,
-        [Description("Готівкою")]
+        [Description("Готівкою при отриманні")]
         Cash,
         [Description("Карткою Visa/MasterCard")]
         Acquiring,

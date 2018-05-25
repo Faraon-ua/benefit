@@ -16,13 +16,6 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult SellerApplication(SellerApplicationViewModel sellerApplication)
-        {
-            EmailService.SendSellerApplication(sellerApplication);
-            return Json(true);
-        }
-
-        [HttpPost]
         public ActionResult SendFacebookAccoutJoinRequest(string facebookAccount)
         {
             EmailService.SendEmail(EmailService.BenefitInfoEmail, string.Format("Постачальник: {0}, фейсбук: {1}", Seller.CurrentAuthorizedSellerName, facebookAccount),

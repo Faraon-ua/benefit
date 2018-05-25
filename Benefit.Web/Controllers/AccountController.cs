@@ -18,12 +18,14 @@ using Microsoft.Owin.Security;
 using Benefit.Web.Models;
 using Microsoft.Owin.Security.DataProtection;
 using System.Data.Entity;
+using Benefit.Web.Controllers.Base;
+using Benefit.Web.Filters;
 using Newtonsoft.Json;
 
 namespace Benefit.Web.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
         public AccountController()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
@@ -34,7 +36,7 @@ namespace Benefit.Web.Controllers
         public AccountController(UserManager<ApplicationUser> userManager)
         {
             UserManager = userManager;
-            var provider = new DpapiDataProtectionProvider("Sample");
+            var provider = new DpapiDataProtectionProvider("ASP.NET IDENTITY");
             UserManager.EmailService = new EmailService();
             UserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(
                 provider.Create("EmailConfirmation"))
@@ -52,6 +54,8 @@ namespace Benefit.Web.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
+        [FetchLastNews]
+        [FetchCategories]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -62,8 +66,10 @@ namespace Benefit.Web.Controllers
         // POST: /Account/Login
         [HttpPost]
         [AllowAnonymous]
+        [FetchLastNews]
+        [FetchCategories]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
             if (ModelState.IsValid)
             {
@@ -77,7 +83,14 @@ namespace Benefit.Web.Controllers
                     else
                     {
                         await SignInAsync(user, model.RememberMe);
-                        return RedirectToLocal(returnUrl);
+                        if (isAjaxRequest)
+                        {
+                            return Json(new { returnUrl }, JsonRequestBehavior.AllowGet);
+                        }
+                        else
+                        {
+                            return RedirectToLocal(returnUrl);
+                        }
                     }
                 }
                 else
@@ -86,8 +99,14 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            // If we got this far, something failed, redisplay form
-            return View(model);
+            if (isAjaxRequest)
+            {
+                return Json(new { error = ModelState.ModelStateErrors() }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         //
@@ -126,7 +145,7 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
             ApplicationUser referal;
             var externalNumber = SettingsService.MinUserExternalNumber;
@@ -182,19 +201,49 @@ namespace Benefit.Web.Controllers
                 {
                     user.ReferalId = referal.Id;
                 }
-                var result = await UserManager.CreateAsync(user, model.Password);
 
+               
+                var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("ConfirmEmail", "Account",
+                    var callbackUrl = Url.Action("confirmEmail", "account",
                        new { userId = user.Id, code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id,
                        "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\""
                        + callbackUrl + "\">це посилання</a>");
 
+                    //if shipping address provided - create db entry
+                    Address shippingAddress = null;
+                    if (!string.IsNullOrEmpty(model.ShippingAddress))
+                    {
+                        shippingAddress = new Address()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            IsDefault = true,
+                            AddressLine = model.ShippingAddress,
+                            FullName = model.FirstName + " " + model.LastName,
+                            Phone = model.PhoneNumber,
+                            RegionId = model.RegionId.Value,
+                            UserId = user.Id
+                        };
+                        using (var db = new ApplicationDbContext())
+                        {
+                            db.Addresses.Add(shippingAddress);
+                            db.SaveChanges();
+                        }
+                    }
+
                     TempData["RegisteredEmail"] = user.Email;
-                    return RedirectToAction("PostRegister", "Account");
+                    if (isAjaxRequest)
+                    {
+                        await SignInAsync(user, isPersistent: true);
+                        return Json(new { returnUrl, shippingAddressId = shippingAddress == null ? string.Empty : shippingAddress.Id }, JsonRequestBehavior.AllowGet);
+                    }
+                    else
+                    {
+                        return RedirectToAction("postregister", "account");
+                    }
                 }
                 else
                 {
@@ -202,7 +251,14 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            return View(model);
+            if (isAjaxRequest)
+            {
+                return Json(new { error = ModelState.ModelStateErrors() }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return View(model);
+            }
         }
 
         [HttpGet]
@@ -225,7 +281,7 @@ namespace Benefit.Web.Controllers
             }
 
             string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-            var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+            var callbackUrl = Url.Action("resetPassword", "account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(user.Id, "Reset Password", "Для відновлення паролю натисніть <a href=\"" + callbackUrl + "\">ТУТ</a>");
             return View("ForgotPasswordConfirmation");
         }
@@ -321,7 +377,7 @@ namespace Benefit.Web.Controllers
                 : message == ManageMessageId.Error ? "An error has occurred."
                 : "";
             ViewBag.HasLocalPassword = HasPassword();
-            ViewBag.ReturnUrl = Url.Action("Manage");
+            ViewBag.ReturnUrl = Url.Action("manage");
             return View();
         }
 

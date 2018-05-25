@@ -1,20 +1,20 @@
-﻿using System;
+﻿using Benefit.Common.Constants;
+using Benefit.Common.Helpers;
+using Benefit.DataTransfer.ViewModels;
+using Benefit.DataTransfer.ViewModels.Base;
+using Benefit.DataTransfer.ViewModels.NavigationEntities;
+using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
+using Benefit.Domain.Models.Enums;
+using Benefit.Domain.Models.ModelExtensions;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Caching;
-using Benefit.Common.Constants;
-using Benefit.Common.Helpers;
-using Benefit.DataTransfer.ViewModels;
-using Benefit.Domain.DataAccess;
-using System.Data.Entity;
-using Benefit.DataTransfer.ViewModels.Base;
-using Benefit.DataTransfer.ViewModels.NavigationEntities;
-using Benefit.Domain.Models;
-using Benefit.Domain.Models.Enums;
-using Benefit.Domain.Models.ModelExtensions;
 
 namespace Benefit.Services.Domain
 {
@@ -102,10 +102,117 @@ namespace Benefit.Services.Domain
             };
         }
 
+        public SellersViewModel GetSellersCatalog(string options, int page = 0)
+        {
+            var sellers = db.Sellers
+                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                .Include(entry => entry.Addresses.Select(addr => addr.Region))
+                .Where(entry=>entry.IsActive);
+
+            var sort = SellerSortOption.Rating;
+
+            if (options != null)
+            {
+                var optionSegments = options.Split(';');
+                foreach (var optionSegment in optionSegments)
+                {
+                    if (optionSegment == string.Empty) continue;
+                    var optionKeyValue = optionSegment.Split('=');
+                    var optionKey = optionKeyValue.First();
+                    var optionValues = optionKeyValue.Last().Split(',');
+                    switch (optionKey)
+                    {
+                        case "sort":
+                            sort = (SellerSortOption)Enum.Parse(typeof(SellerSortOption), optionValues.First());
+                            break;
+                        case "filter":
+                            if (optionValues.Contains("mycity"))
+                            {
+                                var regionId = RegionService.GetRegionId();
+                                sellers = sellers.Where(entry =>
+                                    entry.Addresses.Select(addr => addr.RegionId).Contains(regionId));
+                            }
+                            if (optionValues.Contains("paymentcard"))
+                            {
+                                sellers = sellers.Where(entry => entry.IsAcquiringActive);
+                            }
+                            if (optionValues.Contains("paymentbonuses"))
+                            {
+                                sellers = sellers.Where(entry => entry.IsBonusesPaymentActive || entry.TerminalBonusesPaymentActive);
+                            }
+                            if (optionValues.Contains("freeshipping"))
+                            {
+                                sellers = sellers.Where(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom.HasValue));
+                            }
+                            if (optionValues.Contains("benefitcard"))
+                            {
+                                sellers = sellers.Where(entry => entry.IsBenefitCardActive);
+                            }
+                            if (optionValues.Contains("benefitonline"))
+                            {
+                                sellers = sellers.Where(entry => entry.HasEcommerce);
+                            }
+                            break;
+                        case "category":
+                            var categories = db.Categories.Where(entry => optionValues.Contains(entry.UrlName));
+                            var catIds = categories.Select(entry => entry.Id).Distinct().ToList();
+                            sellers = sellers.Where(entry =>
+                                entry.SellerCategories.Select(sc => sc.Category.Id).Intersect(catIds).Any()
+                                ||
+                                entry.SellerCategories.Select(sc => sc.Category.ParentCategory.Id).Intersect(catIds)
+                                    .Any());
+                            break;
+                    }
+                }
+            }
+            switch (sort)
+            {
+                case SellerSortOption.Rating:
+                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry => entry.Reviews.Count);
+                    break;
+                case SellerSortOption.NameAsc:
+                    sellers = sellers.OrderBy(entry => entry.Name);
+                    break;
+                case SellerSortOption.NameDesc:
+                    sellers = sellers.OrderByDescending(entry => entry.Name);
+                    break;
+                case SellerSortOption.BonusAsc:
+                    sellers = sellers.OrderBy(entry => entry.UserDiscount);
+                    break;
+                case SellerSortOption.BonusDesc:
+                    sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
+                    break;
+            }
+            return new SellersViewModel()
+            {
+                Items = sellers.Skip(ListConstants.DefaultTakePerPage * page).Take(ListConstants.DefaultTakePerPage + 1).ToList(),
+                Category = new Category()
+                {
+                    UrlName = "postachalnuky",
+                    Name = "Каталог постачальників",
+                    ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList(),
+                    ChildAsFilters = true
+                }
+            };
+        }
+
         public Seller GetSellerWithShippingMethods(string urlName)
         {
             return db.Sellers.Include(entry => entry.ShippingMethods.Select(sh => sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
         }
+
+        public Seller GetSeller(string urlName)
+        {
+            var seller = db.Sellers
+                .Include(entry => entry.Images)
+                .Include(entry => entry.SellerCategories)
+                .Include(entry => entry.Schedules)
+                .Include(entry => entry.Addresses)
+                .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
+                .FirstOrDefault(entry => entry.UrlName == urlName);
+            return seller;
+        }
+
         public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName, string currentUserId)
         {
             var sellerVM = new SellerDetailsViewModel();
@@ -202,6 +309,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                 .Include(entry => entry.Seller.Addresses)
+                .Include(entry => entry.Reviews)
                 .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
                 .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
 
@@ -226,38 +334,10 @@ namespace Benefit.Services.Domain
             {
                 items = items.Where(entry => entry.SellerId == sellerId);
             }
-            //fetch product parameters
-            if (categoryId != null && fetchParameters)
-            {
-                var productParameters = db.ProductParameters.Where(entry => entry.CategoryId == categoryId && entry.DisplayInFilters).ToList();
-                if (sellerId != null)
-                {
-                    var mappedCategories = db.Categories.Include(
-                        entry => entry.MappedCategories.Select(mc => mc.ProductParameters))
-                        .Where(
-                            entry =>
-                                entry.SellerId == sellerId && entry.MappedParentCategoryId == categoryId &&
-                                entry.IsActive).ToList();
-                    var mappedCategoriesParameters = mappedCategories
-                        .SelectMany(entry => entry.ProductParameters)
-                        .Where(entry => entry.DisplayInFilters).ToList();
-                    productParameters = productParameters.Union(mappedCategoriesParameters).ToList();
-                }
-                var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
-                foreach (var productParameterName in productParameterNames)
-                {
-                    var parameters = productParameters.Where(entry => entry.UrlName == productParameterName).ToList();
-                    var parameter = parameters.First();
-                    parameter.ProductParameterValues =
-                        parameters.SelectMany(entry => entry.ProductParameterValues).Distinct(new ProductParameterValueComparer()).ToList();
-                    result.ProductParameters.Add(parameter);
-                }
 
-                productParameters.InsertRange(0, FetchGeneralProductParameters(items, sellerId == null));
-                result.ProductParameters = productParameters;
-            }
+            var generalParams = FetchGeneralProductParameters(items, sellerId == null);
             //todo: instead all products show recomendations
-            var sort = ProductSortOption.Order;
+            var sort = ProductSortOption.Rating;
             if (options != null)
             {
                 var optionSegments = options.Split(';');
@@ -299,19 +379,11 @@ namespace Benefit.Services.Domain
             }
             switch (sort)
             {
+                case ProductSortOption.Rating:
+                    items = items.OrderByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.Name);
+                    break;
                 case ProductSortOption.Order:
-                    items = items
-                        .OrderBy(
-                            entry =>
-                                entry.Category.ParentCategory == null
-                                    ? 1000
-                                    : entry.Category.ParentCategory.ParentCategory == null
-                                        ? 1000
-                                        : entry.Category.ParentCategory.ParentCategory.Order)
-                        .ThenBy(
-                            entry => entry.Category.ParentCategory == null ? 1000 : entry.Category.ParentCategory.Order)
-                        .ThenBy(entry => entry.Category.Order)
-                        .ThenByDescending(entry => entry.Images.Any());
+                    items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.Name);
                     break;
                 case ProductSortOption.NameAsc:
                     items = items.OrderBy(entry => entry.Name);
@@ -325,6 +397,56 @@ namespace Benefit.Services.Domain
                 case ProductSortOption.PriceDesc:
                     items = items.OrderByDescending(entry => entry.Price);
                     break;
+            }
+
+            //fetch product parameters
+            if (categoryId != null && fetchParameters)
+            {
+                var productParameters = db.ProductParameters
+                    .Include(entry => entry.ProductParameterProducts)
+                    .Where(entry => entry.CategoryId == categoryId && entry.DisplayInFilters).ToList();
+                if (sellerId != null)
+                {
+                    var mappedCategories = db.Categories
+                        .Include(entry => entry.MappedCategories.Select(mc => mc.ProductParameters.Select(pp => pp.ProductParameterProducts)))
+                        .Where(
+                            entry =>
+                                entry.SellerId == sellerId && entry.MappedParentCategoryId == categoryId &&
+                                entry.IsActive).ToList();
+                    var mappedCategoriesParameters = mappedCategories
+                        .SelectMany(entry => entry.ProductParameters)
+                        .Where(entry => entry.DisplayInFilters).ToList();
+                    productParameters = productParameters.Union(mappedCategoriesParameters).ToList();
+                }
+                var productParametersInItems =
+                    items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue))
+                        .Union(items.Select(entry=>entry.Vendor))
+                        .Union(items.Select(entry=>entry.Seller.UrlName))
+                        .Union(items.Select(entry=>entry.OriginCountry))
+                        .Distinct()
+                        .ToList();
+                productParameters.InsertRange(0, generalParams);
+                var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
+                foreach (var productParameterName in productParameterNames)
+                {
+                    var parameters = productParameters.Where(entry => entry.UrlName == productParameterName).ToList();
+                    var parameter = parameters.First();
+                    parameter.ProductParameterValues =
+                        parameters.SelectMany(entry => entry.ProductParameterValues)
+                            .Distinct(new ProductParameterValueComparer())
+                            .ToList();
+
+                    if (options == null || !options.Contains(parameter.UrlName))
+                    {
+                        parameter.ProductParameterValues =
+                            parameter.ProductParameterValues.Where(
+                                entry => productParametersInItems.Contains(entry.ParameterValueUrl)).ToList();
+                    }
+
+                    result.ProductParameters.Add(parameter);
+                }
+
+                result.ProductParameters = productParameters;
             }
 
             result.Products = items.Skip(skip).Take(take + 1).ToList();
@@ -354,12 +476,12 @@ namespace Benefit.Services.Domain
             }
 
             var vendorParams =
-                   items.Select(entry => entry.Vendor).Distinct().ToList().Select(entry => new ProductParameterValue()
+                   items.Select(entry => entry.Vendor).Distinct().ToList().Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
                    {
                        ParameterValue = entry,
                        ParameterValueUrl = entry
                    }).OrderBy(entry => entry.ParameterValue).ToList();
-            if (vendorParams.Count > 1)
+            if (vendorParams.Count >= 1)
             {
                 productParametersList.Add(new ProductParameter()
                 {
@@ -371,12 +493,12 @@ namespace Benefit.Services.Domain
             }
 
             var originCountryParams =
-                 items.Select(entry => entry.OriginCountry).Distinct().ToList().Select(entry => new ProductParameterValue()
+                 items.Select(entry => entry.OriginCountry).Distinct().ToList().Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
                  {
                      ParameterValue = entry,
                      ParameterValueUrl = entry
                  }).OrderBy(entry => entry.ParameterValue).ToList();
-            if (originCountryParams.Count > 1)
+            if (originCountryParams.Count >= 1)
             {
                 productParametersList.Add(new ProductParameter()
                 {
@@ -389,7 +511,7 @@ namespace Benefit.Services.Domain
             return productParametersList;
         }
 
-        public NavigationEntitiesViewModel<Product> GetSellerCatalog(string sellerUrl, string categoryUrl, string options)
+        public NavigationEntitiesViewModel<Product> GetSellerProductsCatalog(string sellerUrl, string categoryUrl, string options)
         {
             var categoriesService = new CategoriesService();
             var result = new ProductsViewModel();

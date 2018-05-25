@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
-using System.Web.Routing;
 
 namespace Benefit.Web.Filters
 {
@@ -22,7 +18,7 @@ namespace Benefit.Web.Filters
                 return;
             }
             var subdomain = host.Substring(0, index);
-            string[] blacklist = { "www", "benefit", "mail" };
+            string[] blacklist = { "www", "benefit", "mail", "benefit-company", "uzhgorod" };
             if (blacklist.Contains(subdomain))
             {
                 return;

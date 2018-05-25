@@ -1,6 +1,6 @@
 ﻿<!DOCTYPE html>
-<html lang="uk">
-<head>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head lang="uk">
     <title>@ViewBag.Title - Benefit</title>
     @Html.Partial("_head")
     @RenderSection("meta", required: false)
@@ -8,84 +8,69 @@
     @RenderSection("styles", required: false)
     @RenderSection("headscripts", required: false)
 </head>
-<body class="@ViewBag.MainPageClass">
-    <div class="darker hidden"></div>
-    @Html.Partial("_header")
-    @Html.Partial("_ControlPanelPartial")
-    <!-- overlay -->
-    <div class="login_box_over hidden"></div>
-    <div class="empty_over hidden"></div>
-    <div class="container container_provider container_padding">
-        <div class="container_table clearfix @ViewBag.MainContentClass">
-            <aside class="left_sidebar left_sidebar_main">
-                @RenderSection("LeftAside", false)
-            </aside>
-            <main class="@(ViewBag.MainContainerClass ?? "col-8 full_content")">
-                @RenderBody()
-            </main>
-            <aside class="right_sidebar right_sidebar_main">
-                @Html.Partial("_SocialGroups")
-            </aside>
+<body class="fill_bg_n" id="main">
+    <div id="bg"></div>
+    <div id="panel"></div>
+    <div id="popover-here"></div>
+    <div class="wrapper1 with_left_block front_page basket_normal basket_fill_COLOR side_LEFT catalog_icons_Y banner_auto  mheader-v1 header-v3 regions_Y fill_N footer-v2 front-vindex3 title-v3 with_phones">
+        <div class="header_wrap visible-lg visible-md title-v3 index">
+            @Html.Partial("_header")
         </div>
-    </div>
-    <footer>
+
+        @Html.Partial("_headerFixed")
+
+        @Html.Partial("_mobileHeader")
+
+        @RenderBody()
+
         @Html.Partial("_FooterPartial")
-    </footer>
-    @Scripts.Render("~/bundles/master")
-    @RenderSection("scripts", required: false)
-    <script>
-        var searchWordsUrl = '@Url.Action("SearchWords", "Search")';
-        var searchUrl = '@Url.Action("Index", "Search")';
-        $("#search").devbridgeAutocomplete({
-            width: 300,
-            minChars: 3,
-            serviceUrl: searchWordsUrl,
-            onSelect: function (suggestion) {
-                window.location.href = searchUrl + "?term=" + suggestion.data;
-            }
-        });
-        if ($("#seller-id").length === 0) {
-            $("#search-by-seller").hide();
-        } else {
-            $("#search-by-seller").show();
-        }
+        <div class="bx_areas"></div>
+        <div class="inline-search-block fixed with-close big">
+            <div class="maxwidth-theme" style="background: #f9f9f9;">
+                <div class="col-md-12">
+                    <div class="search-wrapper">
+                        <div id="title-search">
+                            @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
+                            {
+                            <div class="search-input-div">
+                                <input class="search-input" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
+                            </div>
+                                <div class="search-button-div">
+                                    <button class="btn btn-search btn-default bold btn-lg" type="submit">Пошук</button>
+                                    <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--
+        <script type="text/javascript">if(!window.BX)window.BX={};if(!window.BX.message)window.BX.message=function(mess){if(typeof mess=='object') for(var i in mess) BX.message[i]=mess[i]; return true;};</script>
+        -->
+        <script>
+            var searchWordsUrl = '@Url.Action("SearchWords", "Search")';
+            var searchUrl = '@Url.Action("Index", "Search")';
+            var cartUrl = '@Url.Action("GetCart", "Cart", new {area = string.Empty})';
 
-        $('#loginPartial').load('@Url.Action("LoginPartial", "Home")');
-        $('.login_links').load('@Url.Action("MobileLoginPartial", "Home")');
-        var categoriesUrl = '@Url.Action("CategoriesPartial", "Home")';
+        </script>
+        <script type="text/javascript" src="~/Scripts/v3/kernel_main.js"></script>
+        <script type="text/javascript" src="~/Scripts/jquery-2.2.3.min.js"></script>
+        <script type="text/javascript" src="~/Scripts/jquery.autocomplete.min.js"></script>
+        <script type="text/javascript" src="~/Scripts/v3/ajax.js"></script>
+        <script type="text/javascript" src="~/Scripts/v3/template_318eaa753f456b90a6d135cb3f5aace3.js"></script>
+        <script type="text/javascript" src="~/Scripts/v3/default_84b0f0da7abeae3ee8bdab600a51e10a.js"></script>
+        <script type="text/javascript" src="~/Scripts/v3/default_34abd663f55e3f30e482309b7ae729af.js"></script>
+        <script type="text/javascript" src="~/Scripts/site.js"></script>
+        <script src="~/Scripts/jquery.mask.min.js"></script>
+        <script src="~/Scripts/v3/menu.js"></script>
+        @RenderSection("scripts", required: false)
+        <script src="~/Scripts/v3/mainpage.js"></script>
+        <div class="title-search-result title-search-input_fixed"></div>
+        <div class="title-search-result title-search-input fixed_type"></div>
 
-        var categoryId = $('#right-menu').attr("data-category-id");
-        if (!categoryId) {
-            categoryId = "";
-        }
-        categoriesUrl = categoriesUrl + "?parentCategoryId=" + categoryId;
-
-        var sellerUrl = $('#right-menu').attr("data-seller-url");
-        if (!sellerUrl) {
-            sellerUrl = "";
-        }
-        categoriesUrl = categoriesUrl + "&sellerUrl=" + sellerUrl;
-
-        //load left menu
-        $('#right-menu').load(categoriesUrl);
-
-        //load dropdown Категорії меню
-        if ($(".categories_drop").length > 0) {
-            $.get('@Url.Action("CategoriesPartial"
-             , "Home")?isDropDown=true',
-                function (data) {
-                    $(".categories_drop").after(data);
-                });
-        }
-
-        $("#order-cart, .deliveri_edit").click(function () {
-            var cartUrl = '@Url.Action("GetCart","Cart")';
-            $("#cart-container").load(cartUrl, function () {
-                $("#basket_modal").modal('show');
-            });
-        });
-
-    </script>
+        <a class="scroll-to-top ROUND_COLOR PADDING" href="#" id="scrollToTop"></a>
+    </div>
     @Html.Partial("_RegionModal")
     <div id="cart-container"></div>
 </body>

@@ -60,6 +60,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 cat.Order = i;
                 db.Entry(cat).State = EntityState.Modified;
             }
+            db.Configuration.ValidateOnSaveEnabled = false;
             db.SaveChanges();
             return Json("Сортування категорій збережено");
         }

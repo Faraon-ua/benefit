@@ -1,0 +1,126 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@model AnketaViewModel
+
+@{
+    ViewBag.Title = "Анкета для підключення до системи Benefit Company";
+    var lastNews = ViewBag.LastNews as List<InfoPage>;
+}
+@section styles
+{
+    <link href="~/Content/css/validation-errors.css" rel="stylesheet" />
+}
+<!--end-title_content-->
+<div class="wraps hover_shine" id="content">
+    <section class="page-top maxwidth-theme">
+        @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Анкета для підключення до системи Benefit Company" } })
+        <h1 id="pagetitle" class="no-padding no-margin">Анкета для підключення до системи Benefit Company</h1>
+    </section>
+    <div class="wrapper_inner wide_page">
+        @Html.Partial("_FlashMessage")
+        <div class="middle ">
+            <div class="container">
+                <div class="maxwidth-theme">
+                    <div class="head-block top">
+                        <div class="bottom_border"></div>
+                    </div>
+                    <div class="wrapper_inner ">
+                        <div class="right_block  wide_">
+                            <div class="middle ">
+                                <div class="container">
+                                    <div class="detail services">
+                                        <div class="line_block share top ">
+                                            <div class="share_wrapp">
+                                                <div class="text btn transparent">Поделиться</div>
+                                                <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
+                                            </div>
+                                        </div>
+                                        <div class="content">
+                                            @using (Html.BeginForm())
+                                            {
+                                                @Html.ValidationSummary()
+                                                <div class="card">
+                                                    <ul class="nav nav-tabs" role="tablist">
+                                                        <li role="presentation" class="active">
+                                                            <a style="font-size: 16px;" href="#auth" aria-controls="home" role="tab" data-toggle="tab">Реєстрація постачальника</a>
+                                                        </li>
+                                                    </ul>
+                                                    <!-- Tab panes -->
+                                                    <div class="tab-content">
+                                                        <div role="tabpanel" class="tab-pane active" id="auth">
+                                                            <div class="row">
+                                                                <div class="col-sm-4">
+                                                                    <label> Вид діяльності</label>
+                                                                    @Html.TextBoxFor(m => m.BusinessType)
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <label> Чи є у Вас інтернет-магазин?</label><br>
+                                                                    @Html.RadioButtonFor(m => m.HasEcommerceWebSite, true) Так
+                                                                    @Html.RadioButtonFor(m => m.HasEcommerceWebSite, false) Ні
+                                                                    @Html.ValidationMessageFor(m => m.BusinessType)
+                                                                </div>
+                                                                <div class="col-sm-4">
+                                                                    <label> Адреса сайту </label>
+                                                                    @Html.TextBoxFor(m => m.WebSiteAddress)
+                                                                </div>
+                                                            </div>
+                                                            <br>
+                                                            @Html.HiddenFor(m => m.Status)
+                                                            <div class="row">
+                                                                <div class="col-sm-6">
+                                                                    <label> ПІБ</label>
+                                                                    @Html.TextBoxFor(m => m.FullName)
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label> Назва компанії</label>
+                                                                    @Html.TextBoxFor(m => m.CompanyName)
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-6">
+                                                                    <label> Телефон</label>
+                                                                    @Html.TextBoxFor(m => m.Phone)
+                                                                </div>
+                                                                <div class="col-sm-6">
+                                                                    <label> Email</label>
+                                                                    @Html.TextBoxFor(m => m.Email)
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <label> Коментар</label>
+                                                                    @Html.TextAreaFor(m => m.Comment)
+                                                                </div>
+                                                            </div>
+                                                            <br>
+                                                            <div class="row">
+                                                                <div class="col-sm-12">
+                                                                    <div class="bx-soa-cart-total-button-container" style="text-align: center;">
+                                                                        <button type="submit" class="btn btn-default btn-lg btn-order-save">Подати заявку</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        </div>
+                                        <div class="wraps goods-block with-padding">
+                                            <div style="clear: both"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="clear: both"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left_block">
+                        @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", lastNews)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Linq;
 using System.Data.Entity;
+using System.Net;
 using System.Threading.Tasks;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
@@ -12,6 +13,8 @@ using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Cart;
 using Benefit.Services.Domain;
+using Benefit.Web.Filters;
+using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
 using NLog;
 
@@ -38,11 +41,11 @@ namespace Benefit.Web.Controllers
             }, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public ActionResult CheckSeller(string sellerId)
-        {
-            return Json(Cart.CurrentInstance.Order.SellerId != null && Cart.CurrentInstance.Order.SellerId != sellerId, JsonRequestBehavior.AllowGet);
-        }
+        //[HttpGet]
+        //public ActionResult CheckSeller(string sellerId)
+        //{
+        //    return Json(Cart.CurrentInstance.Order.SellerId != null && Cart.CurrentInstance.Order.SellerId != sellerId, JsonRequestBehavior.AllowGet);
+        //}
 
         public ActionResult AddProduct(OrderProduct product, string sellerId)
         {
@@ -50,33 +53,42 @@ namespace Benefit.Web.Controllers
             return Json(productsNumber);
         }
 
-        public ActionResult RemoveProduct(string productId)
+        public ActionResult UpdateQuantity(string productId, string sellerId, double amount)
         {
-            var productsNumber = Cart.CurrentInstance.RemoveProduct(productId);
+            var productsNumber = Cart.CurrentInstance.UpdatePoductQuantity(productId, sellerId, amount);
+            return Json(productsNumber);
+        }
+
+        public ActionResult RemoveProduct(string productId, string sellerId)
+        {
+            var productsNumber = Cart.CurrentInstance.RemoveProduct(sellerId, productId);
             return Json(productsNumber);
         }
 
         [HttpPost]
         public ActionResult CompleteOrder(List<OrderProduct> orderProducts, string sellerId)
         {
-            Cart.CurrentInstance.Clear();
+            Cart.CurrentInstance.ClearSellerOrder(sellerId);
             foreach (var orderProduct in orderProducts)
             {
                 Cart.CurrentInstance.AddProduct(orderProduct, sellerId);
             }
             var orderSummary = Cart.CurrentInstance.GetOrderProductsCountAndPrice();
-            return Json(new { redirectUrl = Url.Action("Order"), orderSummary.ProductsNumber, orderSummary.Price });
+            return Json(new { redirectUrl = Url.Action("order", "cart", new { id = sellerId }), orderSummary.ProductsNumber, orderSummary.Price });
         }
 
-        [Authorize]
-        public ActionResult Order()
+        [FetchCategories]
+        public ActionResult Order(string id)
         {
-            var model = new CompleteOrderViewModel();
-            model.Order = Cart.CurrentInstance.Order;
-            var sellerId = Cart.CurrentInstance.Order.SellerId;
+            var model = new CompleteOrderViewModel
+            {
+                SellerId = id,
+                Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == id)
+            };
+            if (model.Order == null) return HttpNotFound();
             using (var db = new ApplicationDbContext())
             {
-                var seller = db.Sellers.Include(entry => entry.Promotions).FirstOrDefault(entry => entry.Id == sellerId);
+                var seller = db.Sellers.Include(entry => entry.Promotions).FirstOrDefault(entry => entry.Id == id);
                 var userId = User.Identity.GetUserId();
                 if (seller == null) return HttpNotFound();
 
@@ -102,7 +114,7 @@ namespace Benefit.Web.Controllers
                             if (model.Order.Sum >= currentPromotion.DiscountFrom)
                             {
                                 model.Order.SellerDiscount = currentPromotion.IsValuePercent
-                                    ? model.Order.Sum*currentPromotion.DiscountValue/100
+                                    ? model.Order.Sum * currentPromotion.DiscountValue / 100
                                     : currentPromotion.DiscountValue;
                                 model.Order.SellerDiscountName = currentPromotion.Name;
                             }
@@ -114,14 +126,14 @@ namespace Benefit.Web.Controllers
                         if (model.Order.Sum >= currentPromotion.DiscountFrom)
                         {
                             model.Order.SellerDiscount = currentPromotion.IsValuePercent
-                                ? model.Order.Sum*currentPromotion.DiscountValue/100
+                                ? model.Order.Sum * currentPromotion.DiscountValue / 100
                                 : currentPromotion.DiscountValue;
                             model.Order.SellerDiscountName = currentPromotion.Name;
                         }
                     }
                 }
 
-                model.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == sellerId).ToList();
+                model.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == id).ToList();
                 model.Addresses = db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
                 if (seller.IsPrePaidPaymentActive)
                     model.PaymentTypes.Add(PaymentType.PrePaid);
@@ -138,16 +150,18 @@ namespace Benefit.Web.Controllers
             return View(model);
         }
 
+        [FetchCategories]
         public ActionResult OrderCompleted(string number)
         {
             return View(model: number);
         }
 
         [HttpPost]
-        [Authorize]
+        [FetchCategories]
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
-            completeOrder.Order = Cart.CurrentInstance.Order;
+            completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
+            if (completeOrder.Order == null) return HttpNotFound();
 
             if (completeOrder.PaymentType == PaymentType.Bonuses)
             {
@@ -171,11 +185,11 @@ namespace Benefit.Web.Controllers
 
                 //order notifications
                 var NotificationService = new NotificationsService();
-                var orderUrl = Url.Action("Details", "Orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName }, Request.Url.Scheme);
+                var orderUrl = Url.Action("details", "orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName }, Request.Url.Scheme);
                 Task.Run(() =>
                     NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl,
                         completeOrder.Order.SellerId));
-                return RedirectToAction("OrderCompleted", new { number = orderNumber });
+                return RedirectToAction("ordercompleted", new { number = orderNumber });
             }
             using (var db = new ApplicationDbContext())
             {
@@ -196,35 +210,15 @@ namespace Benefit.Web.Controllers
                 if (seller.IsBonusesPaymentActive)
                     completeOrder.PaymentTypes.Add(PaymentType.Bonuses);
             }
+
+            TempData["ErrorMessage"] = ModelState.ModelStateErrors();
             return View(completeOrder);
         }
 
         public ActionResult GetCart()
         {
-            var cart = Cart.CurrentInstance.Order;
+            var cart = Cart.CurrentInstance.Orders;
             return PartialView("_CartPartial", cart);
-        }
-
-        public ActionResult Index()
-        {
-            var cart = Cart.CurrentInstance;
-            using (var db = new ApplicationDbContext())
-            {
-                foreach (var orderProduct in cart.Order.OrderProducts)
-                {
-                    var product = db.Products.Include(entry => entry.Currency).FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
-                    orderProduct.ProductName = product.Name;
-                    orderProduct.ProductPrice = (double)(product.Price * product.Currency.Rate);
-                    foreach (var orderProductOption in orderProduct.OrderProductOptions)
-                    {
-                        var productOption = db.ProductOptions.Find(orderProductOption.ProductOptionId);
-                        orderProductOption.ProductOptionName = productOption.Name;
-                        orderProductOption.ProductOptionPriceGrowth = productOption.PriceGrowth;
-                    }
-                }
-            }
-
-            return View(cart.Order);
         }
     }
 }

@@ -1,0 +1,106 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@model Seller
+@{
+    Layout = "_SellerLayout.cshtml";
+    ViewBag.Title = "Головна";
+}
+@section scripts
+{
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+    </script>
+    <script src="~/Scripts/site.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
+}
+<section id="slider_main">
+    <div id="slider_images">
+        @foreach (var image in Model.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+        {
+            <div>
+                <img class="item" src="~/Images/SellerGallery/@Model.Id/@image.ImageUrl" alt="@Model.AltText" />
+            </div>
+        }
+    </div>
+</section>
+
+<section id="info-bar" class="text-xs-center hidden-sm-down">
+    <div class="container p-y-1">
+        <div class="row" style="text-align: center;">
+            @foreach (var page in Model.InfoPages.OrderBy(entry => entry.Order).Take(3))
+            {
+                <div class="col-xs-12 col-md-6 col-lg-4 p-a-1" style="float: none; display: inline-block;">
+                    <div class="text-plus-icon">
+                        <div class="col-md-2" style="border: none;">
+                            <img src="~/Images/NewsLogo/@page.ImageUrl" />
+                        </div>
+                        <div class="col-md-10">
+                            <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })" class="name">@page.Name</a>
+                            <div class="small">@page.ShortContent</div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="content-block">
+    <div id="fn-content">
+        <section class="m-b-3 p-y-1 bg-light l-t l-b">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-lg-7 p-y-2 text-xs-left">
+                        @Html.Raw(Model.Description)
+                    </div>
+                    <div class="col-xs-12 col-lg-5" style="overflow: hidden;">
+                        <h2>Відгуки</h2>
+                        @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                        {
+                            CanReview = false,
+                            SellerId = Model.Id,
+                            TargetName = Model.Name,
+                            Reviews = Model.ApprovedReviews
+                        })
+                        <div class="clearfix"></div>
+                        <a class="btn btn-sm btn-info pull-xs-right" href="@Url.Action("reviews","home")">Усі відгуки</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        @if (Model.HasEcommerce)
+        {
+            <section class="p-y-1">
+                <div class="container">
+                    @if (Model.FeaturedProducts.Any())
+                    {
+                        <div class="heading1608 dotted">
+                            <div class="h1 title">Рекомендовані товари</div>
+                        </div>
+                        <div class="slick-products gridBlock">
+                            @foreach (var product in Model.FeaturedProducts)
+                            {
+                                @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                            }
+                        </div>
+                        <hr />
+                    }
+                    @if (Model.PromotionProducts.Any())
+                    {
+                        <div class="heading1608 dotted">
+                            <div class="h1 title">Акційні товари</div>
+                        </div>
+                        <div class="slick-products gridBlock">
+                            @foreach (var product in Model.PromotionProducts)
+                            {
+                                @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                            }
+                        </div>
+                    }
+                </div>
+            </section>
+        }
+    </div>
+</section>

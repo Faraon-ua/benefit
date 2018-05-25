@@ -1,34 +1,43 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
-using Benefit.Common.Constants;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
+using Benefit.Domain.Models.Enums;
+using Benefit.Services;
+using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers
 {
     public class PagesController : Controller
     {
-        //
-        // GET: /Pages/
         ApplicationDbContext db = new ApplicationDbContext();
+
+        [FetchSeller]
+        [FetchCategories]
+        [FetchLastNews]
         public ActionResult Index(string id)
         {
-            var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id);
-            if (page == null) return HttpNotFound();
-            return View(page);
+            if (ViewBag.Seller != null)
+            {
+                var seller = ViewBag.Seller as Seller;
+                var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id && entry.SellerId == seller.Id);
+                if (page == null) return HttpNotFound();
+                return View("~/Views/SellerArea/Page.cshtml", page);
+            }
+            else
+            {
+                var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id);
+                if (page == null) return HttpNotFound();
+                return View(page);
+            }
         }
 
-        public ActionResult Content(string id)
+        public ActionResult PageContent(string id)
         {
             var page = db.InfoPages.FirstOrDefault(entry => entry.Id == id);
             if (page == null) return HttpNotFound();
             return View(page);
-        }
-
-        public ActionResult News(int page = 0)
-        {
-            var news = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive).OrderByDescending(entry => entry.CreatedOn).Skip(page * ListConstants.NewsTakePerPage).Take(ListConstants.NewsTakePerPage).ToList();
-            ViewBag.PagesCount = db.InfoPages.Count(entry => entry.IsNews) / ListConstants.NewsTakePerPage;
-            return View(news);
         }
     }
 }

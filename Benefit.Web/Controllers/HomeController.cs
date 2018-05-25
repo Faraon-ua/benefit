@@ -5,14 +5,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.Routing;
-using Benefit.Common.Constants;
 using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
-using Benefit.Services.Domain;
+using Benefit.Domain.Models.Enums;
+using Benefit.Services;
 using Benefit.Web.Controllers.Base;
+using Benefit.Web.Filters;
+using Benefit.Web.Helpers;
 using Benefit.Web.Models;
 using WebGrease.Css.Extensions;
 
@@ -20,26 +21,81 @@ namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
+        [FetchSeller]
+        [FetchCategories]
+        //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
+            //handle seller subdomain
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    seller.FeaturedProducts = db.Products
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Seller)
+                        .Where(entry =>
+                            entry.IsActive && entry.SellerId == seller.Id && entry.IsFeatured).ToList();
+                    seller.PromotionProducts = db.Products
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Seller)
+                        .Where(entry =>
+                            entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).ToList();
+                }
+
+                if (seller.HasEcommerce)
+                {
+                    return View("~/views/sellerarea/home.cshtml", seller);
+                }
+                return View("~/views/sellerareabc/home.cshtml", seller);
+            }
             var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())
             {
                 mainPageViewModel.FeaturedProducts = db.Products
+                    .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList();
+                    .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList()
+                    .Select(entry => new ProductPartialViewModel()
+                    {
+                        Product = entry
+                    }).ToList();
                 mainPageViewModel.NewProducts = db.Products
+                    .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller)
-                    .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList();
-                mainPageViewModel.Banners =
-                    db.Banners.Where(entry => entry.BannerType == BannerType.MainPageBanners)
+                    .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList()
+                    .Select(entry => new ProductPartialViewModel()
+                    {
+                        Product = entry
+                    }).ToList();
+                mainPageViewModel.News = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive)
+                    .OrderByDescending(entry => entry.CreatedOn).Take(5).ToList();
+                mainPageViewModel.News.ForEach(entry =>
+                    entry.Name = entry.Name.Length > 75 ? entry.Name.Substring(0, 75) + "..." : entry.Name);
+                mainPageViewModel.PrimaryBanners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage)
                         .OrderBy(entry => entry.Order)
                         .ToList();
+                mainPageViewModel.MobileBanners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.MobileMainPage)
+                        .OrderBy(entry => entry.Order)
+                        .ToList();
+                mainPageViewModel.TopSideBanners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.SideTopMainPage)
+                        .OrderBy(entry => entry.Order)
+                        .ToList();
+                mainPageViewModel.BottomSideBanners =
+                    db.Banners.Where(entry => entry.BannerType == BannerType.SideBottomMainPage)
+                        .OrderBy(entry => entry.Order)
+                        .ToList();
+                mainPageViewModel.FirstRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.FirstRowMainPage);
+                mainPageViewModel.SecondRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.SecondRowMainPage);
+                mainPageViewModel.Brands = db.Sellers.Include(entry => entry.Images).Where(entry => entry.IsActive && entry.IsFeatured).ToList();
             }
             return View(mainPageViewModel);
         }
@@ -57,82 +113,6 @@ namespace Benefit.Web.Controllers
         public ActionResult MobileLoginPartial()
         {
             return PartialView("_MobileLoginPartial");
-        }
-
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByParam = "parentCategoryId;sellerUrl;isDropDown;")]
-        public ActionResult CategoriesPartial(string parentCategoryId, string sellerUrl, bool? isDropDown = null)
-        {
-            if (string.IsNullOrEmpty(parentCategoryId))
-                parentCategoryId = null;
-            if (string.IsNullOrEmpty(sellerUrl))
-                sellerUrl = null;
-            using (var db = new ApplicationDbContext())
-            {
-                var parent = db.Categories.Find(parentCategoryId);
-                var parentName = parent == null ? null : parent.Name;
-                var categories = db.Categories.Include(entry => entry.ParentCategory).Include(entry => entry.ChildCategories).Include(entry=>entry.Products).Where(entry => entry.ParentCategoryId == parentCategoryId && entry.IsActive && !entry.IsSellerCategory && (entry.ChildCategories.Any() || entry.Products.Any())).OrderBy(entry => entry.Order).ToList();
-                categories.ForEach(entry => entry.ChildCategories = db.Categories.Where(cat => cat.ParentCategoryId == entry.Id && cat.IsActive).ToList());
-                if (sellerUrl != null)
-                {
-                    var sellersService = new SellerService();
-                    var sellerCategories = sellersService.GetAllSellerCategories(sellerUrl).ToList();
-                    var sellerCategoriesIds = sellerCategories.Select(entry => entry.Id).ToList();
-                    if (parent == null || parent.ParentCategoryId == null)
-                    {
-                        categories =
-                            sellerCategories.Where(entry => entry.ParentCategoryId == null)
-                                .OrderBy(entry => entry.Order)
-                                .ToList();
-                        foreach (var category in categories)
-                        {
-                            category.ChildCategories = category.ChildCategories.OrderBy(entry => entry.Order).ToList();
-                        }
-                        if (parent == null)
-                        {
-                            parentName = categories.FirstOrDefault() == null ? null : categories.FirstOrDefault().Name;
-                        }
-                    }
-                    else
-                    {
-                        categories = categories.Where(entry => sellerCategoriesIds.Contains(entry.Id)).ToList();
-                        while (categories.Count == 1)
-                        {
-                            var catId = categories.First().Id;
-                            parentName = categories.First().Name;
-                            var childCategories =
-                                db.Categories.Include(entry => entry.ParentCategory)
-                                    .Where(
-                                        entry =>
-                                            entry.ParentCategoryId == catId && entry.IsActive &&
-                                            sellerCategoriesIds.Contains(entry.Id))
-                                    .OrderBy(entry => entry.Order)
-                                    .ToList();
-                            if (childCategories.Count == 0) break;
-                            categories = childCategories;
-                        }
-                    }
-                    var sellerCatsModel = new CategoriesListViewModel()
-                    {
-                        ParentName = parentName,
-                        SellerUrlName = sellerUrl,
-                        Items = categories.ToList()
-                    };
-                    return PartialView((parent == null || parent.ParentCategoryId == null) ? "_SellerCategoriesPartial" : "_SellerChildCategoriesPartial", sellerCatsModel);
-                }
-                if (parent != null)
-                {
-                    categories = categories.Where(entry => !entry.ParentCategory.ChildAsFilters).ToList();
-                }
-
-                ViewBag.IsDropDown = isDropDown ?? false;
-                var model = new CategoriesListViewModel()
-                {
-                    ParentName = parentName,
-                    Items = categories.ToList()
-                };
-
-                return PartialView("_CategoriesPartial", model);
-            }
         }
 
         [HttpGet]
@@ -208,47 +188,61 @@ namespace Benefit.Web.Controllers
             return Content(output);
         }
 
-        public ActionResult About()
+        [FetchSeller]
+        [FetchCategories]
+        public ActionResult Contacts()
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
+            return View("~/Views/SellerArea/Contacts.cshtml");
         }
 
-        public ActionResult Contact()
+        [FetchSeller]
+        [FetchCategories]
+        public ActionResult Reviews()
         {
-            ViewBag.Message = "Your contact page.";
+            return View("~/Views/SellerArea/Reviews.cshtml");
+        }
 
-            return View();
+        [FetchSeller]
+        [FetchCategories]
+        public ActionResult catalog()
+        {
+            return View("~/Views/SellerArea/Catalog.cshtml");
+        }
+
+        [FetchSeller]
+        [FetchCategories]
+        public ActionResult gallery()
+        {
+            return View("~/Views/SellerArea/Gallery.cshtml");
         }
 
         public ActionResult Map()
         {
-/*
-            using (var db = new ApplicationDbContext())
-            {
-                var regionId = RegionService.GetRegionId();
-                var cats =
-                    db.Sellers
-                        .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                        .Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId))
-                        .Select(entry => entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category)
-                         .OrderBy(
-                            entry =>
-                                entry.ParentCategory == null
-                                    ? 1000
-                                    : entry.ParentCategory.ParentCategory == null
-                                        ? 1000
-                                        : entry.ParentCategory.ParentCategory.Order)
-                        .ThenBy(
-                            entry => entry.ParentCategory == null ? 1000 : entry.ParentCategory.Order)
-                        .ThenBy(entry => entry.Order)
-                        .Where(entry => entry != null)
-                        .Distinct()
-                        .ToList();
-                return View(cats);
-            }
-*/
+            /*
+                        using (var db = new ApplicationDbContext())
+                        {
+                            var regionId = RegionService.GetRegionId();
+                            var cats =
+                                db.Sellers
+                                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                                    .Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId))
+                                    .Select(entry => entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category)
+                                     .OrderBy(
+                                        entry =>
+                                            entry.ParentCategory == null
+                                                ? 1000
+                                                : entry.ParentCategory.ParentCategory == null
+                                                    ? 1000
+                                                    : entry.ParentCategory.ParentCategory.Order)
+                                    .ThenBy(
+                                        entry => entry.ParentCategory == null ? 1000 : entry.ParentCategory.Order)
+                                    .ThenBy(entry => entry.Order)
+                                    .Where(entry => entry != null)
+                                    .Distinct()
+                                    .ToList();
+                            return View(cats);
+                        }
+            */
             return View();
         }
 
@@ -260,13 +254,13 @@ namespace Benefit.Web.Controllers
                 var sellers =
                     db.Sellers
                     .Include(entry => entry.SellerCategories.Select(cat => cat.Category))
-                    .Where(entry =>entry.IsActive && entry.Longitude != null && entry.Latitude != null && entry.IsBenefitCardActive)
+                    .Where(entry => entry.IsActive && entry.Longitude != null && entry.Latitude != null && entry.IsBenefitCardActive)
                     .ToList();
 
                 var result = sellers.Select(entry => new SellerMapLocation()
                 {
                     Name = entry.Name,
-                    Url = Url.RouteUrl(RouteConstants.SellersRouteName, new RouteValueDictionary(new { id = entry.UrlName, action = string.Empty }), Request.Url.Scheme, Request.Url.Host),
+                    Url = Url.SubdomainAction(entry.UrlName, "Index", "Home"),
                     Specialization = entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault) == null ? "" : entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category.Name,
                     UserDiscount = entry.UserDiscount,
                     Latitude = entry.Latitude.Value,
@@ -276,122 +270,32 @@ namespace Benefit.Web.Controllers
             }
         }
 
-        #region tempMethods
-
-        public ActionResult PostExportActions()
+        [FetchLastNews]
+        [FetchCategories]
+        public ActionResult Anketa(SellerStatus status)
         {
-            using (var db = new ApplicationDbContext())
+            return View(new AnketaViewModel { Status = status });
+        }
+
+        [FetchLastNews]
+        [FetchCategories]
+        [HttpPost]
+        public ActionResult Anketa(AnketaViewModel anketa)
+        {
+            if (ModelState.IsValid)
             {
-                //string empty card numbers to null
-                db.Users.Where(entry => entry.CardNumber == "").ForEach(entry =>
-                {
-                    entry.CardNumber = null;
-                    db.Entry(entry).State = EntityState.Modified;
-                });
-
-                //decode seller descriptions
-                foreach (var seller in db.Sellers)
-                {
-                    seller.Description = Server.HtmlDecode(seller.Description);
-                    seller.Name = seller.Name.Replace("&quot;", string.Empty);
-                    db.Entry(seller).State = EntityState.Modified;
-                }
-
-                db.SaveChanges();
-
-                //resave seller images
-
-                #region ftp
-
-                /* using (var ftpClient = new FtpClient())
-                {
-                    ftpClient.Host = "benefit-company.com";
-                    ftpClient.Credentials = new NetworkCredential("test1", "ynYjAQJs");
-                    ftpClient.ReadTimeout = 50000;
-                    ftpClient.DataConnectionConnectTimeout = 50000;
-                    ftpClient.DataConnectionReadTimeout = 50000;
-
-                    var imagesPath = "/www/benefit-company.com/image/";
-                    var destinationDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty),"Images");
-
-                    ftpClient.Connect();
-
-                    foreach (var sellerImage in db.Images.Where(entry => entry.SellerId != null))
-                    {
-                        using (
-                            var ftpStream =
-                                ftpClient.OpenRead(Path.Combine(imagesPath, sellerImage.ImageUrl)))
-                        {
-                            var dotIndex = sellerImage.ImageUrl.LastIndexOf('.');
-                            var fileExt = sellerImage.ImageUrl.Substring(dotIndex,
-                                sellerImage.ImageUrl.Length - dotIndex);
-
-                            var imagePath = string.Empty;
-                            if (sellerImage.ImageType == ImageType.SellerLogo)
-                            {
-                                imagePath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId + fileExt);
-                            }
-                            if (sellerImage.ImageType == ImageType.SellerGallery)
-                            {
-                                imagePath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId, sellerImage.Id + fileExt);
-                            }
-                            using (
-                                var fileStream =
-                                    System.IO.File.Create(imagePath, (int) ftpStream.Length))
-                            {
-                                var buffer = new byte[8*1024];
-                                int count;
-                                while ((count = ftpStream.Read(buffer, 0, buffer.Length)) > 0)
-                                {
-                                    fileStream.Write(buffer, 0, count);
-                                }
-                            }
-                            sellerImage.ImageUrl = sellerImage.SellerId + fileExt;
-                            db.Entry(sellerImage).State = EntityState.Modified;
-                        }
-                    }
-
-                    ftpClient.Disconnect();
-                }*/
-
-                #endregion
-
-                #region Images local
-
-                //var imagesPath = "D:/BenefitStuff/images/";
-                //var destinationDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty), "Images");
-                //foreach (var sellerImage in db.Images.Where(entry => entry.SellerId != null))
-                //{
-                //    var dotIndex = sellerImage.ImageUrl.LastIndexOf('.');
-                //    var fileExt = sellerImage.ImageUrl.Substring(dotIndex,
-                //        sellerImage.ImageUrl.Length - dotIndex);
-
-                //    var destPath = string.Empty;
-                //    var sourcePath = Path.Combine(imagesPath, sellerImage.ImageUrl);
-                //    if (sellerImage.ImageType == ImageType.SellerLogo)
-                //    {
-                //        sellerImage.ImageUrl = sellerImage.SellerId + fileExt;
-                //        destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId + fileExt);
-                //    }
-                //    if (sellerImage.ImageType == ImageType.SellerGallery)
-                //    {
-                //        Directory.CreateDirectory(Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId));
-                //        sellerImage.ImageUrl = sellerImage.Id + fileExt;
-                //        destPath = Path.Combine(destinationDirectory, sellerImage.ImageType.ToString(), sellerImage.SellerId, sellerImage.Id + fileExt);
-                //    }
-                //    if (System.IO.File.Exists(sourcePath))
-                //    {
-                //        System.IO.File.Copy(sourcePath, destPath, true);
-                //        db.Entry(sellerImage).State = EntityState.Modified;
-                //    }
-                //}
-                #endregion
-
-                db.SaveChanges();
-                return Content("ok");
+                var emailService = new EmailService();
+                emailService.SendSellerApplication(anketa);
+                TempData["SuccessMessage"] = "Дякуюємо за вашу заявку, в найближчий час з вами зв'яжеться наш менеджер";
             }
+            return View(anketa);
+        }
 
-        #endregion
+        [FetchSeller]
+        [FetchCategories]
+        public ActionResult About()
+        {
+            return View("~/Views/SellerArea/About.cshtml");
         }
     }
 }

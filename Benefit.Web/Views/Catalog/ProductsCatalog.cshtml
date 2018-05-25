@@ -8,7 +8,7 @@
     var title = new StringBuilder();
     if (Model.Category != null)
     {
-        title.Append(Model.Category.Title ?? Model.Category.Name + " - ");
+        title.Append(Model.Category.Title ?? Model.Category.Name);
     }
     if (Model.Seller != null)
     {
@@ -18,241 +18,341 @@
 }
 @section meta
 {
-    <meta name="description" content="@(Model.Category == null?  Model.Seller.ShortSescription : Model.Category.Description)">
+    <meta name="description" content="@(Model.Category == null?  Model.Seller.ShortDescription : Model.Category.Description)">
 }
 @section scripts{
     <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
-        var checkSellerCartUrl = '@Url.Action("CheckSeller", "Cart")';
-        var skip = parseInt('@ListConstants.DefaultTakePerPage');
+    </script>
+    <script src="~/Scripts/v3/products.js"></script>
+    <script>
+        var options = "";
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
         @{
             var categoryId = Model.Category == null ? "" : Model.Category.Id;
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
         }
         $(function () {
-            //select all checkboxes from url
-            var parts = location.href.split('/');
-            var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
-            var options = "";
-            @if (Model.Category != null)
-            {<text>
-            if (lastSegment.toLowerCase().replace('#', '') != '@Model.Category.UrlName.ToLower()') {
-                options = lastSegment;
-                $.each(options.split(";"), function (i, urlSegment) {
-                    if (urlSegment === "") return;
-                    var optKeyValue = urlSegment.split("=");
-                    var optionName = optKeyValue[0];
-                    var optionValues = optKeyValue[1].split(",");
-                    if (optionName === "sort") {
-                        $("select#provider_sort_select").val(optionValues[0]);
-                    } else {
-                        $.each(optionValues, function (j, optValue) {
-                            $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue)).prop('checked', true);
-                            $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]").prop('checked', true);
-                        });
+            $('body').on("click",
+                ".remove-filter",
+                function () {
+                    var optionName = $(this).parent().attr("data-option-name");
+                    var optValue = decodeURI($(this).parent().attr("data-option-value"));
+                    var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
+                    if (checkbox.length === 0) {
+                        checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + optValue.replace(" ", "") + "]")
                     }
+                    checkbox.click();
                 });
-            }
-            </text>
-            }
 
-            $("#add-more-products").click(function (e) {
+            $(".ajax_load_btn").click(function (e) {
                 e.preventDefault();
+                var moreBtn = $(this);
+                var currentPage = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
-                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&skip=" + skip + "&options=" + options, function (data) {
+                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&page=" + (currentPage + 1)  + "&options=" + options, function (data) {
                     if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                        $("#more-products").hide();
+                        moreBtn.hide();
                     }
-                    $("#more-products").before(data.products);
-                    skip += data.number;
+                    $(".product-item:last").after(data.products);
+                    moreBtn.attr("data-page", currentPage + 1);
                     $(".loader").hide();
                 });
             });
 
-            var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
-            $("body").on("click", ".product_buy", function (e) {
-                e.preventDefault();
-                var productId = $(this).attr("data-product-id");
-                var isWeightProduct = $(this).attr("data-is-weight-product").toLowerCase() === 'true';
-                var sellerId = $(this).attr("data-seller-id");
-                $.get(checkSellerCartUrl + "?sellerId=" + sellerId, function (isAnotherSeller) {
-                    if (isAnotherSeller) {
-                        if (!confirm("Увага! У кошику є товари від іншого постачальника. Вони будуть видалені, якщо Ви продовжите цю дію.")) {
-                            return;
-                        }
-                    }
-
-                    $.get(productOptionsUrl + "?productId=" + productId, function (data) {
-                        if (data) {
-                            $("#product-options-wrap").html(data);
-                            $("#product_modal").modal('show');
-                        } else {
-                            AddOrderProduct(productId, sellerId, false, isWeightProduct);
-                        }
-                    });
-                });
+            $(".bx_filter_parameters_box_title").click(function() {
+                $(this).parent().toggleClass("active");
+                $(this).next().slideToggle();
             });
 
-            $("body").on('click', "#buy-product-with-options", function () {
-                var productId = $(this).attr("data-product-id");
-                var sellerId = $(this).attr("data-seller-id");
-                AddOrderProduct(productId, sellerId, true, false);
+            $(".filter_opener").click(function(){
+                $(this).toggleClass("opened");
+                $(".bx_filter_vertical, .bx_filter").slideToggle(333);
             });
+
+            //select all checkboxes from url
+            var parts = location.href.split('/');
+            var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
+            var sortControl = $(".sort_btn[data-sort-value=Rating]");
+            @if (Model.Category != null)
+            {<text>
+            if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
+                     options = lastSegment;
+                     $.each(options.split(";"), function (i, urlSegment) {
+                         if (urlSegment === "") return;
+                         var optKeyValue = urlSegment.split("=");
+                         var optionName = optKeyValue[0];
+                         var optionValues = optKeyValue[1].split(",");
+                         if (optionName === "sort") {
+                             var optionValue = optionValues[0];
+                             sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
+                             $(".sort_btn span").removeClass("badge");
+                         } else {
+                             $.each(optionValues, function (j, optValue) {
+                                 var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue));
+                                 if (checkbox.length === 0) {
+                                     checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]")
+                                 }
+                                 checkbox.prop('checked', true);
+                                 var optionvalueText = checkbox.attr("text");
+                                 $(".selected-filters").append(
+                                     "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" + optionName + "' data-option-value='" + optValue+"'>" + optionvalueText + " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                 );
+                             });
+                         }
+                     });
+                 }
+             </text>
+            }
+            sortControl.find("span").addClass("badge");
 
             @if (Model.Category != null)
             {
                 <text>
-            $("#productFilters input[type=checkbox], select#provider_sort_select").change(function () {
-                $(".loader").show();
-                var parts = location.href.split('/');
-                var lastSegment = parts.pop() || parts.pop(); // handle potential trailing slash
-                var options = "";
+                    $('body').on('change click', "#productFilters input[type=checkbox], .sort_btn", function (e) {
+                        e.preventDefault();
+                        $(".loader").show();
+                        var parts = location.href.split('/');
+                        var lastSegment = (parts.pop() || parts.pop()).replace("#",""); // handle potential trailing slash
+                        var options = "";
 
-                if (lastSegment != '@Model.Category.UrlName') {
-                    options = lastSegment;
-                }
+                        if (lastSegment != '@Model.Category.UrlName') {
+                            options = lastSegment;
+                        }
 
+                        var parent = $(this).parents(".filter-section");
+                        var optionName = parent.attr("data-filter-name");
+                        var optionNameIndex = options.indexOf(optionName);
 
-                var parent = $(this).parents(".filter-section");
-                var optionName = parent.attr("data-filter-name");
-                var optionNameIndex = options.indexOf(optionName);
+                        var currentOption = '';
+                        var selectedValues = parent.find("input[type=checkbox]:checked").map(function () {
+                            return $(this).attr("id");
+                        }).get();
 
-                var currentOption = '';
-                var selectedValues = parent.find("input[type=checkbox]:checked").map(function () {
-                    return $(this).attr("id");
-                }).get();
-                if ($(this).attr("id") === "provider_sort_select") {
-                    selectedValues.push($("select#provider_sort_select").val());
-                }
-                if (selectedValues.length > 0) {
-                    currentOption = optionName;
-                    currentOption += "=";
-                    currentOption += selectedValues.join();
-                    currentOption += ";";
-                }
+                        if ($(this).attr("class").indexOf("sort_btn") >= 0) {
+                            var val = $(this).attr("data-sort-value");
+                            selectedValues.push(val);
+                        }
+                        if (selectedValues.length > 0) {
+                            currentOption = optionName;
+                            currentOption += "=";
+                            currentOption += selectedValues.join();
+                            currentOption += ";";
+                        }
 
-                if (optionNameIndex >= 0) {
-                    var ending = options.indexOf(";", optionNameIndex);
-                    var oldOption = options.substring(optionNameIndex, ending + 1);
-                    options = options.replace(oldOption, currentOption);
-                } else {
-                    options += currentOption;
-                }
-                if (lastSegment !== '@Model.Category.UrlName') {
-                    var locBuilder = location.href.replace(lastSegment + "/", "") + options;
-                    if (options.length > 0)
-                        locBuilder += "/";
-                    location.href = locBuilder;
-                } else {
-                    var locBuilder = location.href;
-                    if (location.href[location.href.length - 1] !== "/") {
-                        locBuilder += "/";
-                    }
-                    location.href = locBuilder + options + "/";
-                }
-            });
-            </text>
+                        if (optionNameIndex >= 0) {
+                            var ending = options.indexOf(";", optionNameIndex);
+                            var oldOption = options.substring(optionNameIndex, ending + 1);
+                            options = options.replace(oldOption, currentOption);
+                        } else {
+                            options += currentOption;
+                        }
+                        if (lastSegment !== '@Model.Category.UrlName') {
+                            var locBuilder = location.href.replace(lastSegment + "/", "") + options;
+                            if (options.length > 0)
+                                locBuilder += "/";
+                            location.href = locBuilder;
+                        } else {
+                            var locBuilder = location.href;
+                            if (location.href[location.href.length - 1] !== "/") {
+                                locBuilder += "/";
+                            }
+                            window.location.href = locBuilder + options + "/";
+                        }
+                    });
+                </text>
             }
         });
-
-        function AddOrderProduct(productId, sellerId, hasOptions, isWeightProduct) {
-
-            $(this).attr("disabled", "disabled");
-            $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
-            $("#" + productId).css("opacity", 0.3);
-
-            //todo: add products amount in the products list
-            var productAmount = 1; //$("#product_amount").val();
-            var productOptions;
-            if (hasOptions) {
-                productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
-                    var id = $(this).attr("id");
-                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
-                    if (!amount) {
-                        amount = 1;
-                    }
-                    return {
-                        ProductOptionId: id,
-                        Amount: amount
-                    };
-                }).get();
-            } else {
-                productOptions = [];
-            }
-
-            var product = {
-                ProductId: productId,
-                Amount: productAmount,
-                IsWeightProduct: isWeightProduct,
-                OrderProductOptions: productOptions
-            };
-
-            var order = {
-                product: product,
-                amount: productAmount
-            };
-            $.post(addToCartUrl + "?sellerId=" + sellerId,
-                order,
-                function (data) {
-                    $('#product_modal').modal('hide');
-                    setTimeout(function () {
-                        $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                        $("#" + productId).css("opacity", 1);
-                        setCartSummary(data);
-                    }, 1000);
-                });
-        }
     </script>
 }
-@section LeftAside{
-    @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model)
-}
 
-@*<main class="full_content full_content_product">*@
-<div class="product_row clearfix">
-    <div class="padding-bottom-15 clearfix">
-        <div class="col-md-9">
+<div class="wraps hover_shine" id="content">
+    <!--title_content-->
+    <div class="top_inner_block_wrapper maxwidth-theme" style="height: 80px;">
+        <section class="page-top maxwidth-theme ">
             @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
-        </div>
-        <div class="provider_sort col-md-3 filter-section" data-filter-name="sort">
-            <label for="provider_sort_title">Сортувати</label>
-            <select id="provider_sort_select" name="sort" class="provider_sort_select">
-                <option value="Order">По замовчуванню</option>
-                <option value="PriceAsc">Ціна &#8593;</option>
-                <option value="PriceDesc">Ціна &#8595;</option>
-                <option value="NameAsc">А-Я</option>
-                <option value="NameDesc">Я-А</option>
-            </select>
-        </div>
+            <div class="page-top-main">
+                <h1 id="pagetitle">@Model.Category.Name</h1>
+            </div>
+        </section>
     </div>
-    @if (Model.Items.Any())
-    {
-        <div id="products-list">
-            @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
-            {
-                var regionId = RegionService.GetRegionId();
-                var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
-                @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
-            }
-            @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
-            {
-                <div class="product_container" id="more-products">
-                    <div class="product">
-                        @*<div class="more-items"></div>*@
-                        <div>
-                            <a class="more-items" href="#" id="add-more-products">Показати ще</a>
+
+    <div class="wrapper_inner " style=" margin-top: 10px;">
+        <div class="right_block  wide_N">
+            <div class="middle ">
+                <div class="container">
+                    <div class="right_block1 clearfix catalog vertical" id="right_block_ajax">
+                        <div class="js_filter filter_horizontal">
+                            <div class="bx_filter bx_filter_vertical"></div>
+                        </div>
+                        <div class="inner_wrapper">
+                            <div class="adaptive_filter">
+                                <a class="filter_opener">
+                                    <i class="fa fa-filter black"></i>
+                                    <span>Фільтри та сортування</span>
+                                </a>
+                            </div>
+
+                            <div class="sort_header view_block">
+                                <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
+                                    <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
+
+                                    <a href="" data-sort-value="Rating" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">По рейтингу</span>
+                                    </a>
+                                    <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">По алфавіту</span>
+                                    </a>
+                                    <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">Дешеві</span>
+                                    </a>
+                                    <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
+                                        <span class="padding-10">Дорогі</span>
+                                    </a>
+                                </div>
+                                @*<div class="sort_display">
+                                        <a rel="nofollow" href="catalog_block.html" class="sort_btn block current"><i title="плиткой"></i></a>
+                                        <a rel="nofollow" href="catalog_list.html" class="sort_btn list "><i title="списком"></i></a>
+                                        <a rel="nofollow" href="catalog_table.html" class="sort_btn table "><i title="таблицей"></i></a>
+                                    </div>*@
+                                <div class="clearfix"></div>
+                                <!--/noindex-->
+                            </div>
+
+                            <div class="sections_wrapper">
+                                <div class="list items">
+                                    <div class="row margin0">
+                                        @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
+                                        {
+                                            var regionId = RegionService.GetRegionId();
+                                            var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = Model.Category == null ? null : Model.Category.UrlName, AvailableForPurchase = product.AvailableForPurchase(regionId) };
+                                            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
+                                        }
+                                    </div>
+                                </div>
+                                <div class="bottom_nav margin-top-20">
+                                    @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+                                    {
+                                        <div class="ajax_load_btn" data-page="0">
+                                            <span class="more_text_ajax">Показати ще</span>
+                                        </div>
+                                    }
+                                    <div class="group_description_block bottom">
+                                        <div>
+                                            @Model.Category.Description
+                                        </div>
+                                    </div>
+                                    @*<div class="module-pagination">
+                                            <div class="nums">
+                                                @for (int i = 0; i < Model.; i++)
+                                                {
+                                                    <a href="#" class="dark_link" id="page-">@(i + 1)</a>
+                                                }
+                                            </div>
+                                        </div>*@
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            }
+            </div>
         </div>
-    }
-    else
-    {
-        <div>У вибраній вами категорії не знайдено жодного товару</div>
-    }
 
+        <div class="left_block">
+            @Html.Partial("_ProductFilters", Model.ProductParameters)
+
+
+            @*<div class="banner SCALE SIDE  " id="bx_651765591_3268">
+                    <img src="images/98d62c0f38e09a2b938e1c1ae598fa39.jpg" alt="Смарт-часы с SIM-картой" title="Смарт-часы с SIM-картой" class="img-responsive">
+                </div>
+                <div class="banner SCALE SIDE  " id="bx_651765591_3269">
+                    <a href="https://#catalog/" target="">
+                        <img src="images/1c257765285162fedb5d137b0c1700bd.jpg" alt="Распродажа фэтбайков" title="Распродажа фэтбайков" class="img-responsive">
+                    </a>
+                </div>
+                <div class="subscribe_wrap">
+                    <!--'start_frame_cache_IzufVt'--><div class="subscribe-form s_Arsw7O">
+                        <div class="wrap_bg">
+                            <div class="top_blocks">
+                                <div class="text">
+                                    <div class="title">Будьте всегда в курсе!</div>
+                                    <div class="more">Узнавайте о скидках и акциях первым</div>
+                                </div>
+                            </div>
+                            <form action="https://#personal/subscribe/" class="sform box-sizing">
+                                <label for="sf_RUB_ID_1Arsw7O" class="hidden">
+                                    <input type="checkbox" name="sf_RUB_ID[]" id="sf_RUB_ID_1Arsw7O" value="1" checked=""> Новости магазина
+                                </label>
+                                <div class="email_wrap">
+                                    <input type="email" title="Ваш e-mail" class="email_input" name="sf_EMAIL" maxlength="100" required="" size="20" value="" placeholder="Ваш e-mail">
+                                    <input type="submit" name="OK" class="btn btn-default send_btn" value="Подписаться">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <!--'end_frame_cache_IzufVt'-->
+                </div>	<div class="news_blocks front">
+                    <div class="top_block">
+                        <div class="title_block">Новости</div>
+                        <a href="https://#company/news/">Все новости</a>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="info_block">
+                        <div class="news_items">
+                            <div id="bx_1373509569_3254" class="item box-sizing dl">
+                                <div class="info">
+                                    <div class="date">22 Июня 2017</div>
+                                    <a class="name dark_link" href="https://#company/news/triumfalnoe_vozvrashchenie_nokia_3310_/">Триумфальное возвращение Nokia 3310 </a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div id="bx_1373509569_2474" class="item box-sizing dl">
+                                <div class="info">
+                                    <div class="date">5 Июня 2016</div>
+                                    <a class="name dark_link" href="https://#company/news/novoe_vospriyatie_mira_ot_google/">Новое восприятие мира от Google</a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div id="bx_1373509569_2475" class="item box-sizing dl">
+                                <div class="info">
+                                    <div class="date">1 Мая 2016</div>
+                                    <a class="name dark_link" href="https://#company/news/perevodchik_s_koshachego_eto_realno/">Переводчик с кошачьего – это реально</a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="news_blocks front">
+                    <div class="top_block">
+                        <div class="title_block">Статьи</div>
+                        <a href="https://#blog/">Все статьи</a>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="info_block">
+                        <div class="news_items">
+                            <div id="bx_3485106786_3260" class="item box-sizing dl">
+                                <div class="info">
+                                    <a class="name dark_link" href="https://#blog/obzory-tovarov/obzor_10_luchshikh_velosipednykh_brendov/">Обзор 10 лучших велосипедных брендов</a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div id="bx_3485106786_3257" class="item box-sizing dl">
+                                <div class="info">
+                                    <a class="name dark_link" href="https://#blog/tekhnologii/5_ozhidaemykh_tekhnonovinok_kotorye_izmenyat_mir/">5 ожидаемых техноновинок, которые изменят мир</a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <div id="bx_3485106786_3258" class="item box-sizing dl">
+                                <div class="info">
+                                    <a class="name dark_link" href="https://#blog/tekhnologii/produkty_budushchego_ne_fantastika_no_nauka/">Фантастические изобретения, которые уже стали реальностью</a>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+    </div>
 </div>
-<div id="product-options-wrap"></div>
-@*</main>*@

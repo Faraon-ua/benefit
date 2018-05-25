@@ -61,7 +61,7 @@ namespace Benefit.Services
                 ImageType = type,
                 ImageUrl = fileName
             };
-            if (type == ImageType.SellerGallery || type == ImageType.SellerGallery)
+            if (type == ImageType.SellerGallery || type == ImageType.SellerGallery || type == ImageType.SellerCatalog)
             {
                 image.SellerId = entityId;
             }

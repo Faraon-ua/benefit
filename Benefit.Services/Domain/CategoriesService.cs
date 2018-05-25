@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
+using System.Web.Caching;
 using Benefit.DataTransfer.ViewModels.Base;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
@@ -28,30 +30,104 @@ namespace Benefit.Services.Domain
             return category;
         }
 
+        public Category GetCategoryByFullName(string categoryFullPass)
+        {
+            var parts = categoryFullPass.Split('/');
+            var catName = parts.Last();
+            var categories = db.Categories
+                .AsNoTracking()
+                .Include(entry=>entry.ParentCategory)
+                .Include(entry=>entry.ProductParameters.Select(pp=>pp.ProductParameterValues))
+                .Where(entry => entry.Name == catName).ToList();
+            if (!categories.Any()) return null;
+            if (categories.Count == 1) return categories.First();
+            var parentName = parts[parts.Length - 2];
+            var category = categories.First(entry => entry.ParentCategory.Name == parentName);
+            return category;
+        }
+
         public List<Category> GetBaseCategories()
         {
             return db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order).ToList();
         }
-        public List<Category> GetBreadcrumbs(string categoryId = null, string urlName = null)
+        public Dictionary<Category,List<Category>> GetBreadcrumbs(string categoryId = null, string urlName = null)
         {
             var cacheKey = string.Format("{0}{1}{2}", CacheConstants.BreadCrumbsKey, categoryId, urlName);
             if (HttpRuntime.Cache[cacheKey] != null)
             {
-                return HttpRuntime.Cache[CacheConstants.BreadCrumbsKey] as List<Category>;
+                return HttpRuntime.Cache[CacheConstants.BreadCrumbsKey] as Dictionary<Category, List<Category>>;
             }
-            var resultList = new List<Category>();
+            var result = new Dictionary<Category, List<Category>>();
             var category = db.Categories.Include(entry => entry.ParentCategory).FirstOrDefault(entry => entry.Id == categoryId || entry.UrlName == urlName);
             if (category != null)
             {
-                resultList.Add(category);
                 while (category.ParentCategory != null)
                 {
-                    resultList.Add(category.ParentCategory);
+                    var nextCats = db.Categories
+                        .Include(entry => entry.ChildCategories)
+                        .Include(entry => entry.Products.Select(pr => pr.Seller))
+                        .Where(entry =>
+                            entry.ParentCategoryId == category.ParentCategory.Id && entry.IsActive &&
+                            entry.Id != category.Id &&
+                            (entry.ChildCategories.Any(ch => ch.IsActive) ||
+                             entry.Products.Any(pr => pr.IsActive && pr.Seller.IsActive))).ToList();
+                    result.Add(category, nextCats);
                     category = category.ParentCategory;
                 }
             }
-            resultList.Reverse();
-            return resultList;
+            if (category != null)
+            {
+                result.Add(category, new List<Category>());
+            }
+            result = result.Reverse().ToDictionary(x => x.Key, x => x.Value);
+            HttpRuntime.Cache.Add(CacheConstants.BreadCrumbsKey, result, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(3), CacheItemPriority.Default, null);
+            return result;
+        }
+
+        public CategoriesViewModel GetCategoriesCatalog(string categoryUrl, string sellerUrl = null)
+        {
+            //fetch childs so if no nested categories - fetch products
+            var parent = db.Categories.Include(entry=>entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            if (!string.IsNullOrEmpty(categoryUrl) && parent == null)
+            {
+                return null;
+            }
+            
+            if (parent == null)
+            {
+                parent = new Category()
+                {
+                    Name = "Каталог"
+                };
+            }
+
+            var categories =
+                db.Categories
+                    .Include(entry=>entry.ChildCategories)
+                    .Include(entry=>entry.Products)
+                    .Where(entry => entry.ParentCategoryId == parent.Id && entry.IsActive && !entry.IsSellerCategory && (entry.ChildCategories.Any(cat=>cat.IsActive) || entry.Products.Any()))
+                    .OrderBy(entry => entry.Order)
+                    .ToList();
+            if (sellerUrl != null)
+            {
+                var sellerService = new SellerService();
+                var sellerCats = sellerService.GetAllSellerCategories(sellerUrl);
+                categories = categories.Intersect(sellerCats, new CategoryComparer()).ToList();
+            }
+            if (categories.Count == 1)
+            {
+                categories = categories.SelectMany(entry => entry.ChildCategories).ToList();
+            }
+            var catsModel = new CategoriesViewModel()
+            {
+                Category = parent,
+                Items = categories.OrderBy(entry => entry.ChildCategories.Any()).ThenByDescending(entry => entry.Id == parent.Id).ToList(),
+                Breadcrumbs = new BreadCrumbsViewModel()
+                {
+                    Categories = GetBreadcrumbs(parent.Id)
+                }
+            };
+            return catsModel;
         }
 
         public CategoriesViewModel GetSellerCategoriesCatalog(Category parent, string sellerUrl)
@@ -89,7 +165,7 @@ namespace Benefit.Services.Domain
             var catsModel = new CategoriesViewModel()
             {
                 Category = parent,
-                Items = categories.OrderBy(entry=>entry.ChildCategories.Any()).ThenByDescending(entry=>entry.Id == parentId).ToList(),
+                Items = categories.OrderBy(entry => entry.ChildCategories.Any()).ThenByDescending(entry => entry.Id == parentId).ToList(),
                 Seller = seller,
                 Breadcrumbs = new BreadCrumbsViewModel()
                 {
@@ -99,47 +175,6 @@ namespace Benefit.Services.Domain
             };
             return catsModel;
         }
-
-        //todo: remove comment think about product list
-        /* public List<Product> GetCategoryProductsOnly(string categoryId, string sellerId, int skip, int take = ListConstants.DefaultTakePerPage)
-         {
-             var products = db.Products.Include(entry => entry.Images).Include(entry=>entry.Currency);
-             if (!string.IsNullOrEmpty(categoryId))
-             {
-                 products = products.Where(entry => entry.CategoryId == categoryId);
-             }
-             if (!string.IsNullOrEmpty(sellerId))
-             {
-                 products = products.Where(entry => entry.SellerId == sellerId);
-             }
-             products = products.OrderBy(entry => entry.Category.Order).ThenByDescending(entry => entry.Images.Any());
-             var result = products.Skip(skip).Take(take + 1).ToList();
-             result.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
-             return result;
-         }*/
-
-        /*public ProductsViewModel GetCategoryProducts(string urlName, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage)
-        {
-            var category =
-                db.Categories.Include(entry => entry.Products)
-                    .Include(entry => entry.Products.Select(pr => pr.Images))
-                    .Include(entry => entry.Products.Select(pr => pr.Currency))
-                    .Include(entry => entry.ProductParameters.Select(pr=>pr.ProductParameterValues))
-                    .FirstOrDefault(entry => entry.UrlName == urlName);
-            if (category.Products.Count == 0)
-            {
-                return null;
-            }
-            var products = SellerService.GetSellerCatalogProducts(null, category.Id, options, skip, take);
-            if (!products.Any()) return null;
-            var result = new ProductsViewModel()
-            {
-                Items = products,
-                Category = category,
-                Breadcrumbs = new BreadCrumbsViewModel() { Categories = GetBreadcrumbs(urlName: urlName) }
-            };
-            return result;
-        }*/
 
         public SellersViewModel GetCategorySellers(string urlName)
         {
@@ -183,7 +218,7 @@ namespace Benefit.Services.Domain
                     items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
             }
             var currentRegionItemsIds = sellersDto.CurrentRegionItems.Select(sc => sc.Id).ToList();
-            sellersDto.Items = items.Where(entry=>!currentRegionItemsIds.Contains(entry.Id)).
+            sellersDto.Items = items.Where(entry => !currentRegionItemsIds.Contains(entry.Id)).
                 OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
 
             sellersDto.Items.ForEach(entry =>

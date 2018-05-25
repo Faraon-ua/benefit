@@ -84,12 +84,17 @@ namespace Benefit.Services.Domain
                 TransactionsService.AddBonusesOrderTransaction(order);
             }
 
-            Cart.Cart.CurrentInstance.Clear();
-            var cartMumberCookie = HttpContext.Current.Response.Cookies["cartNumber"];
-            if (cartMumberCookie != null)
-            {
-                cartMumberCookie.Expires = DateTime.UtcNow.AddDays(-1);
-            }
+            Cart.Cart.CurrentInstance.ClearSellerOrder(model.Order.SellerId);
+            var cartNumberCookie = HttpContext.Current.Response.Cookies["cartNumber"];
+            if (cartNumberCookie != null)
+                if (Cart.Cart.CurrentInstance.Orders.Count == 0)
+                {
+                    cartNumberCookie.Expires = DateTime.UtcNow.AddDays(-1);
+                }
+                else
+                {
+                    cartNumberCookie.Value = Cart.Cart.CurrentInstance.GetOrderProductsCountAndPrice().ProductsNumber.ToString();
+                }
             return order.OrderNumber.ToString();
         }
 
@@ -128,7 +133,7 @@ namespace Benefit.Services.Domain
                     order.User.BonusAccount = order.User.BonusAccount + order.Sum;
                 }
             }
-           
+
             db.Transactions.RemoveRange(order.Transactions);
             db.OrderProductOptions.RemoveRange(order.OrderProductOptions);
             db.OrderProducts.RemoveRange(order.OrderProducts);

@@ -1,70 +1,127 @@
-﻿@model Benefit.Domain.Models.InfoPage
+﻿@using Benefit.Common.Extensions
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@model InfoPage
 
 @{
     ViewBag.Title = Model.Title ?? Model.Name;
 }
-@section LeftAside{
-    <div class="vertical_menu" id="right-menu">
-    </div>
-}
-@section styles
-{
-    <link href="~/Content/css/chat.css" rel="stylesheet" />
-}
 @section meta{
     <meta name="description" content="@Model.ShortContent">
 }
-@section scripts{
-    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+@*@section scripts{
+        <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
 
-    <script>
-        var chatUrl = '@Url.Action("Chat", "Helper")';
-        var messagesUrl = '@Url.Action("Comments", "Helper")';
-        var addChatMessageUrl = '@Url.Action("AddChatMessage", "Helper")';
-        var deleteChatMessageUrl = '@Url.Action("DeleteComment", "Helper")';
+        <script>
+            var chatUrl = '@Url.Action("Chat", "Helper")';
+            var messagesUrl = '@Url.Action("Comments", "Helper")';
+            var addChatMessageUrl = '@Url.Action("AddChatMessage", "Helper")';
+            var deleteChatMessageUrl = '@Url.Action("DeleteComment", "Helper")';
 
-        $(function () {
-            $("#faq a").parents("p").next().hide();
+            $(function () {
+                $("#faq a").parents("p").next().hide();
 
-            $("#faq a").click(function (e) {
-                e.preventDefault();
-                $(this).parents("p").next().slideToggle("medium");
-            });
-
-            if (location.hash) {
-                $(location.hash).click();
-            }
-
-            $("#chat-root").load(chatUrl);
-
-            setInterval(function () {
-                $(".chat").load(messagesUrl);
-            }, 5000);
-
-            $("body").on('keydown', '#btn-input', function (e) {
-                if (e.which == 13) {
+                $("#faq a").click(function (e) {
                     e.preventDefault();
-                    $("#btn-chat").click();
+                    $(this).parents("p").next().slideToggle("medium");
+                });
+
+                if (location.hash) {
+                    $(location.hash).click();
                 }
-            });
 
-            $("body").on("click", "#btn-chat", function () {
-                var message = $("#btn-input").val();
-                $.post(addChatMessageUrl, { message: message }, function (data) {
-                    $(".chat").html(data);
-                    $("#btn-input").val("");
+                $("#chat-root").load(chatUrl);
+
+                setInterval(function () {
+                    $(".chat").load(messagesUrl);
+                }, 5000);
+
+                $("body").on('keydown', '#btn-input', function (e) {
+                    if (e.which == 13) {
+                        e.preventDefault();
+                        $("#btn-chat").click();
+                    }
+                });
+
+                $("body").on("click", "#btn-chat", function () {
+                    var message = $("#btn-input").val();
+                    $.post(addChatMessageUrl, { message: message }, function (data) {
+                        $(".chat").html(data);
+                        $("#btn-input").val("");
+                    });
+                });
+
+                $("body").on("click", ".delete-message", function () {
+                    var message = $(this);
+                    var messageId = message.attr("data-message-id");
+                    $.post(deleteChatMessageUrl, { messageId: messageId }, function (data) {
+                        message.parents("li").remove();
+                    });
                 });
             });
-
-            $("body").on("click", ".delete-message", function () {
-                var message = $(this);
-                var messageId = message.attr("data-message-id");
-                $.post(deleteChatMessageUrl, { messageId: messageId }, function (data) {
-                    message.parents("li").remove();
-                });
-            });
-        });
-    </script>
+        </script>
+    }*@
+@{
+    var lastNews = ViewBag.LastNews as List<InfoPage>;
 }
-@Html.Raw(Model.Content)
+
+<!--end-title_content-->
+<div class="wraps hover_shine" id="content">
+    <section class="page-top maxwidth-theme">
+        @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { IsNews = true, Page = Model })
+        <h1 id="pagetitle" class="no-padding no-margin">@Model.Name</h1>
+    </section>
+    <div class="wrapper_inner wide_page">
+        <div class="middle ">
+            <div class="container">
+                <div class="maxwidth-theme">
+                    <div class="head-block top">
+                        <div class="bottom_border"></div>
+                    </div>
+                    <div class="wrapper_inner ">
+                        <div class="right_block  wide_">
+                            <div class="middle ">
+                                <div class="container">
+                                    <div class="detail services">
+                                        <div class="line_block share top ">
+                                            <div class="share_wrapp">
+                                                <div class="text btn transparent">Поделиться</div>
+                                                <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
+                                            </div>
+                                        </div>
+                                        <div class="content">
+                                            @Html.Raw(Model.Content)
+                                        </div>
+                                        <div class="wraps goods-block with-padding">
+                                            <div style="clear: both"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="clear: both"></div>
+                                <hr class="bottoms">
+                                <div class="row">
+                                    <div class="col-md-6 share">
+                                        <div class="line_block">
+                                            <div class="share_wrapp">
+                                                <div class="text btn transparent">Поделиться</div>
+                                                <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a class="back-url url-block" href="@Url.Action("index", "news")"><i class="fa fa-angle-left"></i><span>Назад до новин</span></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left_block">
+                        @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", lastNews)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <div id="seller-application-container"></div>

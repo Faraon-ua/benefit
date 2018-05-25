@@ -7,9 +7,15 @@ namespace Benefit.DataTransfer.ViewModels
     {
         public string TargetName { get; set; }
         public bool CanReview { get; set; }
-        public int AvarageRating { get; set; }
         public string ProductId { get; set; }
         public string SellerId { get; set; }
         public ICollection<Review> Reviews { get; set; }
+    }
+
+    public class ReviewStarsViewModel
+    {
+        public bool SmallStars { get; set; }
+        public bool IsActive { get; set; }
+        public int? Rating { get; set; }
     }
 }

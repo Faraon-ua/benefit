@@ -1,5 +1,40 @@
-﻿.no-list-style {
+﻿.no-hover-underline:hover {
+    text-decoration: none !important;
+}
+
+.btn-circle {
+    width: 30px;
+    height: 30px;
+    text-align: center;
+    padding: 6px 0;
+    font-size: 12px;
+    line-height: 1.428571429;
+    border-radius: 15px;
+}
+.btn-circle.btn-lg {
+    width: 50px;
+    height: 50px;
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.33;
+    border-radius: 25px;
+}
+.btn-circle.btn-xl {
+    width: 70px;
+    height: 70px;
+    padding: 10px 16px;
+    font-size: 24px;
+    line-height: 1.33;
+    border-radius: 35px;
+}
+
+
+.no-list-style {
     list-style-type: none;
+}
+
+.no-before-content:before {
+    content: none !important;
 }
 
 .x-pseudo-link {
@@ -16,6 +51,10 @@
 
 .green {
     color: #69aa46 !important;
+}
+
+.black {
+    color: #000 !important;
 }
 
 .bg-site-red {
@@ -243,6 +282,10 @@
     padding: 5px;
 }
 
+.padding-10 {
+    padding: 10px;
+}
+
 .padding-vertical-5px {
     padding-top: 5px !important;
     padding-bottom: 5px !important;
@@ -312,6 +355,10 @@
     width: 50% !important;
 }
 
+.width-45 {
+    width: 45% !important;
+}
+
 .width-40 {
     width: 40% !important;
 }
@@ -338,6 +385,9 @@
 
 .height-30px {
     height: 30px !important;
+}
+.height-50px {
+    height: 50px !important;
 }
 
 .height-250 {
@@ -377,7 +427,7 @@
 }
 
 .owl-stage-outer img {
-    max-height: 768px;
+    max-height: 433px;
 }
 
 .pointer:hover {
@@ -422,7 +472,7 @@
         left: -200px;
         width: 200px;
         height: 4px;
-        background-color: #cb2728;
+        background-color: #0A84FF;
         animation: loading 2s linear infinite;
     }
 

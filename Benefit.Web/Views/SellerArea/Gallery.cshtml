@@ -1,0 +1,22 @@
+﻿@using Benefit.Domain.Models
+@{
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+    ViewBag.Title = "Фотогалерея";
+}
+<div class="container" style="margin-top: 10px;">
+    <h1>
+        Фотогалерея @seller.Name
+    </h1>
+    <div class="seller-catalog" style="margin-bottom: 30px;">
+        @foreach (var img in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+        {
+            <a href="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" data-fancybox="gallery">
+                <img src="~/Images/SellerGallery/@seller.Id/@img.ImageUrl"  width="200"/>
+            </a>
+        }
+    </div>
+</div>
+<script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>

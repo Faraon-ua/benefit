@@ -2,10 +2,21 @@
 
 namespace Benefit.Domain.Models.Enums
 {
+    public enum SellerSortOption
+    {
+        Rating,
+        NameAsc,
+        NameDesc,
+        BonusAsc,
+        BonusDesc
+    }
+
     public enum ProductSortOption
     {
         [Description("Порядковий номер")]
         Order,
+        [Description("Рейтинг")]
+        Rating,
         [Description("Назва &#8593;")]
         NameAsc,
         [Description("Назва &#8595;")]

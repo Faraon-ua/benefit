@@ -46,6 +46,22 @@ namespace Benefit.Web
         protected void Session_Start(object sender, EventArgs e)
         {
             HttpContext.Current.Session.Add("__MyAppSession", string.Empty);
+            HttpCookie cookie = new HttpCookie(DomainConstants.SessionCookieName, Session.SessionID.ToString());
+            cookie.Expires = DateTime.Now.AddYears(1);
+            var host = Request.Url.Host;
+            var index = host.IndexOf(".");
+            if (index < 0)
+            {
+                return;
+            }
+            var subdomain = host.Substring(0, index);
+            string[] blacklist = { "www", "benefit", "mail", "benefit-company", "uzhgorod" };
+            if (!blacklist.Contains(subdomain))
+            {
+                host = host.Replace(subdomain + ".", string.Empty);
+            }
+            cookie.Domain = host;
+            Response.SetCookie(cookie);
         }
     }
 }

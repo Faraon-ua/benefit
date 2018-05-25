@@ -1,0 +1,103 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
+
+@{
+    ViewBag.Title = Model.Category.Name;
+    Layout = "_SellerLayout.cshtml";
+}
+
+@section scripts
+{
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+    </script>
+    <script src="~/Scripts/site.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
+}
+
+<section class="breadcrumb" id="content_link">
+    @Html.Partial("~/views/sellerarea/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+</section>
+<div class="container" itemscope="" itemtype="http://schema.org/Product">
+    <div class="row">
+        <div class="content-aside col-xs-12 m-b-2">
+            <div class="hidden-md-down">
+                <ul class="list-none post-list m-b-2">
+                    <div class="h3 text-caps">Новости</div>
+                    <li class="post-block p-y-sm">
+                        <div class="data">26.07.2019</div>
+                        <a class="name" href="blog/letraset-s-obraztsami-lorem-ipsum-v-60-h-godah" data-post="4">Letraset с образцами Lorem Ipsum в 60-х годах</a>
+                    </li>
+                    <li class="post-block p-y-sm">
+                        <div class="data">26.07.2018</div>
+                        <a class="name" href="blog/lorem-ipsum-yavlyaetsya-standartnoj-ryboj" data-post="5">Lorem Ipsum является стандартной "рыбой"</a>
+                    </li>
+                    <li class="post-block p-y-sm">
+                        <div class="data">03.05.2016</div>
+                        <a class="name" href="blog/aldus-pagemaker-v-shablonah-kotoryh-ispolzuetsya-lorem-ipsum" data-post="3">Aldus PageMaker, в шаблонах которых используется Lorem Ipsum</a>
+                    </li>
+                    <a class="m-t-sm btn btn-info" href="blog">Все новости</a>
+                </ul>
+                <hr class="sm">
+            </div>
+        </div>
+
+        <div class="content-main col-xs-12 m-b-2" id="fn-content">
+            <div class="page-header m-t-0 p-t-0">
+                <h1 data-category="3">@Model.Category.Name</h1>
+            </div>
+            <article class="m-b-2 ld-b">
+                <div class="readmore_js">
+                    <p>@Model.Category.Description</p>
+                </div>
+            </article>
+
+            <div class="h3 text-caps m-t-2">
+                <span>Быстрый</span> выбор
+            </div>
+            @*<div class='row filter'>
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm'>
+                        <div class='title'>Торговая марка:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="catalog/pylesosy" selected>Все варианты</option>
+                            <option brand_id="7" value="catalog/pylesosy/dyson">Dyson</option>
+                            <option brand_id="8" value="catalog/pylesosy/electrolux">Electrolux</option>
+                        </select>
+                    </div>
+
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm '>
+                        <div class='title' data-feature="84">Труба всасывания:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="/simpla_clear/catalog/pylesosy" selected>Все варианты</option>
+                            <option value="/simpla_clear/catalog/pylesosy?84=%D1%82%D0%B5%D0%BB%D0%B5%D1%81%D0%BA%D0%BE%D0%BF%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F">телескопическая</option>
+                        </select>
+                    </div>
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm '>
+                        <div class='title' data-feature="87">Турбощетка в комплекте:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="/simpla_clear/catalog/pylesosy" selected>Все варианты</option>
+                            <option value="/simpla_clear/catalog/pylesosy?87=%D0%B5%D1%81%D1%82%D1%8C">есть</option>
+                        </select>
+                    </div>
+                </div>*@
+
+            <div class="row m-x-0">
+                <ul class="col-xs-12 col-xl-6 m-b-1 list-inline sort">
+                    <li><a class="active" href="/simpla_clear/catalog/pylesosy?sort=position" data-sort="position">умолчанию</a></li>
+                    <li><a href="/simpla_clear/catalog/pylesosy?sort=price" data-sort="price">цене</a></li>
+                    <li><a href="/simpla_clear/catalog/pylesosy?sort=name" data-sort="name">названию</a></li>
+                </ul>
+                <div class="col-xs-12 col-xl-6 m-b-1 text-xl-right"></div>
+            </div>
+
+            <div class="row m-x-0 gridBlock">
+                <!-- товар -->
+                @foreach (var product in Model.Items)
+                {
+                    @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                }
+            </div>
+        </div>
+    </div>
+</div>

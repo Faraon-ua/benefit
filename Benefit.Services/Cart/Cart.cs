@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -17,7 +18,7 @@ namespace Benefit.Services.Cart
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         public string SessionKey;
 
-        public Order Order { get; set; }
+        public List<Order> Orders { get; set; }
         public static Cart CurrentInstance
         {
             get
@@ -29,7 +30,7 @@ namespace Benefit.Services.Cart
                     cart = new Cart()
                     {
                         SessionKey = sessionKey,
-                        Order = new Order()
+                        Orders = new List<Order>()
                     };
                     HttpRuntime.Cache.Insert(sessionKey, cart, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
                 }
@@ -39,12 +40,16 @@ namespace Benefit.Services.Cart
 
         public CartEditResult AddProduct(OrderProduct orderProduct, string sellerId)
         {
-            if (Order.SellerId != null && Order.SellerId != sellerId)
+            var order = Orders.FirstOrDefault(entry => entry.SellerId == sellerId);
+            if (order == null)
             {
-                Order.OrderProducts.Clear();
-                Order.OrderProductOptions.Clear();
+                order = new Order()
+                {
+                    SellerId = sellerId
+                };
+                Orders.Add(order);
             }
-            var existingProduct = Order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
+            var existingProduct = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
             if (existingProduct != null)
             {
                 existingProduct.Amount += orderProduct.Amount;
@@ -54,9 +59,16 @@ namespace Benefit.Services.Cart
                 using (var db = new ApplicationDbContext())
                 {
                     var product =
-                        db.Products.Include(entry => entry.Currency)
+                        db.Products
+                            .Include(entry => entry.Seller)
+                            .Include(entry => entry.Currency)
+                            .Include(entry => entry.Images)
                             .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
                     orderProduct.ProductName = product.Name;
+                    orderProduct.ProductUrlName = product.UrlName;
+                    orderProduct.ProductSku = product.SKU;
+                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                    orderProduct.ProductImageUrl = image == null ? null : image.ImageUrl;
                     orderProduct.ProductPrice = product.Price * product.Currency.Rate;
                     if (product.WholesalePrice.HasValue && product.WholesaleFrom.HasValue)
                     {
@@ -70,30 +82,43 @@ namespace Benefit.Services.Cart
                         orderProductOption.ProductOptionPriceGrowth = productOption.PriceGrowth;
                         orderProductOption.EditableAmount = productOption.EditableAmount;
                     }
+                    order.SellerUrlName = product.Seller.UrlName;
+                    order.SellerName = product.Seller.Name;
+                    order.SellerPrimaryRegionName = product.Seller.PrimaryRegionName;
+                    order.SellerUserDiscount = product.Seller.UserDiscount;
                 }
-                Order.SellerId = sellerId;
-                Order.OrderProducts.Add(orderProduct);
+                order.SellerId = sellerId;
+                order.OrderProducts.Add(orderProduct);
             }
             HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
             return GetOrderProductsCountAndPrice();
         }
 
-        public CartEditResult RemoveProduct(string id)
+        public CartEditResult UpdatePoductQuantity(string productId, string sellerId, double amount)
         {
-            var productToRemove = Order.OrderProducts.FirstOrDefault(entry => entry.ProductId == id);
-            Order.OrderProducts.Remove(productToRemove);
-            HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);            
+            var order = Orders.FirstOrDefault(entry => entry.SellerId == sellerId);
+            var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == productId);
+            product.Amount = amount;
             return GetOrderProductsCountAndPrice();
         }
 
-        public void Clear()
+        public CartEditResult RemoveProduct(string sellerId, string productId)
         {
-            Order = new Order();
+            var order = Orders.FirstOrDefault(entry => entry.SellerId == sellerId);
+            var productToRemove = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == productId);
+            order.OrderProducts.Remove(productToRemove);
+            HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
+            return GetOrderProductsCountAndPrice();
+        }
+
+        public void ClearSellerOrder(string sellerId)
+        {
+            Orders.Remove(Orders.FirstOrDefault(entry => entry.SellerId == sellerId));
         }
 
         public double GetOrderSum()
         {
-            return Order.GetOrderSum();
+            return Orders.Sum(entry => entry.GetOrderSum());
         }
 
         public CartEditResult GetOrderProductsCountAndPrice()
@@ -103,20 +128,24 @@ namespace Benefit.Services.Cart
                 ProductsNumber = 0,
                 Price = 0
             };
-            foreach (var product in Order.OrderProducts)
+            foreach (var order in Orders)
             {
-                if (product.IsWeightProduct) result.ProductsNumber++;
-                else
+                foreach (var product in order.OrderProducts)
                 {
-                    result.ProductsNumber += (int)product.Amount;
-                }
-                var productTotal = (product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue &&
-                                    product.Amount >= product.WholesaleFrom.Value)
-                    ? product.WholesaleProductPrice.Value
-                    : product.ProductPrice;
+                    if (product.IsWeightProduct) result.ProductsNumber++;
+                    else
+                    {
+                        result.ProductsNumber += (int)product.Amount;
+                    }
+                    var productTotal = (product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue &&
+                                        product.Amount >= product.WholesaleFrom.Value)
+                        ? product.WholesaleProductPrice.Value
+                        : product.ProductPrice;
 
-                result.Price += productTotal * product.Amount + (product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount));
+                    result.Price += productTotal * product.Amount + (product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount));
+                }
             }
+
             return result;
         }
     }

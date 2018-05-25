@@ -1,0 +1,298 @@
+﻿@using Benefit.Common.Helpers
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@using Image = System.Drawing.Image
+@model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
+
+@{
+    ViewBag.Title = Model.Product.Name;
+    Layout = "_SellerLayout.cshtml";
+    var image_src = Model.Product.Images.FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
+    var img_src = image_src == null ? "default_product_picture.png" : image_src.ImageUrl;
+    var seller = Model.Product.Seller;
+    var paymentTypes = new List<PaymentType>();
+    if (seller.IsPrePaidPaymentActive)
+    {
+        paymentTypes.Add(PaymentType.PrePaid);
+    }
+    if (seller.IsPostPaidPaymentActive)
+    {
+        paymentTypes.Add(PaymentType.PostPaid);
+    }
+    if (seller.IsCashPaymentActive)
+    {
+        paymentTypes.Add(PaymentType.Cash);
+    }
+    if (seller.IsAcquiringActive)
+    {
+        paymentTypes.Add(PaymentType.Acquiring);
+    }
+    if (seller.IsBonusesPaymentActive)
+    {
+        paymentTypes.Add(PaymentType.Bonuses);
+    }
+
+    var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
+}
+
+@section scripts
+{
+    <script src="~/Scripts/site.js"></script>
+    <script>
+        $(function() {
+            var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
+            var sellerId = '@Model.Product.SellerId';
+
+            $("#buy-product, #buy-product-with-options").click(function () {
+               //var buttonId = $(this).attr("id");
+               //     if (buttonId == "buy-product") {
+               //         //if there are options to show
+               //         if ($("#product_modal").length > 0) {
+               //             //show options
+               //             $("#product_modal").modal("show");
+               //             return;
+               //         }
+               //     }
+
+                    $(this).attr("disabled", "disabled");
+                    $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
+                    $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
+
+                    var productAmount = $(".quantity").val();
+                    var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
+                        var id = $(this).attr("id");
+                        var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                        if (!amount) {
+                            amount = 1;
+                        }
+                        return {
+                            ProductOptionId: id,
+                            Amount: amount
+                        };
+                    }).get();
+
+                    var available = $("#available-amount");
+                    var amount = $(".quantity").val();
+
+                    if (available.length > 0) {
+                        available = parseFloat(available.text());
+                        var amount = parseFloat(amount);
+                        if (amount > available) {
+                            alert("Не можливо замовити більше товарів, ніж є в наявності");
+                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                            $(".product_info_wrap").css("opacity", 1);
+                            return;
+                        }
+                    } else {
+                        available = "";
+                    }
+
+                    var product = {
+                        ProductId: '@Model.Product.Id',
+                        IsWeightProduct: '@Model.Product.IsWeightProduct',
+                        Amount: amount,
+                        AvailableAmount: available,
+                        OrderProductOptions: productOptions
+                    };
+
+                    var order = {
+                        product: product,
+                        amount: productAmount
+                    };
+                    $.post(addToCartUrl,
+                        order,
+                        function (data) {
+                            //$('#product_modal').modal('hide');
+                            setTimeout(function f() {
+                                $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                                $(".product_info_wrap,.item_main_info").css("opacity", 1);
+                                $(".button_block  ").removeClass("loadings");
+                                setCartSummary(data);
+                            }, 1000);
+                        });
+            });
+        })
+    </script>
+}
+
+<section class="breadcrumb" id="content_link">
+    @Html.Partial("~/views/sellerarea/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+</section>
+<div class="container" itemscope="" itemtype="http://schema.org/Product">
+    <div class="page-header" data-product="33">
+        <h1 itemprop="name">@Model.Product.Name</h1>
+    </div>
+
+    <div class="row m-x-0 m-b-1 text-md">
+        <ul class="list-inline col-xs-12 col-lg-6">
+            <li>
+                <button class="btn-link select-tab p-l-0" value="2">
+                    <a class="inpage-scroll text-underline" href="#horizontalTab">Відгуки про товар (@Model.Product.ApprovedReviews.Count)</a>
+                </button>
+            </li>
+            <li>
+                <button class="btn-link select-tab" value="0">
+                    <a class="inpage-scroll text-underline" href="#horizontalTab">Інформація про товар</a>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <div class="row m-b-0 ProductView product">
+        <div class="col-lg-6 col-xl-5 m-b-0 div_img">
+            <a class="fn-zoom image text-xs-center" href="~/Images/ProductGallery/@Model.Product.Id/@img_src" rel="group">
+                <img itemprop="image" class="fn-img" src="~/Images/ProductGallery/@Model.Product.Id/@img_src" alt="@Model.Product.AltText" title="@Model.Product.Title" style="opacity: 1;">
+            </a>
+
+            <div class="slick-images">
+                @foreach (var image in Model.Product.Images.Where(entry => entry.ImageType == ImageType.ProductGallery).OrderBy(entry => entry.Order))
+                {
+                    <div>
+                        @if (image.IsAbsoluteUrl)
+                        {
+                            <a class="fn-zoom btn-block border-a-1-info text-xs-center product-images" href="@image.ImageUrl" rel="group">
+                                <img class="fn-img" src="@image.ImageUrl" alt="@Model.Product.AltText" />
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="fn-zoom btn-block border-a-1-info text-xs-center product-images" href="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" rel="group">
+                                <img class="fn-img" src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.AltText" />
+                            </a>
+                        }
+                    </div>
+                }
+            </div>
+
+            <div class="product-labels">
+                @*<div class="label hits ico-pr_hit">Рекомендуем</div>*@
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-xl-7" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+            <form class="variants">
+                <div class="col-lg-12 col-xl-6 m-b-1 p-b-1 div_ctr">
+                    <div class="price m-b-1">
+                        <span>@Model.Product.Price</span> <i>грн</i>
+                        @if (Model.Product.OldPrice.HasValue)
+                        {
+                            <strike class="old_price m-x-sm">@Model.Product.OldPrice.Value</strike>
+                        }
+                    </div>
+                    <div class="input-group m-b-1">
+                        <div class="amount">
+                            <span class="clickable minus">-</span>
+                            <input class="text-center quantity" name="amount" value="1" type="text">
+                            <span class="clickable plus">+</span>
+                        </div>
+                        <button id="buy-product" class="btn-primary ico-btn_2cart fn-is_stock btn " title="" type="button">Купити</button>
+                    </div>
+                    <select class="form-control-lg custom-select" name="variant" style="display:none;">
+                        <option value="41" price="@Model.Product.Price"></option>
+                    </select>
+                    <hr class="sm m-t-2">
+                    <div class="text-md">
+                        <p>Понравилось предложение? Поделитесь с друзьями!</p>
+                        <div class="ya-share2" data-services="vkontakte,facebook,odnoklassniki,gplus,twitter"></div>
+                    </div>
+                </div>
+                <div class="col-lg-12 col-xl-6 p-b-1 div_rgt text-md text-xs-left">
+                    <div class="m-b-1 text-md">
+                        @Model.Product.Description.Substring(0, 200)
+                        <br>
+                        <button class="btn-link select-tab text-sm p-x-0" value="0">
+                            <a class="inpage-scroll text-underline color" href="#horizontalTab">Детальніше</a>
+                        </button>
+                    </div>
+                    <hr class="">
+                </div>
+            </form>
+            <div class="clearfix"></div>
+            <div class="row hidden-md-down div_info">
+                <div class="col-xl-6 m-b-1">
+                    <ul class="list-none p-a-1 bg-light line text-md">
+                        <div class="h5 text-caps ico-truck_1">Доставка</div>
+                        @foreach (var shipping in Model.Product.Seller.ShippingMethods)
+                        {
+                            <li>- @shipping.Name</li>
+                        }
+                        <div class="clearfix"></div>
+                    </ul>
+                </div>
+                <div class="col-xl-6 m-b-1">
+                    <ul class="list-none p-a-1 bg-light line text-md">
+                        <div class="h5 text-caps ico-money_1">Варіанти оплати</div>
+                        @foreach (var payment in paymentTypes)
+                        {
+                            <li>- @Enumerations.GetEnumDescription(payment)</li>
+                        }
+                        <div class="clearfix"></div>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a name="tabslink" class="tabslink b-block" style="margin: -50px 0 50px;" target="_blank"></a>
+    <div id="horizontalTab" class="p-y-2">
+        <ul>
+            <li><a href="#tab-1">Інформація та опис</a></li>
+            <li><a href="#tab-2">Характеристики</a></li>
+            <li><a href="#tab-3">Відгуки <small>(@Model.Product.ApprovedReviews.Count)</small></a></li>
+        </ul>
+        <div id="tab-1" itemprop="description">
+            <article>
+                <div itemprop="description">
+                    @Html.Raw(Model.Product.Description)
+                </div>
+            </article>
+        </div>
+        <div id="tab-2">
+            @foreach (var productParameter in parameters)
+            {
+                <div class="stores_block wo_image margin-top-10">
+                    <span class="width-30" style="display: inline-block">
+                        <a class="title_stores">@productParameter.ProductParameter.Name</a>
+                    </span>
+                    <span>.................</span>
+                    <span class="value">
+                        @if (productParameter.Amount.HasValue)
+                        {
+                            <span>@(productParameter.Amount.Value)x</span>
+                        }
+                        @(productParameter.StartText ?? productParameter.StartValue)
+                        @if (!string.IsNullOrEmpty(productParameter.EndValue))
+                        {
+                            <span>- @productParameter.EndValue</span>
+                        }
+                        @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
+                        {
+                            <span>@productParameter.ProductParameter.MeasureUnit</span>
+                        }
+                    </span>
+                </div>
+            }
+        </div>
+
+        <div id="tab-3">
+            <div class="row m-x-0">
+                <div class="col-xl-6 m-b-2 comm-list">
+                    @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                    {
+                        CanReview = Model.CanReview,
+                        ProductId = Model.Product.Id,
+                        TargetName = Model.Product.Name,
+                        Reviews = Model.Product.ApprovedReviews
+                    })
+                </div>
+                <div class="col-xl-6">
+                    @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                    {
+                        CanReview = Model.CanReview,
+                        ProductId = Model.Product.Id,
+                        TargetName = Model.Product.Name,
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

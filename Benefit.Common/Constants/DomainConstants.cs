@@ -2,6 +2,8 @@
 {
     public class DomainConstants
     {
+        public const string SessionCookieName = "BenefitSessionCookie";
+
         public const string UserIdKey = "userId";
         public const string CabinetAreaName = "Cabinet";
         public const string DefaultAdminUserName = "benefitforbusiness@gmail.com";

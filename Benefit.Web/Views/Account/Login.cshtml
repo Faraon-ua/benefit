@@ -1,89 +1,84 @@
-﻿@model Benefit.Web.Models.LoginViewModel
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
 
 @{
-    ViewBag.Title = "Вхід в особистий кабінет";
+    ViewBag.Title = "Авторизація";
+    var lastNews = ViewBag.LastNews as List<InfoPage>;
 }
+@section styles
+{
+    <link href="~/Content/css/validation-errors.css" rel="stylesheet" />
+    <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
+    <link href="~/Content/css/address.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+    <script src="~/Scripts/address.js"></script>
+    <script>
+        var referalUserUrl = '@Url.Action("GetReferalName")';
+        var registeredCardUrl = '@Url.Action("CheckRegisteredCard")';
 
-<div class="enter_wrap">
-    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
-    {
-        @Html.ValidationSummary()
-        @Html.AntiForgeryToken()
-        <p class="enter_title">Вхід в особистий кабінет</p>
-        @Html.TextBoxFor(m => m.UserName, new { @class = "enter_email", placeholder = "E-mail", type="email" })
-        @Html.ValidationMessageFor(m => m.UserName)
-        @Html.PasswordFor(m => m.Password, new { @class = "enter_password", placeholder = "Пароль" })
-        @Html.ValidationMessageFor(m => m.Password)
-        @Html.ActionLink("Забули пароль", "ForgotPassword", null, new { @class = "enter_forgot" })
-        <input type="submit" class="enter_button" value="Вхід" />
-        <input class="hidden" type="checkbox" id="check01" name="check01">
-        <label class="label_for_check" for="check01">Запам’ятати мене</label>
-        <a href="@Url.RouteUrl("OldRegister")" class="enter_registration">Реєстрація</a>
-    }
+        function GetReferalName() {
+            var externalId = $("#ReferalNumber").val();
+            $.get(referalUserUrl + "?id=" + externalId, function (data) {
+                if (data) {
+                    $("#referal-name").text("Наставник: " + data);
+                }
+            });
+        }
 
-    @*<div class="enter_right">
-        <p class="enter_title_social">Вхід через</p>
-        <a href="" class="enter_soc enter_fb clearfix">
-            <span class="enter_soc_logo">
-                <i class="fa fa-facebook" aria-hidden="true"></i>
-            </span>
-            <span class="enter_soc_text">Facebook</span>
-        </a>
-        <a href="" class="enter_soc enter_go clearfix">
-            <span class="enter_soc_logo">
-                <i class="fa fa-google" aria-hidden="true"></i>
-            </span>
-            <span class="enter_soc_text">Google</span>
-        </a>
-    </div>*@
-</div>
-@*<div class="row">
-        <div class="col-md-8">
-            <section id="loginForm">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+            SetRegionsAutocomplete();
 
-                @Html.AntiForgeryToken()
-                <h4>Use a local account to log in.</h4>
-                <hr />
-                @Html.ValidationSummary(true)
-                <div class="form-group">
-                    @Html.LabelFor(m => m.UserName, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.UserName)
+            if ($("#ReferalNumber").val()) {
+                GetReferalName();
+            }
+
+            $("#ReferalNumber").focusout(function () {
+                GetReferalName();
+            });
+
+            $("#CardNumber").focusout(function () {
+                var cardNumber = $("#CardNumber").val();
+                if (cardNumber !== "") {
+                    $.get(registeredCardUrl + "?id=" + cardNumber, function (data) {
+                        if (data) {
+                            $("#ReferalNumber").val(data.ExternalNumber);
+                            $("#ReferalNumber").attr("readonly", "readonly");
+                            $("#referal-name").text("Наставник: " + data.FullName);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+<div class="wraps hover_shine" id="content">
+    <section class="page-top maxwidth-theme">
+        <h1 id="pagetitle" class="no-padding no-margin">Авторизація</h1>
+    </section>
+    <div class="wrapper_inner wide_page">
+        <div class="middle ">
+            <div class="container">
+                <div class="maxwidth-theme">
+                    <div class="head-block top">
+                        <div class="bottom_border"></div>
                     </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Password)
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <div class="checkbox">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            @Html.LabelFor(m => m.RememberMe)
+                    <div class="wrapper_inner">
+                        <div class="right_block  wide_">
+                            <div class="col-md-12 col-sm-12" style="padding: 0;">
+                                @Html.Partial("_LoginForm")
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Log in" class="btn btn-default" />
+                    <div class="left_block">
+                        @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", lastNews)
                     </div>
                 </div>
-                <p>
-                    @Html.ActionLink("Забули пароль", "ForgotPassword")
-                </p>
-                <p>
-                    @Html.ActionLink("Register", "Register") if you don't have a local account.
-                </p>
-            </section>
-
+            </div>
         </div>
-        <div class="col-md-4">
-            <section id="socialLoginForm">
-                @Html.Partial("_ExternalLoginsListPartial", new { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })
-            </section>
-        </div>
-    </div>*@
+    </div>
+</div>

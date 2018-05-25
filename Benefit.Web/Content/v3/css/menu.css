@@ -1,0 +1,350 @@
+#bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.li-depth-1 i {
+    height: 45px;
+    font-size: 2em;
+    left: 90%;
+    top: -35px;
+    position: relative;
+    color: #bababa;
+}
+
+    .child-menu-3 .child-category {
+        color: #000 !important;
+        text-decoration: none;
+        border: 0 !important;
+        display: block !important;
+        font: 1.5rem PTSans, sans-serif !important;
+        padding: 5px 15px !important;
+        width: 25% !important;
+        height: auto !important;
+    }
+        .child-menu-3 .child-category img {
+            margin-bottom: 5px;
+        }
+
+        .child-menu-3 .child-category:hover {
+            background: none !important;
+            color: #9e1414 !important;
+        }
+
+#section-menu {
+    position: relative;
+    background-color: #fff;
+    z-index: 6;
+}
+
+    #section-menu.active {
+        z-index: 200;
+    }
+
+    #section-menu .title {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        height: 45px;
+        line-height: 14px;
+        font-size: 14px;
+        margin: 0px;
+        padding: 0px 10px;
+        background-color: #e31e24;
+        color: #fff;
+        text-transform: uppercase;
+    }
+
+        #section-menu .title svg {
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        #section-menu .title span {
+            height: 10px;
+        }
+
+    #section-menu .section-title {
+        margin: 0px;
+        height: 45px;
+        line-height: 45px;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 0px 10px;
+        border-top: 1px solid #e4e4e4;
+        border-right: 1px solid #e4e4e4;
+        border-left: 1px solid #e4e4e4;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+
+    #section-menu ul {
+        border: 1px solid #e4e4e4;
+        margin: 0px;
+        padding: 0px;
+    }
+
+    #section-menu.hid {
+        position: relative;
+    }
+
+        #section-menu.hid ul.section-menu,
+        #section-menu.full_hid ul.section-menu {
+            display: none;
+            position: absolute;
+            width: 100%;
+        }
+
+        #section-menu.hid:hover ul.section-menu,
+        #section-menu.hid.active ul.section-menu {
+            display: block;
+        }
+
+    #section-menu.full_hid {
+    }
+
+    #section-menu .back_link {
+        background-color: #fff;
+        width: 100%;
+        margin: -10px -10px -10px 0px;
+        height: 45px;
+        line-height: 48px;
+        font-size: 14px;
+        text-transform: initial;
+        color: #666;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        border: 1px solid #e4e4e4;
+        border-left: 0px;
+    }
+
+    #section-menu .back_icon {
+        max-width: 16px;
+        max-height: 16px;
+        margin: 0px 10px;
+    }
+
+    #section-menu .back_link span {
+        height: 45px;
+        margin-left: 20px;
+        padding-right: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        flex-shrink: 1;
+    }
+
+
+    #section-menu li {
+        list-style: none;
+        padding-left: 0 !important;
+    }
+
+        #section-menu li:before {
+            content: "" !important;
+        }
+
+        #section-menu li a {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            height: 45px;
+            font-size: 14px;
+            line-height: 16px;
+            margin: 0px;
+            color: #282323;
+            padding: 0px 10px;
+            border-bottom: 1px solid #e4e4e4;
+            background-color: #fff;
+            overflow: hidden;
+        }
+
+        #section-menu li.li-depth-1,
+        #section-menu li.li-depth-2,
+        #section-menu li.li-depth-3,
+        #section-menu li.li-depth-4 {
+            height: 45px;
+            position: relative;
+        }
+
+
+        #section-menu li .next-level {
+            position: absolute;
+            right: 0px;
+            top: 0px;
+            height: 45px;
+            width: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            #section-menu li .next-level svg,
+            #section-menu li .prev-level svg {
+                max-width: 16px;
+                max-height: 16px;
+            }
+
+        #section-menu li .prev-level {
+            border-right: 1px solid #e4e4e4;
+            height: 45px;
+            width: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            margin-left: -10px;
+            margin-right: 10px;
+        }
+
+
+        #section-menu li a:hover,
+        #section-menu li.active a.a-depth-1 {
+            background-color: #f1f1f1;
+        }
+
+        #section-menu li a span {
+            height: 13px;
+        }
+
+        #section-menu li a svg {
+            width: 20px;
+            margin-right: 10px;
+        }
+
+        #section-menu li .child-menu-2 {
+        }
+
+            #section-menu li .child-menu-2 ul {
+            }
+
+        #section-menu li.li-depth-2 {
+            width: 100%;
+        }
+
+        #section-menu li .child-menu-3 {
+            border: 1px solid #e4e4e4;
+            width: 700px;
+            height: 450px;
+        }
+
+        #section-menu li .child-menu-2,
+        #section-menu li .child-menu-3,
+        #section-menu li .child-menu-4 {
+            top: 0px;
+            position: absolute;
+            height: 100%;
+            background-color: #fff;
+        }
+
+            #section-menu li .child-menu-2 ul,
+            #section-menu li .child-menu-3 ul,
+            #section-menu li .child-menu-4 ul {
+                height: calc(100% - 45px);
+            }
+
+        #section-menu li.li-depth-1 {
+        }
+
+            #section-menu li.li-depth-1 a {
+            }
+
+                #section-menu li.li-depth-1 a span {
+                    font-weight: 600;
+                }
+
+            #section-menu li.li-depth-1:last-child a.a-depth-1 {
+                border-bottom: 0px;
+            }
+
+        #section-menu li.li-depth-2 {
+        }
+
+            #section-menu li.li-depth-2 a {
+                justify-content: space-between;
+            }
+
+                #section-menu li.li-depth-2 a:hover,
+                #section-menu li.li-depth-2.active a.a-depth-2,
+                #section-menu li.li-depth-3.active a.a-depth-3 {
+                    background-color: #f1f1f1;
+                }
+
+        #section-menu li.li-depth-3 {
+        }
+
+            #section-menu li.li-depth-3 a {
+            }
+
+                #section-menu li.li-depth-4 a span,
+                #section-menu li.li-depth-3 a span,
+                #section-menu li.li-depth-2 a span {
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    width: calc(100% - 45px);
+                }
+
+        #section-menu li.li-depth-1 .section-icon {
+            width: 30px;
+            height: 24px;
+            padding: 0px 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            #section-menu li.li-depth-1 .section-icon img {
+                display: block;
+                max-width: 100%;
+                max-height: 100%;
+            }
+
+    #section-menu.mobile-hid ul.section-menu {
+        position: absolute;
+        overflow: hidden;
+        width: 100%;
+    }
+
+        #section-menu.mobile-hid ul.section-menu li.li-depth-1 {
+            height: 0px;
+            transition: 0.25s ease;
+        }
+
+    #section-menu.mobile-hid.active ul.section-menu li.li-depth-1 {
+        height: 45px;
+    }
+
+@media (min-width: 768px) {
+
+    #section-menu.mobile-hid ul.section-menu {
+        position: relative;
+        overflow: initial;
+    }
+
+        #section-menu.mobile-hid ul.section-menu li.li-depth-1 {
+            height: 45px;
+        }
+
+    #section-menu.hid ul.section-menu {
+        position: absolute;
+    }
+
+    #section-menu li.li-depth-1,
+    #section-menu li.li-depth-2,
+    #section-menu li.li-depth-3,
+    #section-menu li.li-depth-4 {
+        height: 45px;
+        position: initial;
+    }
+}

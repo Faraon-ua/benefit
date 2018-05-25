@@ -24,6 +24,7 @@ namespace Benefit.Domain.Models
             ProductOptions = new Collection<ProductOption>();
             Personnels = new Collection<Personnel>();
             Promotions = new Collection<Promotion>();
+            InfoPages = new Collection<InfoPage>();
         }
 
         [Key]
@@ -33,11 +34,16 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index]
         public string Name { get; set; }
+        [MaxLength(80)]
+        public string Title { get; set; }
         public string Description { get; set; }
+        [MaxLength(50)]
+        public string PrimaryRegionName { get; set; }
+        public int PrimaryRegionId { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         [MaxLength(160)]
-        public string ShortSescription { get; set; }
+        public string ShortDescription { get; set; }
         [MaxLength(160)]
         //internal site search
         public string SearchTags { get; set; }
@@ -86,6 +92,7 @@ namespace Benefit.Domain.Models
         [DisplayName("Оплата Готівкою")]
         public bool IsCashPaymentActive { get; set; }
         [DisplayName("Еквайринг")]
+        public bool IsFeatured { get; set; }
         public bool IsAcquiringActive { get; set; }
         public bool HasEcommerce { get; set; }
         public int TotalDiscount { get; set; }
@@ -119,6 +126,37 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Promotion> Promotions { get; set; }
         public virtual ICollection<NotificationChannel> NotificationChannels { get; set; }
+        public virtual ICollection<InfoPage> InfoPages { get; set; }
+
+        [NotMapped]
+        public ICollection<Product> FeaturedProducts { get; set; }
+        [NotMapped]
+        public ICollection<Product> PromotionProducts { get; set; }
+
+        [NotMapped]
+        public virtual string Specialization
+        {
+            get
+            {
+                if (SellerCategories == null) return null;
+                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault) == null) return null;
+                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault).Category == null)  return null;
+                return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.Name;
+            }
+        }
+
+        [NotMapped]
+        public virtual string SpecializationUrl
+        {
+            get
+            {
+                if (SellerCategories == null) return null;
+                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault) == null) return null;
+                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault).Category == null)  return null;
+                return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.UrlName;
+            }
+        }
+
         [NotMapped]
         public virtual ICollection<Review> ApprovedReviews
         {

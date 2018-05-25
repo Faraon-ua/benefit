@@ -29,6 +29,9 @@ namespace Benefit.Domain.Models
         public DateTime CreatedOn { get; set; }
         public DateTime LastModified { get; set; }
         public string LastModifiedBy { get; set; }
+        [MaxLength(128)]
+        public string SellerId { get;set; }
+        public Seller Seller { get; set; }
         [NotMapped]
         public List<Localization> Localizations { get; set; }
     }

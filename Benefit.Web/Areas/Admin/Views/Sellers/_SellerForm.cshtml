@@ -12,6 +12,13 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Title</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.Seller.Title, new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Url назва</label>
 
         <div class="col-sm-9">
@@ -80,6 +87,14 @@
 
         <div class="col-xs-10 col-sm-5">
             @Html.CheckBoxFor(m => m.Seller.IsActive)
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Висвітлювати на головній сторінці</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.Seller.IsFeatured)
         </div>
     </div>
 

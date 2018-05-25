@@ -1,18 +1,16 @@
-﻿@using Benefit.DataTransfer.ViewModels
+﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
 @model List<Benefit.Domain.Models.Product>
-@foreach (var product in Model.Take(Benefit.Common.Constants.ListConstants.DefaultTakePerPage))
+@foreach (var product in Model.Take(ListConstants.DefaultTakePerPage))
 {
     var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = product.Category.UrlName, SellerUrl = product.Seller.UrlName };
-    @Html.Partial("~/Views/Catalog/_ExpandableProductPartial.cshtml", partialModel)
+    @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
 }
-@if (Model.Count > Benefit.Common.Constants.ListConstants.DefaultTakePerPage)
+@if (Model.Count > ListConstants.DefaultTakePerPage)
 {
-    <div class="product_container" id="more-products">
-        <div class="product">
-            @*<div class="more-items"></div>*@
-            <div>
-                <a class="more-items" href="#" id="add-more-products">Показати ще</a>
-            </div>
+    <div class="bottom_nav margin-top-20">
+        <div class="ajax_load_btn" data-page="0">
+            <span class="more_text_ajax">Показати ще</span>
         </div>
     </div>
 }

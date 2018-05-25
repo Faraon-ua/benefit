@@ -1,4 +1,6 @@
 ﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @using Newtonsoft.Json
 @{
@@ -6,10 +8,68 @@
 }
 @section scripts
 {
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+    <script src="~/Scripts/address.js"></script>
+
     <script>
         var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods))
+        var loginUrl = '@Url.Action("Login", "Account")' + '?returnUrl=@HttpUtility.UrlEncode(Url.Action("Order", "Cart"))&isAjaxRequest=true';
+        var token = $('[name=__RequestVerificationToken]').val();
+        var isAuthenticated = ('@User.Identity.IsAuthenticated' === 'True');
+
         $(function() {
             CalculateSummary();
+            SetRegionsAutocomplete();
+
+            $("#save-order").click(function () {
+                var btn = $(this);
+                btn.find(".btn").attr("disabled", "disabled");
+                showLoader();
+                if (!isAuthenticated) {
+                    var registerForm = $("#register-form");
+                    var registerFormJson = getFormData(registerForm);
+                    $.post(registerForm.attr("action"),
+                        {
+                            "__RequestVerificationToken": token,
+                            "model": registerFormJson
+                        },
+                        function (data) {
+                            if (data.error) {
+                                flashMessage(data.error, true, true);
+                            } else {
+                                $("#AddressId").val(data.shippingAddressId);
+                                $("#order-form-wrap form").submit();
+                            }
+                            $('html,body').animate({ scrollTop: 0 }, 'fast');
+                            btn.find(".btn").removeAttr("disabled");
+                            hideLoader();
+                        });
+                } else {
+                    $("#order-form-wrap form").submit();
+                }
+            });
+
+            $(".btn-ajax-login").click(function() {
+                var username = $("#UserName").val();
+                var password = $("#UserPassword").val();
+
+                $.post(loginUrl,
+                    {
+                        "__RequestVerificationToken": token,
+                        "model": {
+                            "UserName": username,
+                            "Password": password
+                        }
+                    },
+                    function(data) {
+                        if (data.error) {
+                            flashMessage(data.error, true, true);
+                        } else {
+                            location.href = data.returnUrl;
+                        }
+                    });
+            });
 
             $(".delivery_address_item").click(function() {
                 var addressId = $(this).attr("data-address-id");
@@ -24,7 +84,7 @@
                 $(".delivery_address_item").show();
             });
 
-            $("input[name=ShippingMethodId]").change(function () {
+            $("input[name=ShippingMethodId]").change(function() {
                 if ($(this).attr("data-skip-address").toLowerCase() === "true") {
                     $(".delivery_address").hide();
                     $("#RequireAddress").val("False");
@@ -74,16 +134,16 @@
                     var sum = parseFloat($("#order-total").text());
                     if (selectedPaymentType.attr("id") == "@PaymentType.Bonuses.ToString()") {
                         var checkBonusesUrl = '@Url.Action("CheckEnaughBonuses", "Cart")';
-                        $.get(checkBonusesUrl + "?sum=" + (orderSum - promotion), function (data) {
+                        $.get(checkBonusesUrl + "?sum=" + (orderSum - promotion), function(data) {
                             if (data.total) {
                                 $("#bonuses-summary").show();
                                 //bonuses section
-                                $("#bonuses-discount").text(((sum-promotion) - 0.01).toFixed(2));
+                                $("#bonuses-discount").text(((sum - promotion) - 0.01).toFixed(2));
                                 $("#bonuses-total").text(((sum - promotion) - 0.01).toFixed(2));
 
                                 //payment section
                                 $("#pay-total").text((shippingCost + 0.01).toFixed(2));
-                                $("#discount").text(((sum-promotion) - 0.01).toFixed(2));
+                                $("#discount").text(((sum - promotion) - 0.01).toFixed(2));
                                 $("#discount-row").show();
                             } else {
                                 //todo: add pretty windows
@@ -102,32 +162,235 @@
         });
     </script>
 }
-@using (Html.BeginForm())
-{
-    <div class="arrange_content">
-        @Html.ValidationSummary()
-        <p class="arrange_content_title">Оформлення замовлення</p>
-        <div class="delivery_facilities">
-            <p class="delivery_facilities_title">Спосіб доставки</p>
-            @foreach (var shipping in Model.ShippingMethods)
-            {
-                <input class="hidden" type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id" data-skip-address="@shipping.SkipOrderAddress">
-                <label class="label_for_radio" for="@shipping.Id">@shipping.Name</label>
-            }
-            @Html.HiddenFor(m=>m.RequireAddress)
-        </div>
-        @Html.Partial("_ShippingAddresses", Model)
-        @Html.Partial("_PaymentTypes", Model)
-        <div class="delivery_coment">
-            <p class="delivery_coment_title">Коментар</p>
-            @Html.TextAreaFor(m => m.Comment)
-        </div>
-        @Html.Partial("_OrderProducts", Model)
-        @Html.Partial("_PaymentSummary", Model)
-        <div class="delivery_kontrols clearfix">
-            <a href="#" class="deliveri_edit goto_back btn"><span>Редагувати<br /> замовлення</span></a>
-            <button type="submit" class="checkout goto_ahead btn" id="checkout" disabled>Оформити<br /> замовлення</button>
-        </div>
-        @*        <p class="get_bonus">Ви отримаєте 43,60 бонусів</p>*@
+
+@Html.AntiForgeryToken()
+<div class="wrapper_inner " style="margin-top: 10px;">
+    @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel
+    {
+        Page = new InfoPage()
+        {
+            Title = "Оформлення замовленя",
+            Name = "Оформлення замовленя"
+        }
+    })
+    <div class="page-top-main">
+        <h1 id="pagetitle">Оформлення замовлення</h1>
     </div>
-}
+    @Html.Partial("_FlashMessage")
+    <div class="col-md-9 col-sm-9" style="padding: 0;">
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <div class="card">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation" class="active"><a href="#reg" aria-controls="home" role="tab" data-toggle="tab">Новий клієнт</a></li>
+                    <li role="presentation"><a href="#auth" aria-controls="home" role="tab" data-toggle="tab">Постійний клієнт</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content no-padding-top">
+                    <div role="tabpanel" class="tab-pane" id="auth">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <label> Логін </label>
+                                @Html.TextBox("UserName", null, new { @class = "enter_email", type = "email" })
+                            </div>
+                            <div class="col-sm-6">
+                                <label> Пароль </label>
+                                @Html.Password("UserPassword", null, new { @class = "enter_password" })
+                            </div>
+                        </div>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6">
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="bx-soa-cart-total-button-container" style="float: right;">
+                                    <a href="#" class="btn btn-default btn-lg btn-ajax-login">Увійти</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="tab-pane active" id="reg">
+                        <form action="@Url.Action("Register", "Account")?isAjaxRequest=true&returnUrl=@Url.Action("Order", "Cart")" method="POST" id="register-form">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label> Ім'я *</label>
+                                    @Html.TextBox("FirstName", null)
+                                    @Html.ValidationMessage("FirstName")
+                                </div>
+                                <div class="col-sm-6">
+                                    <label> Прізвище *</label>
+                                    @Html.TextBox("LastName", null)
+                                    @Html.ValidationMessage("LastName")
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label> Номер телефону *</label>
+                                    @Html.TextBox("PhoneNumber", null, new { type = "tel" })
+                                    @Html.ValidationMessage("PhoneNumber")
+                                </div>
+                                <div class="col-sm-6">
+                                    <label> E-mail *</label>
+                                    @Html.TextBox("Email", null, new { type = "email" })
+                                    @Html.ValidationMessage("Email")
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    @{
+                                        var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
+                                        var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
+                                        var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
+                                        var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
+                                    }
+                                    <label> Місто *</label>
+                                    @Html.TextBox("RegionName", regionNameCookieVal, new {@class = "regionSearch"})
+                                    @Html.Hidden("RegionId", regionIdCookieVal)
+                                    @Html.ValidationMessage("RegionId")
+                                </div>
+                                <div class="col-sm-6">
+                                    <label> Адреса доставки</label>
+                                    @Html.TextBox("ShippingAddress", null)
+                                    @Html.ValidationMessage("ShippingAddress")
+                                </div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label> Створіть свій пароль *</label>
+                                    @Html.TextBox("Password", null, new { type = "password" })
+                                    @Html.ValidationMessage("Password")
+                                </div>
+                                <div class="col-sm-6">
+                                    <label> Реєстраційний код (за наявності)</label>
+                                    @Html.TextBox("ReferalNumber", null)
+                                    <p style="text-align: center; font-size: 1.2em;" id="referal-name">
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <label> Номер картки (за наявності)</label>
+                                    @Html.TextBox("CardNumber", null)
+                                    @Html.ValidationMessage("CardNumber")
+                                </div>
+                            </div>
+                        </form>
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                Натискаючу оформити замовлення, ви погоджуєтесь з
+                                <a href="@Url.RouteUrl("pagesRoute", new {id = "ugoda-korustuvacha"})">угодою користувача</a>
+                            </div>
+                            <div class="col-sm-6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div id="order-form-wrap">
+            <form action="@Url.Action("order", new {id = Model.SellerId})" method="post">
+                <input type="hidden" name="SellerId" value="@Model.SellerId" />
+                <div class="card">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#delivery" aria-controls="home" role="tab" data-toggle="tab">Способи доставки</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="delivery">
+                            <div class="row">
+                                @foreach (var shipping in Model.ShippingMethods)
+                                {
+                                    <div class="col-sm-3">
+                                        <div class="radio-inline">
+                                            <label>
+                                                <input type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id" data-skip-address="@shipping.SkipOrderAddress">
+                                                @shipping.Name
+                                            </label>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="card">
+                        <ul class="nav nav-tabs" role="tablist">
+                            <li role="presentation" class="active"><a href="#delivery" aria-controls="home" role="tab" data-toggle="tab">Адреса доставки</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="delivery">
+                                <div class="row">
+                                    @Html.Partial("_ShippingAddresses", Model)
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div class="card">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#payment" aria-controls="home" role="tab" data-toggle="tab">Методи оплати</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="payment">
+                            <div class="row">
+                                @Html.Partial("_PaymentTypes", Model)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#comment" aria-controls="home" role="tab" data-toggle="tab">Коментар до замовлення</a></li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="comment">
+                            <div class="row">
+                                <div class="row" style="margin: 3px;">
+                                    <div class="col-sm-12">
+                                        @Html.TextAreaFor(m => m.Comment)
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-3">
+        <div class="card">
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation"><a href="#" aria-controls="cart" role="tab" data-toggle="tab">Ваше замовлення</a></li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="cart">
+                    @Html.Partial("_OrderProducts", Model)
+                </div>
+                <a href="#" class="order-edit">Редагувати замовлення</a>
+            </div>
+            <hr>
+            @*<h5 style="margin: 15px; padding-bottom: 10px; text-align: right;">Всього: 1 000,00 грн.</h5>*@
+            @Html.Partial("_PaymentSummary", Model)
+        </div>
+
+    </div>
+    <!--	SIDEBAR BLOCK	-->
+</div>
+<div class="button_block col-sm-3 col-md-3 display-block-xs" id="save-order" style="text-align: center; float: none;">
+    <span class="btn btn-default bold height-50px" style="font-size: 17px; line-height: 2em;">
+        Оформити замовлення
+    </span>
+</div>
+<br class="visible-xs"/>

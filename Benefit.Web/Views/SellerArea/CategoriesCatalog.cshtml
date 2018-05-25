@@ -1,0 +1,37 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.CategoriesViewModel
+
+@{
+    ViewBag.Title = Model.Category.Name;
+    Layout = "_SellerLayout.cshtml";
+}
+
+<section class="breadcrumb" id="content_link">
+    @Html.Partial("~/views/sellerarea/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+</section>
+<section class="p-y-2">
+    <div class="container">
+        <div class="heading1608 dotted">
+            <div class="h1 title">
+                @Model.Category.Name
+            </div>
+        </div>
+        <div class="gridBlock">
+            @foreach (var cat in Model.Items)
+            {
+                <div class="col-xs-6 col-md-3 col-lg-4 col-xl-6">
+                    <div class="product card">
+                        <div class="card-block fn-transfer">
+                            <a class="card-image image" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })">
+                                <img class="fn-img" src="~/Images/CategoryLogo/@cat.ImageUrl" alt="" style="opacity: 0.96;">
+                            </a>
+                            <div class="card-title h3">
+                                <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })">@cat.Name</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>

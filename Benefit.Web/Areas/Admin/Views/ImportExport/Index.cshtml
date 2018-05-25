@@ -6,18 +6,34 @@
 @section scripts
 {
     <script>
-        $("#1CCommerceML").click(function () {
-            $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
-            $.ajax({
-                type: "POST",
-                url: routePrefix + '/Admin/ImportExport/OneCCommerceMLImport?id=@Model.Id',
-                success: function (result) {
-                    if (result.error) {
-                        flashMessage(result.error, true, true);
-                    } else {
+        $(function() {
+            $("#1CCommerceML").click(function() {
+                $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
+                $.ajax({
+                    type: "POST",
+                    url: routePrefix + '/Admin/ImportExport/OneCCommerceMLImport?id=@Model.Id',
+                    success: function(result) {
                         flashMessage(result.message, false, true);
+                    },
+                    error: function(xhr) {
+                        flashMessage(xhr.responseJSON, true, true);
                     }
-                }
+                });
+            });
+
+            $("#ExcelImport").click(function () {
+                $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
+                $.ajax({
+                    type: "POST",
+                    url: routePrefix + '/Admin/ImportExport/ExceleImport?id=@Model.Id',
+                    success: function(result) {
+                        if (result.error) {
+                            flashMessage(result.error, true, true);
+                        } else {
+                            flashMessage(result.message, false, true);
+                        }
+                    }
+                });
             });
         });
     </script>
@@ -31,6 +47,11 @@
             </a>
         </li>
         <li>
+            <a data-toggle="tab" href="#excel">
+                Excel
+            </a>
+        </li>
+        <li>
             <a data-toggle="tab" href="#1ccommerceml">
                 1C Commerce ML
             </a>
@@ -39,6 +60,26 @@
     <div class="tab-content">
         <div id="prom" class="tab-pane in active">
             @Html.Action("GetPromImport")
+        </div>
+        <div id="excel" class="tab-pane">
+            <div>
+                <h3 class="red" id="warning-message">Імпорт з файлу зробить неактивними всі товари з бази, яких немає у файлі імпорту.</h3>
+                <h2 class="underlined">
+                    Excel
+                </h2>
+                <p>1) Завантажте Excel файл (import.xls) та зображення (в папці Images) на наш FTP</p>
+                @using (Html.BeginForm("UploadExcelFile", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" value="Завантажити" />
+                    <input type="hidden" name="sellerUrlName" value="@Model.UrlName"/>
+                    <br />
+                    <input type="submit" value="Завантажити" class="btn btn-default" />
+                }
+                <p>
+                2) Натисніть кнопку
+                <button type="button" class="btn btn-success" id="ExcelImport">Excel Import</button>
+                </p>
+            </div>
         </div>
         <div id="1ccommerceml" class="tab-pane">
             <div id="importFiles">

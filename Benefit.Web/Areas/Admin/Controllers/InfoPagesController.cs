@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
@@ -20,13 +21,30 @@ namespace Benefit.Web.Areas.Admin.Controllers
         // GET: /Admin/InfoPages/
         public ActionResult Index()
         {
-            return View(db.InfoPages.OrderBy(entry => entry.Order).ToList());
+            var pages = Seller.CurrentAuthorizedSellerId != null
+                ? db.InfoPages.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId)
+                : db.InfoPages.Where(entry => entry.SellerId == null);
+            return View(pages.ToList());
         }
 
         // GET: /Admin/InfoPages/Create
         public ActionResult CreateOrUpdate(string id = null)
         {
-            var infoPage = db.InfoPages.Find(id) ?? new InfoPage() { Id = Guid.NewGuid().ToString() };
+            if (Seller.CurrentAuthorizedSellerId != null)
+            {
+                if (db.InfoPages.Count(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId) > 3)
+                {
+                    TempData["ErrorMessage"] = "Ви не можете створити більшу кількість сторінок";
+                    return RedirectToAction("Index");
+                }
+            }
+
+            var infoPages = db.InfoPages.Where(entry => entry.Id == id);
+            if (Seller.CurrentAuthorizedSellerId != null)
+            {
+                infoPages = infoPages.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+            }
+            var infoPage = infoPages.FirstOrDefault() ?? new InfoPage() { Id = Guid.NewGuid().ToString() };
             infoPage.Localizations = LocalizationService.Get(infoPage, new[] { "Name", "Content" });
             return View(infoPage);
         }
@@ -34,7 +52,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult TabableContent(string pageUrls)
         {
             var pageUrlNames = pageUrls.Split(',');
-            var infoPages = db.InfoPages.Where(entry => pageUrlNames.Contains(entry.UrlName)).OrderBy(entry=>entry.Order).ToList();
+            var infoPages = db.InfoPages.Where(entry => pageUrlNames.Contains(entry.UrlName)).OrderBy(entry => entry.Order).ToList();
             return View(infoPages);
         }
 
@@ -51,6 +69,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (Seller.CurrentAuthorizedSellerId != null)
+                {
+                    infopage.SellerId = Seller.CurrentAuthorizedSellerId;
+                }
                 infopage.LastModified = DateTime.UtcNow;
                 infopage.LastModifiedBy = User.Identity.Name;
                 var logo = Request.Files[0];
@@ -77,10 +99,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     infopage.CreatedOn = DateTime.UtcNow;
                     db.InfoPages.Add(infopage);
                 }
-                LocalizationService.Save(infopage.Localizations);
+                //LocalizationService.Save(infopage.Localizations);
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Сторінку збережено";
-                return RedirectToAction("CreateOrUpdate", new { id=infopage.Id });
+                return RedirectToAction("CreateOrUpdate", new { id = infopage.Id });
             }
 
             return View(infopage);

@@ -1,81 +1,194 @@
-﻿@using Benefit.Web.Helpers
-<header>
-    <div class="container">
-        <div class="container_table topheader_content position-relative">
-            <div class="position-absolute logo-container">
-                @{
-                    var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("Index", "Home", new { area = string.Empty }, Request.Url.Scheme);
-                }
-                <a class="logo" href='@href'></a>
-                <div class="show_on_tablet logo_region select_place_container">
-                    <i class="icn location"></i>
-                    <span class="inside"></span>
-                </div>
-                <div class="logo_slogan">Онлайн торговий центр</div>
-            </div>
-            <div class="menu-container">
-                <div class="menu lmenu_block" id="left-menu">
-                    @Html.Partial("_MenuPartial")
-                    <div class="f_soc_p">
-                        <a href="https://www.youtube.com/channel/UC2YbFBSzjxW_ji2_mDBeWpw" class="yt"><i class="fa fa-youtube" aria-hidden="true"></i></a>
-                        <a href="https://www.facebook.com/groups/benefitcompany" class="fb"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-                        <a href="https://plus.google.com/+BenefitCompanyTV" class="gp"><i class="fa fa-google-plus" aria-hidden="true"></i></a>
-                        <a href="https://twitter.com/benefitcompany" class="tw"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-                        <a href="https://www.instagram.com/benefitcompany/" class="ig"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-                        <a href="viber://chat?number=%2B380500354555" class="viber" title="Viber"><i class="fa fa-volume-control-phone " aria-hidden="true"></i></a>
-                        <a href="whatsapp://send?phone=%2B380500354555" class="whatsapp" title="Whatsapp"><i class="fa fa-whatsapp" aria-hidden="true"></i></a>
-                        <a href="skype:live:info_706852?chat" class="skype" title="Skype"><i class="fa fa-skype" aria-hidden="true"></i></a>
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
+
+@{
+    var categories = ViewBag.Categories as List<Category>;
+    var isMainPage = ViewContext.RouteData.GetRequiredString("action") == "Index" && ViewContext.RouteData.GetRequiredString("controller") == "Home";
+}
+
+<header id="header" class="header-v4 header-wrapper">
+    <div class="logo_and_menu-row">
+        <div class="logo-row">
+            <div class="maxwidth-theme">
+                <div class="row">
+                    <div class="logo-block pull-left col-md-2 col-sm-3">
+                        <div class="logo ">
+                            @{
+                                var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
+                            }
+                            <a href="@href">
+                                <img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company">
+                            </a>
+                        </div>
                     </div>
-                    <div class="lmenu_contact">
-                        <span>Служба підтримки:</span>
-                        <a href="tel:+380500354555">
-                            <span>(050) 035 45 55</span>
-                        </a>
-                        <a href="tel:+380630354555">
-                            <span>(063) 035 45 55</span>
-                        </a>
-                        <a href="tel:+380970354555">
-                            <span>(097) 035 45 55</span>
-                        </a>
+                    <div class="inline-block pull-left">
+                        @Html.Partial("_SelectRegionPartial")
                     </div>
-                </div>
-            </div>
-            <div class="position-absolute top-right contacts-container">
-                <div class="top_right_selectors">
-                    <div class="dropdown dropdown_inline margin-left-10">
-                        <a title="Viber" href="viber://chat?number=%2B380500354555">
-                            <img src="~/Content/img/viber_png.png" />
-                        </a>
-                        <a title="Whatsapp" href="whatsapp://send?phone=%2B380500354555">
-                            <img src="~/Content/img/whatsapp_png.png" />
-                        </a>
-                        <a title="Skype" href="skype:live:info_706852?chat">
-                            <img src="~/Content/img/skype_png.png" />
-                        </a>
+                    <div class="col-md-3 col-lg-3 search_wrap">
+                        <div class="search-block inner-table-block">
+                            <div class="search-wrapper">
+                                <div id="title-search_fixed">
+                                    @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
+                                    {
+                                        <div class="search-input-div">
+                                            <input class="search-input" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />
+                                        </div>
+                                        <div class="search-button-div">
+                                            <button class="btn btn-search" type="submit" value="Пошук"><i class="svg svg-search svg-black"></i></button>
+                                            <span class="close-block inline-search-hide"><span class="svg svg-close close-icons"></span></span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="dropdown dropdown_inline">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="select_language" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                            <i class="icn flag ua"></i>
-                            УКР
-                            @*                                <span class="caret"></span>*@
-                        </button>
-                        @*//todo:add language select <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="select_language">
-                        <li><a href="#"><i class="icn flag ua"></i> РУС</a></li>
-                    </ul>*@
-                    </div>
-                    @Html.Partial("_SelectRegionPartial")
-                </div>
-                <div class="top_right_phone">
-                    <div>
-                        <i class="icn phone"></i>
-                    </div>
-                    <div>
-                        <span>(050) 035 45 55</span>
-                        <span>(063) 035 45 55</span>
-                        <span>(097) 035 45 55</span>
+                    <div class="right-icons pull-right">
+                        <div class="pull-right block-link">
+                            <div class="wrap_icon inner-table-block baskets">
+                                <a rel="nofollow" class="basket-link basket has_prices with_price" href="#" title="Корзина пуста">
+                                    <span class="js-basket-block">
+                                        <i class="svg svg-basket "></i>
+                                        <span class="wrap">
+                                            <span class="title dark_link">Кошик</span>
+                                            <span id="cart-items-price" class="prices">порожній</span>
+                                        </span>
+                                        <span class="count cart-items-number">0</span>
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
+                        @Html.Partial("_LoginPartial")
+                        <div class="pull-right">
+                            <div class="wrap_icon inner-table-block">
+                                <div class="phone-block">
+                                    <div class="phone">
+                                        <i class="svg svg-phone"></i>
+                                        <a rel="nofollow" href="tel:+380500354555">+38 (050) 035 45 55</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    <div class="menu-row middle-block bgcolored">
+        <div class="maxwidth-theme">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="menu-only">
+                        <nav class="mega-menu sliced ovisible">
+                            <div class="table-menu">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td class="menu-item dropdown catalog @(isMainPage ? "" : "active")">
+                                                <div class="wrap">
+                                                    <a class="dropdown-toggle" href="@Url.Action("index","catalog", new { categoryUrl = string.Empty })" style="padding-top: 10px;">
+                                                        <div class="no-hover-underline">
+                                                            КАТАЛОГ<br>ТОВАРІВ ТА ПОСЛУГ
+                                                            <div class="line-wrapper">
+                                                                <span class="line"></span>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                    @if (!isMainPage)
+                                                    {
+                                                        <ul class="dropdown-menu" style="width: 306px;">
+                                                            <li id="section-menu" class="no-select mobile-hid">
+                                                                <ul class="section-menu">
+                                                                    @foreach (var cat in categories)
+                                                                    {
+                                                                        <li class="li-depth-1">
+                                                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" class="a-depth-1">
+                                                                                <div class="section-icon">
+                                                                                    <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" height="20">
+                                                                                </div>
+                                                                                <span>@cat.Name</span>
+                                                                            </a>
+                                                                            @if (cat.ChildCategories.Any())
+                                                                            {
+                                                                                <i class="fa fa-angle-right"></i>
+                                                                                <div class="child-menu child-menu-2 hidden">
+                                                                                    <ul>
+                                                                                        @foreach (var subCat in cat.ChildCategories)
+                                                                                        {
+                                                                                            <li class="li-depth-2">
+                                                                                                <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" class="a-depth-2">
+                                                                                                    <span>@subCat.Name</span>
+                                                                                                    @if (subCat.ChildCategories.Any())
+                                                                                                    {
+                                                                                                        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 185.343 185.343" style="enable-background: new 0 0 185.343 185.343;" xml:space="preserve" width="512px" height="512px">
+                                                                                                            <g><g><path d="M51.707,185.343c-2.741,0-5.493-1.044-7.593-3.149c-4.194-4.194-4.194-10.981,0-15.175    l74.352-74.347L44.114,18.32c-4.194-4.194-4.194-10.987,0-15.175c4.194-4.194,10.987-4.194,15.18,0l81.934,81.934    c4.194,4.194,4.194,10.987,0,15.175l-81.934,81.939C57.201,184.293,54.454,185.343,51.707,185.343z" fill="#bababa"/></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                                                    }
+                                                                                                </a>
+                                                                                                <span class="next-level hidden-lg hidden-md hidden-sm">
+                                                                                                    <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 185.343 185.343" style="enable-background: new 0 0 185.343 185.343;" xml:space="preserve" width="512px" height="512px">
+                                                                                                    <g>
+                                                                                                    <g><path d="M51.707,185.343c-2.741,0-5.493-1.044-7.593-3.149c-4.194-4.194-4.194-10.981,0-15.175    l74.352-74.347L44.114,18.32c-4.194-4.194-4.194-10.987,0-15.175c4.194-4.194,10.987-4.194,15.18,0l81.934,81.934    c4.194,4.194,4.194,10.987,0,15.175l-81.934,81.939C57.201,184.293,54.454,185.343,51.707,185.343z" fill="#bababa" /></g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g><g></g></svg>
+                                                                                                </span>
+                                                                                                <div class="child-menu child-menu-3 hidden">
+                                                                                                    <div style="padding: 5px; clear: both;">
+                                                                                                        @foreach (var childCat in subCat.ChildCategories)
+                                                                                                        {
+                                                                                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" class="pull-left child-category">
+                                                                                                                <img src="~/Images/CategoryLogo/@childCat.ImageUrl" style="width: 85px; height: 85px;" />
+                                                                                                                <div style="height: 50px; overflow: hidden;">
+                                                                                                                    @childCat.Name
+                                                                                                                </div>
+                                                                                                            </a>
+                                                                                                        }
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                            </li>
+                                                                                        }
+                                                                                    </ul>
+                                                                                </div>
+                                                                            }
+                                                                        </li>
+                                                                    }
+                                                                </ul>
+                                                            </li>
+                                                        </ul>
+                                                    }
+                                                </div>
+                                            </td>
+
+                                            <td class="menu-item catalog wide_menu">
+                                                <div class="wrap">
+                                                    <a class="" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" style="padding-top: 10px;">
+                                                        <div class="no-hover-underline">
+                                                            КАТАЛОГ<br>ПОСТАЧАЛЬНИКІВ<div class="line-wrapper"><span class="line"></span></div>
+                                                        </div>
+                                                    </a>
+                                                    @*<ul class="dropdown-menu">
+                                                        @foreach (var cat in categories)
+                                                        {
+                                                            <div class="dropdown-submenu" style="width: 20%; float: left; text-align: center; padding-bottom: 20px;">
+                                                                <div class="menu_img">
+                                                                    <a href="@HttpUtility.UrlDecode(Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options="nav=sellers;/" }))" title="@cat.Name" class="dark_link">
+                                                                        <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" title="@cat.Name">
+                                                                    </a>
+                                                                    <a href="@HttpUtility.UrlDecode(Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options="nav=sellers;/" }))" title="@cat.Name" class="dark_link">@cat.Name</a>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                    </ul>*@
+                                                </div>
+                                            </td>
+                                            @Html.Partial("_MenuPartial")
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="line-row visible-xs"></div>
 </header>
+<div class="loader" style="display: none;"></div>

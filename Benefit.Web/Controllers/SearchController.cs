@@ -1,10 +1,14 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.DataTransfer.ViewModels.NavigationEntities;
+using Benefit.Domain.Models;
 using Benefit.Domain.Models.Search;
 using Benefit.Services;
+using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Controllers
@@ -12,9 +16,9 @@ namespace Benefit.Web.Controllers
     public class SearchController : Controller
     {
         SearchService SearchService = new SearchService();
-        public ActionResult SearchWords(string query, string categoryId = null)
+        public ActionResult SearchWords(string query, string sellerId = null)
         {
-            var searchResult = SearchService.SearchKeyWords(query, categoryId);
+            var searchResult = SearchService.SearchKeyWords(query, sellerId);
             var result = new AutocompleteSearch
             {
                 query = query,
@@ -28,18 +32,45 @@ namespace Benefit.Web.Controllers
                 JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult Index(string term, string searchSellerId = null)
+        [FetchSeller]
+        [FetchCategories]
+        public ActionResult Index(string term, string options, string searchSellerId)
         {
             searchSellerId = searchSellerId == string.Empty ? null : searchSellerId;
-            var result = SearchService.SearchProducts(term, 0, searchSellerId);
+            var result = SearchService.SearchProducts(term, options, 0, searchSellerId);
             result.SellerId = searchSellerId;
+            if (!string.IsNullOrEmpty(searchSellerId))
+            {
+                return View("~/Views/SellerArea/ProductsCatalog.cshtml", new ProductsViewModel
+                {
+                    Items = result.Products,
+                    Category = new Category()
+                    {
+                        Name = "Пошук",
+                        Description = string.Format("Результати пошуку по запиту '{0}'", result.Term)
+                    },
+                    Breadcrumbs = new BreadCrumbsViewModel()
+                    {
+                        Categories = new Dictionary<Category, List<Category>>()
+                        {
+                            {
+                                new Category()
+                                {
+                                    Name = "Пошук"
+                                },
+                                null
+                            }
+                        }
+                    }
+                });
+            }
             return View(result);
         }
 
-        public ActionResult GetProducts(string term, int skip, int take = ListConstants.DefaultTakePerPage)
+        public ActionResult GetProducts(string term, string options, int page)
         {
-            var result = SearchService.SearchProducts(term, skip);
-            var productsHtml = string.Join("", result.Products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ExpandableProductPartial.cshtml", new ProductPartialViewModel
+            var result = SearchService.SearchProducts(term, options, ListConstants.DefaultTakePerPage * page);
+            var productsHtml = string.Join("", result.Products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ProductPartial.cshtml", new ProductPartialViewModel
             {
                 Product = entry,
                 CategoryUrl = entry.Category.UrlName,

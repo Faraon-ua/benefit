@@ -1,22 +1,52 @@
-﻿<ul>
-    <li class="login_links show_on_tablet">
-    </li>
-    <li class="margin-left-0">
-        <a href="@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })">Партнерська програма</a>
-    </li>
-    <li>
-        <a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })">Співпраця</a>
-    </li>
-    <li>
-        <a href="@Url.RouteUrl("pagesRoute", new { id = "benefit_tv" })">Benefit TV</a>
-    </li>
-    <li>
-        <a href="@Url.RouteUrl("pagesRoute", new { id = "faq" })">FAQ</a>
-    </li>
-    <li>
-        <a href="@Url.RouteUrl("newsRoute")">Новини</a>
-    </li>
-    <li class="show_on_tablet show_on_mobile">
-        <a href="@Url.Action("Map", "Home")">Мапа закладів Benefit Card</a>
-    </li>
-</ul>
+﻿<td class="menu-item dropdown" style="visibility: visible;">
+    <div class="wrap">
+        <a class="dropdown-toggle" href="#">
+            <div class="no-hover-underline">
+                Покупцям
+                <div class="line-wrapper"><span class="line"></span></div>
+            </div>
+        </a>
+        <span class="tail"></span>
+        <ul class="dropdown-menu">
+            <li><a href="#" title="Відгуки покупців"><span class="name">Відгуки покупців</span></a></li>
+            <li><a href="#" title="Правила Benefit Card"><span class="name">Правила Benefit Card</span></a></li>
+            <li><a href="@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })" title="Партнерська програма"><span class="name">Партнерська програма</span></a></li>
+            <li><a href="@Url.RouteUrl("pagesRoute", new {id = "faq"})" title="Питання та відповіді"><span class="name">Питання та відповіді</span></a></li>
+        </ul>
+    </div>
+</td>
+<td class="menu-item dropdown" style="visibility: visible;">
+    <div class="wrap">
+        <a class="dropdown-toggle" href="#">
+            <div class="no-hover-underline">Постачальникам<div class="line-wrapper"><span class="line"></span></div></div>
+        </a>
+        <span class="tail"></span>
+        <ul class="dropdown-menu">
+            <li><a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })" title="Співпраця з компанією"><span class="name">Співпраця з компанією</span></a></li>
+            <li><a href="#" title="Тарифи та можливості"><span class="name">Тарифи та можливості</span></a></li>
+            <li><a href="#" title="Реєстрація постачальника"><span class="name">Реєстрація постачальника</span></a></li>
+            <li><a href="#" title="Система Benefit Card"><span class="name">Система Benefit Card</span></a></li>
+        </ul>
+    </div>
+</td>
+<td class="menu-item dropdown" style="visibility: visible;">
+    <div class="wrap">
+        <a class="dropdown-toggle" href="">
+            <div class="no-hover-underline">Про нас<div class="line-wrapper"><span class="line"></span></div></div>
+        </a>
+        <span class="tail"></span>
+        <ul class="dropdown-menu">
+            <li><a href="#" title="Про компанію Benefit Company"><span class="name">Про компанію Benefit Company</span></a></li>
+            <li><a href="@Url.Action("index","news")" title="Новини компанії"><span class="name">Новини компанії</span></a></li>
+            <li><a href="#" title="Відгуки про компанію"><span class="name">Відгуки про компанію</span></a></li>
+            <li><a href="#" title="Угода користувача"><span class="name">Угода користувача</span></a></li>
+        </ul>
+    </div>
+</td>
+<td class="menu-item" style="visibility: visible;">
+    <div class="wrap">
+        <a class="" href="#">
+            <div class="no-hover-underline">Контакти<div class="line-wrapper"><span class="line"></span></div></div>
+        </a>
+    </div>
+</td>

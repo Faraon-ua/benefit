@@ -1,0 +1,47 @@
+﻿@model Benefit.DataTransfer.ViewModels.MainPageViewModel
+<div class="top_slider_wrapp maxwidth-banner visible-xs">
+    <div class="slider">
+        @foreach (var banner in Model.MobileBanners)
+        {
+            <a href="@banner.NavigationUrl">
+                <img class="item" src="~/Images/@banner.BannerType/@banner.ImageUrl">
+            </a>
+        }
+    </div>
+</div>
+<div class="top_slider_wrapp maxwidth-banner hidden-xs">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="slider" style="max-height: 466px;">
+                @foreach (var banner in Model.PrimaryBanners)
+                {
+                    <a href="@banner.NavigationUrl">
+                        <img class="item" src="~/Images/@banner.BannerType/@banner.ImageUrl">
+                    </a>
+                }
+            </div>
+        </div>
+        <div class="col-md-4" style="padding-left: 0;padding-right: 30px;">
+            <div class="row">
+                <div class="slider desctop-slider">
+                    @foreach (var banner in Model.TopSideBanners)
+                    {
+                        <a href="@banner.NavigationUrl">
+                            <img class="item" src="~/Images/@banner.BannerType/@banner.ImageUrl">
+                        </a>
+                    }
+                </div>
+            </div>
+            <div class="row margin-top-10">
+                <div class="slider desctop-slider">
+                    @foreach (var banner in Model.BottomSideBanners)
+                    {
+                        <a href="@banner.NavigationUrl">
+                            <img class="item" src="~/Images/@banner.BannerType/@banner.ImageUrl">
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

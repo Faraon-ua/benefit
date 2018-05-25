@@ -14,7 +14,7 @@ namespace Benefit.Domain.Models
         [Description("#73d36a")]
         [Display(Name = "В наявності")]
         Available,
-        [Display(Name = "Завжди в наявності")]
+        [Display(Name = "В наявності")]
         [Description("#73d36a")]
         AlwaysAvailable,
         [Display(Name = "Немає в наявності")]
@@ -41,6 +41,8 @@ namespace Benefit.Domain.Models
         [Key]
         [MaxLength(128)]
         public string Id { get; set; }
+        [MaxLength(128)]
+        public string ExternalId { get; set; }
         [Required]
         [MaxLength(256)]
         [Index]
@@ -61,6 +63,7 @@ namespace Benefit.Domain.Models
         [Required(AllowEmptyStrings = true, ErrorMessage = "Опис обовязковий для заповнення")]
         public string Description { get; set; }
         public double Price { get; set; }
+        public double? OldPrice { get; set; }
         public double? WholesalePrice { get; set; }
         public int? WholesaleFrom { get; set; }
         public bool IsWeightProduct { get; set; }

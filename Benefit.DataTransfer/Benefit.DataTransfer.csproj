@@ -62,6 +62,7 @@
     <Compile Include="ApiDto\SendPulse\AuthDto.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="JSON\AutocompleteSearch.cs" />
+    <Compile Include="ViewModels\AnketaViewModel.cs" />
     <Compile Include="ViewModels\Base\NavigationEntitiesViewModel.cs" />
     <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
     <Compile Include="ViewModels\CartEditResult.cs" />

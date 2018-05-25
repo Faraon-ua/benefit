@@ -1,0 +1,104 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
+@model Seller
+
+@{
+    //var sellerUrl = Url.SubdomainAction(Model.UrlName, "Index", "Home", null);
+    var sellerUrl = "#";
+    var logo = Model.Images.FirstOrDefault(entry => entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo);
+    var logoUrl = logo == null ? "" : logo.ImageUrl;
+    var address = Model.Addresses.FirstOrDefault();
+    var todayShedule = Model.Schedules.FirstOrDefault(entry => entry.Day == DateTime.Now.DayOfWeek);
+}
+
+<div class="list_item_wrapp item_wrap item seller-item">
+    <table class="list_item" cellspacing="0" cellpadding="0" border="0" width="100%">
+        <tr class="adaptive_name">
+            <td colspan="2">
+                <div class="desc_name">
+                    <a href="@sellerUrl">
+                        <span>@Model.Name</span>
+                    </a>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td class="image_block">
+                <div class="stickers">
+                    <div class="sticker_sale_text">@Model.UserDiscount %</div>
+                </div>
+                <a href="@sellerUrl" class="thumb shine">
+                    <img src="~/Images/SellerLogo/@logoUrl" alt="@Model.AltText" title="@Model.Title" style="max-width: 230px; max-height: 230px;" />
+                </a>
+            </td>
+            <td class="description_wrapp">
+                <div class="description">
+                    <div class="item-title">
+                        <a href="@sellerUrl" class="dark_link" style="font-size: 18px">@Model.Name</a>
+                        @if (address != null)
+                        {
+                            <span>@string.Format("{0}, {1}", address.Region.Name_ua, address.AddressLine)</span>
+                        }
+                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky", options = string.Empty })/category=@Model.SpecializationUrl;/" class="dark_link" style="font-size: 12px">@Model.Specialization</a>
+                    </div>
+
+                    <div class="preview_text">@Model.ShortDescription</div>
+                </div>
+
+
+                <div class="preview_text">
+                    @if (todayShedule != null)
+                    {
+                        if (todayShedule.StartHour < DateTime.Now.Hour && todayShedule.EndHour > DateTime.Now.Hour)
+                        {
+                            <i class="fa fa-clock-o" style="color: #42c473; font-size: 1.5em;"></i>
+                            <span style="color: #42c473; font-weight: bold;">@todayShedule.StartHour:00 - @todayShedule.EndHour:00</span>
+                        }
+                        else
+                        {
+                            <i class="fa fa-clock-o" style="color: #ed1e1e; font-size: 1.5em;"></i>
+                            <span style="color: #ed1e1e; font-weight: bold;">@todayShedule.StartHour:00 - @todayShedule.EndHour:00</span>
+                        }
+                    }
+                    @if (Model.IsAcquiringActive)
+                    {
+                        <span>
+                            <img src="~/Content/img/visa-mastercard.png" height="17" />
+                        </span>
+                    }
+                    @if (Model.IsBonusesPaymentActive)
+                    {
+                        <span>
+                            Використати бонуси
+                        </span>
+                    }
+                </div>
+            </td>
+            <td style="text-align:center; padding: 15px;">
+                Рейтинг постачальника
+                <div class="rating">
+                    <div class="iblock-vote small">
+                        <table class="table-no-border">
+                            <tr>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <td>
+                                        <div class="star-@(i<=Model.AvarageRating.GetValueOrDefault(0)?"active":"empty") star-voted" title="@i"></div>
+                                    </td>
+                                }
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <br><br>
+
+                @*<a href="#">Детальніше </a><br>
+                    <a href="#"> Всі товари</a><br>*@
+                <a href="@sellerUrl" class="small btn btn-default">
+                    Детальніше
+                </a>
+            </td>
+        </tr>
+    </table>
+</div>

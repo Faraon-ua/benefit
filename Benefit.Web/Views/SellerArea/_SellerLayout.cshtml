@@ -1,0 +1,296 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Helpers
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
+@{
+    var seller = ViewBag.Seller as Seller;
+    var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+    var todayShedule = seller.Schedules.FirstOrDefault(entry => entry.Day == DateTime.Now.DayOfWeek);
+    var categories = ViewBag.Categories as List<Category>;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title - @ViewBag.Seller.Name</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="@ViewBag.Seller.ShortDescription">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="robots" content="index,follow">
+    <meta name="format-detection" content="telephone=no">
+
+    <link href="~/Content/seller/css/style.css" rel="stylesheet" />
+    <link href="~/Content/seller/css/main.css" rel="stylesheet" />
+    <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
+
+    <style type="text/css">
+        body {
+            padding-top: 25px;
+        }
+
+        .ic-tooltip-body {
+            padding-top: 0
+        }
+
+        .ic-tooltip {
+            background-color: #444444;
+            display: flex;
+            justify-content: space-between;
+            position: fixed;
+            height: 25px;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 101
+        }
+
+        .ic-tooltip__logo {
+            display: flex;
+            align-items: center;
+            padding-left: 25px;
+        }
+
+        .ic-tooltip__buttons {
+            display: flex;
+            flex-grow: 1;
+            justify-content: flex-end;
+            padding-right: 20px;
+            align-items: center;
+        }
+
+            .ic-tooltip__buttons a {
+                display: inline-block;
+                text-align: center;
+                font-size: 13px;
+                color: #fff;
+                background-color: #7a2511;
+                min-height: 20px;
+                line-height: 20px;
+                padding: 0 20px;
+                text-decoration: none;
+                margin: 0 10px;
+                border-radius: 2px;
+            }
+
+                .ic-tooltip__buttons a:hover {
+                    text-decoration: none;
+                    opacity: .9;
+                    color: #fff;
+                }
+    </style>
+</head>
+<body class="page fullWidht boxed MainView">
+    <div class="wrapper">
+        <header id="header">
+            <div id="top">
+                <div class="container p-x-1">
+                    <div class="row">
+                        <div class="col-xs-12 col-lg-7 pages_menu overlay-menu">
+                            <div id="toggle" class="hidden-lg-up"><i class="ico-menu"></i> <span>Информация</span></div>
+                            <div class="overlay" id="overlay">
+                                <nav>
+                                    <ul class="list-inline">
+                                        @foreach (var page in seller.InfoPages.OrderBy(entry => entry.Order))
+                                        {
+                                            <li>
+                                                <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })">
+                                                    @page.Name
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                        @Html.Partial("_FlashMessage")
+                        <div class="col-xs-12 col-lg-5 text-xs-right">
+                            <ul class="list-inline">
+                                <li>
+                                    @if (User.Identity.IsAuthenticated)
+                                    {
+                                        <a href="@Url.Action("index", "panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
+                                            @HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("login", "account")">Вхід / Реєстрація</a>
+                                    }
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="main">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3 col-xl-2 text-sm-left logo p-r-sm">
+                            <a href="/">
+                                <img class="img-fluid logo_fix" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" height="54" />
+                            </a>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-8 col-md-9 col-lg-9 @(seller.HasEcommerce ? "col-xl-8" : "col-xl-6") p-y-sm hidden-md-down">
+                            @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search", id = "fn-search" }))
+                            {
+                                <button class="ico-search" type="submit"></button>
+                                <input type="hidden" name="searchSellerId" value="@seller.Id" />
+                                <input class="fn-search search-input" type="text" name="term" value="" placeholder="Пошук" />
+                            }
+                        </div>
+                        @if (seller.IsBenefitCardActive && !string.IsNullOrEmpty(seller.OnlineOrdersPhone))
+                        {
+                            <div class="col-xs-12 col-sm-4 col-md-8 offset-lg-3 col-lg-6 offset-xl-0 col-xl-4 list-inline text-sm-left text-xl-center">
+                                {
+                                <div class="text-plus-icon ico-head_phone1 info hidden-sm-down">
+                                    <a class="name" href="tel:@seller.OnlineOrdersPhone">@seller.OnlineOrdersPhone</a>
+                                    <div class="small">
+                                        Час роботи
+                                        @if (todayShedule != null)
+                                        {
+                                            <span>
+                                                @todayShedule.StartHour:@todayShedule.StartMinutes.GetValueOrDefault(0).ToString("00")-@todayShedule.EndHour:@todayShedule.EndMinutes.GetValueOrDefault(0).ToString("00")
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span>
+                                                вихідний
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                        }
+                        @if (seller.HasEcommerce)
+                        {
+                            <div class="col-xs-12 col-sm-8 col-md-4 col-lg-4 col-xl-2 p-x-0 list-inline informers2 text-md-right">
+                                <div id="cart_informer">
+                                    <a class="disabled" href="@Url.Action("order", "cart", new { id=seller.Id })">
+                                        <span class="count cart-items-number">0</span>
+                                        <i class="ico-head_cart"></i>
+                                        <div>Кошик</div>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <div id='catMenu'>
+                <nav class="container">
+                    <a class="list_drop b-block btn-primary btn-lg text-center hidden-lg-up" target="_blank"><i class="ico-menu"></i> МЕНЮ/КАТАЛОГ ПОСЛУГ</a>
+                    <ul class="lev1">
+                        <li>
+                            @if (seller.HasEcommerce)
+                            {
+                                <a class="cat_index list_drop" target="_blank">
+                                    Каталог товарів
+                                    <i class="f-sm_down"></i>
+                                </a>
+                                <ul id="id000" class="lev2">
+                                    @foreach (var cat in categories)
+                                    {
+                                        <li>
+                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName})">
+                                                <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="" width="45" style="float: left; margin-right: 10px;" />
+                                                @cat.Name
+                                            </a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else
+                            {
+                                <a class="cat_index list_drop" href="@Url.Action("catalog", "home")">
+                                    @seller.CatalogButtonName
+                                </a>
+                            }
+                        </li>
+                        <li><a href="@Url.Action("reviews", "home")">Відгуки</a></li>
+                        <li><a href="@Url.Action("gallery", "home")">Фотогалерея</a></li>
+                        <li><a href="@Url.Action("about", "home")">Про нас</a></li>
+                        <li><a href="@Url.Action("contacts", "home")">Контакти</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        @RenderBody()
+
+        <footer id="footer">
+            <section class="foo-copy">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-9 col-lg-10 text-xs-center text-sm-left">
+                            <p><b>@seller.Name © 2018.</b></p>
+                        </div>
+
+                        <div class="col-xs-12 col-sm-3 col-md-3 col-lg-2 text-xs-center text-lg-right counters">
+                            <a class="des_by" title="Benefit Company" target="_blank" href="https://benefit-company.com">
+                                Сайт створено на системі
+                                <img src="~/Content/seller/images/b.jpg" width="25">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </footer>
+    </div>
+
+    <a href="#" class="inpage-scroll scrollUp">Наверх</a>
+    <div class="ic-tooltip " data-ic-tooltip>
+        <div class="ic-tooltip__logo hidden-md-down">
+            <a href="#">
+                <img src="~/Content/seller/images/b.jpg" width="20" class="custom-logo">
+            </a>
+            <div class="ic-tooltip__buttons hidden-xs">
+                <a href="@Url.SubdomainRoute(seller.UrlName, "pagesRoute", new {id = "stati_postachalnikom"}, true)" target="_blank">
+                    Пакет «@Enumerations.GetEnumDescription(seller.Status)»
+                </a>
+
+                <a href="@Url.SubdomainRoute(seller.UrlName, "pagesRoute", new {id = "stati_postachalnikom"}, true)" title="Стати постачальником Benefit" target="_blank">
+                    Стати постачальником
+                </a>
+            </div>
+        </div>
+        <div class="ic-tooltip__buttons hidden-xs">
+            <a href="@Url.Action("order", "cart", new { id=seller.Id })">
+                Кошик (<span class="count cart-items-number">0</span>)
+            </a>
+        </div>
+    </div>
+
+    <script src="~/Scripts/seller/jquery.js"></script>
+    <script src="~/Scripts/seller/jquery-migrate-1.js"></script>
+    <script src="~/Scripts/seller/jquery-ui.js"></script>
+    <script src="~/Scripts/seller/main.js"></script>
+    <script src="~/Scripts/seller/custom.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+    @RenderSection("scripts", false)
+    <script>
+        var searchWordsUrl = '@Url.Action("SearchWords", "Search")';
+        var searchUrl = '@Url.Action("Index", "Search")';
+
+        $(function () {
+            $('.overlay-menu>#toggle').click(function() {
+                $(this).toggleClass('active');
+                $('#overlay').toggleClass('open');
+            });
+
+            $(".search-input").devbridgeAutocomplete({
+                width: 300,
+                minChars: 3,
+                serviceUrl: searchWordsUrl,
+                onSelect: function(suggestion) {
+                    window.location.href = searchUrl + "?term=" + suggestion.data + "&searchSellerId=" + '@seller.Id';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
