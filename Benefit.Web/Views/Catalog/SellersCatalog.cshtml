@@ -172,7 +172,10 @@
                         </div>
                         <div class="inner_wrapper">
                             <div class="adaptive_filter">
-                                <a class="filter_opener"><i></i><span>Фільтр</span></a>
+                                <a class="filter_opener">
+                                    <i class="fa fa-filter black"></i>
+                                    <span>Фільтри та сортування</span>
+                                </a>
                             </div>
 
                             <!--'start_frame_cache_viewtype-block'-->
@@ -235,8 +238,7 @@
                 <div class="bx_filter_section" id="sellerFilters">
                     <div class="bx_filter_parameters_box title">
                         <div class="bx_filter_parameters_box_title">
-                            Фільтри по параметрам
-                            <br/>
+                            Фільтри
                             <div class="selected-filters">
                             </div>
                             <div class="sort_header view_block hidden-lg" style="float: right">
@@ -244,11 +246,14 @@
                                 <div class="sort_filter filter-section" data-filter-name="sort">
                                     <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
 
-                                    <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
-                                        <span class="padding-10">По алфавіту</span>
+                                    <a href="" data-sort-value="Rating" class="sort_btn" rel="nofollow">
+                                        <span class="icon padding_5" title="За рейтингом">&#9734; ↓</span>
                                     </a>
-                                    <a href="" data-sort-value="Bonus" class="sort_btn" rel="nofollow">
-                                        <span class="padding-10">За відсотком бонуса</span>
+                                    <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                                        <span class="icon padding_5" title="По алфавіту">A ↑</span>
+                                    </a>
+                                    <a href="" data-sort-value="BonusDesc" class="sort_btn" rel="nofollow">
+                                        <span class="icon padding_5" title="За відсотком бонуса">% ↓</span>
                                     </a>
                                 </div>
                                 <!--/noindex-->
@@ -367,6 +372,7 @@
                         </div>
                     </div>
                     <div style="clear: both;"></div>
+                    @Html.Partial("_SocialGroups")
                 </div>
             </div>
         </div>

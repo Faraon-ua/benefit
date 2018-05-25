@@ -70,16 +70,6 @@
                     <div class="wrapper_inner">
                         <div class="right_block  wide_">
                             <div class="col-md-12 col-sm-12" style="padding: 0;">
-                                @if (Request.IsAuthenticated)
-                                {
-                                    using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
-                                    {
-                                        @Html.AntiForgeryToken()
-                                        <a href="javascript:document.getElementById('logoutForm').submit()">
-                                            Вийти
-                                        </a>
-                                    }
-                                }
                                 @Html.Partial("_LoginForm")
                             </div>
                         </div>

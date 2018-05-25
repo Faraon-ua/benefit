@@ -24,7 +24,7 @@
 
             $("#save-order").click(function () {
                 var btn = $(this);
-                btn.attr("disabled", "disabled");
+                btn.find(".btn").attr("disabled", "disabled");
                 showLoader();
                 if (!isAuthenticated) {
                     var registerForm = $("#register-form");
@@ -42,7 +42,7 @@
                                 $("#order-form-wrap form").submit();
                             }
                             $('html,body').animate({ scrollTop: 0 }, 'fast');
-                            btn.removeAttr("disabled");
+                            btn.find(".btn").removeAttr("disabled");
                             hideLoader();
                         });
                 } else {
@@ -240,9 +240,15 @@
                             <br>
                             <div class="row">
                                 <div class="col-sm-6">
+                                    @{
+                                        var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
+                                        var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
+                                        var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
+                                        var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
+                                    }
                                     <label> Місто *</label>
-                                    @Html.TextBox("RegionName", HttpUtility.UrlDecode(Request.Cookies[RouteConstants.RegionNameCookieName].Value), new { @class = "regionSearch" })
-                                    @Html.Hidden("RegionId", HttpUtility.UrlDecode(Request.Cookies[RouteConstants.RegionIdCookieName].Value))
+                                    @Html.TextBox("RegionName", regionNameCookieVal, new {@class = "regionSearch"})
+                                    @Html.Hidden("RegionId", regionIdCookieVal)
                                     @Html.ValidationMessage("RegionId")
                                 </div>
                                 <div class="col-sm-6">
@@ -382,8 +388,9 @@
     </div>
     <!--	SIDEBAR BLOCK	-->
 </div>
-<div class="button_block margin-left-10 pull-left" id="save-order">
-    <span class="btn pull-right btn btn-default bold height-50px" style="font-size: 17px; line-height: 2em;">
+<div class="button_block col-sm-3 col-md-3 display-block-xs" id="save-order" style="text-align: center; float: none;">
+    <span class="btn btn-default bold height-50px" style="font-size: 17px; line-height: 2em;">
         Оформити замовлення
     </span>
 </div>
+<br class="visible-xs"/>

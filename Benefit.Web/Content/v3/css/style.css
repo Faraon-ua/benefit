@@ -93,7 +93,15 @@ i.icon-info {
     .block-1{
         background: #f7f7f7;
         text-align: center;
-    }  
+    }
+
+    .btn-small-xs {
+        white-space: normal !important;
+        max-width: 150px;
+    }
+    .display-block-xs {
+        display: block !important;
+    }
 }
 
 @media only screen and (max-width: 600px) {
@@ -4122,13 +4130,13 @@ body .social-icons li,body .soc-avt .row a{display:inline-block;vertical-align:t
 .soc-avt .row a i{display:block;width:100%;height:100%;background:url(../images/social.png) 0 0 no-repeat;border-radius:100%}
 .social-icons li a:hover,.soc-avt .row a:hover{opacity:.8}
 body .soc-avt .row a{display:inline-block;margin:5px 11px 5px 0}
-.social-icons li.facebook a,.soc-avt a i.facebook{background-position:-61px -4px}
-.social-icons li.twitter a,.soc-avt a i.twitter{background-position:-61px -4px}
-.social-icons li.instagram a,.soc-avt a i.instagram{background-position:-161px -4px}
+.social-icons li.facebook a,.soc-avt a i.facebook{background-position:-54px -4px}
+.social-icons li.twitter a,.soc-avt a i.twitter{background-position:-104px -4px}
+.social-icons li.instagram a,.soc-avt a i.instagram{background-position:-154px -4px}
 .social-icons li.telegram a,.soc-avt a i.telegram{background-position:-153px -61px}
 .social-icons li.ytb a,.soc-avt a i.ytb{background-position:-204px -4px}
 .social-icons li.odn a,.soc-avt a i.odn{background-position:-261px -4px}
-.social-icons li.gplus a,.soc-avt a i.gplus{background-position:-61px -61px}
+.social-icons li.gplus a,.soc-avt a i.gplus{background-position:-54px -54px}
 .social-icons li.mail a,.soc-avt a i.mymailru{background-position:-4px -61px}
 .soc-avt a i.openid-mail-ru{background-position:-400px 0}
 .soc-avt a i.livejournal{background-position:-100px -50px}

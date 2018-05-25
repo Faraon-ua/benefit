@@ -64,8 +64,13 @@ namespace Benefit.Services.Domain
                 while (category.ParentCategory != null)
                 {
                     var nextCats = db.Categories
+                        .Include(entry => entry.ChildCategories)
+                        .Include(entry => entry.Products.Select(pr => pr.Seller))
                         .Where(entry =>
-                            entry.ParentCategoryId == category.ParentCategory.Id && entry.IsActive && entry.Id != category.Id).ToList();
+                            entry.ParentCategoryId == category.ParentCategory.Id && entry.IsActive &&
+                            entry.Id != category.Id &&
+                            (entry.ChildCategories.Any(ch => ch.IsActive) ||
+                             entry.Products.Any(pr => pr.IsActive && pr.Seller.IsActive))).ToList();
                     result.Add(category, nextCats);
                     category = category.ParentCategory;
                 }

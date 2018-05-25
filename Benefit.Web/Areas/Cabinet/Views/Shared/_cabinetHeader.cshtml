@@ -7,38 +7,24 @@
                     var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("Index", "Home", new { area = string.Empty }, Request.Url.Scheme);
                 }
                 <a class="logo" href='@href'></a>
-                <div class="show_on_tablet logo_region select_place_container">
-                    <i class="icn location"></i>
-                    <span class="inside"></span>
+                <div class="show_on_tablet logo_region">
+                    @using (Html.BeginForm("LogOff", "Account", new { area = ""}, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <a class="btn btn-danger margin-top-10" href="javascript:document.getElementById('logoutForm').submit()">
+                            Вийти
+                        </a>
+                    }
                 </div>
-                <div class="logo_slogan">Онлайн торговий центр</div>
             </div>
             <div class="position-absolute top-right contacts-container">
-                <div class="top_right_selectors">
-                    <div class="dropdown dropdown_inline margin-left-10">
-                        <a title="Viber" href="viber://chat?number=%2B380500354555">
-                            <img src="~/Content/img/viber_png.png" />
-                        </a>
-                        <a title="Whatsapp" href="whatsapp://send?phone=%2B380500354555">
-                            <img src="~/Content/img/whatsapp_png.png" />
-                        </a>
-                        <a title="Skype" href="skype:live:info_706852?chat">
-                            <img src="~/Content/img/skype_png.png" />
-                        </a>
-                    </div>
-                    <div class="dropdown dropdown_inline">
-                    </div>
-                </div>
-                <div class="top_right_phone">
-                    <div>
-                        <i class="icn phone"></i>
-                    </div>
-                    <div>
-                        <span>(050) 035 45 55</span>
-                        <span>(063) 035 45 55</span>
-                        <span>(097) 035 45 55</span>
-                    </div>
-                </div>
+                @using (Html.BeginForm("LogOff", "Account", new { area = ""}, FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <a class="btn btn-danger margin-top-10" href="javascript:document.getElementById('logoutForm').submit()">
+                        Вийти
+                    </a>
+                }
             </div>
         </div>
     </div>
