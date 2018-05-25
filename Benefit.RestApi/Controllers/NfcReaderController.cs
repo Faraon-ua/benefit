@@ -237,6 +237,7 @@ namespace Benefit.RestApi.Controllers
 
         [Route("PingOnline")]
         [HttpGet]
+        [AllowAnonymous]
         public IHttpActionResult PingOnline(string licenseKey)
         {
             Seller seller = null;
