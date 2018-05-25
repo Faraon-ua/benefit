@@ -96,6 +96,7 @@ namespace Benefit.Web.Controllers
                 mainPageViewModel.FirstRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.FirstRowMainPage);
                 mainPageViewModel.SecondRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.SecondRowMainPage);
                 mainPageViewModel.Brands = db.Sellers.Include(entry => entry.Images).Where(entry => entry.IsActive && entry.IsFeatured).ToList();
+                mainPageViewModel.Description = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "golovna");
             }
             return View(mainPageViewModel);
         }

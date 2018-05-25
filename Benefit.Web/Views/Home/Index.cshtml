@@ -20,6 +20,13 @@
     <script src="~/Scripts/owl.carousel.min.js"></script>
     <script>
         $(function () {
+            $(".toggle-descr").click(function (e) {
+                e.preventDefault();
+                $(this).parent().find(".contents").css("max-height", "");
+                $(this).parent().find(".gradient").remove();
+                $(this).remove();
+            });
+
             $('.slider').owlCarousel({
                 loop: true,
                 margin: 0,
@@ -73,43 +80,44 @@
         .slider {
             width: 98% !important;
         }
-        .slider .owl-prev {
-            left: 5px;
-            font-size: 42px;
-            margin-top: -30px;
-            color: #9d9a95;
-        }
 
-        .slider .owl-next {
-            right: 5px;
-            font-size: 42px;
-            margin-top: -30px;
-            color: #9d9a95;
-        }
-
-            .slider .owl-prev:hover, .slider .owl-next:hover {
-                color: #fff;
+            .slider .owl-prev {
+                left: 5px;
+                font-size: 42px;
+                margin-top: -30px;
+                color: #9d9a95;
             }
 
-        .slider .owl-dots .owl-dot span {
-            width: 18px;
-            height: 18px;
-            background: #fff;
-            border: 1px solid #cdcbca;
-            box-sizing: border-box;
-        }
+            .slider .owl-next {
+                right: 5px;
+                font-size: 42px;
+                margin-top: -30px;
+                color: #9d9a95;
+            }
 
-        .slider .owl-dots .owl-dot.active span, .slider .owl-dots .owl-dot:hover span {
-            background: #990000;
-            border-color: #990000;
-        }
+                .slider .owl-prev:hover, .slider .owl-next:hover {
+                    color: #fff;
+                }
 
-        .slider .owl-dots {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            text-align: center;
-        }
+            .slider .owl-dots .owl-dot span {
+                width: 18px;
+                height: 18px;
+                background: #fff;
+                border: 1px solid #cdcbca;
+                box-sizing: border-box;
+            }
+
+            .slider .owl-dots .owl-dot.active span, .slider .owl-dots .owl-dot:hover span {
+                background: #990000;
+                border-color: #990000;
+            }
+
+            .slider .owl-dots {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+            }
     </style>
     <link href="~/Content/css/owl.carousel.css" rel="stylesheet" />
 }
@@ -262,27 +270,25 @@
                     </div>
                 }
 
-                <div class="company_bottom_block">
-                    <div class="row wrap_md">
-                        <div class="col-md-3 col-sm-3 hidden-xs img">
-                            <img alt="companypic.png" src="images/company.png" title="companypic.png">
-                        </div>
-                        <div class="col-md-9 col-sm-9 big">
-                            <h1 class="title_block lg">Онлайн торговий центр Benefit-Company</h1>
-                            <p>
-                                Сайт, торгующий товарами в Челябинске. Позволяет пользователям
-                                сформировать заказ на покупку, выбрать способ оплаты и доставки заказа в
-                                сети Интернет. Выбрав необходимые товары или услуги, пользователь
-                                обычно имеет возможность тут же на сайте выбрать метод оплаты и
-                                доставки.
-                            </p>
-                            <p>
-                                Основное отличие Интернет-магазина от традиционного — в типе торговой площадки.
-                            </p>
-                            <a href="#" class="btn btn-default">Подробнее</a>
+                @if (Model.Description != null)
+                {
+                    <div class="company_bottom_block">
+                        <div class="row wrap_md">
+                            <div class="col-md-3 col-sm-3 hidden-xs img">
+                                <img src="~/Images/NewsLogo/@Model.Description.ImageUrl">
+                            </div>
+                            <div class="col-md-9 col-sm-9 big" style="position: relative;">
+                                <div class="contents" style="padding-right: 20px; max-height: 150px;overflow: hidden; text-align: justify;">
+                                    @Html.Raw(Model.Description.Content)
+                                </div>
+                                <div class="gradient">
+                                </div>
+                                <a href="#" class="btn btn-default toggle-descr">Детальніше</a>
+                            </div>
                         </div>
                     </div>
-                </div>
+
+                }
 
                 <div class="brand_main_wrapper">
                     <div class="brands_slider_wrapp flexslider loading_state clearfix" data-plugin-options='{"animation": "slide", "directionNav": true, "itemMargin":30, "controlNav" :false, "animationLoop": true, "slideshow": true, "slideshowSpeed": 5000, "animationSpeed": 600, "counts": [5,4,3,2,1]}'>
@@ -295,7 +301,7 @@
                                 {
                                     <li class="visible" id="bx_1373509569_2440">
                                         <a href="@sellerUrl">
-                                            <img class="noborder" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" title="@seller.Name"/>
+                                            <img class="noborder" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" title="@seller.Name" />
                                         </a>
                                     </li>
                                 }
