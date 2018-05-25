@@ -270,7 +270,7 @@ $(function () {
     });
 
     $(".search-form").submit(function (e) {
-        if ($("#search").val().length < 3) {
+        if ($(this).find(".search-input").val().length < 3) {
             alert("Для пошуку необхідно мінімум 3 символи");
             e.preventDefault();
         }

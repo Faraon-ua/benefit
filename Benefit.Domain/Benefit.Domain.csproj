@@ -450,6 +450,10 @@
     <Compile Include="Migrations\201801101114346_AddTitleDescriptionToBanner.Designer.cs">
       <DependentUpon>201801101114346_AddTitleDescriptionToBanner.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201801181345519_CategoryExternalIds.cs" />
+    <Compile Include="Migrations\201801181345519_CategoryExternalIds.Designer.cs">
+      <DependentUpon>201801181345519_CategoryExternalIds.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\201801291059204_AddOldPriceToProduct.cs" />
     <Compile Include="Migrations\201801291059204_AddOldPriceToProduct.Designer.cs">
       <DependentUpon>201801291059204_AddOldPriceToProduct.cs</DependentUpon>
@@ -457,6 +461,10 @@
     <Compile Include="Migrations\201802141042542_AddSellerTitle.cs" />
     <Compile Include="Migrations\201802141042542_AddSellerTitle.Designer.cs">
       <DependentUpon>201802141042542_AddSellerTitle.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201803071040262_AddMetaDescriptionCategory.cs" />
+    <Compile Include="Migrations\201803071040262_AddMetaDescriptionCategory.Designer.cs">
+      <DependentUpon>201803071040262_AddMetaDescriptionCategory.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\201804041010080_AddIsFeaturedToSeller.cs" />
     <Compile Include="Migrations\201804041010080_AddIsFeaturedToSeller.Designer.cs">
@@ -803,11 +811,17 @@
     <EmbeddedResource Include="Migrations\201801101114346_AddTitleDescriptionToBanner.resx">
       <DependentUpon>201801101114346_AddTitleDescriptionToBanner.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201801181345519_CategoryExternalIds.resx">
+      <DependentUpon>201801181345519_CategoryExternalIds.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201801291059204_AddOldPriceToProduct.resx">
       <DependentUpon>201801291059204_AddOldPriceToProduct.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201802141042542_AddSellerTitle.resx">
       <DependentUpon>201802141042542_AddSellerTitle.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201803071040262_AddMetaDescriptionCategory.resx">
+      <DependentUpon>201803071040262_AddMetaDescriptionCategory.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804041010080_AddIsFeaturedToSeller.resx">
       <DependentUpon>201804041010080_AddIsFeaturedToSeller.cs</DependentUpon>
