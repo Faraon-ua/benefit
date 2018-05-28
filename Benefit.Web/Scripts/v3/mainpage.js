@@ -1,4 +1,6 @@
 ﻿$(function () {
+    $('#loginPartial').load(loginPartialUrl);
+
     $(".search-input").devbridgeAutocomplete({
         width: 300,
         minChars: 3,

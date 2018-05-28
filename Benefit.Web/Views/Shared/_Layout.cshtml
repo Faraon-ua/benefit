@@ -65,6 +65,9 @@
         <script src="~/Scripts/jquery.mask.min.js"></script>
         <script src="~/Scripts/v3/menu.js"></script>
         @RenderSection("scripts", required: false)
+        <script>
+            var loginPartialUrl = '@Url.Action("LoginPartial", "Home")';
+        </script>
         <script src="~/Scripts/v3/mainpage.js"></script>
         <div class="title-search-result title-search-input_fixed"></div>
         <div class="title-search-result title-search-input fixed_type"></div>

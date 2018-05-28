@@ -1,26 +1,24 @@
 ﻿@using Benefit.Common.Constants
-<div class="sub_header_right_links pull-right">
-    @if (Request.IsAuthenticated)
-    {
-        <div class="wrap_icon inner-table-block">
-            <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("index", "panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
-                <i class="fa fa-user" style="color: #b0b0b0; font-size: 2em;" aria-hidden="true"></i>
-                <span class="wrap">
-                    <span class="name">Кабінет</span>
-                    <span class="title">@HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)</span>
-                </span>
-            </a>
-        </div>
-    }
-    else
-    {
-        <div class="wrap_icon inner-table-block">
-            <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("login", "account")">
-                <i class="fa fa-lock" style="color: #b0b0b0; font-size: 2em;" aria-hidden="true"></i>
-                <span class="wrap">
-                    <span class="name">Увійти</span>
-                </span>
-            </a>
-        </div>
-    }
-</div>
+@if (Request.IsAuthenticated)
+{
+    <div class="wrap_icon inner-table-block">
+        <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("index", "panel", routeValues: new { area = DomainConstants.CabinetAreaName })">
+            <i class="fa fa-user" style="color: #b0b0b0; font-size: 2em;" aria-hidden="true"></i>
+            <span class="wrap">
+                <span class="name">Кабінет</span>
+                <span class="title">@HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)</span>
+            </span>
+        </a>
+    </div>
+}
+else
+{
+    <div class="wrap_icon inner-table-block">
+        <a rel="nofollow" title="Мій кабінет" class="personal-link dark-color animate-load" href="@Url.Action("login", "account")">
+            <i class="fa fa-lock" style="color: #b0b0b0; font-size: 2em;" aria-hidden="true"></i>
+            <span class="wrap">
+                <span class="name">Увійти</span>
+            </span>
+        </a>
+    </div>
+}

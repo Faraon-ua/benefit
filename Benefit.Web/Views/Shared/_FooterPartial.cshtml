@@ -1,4 +1,5 @@
-﻿<footer id="footer">
+﻿@using Benefit.Common.Constants
+<footer id="footer">
     <div class="footer_inner no_fill footer-light ext_view">
         <div class="bottom_wrapper">
             <div class="wrapper_inner">
@@ -20,28 +21,21 @@
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#">Про компанію Benefit Company</a>
+                                                        <a href="@Url.RouteUrl("pagesRoute", new { id = "pro-kompaniyu-benefit-company" })">Про компанію Benefit Company</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#">Новини компанії</a>
+                                                        <a href="@Url.Action("index","news")">Новини компанії</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#">Відгуки про компанію</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item-link">
-                                                <div class="item">
-                                                    <div class="title">
-                                                        <a href="#">Угода користувача</a>
+                                                        <a href="@Url.RouteUrl("pagesRoute", new { id = "ugoda-korustuvacha" })">Угода користувача</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -64,7 +58,7 @@
                                         <div class="item-link">
                                             <div class="item">
                                                 <div class="title">
-                                                    <a href="#/info/">Покупцям</a>
+                                                    <a href="#">Покупцям</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -72,35 +66,28 @@
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#/help/">Каталог товарів та послуг</a>
+                                                        <a href="@Url.Action("index","catalog", new { categoryUrl = string.Empty })">Каталог товарів та послуг</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#/help/payment/">Каталог постачальників</a>
+                                                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })">Каталог постачальників</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#/help/">Відгуки покупців</a>
+                                                        <a href="@Url.RouteUrl("pagesRoute", new { id = "pravila-benefit-card" })">Правила Benefit Card</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#/help/delivery/">Правила Benefit Card</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item-link">
-                                                <div class="item">
-                                                    <div class="title">
-                                                        <a href="#/info/more/">Питання та відповіді</a>
+                                                        <a href="@Url.RouteUrl("pagesRoute", new {id = "faq"})">Питання та відповіді</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -116,7 +103,7 @@
                                         <div class="item-link">
                                             <div class="item">
                                                 <div class="title">
-                                                    <a href="#/help/">Постачальникам</a>
+                                                    <a href="#">Постачальникам</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -124,35 +111,28 @@
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#/blog/">Співпраця з компанією</a>
+                                                        <a href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })">Співпраця з компанією</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#/info/faq/">Тарифи та можливості</a>
+                                                        <a href="@Url.RouteUrl("pagesRoute", new { id = "tarifi-ta-mozhlivosti" })">Тарифи та можливості</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#/info/brands/">Реєстрація постачальника</a>
+                                                        <a href="@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })">Партнерська програма</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="#/landings/">Партнерська програма</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="item-link">
-                                                <div class="item">
-                                                    <div class="title">
-                                                        <a href="#/landings/">Система Benefit Card</a>
+                                                        <a href="@Url.RouteUrl("pagesRoute", new { id = "sistema-benefit-card" })">Система Benefit Card</a>
                                                     </div>
                                                 </div>
                                             </div>
