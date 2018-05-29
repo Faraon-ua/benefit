@@ -41,16 +41,11 @@ namespace Benefit.Web.Helpers
 
     public static class VersionedFileHtmlHelper
     {
-      /*  public static MvcHtmlString IncludeVersionedCss(this HtmlHelper helper, string filename)
+        public static MvcHtmlString IncludeVersionedFile(this HtmlHelper helper, string filename)
         {
             string version = GetVersion(helper, filename);
-            return MvcHtmlString.Create("<style type='text/javascript' src='" + filename + version + "'></script>");
+            return MvcHtmlString.Create(filename + version);
         }
- public static MvcHtmlString IncludeVersionedJs(this HtmlHelper helper, string filename)
-        {
-            string version = GetVersion(helper, filename);
-            return MvcHtmlString.Create("<script type='text/javascript' src='" + filename + version + "'></script>");
-        }*/
 
         private static string GetVersion(this HtmlHelper helper, string filename)
         {

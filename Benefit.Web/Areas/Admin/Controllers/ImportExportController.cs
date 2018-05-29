@@ -131,7 +131,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var seller = db.Sellers.Find(id);
                 var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                var ftpDirectory = new DirectoryInfo(originalDirectory).Parent.FullName;
+                var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
                 var sellerPath = Path.Combine(ftpDirectory, "FTP", seller.UrlName);
                 var importFile = new DirectoryInfo(sellerPath).GetFiles("import.xls", SearchOption.AllDirectories).FirstOrDefault();
 
@@ -298,7 +298,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             else
             {
                 var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                var ftpDirectory = new DirectoryInfo(originalDirectory).Parent.FullName;
+                var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
                 var sellerPath = Path.Combine(ftpDirectory, "FTP", sellerUrlName);
                 if (!Directory.Exists(sellerPath))
                 {

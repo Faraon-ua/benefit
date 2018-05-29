@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Benefit.Web.Helpers
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head lang="uk">
     <title>@ViewBag.Title - Benefit</title>
@@ -61,7 +62,7 @@
         <script type="text/javascript" src="~/Scripts/v3/template_318eaa753f456b90a6d135cb3f5aace3.js"></script>
         <script type="text/javascript" src="~/Scripts/v3/default_84b0f0da7abeae3ee8bdab600a51e10a.js"></script>
         <script type="text/javascript" src="~/Scripts/v3/default_34abd663f55e3f30e482309b7ae729af.js"></script>
-        <script type="text/javascript" src="~/Scripts/site.js"></script>
+        <script type="text/javascript" src="~/Scripts/@Html.IncludeVersionedFile("site.js")"></script>
         <script src="~/Scripts/jquery.mask.min.js"></script>
         <script src="~/Scripts/v3/menu.js"></script>
         @RenderSection("scripts", required: false)

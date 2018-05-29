@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -439,14 +440,14 @@ namespace Benefit.Services.Domain
                      {
                          ExternalId = row["SKU"].Cast<string>(),
                          Vendor = row["Brand"].Cast<string>(),
-                         Name = row["Product"].Cast<string>(),
+                         Name = row["Product"].Cast<string>().Truncate(256),
                          Price = row["Price"].Cast<double>(),
                          OldPrice = row["Old price"].Cast<double>(),
                          IsWeightProduct = row["Units"].Cast<string>() != "шт",
                          IsFeatured = row["Featured"].Cast<bool>(),
-                         Title = row["Meta title"].Cast<string>(),
+                         Title = row["Meta title"].Cast<string>().Truncate(70),
                          Description = row["Description"].Cast<string>(),
-                         ShortDescription = row["Meta description"].Cast<string>().Substring(0, 160),
+                         ShortDescription = row["Meta description"].Cast<string>().Truncate(160),
                          UrlName = row["URL"].Cast<string>() ?? row["Product"].Cast<string>().Translit(),
                          AvailableAmount = row["Stock"].Cast<int>()
                      },
@@ -458,16 +459,16 @@ namespace Benefit.Services.Domain
                  select item).ToList()
                 .Where(entry => entry.Category != null).ToList();
 
+            var currencies = db.Currencies.AsNoTracking().ToList();
             var xlsProducts = new List<Product>();
             excelProducts.ForEach(entry =>
             {
                 var product = entry.Product;
+                if (product.Description == null)
+                    product.Description = product.Name;
                 product.CategoryId = entry.Category.Id;
-                product.CurrencyId = db.Currencies.AsNoTracking().First(cur => cur.Name == entry.CurrencyName).Id;
-                product.ShortDescription = entry.Product.ShortDescription.Length > 160
-                    ? entry.Product.ShortDescription.Substring(0, 160) : entry.Product.ShortDescription;
-                product.Name = entry.Product.Name.Length > 256
-                    ? entry.Product.Name.Substring(0, 256) : entry.Product.Name;
+                var curr = currencies.FirstOrDefault(cur => cur.Name == entry.CurrencyName);
+                product.CurrencyId = curr == null ? null : curr.Id;
                 product.OldPrice = product.OldPrice == default(double) ? (double?)null : product.OldPrice.Value;
                 if (entry.Visible > 0)
                 {
@@ -597,7 +598,14 @@ namespace Benefit.Services.Domain
                         if (Uri.IsWellFormedUriString(img, UriKind.Absolute))
                         {
                             fileName = Path.GetFileName(img);
-                            client.DownloadFile(img, Path.Combine(destPath, fileName));
+                            try
+                            {
+                                client.DownloadFile(img, Path.Combine(destPath, fileName));
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(ex.ToString());
+                            }
                         }
                         else
                         {

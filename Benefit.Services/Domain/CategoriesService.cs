@@ -9,11 +9,9 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using System.Data.Entity;
 using System.Web.Caching;
-using Benefit.DataTransfer.ViewModels.Base;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.ModelExtensions;
-using Benefit.Domain.Models.XmlModels;
 
 namespace Benefit.Services.Domain
 {

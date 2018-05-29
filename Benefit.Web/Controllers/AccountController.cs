@@ -128,12 +128,14 @@ namespace Benefit.Web.Controllers
         }
 
         [AllowAnonymous]
+        [FetchCategories]
         public ActionResult PostRegister()
         {
             return View();
         }
 
         [AllowAnonymous]
+        [FetchCategories]
         [HttpPost]
         public ActionResult PostRegister(string email)
         {
@@ -144,6 +146,8 @@ namespace Benefit.Web.Controllers
         // POST: /Account/Register
         [HttpPost]
         [AllowAnonymous]
+        [FetchLastNews]
+        [FetchCategories]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
@@ -257,7 +261,7 @@ namespace Benefit.Web.Controllers
             }
             else
             {
-                return View(model);
+                return View("Login", model);
             }
         }
 

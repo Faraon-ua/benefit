@@ -7,9 +7,9 @@
     <!-- Tab panes -->
     <div class="tab-content no-padding-top">
         <div role="tabpanel" class="tab-pane active padding-0" id="auth">
+            @Html.ValidationSummary()
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
             {
-                @Html.ValidationSummary()
                 @Html.AntiForgeryToken()
                 <div class="row">
                     <div class="col-sm-6">
@@ -40,6 +40,7 @@
         <div role="tabpanel" class="tab-pane" id="reg">
             @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))
             {
+                @Html.AntiForgeryToken()
                 <div class="row">
                     <div class="col-sm-6">
                         <label> Ім'я *</label>

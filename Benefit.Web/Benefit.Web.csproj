@@ -722,7 +722,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\img\fav.jpg" />
-    <Content Include="index.html" />
     <Content Include="Scripts\address.js" />
     <Content Include="Scripts\bootstrap-select.js" />
     <Content Include="Scripts\bootstrap.js" />
