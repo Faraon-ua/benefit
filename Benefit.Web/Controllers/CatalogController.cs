@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
@@ -7,6 +8,7 @@ using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
+using Benefit.Domain.Models;
 
 namespace Benefit.Web.Controllers
 {
@@ -32,6 +34,7 @@ namespace Benefit.Web.Controllers
         [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {
+            var cachedCats = ViewBag.Categories as List<Category>;
             if (categoryUrl == "postachalnuky")
             {
                 var sellers = SellerService.GetSellersCatalog(options);
@@ -39,15 +42,14 @@ namespace Benefit.Web.Controllers
                 {
                     return HttpNotFound();
                 }
-
                 sellers.Breadcrumbs = new BreadCrumbsViewModel()
                 {
-                    Categories = CategoriesService.GetBreadcrumbs(urlName: categoryUrl)
+                    Categories = CategoriesService.GetBreadcrumbs(cachedCats, urlName: categoryUrl)
                 };
                 return View("SellersCatalog", sellers);
             }
 
-            CategoriesViewModel catsModel = CategoriesService.GetCategoriesCatalog(categoryUrl, ViewBag.SellerUrl);
+            CategoriesViewModel catsModel = CategoriesService.GetCategoriesCatalog(cachedCats, categoryUrl, ViewBag.SellerUrl);
             if (catsModel == null)
             {
                 return HttpNotFound();
@@ -61,7 +63,7 @@ namespace Benefit.Web.Controllers
                 return View("CategoriesCatalog", catsModel);
             }
 
-            var catalog = SellerService.GetSellerProductsCatalog(ViewBag.SellerUrl, categoryUrl, options);
+            var catalog = SellerService.GetSellerProductsCatalog(cachedCats, ViewBag.SellerUrl, categoryUrl, options);
             if (ViewBag.Seller != null)
             {
                 return View("~/views/sellerarea/productscatalog.cshtml", catalog);

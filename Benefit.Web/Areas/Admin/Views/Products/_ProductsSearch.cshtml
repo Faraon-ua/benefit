@@ -57,7 +57,7 @@ else
                             @product.Category.Name
                         </td>
                         <td>
-                            @product.Seller.Name
+                            @Html.ActionLink(product.Seller.Name, "CreateOrUpdate", "Sellers", new { id = product.Seller.Id }, null)
                         </td>
                         <td>
                             @if (product.AvailableAmount == 0)

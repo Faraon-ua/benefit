@@ -79,9 +79,9 @@
     </script>
 }
 <div class="nav-search" id="nav-search" style="position: static;">
-    @using (Html.BeginForm("Index", "Categories", FormMethod.Get, new { @class = "form-search" }))
+    @using (Html.BeginForm("Index", "Categories", FormMethod.Get, new { @class = "form-search row" }))
     {
-        <div class="input-group col-md-4">
+        <div class="input-group col-md-4 pull-left">
             <input class="form-control search-query" placeholder="Пошук..." type="text" name="search">
             <span class="input-group-btn">
                 <button type="button" class="btn btn-purple btn-sm">
@@ -89,6 +89,11 @@
                     <i class="icon-search icon-on-right bigger-110"></i>
                 </button>
             </span>
+        </div>
+        <div class="col-md-2 pull-right">
+            <a href="@Url.Action("DeactivateEmptyCategories")" class="btn btn-purple btn-sm">
+                Деактивувати пусті категорії
+            </a>
         </div>
     }
     @if (Model.Any())
@@ -126,6 +131,7 @@
             }
         </div>
     }
+    <br />
     <div id="catLists">
         @Html.Action("CategoriesList")
     </div>

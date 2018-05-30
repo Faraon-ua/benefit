@@ -13,6 +13,7 @@ using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
+using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -63,6 +64,26 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.Configuration.ValidateOnSaveEnabled = false;
             db.SaveChanges();
             return Json("Сортування категорій збережено");
+        }
+
+        public ActionResult DeactivateEmptyCategories()
+        {
+            var cats = new List<Category>();
+            do
+            {
+                cats = db.Categories
+                    .Include(entry => entry.Products.Select(pr => pr.Seller))
+                    .Include(entry => entry.ChildCategories)
+                    .Where(entry =>
+                        entry.IsActive && !entry.IsSellerCategory &&
+                        !(entry.ChildCategories.Any(cc => cc.IsActive) ||
+                          entry.Products.Any(pr => pr.IsActive && pr.Seller.IsActive))).ToList();
+                cats.ForEach(entry => entry.IsActive = false);
+                db.SaveChanges();
+            } while (cats.Any());
+
+            TempData["SuccessMessage"] = "Пусті категорі було деактивовано";
+            return RedirectToAction("Index");
         }
 
         // GET: /Admin/Categories/Create
@@ -158,7 +179,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult SearchCategories(string search)
         {
-            var categories = db.Categories.Include(entry=>entry.ChildCategories).Where(entry => !entry.ChildCategories.Any() && entry.Name.ToLower().Contains(search.ToLower())).ToList();
+            var categories = db.Categories.Include(entry => entry.ChildCategories).Where(entry => !entry.ChildCategories.Any() && entry.Name.ToLower().Contains(search.ToLower())).ToList();
             return PartialView("_MappingSearchCategories", categories);
         }
 
@@ -168,7 +189,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.Categories.Where(
                     entry => entry.ParentCategoryId == parentId && entry.IsActive && !entry.IsSellerCategory).OrderBy(entry => entry.Order).ToList();
             var partialHtml = ControllerContext.RenderPartialToString("_MappingSiteCategoriesList", cats);
-            return Json(new {html = partialHtml, selectable = !cats.Any()}, JsonRequestBehavior.AllowGet);
+            return Json(new { html = partialHtml, selectable = !cats.Any() }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult MapCategories(string sellerCatId, string siteCatId)

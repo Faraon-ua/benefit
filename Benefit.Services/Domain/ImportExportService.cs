@@ -443,6 +443,7 @@ namespace Benefit.Services.Domain
                          Name = row["Product"].Cast<string>().Truncate(256),
                          Price = row["Price"].Cast<double>(),
                          OldPrice = row["Old price"].Cast<double>(),
+                         IsActive = true,
                          IsWeightProduct = row["Units"].Cast<string>() != "шт",
                          IsFeatured = row["Featured"].Cast<bool>(),
                          Title = row["Meta title"].Cast<string>().Truncate(70),

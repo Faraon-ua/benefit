@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
@@ -16,7 +17,7 @@ namespace Benefit.Services.Domain
     public class ProductsService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        public ProductDetailsViewModel GetProductDetails(string urlName, string userId)
+        public ProductDetailsViewModel GetProductDetails(IEnumerable<Category> cachedCats,string urlName, string userId)
         {
             var delimeterPos = urlName.LastIndexOf("-")+1;
             var sku = urlName.Substring(delimeterPos, urlName.Length - delimeterPos);
@@ -38,7 +39,7 @@ namespace Benefit.Services.Domain
                 ProductOptions = GetProductOptions(product.Id),
                 Breadcrumbs = new BreadCrumbsViewModel()
                 {
-                    Categories = categoriesService.GetBreadcrumbs(urlName: product.Category.UrlName),
+                    Categories = categoriesService.GetBreadcrumbs(cachedCats, urlName: product.Category.UrlName),
                     Product = product,
                 },
                 CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == userId && entry.OrderProducts.Any(pr => pr.ProductId == product.Id))

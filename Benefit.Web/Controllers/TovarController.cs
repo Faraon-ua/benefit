@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -30,7 +31,8 @@ namespace Benefit.Web.Controllers
         [FetchCategories]
         public ActionResult Index(string productUrl)
         {
-            var productResult = ProductsService.GetProductDetails(productUrl, User.Identity.GetUserId());
+            var cats = ViewBag.Categories as List<Category>;
+            var productResult = ProductsService.GetProductDetails(cats, productUrl, User.Identity.GetUserId());
             if (productResult == null) return HttpNotFound();
             var seller = ViewBag.Seller as Seller;
             if (seller != null)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Text;
 
 namespace Benefit.Domain.Models
@@ -11,6 +12,14 @@ namespace Benefit.Domain.Models
     {
         SellersOnly,
         SellersAndProducts
+    }
+    public static class CategoryListExtentions
+    {
+        public static Category FindByUrlIdRecursively(this IEnumerable<Category> list, string url, string id)
+        {
+            var category = list.FirstOrDefault(entry => entry.UrlName == url || entry.Id == id);
+            return category ?? FindByUrlIdRecursively(list.SelectMany(entry => entry.ChildCategories), url, id);
+        }
     }
     public class Category
     {

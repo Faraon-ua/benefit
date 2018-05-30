@@ -213,50 +213,50 @@ namespace Benefit.Services.Domain
             return seller;
         }
 
-        public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName, string currentUserId)
-        {
-            var sellerVM = new SellerDetailsViewModel();
-            var seller = db.Sellers
-                .Include(entry => entry.SellerCategories)
-                .Include(entry => entry.Schedules)
-                .Include(entry => entry.Addresses)
-                .Include(entry => entry.ShippingMethods)
-                .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
-                .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
-                .FirstOrDefault(entry => entry.UrlName == urlName);
-            if (seller != null)
-            {
-                var regionId = RegionService.GetRegionId();
-                var tempAddresses = new List<Address>(seller.Addresses.ToList());
-                seller.Addresses = new Collection<Address>();
-                foreach (var address in tempAddresses.Where(addr => addr.RegionId == regionId))
-                {
-                    seller.Addresses.Add(address);
-                }
-                foreach (var address in tempAddresses.Where(addr => addr.RegionId != regionId))
-                {
-                    seller.Addresses.Add(address);
-                }
+        //public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName, string currentUserId)
+        //{
+        //    var sellerVM = new SellerDetailsViewModel();
+        //    var seller = db.Sellers
+        //        .Include(entry => entry.SellerCategories)
+        //        .Include(entry => entry.Schedules)
+        //        .Include(entry => entry.Addresses)
+        //        .Include(entry => entry.ShippingMethods)
+        //        .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
+        //        .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
+        //        .FirstOrDefault(entry => entry.UrlName == urlName);
+        //    if (seller != null)
+        //    {
+        //        var regionId = RegionService.GetRegionId();
+        //        var tempAddresses = new List<Address>(seller.Addresses.ToList());
+        //        seller.Addresses = new Collection<Address>();
+        //        foreach (var address in tempAddresses.Where(addr => addr.RegionId == regionId))
+        //        {
+        //            seller.Addresses.Add(address);
+        //        }
+        //        foreach (var address in tempAddresses.Where(addr => addr.RegionId != regionId))
+        //        {
+        //            seller.Addresses.Add(address);
+        //        }
 
-                sellerVM.Seller = seller;
-                var categoriesService = new CategoriesService();
-                sellerVM.Breadcrumbs = new BreadCrumbsViewModel
-                {
-                    Seller = seller
-                };
-                if (categoryUrlName == null)
-                {
-                    sellerVM.Breadcrumbs.Categories = categoriesService.GetBreadcrumbs(seller.SellerCategories.First().CategoryId);
-                }
-                else
-                {
-                    sellerVM.Breadcrumbs.Categories = categoriesService.GetBreadcrumbs(urlName: categoryUrlName);
-                }
-                sellerVM.Breadcrumbs.IsInfoPage = true;
-                sellerVM.CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == currentUserId && entry.SellerId == seller.Id);
-            }
-            return sellerVM;
-        }
+        //        sellerVM.Seller = seller;
+        //        var categoriesService = new CategoriesService();
+        //        sellerVM.Breadcrumbs = new BreadCrumbsViewModel
+        //        {
+        //            Seller = seller
+        //        };
+        //        if (categoryUrlName == null)
+        //        {
+        //            sellerVM.Breadcrumbs.Categories = categoriesService.GetBreadcrumbs(null, seller.SellerCategories.First().CategoryId);
+        //        }
+        //        else
+        //        {
+        //            sellerVM.Breadcrumbs.Categories = categoriesService.GetBreadcrumbs(null, urlName: categoryUrlName);
+        //        }
+        //        sellerVM.Breadcrumbs.IsInfoPage = true;
+        //        sellerVM.CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == currentUserId && entry.SellerId == seller.Id);
+        //    }
+        //    return sellerVM;
+        //}
 
         public List<Category> GetAllSellerCategories(string sellerUrl)
         {
@@ -511,7 +511,7 @@ namespace Benefit.Services.Domain
             return productParametersList;
         }
 
-        public NavigationEntitiesViewModel<Product> GetSellerProductsCatalog(string sellerUrl, string categoryUrl, string options)
+        public NavigationEntitiesViewModel<Product> GetSellerProductsCatalog(IEnumerable<Category> cachedCats, string sellerUrl, string categoryUrl, string options)
         {
             var categoriesService = new CategoriesService();
             var result = new ProductsViewModel();
@@ -529,7 +529,7 @@ namespace Benefit.Services.Domain
             result.Breadcrumbs = new BreadCrumbsViewModel()
             {
                 Seller = seller,
-                Categories = categoriesService.GetBreadcrumbs(category == null ? null : category.Id)
+                Categories = categoriesService.GetBreadcrumbs(cachedCats, category == null ? null : category.Id)
             };
             return result;
         }

@@ -57,19 +57,19 @@ namespace Benefit.Web.Controllers
         //    return View(sellerVm);
         //}
 
-        [HttpGet]
-        public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null, string options = null, ProductSortOption? sort = null)
-        {
-            var category = CategoriesService.GetByUrlWithChildren(categoryUrl);
-            if (category == null || (category != null  && category.ChildCategories.Any()))
-            {
-                var catsModel = CategoriesService.GetSellerCategoriesCatalog(category, sellerUrl);
-                return View("../Catalog/CategoriesCatalog", catsModel);
+        //[HttpGet]
+        //public ActionResult Catalog(string sellerUrl = null, string categoryUrl = null, string options = null, ProductSortOption? sort = null)
+        //{
+        //    var category = CategoriesService.GetByUrlWithChildren(categoryUrl);
+        //    if (category == null || (category != null  && category.ChildCategories.Any()))
+        //    {
+        //        var catsModel = CategoriesService.GetSellerCategoriesCatalog(category, sellerUrl);
+        //        return View("../Catalog/CategoriesCatalog", catsModel);
                 
-            }
-            var model = SellerService.GetSellerProductsCatalog(sellerUrl, categoryUrl, options);
-            return View("../Catalog/ProductsCatalog", model);
-        }
+        //    }
+        //    var model = SellerService.GetSellerProductsCatalog(sellerUrl, categoryUrl, options);
+        //    return View("../Catalog/ProductsCatalog", model);
+        //}
 
         /* [HttpGet]
          public ActionResult ProductsList(string sellerId = null, string categoryId = null, string options = null,
