@@ -335,6 +335,7 @@ namespace Benefit.Web.Controllers
             return View();
         }
 
+        [FetchCategories]
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {

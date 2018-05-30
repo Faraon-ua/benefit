@@ -168,29 +168,29 @@ $(document).ready(function () {
      *
      */
 
-    var winHeight = $(window).scrollTop();
-    var subheader = $(".sub_header");
-    var subheaderTopOffset = subheader.offset().top;
+    //var winHeight = $(window).scrollTop();
+    //var subheader = $(".sub_header");
+    //var subheaderTopOffset = subheader.offset().top;
 
-    $(window).resize(function () {
-        if (subheader.hasClass('fixed')) {
+    //$(window).resize(function () {
+    //    if (subheader.hasClass('fixed')) {
 
-        } else {
-            subheaderTopOffset = subheader.offset().top;
-        }
-    });
+    //    } else {
+    //        subheaderTopOffset = subheader.offset().top;
+    //    }
+    //});
 
-    $(window).scroll(function () {
-        winHeight = $(window).scrollTop();
-        if (winHeight >= (subheaderTopOffset)) {
-            subheader.addClass('fixed');
-            $('header').addClass('fixed');
-        } else if (winHeight < subheaderTopOffset) {
-            subheader.removeClass('fixed');
-            $('header').removeClass('fixed');
-        }
+    //$(window).scroll(function () {
+    //    winHeight = $(window).scrollTop();
+    //    if (winHeight >= (subheaderTopOffset)) {
+    //        subheader.addClass('fixed');
+    //        $('header').addClass('fixed');
+    //    } else if (winHeight < subheaderTopOffset) {
+    //        subheader.removeClass('fixed');
+    //        $('header').removeClass('fixed');
+    //    }
 
-    });
+    //});
 
 
     /*

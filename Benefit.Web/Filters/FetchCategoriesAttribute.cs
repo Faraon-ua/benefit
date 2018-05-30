@@ -54,23 +54,24 @@ namespace Benefit.Web.Filters
                     using (var db = new ApplicationDbContext())
                     {
                         categories = db.Categories
-                           .Include(entry => entry.Products)
-                           .Include(entry => entry.ChildCategories.Select(cat => cat.Products.Select(pr=>pr.Seller)))
-                           .Include(entry => entry.ChildCategories.Select(cat => cat.ChildCategories.Select(ch => ch.Products.Select(cp=>cp.Seller))))
-                           .Where(
-                               entry =>
-                                   entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory)
-                           .OrderBy(entry => entry.Order)
-                           .ToList();
+                            .Include(entry => entry.Products)
+                            .Include(entry => entry.ChildCategories.Select(cat => cat.Products.Select(pr => pr.Seller)))
+                            .Include(entry => entry.ChildCategories.Select(cat =>
+                                cat.ChildCategories.Select(ch => ch.Products.Select(cp => cp.Seller))))
+                            .Where(
+                                entry =>
+                                    entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory)
+                            .OrderBy(entry => entry.Order)
+                            .ToList();
                         categories.ForEach(entry =>
                         {
                             entry.ChildCategories.ForEach(child =>
                             {
-                                child.ChildCategories = child.ChildCategories.Where(cat => cat.IsActive && cat.Products.Any(cc=> cc.IsActive && cc.Seller.IsActive)).OrderBy(cat => cat.Order).ToList();
+                                child.ChildCategories = child.ChildCategories.Where(cat => cat.IsActive && cat.Products.Any(cc => cc.IsActive && cc.Seller.IsActive)).OrderBy(cat => cat.Order).ToList();
                             });
-                            entry.ChildCategories = entry.ChildCategories.Where(cat => cat.IsActive && (cat.ChildCategories.Any(chcat=>chcat.IsActive) || cat.Products.Any(pr => pr.IsActive && pr.Seller.IsActive))).OrderBy(cat => cat.Order).ToList();
+                            entry.ChildCategories = entry.ChildCategories.Where(cat => cat.IsActive && (cat.ChildCategories.Any(chcat => chcat.IsActive) || cat.Products.Any(pr => pr.IsActive && pr.Seller.IsActive))).OrderBy(cat => cat.Order).ToList();
                         });
-                        categories = categories.Where(entry => entry.ChildCategories.Any() || entry.Products.Any()).ToList();
+                        categories = categories.ToList();
                         HttpRuntime.Cache.Insert("Categories", categories, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
                     }
                 }

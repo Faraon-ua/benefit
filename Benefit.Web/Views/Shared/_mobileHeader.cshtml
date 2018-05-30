@@ -147,8 +147,8 @@
                                 <span class="arrow"><i class="svg svg_triangle_right"></i></span>
                             </a>
                             <ul class="dropdown">
-                                <li><a class="dark-color" href="#" title="Відгуки покупців"><span class="name">Відгуки покупців</span></a></li>
-                                <li><a class="dark-color" href="#" title="Правила Benefit Card"><span class="name">Правила Benefit Card</span></a></li>
+                                @*<li><a class="dark-color" href="#" title="Відгуки покупців"><span class="name">Відгуки покупців</span></a></li>*@
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "pravila-benefit-card" })" title="Правила Benefit Card"><span class="name">Правила Benefit Card</span></a></li>
                                 <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "partnerska_programa" })" title="Партнерська програма"><span class="name">Партнерська програма</span></a></li>
                                 <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new {id = "faq"})" title="Питання та відповіді"><span class="name">Питання та відповіді</span></a></li>
                             </ul>
@@ -160,9 +160,9 @@
                             </a>
                             <ul class="dropdown">
                                 <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "stati_postachalnikom" })" title="Співпраця з компанією"><span class="name">Співпраця з компанією</span></a></li>
-                                <li><a class="dark-color" href="#" title="Тарифи та можливості"><span class="name">Тарифи та можливості</span></a></li>
-                                <li><a class="dark-color" href="#" title="Реєстрація постачальника"><span class="name">Реєстрація постачальника</span></a></li>
-                                <li><a class="dark-color" href="#" title="Система Benefit Card"><span class="name">Система Benefit Card</span></a></li>
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "tarifi-ta-mozhlivosti" })" title="Тарифи та можливості"><span class="name">Тарифи та можливості</span></a></li>
+                                <li>@*<a class="dark-color" href="#" title="Реєстрація постачальника"><span class="name">Реєстрація постачальника</span></a>*@</li>
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "sistema-benefit-card" })" title="Система Benefit Card"><span class="name">Система Benefit Card</span></a></li>
                             </ul>
                         </li>
                         <li>
@@ -171,10 +171,10 @@
                                 <span class="arrow"><i class="svg svg_triangle_right"></i></span>
                             </a>
                             <ul class="dropdown">
-                                <li><a class="dark-color" href="#" title="Про компанію Benefit Company"><span class="name">Про компанію Benefit Company</span></a></li>
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "pro-kompaniyu-benefit-company" })" title="Про компанію Benefit Company"><span class="name">Про компанію Benefit Company</span></a></li>
                                 <li><a class="dark-color" href="@Url.Action("index","news")" title="Новини компанії"><span class="name">Новини компанії</span></a></li>
-                                <li><a class="dark-color" href="#" title="Відгуки про компанію"><span class="name">Відгуки про компанію</span></a></li>
-                                <li><a class="dark-color" href="#" title="Угода користувача"><span class="name">Угода користувача</span></a></li>
+                                <li>@*<a class="dark-color" href="#" title="Відгуки про компанію"><span class="name">Відгуки про компанію</span></a>*@</li>
+                                <li><a class="dark-color" href="@Url.RouteUrl("pagesRoute", new { id = "ugoda-korustuvacha" })" title="Угода користувача"><span class="name">Угода користувача</span></a></li>
                             </ul>
                         </li>
                     </ul>
