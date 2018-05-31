@@ -307,6 +307,7 @@ namespace Benefit.Web.Controllers
 
         //
         // POST: /Account/ResetPassword
+        [FetchCategories]
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -333,6 +334,7 @@ namespace Benefit.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [FetchCategories]
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
