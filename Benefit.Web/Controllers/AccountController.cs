@@ -265,6 +265,7 @@ namespace Benefit.Web.Controllers
             }
         }
 
+        [FetchCategories]
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult> ForgotPassword()
@@ -272,6 +273,7 @@ namespace Benefit.Web.Controllers
             return View();
         }
 
+        [FetchCategories]
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -292,6 +294,7 @@ namespace Benefit.Web.Controllers
 
         //
         // GET: /Account/ResetPassword
+        [FetchCategories]
         [HttpGet]
         [AllowAnonymous]
         public ActionResult ResetPassword(string userId, string code = null)
