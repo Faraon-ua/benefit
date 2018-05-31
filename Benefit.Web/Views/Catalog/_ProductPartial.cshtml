@@ -7,7 +7,7 @@
     var image = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.Product.UrlName, Model.Product.SKU) });
     //var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);
-    var sellerUrl = "#";
+    var sellerUrl = "";
     var reviewsCount = Model.Product.Reviews.Count;
 }
 
