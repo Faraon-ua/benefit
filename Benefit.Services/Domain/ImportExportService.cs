@@ -80,23 +80,16 @@ namespace Benefit.Services.Domain
             }
         }
 
-        private void DeletePromUaCategories(Seller seller, IEnumerable<XElement> xmlCategories, bool delete)
+        private void DeletePromUaCategories(Seller seller, IEnumerable<XElement> xmlCategories)
         {
             var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.Id).ToList();
             var xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
             var catIdsToRemove = currentSellercategoyIds.Except(xmlCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {
-                if (delete)
-                {
-                    categoriesService.Delete(catId);
-                }
-                else
-                {
-                    var dbCategory = db.Categories.Find(catId);
-                    dbCategory.IsActive = false;
-                    db.Entry(dbCategory).State = EntityState.Modified;
-                }
+                var dbCategory = db.Categories.Find(catId);
+                dbCategory.IsActive = false;
+                db.Entry(dbCategory).State = EntityState.Modified;
             }
         }
 
@@ -344,7 +337,7 @@ namespace Benefit.Services.Domain
             db.InsertIntoMembers(productParameterProductsToAdd);
         }
 
-        private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId, bool delete)
+        private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId)
         {
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
                 .Select(entry => entry.Id).ToList();
@@ -352,16 +345,9 @@ namespace Benefit.Services.Domain
             var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).ToList();
             foreach (var prodId in productIdsToRemove)
             {
-                if (delete)
-                {
-                    productsService.Delete(prodId);
-                }
-                else
-                {
-                    var dbProduct = db.Products.Find(prodId);
-                    dbProduct.IsActive = false;
-                    db.Entry(dbProduct).State = EntityState.Modified;
-                }
+                var dbProduct = db.Products.Find(prodId);
+                dbProduct.AvailabilityState = ProductAvailabilityState.NotInStock;
+                db.Entry(dbProduct).State = EntityState.Modified;
             }
         }
 
@@ -372,6 +358,9 @@ namespace Benefit.Services.Domain
                     entry => entry.IsActive && entry.IsImport && entry.SyncType == SyncType.Promua).ToList();
             foreach (var importTask in importTasks)
             {
+                if (importTask.LastSync.HasValue &&
+                    (DateTime.UtcNow - importTask.LastSync.Value).TotalDays < importTask.SyncPeriod)
+                    continue;
                 XDocument xml = null;
                 try
                 {
@@ -393,13 +382,13 @@ namespace Benefit.Services.Domain
                     var xmlCategories = root.Descendants("categories").First().Elements().ToList();
                     CreateAndUpdatePromUaCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
                     db.SaveChanges();
-                    DeletePromUaCategories(importTask.Seller, xmlCategories, importTask.RemoveProducts);
+                    DeletePromUaCategories(importTask.Seller, xmlCategories);
                     db.SaveChanges();
 
                     var xmlProducts = root.Descendants("offers").First().Elements().ToList();
                     AddAndUpdatePromUaProducts(xmlProducts, importTask.SellerId);
                     db.SaveChanges();
-                    DeletePromUaProducts(xmlProducts, importTask.SellerId, importTask.RemoveProducts);
+                    DeletePromUaProducts(xmlProducts, importTask.SellerId);
                     db.SaveChanges();
 
                     //todo:handle exceptions

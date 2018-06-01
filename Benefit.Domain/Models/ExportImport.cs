@@ -6,7 +6,8 @@ namespace Benefit.Domain.Models
     public enum SyncType
     {
         OneCCommerceMl,
-        Promua
+        Promua,
+        Excel
     }
     public class ExportImport
     {

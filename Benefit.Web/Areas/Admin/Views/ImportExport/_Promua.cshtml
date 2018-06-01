@@ -17,15 +17,6 @@
                 @Html.CheckBoxFor(m => m.IsActive)
             </div>
         </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2" for="IsActive">Дія з відсутніми товарами</label>
-            <div class="col-md-10">
-                @Html.DropDownList("RemoveProducts", null, new { @class = "col-md-3" })
-                <span>* Товари, які є на сайті, але відсутні в новій версії файлу</span>
-            </div>
-        </div>
-
         <div class="form-group">
             <label class="control-label col-md-2" for="IsActive">URL</label>
             <div class="col-md-10">

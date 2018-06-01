@@ -48,12 +48,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         SyncType = SyncType.Promua,
                         SellerId = Seller.CurrentAuthorizedSellerId
                     };
-            var deleteProductsOption = new List<SelectListItem>()
-            {
-                new SelectListItem() {Text = "Видаляти", Value = true.ToString()},
-                new SelectListItem() {Text = "Робити неактивними", Value = false.ToString()}
-            };
-            ViewBag.RemoveProducts = new SelectList(deleteProductsOption, "Value", "Text", importTask.RemoveProducts);
 
             var updateFrequency = new List<SelectListItem>()
             {
@@ -92,7 +86,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Entry(import).State = EntityState.Modified;
                 }
                 import.IsActive = exportImport.IsActive;
-                import.RemoveProducts = exportImport.RemoveProducts;
                 import.FileUrl = exportImport.FileUrl;
                 import.SyncPeriod = exportImport.SyncPeriod;
             }
