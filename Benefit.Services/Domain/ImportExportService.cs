@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using System.Web;
 using System.Xml.Linq;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
@@ -190,16 +191,16 @@ namespace Benefit.Services.Domain
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
             {
                 var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToAdd);
-                var name = xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim();
+                var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
                 var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
                 var currencyId = xmlProduct.Element("currencyId").Value;
-                var urlName = name.Translit();
+                var urlName = name.Translit().Truncate(128);
                 var product = new Product()
                 {
                     Id = xmlProduct.Attribute("id").Value,
                     ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null),
                     Name = name,
-                    UrlName = urlName.Truncate(128),
+                    UrlName = urlName,
                     Vendor = xmlProduct.Element("vendor").GetValueOrDefault(null),
                     OriginCountry = xmlProduct.Element("country_of_origin").GetValueOrDefault(null),
                     CategoryId = xmlProduct.Element("categoryId").Value,
@@ -265,13 +266,13 @@ namespace Benefit.Services.Domain
                 var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToUpdate);
                 var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToUpdate);
 
-                var name = xmlProduct.Element("name").Value;
+                var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
                 var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
                 var currencyId = xmlProduct.Element("currencyId").Value;
 
                 product.Name = name;
                 product.ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null);
-                product.UrlName = string.Format("{0}_{1}", product.SKU, name.Translit()).Truncate(128);
+                product.UrlName = name.Translit().Truncate(128);
                 product.CategoryId = xmlProduct.Element("categoryId").Value;
                 product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                 product.Price = double.Parse(xmlProduct.Element("price").Value);

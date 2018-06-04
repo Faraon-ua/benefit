@@ -203,10 +203,10 @@
                                                         @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
                                                     </span>
                                                     @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
-                    {
-                                <span id="available-amount">@Model.Product.AvailableAmount</span>
-                                @(@Model.Product.IsWeightProduct ? "кг" : "шт")
-}
+                                                    {
+                                                        <span id="available-amount">@Model.Product.AvailableAmount</span>
+                                                        @(@Model.Product.IsWeightProduct ? "кг" : "шт")
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -229,24 +229,24 @@
                                                 <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
                                             </div>
                                             @if (Model.Product.OldPrice.HasValue)
-            {
-                                <div class="x-product-price__discount">
-                                    <div class="x-product-price__discount-value" data-qaid="price_without_discount">
-                                        @Model.Product.OldPrice.Value.ToString("F") грн
-                                    </div>
-                                </div>
-}
+                                            {
+                                                <div class="x-product-price__discount">
+                                                    <div class="x-product-price__discount-value" data-qaid="price_without_discount">
+                                                        @Model.Product.OldPrice.Value.ToString("F") грн
+                                                    </div>
+                                                </div>
+                                            }
                                             @if (Model.Product.WholesalePrice.HasValue && Model.Product.WholesaleFrom.HasValue)
-            {
-                                <div class="x-product-price__discount-info">
-                                    <a href="#" class="dark_link wholesalePices">Гуртові ціни</a>
-                                    <p style="display: none;">
-                                        <span>@Model.Product.WholesalePrice.Value.ToString("F") грн</span>
-                                        <span>.........................</span>
-                                        <span>від @Model.Product.WholesaleFrom шт.</span>
-                                    </p>
-                                </div>
-}
+                                            {
+                                                <div class="x-product-price__discount-info">
+                                                    <a href="#" class="dark_link wholesalePices">Гуртові ціни</a>
+                                                    <p style="display: none;">
+                                                        <span>@Model.Product.WholesalePrice.Value.ToString("F") грн</span>
+                                                        <span>.........................</span>
+                                                        <span>від @Model.Product.WholesaleFrom шт.</span>
+                                                    </p>
+                                                </div>
+                                            }
                                         </div>
                                     </div>
 
@@ -262,27 +262,27 @@
                                         <div class="x-product-conversion__col">
                                             <div class="x-product-conversion__item">
                                                 @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
-                {
-                                <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey" href="#" disabled="disabled">
-                                    <span class="x-button__text js-buy-button__text">Купити</span>
-                                </a>
-}
-else
-{
-var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
-if (availableForPurchase.Key)
-{
-                                <a id="buy-product" class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#" style="background: #8f1b0a; color: white">
-                                    <span class="x-button__text js-buy-button__text">Купити</span>
-                                </a>
-}
-else
-{
-                                <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">
-                                    <span class="x-button__text js-buy-button__text">Купити</span>
-                                </a>
-}
-}
+                                                {
+                                                    <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey" href="#" disabled="disabled">
+                                                        <span class="x-button__text js-buy-button__text">Купити</span>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+                                                    if (availableForPurchase.Key)
+                                                    {
+                                                        <a id="buy-product" class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#" style="background: #8f1b0a; color: white">
+                                                            <span class="x-button__text js-buy-button__text">Купити</span>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">
+                                                            <span class="x-button__text js-buy-button__text">Купити</span>
+                                                        </a>
+                                                    }
+                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -295,9 +295,12 @@ else
                             <div class="x-company-info__parts">
                                 <div class="x-company-info__logo">
                                     <!-- лого постачальника -->
-                                    <a href="@sellerUrl" target="_blank">
-                                        <img class="x-company-info__logo-img" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" />
-                                    </a>
+                                    @if (sellerLogo != null)
+                                    {
+                                        <a href="@sellerUrl" target="_blank">
+                                            <img class="x-company-info__logo-img" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" />
+                                        </a>
+                                    }
                                     <!-- лого постачальника -->
                                 </div>
                                 Продавець товару:

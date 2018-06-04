@@ -107,7 +107,7 @@ namespace Benefit.Services.Domain
             var sellers = db.Sellers
                 .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
                 .Include(entry => entry.Addresses.Select(addr => addr.Region))
-                .Where(entry=>entry.IsActive);
+                .Where(entry => entry.IsActive);
 
             var sort = SellerSortOption.Rating;
 
@@ -398,6 +398,8 @@ namespace Benefit.Services.Domain
                     items = items.OrderByDescending(entry => entry.Price);
                     break;
             }
+            items = items.OrderByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.Name);
+
 
             //fetch product parameters
             if (categoryId != null && fetchParameters)
@@ -420,9 +422,9 @@ namespace Benefit.Services.Domain
                 }
                 var productParametersInItems =
                     items.SelectMany(entry => entry.ProductParameterProducts.Select(pr => pr.StartValue))
-                        .Union(items.Select(entry=>entry.Vendor))
-                        .Union(items.Select(entry=>entry.Seller.UrlName))
-                        .Union(items.Select(entry=>entry.OriginCountry))
+                        .Union(items.Select(entry => entry.Vendor))
+                        .Union(items.Select(entry => entry.Seller.UrlName))
+                        .Union(items.Select(entry => entry.OriginCountry))
                         .Distinct()
                         .ToList();
                 productParameters.InsertRange(0, generalParams);
