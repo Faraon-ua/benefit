@@ -12,18 +12,18 @@ namespace Benefit.Domain.Models
     public enum ProductAvailabilityState
     {
         [Description("#73d36a")]
-        [Display(Name = "В наявності")]
+        [Display(Name = "В наявності", Description = "fa-check")]
         Available,
-        [Display(Name = "Завжди в наявності")]
+        [Display(Name = "Завжди в наявності", Description = "fa-check")]
         [Description("#73d36a")]
         AlwaysAvailable,
-        [Display(Name = "Немає в наявності")]
+        [Display(Name = "Немає в наявності", Description = "fa-times")]
         [Description("#333333")]
         NotInStock,
-        [Display(Name = "Під замовлення")]
+        [Display(Name = "Під замовлення", Description = "fa-check")]
         [Description("#fe6600")]
         OnDemand,
-        [Display(Name = "Закінчується")]
+        [Display(Name = "Закінчується", Description = "fa-exclamation-circle")]
         [Description("#fe6600")]
         Ending
     }
@@ -134,6 +134,9 @@ namespace Benefit.Domain.Models
             }
             _availableForPurchase = new KeyValuePair<bool, string>(isAvailable, shippingRegions);
 
+            if (AvailabilityState == ProductAvailabilityState.NotInStock ||
+                (AvailabilityState == ProductAvailabilityState.Available && AvailableAmount == 0))
+                _availableForPurchase = new KeyValuePair<bool, string>(false, shippingRegions);
             return _availableForPurchase.Value;
         }
     }

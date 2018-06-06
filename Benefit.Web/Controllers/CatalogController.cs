@@ -9,6 +9,7 @@ using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
+using Benefit.Web.Models;
 
 namespace Benefit.Web.Controllers
 {
@@ -71,17 +72,16 @@ namespace Benefit.Web.Controllers
             return View("ProductsCatalog", catalog);
         }
 
-        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page)
+        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page, LayoutTemplate layout = LayoutTemplate.Default)
         {
             var skip = page * ListConstants.DefaultTakePerPage;
             var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, ListConstants.DefaultTakePerPage, false).Products;
-            var productsHtml = string.Join("", products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString("_ProductPartial", new ProductPartialViewModel
+            var templateName = "_ProductPartial";
+            if (layout == LayoutTemplate.BenefitOnline)
             {
-                Product = entry,
-                CategoryUrl = entry.Category.UrlName,
-                SellerUrl = entry.Seller.UrlName,
-                AvailableForPurchase = entry.AvailableForPurchase(RegionService.GetRegionId())
-            })));
+                templateName = "~/Views/SellerArea/_ProductPartial.cshtml";
+            }
+            var productsHtml = string.Join("", products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString(templateName, entry)));
             return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
         }
 

@@ -43,6 +43,7 @@ function setCookie(name, value, options) {
 function setCartSummary(data) {
     setCookie("cartNumber", data.ProductsNumber, { expires: 36000, path: "/" });
     setCookie("cartPrice", data.Price.toFixed(2), { expires: 36000, path: "/" });
+    $(".cart-items-number").parent().removeClass("disabled");
     $(".cart-items-number").text(data.ProductsNumber);
     $("#cart-items-price").text(data.Price.toFixed(2) + " грн");
     $(".cart-summary").show();

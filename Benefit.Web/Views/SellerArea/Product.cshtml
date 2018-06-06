@@ -1,6 +1,8 @@
-﻿@using Benefit.Common.Helpers
+﻿@using Benefit.Common.Extensions
+@using Benefit.Common.Helpers
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
+@using Benefit.Services.Domain
 @using Image = System.Drawing.Image
 @model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
 
@@ -33,6 +35,7 @@
     }
 
     var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
+    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
 }
 
 @section scripts
@@ -185,7 +188,14 @@
                             <input class="text-center quantity" name="amount" value="1" type="text">
                             <span class="clickable plus">+</span>
                         </div>
-                        <button id="buy-product" class="btn-primary ico-btn_2cart fn-is_stock btn " title="" type="button">Купити</button>
+                        @if (availableForPurchase.Key)
+                        {
+                            <button id="buy-product" class="btn-primary ico-btn_2cart fn-is_stock btn " title="" type="button">Купити</button>
+                        }
+                        else
+                        {
+                            <button id="buy-product" class="btn-primary ico-btn_2cart fn-is_stock btn " title="" type="button" disabled="disabled">Купити</button>
+                        }
                     </div>
                     <select class="form-control-lg custom-select" name="variant" style="display:none;">
                         <option value="41" price="@Model.Product.Price"></option>
@@ -198,7 +208,7 @@
                 </div>
                 <div class="col-lg-12 col-xl-6 p-b-1 div_rgt text-md text-xs-left">
                     <div class="m-b-1 text-md">
-                        @Model.Product.Description.Substring(0, 200)
+                        @Html.Raw(Model.Product.Description.Truncate(200))
                         <br>
                         <button class="btn-link select-tab text-sm p-x-0" value="0">
                             <a class="inpage-scroll text-underline color" href="#horizontalTab">Детальніше</a>

@@ -1,9 +1,11 @@
-﻿@using Benefit.DataTransfer.ViewModels
+﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @model Seller
 @{
     Layout = "_SellerLayout.cshtml";
     ViewBag.Title = "Головна";
+    var categories = ViewBag.Categories;
 }
 @section scripts
 {
@@ -46,6 +48,61 @@
     </div>
 </section>
 
+@if (Model.HasEcommerce)
+{
+    <section class="p-y-1">
+        <div class="container">
+            @if (Model.FeaturedProducts.Any())
+            {
+                <div class="heading1608 dotted">
+                    <div class="h1 title">Рекомендовані товари</div>
+                </div>
+                <div class="slick-products gridBlock">
+                    @foreach (var product in Model.FeaturedProducts)
+                    {
+                        @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                    }
+                </div>
+            }
+            @if (Model.PromotionProducts.Any())
+            {
+                <hr />
+                <div class="heading1608 dotted">
+                    <div class="h1 title">Акційні товари</div>
+                </div>
+                <div class="slick-products gridBlock">
+                    @foreach (var product in Model.PromotionProducts)
+                    {
+                        @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                    }
+                </div>
+            }
+        </div>
+    </section>
+
+    <div class="container">
+
+        <h2>Категорії</h2>
+        <div class="gridBlock">
+            @foreach (var cat in categories)
+            {
+                <div class="col-xs-6 col-md-3 col-lg-4 col-xl-6">
+                    <div class="product card">
+                        <div class="card-block fn-transfer">
+                            <a class="card-image image" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })">
+                                <img class="fn-img" src="~/Images/CategoryLogo/@cat.ImageUrl" alt="" style="opacity: 0.96;">
+                            </a>
+                            <div class="card-title h3">
+                                <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })">@cat.Name</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+}
+<br style="clear: both;" />
 <section class="content-block">
     <div id="fn-content">
         <section class="m-b-3 p-y-1 bg-light l-t l-b">
@@ -69,38 +126,5 @@
                 </div>
             </div>
         </section>
-
-        @if (Model.HasEcommerce)
-        {
-            <section class="p-y-1">
-                <div class="container">
-                    @if (Model.FeaturedProducts.Any())
-                    {
-                        <div class="heading1608 dotted">
-                            <div class="h1 title">Рекомендовані товари</div>
-                        </div>
-                        <div class="slick-products gridBlock">
-                            @foreach (var product in Model.FeaturedProducts)
-                            {
-                                @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
-                            }
-                        </div>
-                        <hr />
-                    }
-                    @if (Model.PromotionProducts.Any())
-                    {
-                        <div class="heading1608 dotted">
-                            <div class="h1 title">Акційні товари</div>
-                        </div>
-                        <div class="slick-products gridBlock">
-                            @foreach (var product in Model.PromotionProducts)
-                            {
-                                @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
-                            }
-                        </div>
-                    }
-                </div>
-            </section>
-        }
     </div>
 </section>

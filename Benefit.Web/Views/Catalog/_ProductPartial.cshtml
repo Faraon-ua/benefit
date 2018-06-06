@@ -1,34 +1,38 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Common.Helpers
-@model Benefit.DataTransfer.ViewModels.ProductPartialViewModel
+@using Benefit.Domain.Models
+@using Benefit.Services.Domain
+@*@model Benefit.DataTransfer.ViewModels.ProductPartialViewModel*@
+@model Product
 
 @{
-    var image = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.Product.UrlName, Model.Product.SKU) });
-    //var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);
+    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
+    //var sellerUrl = Url.SubdomainAction(Model.Seller.UrlName, "Index", "Home", null);
     var sellerUrl = "";
-    var reviewsCount = Model.Product.Reviews.Count;
+    var reviewsCount = Model.Reviews.Count;
+    var availableForPurchase = Model.AvailableForPurchase(RegionService.GetRegionId());
 }
 
-<div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6" @(Model.PageMark == null ? "" : "id=" + Model.PageMark)>
-    <div class="item" id="@Model.Product.Id">
+<div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6">
+    <div class="item" id="@Model.Id">
         <div class="img shine" style="text-align: left;">
-            <a href="@productDetailsUrl" title="@Model.Product.Title">
+            <a href="@productDetailsUrl" title="@Model.Title">
                 <div class="row">
                     <div class="span2">
                         @if (image == null)
                         {
-                            <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Product.Title" title="@Model.Product.Title">
+                            <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
                         }
                         else
                         {
                             if (image.IsAbsoluteUrl)
                             {
-                                <img src="@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
+                                <img src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
                             }
                             else
                             {
-                                <img src="~/Images/ProductGallery/@Model.Product.Id/@image.ImageUrl" alt="@Model.Product.Title" title="@Model.Product.Title">
+                                <img src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
                             }
                         }
                     </div>
@@ -36,15 +40,15 @@
             </a>
 
             <div class="stickers">
-                @if (Model.Product.Seller.UserDiscount > 0)
+                @if (Model.Seller.UserDiscount > 0)
                 {
-                    <div class="sticker_sale_text">@Model.Product.Seller.UserDiscount %</div>
+                    <div class="sticker_sale_text">@Model.Seller.UserDiscount %</div>
                 }
                 @*<div class="sticker_khit">Хит</div>*@
                 @*<div class="sticker_aktsiya">Сове</div>*@
             </div>
 
-            <a href="@productDetailsUrl" class="dark_link" style="font-size: 16px; font-weight: bold; height: 66px; display: block; overflow: hidden;">@Model.Product.Name</a>
+            <a href="@productDetailsUrl" class="dark_link" style="font-size: 16px; font-weight: bold; height: 66px; display: block; overflow: hidden;">@Model.Name</a>
 
             <div class="rating" style="width: 100%;">
                 <div class="iblock-vote small">
@@ -54,7 +58,7 @@
                                 @for (int i = 1; i <= 5; i++)
                                 {
                                     <td>
-                                        <div class="star-@(i <= Model.Product.AvarageRating.GetValueOrDefault(0) ? "active" : "empty") star-voted" title="@i"></div>
+                                        <div class="star-@(i <= Model.AvarageRating.GetValueOrDefault(0) ? "active" : "empty") star-voted" title="@i"></div>
                                     </td>
                                 }
                                 <td><a href="@productDetailsUrl#reviews" style="padding-left: 20px;">@reviewsCount відгуків</a></td>
@@ -65,9 +69,9 @@
             </div>
             <div class="sa_block" style="width: 100%; float: left;">
                 <div class="item-stock">
-                    <span class="icon stock"></span>
-                    <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
-                        @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+                    <i class="fa @Enumerations.GetDisplayDescriptionValue(Model.AvailabilityState)" style="color: @Enumerations.GetEnumDescription(Model.AvailabilityState); font-size: 1.2em;"></i>
+                    <span class="value" style="color: @Enumerations.GetEnumDescription(Model.AvailabilityState);">
+                        @Enumerations.GetDisplayNameValue(Model.AvailabilityState)
                     </span>
                 </div>
                 <div class="article_block"></div>
@@ -77,15 +81,15 @@
                 <div class="price_matrix_block">
                     <div class="price_matrix_wrapper ">
                         <div class="price">
-                            @if (Model.Product.OldPrice.HasValue)
+                            @if (Model.OldPrice.HasValue)
                             {
-                                <span style="font-size: 14px; color: grey; text-decoration: line-through; margin-right: 10px;">@Model.Product.OldPrice.Value.ToString("F") грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                                <span style="font-size: 14px; color: grey; text-decoration: line-through; margin-right: 10px;">@Model.OldPrice.Value.ToString("F") грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span>
                                 <br><br>
                             }
-                            <span class="price_value">@Model.Product.Price.ToString("F") грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
-                            @if (Model.Product.WholesalePrice.HasValue)
+                            <span class="price_value">@Model.Price.ToString("F") грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span>
+                            @if (Model.WholesalePrice.HasValue)
                             {
-                                <span class="green">| @Model.Product.WholesalePrice.Value.ToString("F") <span class="small">грн/опт</span></span>
+                                <span class="green">| @Model.WholesalePrice.Value.ToString("F") <span class="small">грн/опт</span></span>
                             }
                         </div>
                     </div>
@@ -95,7 +99,7 @@
             <div class="counter_wrapp ">
                 <div class="counter">
                     <div class="minus">-</div>
-                    @if (Model.Product.IsWeightProduct)
+                    @if (Model.IsWeightProduct)
                     {
                         <input class="text quantity" name="quantity" type="text" value="0.1" data-weight-product="true" />
                     }
@@ -106,19 +110,34 @@
                     <div class="plus">+</div>
                 </div>
                 <div style="width: 15px; height: 15px; float: right" class="hidden-xs"></div>
-                <div class="button_block product_buy" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.Seller.Id" data-is-weight-product="@Model.Product.IsWeightProduct">
-                    <span class="small to-cart btn btn-default transition_bg animate-load" style="height: 36px; padding: 7px 10px 10px 10px;">
-                        <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
-                        <i></i>
-                        <span class="hidden-xs" style="font-weight: bold;">Купити</span>
-                    </span>
-                </div>
+
+                @if (availableForPurchase.Key)
+                {
+                    <div class="button_block product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">
+
+                        <span class="small to-cart btn btn-default transition_bg animate-load" style="height: 36px; padding: 7px 10px 10px 10px;">
+                            <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
+                            <i></i>
+                            <span class="hidden-xs" style="font-weight: bold;">Купити</span>
+                        </span>
+                    </div>
+                }
+                else
+                {
+                    <div class="button_block product_buy title-to-tooltip" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct" disabled="disabled">
+                        <span class="small to-cart btn btn-default bg-grey" style="height: 36px; padding: 7px 10px 10px 10px;">
+                            <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
+                            <i></i>
+                            <span class="hidden-xs" style="font-weight: bold;">Купити</span>
+                        </span>
+                    </div>
+                }
                 <div class="button_block hidden-lg"></div>
                 <br class="clear" />
             </div>
             <div class="item-stock" style="padding-top: 10px; text-align: left;">
-                <a href="@sellerUrl">@Model.Product.Seller.Name</a><br>
-                @Model.Product.Seller.PrimaryRegionName
+                <a href="@sellerUrl">@Model.Seller.Name</a><br>
+                @Model.Seller.PrimaryRegionName
             </div>
         </div>
     </div>

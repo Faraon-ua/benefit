@@ -320,7 +320,7 @@ namespace Benefit.Services.Domain
                 //add mapped categoryIds
                 allIds.AddRange(category.MappedCategories.Select(entry => entry.Id));
 
-                if (sellerId != null)
+                if (!string.IsNullOrEmpty(sellerId))
                 {
                     var allDescendants = category.GetAllChildrenRecursively().ToList();
                     var allDescandantIds = allDescendants.Select(entry => entry.Id).ToList();
@@ -377,10 +377,11 @@ namespace Benefit.Services.Domain
                     }
                 }
             }
+
             switch (sort)
             {
                 case ProductSortOption.Rating:
-                    items = items.OrderByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.Name);
+                    items = items.OrderByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any());
                     break;
                 case ProductSortOption.Order:
                     items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.Name);
@@ -398,8 +399,6 @@ namespace Benefit.Services.Domain
                     items = items.OrderByDescending(entry => entry.Price);
                     break;
             }
-            items = items.OrderByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.Name);
-
 
             //fetch product parameters
             if (categoryId != null && fetchParameters)
@@ -447,7 +446,6 @@ namespace Benefit.Services.Domain
 
                     result.ProductParameters.Add(parameter);
                 }
-
                 result.ProductParameters = productParameters;
             }
 

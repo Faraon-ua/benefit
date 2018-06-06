@@ -82,7 +82,8 @@ namespace Benefit.Services.Domain
             {
                 parent = new Category()
                 {
-                    Name = "Каталог"
+                    Name = "Каталог",
+                    ChildCategories = cachedCats.ToList()
                 };
             }
 

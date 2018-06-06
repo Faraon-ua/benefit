@@ -37,6 +37,20 @@ namespace Benefit.Common.Helpers
             return (descriptionAttributes.Length > 0) ? descriptionAttributes[0].Name : value.ToString();
         }
 
+        public static string GetDisplayDescriptionValue(Enum value)
+        {
+            var fieldInfo = value.GetType().GetField(value.ToString());
+
+            var descriptionAttributes = fieldInfo.GetCustomAttributes(
+                typeof(DisplayAttribute), false) as DisplayAttribute[];
+
+            if (descriptionAttributes[0].ResourceType != null)
+                return lookupResource(descriptionAttributes[0].ResourceType, descriptionAttributes[0].Description);
+
+            if (descriptionAttributes == null) return string.Empty;
+            return (descriptionAttributes.Length > 0) ? descriptionAttributes[0].Description : value.ToString();
+        }
+
         private static string lookupResource(Type resourceManagerProvider, string resourceKey)
         {
             foreach (PropertyInfo staticProperty in resourceManagerProvider.GetProperties(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))

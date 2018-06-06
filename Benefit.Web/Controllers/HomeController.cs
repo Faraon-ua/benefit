@@ -34,12 +34,12 @@ namespace Benefit.Web.Controllers
                 {
                     seller.FeaturedProducts = db.Products
                         .Include(entry => entry.Images)
-                        .Include(entry => entry.Seller)
+                        .Include(entry => entry.Seller.ShippingMethods)
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.IsFeatured).ToList();
                     seller.PromotionProducts = db.Products
                         .Include(entry => entry.Images)
-                        .Include(entry => entry.Seller)
+                        .Include(entry => entry.Seller.ShippingMethods)
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).ToList();
                 }
@@ -57,22 +57,14 @@ namespace Benefit.Web.Controllers
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
-                    .Include(entry => entry.Seller)
-                    .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList()
-                    .Select(entry => new ProductPartialViewModel()
-                    {
-                        Product = entry
-                    }).ToList();
+                    .Include(entry => entry.Seller.ShippingMethods)
+                    .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList();
                 mainPageViewModel.NewProducts = db.Products
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
-                    .Include(entry => entry.Seller)
-                    .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList()
-                    .Select(entry => new ProductPartialViewModel()
-                    {
-                        Product = entry
-                    }).ToList();
+                    .Include(entry => entry.Seller.ShippingMethods)
+                    .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList();
                 mainPageViewModel.News = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive)
                     .OrderByDescending(entry => entry.CreatedOn).Take(5).ToList();
                 mainPageViewModel.News.ForEach(entry =>

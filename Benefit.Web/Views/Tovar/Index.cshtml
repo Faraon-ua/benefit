@@ -18,6 +18,7 @@
     var sellerLogo = Model.Product.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
     var sellerAddress = @Model.Product.Seller.Addresses.FirstOrDefault();
     var sellerAddressStr = sellerAddress == null ? "" : string.Format("{0}, {1}", sellerAddress.Region.Name_ua, sellerAddress.AddressLine);
+    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
 }
 @section image_src
 {
@@ -261,16 +262,7 @@
                                     <div class="x-product-conversion" style="width: 30%; float: left; margin-top: 30px;">
                                         <div class="x-product-conversion__col">
                                             <div class="x-product-conversion__item">
-                                                @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
-                                                {
-                                                    <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey" href="#" disabled="disabled">
-                                                        <span class="x-button__text js-buy-button__text">Купити</span>
-                                                    </a>
-                                                }
-                                                else
-                                                {
-                                                    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
-                                                    if (availableForPurchase.Key)
+                                                    @if (availableForPurchase.Key)
                                                     {
                                                         <a id="buy-product" class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#" style="background: #8f1b0a; color: white">
                                                             <span class="x-button__text js-buy-button__text">Купити</span>
@@ -278,11 +270,10 @@
                                                     }
                                                     else
                                                     {
-                                                        <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey title-to-tooltip" href="#" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">
+                                                        <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey title-to-tooltip" href="#" disabled="disabled" title="@(string.IsNullOrEmpty(availableForPurchase.Value) ? string.Empty : " Доставка по вибраному регіону неможлива. Доставка здійснюється по:" + availableForPurchase.Value)">
                                                             <span class="x-button__text js-buy-button__text">Купити</span>
                                                         </a>
                                                     }
-                                                }
                                             </div>
                                         </div>
                                     </div>
@@ -316,7 +307,9 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="x-company-info__item"><a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Catalog")" class="dark_link">Всі товари постачальника</a></div>
+                                <div class="x-company-info__item">
+                                    <a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Catalog")" class="dark_link">Всі товари постачальника</a>
+                                </div>
                             </div>
                             <div class="x-company-info__parts">
                                 <div class="x-company-info__title">Рейтинг постачальника</div>
@@ -549,16 +542,7 @@
                                             </div>
                                             <div class="button_block ">
                                                 <!--noindex-->
-                                                @if (Model.Product.AvailabilityState == ProductAvailabilityState.NotInStock || ((Model.Product.AvailabilityState != ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState != ProductAvailabilityState.OnDemand) && Model.Product.AvailableAmount == 0))
-                                                {
-                                                    <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey" disabled="disabled">
-                                                        <i></i><span>Купити</span>
-                                                    </span>
-                                                }
-                                                else
-                                                {
-                                                    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
-                                                    if (availableForPurchase.Key)
+                                                    @if (availableForPurchase.Key)
                                                     {
                                                         <span id="buy-product" class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load">
                                                             <i></i><span>Купити</span>
@@ -566,11 +550,10 @@
                                                     }
                                                     else
                                                     {
-                                                        <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey title-to-tooltip" disabled="disabled" title="Доставка по вибраному регіону неможлива. Доставка здійснюється по: @availableForPurchase.Value">
+                                                        <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey title-to-tooltip" disabled="disabled" title="@(string.IsNullOrEmpty(availableForPurchase.Value) ? string.Empty : " Доставка по вибраному регіону неможлива. Доставка здійснюється по:" + availableForPurchase.Value)">
                                                             <i></i><span>Купити</span>
                                                         </span>
                                                     }
-                                                }
                                                 <!--/noindex-->
                                             </div>
                                             <br class="clear" />

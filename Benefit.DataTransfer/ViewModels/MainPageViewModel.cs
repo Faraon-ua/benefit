@@ -5,8 +5,8 @@ namespace Benefit.DataTransfer.ViewModels
 {
     public class MainPageViewModel
     {
-        public List<ProductPartialViewModel> FeaturedProducts { get; set; }
-        public List<ProductPartialViewModel> NewProducts { get; set; }
+        public List<Product> FeaturedProducts { get; set; }
+        public List<Product> NewProducts { get; set; }
         public InfoPage Description { get; set; } 
         public List<InfoPage> News { get; set; } 
         public List<Banner> MobileBanners { get; set; } 

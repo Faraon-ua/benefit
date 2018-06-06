@@ -32,6 +32,9 @@
         ".product_buy",
         function (e) {
             e.preventDefault();
+            if ($(this).attr("disabled")) {
+                return;
+            }
             var productId = $(this).attr("data-product-id");
             var isWeightProduct = $(this).attr("data-is-weight-product").toLowerCase() === 'true';
             var sellerId = $(this).attr("data-seller-id");
