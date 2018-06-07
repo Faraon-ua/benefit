@@ -110,7 +110,7 @@
         {
             <div class="organization_adress">
                 @{
-            var address = Model.Seller.Addresses.FirstOrDefault();
+                    var address = Model.Seller.Addresses.FirstOrDefault();
                 }
                 @if (address != null)
                 {
@@ -241,8 +241,6 @@
         <div id="recall_org" class="recall_org tab-pane fade">
             @Html.Partial("_ReviewsPartial", new ReviewsViewModel
             {
-                AvarageRating = Model.Seller.AvarageRating ?? default(int),
-//                CanReview = Model.CanReview,
                 CanReview = true,
                 SellerId = Model.Seller.Id,
                 TargetName = Model.Seller.Name,
