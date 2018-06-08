@@ -250,33 +250,25 @@
                                             }
                                         </div>
                                     </div>
-
-                                    <div class="x-product-info__item counter_wrapp" style="width: 30%; float: left; margin-top: 25px;">
-                                        <div class="counter big_basket">
-                                            <div class="minus">-</div>
-                                            <input type="text" class="text quantity" name="quantity" value="1" data-weight-product="@Model.Product.IsWeightProduct" />
-                                            <div class="plus">+</div>
-                                        </div>
-                                    </div>
-
-                                    <div class="x-product-conversion" style="width: 30%; float: left; margin-top: 30px;">
-                                        <div class="x-product-conversion__col">
-                                            <div class="x-product-conversion__item">
-                                                    @if (availableForPurchase.Key)
-                                                    {
-                                                        <a id="buy-product" class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#" style="background: #8f1b0a; color: white">
-                                                            <span class="x-button__text js-buy-button__text">Купити</span>
-                                                        </a>
-                                                    }
-                                                    else
-                                                    {
-                                                        <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl bg-grey title-to-tooltip" href="#" disabled="disabled" title="@(string.IsNullOrEmpty(availableForPurchase.Value) ? string.Empty : " Доставка по вибраному регіону неможлива. Доставка здійснюється по:" + availableForPurchase.Value)">
-                                                            <span class="x-button__text js-buy-button__text">Купити</span>
-                                                        </a>
-                                                    }
+                                    @if (availableForPurchase.Key)
+                                    {
+                                        <div class="x-product-info__item counter_wrapp" style="width: 30%; float: left; margin-top: 25px;">
+                                            <div class="counter big_basket">
+                                                <div class="minus">-</div>
+                                                <input type="text" class="text quantity" name="quantity" value="1" data-weight-product="@Model.Product.IsWeightProduct" />
+                                                <div class="plus">+</div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="x-product-conversion" style="width: 30%; float: left; margin-top: 30px;">
+                                            <div class="x-product-conversion__col">
+                                                <div class="x-product-conversion__item">
+                                                    <a id="buy-product" class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#" style="background: #8f1b0a; color: white">
+                                                        <span class="x-button__text js-buy-button__text">Купити</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -542,18 +534,18 @@
                                             </div>
                                             <div class="button_block ">
                                                 <!--noindex-->
-                                                    @if (availableForPurchase.Key)
-                                                    {
-                                                        <span id="buy-product" class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load">
-                                                            <i></i><span>Купити</span>
-                                                        </span>
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey title-to-tooltip" disabled="disabled" title="@(string.IsNullOrEmpty(availableForPurchase.Value) ? string.Empty : " Доставка по вибраному регіону неможлива. Доставка здійснюється по:" + availableForPurchase.Value)">
-                                                            <i></i><span>Купити</span>
-                                                        </span>
-                                                    }
+                                                @if (availableForPurchase.Key)
+                                                {
+                                                    <span id="buy-product" class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load">
+                                                        <i></i><span>Купити</span>
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey title-to-tooltip" disabled="disabled" title="@(string.IsNullOrEmpty(availableForPurchase.Value) ? string.Empty : " Доставка по вибраному регіону неможлива. Доставка здійснюється по:" + availableForPurchase.Value)">
+                                                        <i></i><span>Купити</span>
+                                                    </span>
+                                                }
                                                 <!--/noindex-->
                                             </div>
                                             <br class="clear" />

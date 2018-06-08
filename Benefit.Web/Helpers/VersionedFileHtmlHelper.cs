@@ -53,7 +53,8 @@ namespace Benefit.Web.Helpers
 
             if (context.Cache[filename] == null)
             {
-                var physicalPath = context.Server.MapPath(filename);
+                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                var physicalPath = Path.Combine(originalDirectory, filename);
                 var version = string.Format("?v={0}", new System.IO.FileInfo(physicalPath).LastWriteTime.ToString("MMddHHmmss"));
                 context.Cache.Add(filename, version, null,
                   DateTime.Now.AddMinutes(5), TimeSpan.Zero,

@@ -97,24 +97,26 @@
             </div>
 
             <div class="counter_wrapp ">
-                <div class="counter">
-                    <div class="minus">-</div>
-                    @if (Model.IsWeightProduct)
-                    {
-                        <input class="text quantity" name="quantity" type="text" value="0.1" data-weight-product="true" />
-                    }
-                    else
-                    {
-                        <input class="text quantity" name="quantity" type="text" value="1" data-weight-product="false" />
-                    }
-                    <div class="plus">+</div>
-                </div>
+                @if (availableForPurchase.Key)
+                {
+                    <div class="counter">
+                        <div class="minus">-</div>
+                        @if (Model.IsWeightProduct)
+                        {
+                            <input class="text quantity" name="quantity" type="text" value="0.1" data-weight-product="true"/>
+                        }
+                        else
+                        {
+                            <input class="text quantity" name="quantity" type="text" value="1" data-weight-product="false"/>
+                        }
+                        <div class="plus">+</div>
+                    </div>
+                }
                 <div style="width: 15px; height: 15px; float: right" class="hidden-xs"></div>
 
                 @if (availableForPurchase.Key)
                 {
                     <div class="button_block product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">
-
                         <span class="small to-cart btn btn-default transition_bg animate-load" style="height: 36px; padding: 7px 10px 10px 10px;">
                             <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
                             <i></i>
@@ -124,16 +126,15 @@
                 }
                 else
                 {
-                    <div class="button_block product_buy title-to-tooltip" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct" disabled="disabled">
-                        <span class="small to-cart btn btn-default bg-grey" style="height: 36px; padding: 7px 10px 10px 10px;">
-                            <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
+                    <a class="button_block title-to-tooltip" href="@productDetailsUrl">
+                        <span class="small btn btn-default bg-grey" style="height: 36px; padding: 7px 10px 10px 10px;">
                             <i></i>
-                            <span class="hidden-xs" style="font-weight: bold;">Купити</span>
+                            <span style="font-weight: bold;">Детальніше</span>
                         </span>
-                    </div>
+                    </a>
                 }
                 <div class="button_block hidden-lg"></div>
-                <br class="clear" />
+                <br class="clear"/>
             </div>
             <div class="item-stock" style="padding-top: 10px; text-align: left;">
                 <a href="@sellerUrl">@Model.Seller.Name</a><br>

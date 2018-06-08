@@ -144,9 +144,7 @@
                                     <div class="row margin0">
                                         @foreach (var product in Model.Products.Take(ListConstants.DefaultTakePerPage))
                                         {
-                                            var regionId = RegionService.GetRegionId();
-                                            var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = null, AvailableForPurchase = product.AvailableForPurchase(regionId) };
-                                            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
+                                            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
                                         }
                                     </div>
                                 </div>

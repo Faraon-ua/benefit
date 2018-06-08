@@ -399,7 +399,6 @@
                     <div class="col-md-12">
                         <div class="h1">Фотогалерея</div>
                     </div>
-
                     @foreach (var image in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
                     {
                         <div class="col-xs-6 col-sm-6 col-md-3">
