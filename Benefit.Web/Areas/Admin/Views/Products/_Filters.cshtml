@@ -4,7 +4,7 @@
 <label>Категорія</label>
 <div class="row">
     <div class="col-xs-8 col-sm-11">
-        @Html.DropDownList("CategoryId", Model.Categories, "Не обрано", new { @class = "width-90 chosen-select" })
+        @Html.Partial("_HierarchySelect", new KeyValuePair<string, IEnumerable<Benefit.Web.Models.HierarchySelectItem>>("CategoryId", Model.Categories))
     </div>
 </div>
 @if (User.IsInRole(DomainConstants.AdminRoleName))

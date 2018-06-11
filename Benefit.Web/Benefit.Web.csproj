@@ -313,7 +313,9 @@
     <Compile Include="Models\Admin\UserFilters.cs" />
     <Compile Include="Models\Admin\SellerFilters.cs" />
     <Compile Include="Models\Admin\UserViewModels.cs" />
+    <Compile Include="Models\Enumerations\ProductsBundleAction.cs" />
     <Compile Include="Models\FacebookAccountModel.cs" />
+    <Compile Include="Models\HierarchySelectItem.cs" />
     <Compile Include="Models\ImagesViewModel.cs" />
     <Compile Include="Models\Admin\SellerViewModel.cs" />
     <Compile Include="Models\ProductOptionsViewModel.cs" />
@@ -950,6 +952,7 @@
     <Content Include="Areas\Cabinet\Views\Shared\_cabinetFooterPartial.cshtml" />
     <Content Include="Areas\Cabinet\Views\Shared\_cabinetMenuPartial.cshtml" />
     <Content Include="Areas\Cabinet\Views\Shared\_cabinetLoginPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Shared\_HierarchySelect.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

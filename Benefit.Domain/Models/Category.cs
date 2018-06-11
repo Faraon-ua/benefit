@@ -22,6 +22,18 @@ namespace Benefit.Domain.Models
                 return null;
             return category ?? FindByUrlIdRecursively(list.SelectMany(entry => entry.ChildCategories), url, id);
         }
+
+        public static IEnumerable<Category> SortByHierarchy(this List<Category> list, string parentId = null)
+        {
+            foreach (var cat in list.Where(entry=>entry.ParentCategoryId == parentId))
+            {
+                yield return cat;
+                foreach (var childCat in list.SortByHierarchy(cat.Id))
+                {
+                    yield return childCat;
+                }
+            }
+        }
     }
     public class Category
     {
@@ -90,6 +102,23 @@ namespace Benefit.Domain.Models
                     parent = parent.ParentCategory;
                 }
                 return sb.ToString();
+            }
+        }
+
+        [NotMapped]
+        public int HierarchicalLevel
+        {
+            get
+            {
+                var level = 1;
+                var parent = ParentCategory;
+                while (parent != null)
+                {
+                    level++;
+                    parent = parent.ParentCategory;
+                }
+
+                return level;
             }
         }
     }

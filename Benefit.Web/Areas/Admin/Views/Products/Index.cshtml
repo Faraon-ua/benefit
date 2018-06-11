@@ -1,19 +1,43 @@
-﻿@model Benefit.Web.Models.Admin.ProductsViewModel
+﻿@using Benefit.Web.Models.Enumerations
+@model Benefit.Web.Models.Admin.ProductsViewModel
 @{
     ViewBag.Title = "Товари";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 @section scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/Scripts/hierarchy-select.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+
     @*    <script src="~/Scripts/sorting-filtering.js"></script>*@
 
     <script>
         var updateWeightProductUrl = '@Url.Action("UpdateWeightProduct")';
-
+        var bulkProductsActionUrl = '@Url.Action("BulkProductsAction")';
+        var hSelect;
         $(function () {
+            $("#products-bulk-action-btn").click(function() {
+                var productIds = $(".product-select:checked").map(function () {
+                    return $(this).attr("data-product-id");
+                }).get();
+                var action = $("#products-bulk-action").val();
+                var categoryId = $("[name=move-to-categoryId]").val();
+                $.post(bulkProductsActionUrl,
+                    {
+                        "productIds": productIds,
+                        "action": action,
+                        "categoryId": categoryId
+                    }, function() {
+                        window.location.reload();
+                    });
+            });
+
             $(".chosen-select").chosen({
                 search_contains: true
+            });
+
+            hSelect = $('.hierarchy-select').hierarchySelect({
+                width: 170
             });
 
             $(".pagination a").click(function () {
@@ -37,6 +61,10 @@
                 }, function () {
                     product.removeAttr("disabled");
                 });
+            });
+
+            $("#select-all").click(function() {
+                $(".product-select").click();
             });
         });
 
@@ -70,6 +98,22 @@
 
 @section styles{
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
+    <link href="~/Content/css/pygments.css" rel="stylesheet" />
+    <link href="~/Content/css/hierarchy-select.min.css" rel="stylesheet" />
+    <style>
+        #select-all {
+            cursor: pointer;
+            border-bottom: 1px dotted #4D4D4D;
+            font-weight: normal;
+            font-style: normal;
+            color: #4D4D4D;
+            text-decoration: none;
+        }
+
+        .chosen-drop {
+            width: 400px !important;
+        }
+    </style>
 }
 
 @using (Html.BeginForm("Index", "Products", FormMethod.Get))
@@ -109,6 +153,18 @@
             </div>
 
             @Html.Partial("_ProductsSearch", Model.Products)
+            <div class="row">
+                <div class="col-md-2">
+                    <label id="select-all">Вибрати всі</label>
+                </div>
+                <div class="col-md-2">
+                    @Html.DropDownList("products-bulk-action", EnumHelper.GetSelectList(typeof(ProductsBulkAction)))
+                </div>
+                <div class="col-md-2">
+                    @Html.Partial("_HierarchySelect", new KeyValuePair<string, IEnumerable<Benefit.Web.Models.HierarchySelectItem>>("move-to-categoryId", Model.ProductFilters.Categories))
+                </div>
+                <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
+            </div>
 
             @if (Model.Products.Any())
             {

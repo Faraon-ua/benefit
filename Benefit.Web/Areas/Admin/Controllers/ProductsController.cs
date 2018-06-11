@@ -12,7 +12,9 @@ using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
+using Benefit.Web.Models;
 using Benefit.Web.Models.Admin;
+using Benefit.Web.Models.Enumerations;
 using Microsoft.AspNet.Identity;
 using WebGrease.Css.Extensions;
 
@@ -167,23 +169,20 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         entry.SellerCategories.Where(sc => !sc.IsDefault)
                             .Select(sc => sc.SellerId)
                             .Contains(Seller.CurrentAuthorizedSellerId))
-                    .OrderBy(entry => entry.ParentCategoryId)
-                    .ThenBy(entry => entry.Name)
                     .ToList();
                 categories =
                     categories.Union(
-                        db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == Seller.CurrentAuthorizedSellerId)).ToList();
+                        db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == Seller.CurrentAuthorizedSellerId)).ToList().SortByHierarchy().ToList();
                 productsViewModel.ProductFilters.Categories =
-                    categories.Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
+                    categories.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel });
             }
             else
             {
                 productsViewModel.ProductFilters.Sellers =
                    db.Sellers.OrderBy(entry => entry.Name)
                        .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
-                productsViewModel.ProductFilters.Categories =
-                    db.Categories.Where(entry => !entry.IsSellerCategory).OrderBy(entry => entry.ParentCategoryId).ThenBy(entry => entry.Name).ToList()
-                        .Select(entry => new SelectListItem { Text = entry.ExpandedName, Value = entry.Id });
+                var cats = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList();
+                productsViewModel.ProductFilters.Categories = cats.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel });
             }
             productsViewModel.ProductFilters.HasParameters = new List<SelectListItem>()
             {
@@ -345,6 +344,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.Entry(product).State = EntityState.Modified;
             db.SaveChanges();
             return Json("success");
+        }
+
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string categoryId)
+        {
+            if (action == ProductsBulkAction.SetCategory)
+            {
+                db.Products.Where(entry => productIds.Contains(entry.Id))
+                    .ForEach(entry =>
+                    {
+                        entry.CategoryId = categoryId;
+                        db.Entry(entry).State = EntityState.Modified;
+                    });
+            }
+            db.SaveChanges();
+            TempData["SuccessMessage"] = "Товари успішно оброблено";
+            return new HttpStatusCodeResult(200);
         }
     }
 }
