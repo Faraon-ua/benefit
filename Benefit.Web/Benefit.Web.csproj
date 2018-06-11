@@ -653,8 +653,11 @@
     <Content Include="Content\css\category-selector.css" />
     <Content Include="Content\css\chat.css" />
     <Content Include="Content\css\common.css" />
+    <Content Include="Content\css\fancybox_sprite.png" />
     <Content Include="Content\css\font-awesome.min.css" />
+    <Content Include="Content\css\fontawesome.min.css" />
     <Content Include="Content\css\fonts\fontawesome-webfont.svg" />
+    <Content Include="Content\css\hierarchy-select.min.css" />
     <Content Include="Content\css\input-icon-left.css" />
     <Content Include="Content\css\jquery-ui.css" />
     <Content Include="Content\css\jquery.fancybox.css" />
@@ -664,6 +667,7 @@
     <Content Include="Content\css\order-details.css" />
     <Content Include="Content\css\order-print.css" />
     <Content Include="Content\css\owl.carousel.css" />
+    <Content Include="Content\css\pygments.css" />
     <Content Include="Content\css\validation-errors.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
@@ -800,6 +804,7 @@
     <Content Include="Areas\Admin\Views\InfoPages\Delete.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\Index.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\_PageLocalizedInfo.cshtml" />
+    <Content Include="Scripts\bootstrap3.3.7.min.js" />
     <Content Include="Scripts\ckeditor\adapters\jquery.js" />
     <Content Include="Scripts\ckeditor\CHANGES.html" />
     <Content Include="Scripts\ckeditor\ckeditor.asp" />
@@ -1308,6 +1313,7 @@
     <Content Include="Scripts\ckeditor\themes\default\theme.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\console.js" />
+    <Content Include="Scripts\hierarchy-select.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />

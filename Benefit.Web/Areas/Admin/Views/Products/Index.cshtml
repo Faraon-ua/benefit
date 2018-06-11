@@ -153,19 +153,21 @@
             </div>
 
             @Html.Partial("_ProductsSearch", Model.Products)
-            <div class="row">
-                <div class="col-md-2">
-                    <label id="select-all">Вибрати всі</label>
+            @if (Model.Products.Any())
+            {
+                <div class="row">
+                    <div class="col-md-2">
+                        <label id="select-all">Вибрати всі</label>
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DropDownList("products-bulk-action", EnumHelper.GetSelectList(typeof(ProductsBulkAction)))
+                    </div>
+                    <div class="col-md-2">
+                        @Html.Partial("_HierarchySelect", new KeyValuePair<string, IEnumerable<Benefit.Web.Models.HierarchySelectItem>>("move-to-categoryId", Model.ProductFilters.Categories))
+                    </div>
+                    <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
                 </div>
-                <div class="col-md-2">
-                    @Html.DropDownList("products-bulk-action", EnumHelper.GetSelectList(typeof(ProductsBulkAction)))
-                </div>
-                <div class="col-md-2">
-                    @Html.Partial("_HierarchySelect", new KeyValuePair<string, IEnumerable<Benefit.Web.Models.HierarchySelectItem>>("move-to-categoryId", Model.ProductFilters.Categories))
-                </div>
-                <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
-            </div>
-
+            }
             @if (Model.Products.Any())
             {
                 <div class="page-header">
