@@ -8,20 +8,23 @@
     <script>
         $(function() {
             $("#1CCommerceML").click(function() {
+                $(this).attr("disabled", "disabled");
                 $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
                 $.ajax({
                     type: "POST",
                     url: routePrefix + '/Admin/ImportExport/OneCCommerceMLImport?id=@Model.Id',
-                    success: function(result) {
-                        flashMessage(result.message, false, true);
-                    },
-                    error: function(xhr) {
-                        flashMessage(xhr.responseJSON, true, true);
+                    success: function (result) {
+                        if (result.error) {
+                            flashMessage(result.error, true, true);
+                        } else {
+                            flashMessage(result.message, false, true);
+                        }
+                        $(this).removeAttr("disabled");
                     }
                 });
             });
 
-            $("#ExcelImport").click(function () {
+            $("#ExcelImport").click(function() {
                 $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
                 $.ajax({
                     type: "POST",

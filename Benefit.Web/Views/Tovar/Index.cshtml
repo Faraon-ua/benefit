@@ -162,7 +162,14 @@
                                             {
                                                 <li class="no-before-content">
                                                     <a>
-                                                        <img class="product-v-img" src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl">
+                                                        @if (img.IsAbsoluteUrl)
+                                                        {
+                                                            <img class="product-v-img" src="@img.ImageUrl">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img class="product-v-img" src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl">
+                                                        }
                                                     </a>
                                                 </li>
                                             }

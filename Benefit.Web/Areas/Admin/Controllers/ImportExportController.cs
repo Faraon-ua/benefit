@@ -201,14 +201,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             catch (XmlException)
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { errror = "Завантажений файл має невірну структуру" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 _logger.Error(ex);
-                return Json(new { error = "Помилка імпорту файлу: " + ex.InnerException.Message }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = "Помилка імпорту файлу: " + ex }, JsonRequestBehavior.AllowGet);
             }
         }
 
