@@ -34,16 +34,17 @@ namespace Benefit.Services.Domain
             {
                 var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
                 var resultXmlCategories = GetAllFiniteCategories(rawXmlCategories);
+                var resultXmlCategoryIds = resultXmlCategories.Select(entry => entry.Element("Ид").Value);
 
                 CreateAndUpdate1CCategories(resultXmlCategories, seller.Id);
                 db.SaveChanges();
-                DeleteImportCategories(seller, resultXmlCategories);
+                DeleteImportCategories(seller, resultXmlCategories, SyncType.OneCCommerceMl);
                 db.SaveChanges();
 
-                var xmlProducts = xml.Descendants("Товары").First().Elements().ToList();
-                AddAndUpdatePromUaProducts(xmlProducts, seller.Id);
+                var xmlProducts = xml.Descendants("Товары").First().Elements().Where(entry=>resultXmlCategoryIds.Contains(entry.Element("Группы").Element("Ид").Value)).ToList();
+                AddAndUpdate1СProducts(xmlProducts, seller.Id, seller.UrlName);
                 db.SaveChanges();
-                DeletePromUaProducts(xmlProducts, seller.Id);
+                DeletePromUaProducts(xmlProducts, seller.Id, SyncType.OneCCommerceMl);
                 db.SaveChanges();
             }
             catch (Exception ex)
@@ -67,8 +68,6 @@ namespace Benefit.Services.Domain
             var imagesToAddList = new List<Image>();
 
             var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
-            var currencies = db.Currencies.Where(entry => entry.SellerId == null || entry.SellerId == sellerId)
-                .ToList();
             db.DeleteWhereColumnIn(existingImages);
 
 
@@ -98,7 +97,7 @@ namespace Benefit.Services.Domain
                     AltText = name.Truncate(100),
                     ShortDescription = name
                 };
-                
+
                 lock (lockObj)
                 {
                     productsToAddList.Add(product);
@@ -132,7 +131,6 @@ namespace Benefit.Services.Domain
                 product.UrlName = name.Translit().Truncate(128);
                 product.CategoryId = xmlProduct.Element("Группы").Element("Ид").Value;
                 product.Description = string.IsNullOrEmpty(descr) ? name : descr;
-                product.Price = double.Parse(xmlProduct.Element("price").Value);
                 product.AvailabilityState = ProductAvailabilityState.AlwaysAvailable;
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = "1CUaImport";
@@ -153,7 +151,6 @@ namespace Benefit.Services.Domain
                     }));
                 }
             });
-
             foreach (var product in productsToAddList)
             {
                 product.SKU = maxSku;
@@ -280,10 +277,18 @@ namespace Benefit.Services.Domain
             }
         }
 
-        private void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories)
+        private void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories, SyncType importType)
         {
             var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.Id).ToList();
-            var xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
+            List<string> xmlCategoryIds = null;
+            if (importType == SyncType.OneCCommerceMl)
+            {
+                xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Ид").Value).ToList();
+            }
+            if (importType == SyncType.Promua)
+            {
+                xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
+            }
             var catIdsToRemove = currentSellercategoyIds.Except(xmlCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {
@@ -537,18 +542,25 @@ namespace Benefit.Services.Domain
             db.InsertIntoMembers(productParameterProductsToAdd);
         }
 
-        private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId)
+        private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId, SyncType importType)
         {
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
                 .Select(entry => entry.Id).ToList();
-            var xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
-            var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).ToList();
-            foreach (var prodId in productIdsToRemove)
+            List<string> xmlProductIds = null;
+            if (importType == SyncType.OneCCommerceMl)
             {
-                var dbProduct = db.Products.Find(prodId);
-                dbProduct.AvailabilityState = ProductAvailabilityState.NotInStock;
-                db.Entry(dbProduct).State = EntityState.Modified;
+                xmlProductIds = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
             }
+            if (importType == SyncType.Promua)
+            {
+                xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
+            }
+            var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).ToList();
+            var productsToRemove = db.Products.Where(entry => productIdsToRemove.Contains(entry.Id)).ToList();
+            Parallel.ForEach(productsToRemove, (dbProduct) =>
+            {
+                dbProduct.AvailabilityState = ProductAvailabilityState.NotInStock;
+            });
         }
 
         public void ImportFromPromua()
@@ -582,13 +594,13 @@ namespace Benefit.Services.Domain
                     var xmlCategories = root.Descendants("categories").First().Elements().ToList();
                     CreateAndUpdatePromUaCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
                     db.SaveChanges();
-                    DeleteImportCategories(importTask.Seller, xmlCategories);
+                    DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Promua);
                     db.SaveChanges();
 
                     var xmlProducts = root.Descendants("offers").First().Elements().ToList();
                     AddAndUpdatePromUaProducts(xmlProducts, importTask.SellerId);
                     db.SaveChanges();
-                    DeletePromUaProducts(xmlProducts, importTask.SellerId);
+                    DeletePromUaProducts(xmlProducts, importTask.SellerId, SyncType.Promua);
                     db.SaveChanges();
 
                     //todo:handle exceptions
