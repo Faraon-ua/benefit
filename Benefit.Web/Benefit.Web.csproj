@@ -306,7 +306,7 @@
     <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Helpers\UrlHelperExtension.cs" />
     <Compile Include="Helpers\VersionedFileHtmlHelper.cs" />
-    <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\ViewModels\AccountViewModels.cs" />
     <Compile Include="Models\Admin\OrdersFilters.cs" />
     <Compile Include="Models\Admin\ProductFilters.cs" />
     <Compile Include="Models\Admin\ProductsViewModel.cs" />
@@ -318,7 +318,8 @@
     <Compile Include="Models\HierarchySelectItem.cs" />
     <Compile Include="Models\ImagesViewModel.cs" />
     <Compile Include="Models\Admin\SellerViewModel.cs" />
-    <Compile Include="Models\ProductOptionsViewModel.cs" />
+    <Compile Include="Models\ViewModels\HierarchySelectViewModel.cs" />
+    <Compile Include="Models\ViewModels\ProductOptionsViewModel.cs" />
     <Compile Include="Models\Templates.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -730,6 +731,7 @@
     <Content Include="Global.asax" />
     <Content Include="Content\img\fav.jpg" />
     <Content Include="Scripts\address.js" />
+    <Content Include="Scripts\admin.js" />
     <Content Include="Scripts\bootstrap-select.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

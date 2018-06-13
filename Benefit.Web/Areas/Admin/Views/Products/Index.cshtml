@@ -1,4 +1,5 @@
 ﻿@using Benefit.Web.Models.Enumerations
+@using Benefit.Web.Models.ViewModels
 @model Benefit.Web.Models.Admin.ProductsViewModel
 @{
     ViewBag.Title = "Товари";
@@ -36,8 +37,9 @@
                 search_contains: true
             });
 
-            hSelect = $('.hierarchy-select').hierarchySelect({
-                width: 170
+            $('.hierarchy-select').hierarchySelect({
+                width: 170,
+                setValue: '@Request.QueryString["CategoryId"]'
             });
 
             $(".pagination a").click(function () {
@@ -163,7 +165,12 @@
                         @Html.DropDownList("products-bulk-action", EnumHelper.GetSelectList(typeof(ProductsBulkAction)))
                     </div>
                     <div class="col-md-2">
-                        @Html.Partial("_HierarchySelect", new KeyValuePair<string, IEnumerable<Benefit.Web.Models.HierarchySelectItem>>("move-to-categoryId", Model.ProductFilters.Categories))
+                        @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
+                        {
+                            Name = "move-to-categoryId",
+                            Value = null,
+                            Items = Model.ProductFilters.Categories
+                        })
                     </div>
                     <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
                 </div>

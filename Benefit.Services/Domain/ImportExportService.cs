@@ -26,6 +26,205 @@ namespace Benefit.Services.Domain
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         Object lockObj = new Object();
 
+        #region 1C
+
+        public bool ImportFrom1C(XDocument xml, Seller seller)
+        {
+            try
+            {
+                var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
+                var resultXmlCategories = GetAllFiniteCategories(rawXmlCategories);
+
+                CreateAndUpdate1CCategories(resultXmlCategories, seller.Id);
+                db.SaveChanges();
+                DeleteImportCategories(seller, resultXmlCategories);
+                db.SaveChanges();
+
+                var xmlProducts = xml.Descendants("Товары").First().Elements().ToList();
+                AddAndUpdatePromUaProducts(xmlProducts, seller.Id);
+                db.SaveChanges();
+                DeletePromUaProducts(xmlProducts, seller.Id);
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                return false;
+            }
+            return true;
+        }
+
+        private void AddAndUpdate1СProducts(List<XElement> xmlProducts, string sellerId, string sellerUrl)
+        {
+            var maxSku = db.Products.Max(entry => entry.SKU) + 1;
+            var xmlProductIds = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
+            var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
+            var dbProductIds = dbProducts.Select(entry => entry.Id).ToList();
+            var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
+            var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
+
+            var productsToAddList = new List<Product>();
+            var imagesToAddList = new List<Image>();
+
+            var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
+            var currencies = db.Currencies.Where(entry => entry.SellerId == null || entry.SellerId == sellerId)
+                .ToList();
+            db.DeleteWhereColumnIn(existingImages);
+
+
+            Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
+            {
+                var xmlProduct = xmlProducts.First(entry => entry.Element("Ид").Value == productIdToAdd);
+                var name = HttpUtility
+                    .HtmlDecode(xmlProduct.Element("Наименование").Value.Replace("\n", "").Replace("\r", "").Trim())
+                    .Truncate(256);
+                var descr = xmlProduct.Element("Описание").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
+                var urlName = name.Translit().Truncate(128);
+                var product = new Product()
+                {
+                    Id = xmlProduct.Element("Ид").Value,
+                    ExternalId = xmlProduct.Element("ШтрихКод").GetValueOrDefault(null),
+                    Name = name,
+                    UrlName = urlName,
+                    CategoryId = xmlProduct.Element("Группы").Element("Ид").Value,
+                    SellerId = sellerId,
+                    Description = string.IsNullOrEmpty(descr) ? name : descr,
+                    AvailabilityState = ProductAvailabilityState.AlwaysAvailable,
+                    IsActive = true,
+                    IsImported = true,
+                    DoesCountForShipping = true,
+                    LastModified = DateTime.UtcNow,
+                    LastModifiedBy = "1CImport",
+                    AltText = name.Truncate(100),
+                    ShortDescription = name
+                };
+                
+                lock (lockObj)
+                {
+                    productsToAddList.Add(product);
+                }
+
+                var order = 0;
+                lock (lockObj)
+                {
+                    imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Select(xmlImage => new Image()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ImageType = ImageType.ProductGallery,
+                        ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", sellerUrl, xmlImage.Value),
+                        IsAbsoluteUrl = false,
+                        Order = order++,
+                        ProductId = product.Id
+                    }));
+                }
+            });
+
+            Parallel.ForEach(productIdsToUpdate, (productIdToUpdate) =>
+            {
+                var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToUpdate);
+                var xmlProduct = xmlProducts.First(entry => entry.Element("Ид").Value == productIdToUpdate);
+
+                var name = HttpUtility.HtmlDecode(xmlProduct.Element("Наименование").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
+                var descr = xmlProduct.Element("Описание").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
+
+                product.Name = name;
+                product.ExternalId = xmlProduct.Element("ШтрихКод").GetValueOrDefault(null);
+                product.UrlName = name.Translit().Truncate(128);
+                product.CategoryId = xmlProduct.Element("Группы").Element("Ид").Value;
+                product.Description = string.IsNullOrEmpty(descr) ? name : descr;
+                product.Price = double.Parse(xmlProduct.Element("price").Value);
+                product.AvailabilityState = ProductAvailabilityState.AlwaysAvailable;
+                product.LastModified = DateTime.UtcNow;
+                product.LastModifiedBy = "1CUaImport";
+                product.AltText = name.Truncate(100);
+                product.ShortDescription = name;
+
+                var order = 0;
+                lock (lockObj)
+                {
+                    imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Select(xmlImage => new Image()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ImageType = ImageType.ProductGallery,
+                        ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", sellerUrl, xmlImage.Value),
+                        IsAbsoluteUrl = true,
+                        Order = order++,
+                        ProductId = product.Id
+                    }));
+                }
+            });
+
+            foreach (var product in productsToAddList)
+            {
+                product.SKU = maxSku;
+                product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
+            }
+
+            db.InsertIntoMembers(productsToAddList);
+            db.SaveChanges();
+            db.InsertIntoMembers(imagesToAddList);
+        }
+
+        private List<XElement> GetAllFiniteCategories(IEnumerable<XElement> xmlCategories)
+        {
+            var resultXmlCategories = new List<XElement>();
+            var hadChildren = false;
+            foreach (var rawXmlCategory in xmlCategories)
+            {
+                if (rawXmlCategory.Element("Группы") != null)
+                {
+                    resultXmlCategories.AddRange(rawXmlCategory.Element("Группы").Elements());
+                    hadChildren = true;
+                }
+                else
+                {
+                    resultXmlCategories.Add(rawXmlCategory);
+                }
+            }
+            if (hadChildren)
+            {
+                resultXmlCategories = GetAllFiniteCategories(resultXmlCategories);
+            }
+            return resultXmlCategories;
+        }
+
+
+        private void CreateAndUpdate1CCategories(List<XElement> xmlCategories, string sellerId)
+        {
+            foreach (var xmlCategory in xmlCategories)
+            {
+                var catId = xmlCategory.Element("Ид").Value;
+                var catName = xmlCategory.Element("Наименование").Value.Replace("\n", "").Replace("\r", "").Trim();
+                var dbCategory = db.Categories.FirstOrDefault(entry => entry.Id == catId);
+                if (dbCategory == null)
+                {
+                    dbCategory = new Category()
+                    {
+                        Id = catId,
+                        IsSellerCategory = true,
+                        SellerId = sellerId,
+                        Name = catName.Truncate(64),
+                        UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128),
+                        NavigationType = CategoryNavigationType.SellersAndProducts.ToString(),
+                        IsActive = true,
+                        LastModified = DateTime.UtcNow,
+                        LastModifiedBy = "ImportFrom1C"
+                    };
+                    db.Categories.Add(dbCategory);
+                }
+                else
+                {
+                    dbCategory.Name = catName.Truncate(64);
+                    dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
+                    db.Entry(dbCategory).State = EntityState.Modified;
+                }
+            }
+        }
+
+        #endregion
+
+        #region PromUa
+
         private void CreateAndUpdatePromUaCategories(List<XElement> xmlCategories, string sellerUrlName,
             string sellerId, Category parent = null)
         {
@@ -81,7 +280,7 @@ namespace Benefit.Services.Domain
             }
         }
 
-        private void DeletePromUaCategories(Seller seller, IEnumerable<XElement> xmlCategories)
+        private void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories)
         {
             var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.Id).ToList();
             var xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
@@ -383,7 +582,7 @@ namespace Benefit.Services.Domain
                     var xmlCategories = root.Descendants("categories").First().Elements().ToList();
                     CreateAndUpdatePromUaCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
                     db.SaveChanges();
-                    DeletePromUaCategories(importTask.Seller, xmlCategories);
+                    DeleteImportCategories(importTask.Seller, xmlCategories);
                     db.SaveChanges();
 
                     var xmlProducts = root.Descendants("offers").First().Elements().ToList();
@@ -413,6 +612,10 @@ namespace Benefit.Services.Domain
                 }
             }
         }
+
+        #endregion
+
+        #region Excel
 
         public async Task<ProductImportResults> ImportFromExcel(string sellerId, string xlsPath)
         {
@@ -613,8 +816,9 @@ namespace Benefit.Services.Domain
                     }
                 }
             }
-
             return result;
         }
+
+        #endregion
     }
 }

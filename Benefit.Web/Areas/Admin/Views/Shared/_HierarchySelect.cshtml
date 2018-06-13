@@ -1,4 +1,4 @@
-﻿@model  KeyValuePair<string, IEnumerable<Benefit.Web.Models.HierarchySelectItem>>
+﻿@model  Benefit.Web.Models.ViewModels.HierarchySelectViewModel
 <div class="btn-group hierarchy-select" data-resize="auto">
     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
         <span class="selected-label pull-left">&nbsp;</span>
@@ -10,13 +10,13 @@
             <input type="text" class="form-control" autocomplete="off">
         </div>
         <ul class="dropdown-menu inner" role="menu">
-            @foreach (var option in Model.Value)
+            @foreach (var option in Model.Items)
             {
-                <li data-value="@option.Value" data-level="@option.Level">
+                <li data-value="@option.Value" data-level="@option.Level" @(option.Value == Model.Value ? "data-default-selected":"")>
                     <a href="#">@option.Text</a>
                 </li>
             }
         </ul>
     </div>
-    <input class="hidden hidden-field" name="@Model.Key" readonly="readonly" aria-hidden="true" type="text" />
+    <input class="hidden hidden-field" name="@Model.Name" readonly="readonly" aria-hidden="true" type="text" />
 </div>

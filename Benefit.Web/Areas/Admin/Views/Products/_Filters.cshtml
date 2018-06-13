@@ -1,10 +1,16 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Web.Models.ViewModels
 @model Benefit.Web.Models.Admin.ProductFilters
 
 <label>Категорія</label>
 <div class="row">
     <div class="col-xs-8 col-sm-11">
-        @Html.Partial("_HierarchySelect", new KeyValuePair<string, IEnumerable<Benefit.Web.Models.HierarchySelectItem>>("CategoryId", Model.Categories))
+        @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
+        {
+            Name = "CategoryId",
+            Value = Request.QueryString["CategoryId"],
+            Items = Model.Categories
+        })
     </div>
 </div>
 @if (User.IsInRole(DomainConstants.AdminRoleName))
