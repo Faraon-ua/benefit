@@ -109,7 +109,7 @@ namespace Benefit.Services.Domain
                     {
                         Id = Guid.NewGuid().ToString(),
                         ImageType = ImageType.ProductGallery,
-                        ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", sellerUrl, xmlImage.Value),
+                        ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", "LocalUser", sellerUrl, xmlImage.Value),
                         IsAbsoluteUrl = true,
                         Order = order++,
                         ProductId = product.Id
@@ -144,7 +144,7 @@ namespace Benefit.Services.Domain
                     {
                         Id = Guid.NewGuid().ToString(),
                         ImageType = ImageType.ProductGallery,
-                        ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", sellerUrl, xmlImage.Value),
+                        ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", "LocalUser", sellerUrl, xmlImage.Value),
                         IsAbsoluteUrl = true,
                         Order = order++,
                         ProductId = product.Id

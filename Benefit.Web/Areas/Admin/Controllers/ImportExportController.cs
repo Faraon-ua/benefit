@@ -94,29 +94,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        private List<XElement> GetAllFiniteCategories(IEnumerable<XElement> xmlCategories)
-        {
-            var resultXmlCategories = new List<XElement>();
-            var hadChildren = false;
-            foreach (var rawXmlCategory in xmlCategories)
-            {
-                if (rawXmlCategory.Element("Группы") != null)
-                {
-                    resultXmlCategories.AddRange(rawXmlCategory.Element("Группы").Elements());
-                    hadChildren = true;
-                }
-                else
-                {
-                    resultXmlCategories.Add(rawXmlCategory);
-                }
-            }
-            if (hadChildren)
-            {
-                resultXmlCategories = GetAllFiniteCategories(resultXmlCategories);
-            }
-            return resultXmlCategories;
-        }
-
         [HttpPost]
         public async Task<JsonResult> ExceleImport(string id)
         {
