@@ -70,7 +70,6 @@ namespace Benefit.Services.Domain
             var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
             db.DeleteWhereColumnIn(existingImages);
 
-
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
             {
                 var xmlProduct = xmlProducts.First(entry => entry.Element("Ид").Value == productIdToAdd);
@@ -111,7 +110,7 @@ namespace Benefit.Services.Domain
                         Id = Guid.NewGuid().ToString(),
                         ImageType = ImageType.ProductGallery,
                         ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", sellerUrl, xmlImage.Value),
-                        IsAbsoluteUrl = false,
+                        IsAbsoluteUrl = true,
                         Order = order++,
                         ProductId = product.Id
                     }));
@@ -129,6 +128,7 @@ namespace Benefit.Services.Domain
                 product.Name = name;
                 product.ExternalId = xmlProduct.Element("ШтрихКод").GetValueOrDefault(null);
                 product.UrlName = name.Translit().Truncate(128);
+                product.IsImported = true;
                 product.CategoryId = xmlProduct.Element("Группы").Element("Ид").Value;
                 product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                 product.AvailabilityState = ProductAvailabilityState.AlwaysAvailable;

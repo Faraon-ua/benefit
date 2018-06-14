@@ -17,7 +17,7 @@ namespace Benefit.Domain.Models
     {
         public static Category FindByUrlIdRecursively(this IEnumerable<Category> list, string url, string id)
         {
-            var category = list.FirstOrDefault(entry => entry.UrlName == url || entry.Id == id);
+            var category = list.FirstOrDefault(entry => entry.UrlName == url || entry.Id == id || (entry.MappedCategories != null && entry.MappedCategories.Select(mc=>mc.UrlName).Contains(url)));
             if (category == null && !list.Any())
                 return null;
             return category ?? FindByUrlIdRecursively(list.SelectMany(entry => entry.ChildCategories), url, id);

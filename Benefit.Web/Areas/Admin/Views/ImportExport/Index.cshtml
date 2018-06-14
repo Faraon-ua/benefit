@@ -8,7 +8,8 @@
     <script>
         $(function() {
             $("#1CCommerceML").click(function() {
-                $(this).attr("disabled", "disabled");
+                var btn = $(this);
+                btn.attr("disabled", "disabled");
                 $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
                 $.ajax({
                     type: "POST",
@@ -19,7 +20,7 @@
                         } else {
                             flashMessage(result.message, false, true);
                         }
-                        $(this).removeAttr("disabled");
+                        btn.removeAttr("disabled");
                     }
                 });
             });

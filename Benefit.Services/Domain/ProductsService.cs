@@ -3,14 +3,10 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
-using Benefit.Common.Constants;
-using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.XmlModels;
-using Benefit.Web.Models.Admin;
 
 namespace Benefit.Services.Domain
 {
@@ -70,6 +66,7 @@ namespace Benefit.Services.Domain
             {
                 var xmlProductPrice = xmlProductPrices.First(entry => entry.Id == product.Id);
                 product.Price = xmlProductPrice.Price;
+                product.AvailableAmount = (int)xmlProductPrice.Amount;
                 productPricesUpdated++;
             });
 

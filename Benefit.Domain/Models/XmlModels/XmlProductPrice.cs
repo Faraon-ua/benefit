@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Xml.Linq;
+﻿using System.Xml.Linq;
 
 namespace Benefit.Domain.Models.XmlModels
 {
@@ -13,11 +12,15 @@ namespace Benefit.Domain.Models.XmlModels
                     .Element("Цена")
                     .Element("ЦенаЗаЕдиницу");
 
+            double amountValue = 0;
             Id = xmlProduct.Element("Ид").Value;
             Price = double.Parse(priceValue.Value);
+            double.TryParse(xmlProduct.Element("Ид").Value, out amountValue);
+            Amount = amountValue;
         }
 
         public string Id { get; set; }
         public double Price { get; set; }
+        public double Amount { get; set; }
     }
 }

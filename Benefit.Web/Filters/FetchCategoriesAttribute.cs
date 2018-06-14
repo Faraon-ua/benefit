@@ -54,7 +54,7 @@ namespace Benefit.Web.Filters
                     using (var db = new ApplicationDbContext())
                     {
                         categories = db.Categories
-                            .Include(entry => entry.ChildCategories.Select(cat =>cat.ChildCategories))
+                            .Include(entry => entry.ChildCategories.Select(cat =>cat.ChildCategories.Select(ch=>ch.MappedCategories)))
                             .Where(
                                 entry =>
                                     entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory)
