@@ -381,22 +381,22 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case ProductSortOption.Rating:
-                    items = items.OrderByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any());
+                    items = items.OrderByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenBy(entry=>entry.SKU);
                     break;
                 case ProductSortOption.Order:
-                    items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.Name);
+                    items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.NameAsc:
-                    items = items.OrderBy(entry => entry.Name);
+                    items = items.OrderBy(entry => entry.Name).ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.NameDesc:
-                    items = items.OrderByDescending(entry => entry.Name);
+                    items = items.OrderByDescending(entry => entry.Name).ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.PriceAsc:
-                    items = items.OrderBy(entry => entry.Price);
+                    items = items.OrderBy(entry => entry.Price).ThenBy(entry=>entry.SKU);
                     break;
                 case ProductSortOption.PriceDesc:
-                    items = items.OrderByDescending(entry => entry.Price);
+                    items = items.OrderByDescending(entry => entry.Price).ThenBy(entry=>entry.SKU);
                     break;
             }
 
@@ -450,7 +450,13 @@ namespace Benefit.Services.Domain
             }
 
             result.Products = items.Skip(skip).Take(take + 1).ToList();
-            result.Products.ForEach(entry => entry.Price = (double)(entry.Price * entry.Currency.Rate));
+            result.Products.ForEach(entry =>
+            {
+                if (entry.Currency != null)
+                {
+                    entry.Price = (double) (entry.Price * entry.Currency.Rate);
+                }
+            });
 
             return result;
         }

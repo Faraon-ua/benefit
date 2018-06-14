@@ -102,7 +102,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var seller = db.Sellers.Find(id);
                 var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                 var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
-                var sellerPath = Path.Combine(ftpDirectory, "FTP", seller.UrlName);
+                var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", seller.UrlName);
                 var importFile = new DirectoryInfo(sellerPath).GetFiles("import.xls", SearchOption.AllDirectories).FirstOrDefault();
 
                 if (importFile == null || importFile.Length == 0)
@@ -139,7 +139,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                 var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
-                var sellerPath = Path.Combine(ftpDirectory, "FTP", seller.UrlName);
+                var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", seller.UrlName);
                 var importFile = new DirectoryInfo(sellerPath).GetFiles("import.xml", SearchOption.AllDirectories).FirstOrDefault();
                 var offersFile = new DirectoryInfo(sellerPath).GetFiles("offers.xml", SearchOption.AllDirectories).FirstOrDefault();
 
@@ -197,7 +197,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                 var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
-                var sellerPath = Path.Combine(ftpDirectory, "FTP", sellerUrlName);
+                var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", sellerUrlName);
                 if (!Directory.Exists(sellerPath))
                 {
                     Directory.CreateDirectory(sellerPath);
