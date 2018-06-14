@@ -105,7 +105,7 @@ namespace Benefit.Services.Domain
                 var order = 0;
                 lock (lockObj)
                 {
-                    imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Select(xmlImage => new Image()
+                    imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Where(entry=>!string.IsNullOrEmpty(entry.Value)).Select(xmlImage => new Image()
                     {
                         Id = Guid.NewGuid().ToString(),
                         ImageType = ImageType.ProductGallery,
@@ -140,7 +140,7 @@ namespace Benefit.Services.Domain
                 var order = 0;
                 lock (lockObj)
                 {
-                    imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Select(xmlImage => new Image()
+                    imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Where(entry => !string.IsNullOrEmpty(entry.Value)).Select(xmlImage => new Image()
                     {
                         Id = Guid.NewGuid().ToString(),
                         ImageType = ImageType.ProductGallery,

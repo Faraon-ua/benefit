@@ -222,21 +222,27 @@ namespace Benefit.Services.Domain
 
         public void Delete(string id)
         {
-            var category = db.Categories.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.Id == id);
+            var category = db.Categories
+                .Include(entry => entry.SellerCategories)
+                .Include(entry => entry.ProductParameters)
+                .Include(entry => entry.ProductOptions)
+                .FirstOrDefault(entry => entry.Id == id);
             if (category == null) return;
 
             db.SellerCategories.RemoveRange(category.SellerCategories);
 
-            var productParameters = category.ProductParameters;
-            var productParameterValues =
+            var productParameters = category.ProductParameters.ToList();
+            var productParameterIds = productParameters.Select(entry => entry.Id).ToList();
+            var productParameterValues = 
                 db.ProductParameterValues.Where(
-                    entry => productParameters.Select(pr => pr.Id).Contains(entry.ProductParameterId));
+                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
             var productParameterProducts = db.ProductParameterProducts.Where(
-                    entry => productParameters.Select(pr => pr.Id).Contains(entry.ProductParameterId));
+                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
 
             db.ProductParameterProducts.RemoveRange(productParameterProducts);
             db.ProductParameterValues.RemoveRange(productParameterValues);
             db.ProductParameters.RemoveRange(productParameters);
+            db.ProductOptions.RemoveRange(category.ProductOptions.ToList());
             db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
             if (category.ImageUrl != null)
             {
@@ -249,7 +255,6 @@ namespace Benefit.Services.Domain
             {
                 ProductsService.Delete(product.Id);
             }
-
             var childCats = db.Categories.AsNoTracking().Where(entry => entry.ParentCategoryId == id).ToList();
             foreach (var childCategory in childCats)
             {
