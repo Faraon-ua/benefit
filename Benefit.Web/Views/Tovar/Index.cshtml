@@ -158,18 +158,29 @@
                                         <a class="arrow prev"></a>
                                         <a class="arrow next"></a>
                                         <ul id="gal1" class="ubislider-inner">
-                                            @foreach (var img in Model.Product.Images)
+                                            @if (Model.Product.Images.Any())
+                                            {
+                                                foreach (var img in Model.Product.Images)
+                                                {
+                                                    <li class="no-before-content">
+                                                        <a>
+                                                            @if (img.IsAbsoluteUrl)
+                                                            {
+                                                                <img class="product-v-img" src="@img.ImageUrl">
+                                                            }
+                                                            else
+                                                            {
+                                                                <img class="product-v-img" src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl">
+                                                            }
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+                                            else
                                             {
                                                 <li class="no-before-content">
                                                     <a>
-                                                        @if (img.IsAbsoluteUrl)
-                                                        {
-                                                            <img class="product-v-img" src="@img.ImageUrl">
-                                                        }
-                                                        else
-                                                        {
-                                                            <img class="product-v-img" src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl">
-                                                        }
+                                                        <img class="product-v-img" src="~/Images/ProductGallery/default_product_picture.png">
                                                     </a>
                                                 </li>
                                             }
@@ -464,23 +475,34 @@
                                 </div>
                                 <div class="item_slider color-controls flex flexslider" data-plugin-options='{"animation": "slide", "directionNav": false, "controlNav": true, "animationLoop": false, "slideshow": false, "slideshowSpeed": 10000, "animationSpeed": 600}'>
                                     <ul class="slides">
-                                        @foreach (var img in Model.Product.Images)
+                                        @if (Model.Product.Images.Any())
+                                        {
+                                            foreach (var img in Model.Product.Images)
+                                            {
+                                                <li>
+                                                    @if (img.IsAbsoluteUrl)
+                                                    {
+                                                        <a href="@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
+                                                            <img src="@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title"/>
+                                                            <div class="zoom"></div>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
+                                                            <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title"/>
+                                                            <div class="zoom"></div>
+                                                        </a>
+                                                    }
+                                                </li>
+                                            }
+                                        }
+                                        else
                                         {
                                             <li>
-                                                @if (img.IsAbsoluteUrl)
-                                                {
-                                                    <a href="@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
-                                                        <img src="@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title"/>
-                                                        <div class="zoom"></div>
-                                                    </a>
-                                                }
-                                                else
-                                                {
-                                                    <a href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
-                                                        <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title"/>
-                                                        <div class="zoom"></div>
-                                                    </a>
-                                                }
+                                                <a>
+                                                    <img class="product-v-img" src="~/Images/ProductGallery/default_product_picture.png">
+                                                </a>
                                             </li>
                                         }
                                     </ul>
