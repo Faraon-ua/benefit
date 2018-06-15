@@ -94,8 +94,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                            new Category()
                            {
                                Id = Guid.NewGuid().ToString(),
-                               ParentCategoryId = parentCategoryId,
-                               NavigationType = CategoryNavigationType.SellersAndProducts.ToString()
+                               ParentCategoryId = parentCategoryId
                            };
             ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id && entry.SellerId == null), "Id",
                 "ExpandedName", category.ParentCategoryId);
@@ -168,9 +167,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult Mapping()
+        public ActionResult Mapping(string selectedSellerId = null)
         {
-            var sellerId = Seller.CurrentAuthorizedSellerId;
+            var sellerId = selectedSellerId ?? Seller.CurrentAuthorizedSellerId;
             var categoriesToMap = db.Categories.Include(entry => entry.ChildCategories.Select(ch => ch.ChildCategories)).Where(entry => entry.SellerId == sellerId && entry.IsSellerCategory && entry.ParentCategoryId == null).ToList();
             SetMappedCategories(categoriesToMap);
             ViewBag.RootCategories = db.Categories.Where(entry => entry.IsActive && !entry.IsSellerCategory && entry.ParentCategoryId == null && entry.Order > 0).OrderBy(entry => entry.Order).ToList();

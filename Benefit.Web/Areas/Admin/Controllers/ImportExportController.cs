@@ -36,16 +36,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(seller);
         }
 
-        public ActionResult GetPromImport()
+        public ActionResult GetImportForm(SyncType syncType)
         {
             var importTask =
                 db.ExportImports.FirstOrDefault(
-                    entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == SyncType.Promua) ?? new ExportImport()
+                    entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == syncType) ?? new ExportImport()
                     {
                         Id = Guid.NewGuid().ToString(),
                         IsActive = true,
                         IsImport = true,
-                        SyncType = SyncType.Promua,
+                        SyncType = syncType,
                         SellerId = Seller.CurrentAuthorizedSellerId
                     };
 
@@ -57,7 +57,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 new SelectListItem() { Text = "Раз в місяць", Value = 30.ToString()}
             };
             ViewBag.SyncPeriod = new SelectList(updateFrequency, "Value", "Text", importTask.SyncPeriod.ToString());
-            return PartialView("_Promua", importTask);
+            return PartialView("_ImportForm", importTask);
         }
 
         [HttpPost]

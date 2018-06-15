@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
+using System.Data.Entity;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
@@ -36,10 +37,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult GetNotifications()
         {
             var reviewsToModerate = db.Reviews.Count(entry => !entry.IsActive);
+            var sellerNewContent = db.ExportImports.Include(entry=>entry.Seller).Where(entry => entry.HasNewContent).Select(entry=>entry.Seller).ToList();
             var result = new NotificationsViewModel()
             {
                 Reviews = reviewsToModerate,
-                Total = reviewsToModerate
+                Total = reviewsToModerate + sellerNewContent.Count,
+                NewSellerContent = sellerNewContent
             };
             if (result.Total > 0)
             {

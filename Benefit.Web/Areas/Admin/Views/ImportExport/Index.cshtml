@@ -1,4 +1,5 @@
-﻿@model Benefit.Domain.Models.Seller
+﻿@using Benefit.Domain.Models
+@model Benefit.Domain.Models.Seller
 
 @{
     ViewBag.Title = "Імпорт/Експорт";
@@ -63,7 +64,7 @@
     </ul>
     <div class="tab-content">
         <div id="prom" class="tab-pane in active">
-            @Html.Action("GetPromImport")
+            @Html.Action("GetImportForm", new { syncType = SyncType.Promua})
         </div>
         <div id="excel" class="tab-pane">
             <div>
@@ -91,6 +92,8 @@
                 <h2 class="underlined">
                     1C Commerce ML
                 </h2>
+                @Html.Action("GetImportForm", new { syncType = SyncType.OneCCommerceMl})
+
                 <p>1) Завантажте файли експортовані з 1С на наш FTP</p>
                 <p>
                     2) Натисніть кнопку

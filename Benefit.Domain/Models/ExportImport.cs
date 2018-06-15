@@ -14,7 +14,6 @@ namespace Benefit.Domain.Models
         public string Id { get; set; }
         public bool IsImport { get; set; }
         public bool IsActive { get; set; }
-        public bool RemoveProducts { get; set; }
         public SyncType SyncType { get; set; }
         public string FileUrl { get; set; }
         //in hours
@@ -28,5 +27,6 @@ namespace Benefit.Domain.Models
         [Required]
         public string SellerId { get; set; }
         public Seller Seller { get; set; }
+        public bool HasNewContent { get; set; }
     }
 }

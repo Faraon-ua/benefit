@@ -129,6 +129,7 @@ namespace Benefit.Services.Domain
                 product.ExternalId = xmlProduct.Element("ШтрихКод").GetValueOrDefault(null);
                 product.UrlName = name.Translit().Truncate(128);
                 product.IsImported = true;
+                product.IsActive = true;
                 product.CategoryId = xmlProduct.Element("Группы").Element("Ид").Value;
                 product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                 product.AvailabilityState = ProductAvailabilityState.AlwaysAvailable;
@@ -185,9 +186,13 @@ namespace Benefit.Services.Domain
             return resultXmlCategories;
         }
 
-
         private void CreateAndUpdate1CCategories(List<XElement> xmlCategories, string sellerId)
         {
+            var hasNewContent = false;
+            var sellerCats = new List<SellerCategory>();
+            var seller = db.Sellers.Include(entry => entry.SellerCategories)
+                .FirstOrDefault(entry => entry.Id == sellerId);
+            db.SellerCategories.RemoveRange(seller.SellerCategories.Where(entry=>!entry.IsDefault));
             foreach (var xmlCategory in xmlCategories)
             {
                 var catId = xmlCategory.Element("Ид").Value;
@@ -195,6 +200,8 @@ namespace Benefit.Services.Domain
                 var dbCategory = db.Categories.FirstOrDefault(entry => entry.Id == catId);
                 if (dbCategory == null)
                 {
+                    if (!hasNewContent)
+                        hasNewContent = true;
                     dbCategory = new Category()
                     {
                         Id = catId,
@@ -202,7 +209,6 @@ namespace Benefit.Services.Domain
                         SellerId = sellerId,
                         Name = catName.Truncate(64),
                         UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128),
-                        NavigationType = CategoryNavigationType.SellersAndProducts.ToString(),
                         IsActive = true,
                         LastModified = DateTime.UtcNow,
                         LastModifiedBy = "ImportFrom1C"
@@ -211,10 +217,23 @@ namespace Benefit.Services.Domain
                 }
                 else
                 {
+                    sellerCats.Add(new SellerCategory()
+                    {
+                        CategoryId = dbCategory.MappedParentCategoryId,
+                        SellerId = sellerId
+                    });
                     dbCategory.Name = catName.Truncate(64);
                     dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
                     db.Entry(dbCategory).State = EntityState.Modified;
                 }
+            }
+            
+            sellerCats = sellerCats.Where(entry => entry.CategoryId != null).Distinct(new SellerCategoryComparer()).ToList();
+            db.SellerCategories.AddRange(sellerCats);
+            if (hasNewContent)
+            {
+                var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
+                importTask.HasNewContent = true;
             }
         }
 
@@ -255,7 +274,6 @@ namespace Benefit.Services.Domain
                         UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128),
                         Description = catName,
                         MetaDescription = catName,
-                        NavigationType = CategoryNavigationType.SellersAndProducts.ToString(),
                         IsActive = true,
                         LastModified = DateTime.UtcNow,
                         LastModifiedBy = "ImportFromPromua"

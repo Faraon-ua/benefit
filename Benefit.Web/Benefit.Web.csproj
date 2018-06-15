@@ -930,7 +930,7 @@
     <Content Include="Areas\Admin\Views\Cards\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_LocationPartial.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\ImportExport\_Promua.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExport\_ImportForm.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\Mapping.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\_MappingCategoriesList.cshtml" />
     <Content Include="Areas\Admin\Views\Categories\_MapCategoryPartial.cshtml" />

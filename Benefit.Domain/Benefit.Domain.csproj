@@ -478,6 +478,10 @@
     <Compile Include="Migrations\201804261329181_AddInfoPageSellerRelation.Designer.cs">
       <DependentUpon>201804261329181_AddInfoPageSellerRelation.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201806151404500_AddHasNewContentToImport.cs" />
+    <Compile Include="Migrations\201806151404500_AddHasNewContentToImport.Designer.cs">
+      <DependentUpon>201806151404500_AddHasNewContentToImport.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -831,6 +835,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201804261329181_AddInfoPageSellerRelation.resx">
       <DependentUpon>201804261329181_AddInfoPageSellerRelation.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201806151404500_AddHasNewContentToImport.resx">
+      <DependentUpon>201806151404500_AddHasNewContentToImport.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
