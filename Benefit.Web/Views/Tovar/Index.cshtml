@@ -467,10 +467,20 @@
                                         @foreach (var img in Model.Product.Images)
                                         {
                                             <li>
-                                                <a href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
-                                                    <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title" />
-                                                    <div class="zoom"></div>
-                                                </a>
+                                                @if (img.IsAbsoluteUrl)
+                                                {
+                                                    <a href="@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
+                                                        <img src="@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title"/>
+                                                        <div class="zoom"></div>
+                                                    </a>
+                                                }
+                                                else
+                                                {
+                                                    <a href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
+                                                        <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title"/>
+                                                        <div class="zoom"></div>
+                                                    </a>
+                                                }
                                             </li>
                                         }
                                     </ul>

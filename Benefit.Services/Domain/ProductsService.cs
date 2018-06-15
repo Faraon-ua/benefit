@@ -26,7 +26,10 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Reviews.Select(rev=>rev.ChildReviews))
                 .FirstOrDefault(entry => entry.SKU.ToString() == sku);
             if (product == null) return null;
-            product.Price = product.Price*product.Currency.Rate;
+            if (product.Currency != null)
+            {
+                product.Price = product.Price * product.Currency.Rate;
+            }
 
             var categoriesService = new CategoriesService();
             var result = new ProductDetailsViewModel()

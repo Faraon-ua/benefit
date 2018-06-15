@@ -73,10 +73,16 @@ namespace Benefit.Services.Cart
                     orderProduct.ProductSku = product.SKU;
                     var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
                     orderProduct.ProductImageUrl = image == null ? null : image.ImageUrl;
-                    orderProduct.ProductPrice = product.Price * product.Currency.Rate;
+                    if (product.Currency != null)
+                    {
+                        orderProduct.ProductPrice = product.Price * product.Currency.Rate;
+                    }
                     if (product.WholesalePrice.HasValue && product.WholesaleFrom.HasValue)
                     {
-                        orderProduct.WholesaleProductPrice = product.WholesalePrice.Value * product.Currency.Rate;
+                        if (product.Currency != null)
+                        {
+                            orderProduct.WholesaleProductPrice = product.WholesalePrice.Value * product.Currency.Rate;
+                        }
                         orderProduct.WholesaleFrom = product.WholesaleFrom.Value;
                     }
                     foreach (var orderProductOption in orderProduct.OrderProductOptions)
