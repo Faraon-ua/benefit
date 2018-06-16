@@ -3,8 +3,15 @@
 @foreach (var product in Model.Order.OrderProducts)
 {
     <div class="row" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
-        <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) })">
-            <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+        <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku)})">
+            @if (product.ProductImageUrl.Contains("http"))
+            {
+                <img src="@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+            }
+            else
+            {
+                <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+            }
             @product.ProductName
         </a>
         <p>@product.Amount x @product.ActualPrice.ToString("F") грн.</p>
@@ -12,45 +19,45 @@
 }
 
 @*<p class="delivery_basket_title">Товари в кошику</p>
-<table class="basket_modal_table">
-    <thead>
-        <tr class="basket_modal_table_row">
-            <th>Назва</th>
-            <th>Кількість</th>
-            <th>Ціна</th>
-            <th>Сума</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var product in Model.Order.OrderProducts)
-        {
-            <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
-                <td class="basket_modal_td">@product.ProductName</td>
-                <td class="basket_modal_td">
-                    @product.Amount
-                </td>
-                <td class="basket_modal_td">@product.ActualPrice.ToString("F")</td>
-                @{
-            var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
-            var productSum = product.ActualPrice * product.Amount;
-                }
-                <td class="basket_modal_td product-total-price">@((productSum + productOptionsSum).ToString("F"))</td>
+    <table class="basket_modal_table">
+        <thead>
+            <tr class="basket_modal_table_row">
+                <th>Назва</th>
+                <th>Кількість</th>
+                <th>Ціна</th>
+                <th>Сума</th>
             </tr>
-            if (product.OrderProductOptions.Any())
+        </thead>
+        <tbody>
+            @foreach (var product in Model.Order.OrderProducts)
             {
-                foreach (var orderProductOption in product.OrderProductOptions)
+                <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
+                    <td class="basket_modal_td">@product.ProductName</td>
+                    <td class="basket_modal_td">
+                        @product.Amount
+                    </td>
+                    <td class="basket_modal_td">@product.ActualPrice.ToString("F")</td>
+                    @{
+                var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                var productSum = product.ActualPrice * product.Amount;
+                    }
+                    <td class="basket_modal_td product-total-price">@((productSum + productOptionsSum).ToString("F"))</td>
+                </tr>
+                if (product.OrderProductOptions.Any())
                 {
-                    <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
-                        <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
-                        <td class="basket_modal_td">
-                            @orderProductOption.Amount
-                        </td>
-                        <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F")</td>
-                        <td></td>
-                    </tr>
+                    foreach (var orderProductOption in product.OrderProductOptions)
+                    {
+                        <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
+                            <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
+                            <td class="basket_modal_td">
+                                @orderProductOption.Amount
+                            </td>
+                            <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F")</td>
+                            <td></td>
+                        </tr>
+                    }
                 }
             }
-        }
-    </tbody>
-</table>*@
+        </tbody>
+    </table>*@
 
