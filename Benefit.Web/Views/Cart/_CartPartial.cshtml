@@ -46,7 +46,14 @@
                                                 <td colspan="5" style="padding: 0;">
                                                     <div class="tarif-tabelle t-even" data-seller-id="@order.SellerId" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
                                                         <div class="block-1 h-block">
-                                                            <img height="24" src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" />
+                                                            @if (product.ProductImageUrl.Contains("http"))
+                                                            {
+                                                                <img height="24" src="@product.ProductImageUrl"/>
+                                                            }
+                                                            else
+                                                            {
+                                                                <img height="24" src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl"/>
+                                                            }
                                                             <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku)})">@product.ProductName</a>
                                                         </div>
                                                         <div class="block-2 h-block">
