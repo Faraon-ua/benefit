@@ -130,6 +130,12 @@ i.icon-info {
     }
 }
 
+@media screen and (max-width: 340px) {
+    .hidden-xxs {
+        display: none;
+    } 
+}
+
 .modal-dialog {
     display: inline-block;
     text-align: left;

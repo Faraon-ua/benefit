@@ -175,7 +175,7 @@
             <div class="page-top-main">
                 <div class="visible-xs">
                     <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = Model.Category.ParentCategory.UrlName })" style="font-size:16px;font-weight:bold;">
-                        @Model.Category.ParentCategory.Name
+                        < @Model.Category.ParentCategory.Name
                     </a>
                 </div>
                 <h1 id="pagetitle" style="text-align: left;">@Model.Category.Name</h1>

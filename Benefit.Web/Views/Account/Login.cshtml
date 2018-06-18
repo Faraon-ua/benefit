@@ -25,6 +25,8 @@
             $.get(referalUserUrl + "?id=" + externalId, function (data) {
                 if (data) {
                     $("#referal-name").text("Наставник: " + data);
+                } else {
+                    $("#referal-name").text("Даний реєстраційний номер не існує");
                 }
             });
         }

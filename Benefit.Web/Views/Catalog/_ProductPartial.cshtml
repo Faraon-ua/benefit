@@ -61,7 +61,10 @@
                                         <div class="star-@(i <= Model.AvarageRating.GetValueOrDefault(0) ? "active" : "empty") star-voted" title="@i"></div>
                                     </td>
                                 }
-                                <td><a href="@productDetailsUrl#reviews" style="padding-left: 20px;">@reviewsCount відгуків</a></td>
+                                @if (reviewsCount > 0)
+                                {
+                                    <td><a href="@productDetailsUrl#reviews" style="padding-left: 20px;">@reviewsCount відгуків</a></td>
+                                }
                             </tr>
                         </tbody>
                     </table>

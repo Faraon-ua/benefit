@@ -24,7 +24,14 @@
 {
     @if (image_src != null)
     {
-        <link rel="image_src" href="~/Images/ProductGallery/@Model.Product.Id/@image_src.ImageUrl" />
+        if (image_src.IsAbsoluteUrl)
+        {
+            <link rel="image_src" href="@image_src.ImageUrl" />
+        }
+        else
+        {
+            <link rel="image_src" href="~/Images/ProductGallery/@Model.Product.Id/@image_src.ImageUrl" />
+        }
     }
 }
 @section meta{
@@ -465,9 +472,9 @@
                         <meta itemprop="name" content="@Model.Product.Name" />
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
                         <meta itemprop="description" content="@Model.Product.ShortDescription" />
-                        <div>
-                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = Model.Product.Category.UrlName })" style="font-size:16px;font-weight:bold;">
-                                @Model.Product.Category.Name
+                        <div style="padding-top: 5px;">
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = Model.Product.Category.UrlName })" style="font-size:16px;font-weight:bold; text-decoration: underline;">
+                                < @Model.Product.Category.Name
                             </a>
                         </div>
                         <h1 id="pagetitle" style="text-align: left;">@Model.Product.Name</h1>
@@ -526,7 +533,7 @@
                                                 <div class="price_matrix_block">
                                                     <div class="price_matrix_wrapper ">
                                                         <div class="price" style="font-size: 26px;">
-                                                            <span class="values_wrapper">@Model.Product.Price<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
+                                                            <span class="values_wrapper">@Model.Product.Price.ToString("F")<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
                                                         </div>
                                                         @if (Model.Product.OldPrice.HasValue)
                                                         {

@@ -29,7 +29,7 @@
                                             {
                                                 <div class="visible-xs">
                                                     <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = Model.Category.ParentCategory.UrlName})" style="font-size: 16px; font-weight: bold;">
-                                                        @Model.Category.ParentCategory.Name
+                                                        < @Model.Category.ParentCategory.Name
                                                     </a>
                                                 </div>
                                             }
@@ -54,6 +54,8 @@
                                     </div>
                                 </div>
                             </div>
+                            <br style="clear: both;"/>
+                            <br/>
                             <p>
                                 @Model.Category.Description
                             </p>
