@@ -189,7 +189,7 @@
                                 </div>
                                 <div class="x-product-info__content">
                                     <h1 class="x-title">@Model.Product.Name</h1>
-                                    <span style="color:white; background:red;padding:3px;">Бонус: @Model.Product.Seller.UserDiscount%</span>
+                                    <span style="color: white; background: red; padding: 3px;">Бонус: @Model.Product.Seller.UserDiscount%</span>
                                     <div class="x-product-info__identity">
                                         <div class="x-product-info__identity-item">
                                             <span>Код:&nbsp;</span>
@@ -465,7 +465,12 @@
                         <meta itemprop="name" content="@Model.Product.Name" />
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
                         <meta itemprop="description" content="@Model.Product.ShortDescription" />
-                        <h1 id="pagetitle">@Model.Product.Name</h1>
+                        <div>
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = Model.Product.Category.UrlName })" style="font-size:16px;font-weight:bold;">
+                                @Model.Product.Category.Name
+                            </a>
+                        </div>
+                        <h1 id="pagetitle" style="text-align: left;">@Model.Product.Name</h1>
                         <div class="item_main_info noffer show_un_props">
                             <div class="img_wrapper">
                                 <div class="stickers" style="width: 100%">
@@ -483,14 +488,14 @@
                                                     @if (img.IsAbsoluteUrl)
                                                     {
                                                         <a href="@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
-                                                            <img src="@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title"/>
+                                                            <img src="@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title" />
                                                             <div class="zoom"></div>
                                                         </a>
                                                     }
                                                     else
                                                     {
                                                         <a href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox-group="item_slider_flex" class="fancy" title="@Model.Product.Title">
-                                                            <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title"/>
+                                                            <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" title="@Model.Product.Title" />
                                                             <div class="zoom"></div>
                                                         </a>
                                                     }

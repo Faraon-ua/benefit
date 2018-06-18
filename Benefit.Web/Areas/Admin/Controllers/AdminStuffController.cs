@@ -12,6 +12,7 @@ using Benefit.Services.Admin;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Helpers;
 using System.Data.Entity;
+using System.Web;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -67,6 +68,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.SaveChanges();
             TempData["SuccessMessage"] = "Чат було очищено";
             return View("Index");
+        }
+
+        public ActionResult ClearCategoriesCache()
+        {
+            HttpRuntime.Cache.Remove("Categories");
+            var staleItem = Url.Action("Index", "Home", new
+            {
+                area = string.Empty
+            });
+            Response.RemoveOutputCacheItem(staleItem);
+            TempData["SuccessMessage"] = "Кеш категорій очищено";
+            return RedirectToAction("Index");
         }
     }
 }

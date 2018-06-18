@@ -1,4 +1,5 @@
-﻿@{
+﻿@using Benefit.Services
+@{
     ViewBag.Title = "VIP функції";
 }
 @section scripts{
@@ -23,13 +24,6 @@
 
 <fieldset>
     <legend>
-        Чат
-    </legend>
-    <a class="btn btn-info" href="@Url.Action("ClearChat", "AdminStuff")">Очистити чат</a>
-</fieldset>
-
-<fieldset>
-    <legend>
         Закриття періоду (30 число)
     </legend>
     <a class="btn btn-info" id="start-close-period" href="@Url.Action("ClosePeriod", "AdminStuff")">Закрити період</a>
@@ -42,7 +36,25 @@
 </fieldset>
 <fieldset>
     <legend>
-        Термінація
+        Запустити імпорт
     </legend>
-    <a class="btn btn-info" href="@Url.Action("TerminateNonActivePartners", "AdminStuff")" onclick="$(this).attr('disabled', 'disabled');">Термінація користувачів</a>
+    <a class="btn btn-info" href="@Url.Action("ProcessImportTasks", "Schedule", new {key = SettingsService.ScheduleKey, area = string.Empty})">Імпорт</a>
 </fieldset>
+<fieldset>
+    <legend>
+        Очистити кеш категорій
+    </legend>
+    <a class="btn btn-info" href="@Url.Action("ClearCategoriesCache", "AdminStuff")">Очистити кеш</a>
+</fieldset>
+@*<fieldset>
+        <legend>
+            Термінація
+        </legend>
+        <a class="btn btn-info" href="@Url.Action("TerminateNonActivePartners", "AdminStuff")" onclick="$(this).attr('disabled', 'disabled');">Термінація користувачів</a>
+    </fieldset>*@
+@*<fieldset>
+        <legend>
+            Чат
+        </legend>
+        <a class="btn btn-info" href="@Url.Action("ClearChat", "AdminStuff")">Очистити чат</a>
+    </fieldset>*@

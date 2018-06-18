@@ -173,7 +173,12 @@
         <section class="page-top maxwidth-theme ">
             @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
             <div class="page-top-main">
-                <h1 id="pagetitle">@Model.Category.Name</h1>
+                <div class="visible-xs">
+                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = Model.Category.ParentCategory.UrlName })" style="font-size:16px;font-weight:bold;">
+                        @Model.Category.ParentCategory.Name
+                    </a>
+                </div>
+                <h1 id="pagetitle" style="text-align: left;">@Model.Category.Name</h1>
             </div>
         </section>
     </div>

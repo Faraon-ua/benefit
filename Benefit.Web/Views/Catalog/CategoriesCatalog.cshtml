@@ -16,27 +16,36 @@
         <section>
             @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
         </section>
-
         <div class="right_block  wide_">
             <div class="middle ">
                 <div class="container">
-                    <div class="catalog_section_list row items visible-xs" style="margin-top: 30px;"></div>
                     <div class="catalog_section_list row items">
                         <div class="section_block">
                             <div class="sections_wrapper">
                                 <div class="list items">
-                                    <div class="row margin0">
-                                        <h1>@Model.Category.Name</h1>
+                                    <div class="margin0">
+                                        <div class="page-top maxwidth-theme ">
+                                            @if (Model.Category.ParentCategory != null)
+                                            {
+                                                <div class="visible-xs">
+                                                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = Model.Category.ParentCategory.UrlName})" style="font-size: 16px; font-weight: bold;">
+                                                        @Model.Category.ParentCategory.Name
+                                                    </a>
+                                                </div>
+                                            }
+                                            <h1 style="text-align: left;">@Model.Category.Name</h1>
+                                        </div>
+
                                         @foreach (var cat in Model.Items)
                                         {
                                             <div class="col-md-25 col-sm-4 col-xs-6">
                                                 <div class="item category-item" style="height: 230px;">
                                                     <div class="img shine">
-                                                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" class="thumb">
+                                                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName})" class="thumb">
                                                             <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Title" title="@cat.Title">
                                                         </a>
                                                         <div class="name">
-                                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" class="dark_link">@cat.Name</a>
+                                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName})" class="dark_link">@cat.Name</a>
                                                         </div>
                                                     </div>
                                                 </div>
