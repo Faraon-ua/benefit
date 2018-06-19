@@ -73,6 +73,7 @@ namespace Benefit.Web.Filters
 
                         filterContext.HttpContext.Session.Add(DomainConstants.SellerSessionIdKey, seller.Id);
                         filterContext.HttpContext.Session.Add(DomainConstants.SellerSessionNameKey, seller.Name);
+                        filterContext.HttpContext.Session.Add(DomainConstants.SellerEcommerceKey, seller.HasEcommerce);
                     }
                 }
             }

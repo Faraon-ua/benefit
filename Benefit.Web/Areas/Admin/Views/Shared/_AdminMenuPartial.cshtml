@@ -46,12 +46,15 @@
                 <span class="menu-text"> Дані постачальника </span>
             </a>
         </li>
-        <li>
-            <a href="@Url.Action("SellerCatalog", "Images")">
-                <i class="icon-picture"></i>
-                <span class="menu-text"> Каталог</span>
-            </a>
-        </li>
+         if (!(bool) Session[DomainConstants.SellerEcommerceKey])
+         {
+             <li>
+                 <a href="@Url.Action("SellerCatalog", "Images")">
+                     <i class="icon-picture"></i>
+                     <span class="menu-text"> Фотогалерея меню</span>
+                 </a>
+             </li>
+         }
     }
 
     @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))

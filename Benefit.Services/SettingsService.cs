@@ -208,6 +208,20 @@ namespace Benefit.Services
                     return int.Parse(ConfigurationManager.AppSettings["SellerLogoMaxHeight"]);
                 }
             }
+            public static int ProductGalleryMaxWidth
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["ProductGalleryMaxWidth"]);
+                }
+            }
+            public static int ProductGalleryMaxHeight
+            {
+                get
+                {
+                    return int.Parse(ConfigurationManager.AppSettings["ProductGalleryMaxHeight"]);
+                }
+            }
             public static int NewsLogoMaxWidth
             {
                 get

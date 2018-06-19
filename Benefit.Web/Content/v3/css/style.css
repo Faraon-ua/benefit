@@ -4073,7 +4073,7 @@ ul.mobile_menu .search .search-input-div input{border:0;font-size:13px}
 #mobileheader .mobileheader-v1{background:#fff;border-bottom:1px solid #f5f5f5}
 #mobileheader .mobileheader-v2{color:#fff}
 #mobileheader .mobileheader-v2 .basket-link .count{background-color:#fff;color:#222}
-#mobilemenu{background:#fff;z-index:3002;overflow:hidden;overflow-y:auto;transition:left .4s ease 0s,opacity .4s ease 0;position:fixed}
+#mobilemenu{background:#fff;z-index:10;overflow:hidden;overflow-y:auto;transition:left .4s ease 0s,opacity .4s ease 0;position:fixed}
 #mobilemenu::-webkit-scrollbar{width:8px}
 #mobilemenu::-webkit-scrollbar-track{border-radius:8px}
 #mobilemenu::-webkit-scrollbar-thumb{border-radius:8px;background:#999;border:2px solid #fff}

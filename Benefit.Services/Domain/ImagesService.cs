@@ -75,6 +75,7 @@ namespace Benefit.Services
 
         public void ResizeToSiteRatio(string imagePath, ImageType imageType)
         {
+            if(!File.Exists(imagePath)) return;
             var img = Image.FromFile(imagePath);
             int maxHeight = 0;
             int maxWidth = 0;
@@ -99,6 +100,10 @@ namespace Benefit.Services
                 case ImageType.CategoryLogo:
                     maxHeight = SettingsService.Images.CategoryLogoMaxHeight;
                     maxWidth = SettingsService.Images.CategoryLogoMaxWidth;
+                    break;
+                case ImageType.ProductGallery:
+                    maxWidth = SettingsService.Images.ProductGalleryMaxWidth;
+                    maxHeight = SettingsService.Images.ProductGalleryMaxHeight;
                     break;
             }
             if (img.Height <= maxHeight &&

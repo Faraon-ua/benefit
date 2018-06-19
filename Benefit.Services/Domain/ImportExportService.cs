@@ -12,6 +12,7 @@ using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Excel;
+using Benefit.Web.Helpers;
 using Benefit.Web.Models.Admin;
 using NLog;
 
@@ -24,6 +25,7 @@ namespace Benefit.Services.Domain
         private ProductsService productsService = new ProductsService();
         private ImagesService ImagesService = new ImagesService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private string originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
         Object lockObj = new Object();
 
         #region 1C
@@ -109,7 +111,7 @@ namespace Benefit.Services.Domain
                     {
                         Id = Guid.NewGuid().ToString(),
                         ImageType = ImageType.ProductGallery,
-                        ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", "LocalUser", sellerUrl, xmlImage.Value),
+                        ImageUrl = new Uri(SettingsService.BaseHostName).Append("FTP").Append("LocalUser").Append(sellerUrl).Append(xmlImage.Value).AbsoluteUri,
                         IsAbsoluteUrl = true,
                         Order = order++,
                         ProductId = product.Id
@@ -145,7 +147,7 @@ namespace Benefit.Services.Domain
                     {
                         Id = Guid.NewGuid().ToString(),
                         ImageType = ImageType.ProductGallery,
-                        ImageUrl = Path.Combine(SettingsService.BaseHostName, "FTP", "LocalUser", sellerUrl, xmlImage.Value),
+                        ImageUrl = new Uri(SettingsService.BaseHostName).Append("FTP").Append("LocalUser").Append(sellerUrl).Append(xmlImage.Value).AbsoluteUri,
                         IsAbsoluteUrl = true,
                         Order = order++,
                         ProductId = product.Id
@@ -161,6 +163,12 @@ namespace Benefit.Services.Domain
             db.InsertIntoMembers(productsToAddList);
             db.SaveChanges();
             db.InsertIntoMembers(imagesToAddList);
+            foreach (var image in imagesToAddList)
+            {
+                var uri = new Uri(image.ImageUrl);
+                var path = originalDirectory + uri.LocalPath;
+                ImagesService.ResizeToSiteRatio(path, ImageType.ProductGallery);
+            }
         }
 
         private List<XElement> GetAllFiniteCategories(IEnumerable<XElement> xmlCategories)
@@ -558,6 +566,12 @@ namespace Benefit.Services.Domain
             db.InsertIntoMembers(productParameterValuesToAdd);
             productParameterProductsToAdd = productParameterProductsToAdd.Where(entry => entry != null).ToList();
             db.InsertIntoMembers(productParameterProductsToAdd);
+            foreach (var image in imagesToAddList.Where(entry=>entry.ImageUrl.Contains(SettingsService.BaseHostName)))
+            {
+                var uri = new Uri(image.ImageUrl);
+                var path = originalDirectory + uri.LocalPath;
+                ImagesService.ResizeToSiteRatio(path, ImageType.ProductGallery);
+            }
         }
 
         private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId, SyncType importType)

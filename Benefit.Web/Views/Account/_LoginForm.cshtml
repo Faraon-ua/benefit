@@ -1,13 +1,16 @@
-﻿<div class="card">
+﻿@using Benefit.Web.Helpers
+@{
+    var actionName = RouteDataHelper.ActionName;
+}
+<div class="card">
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#auth" aria-controls="home" role="tab" data-toggle="tab">Авторизація</a></li>
-        <li role="presentation"><a href="#reg" aria-controls="home" role="tab" data-toggle="tab">Реєстрація</a></li>
+        <li role="presentation" class="@(actionName == "login" ? "active":string.Empty )"><a href="#auth" aria-controls="home" role="tab" data-toggle="tab">Авторизація</a></li>
+        <li role="presentation" class="@(actionName == "register" ? "active":string.Empty )"><a href="#reg" aria-controls="home" role="tab" data-toggle="tab">Реєстрація</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content no-padding-top">
-        <div role="tabpanel" class="tab-pane active padding-0" id="auth">
-            @Html.ValidationSummary()
+        <div role="tabpanel" class="tab-pane padding-0 @(actionName == "login" ? "active":string.Empty )" id="auth">
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
             {
                 @Html.AntiForgeryToken()
@@ -37,7 +40,7 @@
                 </div>
             }
         </div>
-        <div role="tabpanel" class="tab-pane" id="reg">
+        <div role="tabpanel" class="tab-pane @(actionName == "register" ? "active":string.Empty )" id="reg">
             @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))
             {
                 @Html.AntiForgeryToken()

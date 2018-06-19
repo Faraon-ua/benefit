@@ -12,6 +12,11 @@
 }
 @{
     var image_src = Model.Product.Images.FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
+    var image_src_str = string.Empty;
+    if (image_src != null)
+    {
+        image_src_str = image_src.IsAbsoluteUrl ? image_src.ImageUrl : string.Format("/Images/ProductGallery/{0}/{1}", @Model.Product.Id, image_src.ImageUrl);
+    }
     var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
     //var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);
     var sellerUrl = "#";
@@ -22,17 +27,7 @@
 }
 @section image_src
 {
-    @if (image_src != null)
-    {
-        if (image_src.IsAbsoluteUrl)
-        {
-            <link rel="image_src" href="@image_src.ImageUrl" />
-        }
-        else
-        {
-            <link rel="image_src" href="~/Images/ProductGallery/@Model.Product.Id/@image_src.ImageUrl" />
-        }
-    }
+    <link rel="image_src" href="@image_src.ImageUrl" />
 }
 @section meta{
     <meta name="description" content="@Model.Product.ShortDescription">
@@ -41,7 +36,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="@Model.Product.Name" />
     <meta property="og:description" content="@Model.Product.ShortDescription" />
-    <meta property="og:image" content="@(image_src == null ? "" : SettingsService.BaseHostName + "/Images/ProductGallery/" +Model.Product.Id+"/"+image_src.ImageUrl)" />
+    <meta property="og:image" content="@image_src_str" />
 }
 @section styles
 {

@@ -20,6 +20,7 @@
 
         public const string SellerSessionIdKey = "SellerId";
         public const string SellerSessionNameKey = "SellerName";
+        public const string SellerEcommerceKey = "SellerEcommerce";
 
         public const string RegionIdCookieKey = "regionId";
         public const string RegionNameCookieKey = "regionName";
