@@ -27,7 +27,7 @@
 }
 @section image_src
 {
-    <link rel="image_src" href="@image_src.ImageUrl" />
+    <link rel="image_src" href="@image_src_str" />
 }
 @section meta{
     <meta name="description" content="@Model.Product.ShortDescription">
@@ -226,7 +226,7 @@
                                                     @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
                                                     {
                                                         <span id="available-amount">@Model.Product.AvailableAmount</span>
-                                                        @(@Model.Product.IsWeightProduct ? "кг" : "шт")
+                                                        @(Model.Product.IsWeightProduct ? "кг" : "шт")
                                                     }
                                                 </div>
                                             </div>
