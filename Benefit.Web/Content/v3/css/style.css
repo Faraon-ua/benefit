@@ -1,4 +1,12 @@
-﻿.gradient {
+﻿input[type="checkbox"].editable-amount:checked ~ .display-after-checked {
+    display: inline-block;
+}
+
+input[type="checkbox"].editable-amount ~ .display-after-checked {
+    display: none;
+}
+
+.gradient {
     position: absolute;
     z-index: 2;
     right: 0;
@@ -302,7 +310,7 @@ basket_modal_table td:nth-child(4) {
     display: inline-block;
 }
 
-.delete_product {
+.delete_product, .delete-option {
     display: inline-block;
     width: 15px;
     height: 15px;

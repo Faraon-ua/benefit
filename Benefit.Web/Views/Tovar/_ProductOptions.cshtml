@@ -7,16 +7,17 @@
                 <span></span>
             </div>
             <div class="modal-body">
-                <p class="product_modal_title">@Model.Product.Name</p>
+                <h2 class="no-margin">@Model.Product.Name</h2>
+                <hr />
                 <form class="product_modal_form">
                     <div class="product_modal_form_top clearfix">
                         @for (var i = 0; i < Model.ProductOptions.Count; i++)
                         {
                             var optionsGroup = Model.ProductOptions[i];
 
-                            <fieldset class="product_modal_portion">
-                                <p class="product_modal_subtitle">@optionsGroup.Name</p>
-
+                            <fieldset class="product_modal_portion margin-bottom-15">
+                                <span class="bold">@optionsGroup.Name</span>
+                                <br />
                                 @if (optionsGroup.MultipleSelection)
                                 {
                                     foreach (var option in optionsGroup.ChildProductOptions)
@@ -25,14 +26,14 @@
                                             @{
                                                 var editableAmountClass = option.EditableAmount ? "editable-amount" : "";
                                             }
-                                            <input class="hidden @editableAmountClass" type="checkbox" id="@option.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" data-binded-option-id="@option.BindedProductOptionId" />
-                                            <label class="label_for_check" for="@option.Id">
+                                            <input class="@editableAmountClass" type="checkbox" id="@option.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" data-binded-option-id="@option.BindedProductOptionId" />
+                                            <label for="@option.Id">
                                                 @option.Name ( +@option.PriceGrowth.ToString("F"))
                                             </label>
-                                            <div class="modal_amount_wrap">
-                                                <div class="product_modal_minus">-</div>
-                                                <input id="product_amount" class="product_modal_amount" type="text" value="1" data-is-weight-product="false">
-                                                <div class="product_modal_plus">+</div>
+                                            <div class="counter display-after-checked no-float">
+                                                <div class="minus">-</div>
+                                                <input class="product_modal_amount quantity" value="1" name="quantity" type="text" data-weight-product="false">
+                                                <div class="plus">+</div>
                                             </div>
                                         </div>
                                     }
@@ -41,26 +42,24 @@
                                 {
                                     foreach (var option in optionsGroup.ChildProductOptions)
                                     {
-                                        <input class="hidden" type="radio" id="@option.Id" name="@optionsGroup.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" data-binded-option-id="@option.BindedProductOptionId" />
+                                        <input type="radio" id="@option.Id" name="@optionsGroup.Id" data-price-growth="@option.PriceGrowth.ToString("F")" data-option-name="@option.Name" data-binded-option-id="@option.BindedProductOptionId" />
                                         <label class="label_for_radio" for="@option.Id">@option.Name ( +@option.PriceGrowth.ToString("F"))</label>
+                                        <br />
                                     }
                                 }
 
                             </fieldset>
 
-                            if (i % 3 == 2)
-                            {
-                                <div class="clearfix"></div>
-                                <hr />
-                            }
-                        }
 
+                        }
                     </div>
                 </form>
-                <p class="product_modal_price">Сума <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн</p>
+                <div class="clearfix"></div>
+                <hr />
+                <p class="product_modal_price pull-right bold">Сума <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн</p>
                 <div class="product_modal_kontrols clearfix">
                     <a href="#" class="goto_back btn" data-dismiss="modal" aria-hidden="true">До товарів</a>
-                    <a href="#" id="buy-product-with-options" class="goto_ahead btn" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId">Додати в кошик</a>
+                    <a href="#" id="buy-product-with-options" class="goto_ahead btn btn-default pull-right" data-product-id="@Model.Product.Id" data-seller-id="@Model.Product.SellerId">Додати в кошик</a>
                 </div>
             </div>
         </div>

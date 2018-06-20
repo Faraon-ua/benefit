@@ -124,21 +124,13 @@ namespace Benefit.Services.Domain
                 var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToUpdate);
                 var xmlProduct = xmlProducts.First(entry => entry.Element("Ид").Value == productIdToUpdate);
 
-                var name = HttpUtility.HtmlDecode(xmlProduct.Element("Наименование").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
-                var descr = xmlProduct.Element("Описание").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
-
-                product.Name = name;
                 product.ExternalId = xmlProduct.Element("ШтрихКод").GetValueOrDefault(null);
-                product.UrlName = name.Translit().Truncate(128);
                 product.IsImported = true;
                 product.IsActive = true;
                 product.CategoryId = xmlProduct.Element("Группы").Element("Ид").Value;
-                product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                 product.AvailabilityState = ProductAvailabilityState.AlwaysAvailable;
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = "1CUaImport";
-                product.AltText = name.Truncate(100);
-                product.ShortDescription = name;
 
                 var order = 0;
                 lock (lockObj)
@@ -252,6 +244,7 @@ namespace Benefit.Services.Domain
         private void CreateAndUpdatePromUaCategories(List<XElement> xmlCategories, string sellerUrlName,
             string sellerId, Category parent = null)
         {
+            var hasNewContent = false;
             List<XElement> xmlCats = null;
             if (parent == null)
             {
@@ -290,6 +283,8 @@ namespace Benefit.Services.Domain
                 }
                 else
                 {
+                    if (!hasNewContent)
+                        hasNewContent = true;
                     dbCategory.Name = catName.Truncate(64);
                     dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
 
@@ -300,6 +295,11 @@ namespace Benefit.Services.Domain
                 }
 
                 CreateAndUpdatePromUaCategories(xmlCategories, sellerUrlName, sellerId, dbCategory);
+            }
+            if (hasNewContent)
+            {
+                var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
+                importTask.HasNewContent = true;
             }
         }
 

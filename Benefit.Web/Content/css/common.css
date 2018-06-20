@@ -190,6 +190,10 @@
     background-image: url(img/flags/ru.png);
 }
 
+.no-float {
+    float: none !important;
+}
+
 .no-padding {
     padding: 0 !important;
 }

@@ -15,6 +15,14 @@
             @product.ProductName
         </a>
         <p>@product.Amount x @product.ActualPrice.ToString("F") грн.</p>
+        @if (product.OrderProductOptions.Any())
+        {
+            foreach (var orderProductOption in product.OrderProductOptions)
+            {
+                <span>@orderProductOption.ProductOptionName  (@orderProductOption.Amount x @orderProductOption.ProductOptionPriceGrowth.ToString("F") грн)</span>
+                <br />
+            }
+        }
     </div>
 }
 

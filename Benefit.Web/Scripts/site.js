@@ -333,7 +333,7 @@ $(function () {
             var amount = parseFloat($(this).find(".product_modal_amount").val());
             var productOptions = $(this).nextUntil(".product").map(function () {
                 var optionId = $(this).attr("data-option-id");
-                var optionAmount = $(this).find(".product_modal_amount").val();
+                var optionAmount = $(this).find(".quantity").val();
                 return {
                     ProductOptionId: optionId,
                     Amount: optionAmount

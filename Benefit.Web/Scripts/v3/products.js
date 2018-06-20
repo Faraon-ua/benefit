@@ -1,6 +1,35 @@
 ﻿$(function () {
+    function CalculateProductPrice() {
+        var checkOptions = $(".product_modal_form input[type=checkbox]:checked").map(function () {
+            var checkboxPriceGrowth = parseFloat($(this).attr("data-price-growth"));
+            var amount = $(this).siblings(".counter").find(".quantity").val();
+            return checkboxPriceGrowth * amount;
+        }).get();
+        var radioOptions = $(".product_modal_form input[type=radio]:checked").map(function () {
+            return parseFloat($(this).attr("data-price-growth"));
+        }).get();
+        var checkPriceGrowth = checkOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
+        var radioPriceGrowth = radioOptions.reduce(function (pv, cv) { return pv + cv; }, 0);
+        var originalPrice = parseFloat($(".product-price").attr("data-original-price"));
+        $(".product-price").text((originalPrice + checkPriceGrowth + radioPriceGrowth).toFixed(2));
+    }
+
+    $('body').on("blur", ".product_modal_form .counter", function () {
+        CalculateCartSum();
+    });
+
+    $("body").on("click", ".product_modal_form input[type=checkbox], .product_modal_form input[type=radio]", function () {
+        var id = $(this).attr("id");
+        $(".product_modal_form input[data-binded-option-id=" + id + "]").prop('checked', true);
+        CalculateProductPrice();
+    });
+
+    $("body").on("click", ".product_modal_form div.minus, .product_modal_form div.plus", function () {
+        CalculateProductPrice();
+    });
+
     $("body").on('click',
-        ".product-item .plus, .product-item .minus, .product-page .plus, .product-page .minus",
+        ".product_modal_form .plus, .product_modal_form .minus, .product-item .plus, .product-item .minus, .product-page .plus, .product-page .minus",
         function () {
             var quantity = $(this).parent().find('input[name=quantity]');
             var valueToAdd = 1;
@@ -25,7 +54,7 @@
     $("body").on('click', "#buy-product-with-options", function () {
         var productId = $(this).attr("data-product-id");
         var sellerId = $(this).attr("data-seller-id");
-        AddOrderProduct(productId, sellerId, true, false);
+        AddOrderProduct(1, productId, sellerId, true, false);
     });
 
     $("body").on("click",
@@ -61,7 +90,7 @@ function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduc
     if (hasOptions) {
         productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
             var id = $(this).attr("id");
-            var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+            var amount = $(this).siblings(".counter").find(".quantity").val();
             if (!amount) {
                 amount = 1;
             }
