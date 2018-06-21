@@ -425,6 +425,7 @@ namespace Benefit.Services.Domain
                         .Union(items.Select(entry => entry.Seller.UrlName))
                         .Union(items.Select(entry => entry.OriginCountry))
                         .Distinct()
+                        .Select(entry=>entry.ToLower())
                         .ToList();
                 productParameters.InsertRange(0, generalParams);
                 var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
@@ -441,7 +442,7 @@ namespace Benefit.Services.Domain
                     {
                         parameter.ProductParameterValues =
                             parameter.ProductParameterValues.Where(
-                                entry => productParametersInItems.Contains(entry.ParameterValueUrl)).ToList();
+                                entry => productParametersInItems.Contains(entry.ParameterValueUrl.ToLower())).ToList();
                     }
 
                     result.ProductParameters.Add(parameter);

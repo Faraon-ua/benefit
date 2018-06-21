@@ -70,7 +70,7 @@ function CalculateCartSum(sellerId) {
         var amount = parseFloat($(this).find(".product_modal_amount").val());
         var productOptionSum = $(this).nextUntil(".product").map(function () {
             var optionPrice = parseFloat($(this).attr("data-original-price"));
-            var optionAmount = parseFloat($(this).find(".product_modal_amount").val());
+            var optionAmount = parseFloat($(this).find(".quantity").val());
             return optionPrice * optionAmount;
         }).get();
         var actualProductSum = actualPrice * amount + productOptionSum.reduce(function (pv, cv) { return pv + cv; }, 0);
