@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Web.Mvc;
 using System.Linq;
 using System.Data.Entity;
-using System.Net;
 using System.Threading.Tasks;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;

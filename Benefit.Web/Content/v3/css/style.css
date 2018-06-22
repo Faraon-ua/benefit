@@ -116,6 +116,7 @@ i.icon-info {
 
     .btn-small-xs {
         white-space: normal !important;
+        max-width: 150px;
     }
     .display-block-xs {
         display: block !important;

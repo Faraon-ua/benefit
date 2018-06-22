@@ -10,13 +10,13 @@
         }
     });
 
-    //$(".basket-link, #order-cart, .order-edit").click(function (e) {
-    //    e.preventDefault();
-    //    $("#cart-container").load(cartUrl,
-    //        function () {
-    //            $("#basket_modal").modal('show');
-    //        });
-    //});
+    $(".basket-link, #order-cart, .order-edit").click(function (e) {
+        e.preventDefault();
+        $("#cart-container").load(cartUrl,
+            function () {
+                $("#basket_modal").modal('show');
+            });
+    });
 
     $(".region_wrapper, .burger").popover({
         content: $(".region-popover").html(),

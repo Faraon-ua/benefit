@@ -468,7 +468,7 @@
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
                         <meta itemprop="description" content="@Model.Product.ShortDescription" />
                         <div style="padding-top: 5px;">
-                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = Model.Product.Category.UrlName })" style="font-size:16px;font-weight:bold; text-decoration: underline;">
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = Model.Product.Category.UrlName })" style="font-size:16px;font-weight:bold;">
                                 < @Model.Product.Category.Name
                             </a>
                         </div>

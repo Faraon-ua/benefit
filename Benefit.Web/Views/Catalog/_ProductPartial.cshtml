@@ -16,7 +16,7 @@
 
 <div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6">
     <div class="item" id="@Model.Id">
-        <div class="img shine" style="text-align: left;">
+        <div class="img" style="text-align: left;">
             <a href="@productDetailsUrl" title="@Model.Title">
                 <div class="row">
                     <div class="span2">
@@ -120,7 +120,7 @@
                 @if (availableForPurchase.Key)
                 {
                     <div class="button_block product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">
-                        <span class="small to-cart btn btn-default transition_bg animate-load" style="height: 36px; padding: 7px 10px 10px 10px;">
+                        <span class="small to-cart btn btn-default" style="height: 36px; padding: 7px 10px 10px 10px;">
                             <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
                             <i></i>
                             <span class="hidden-xs" style="font-weight: bold;">Купити</span>
