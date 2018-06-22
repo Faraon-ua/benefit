@@ -17,6 +17,7 @@ using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
+using Benefit.Web.Models;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -156,15 +157,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var cats = db.Categories.Include(entry => entry.ChildCategories).Where(entry => entry.ParentCategoryId == null && !entry.IsSellerCategory).ToList();
             catsList.AddRange(cats);
             catsList.AddRange(cats.SelectMany(entry => entry.ChildCategories).Where(entry=>!entry.IsSellerCategory));
-            catsList = catsList.OrderBy(entry => entry.ExpandedName).ToList();
+            catsList = catsList.ToList().SortByHierarchy().ToList();
             var options = new SellerFilterOptions
             {
-                Categories = catsList.Select(entry => new SelectListItem() { Text = entry.ExpandedName, Value = entry.Id }).ToList(),
+                Categories = catsList.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel }).ToList(),
                 PointRatio = SettingsService.DiscountPercentToPointRatio.Values.Distinct().Select(entry => new SelectListItem() { Text = entry + ":1", Value = entry.ToString() }).ToList(),
                 TotalDiscountPercent = SettingsService.DiscountPercentToPointRatio.Keys.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() }).ToList(),
                 UserDiscountPercent = SettingsService.RewardsPlan.UserDiscounts.Select(entry => new SelectListItem() { Text = entry + " %", Value = entry.ToString() }).ToList()
             };
-            options.Categories.Insert(0, new SelectListItem() { Text = "Всі постачальники", Value = "all" });
+            options.Categories.Insert(0, new HierarchySelectItem() { Text = "Всі постачальники", Value = "all", Level = 1 });
+            options.Categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 1 });
             return View(options);
         }
 

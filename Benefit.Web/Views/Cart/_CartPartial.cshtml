@@ -3,131 +3,131 @@
 @model List<Benefit.Domain.Models.Order>
 
 @*<div class="basket_modal modal fade in" id="basket_modal" style="display: block;" >*@
-<div class="basket_modal modal fade in" id="basket_modal" style="display: block; text-align: center;">
+@*<div class="basket_modal modal fade in" id="basket_modal" style="display: block; text-align: center;">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal_close" data-dismiss="modal" aria-hidden="true"><span></span></div>
-            <div class="modal-body">
-                @if (Model.Count == 0)
+            <div class="modal-body">*@
+<div class="basket_modal" id="basket_modal" style="display: block;">
+    @if (Model.Count == 0)
+    {
+        <p>Ваш кошик пустий</p>
+    }
+    else
+    {
+        foreach (var order in Model.Where(entry => entry.OrderProducts.Any()))
+        {
+            <div class="order-wrap" data-seller-id="@order.SellerId" data-seller-userdiscount="@order.SellerUserDiscount">
+                @if (order.OrderProducts.Any())
                 {
-                    <p>Ваш кошик пустий</p>
-                }
-                else
-                {
-                    <p class="basket_modal_title">Кошик покупок</p>
-                    <hr />
-                    foreach (var order in Model)
-                    {
-                        <div class="order-wrap" data-seller-id="@order.SellerId" data-seller-userdiscount="@order.SellerUserDiscount">
-                            @if (order.OrderProducts.Any())
-                            {
-                                <div class="row">
-                                    <div class="col-sm-8">
-                                        <span>Постачальник:</span>
-                                        <a href="@Url.SubdomainAction(order.SellerUrlName, "Index", "Home", null)">@order.SellerName</a>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        @order.SellerPrimaryRegionName
-                                    </div>
-                                    <div class="col-sm-2">
-                                        Бонус: @order.SellerUserDiscount %
-                                    </div>
-                                </div>
-                                <table class="basket_modal_table">
-                                    <tbody>
-                                        @foreach (var product in order.OrderProducts)
-                                        {
-                                            var hasWholesale = product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue;
-                                            var showWholesale = hasWholesale && product.Amount >= product.WholesaleFrom.Value;
-                                            var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
-                                            var oldProductSum = product.ProductPrice * product.Amount;
-                                            var actualProductSum = (showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice) * product.Amount;
-                                            <tr class="basket_modal_table_row product" data-seller-id="@order.SellerId" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
-                                                <td colspan="5" style="padding: 0;">
-                                                    <div class="tarif-tabelle t-even" data-seller-id="@order.SellerId" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
-                                                        <div class="block-1 h-block">
-                                                            @if (product.ProductImageUrl.Contains("http"))
-                                                            {
-                                                                <img height="24" src="@product.ProductImageUrl"/>
-                                                            }
-                                                            else
-                                                            {
-                                                                <img height="24" src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl"/>
-                                                            }
-                                                            <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku)})">@product.ProductName</a>
-                                                        </div>
-                                                        <div class="block-2 h-block">
-                                                            <div class="counter" data-weight-product="@product.IsWeightProduct">
-                                                                <div class="minus">-</div>
-                                                                <input class="product_modal_amount quantity" name="quantity" value="@product.Amount" type="text" data-weight-product="@product.IsWeightProduct">
-                                                                <div class="plus">+</div>
-                                                            </div>
-                                                            <div style="display: @(hasWholesale && product.Amount < product.WholesaleFrom.Value ? "" : "none")" class="wholesale-hint">
-                                                                опт від <span>@product.WholesaleFrom.GetValueOrDefault(0)</span> шт
-                                                            </div>
-                                                        </div>
-                                                        <div class="block-3 h-block">
-                                                            <del class="old-product-price" style="display: @(showWholesale ? "" : "none")">@product.ProductPrice.ToString("F")</del>
-                                                            <div class="actual-product-price">
-                                                                @((showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice).ToString("F"))
-                                                            </div>
-                                                        </div>
-                                                        <div class="block-3 h-block">
-                                                            <del class="old-product-total" style="display: @(showWholesale ? "" : "none")">
-                                                                @((oldProductSum + productOptionsSum).ToString("F"))
-                                                            </del>
-                                                            <span class="actual-product-total">
-                                                                @((actualProductSum + productOptionsSum).ToString("F"))
-                                                            </span>
-                                                        </div>
-                                                        <div class="block-3 h-block">
-                                                            <div class="delete_product" data-product-id="@product.ProductId" data-seller-id=""></div>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            if (product.OrderProductOptions.Any())
-                                            {
-                                                foreach (var orderProductOption in product.OrderProductOptions)
-                                                {
-                                                    <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
-                                                        <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
-                                                        <td class="basket_modal_td">
-                                                            @{
-                                                                var visibleClass = orderProductOption.EditableAmount ? "" : "hidden";
-                                                            }
-                                                            <div class="counter hidden">
-                                                                <div class="minus">-</div>
-                                                                <input class="quantity" value="@orderProductOption.Amount" type="text">
-                                                                <div class="plus">+</div>
-                                                            </div>
-                                                        </td>
-                                                        <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F")</td>
-                                                        <td class="basket_modal_td"></td>
-                                                        <td class="basket_modal_td">
-                                                            <div class="delete-option" onclick="$(this).parent().parent().remove()"></div>
-                                                        </td>
-                                                    </tr>
-                                                }
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-                                var сartSum = order.OrderProducts.Sum(entry => entry.ProductPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-                                var actualCartSum = order.OrderProducts.Sum(entry => entry.ActualPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-                                <p class="basket_modal_saving" style="display: @(actualCartSum < сartSum ? "" : "none")">Економія: <span>@((сartSum - actualCartSum).ToString("F"))</span></p>
-                                <p class="basket_modal_bonus">Бонус: <span>@((actualCartSum * order.SellerUserDiscount / 100).ToString("F"))</span></p>
-                                <p class="basket_modal_price">Всього: <span>@actualCartSum.ToString("F")</span></p>
-                                <div class="basket_modal_kontrols clearfix">
-                                    <a href="#" class="continue-purchase goto_back btn btn-small-xs bold" style="line-height: 2.7em;">Продовжити покупки</a>
-                                    <a href="#" class="complete-order goto_ahead pull-right btn btn-small-xs btn-default bold" style="line-height: 2.7em;">Оформити замовлення</a>
-                                </div>
-                            }
+                    <div class="row no-margin">
+                        <div class="col-sm-8">
+                            <span>Постачальник:</span>
+                            <a href="@Url.SubdomainAction(order.SellerUrlName, "Index", "Home", null)">@order.SellerName</a>
                         </div>
-                        <hr />
-                    }
+                        <div class="col-sm-2">
+                            @order.SellerPrimaryRegionName
+                        </div>
+                        <div class="col-sm-2">
+                            Бонус: @order.SellerUserDiscount %
+                        </div>
+                    </div>
+                    <table class="basket_modal_table">
+                        <tbody>
+                            @foreach (var product in order.OrderProducts)
+                            {
+                                var hasWholesale = product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue;
+                                var showWholesale = hasWholesale && product.Amount >= product.WholesaleFrom.Value;
+                                var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                                var oldProductSum = product.ProductPrice * product.Amount;
+                                var actualProductSum = (showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice) * product.Amount;
+                                <tr class="basket_modal_table_row product" data-seller-id="@order.SellerId" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
+                                    <td colspan="5" style="padding: 0;">
+                                        <div class="tarif-tabelle t-even" data-seller-id="@order.SellerId" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
+                                            <div class="block-1 h-block">
+                                                @if (product.ProductImageUrl.Contains("http"))
+                                                {
+                                                    <img height="24" src="@product.ProductImageUrl" />
+                                                }
+                                                else
+                                                {
+                                                    <img height="24" src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" />
+                                                }
+                                                <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku)})">@product.ProductName</a>
+                                            </div>
+                                            <div class="block-2 h-block">
+                                                <div class="counter" data-weight-product="@product.IsWeightProduct">
+                                                    <div class="minus">-</div>
+                                                    <input class="product_modal_amount quantity" name="quantity" value="@product.Amount" type="text" data-weight-product="@product.IsWeightProduct">
+                                                    <div class="plus">+</div>
+                                                </div>
+                                                <div style="display: @(hasWholesale && product.Amount < product.WholesaleFrom.Value ? "" : "none")" class="wholesale-hint">
+                                                    опт від <span>@product.WholesaleFrom.GetValueOrDefault(0)</span> шт
+                                                </div>
+                                            </div>
+                                            <div class="block-3 h-block">
+                                                <del class="old-product-price" style="display: @(showWholesale ? "" : "none")">@product.ProductPrice.ToString("F")</del>
+                                                <div class="actual-product-price">
+                                                    @((showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice).ToString("F"))
+                                                </div>
+                                            </div>
+                                            <div class="block-3 h-block">
+                                                <del class="old-product-total" style="display: @(showWholesale ? "" : "none")">
+                                                    @((oldProductSum + productOptionsSum).ToString("F"))
+                                                </del>
+                                                <span class="actual-product-total">
+                                                    @((actualProductSum + productOptionsSum).ToString("F"))
+                                                </span>
+                                            </div>
+                                            <div class="block-3 h-block">
+                                                <div class="delete_product" data-product-id="@product.ProductId" data-seller-id=""></div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                if (product.OrderProductOptions.Any())
+                                {
+                                    foreach (var orderProductOption in product.OrderProductOptions)
+                                    {
+                                        <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
+                                            <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
+                                            <td class="basket_modal_td">
+                                                @{
+                                                    var visibleClass = orderProductOption.EditableAmount ? "" : "hidden";
+                                                }
+                                                <div class="counter hidden">
+                                                    <div class="minus">-</div>
+                                                    <input class="quantity" value="@orderProductOption.Amount" type="text">
+                                                    <div class="plus">+</div>
+                                                </div>
+                                            </td>
+                                            <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F")</td>
+                                            <td class="basket_modal_td"></td>
+                                            <td class="basket_modal_td">
+                                                <div class="delete-option" onclick="$(this).parent().parent().remove()"></div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            }
+                        </tbody>
+                    </table>
+                    var сartSum = order.OrderProducts.Sum(entry => entry.ProductPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+                    var actualCartSum = order.OrderProducts.Sum(entry => entry.ActualPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+                    <p class="basket_modal_saving" style="display: @(actualCartSum < сartSum ? "" : "none")">Економія: <span>@((сartSum - actualCartSum).ToString("F"))</span></p>
+                    <p class="basket_modal_bonus">Бонус: <span>@((actualCartSum * order.SellerUserDiscount / 100).ToString("F"))</span></p>
+                    <p class="basket_modal_price">Всього: <span>@actualCartSum.ToString("F")</span></p>
+                    <div class="basket_modal_kontrols clearfix">
+                        @*<a href="#" class="continue-purchase goto_back btn btn-small-xs bold" style="line-height: 2.7em;">Продовжити покупки</a>*@
+                        <a href="#" class="complete-order goto_ahead pull-right btn btn-small-xs btn-default bold" style="line-height: 2.7em;">Оформити замовлення</a>
+                    </div>
                 }
             </div>
-        </div>
-    </div>
+            <hr />
+        }
+    }
 </div>
+@*</div>
+            </div>
+        </div>
+    </div>*@

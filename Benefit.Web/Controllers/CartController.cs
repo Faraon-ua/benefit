@@ -26,6 +26,12 @@ namespace Benefit.Web.Controllers
         public UserService UserService = new UserService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
+        [FetchCategories]
+        public ActionResult Index()
+        {
+            return View();
+        }
+
         [HttpGet]
         public ActionResult CheckEnaughBonuses(double sum)
         {

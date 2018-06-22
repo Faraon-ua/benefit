@@ -174,7 +174,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     categories.Union(
                         db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == Seller.CurrentAuthorizedSellerId)).ToList().SortByHierarchy().ToList();
                 productsViewModel.ProductFilters.Categories =
-                    categories.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel });
+                    categories.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel }).ToList();
+                productsViewModel.ProductFilters.Categories.Insert(0, new HierarchySelectItem(){Text = "Не обрано", Value = string.Empty, Level = 0});
             }
             else
             {
@@ -182,7 +183,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                    db.Sellers.OrderBy(entry => entry.Name)
                        .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
                 var cats = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList();
-                productsViewModel.ProductFilters.Categories = cats.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel });
+                productsViewModel.ProductFilters.Categories = cats.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel }).ToList();
+                productsViewModel.ProductFilters.Categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 1 });
             }
             productsViewModel.ProductFilters.HasParameters = new List<SelectListItem>()
             {
@@ -214,7 +216,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                           };
             if (User.IsInRole(DomainConstants.AdminRoleName))
             {
-                ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName", product.CategoryId);
+                ViewBag.Categories = db.Categories.ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
+                {
+                    Text = entry.Name,
+                    Value = entry.Id,
+                    Level = entry.HierarchicalLevel
+                });
             }
             else
             {
@@ -227,9 +234,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     categories =
                         categories.Union(
-                            db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == product.SellerId)).ToList();
+                            db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == product.SellerId)).ToList().SortByHierarchy().ToList();
                 }
-                ViewBag.CategoryId = new SelectList(categories, "Id", "ExpandedName", product.CategoryId);
+
+                ViewBag.Categories = categories.Select(entry => new HierarchySelectItem()
+                {
+                    Text = entry.Name,
+                    Value = entry.Id,
+                    Level = entry.HierarchicalLevel
+                });
             }
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name", product.SellerId);
             var currencies =

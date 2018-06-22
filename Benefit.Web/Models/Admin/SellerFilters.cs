@@ -15,7 +15,7 @@ namespace Benefit.Web.Models.Admin
     }
     public class SellerFilterOptions
     {
-        public List<SelectListItem> Categories { get; set; }
+        public List<HierarchySelectItem> Categories { get; set; }
         public List<SelectListItem> PointRatio { get; set; }
         public List<SelectListItem> TotalDiscountPercent { get; set; }
         public List<SelectListItem> UserDiscountPercent { get; set; }

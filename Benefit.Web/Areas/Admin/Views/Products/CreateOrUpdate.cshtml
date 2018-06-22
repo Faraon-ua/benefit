@@ -8,12 +8,14 @@
 @section styles{
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/dropzone.css" rel="stylesheet" />
+    <link href="~/Content/css/hierarchy-select.min.css" rel="stylesheet" />
 }
 @section scripts{
     <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
     <script src="~/Scripts/ckeditor/ckeditor.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/hierarchy-select.min.js"></script>
     <script src="~/Areas/Admin/assets/js/dropzone.min.js"></script>
     <script src="~/Areas/Admin/assets/js/bootstrap-tag.min.js"></script>
 
@@ -89,6 +91,9 @@
 
             $(".chosen-select").chosen({
                 search_contains: true
+            });
+            $('.hierarchy-select').hierarchySelect({
+                width: 170
             });
             $('#Price, #WholesalePrice').mask("#0.00", { reverse: true });
             $('#SKU, #WholesaleFrom').mask("#");

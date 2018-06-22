@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
+using Benefit.Web.Models;
 
 namespace Benefit.Web.Areas.Admin.Controllers.Base
 {
@@ -106,9 +107,9 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
                 ViewBag.Categories =
                     db.Categories.Where(entry=>!entry.IsSellerCategory).ToList().Select(
                         entry =>
-                            new SelectListItem()
+                            new HierarchySelectItem()
                             {
-                                Text = entry.ExpandedName,
+                                Text = entry.Name,
                                 Value = entry.Id,
                                 Selected = entry.Id == categoryId
                             });

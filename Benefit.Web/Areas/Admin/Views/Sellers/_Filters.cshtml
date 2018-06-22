@@ -1,4 +1,5 @@
-﻿@model Benefit.Web.Models.Admin.SellerFilterOptions
+﻿@using Benefit.Web.Models.ViewModels
+@model Benefit.Web.Models.Admin.SellerFilterOptions
 
 <label for="id-date-range-picker-1">Дата реєстрації</label>
 <div class="row">
@@ -16,7 +17,12 @@
 <label>Спеціалізація</label>
 <div class="row">
     <div class="col-xs-8 col-sm-11">
-        @Html.DropDownList("CategoryId", Model.Categories, "Не обрано", new { @class = "width-90 chosen-select" })
+        @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
+        {
+            Name = "CategoryId",
+            Value = Request.QueryString["CategoryId"],
+            Items = Model.Categories
+        })
     </div>
 </div>
 <br />

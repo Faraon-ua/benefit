@@ -1,6 +1,7 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Common.Extensions
 @using Benefit.Domain.Models
+@using Benefit.Web.Models.ViewModels
 @model  Benefit.Domain.Models.Product
 
 <div class="form-horizontal">
@@ -123,7 +124,12 @@
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Категорія</label>
         <div class="col-md-9">
-            @Html.DropDownListFor(m => m.CategoryId, null, "Не обрано", new { @class = "chosen-select col-xs-10 col-sm-5" })
+            @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
+            {
+                Name = "CategoryId",
+                Value = Model.CategoryId,
+                Items = ViewBag.Categories
+            })
             @Html.ValidationMessageFor(model => model.CategoryId)
         </div>
     </div>

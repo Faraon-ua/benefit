@@ -24,7 +24,7 @@ namespace Benefit.Web.Models.Admin
     }
     public class ProductFilters
     {
-        public IEnumerable<HierarchySelectItem> Categories { get; set; }
+        public List<HierarchySelectItem> Categories { get; set; }
         public IEnumerable<SelectListItem> Sellers { get; set; }
         public IEnumerable<SelectListItem> Sorting { get; set; }
         public IEnumerable<SelectListItem> HasParameters { get; set; }
