@@ -288,6 +288,7 @@
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Areas\Admin\Controllers\TerminalController.cs" />
+    <Compile Include="Controllers\SellerController.cs" />
     <Compile Include="Controllers\TovarController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\CabinetFilterAttribute.cs" />

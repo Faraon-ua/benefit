@@ -4,13 +4,20 @@
 {
     <div class="row" data-product-id="@product.ProductId" data-original-price="@product.ProductPrice">
         <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku)})">
-            @if (product.ProductImageUrl.Contains("http"))
+            @if (product.ProductImageUrl != null)
             {
-                <img src="@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+                if (product.ProductImageUrl.Contains("http"))
+                {
+                    <img src="@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+                }
+                else
+                {
+                    <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+                }
             }
             else
             {
-                <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+                <img src="~/Images/ProductGallery/default_product_thumbnail.png" style="float: left; margin: 10px;" width="75">
             }
             @product.ProductName
         </a>
