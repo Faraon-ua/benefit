@@ -32,6 +32,12 @@
 .no-list-style {
     list-style-type: none;
 }
+    .no-list-style li {
+        padding-left: 0 !important;
+    }
+        .no-list-style li:before {
+            content: none;
+        }
 
 .no-before-content:before {
     content: none !important;
@@ -276,6 +282,9 @@
 
 .margin-left-30 {
     margin-left: 30px !important;
+}
+.margin-left-60 {
+    margin-left: 60px !important;
 }
 
 .padding-0 {

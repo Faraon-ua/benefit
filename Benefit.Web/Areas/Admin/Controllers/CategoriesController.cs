@@ -173,6 +173,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var categoriesToMap = db.Categories.Include(entry => entry.ChildCategories.Select(ch => ch.ChildCategories)).Where(entry => entry.SellerId == sellerId && entry.IsSellerCategory && entry.ParentCategoryId == null).ToList();
             SetMappedCategories(categoriesToMap);
             ViewBag.RootCategories = db.Categories.Where(entry => entry.IsActive && !entry.IsSellerCategory && entry.ParentCategoryId == null && entry.Order > 0).OrderBy(entry => entry.Order).ToList();
+            var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
+            if (importTask != null)
+            {
+                importTask.HasNewContent = false;
+                db.SaveChanges();
+            }
             return View(categoriesToMap);
         }
 

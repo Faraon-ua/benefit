@@ -1,0 +1,55 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@model IEnumerable<Category>
+@{
+    var seller = ViewBag.Seller as Seller;
+    var selectedCategory = ViewBag.SelectedCategory as Category;
+}
+<ul class="no-list-style seller-menu">
+    @foreach (var category in Model)
+    {
+        <li>
+            <h4 class="no-margin parent-cat" style="text-align: left;">
+                <a href="#">
+                    @category.Name
+                </a>
+            </h4>
+            @if (category.ChildCategories.Any())
+            {
+                var ulDisplay = (selectedCategory != null && selectedCategory.ParentCategory.ParentCategoryId == category.Id) ? "" : "none";
+                <ul class="no-list-style" style='display:@ulDisplay'>
+                    @foreach (var childCat in category.ChildCategories)
+                    {
+                        <li>
+                            <h5 class="no-margin-top no-margin-bottom margin-left-30 parent-cat">
+                                <a href="#">
+                                    @childCat.Name
+                                </a>
+                            </h5>
+                            @if (childCat.ChildCategories.Any())
+                            {
+                                var subUlDisplay = (selectedCategory != null && selectedCategory.ParentCategoryId == childCat.Id) ? "" : "none";
+                                <ul class="margin-left-60" style='display: @subUlDisplay'>
+                                    @foreach (var subCat in childCat.ChildCategories)
+                                    {
+                                        <li>
+                                            @if (Request.QueryString["category"] != null && Request.QueryString["category"] == subCat.UrlName)
+                                            {
+                                                <b>@subCat.Name</b>
+                                            }
+                                            else
+                                            {
+                                                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id = seller.UrlName, category = subCat.UrlName})">@subCat.Name</a>
+                                            }
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+            <hr />
+        </li>
+    }
+</ul>

@@ -93,8 +93,8 @@
                 </div>
                 <br><br>
 
-                @*<a href="#">Детальніше </a><br>
-                    <a href="#"> Всі товари</a><br>*@
+                @*<a href="#">Детальніше </a><br>*@
+                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id=Model.UrlName})"> Всі товари</a><br>
                 <a href="@sellerUrl" class="small btn btn-default">
                     Детальніше
                 </a>

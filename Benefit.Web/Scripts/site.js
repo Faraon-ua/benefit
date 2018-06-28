@@ -24,7 +24,6 @@ function setCookie(name, value, options) {
     if (expires && expires.toUTCString) {
         options.expires = expires.toUTCString();
     }
-
     value = encodeURIComponent(value);
 
     var updatedCookie = name + "=" + value;
@@ -41,8 +40,8 @@ function setCookie(name, value, options) {
 }
 
 function setCartSummary(data) {
-    setCookie("cartNumber", data.ProductsNumber, { expires: 36000, path: "/" });
-    setCookie("cartPrice", data.Price.toFixed(2), { expires: 36000, path: "/" });
+    setCookie("cartNumber", data.ProductsNumber, { expires: 21600, path: "/" });
+    setCookie("cartPrice", data.Price.toFixed(2), { expires: 21600, path: "/" });
     $(".cart-items-number").parent().removeClass("disabled");
     $(".cart-items-number").text(data.ProductsNumber);
     $("#cart-items-price").text(data.Price.toFixed(2) + " грн");
@@ -286,7 +285,8 @@ $(function () {
         }
     });
 
-    $("body").on("click", ".parent-category", function () {
+    $("body").on("click", ".parent-cat", function (e) {
+        e.preventDefault();
         $(this).next("ul").slideToggle();
     });
 

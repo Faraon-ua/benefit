@@ -1,4 +1,14 @@
-﻿input[type="checkbox"].editable-amount:checked ~ .display-after-checked {
+﻿.cart-summary {
+    position: fixed;
+    width: 24%;
+    z-index: 10;
+}
+
+.seller-menu li {
+    padding: 5px 0px;
+}
+
+input[type="checkbox"].editable-amount:checked ~ .display-after-checked {
     display: inline-block;
 }
 
@@ -127,6 +137,10 @@ i.icon-info {
     .modal-body {
         padding: 5px !important;
     }
+    .cart-summary {
+        position: unset;
+        width: 100%;
+    }
 }
 
 @media screen and (min-width: 768px) { 
@@ -135,6 +149,10 @@ i.icon-info {
         vertical-align: middle;
         content: " ";
         height: 100%;
+    }
+    .cart-summary {
+        position: fixed;
+        width: 24%;
     }
 }
 

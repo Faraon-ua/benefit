@@ -52,6 +52,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     var children = category.GetAllChildrenRecursively().ToList();
                     categoryIds.Add(category.Id);
                     categoryIds.AddRange(children.Select(cat => cat.Id));
+                    categoryIds.AddRange(children.SelectMany(entry=>entry.MappedCategories).Select(entry=>entry.Id));
                     categoryIds.AddRange(category.MappedCategories.Select(entry => entry.Id));
                     products = products.Where(entry => categoryIds.Contains(entry.CategoryId));
                 }

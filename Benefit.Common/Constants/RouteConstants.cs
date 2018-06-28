@@ -10,6 +10,9 @@
         public const string CatalogRouteName = "CatalogRoute";
         public const string CatalogRoutePrefix = "catalog";
 
+        public const string SellerCatalogRouteName = "SellerCatalogRoute";
+        public const string SellerCatalogRoutePrefix = "seller";
+
         public const string ProductRouteName = "ProductRoute";
         public const string ProductRoutePrefix = "t";
 

@@ -320,7 +320,7 @@
                                     </div>
                                 </div>
                                 <div class="x-company-info__item">
-                                    <a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Catalog")" class="dark_link">Всі товари постачальника</a>
+                                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id=Model.Product.Seller.UrlName})" class="dark_link">Всі товари постачальника</a>
                                 </div>
                             </div>
                             <div class="x-company-info__parts">

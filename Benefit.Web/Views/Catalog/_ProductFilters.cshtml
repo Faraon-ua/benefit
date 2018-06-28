@@ -1,7 +1,17 @@
-﻿@model ICollection<Benefit.Domain.Models.ProductParameter>
+﻿@using System.Web.Mvc.Html
+@using Benefit.Domain.Models
+@model ICollection<ProductParameter>
+@{
+    var seller = ViewBag.Seller as Seller;
+    var categories = ViewBag.SellerCategories as List<Category>;
+}
 <div class="bx_filter bx_filter_vertical">
     <div class="bx_filter_section" id="productFilters">
         <div class="bx_filter_parameters_box title">
+            @if (seller != null)
+            {
+                @Html.Partial("~/Views/Seller/_SellerMenu.cshtml", categories)
+            }
             <div class="bx_filter_parameters_box_title">
                 Фільтри
                 <div class="selected-filters">
@@ -14,7 +24,7 @@
                         </a>
                         <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
                             <span class="icon padding_5" title="За ціною">&#36; &#8593;</span>
-                        </a> 
+                        </a>
                         <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
                             <span class="icon padding_5" title="За ціною">&#36; &#8595;</span>
                         </a>
@@ -23,7 +33,7 @@
                 </div>
             </div>
         </div>
-
+        
         @foreach (var filter in Model.OrderBy(entry => entry.Order))
         {
             if (filter.ProductParameterValues.Any())

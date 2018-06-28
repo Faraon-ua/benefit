@@ -71,6 +71,7 @@ namespace Benefit.Services
             var productsResult = db.Products
                 .Include(entry => entry.Category)
                 .Include(entry => entry.Seller)
+                .Include(entry => entry.Images)
                 .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce && entry.Category.IsActive);
             if (searchSellerId != null)
             {
@@ -83,7 +84,10 @@ namespace Benefit.Services
                 ).Containing(term.Split(new[] { ' ' }))
                 .ToRanked()
                 .Where(entry => entry.Item.IsActive)
-                .OrderByDescending(entry => entry.Hits)
+                .OrderBy(entry => entry.Item.AvailabilityState)
+                .ThenByDescending(entry => entry.Item.Images.Any())
+                .ThenBy(entry => entry.Hits)
+                .ThenBy(entry => entry.Item.SKU)
                 .Select(entry => entry.Item);
 
             if (options != null)

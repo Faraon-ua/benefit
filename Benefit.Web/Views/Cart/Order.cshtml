@@ -247,7 +247,7 @@
                                         var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
                                     }
                                     <label> Місто *</label>
-                                    @Html.TextBox("RegionName", regionNameCookieVal, new {@class = "regionSearch"})
+                                    @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "regionSearch" })
                                     @Html.Hidden("RegionId", regionIdCookieVal)
                                     @Html.ValidationMessage("RegionId")
                                 </div>
@@ -368,29 +368,30 @@
     </div>
 
     <div class="col-md-3 col-sm-3">
-        <div class="card">
-            <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation"><a href="#" aria-controls="cart" role="tab" data-toggle="tab">Ваше замовлення</a></li>
-            </ul>
+        <div class="cart-summary">
+            <div class="card">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li role="presentation"><a href="#" aria-controls="cart" role="tab" data-toggle="tab">Ваше замовлення</a></li>
+                </ul>
 
-            <!-- Tab panes -->
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="cart">
-                    @Html.Partial("_OrderProducts", Model)
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="cart">
+                        @Html.Partial("_OrderProducts", Model)
+                    </div>
+                    <a href="#" class="order-edit">Редагувати замовлення</a>
                 </div>
-                <a href="#" class="order-edit">Редагувати замовлення</a>
+                <hr>
+                @*<h5 style="margin: 15px; padding-bottom: 10px; text-align: right;">Всього: 1 000,00 грн.</h5>*@
+                @Html.Partial("_PaymentSummary", Model)
             </div>
-            <hr>
-            @*<h5 style="margin: 15px; padding-bottom: 10px; text-align: right;">Всього: 1 000,00 грн.</h5>*@
-            @Html.Partial("_PaymentSummary", Model)
+            <div class="button_block col-sm-3 col-md-3 display-block-xs" id="save-order" style="text-align: center; float: none; padding: 0;">
+                <span class="btn btn-default bold height-50px" style="font-size: 17px; line-height: 2em;">
+                    Оформити замовлення
+                </span>
+            </div>
+            <br class="visible-xs" />
         </div>
-
     </div>
     <!--	SIDEBAR BLOCK	-->
 </div>
-<div class="button_block col-sm-3 col-md-3 display-block-xs" id="save-order" style="text-align: center; float: none;">
-    <span class="btn btn-default bold height-50px" style="font-size: 17px; line-height: 2em;">
-        Оформити замовлення
-    </span>
-</div>
-<br class="visible-xs"/>

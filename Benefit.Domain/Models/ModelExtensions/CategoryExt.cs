@@ -11,7 +11,7 @@ namespace Benefit.Domain.Models.ModelExtensions
         {
             using (var db = new ApplicationDbContext())
             {
-                foreach (var cat in db.Categories.Include("ChildCategories").Include("SellerCategories").Include(entry => entry.MappedCategories).Where(entry => entry.ParentCategoryId == category.Id))
+                foreach (var cat in db.Categories.Include(entry=>entry.ChildCategories).Include(entry=>entry.SellerCategories).Include(entry => entry.MappedCategories).Where(entry => entry.ParentCategoryId == category.Id))
                 {
                     yield return cat;
 

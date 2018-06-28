@@ -1461,6 +1461,7 @@
     <Content Include="Views\SellerArea\About.cshtml" />
     <Content Include="Views\SellerArea\Gallery.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Seller\_SellerMenu.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

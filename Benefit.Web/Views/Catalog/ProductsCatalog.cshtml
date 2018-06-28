@@ -1,7 +1,6 @@
 ﻿@using System.Text
 @using Benefit.Common.Constants
-@using Benefit.DataTransfer.ViewModels
-@using Benefit.Services.Domain
+@using Benefit.Domain.Models
 @model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
 
 @{
@@ -12,9 +11,11 @@
     }
     if (Model.Seller != null)
     {
-        title.Append(Model.Seller.Name);
+        title.Append(" " + Model.Seller.Name);
     }
     ViewBag.Title = title.ToString();
+    ViewBag.SelectedCategory = Model.Category;
+    var categories = ViewBag.SellerCategories as List<Category>;
 }
 @section meta
 {
@@ -41,7 +42,7 @@
                     var optValue = decodeURI($(this).parent().attr("data-option-value"));
                     var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
                     if (checkbox.length === 0) {
-                        checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + optValue.replace(" ", "") + "]")
+                        checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + optValue.replace(" ", "") + "]");
                     }
                     checkbox.click();
                 });
@@ -77,7 +78,7 @@
             var sortControl = $(".sort_btn[data-sort-value=Rating]");
             @if (Model.Category != null)
             {<text>
-            if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
+                 if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
                      options = lastSegment;
                      $.each(options.split(";"), function (i, urlSegment) {
                          if (urlSegment === "") return;
@@ -171,9 +172,12 @@
     <!--title_content-->
     <div class="top_inner_block_wrapper maxwidth-theme" style="height: 80px;">
         <section class="page-top maxwidth-theme ">
-            @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+            @if (Model.Breadcrumbs != null)
+            {
+                @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
+            }
             <div class="page-top-main">
-                @if (Model.Category.ParentCategory != null)
+                @if (Model.Category != null && Model.Category.ParentCategory != null)
                 {
                     <div class="visible-xs">
                         <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = Model.Category.ParentCategory.UrlName})" style="font-size: 16px; font-weight: bold;">
@@ -181,7 +185,20 @@
                         </a>
                     </div>
                 }
-                <h1 id="pagetitle" style="text-align: left;">@Model.Category.Name</h1>
+                <h1 id="pagetitle" style="text-align: left;">
+                    @if (Model.Category != null)
+                    {
+                        <span>
+                            @Model.Category.Name
+                        </span>
+                    }
+                    @if (Model.Seller != null)
+                    {
+                        <span>
+                            - @Model.Seller.Name
+                        </span>
+                    }
+                </h1>
             </div>
         </section>
     </div>
@@ -203,22 +220,25 @@
                             </div>
 
                             <div class="sort_header view_block">
-                                <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
-                                    <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
+                                @if (Model.Category != null)
+                                {
+                                    <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
+                                        <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
 
-                                    <a href="" data-sort-value="Rating" class="sort_btn" rel="nofollow">
-                                        <span class="padding-10">По рейтингу</span>
-                                    </a>
-                                    <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
-                                        <span class="padding-10">По алфавіту</span>
-                                    </a>
-                                    <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
-                                        <span class="padding-10">Дешеві</span>
-                                    </a>
-                                    <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
-                                        <span class="padding-10">Дорогі</span>
-                                    </a>
-                                </div>
+                                        <a href="" data-sort-value="Rating" class="sort_btn" rel="nofollow">
+                                            <span class="padding-10">По рейтингу</span>
+                                        </a>
+                                        <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                                            <span class="padding-10">По алфавіту</span>
+                                        </a>
+                                        <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
+                                            <span class="padding-10">Дешеві</span>
+                                        </a>
+                                        <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
+                                            <span class="padding-10">Дорогі</span>
+                                        </a>
+                                    </div>
+                                }
                                 @*<div class="sort_display">
                                         <a rel="nofollow" href="catalog_block.html" class="sort_btn block current"><i title="плиткой"></i></a>
                                         <a rel="nofollow" href="catalog_list.html" class="sort_btn list "><i title="списком"></i></a>
@@ -244,11 +264,14 @@
                                             <span class="more_text_ajax">Показати ще</span>
                                         </div>
                                     }
-                                    <div class="group_description_block bottom">
-                                        <div>
-                                            @Model.Category.Description
+                                    @if (Model.Category != null)
+                                    {
+                                        <div class="group_description_block bottom">
+                                            <div>
+                                                @Model.Category.Description
+                                            </div>
                                         </div>
-                                    </div>
+                                    }
                                     @*<div class="module-pagination">
                                             <div class="nums">
                                                 @for (int i = 0; i < Model.; i++)
@@ -266,9 +289,10 @@
         </div>
 
         <div class="left_block">
-            @Html.Partial("_ProductFilters", Model.ProductParameters)
-
-
+            @if (Model.ProductParameters.Any())
+            {
+                @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
+            }
             @*<div class="banner SCALE SIDE  " id="bx_651765591_3268">
                     <img src="images/98d62c0f38e09a2b938e1c1ae598fa39.jpg" alt="Смарт-часы с SIM-картой" title="Смарт-часы с SIM-картой" class="img-responsive">
                 </div>
