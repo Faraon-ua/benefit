@@ -12,26 +12,30 @@
             {
                 @Html.Partial("~/Views/Seller/_SellerMenu.cshtml", categories)
             }
-            <div class="bx_filter_parameters_box_title">
-                Фільтри
-                <div class="selected-filters">
-                </div>
-                <div class="sort_header view_block hidden-lg" style="float: right">
-                    <!--noindex-->
-                    <div class="sort_filter filter-section" data-filter-name="sort">
-                        <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
-                            <span class="icon padding_5" title="По алфавіту">A &#8593;</span>
-                        </a>
-                        <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
-                            <span class="icon padding_5" title="За ціною">&#36; &#8593;</span>
-                        </a>
-                        <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
-                            <span class="icon padding_5" title="За ціною">&#36; &#8595;</span>
-                        </a>
+            @if (Model.Any())
+            {
+                <div class="bx_filter_parameters_box_title">
+                    Фільтри
+                    <div class="selected-filters">
+                        <span id="reset-filters" class="badge padding_5 margin-right-10 margin-top-5" style="background: #b41818; display: none;">Скинути всі<i class="fa fa-times-circle pointer remove-filter" style="font-size: 1.5em"></i></span>
                     </div>
-                    <!--/noindex-->
+                    <div class="sort_header view_block hidden-lg" style="float: right">
+                        <!--noindex-->
+                        <div class="sort_filter filter-section" data-filter-name="sort">
+                            <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                                <span class="icon padding_5" title="По алфавіту">A &#8593;</span>
+                            </a>
+                            <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
+                                <span class="icon padding_5" title="За ціною">&#36; &#8593;</span>
+                            </a>
+                            <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
+                                <span class="icon padding_5" title="За ціною">&#36; &#8595;</span>
+                            </a>
+                        </div>
+                        <!--/noindex-->
+                    </div>
                 </div>
-            </div>
+            }
         </div>
         
         @foreach (var filter in Model.OrderBy(entry => entry.Order))

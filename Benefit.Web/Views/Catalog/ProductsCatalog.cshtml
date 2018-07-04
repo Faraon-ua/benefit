@@ -15,7 +15,6 @@
     }
     ViewBag.Title = title.ToString();
     ViewBag.SelectedCategory = Model.Category;
-    var categories = ViewBag.SellerCategories as List<Category>;
 }
 @section meta
 {
@@ -35,6 +34,10 @@
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
         }
         $(function () {
+            $("#reset-filters").click(function () {
+                location.href = location.href.substring(0, location.href.indexOf(lastSegment));
+            });
+
             $('body').on("click",
                 ".remove-filter",
                 function () {
@@ -73,6 +76,7 @@
             });
 
             //select all checkboxes from url
+            var showFiltersReset = false;
             var parts = location.href.split('/');
             var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
             var sortControl = $(".sort_btn[data-sort-value=Rating]");
@@ -91,6 +95,7 @@
                              $(".sort_btn span").removeClass("badge");
                          } else {
                              $.each(optionValues, function (j, optValue) {
+                                 showFiltersReset = true;
                                  var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue));
                                  if (checkbox.length === 0) {
                                      checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]")
@@ -101,6 +106,9 @@
                                      "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" + optionName + "' data-option-value='" + optValue+"'>" + optionvalueText + " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
                                  );
                              });
+                             if (showFiltersReset) {
+                                 $("#reset-filters").show();
+                             }
                          }
                      });
                  }
@@ -186,18 +194,7 @@
                     </div>
                 }
                 <h1 id="pagetitle" style="text-align: left;">
-                    @if (Model.Category != null)
-                    {
-                        <span>
-                            @Model.Category.Name
-                        </span>
-                    }
-                    @if (Model.Seller != null)
-                    {
-                        <span>
-                            - @Model.Seller.Name
-                        </span>
-                    }
+                   @title
                 </h1>
             </div>
         </section>
@@ -289,7 +286,7 @@
         </div>
 
         <div class="left_block">
-            @if (Model.ProductParameters.Any())
+            @if (Model.ProductParameters.Any() || Model.Seller != null)
             {
                 @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
             }
