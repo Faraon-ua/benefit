@@ -1,6 +1,5 @@
 ﻿.cart-summary {
-    position: fixed;
-    width: 24%;
+    width: 100%;
     z-index: 10;
 }
 
@@ -150,10 +149,7 @@ i.icon-info {
         content: " ";
         height: 100%;
     }
-    .cart-summary {
-        position: fixed;
-        width: 24%;
-    }
+    
 }
 
 @media screen and (max-width: 340px) {

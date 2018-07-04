@@ -18,7 +18,7 @@ namespace Benefit.Services.Domain
             var delimeterPos = urlName.LastIndexOf("-")+1;
             var sku = urlName.Substring(delimeterPos, urlName.Length - delimeterPos);
             var product = db.Products
-                .Include(entry => entry.Category)
+                .Include(entry => entry.Category.MappedParentCategory)
                 .Include(entry => entry.Seller.ShippingMethods.Select(addr=>addr.Region))
                 .Include(entry => entry.Seller.Addresses.Select(addr=>addr.Region))
                 .Include(entry => entry.Images)

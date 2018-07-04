@@ -467,9 +467,12 @@
                         <meta itemprop="name" content="@Model.Product.Name" />
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
                         <meta itemprop="description" content="@Model.Product.ShortDescription" />
+                        @{
+                            var parentCat = Model.Product.Category.MappedParentCategory ?? Model.Product.Category;
+                        }
                         <div style="padding-top: 5px;">
-                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = Model.Product.Category.UrlName })" style="font-size:16px;font-weight:bold;">
-                                < @Model.Product.Category.Name
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = parentCat.UrlName })" style="font-size:16px;font-weight:bold;">
+                                < @parentCat.Name
                             </a>
                         </div>
                         <h1 id="pagetitle" style="text-align: left;">@Model.Product.Name</h1>

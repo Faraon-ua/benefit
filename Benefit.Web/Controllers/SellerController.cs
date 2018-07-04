@@ -43,8 +43,15 @@ namespace Benefit.Web.Controllers
                     .OrderByDescending(s => s.Count())
                     .Select(entry => entry.Key)
                     .Take(ListConstants.DefaultTakePerPage).ToList();
-                viewModel.Items = db.Products
-                    .Where(entry => productIds.Contains(entry.Id)).ToList();
+                if (productIds.Any())
+                {
+                    viewModel.Items = db.Products
+                        .Where(entry => productIds.Contains(entry.Id)).ToList();
+                }
+                else
+                {
+                    viewModel.Items = db.Products.Where(entry => entry.SellerId == seller.Id).Take(ListConstants.DefaultTakePerPage).ToList();
+                }
             }
             else
             {

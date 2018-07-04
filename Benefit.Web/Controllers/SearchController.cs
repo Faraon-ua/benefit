@@ -70,12 +70,7 @@ namespace Benefit.Web.Controllers
         public ActionResult GetProducts(string term, string options, int page)
         {
             var result = SearchService.SearchProducts(term, options, ListConstants.DefaultTakePerPage * page);
-            var productsHtml = string.Join("", result.Products.Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ProductPartial.cshtml", new ProductPartialViewModel
-            {
-                Product = entry,
-                CategoryUrl = entry.Category.UrlName,
-                SellerUrl = entry.Seller.UrlName
-            })));
+            var productsHtml = string.Join("", result.Products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ProductPartial.cshtml", entry)));
             return Json(new { number = result.Products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
         }
     }

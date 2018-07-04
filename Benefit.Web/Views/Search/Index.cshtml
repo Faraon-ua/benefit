@@ -28,7 +28,7 @@
                 $.get(searchProductsUrl + "?term=@Model.Term&options="+options+"&sellerId=@Model.SellerId&page=" +
                     (currentPage + 1) //  + "&options=" + options
                     ,
-                    function(data) {
+                    function (data) {
                         if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
                             moreBtn.hide();
                         }

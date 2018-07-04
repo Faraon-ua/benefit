@@ -8,16 +8,16 @@
             {
                 if (product.ProductImageUrl.Contains("http"))
                 {
-                    <img src="@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+                    <img src="@product.ProductImageUrl" style="float: left; margin: 10px; max-width: 75px; max-height: 60px;" >
                 }
                 else
                 {
-                    <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" style="float: left; margin: 10px;" width="75">
+                    <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl" style="float: left; margin: 10px;max-width: 75px; max-height: 60px">
                 }
             }
             else
             {
-                <img src="~/Images/ProductGallery/default_product_thumbnail.png" style="float: left; margin: 10px;" width="75">
+                <img src="~/Images/ProductGallery/default_product_thumbnail.png" style="float: left; margin: 10px; max-width: 75px; max-height: 60px">
             }
             @product.ProductName
         </a>

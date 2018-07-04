@@ -17,6 +17,16 @@ namespace Benefit.Web
               );
 
             routes.MapRoute(
+                name: RouteConstants.SearchRouteName + "GetProducts",
+                url: RouteConstants.SearchRoutePrefix + "/getproducts",
+                defaults: new
+                {
+                    controller = "Search",
+                    action = "getproducts",
+                }
+            );
+
+            routes.MapRoute(
               name: RouteConstants.CatalogRouteName + "GetSellers",
               url: RouteConstants.CatalogRoutePrefix + "/getsellers",
               defaults: new { controller = "Catalog", action = "GetSellers" }
@@ -58,7 +68,6 @@ namespace Benefit.Web
                     options = UrlParameter.Optional
                 }
             );
-
 
             routes.MapRoute(
                 name: RouteConstants.SearchRouteName,
