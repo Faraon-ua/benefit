@@ -81,7 +81,15 @@ namespace Benefit.Services.Domain
         }
         public ApplicationUser GetUserInfoWithRegions(string id)
         {
-            var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Addresses).Include(entry => entry.Addresses.Select(addr => addr.Region)).FirstOrDefault(entry => entry.Id == id);
+            var user = db.Users
+                .Include(entry => entry.Region)
+                .Include(entry => entry.Addresses)
+                .Include(entry => entry.Addresses.Select(addr => addr.Region))
+                .Include(entry => entry.OwnedSellers)
+                .Include(entry => entry.ReferedBenefitCardSellers)
+                .Include(entry => entry.ReferedWebSiteSellers)
+                .Include(entry => entry.OwnedSellers)
+                .FirstOrDefault(entry => entry.Id == id);
             return user;
         }
         

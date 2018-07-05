@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Web.Mvc;
 using Benefit.Domain.Models.Enums;
 
@@ -69,6 +70,14 @@ namespace Benefit.Domain.Models
         public ICollection<Message> Messages { get; set; }
         public ICollection<NotificationChannel> NotificationChannels{ get; set; }
         public ICollection<Personnel> Personnels { get; set; }
+
+        [NotMapped]
+        public bool HasSellers {
+            get
+            {
+                return OwnedSellers.Any() || ReferedBenefitCardSellers.Any() || ReferedWebSiteSellers.Any();
+            }
+        }
     }
 
     public class ApplicationUserComparer : IEqualityComparer<ApplicationUser>
