@@ -2,14 +2,13 @@
 @using Benefit.Common.Helpers
 @using Benefit.Domain.Models
 @using Benefit.Services.Domain
-@*@model Benefit.DataTransfer.ViewModels.ProductPartialViewModel*@
 @model Product
 
 @{
     var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
     //var sellerUrl = Url.SubdomainAction(Model.Seller.UrlName, "Index", "Home", null);
-    var sellerUrl = "";
+    var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.Seller.UrlName });
     var reviewsCount = Model.Reviews.Count;
     var availableForPurchase = Model.AvailableForPurchase(RegionService.GetRegionId());
 }

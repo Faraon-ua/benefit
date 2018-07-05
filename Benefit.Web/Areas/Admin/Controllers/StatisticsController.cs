@@ -16,7 +16,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult SellerTurnover(SellerTurnoverViewModel sellerTurnover)
         {
             var model = new SellerTurnoverViewModel();
-            var orders = db.Orders.Include(entry => entry.OrderStatusStamps).Where(entry => entry.Status == OrderStatus.Finished);
+            var orders = db.Orders
+                .Include(entry => entry.OrderStatusStamps)
+                .Include(entry => entry.Transactions)
+                .Where(entry => entry.Status == OrderStatus.Finished);
 
             var startDate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
             var endDate = DateTime.UtcNow;
@@ -73,7 +76,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             .Select(entry => entry.Sum)
                             .DefaultIfEmpty(0)
                             .Sum(),
-                    BonusesOnlineTurnover =
+                    BonusesOnlineTurnover = Math.Abs(
                         orders.Where(
                             entry =>
                                 entry.SellerId == seller.Id 
@@ -83,9 +86,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                     stamp => stamp.OrderStatus == OrderStatus.Finished).Time >= startDate &&
                                 entry.OrderStatusStamps.FirstOrDefault(
                                     stamp => stamp.OrderStatus == OrderStatus.Finished).Time <= endDate)
-                            .Select(entry => entry.Sum)
+                            .SelectMany(entry => entry.Transactions.Where(tr=>tr.Type == TransactionType.BonusesOrderPayment || tr.Type == TransactionType.OrderRefund).Select(tr=>tr.Bonuses))
                             .DefaultIfEmpty(0)
-                            .Sum(),
+                            .Sum()),
                     BonusesOffineTurnover =
                         orders.Where(
                             entry =>
