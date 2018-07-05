@@ -5,20 +5,23 @@
 
 @{
     var title = new StringBuilder();
+    var h1 = new StringBuilder();
     if (Model.Category != null)
     {
         title.Append(Model.Category.Title ?? Model.Category.Name);
+        h1.Append(Model.Category.Name);
     }
     if (Model.Seller != null)
     {
         title.Append(" " + Model.Seller.Name);
+        h1.Append(" " + Model.Seller.Name);
     }
     ViewBag.Title = title.ToString();
     ViewBag.SelectedCategory = Model.Category;
 }
 @section meta
 {
-    <meta name="description" content="@(Model.Category == null?  Model.Seller.ShortDescription : Model.Category.Description)">
+    <meta name="description" content="@(Model.Category == null ? Model.Seller.ShortDescription : Model.Category.MetaDescription)">
 }
 @section scripts{
     <script>
@@ -50,17 +53,26 @@
                     checkbox.click();
                 });
 
-            $(".ajax_load_btn").click(function (e) {
+            $(".ajax_load_btn, .paging").click(function (e) {
                 e.preventDefault();
                 var moreBtn = $(this);
-                var currentPage = parseInt(moreBtn.attr("data-page"));
+                var page = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
-                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&page=" + (currentPage + 1)  + "&options=" + options, function (data) {
-                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                        moreBtn.hide();
+                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&page=" + page + "&options=" + options, function (data) {
+                    if (moreBtn.hasClass("ajax_load_btn")) {
+                        if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                            moreBtn.hide();
+                        }
+                        $(".product-item:last").after(data.products);
+                        moreBtn.attr("data-page", page + 1);
+                        $(".paging[data-page=" + page + "]").addClass("cur");
+                    } else {
+                        $(".products-wrapper").html(data.products);
+                        $("html, body").animate({ scrollTop: 0 }, 600);
+                        $(".paging").removeClass("cur");
+                        $(".paging[data-page=" + page + "]").addClass("cur");
+                        $(".ajax_load_btn").attr("data-page", (page + 1));
                     }
-                    $(".product-item:last").after(data.products);
-                    moreBtn.attr("data-page", currentPage + 1);
                     $(".loader").hide();
                 });
             });
@@ -194,7 +206,7 @@
                     </div>
                 }
                 <h1 id="pagetitle" style="text-align: left;">
-                   @title
+                    @h1
                 </h1>
             </div>
         </section>
@@ -247,7 +259,7 @@
 
                             <div class="sections_wrapper">
                                 <div class="list items">
-                                    <div class="row margin0">
+                                    <div class="row margin0 products-wrapper">
                                         @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
                                         {
                                             @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
@@ -257,8 +269,20 @@
                                 <div class="bottom_nav margin-top-20">
                                     @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
                                     {
-                                        <div class="ajax_load_btn" data-page="0">
+                                        <div class="ajax_load_btn" data-page="1">
                                             <span class="more_text_ajax">Показати ще</span>
+                                        </div>
+                                    }
+                                    @if (Model.PagesCount > 1)
+                                    {
+                                        <div class="module-pagination">
+                                            <div class="nums">
+                                                <a href="#" class="paging dark_link cur" data-page="0">1</a>
+                                                @for (int i = 2; i <= Model.PagesCount; i++)
+                                                {
+                                                    <a href="#" class="paging dark_link" data-page="@(i-1)">@i</a>
+                                                }
+                                            </div>
                                         </div>
                                     }
                                     @if (Model.Category != null)
@@ -269,14 +293,6 @@
                                             </div>
                                         </div>
                                     }
-                                    @*<div class="module-pagination">
-                                            <div class="nums">
-                                                @for (int i = 0; i < Model.; i++)
-                                                {
-                                                    <a href="#" class="dark_link" id="page-">@(i + 1)</a>
-                                                }
-                                            </div>
-                                        </div>*@
                                 </div>
                             </div>
                         </div>

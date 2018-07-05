@@ -3,7 +3,7 @@
 @model Benefit.DataTransfer.ViewModels.MainPageViewModel
 
 @{
-    ViewBag.Title = "Головна";
+    ViewBag.Title = Model.Description.Title;
     var categories = ViewBag.Categories as List<Category>;
 }
 @section meta

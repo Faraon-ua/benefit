@@ -451,6 +451,7 @@ namespace Benefit.Services.Domain
                 result.ProductParameters = productParameters;
             }
 
+            result.ProductsNumber = items.Count();
             result.Products = items.Skip(skip).Take(take + 1).ToList();
             result.Products.ForEach(entry =>
             {
@@ -531,6 +532,7 @@ namespace Benefit.Services.Domain
             var categoryId = category == null ? null : category.Id;
             var catalog = GetSellerCatalogProducts(seller == null ? null : seller.Id, categoryId, options);
             result.Items = catalog.Products.ToList();
+            result.PagesCount = (catalog.ProductsNumber - 1) / ListConstants.DefaultTakePerPage + 1;
             result.ProductParameters = catalog.ProductParameters;
 
             //todo: add breadcrumbs

@@ -12,5 +12,6 @@ namespace Benefit.DataTransfer.ViewModels
         }
         public List<Product> Products { get; set; }
         public List<ProductParameter> ProductParameters { get; set; }
+        public int ProductsNumber { get; set; }
     }
 }

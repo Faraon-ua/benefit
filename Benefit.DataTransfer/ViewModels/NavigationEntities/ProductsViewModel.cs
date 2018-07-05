@@ -11,5 +11,6 @@ namespace Benefit.DataTransfer.ViewModels.NavigationEntities
             ProductParameters = new List<ProductParameter>();
         }
         public ICollection<ProductParameter> ProductParameters { get; set; }
+        public int PagesCount { get; set; }
     }
 }
