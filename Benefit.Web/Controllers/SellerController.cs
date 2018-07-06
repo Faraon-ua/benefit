@@ -42,7 +42,7 @@ namespace Benefit.Web.Controllers
                     .GroupBy(entry => entry)
                     .OrderByDescending(s => s.Count())
                     .Select(entry => entry.Key)
-                    .Take(ListConstants.DefaultTakePerPage).ToList();
+                    .Take(ListConstants.DefaultTakePerPage + 1).ToList();
                 if (productIds.Any())
                 {
                     viewModel.Items = db.Products
@@ -50,12 +50,14 @@ namespace Benefit.Web.Controllers
                 }
                 else
                 {
-                    viewModel.Items = db.Products.Where(entry => entry.SellerId == seller.Id).Take(ListConstants.DefaultTakePerPage).ToList();
+                    viewModel.Items = db.Products.Where(entry => entry.SellerId == seller.Id).Take(ListConstants.DefaultTakePerPage + 1).ToList();
                 }
             }
             else
             {
-                viewModel.Category = categories.FindByUrlIdRecursively(category, null);
+                var selectedCat = categories.FindByUrlIdRecursively(category, null);
+                if(selectedCat == null) throw new HttpException(404, "Not Found");
+                viewModel.Category = selectedCat;
                 viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
 
@@ -68,7 +70,7 @@ namespace Benefit.Web.Controllers
         public ActionResult Reviews(string id)
         {
             var seller = db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.UrlName == id);
-            if(seller == null) throw  new HttpException(404, "Not Found");
+            if (seller == null) throw new HttpException(404, "Not Found");
             return View(seller);
         }
     }

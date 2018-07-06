@@ -16,8 +16,8 @@
             </h4>
             @if (category.ChildCategories.Any())
             {
-                var ulDisplay = (selectedCategory != null && selectedCategory.ParentCategory.ParentCategoryId == category.Id) ? "" : "none";
-                <ul class="no-list-style" style='display:@ulDisplay'>
+                //var ulDisplay = (selectedCategory != null && selectedCategory.ParentCategory.ParentCategoryId == category.Id) ? "" : "none";
+                <ul class="no-list-style" @*style='display:@ulDisplay'*@>
                     @foreach (var childCat in category.ChildCategories)
                     {
                         <li>

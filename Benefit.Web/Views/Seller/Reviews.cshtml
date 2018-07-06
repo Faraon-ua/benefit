@@ -12,7 +12,6 @@
 }
 <!--end-title_content-->
 <div class="wraps hover_shine" id="content">
-    @Html.Partial("_FlashMessage")
     <section class="page-top maxwidth-theme">
         @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { IsNews = false, Page = new InfoPage() { Name = "Відгуки - " + Model.Name } })
         <h1 id="pagetitle" class="no-padding no-margin">Відгуки - @Model.Name</h1>
@@ -42,6 +41,8 @@
                                             </div>
                                         </div>
                                         <div class="content">
+                                            @Html.Partial("_FlashMessage")
+
                                             @Html.Partial("_ReviewsPartial", new ReviewsViewModel
                                             {
                                                 CanReview = true,
