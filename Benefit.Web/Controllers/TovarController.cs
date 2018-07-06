@@ -33,7 +33,7 @@ namespace Benefit.Web.Controllers
         {
             var cats = ViewBag.Categories as List<Category>;
             var productResult = ProductsService.GetProductDetails(cats, productUrl, User.Identity.GetUserId());
-            if (productResult == null) return HttpNotFound();
+            if (productResult == null) throw new HttpException(404, "Not found");
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {

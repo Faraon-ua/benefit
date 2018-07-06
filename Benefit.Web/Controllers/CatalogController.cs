@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
@@ -41,7 +42,7 @@ namespace Benefit.Web.Controllers
                 var sellers = SellerService.GetSellersCatalog(options);
                 if (sellers == null)
                 {
-                    return HttpNotFound();
+                    throw new HttpException(404, "Not found");
                 }
                 sellers.Breadcrumbs = new BreadCrumbsViewModel()
                 {
@@ -53,7 +54,7 @@ namespace Benefit.Web.Controllers
             CategoriesViewModel catsModel = CategoriesService.GetCategoriesCatalog(cachedCats, categoryUrl, ViewBag.SellerUrl);
             if (catsModel == null)
             {
-                return HttpNotFound();
+                throw new HttpException(404, "Not found");
             }
             if (catsModel.Items.Any())
             {

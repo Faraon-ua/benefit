@@ -4,6 +4,7 @@ using System.Web.Mvc;
 using System.Linq;
 using System.Data.Entity;
 using System.Threading.Tasks;
+using System.Web;
 using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
@@ -90,12 +91,12 @@ namespace Benefit.Web.Controllers
                 SellerId = id,
                 Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == id)
             };
-            if (model.Order == null) return HttpNotFound();
+            if (model.Order == null) throw new HttpException(404, "Not found");
             using (var db = new ApplicationDbContext())
             {
                 var seller = db.Sellers.Include(entry => entry.Promotions).FirstOrDefault(entry => entry.Id == id);
                 var userId = User.Identity.GetUserId();
-                if (seller == null) return HttpNotFound();
+                if (seller == null) throw new HttpException(404, "Not found");
 
                 //promotions
                 var now = DateTime.UtcNow;
@@ -166,7 +167,7 @@ namespace Benefit.Web.Controllers
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
             completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
-            if (completeOrder.Order == null) return HttpNotFound();
+            if (completeOrder.Order == null) throw new HttpException(404, "Not found");
 
             if (completeOrder.PaymentType == PaymentType.Bonuses)
             {
@@ -199,7 +200,7 @@ namespace Benefit.Web.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var seller = db.Sellers.FirstOrDefault(entry => entry.Id == completeOrder.Order.SellerId);
-                if (seller == null) return HttpNotFound();
+                if (seller == null) throw new HttpException(404, "Not found");
                 var userId = User.Identity.GetUserId();
                 completeOrder.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == completeOrder.Order.SellerId).ToList();
                 completeOrder.Addresses =
