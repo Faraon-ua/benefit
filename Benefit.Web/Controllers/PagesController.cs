@@ -29,7 +29,7 @@ namespace Benefit.Web.Controllers
             else
             {
                 var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id);
-                if (page == null) return HttpNotFound();
+                if (page == null) throw new HttpException(404, "Not found");
                 return View(page);
             }
         }

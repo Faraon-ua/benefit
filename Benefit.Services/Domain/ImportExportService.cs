@@ -43,7 +43,9 @@ namespace Benefit.Services.Domain
                 DeleteImportCategories(seller, resultXmlCategories, SyncType.OneCCommerceMl);
                 db.SaveChanges();
 
-                var xmlProducts = xml.Descendants("Товары").First().Elements().Where(entry=>resultXmlCategoryIds.Contains(entry.Element("Группы").Element("Ид").Value)).ToList();
+                var xmlProducts = xml.Descendants("Товары").First().Elements()
+                    .Where(entry => entry.Element("Группы") != null)
+                    .Where(entry => resultXmlCategoryIds.Contains(entry.Element("Группы").Element("Ид").Value)).ToList();
                 AddAndUpdate1СProducts(xmlProducts, seller.Id, seller.UrlName);
                 db.SaveChanges();
                 DeletePromUaProducts(xmlProducts, seller.Id, SyncType.OneCCommerceMl);
@@ -107,7 +109,7 @@ namespace Benefit.Services.Domain
                 var order = 0;
                 lock (lockObj)
                 {
-                    imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Where(entry=>!string.IsNullOrEmpty(entry.Value)).Select(xmlImage => new Image()
+                    imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Where(entry => !string.IsNullOrEmpty(entry.Value)).Select(xmlImage => new Image()
                     {
                         Id = Guid.NewGuid().ToString(),
                         ImageType = ImageType.ProductGallery,
@@ -192,7 +194,7 @@ namespace Benefit.Services.Domain
             var sellerCats = new List<SellerCategory>();
             var seller = db.Sellers.Include(entry => entry.SellerCategories)
                 .FirstOrDefault(entry => entry.Id == sellerId);
-            db.SellerCategories.RemoveRange(seller.SellerCategories.Where(entry=>!entry.IsDefault));
+            db.SellerCategories.RemoveRange(seller.SellerCategories.Where(entry => !entry.IsDefault));
             foreach (var xmlCategory in xmlCategories)
             {
                 var catId = xmlCategory.Element("Ид").Value;
@@ -227,7 +229,7 @@ namespace Benefit.Services.Domain
                     db.Entry(dbCategory).State = EntityState.Modified;
                 }
             }
-            
+
             sellerCats = sellerCats.Where(entry => entry.CategoryId != null).Distinct(new SellerCategoryComparer()).ToList();
             db.SellerCategories.AddRange(sellerCats);
             if (hasNewContent)
@@ -566,7 +568,7 @@ namespace Benefit.Services.Domain
             db.InsertIntoMembers(productParameterValuesToAdd);
             productParameterProductsToAdd = productParameterProductsToAdd.Where(entry => entry != null).ToList();
             db.InsertIntoMembers(productParameterProductsToAdd);
-            foreach (var image in imagesToAddList.Where(entry=>entry.ImageUrl.Contains(SettingsService.BaseHostName)))
+            foreach (var image in imagesToAddList.Where(entry => entry.ImageUrl.Contains(SettingsService.BaseHostName)))
             {
                 var uri = new Uri(image.ImageUrl);
                 var path = originalDirectory + uri.LocalPath;
