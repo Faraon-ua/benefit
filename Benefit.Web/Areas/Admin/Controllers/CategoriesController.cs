@@ -12,6 +12,7 @@ using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Helpers;
+using Benefit.Web.Models;
 using Microsoft.AspNet.Identity;
 using WebGrease.Css.Extensions;
 
@@ -96,8 +97,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                Id = Guid.NewGuid().ToString(),
                                ParentCategoryId = parentCategoryId
                            };
-            ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id && entry.SellerId == null), "Id",
-                "ExpandedName", category.ParentCategoryId);
+            ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
+            {
+                Text = entry.Name,
+                Value = entry.Id,
+                Level = entry.HierarchicalLevel
+            });
             category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
             return View(category);
         }

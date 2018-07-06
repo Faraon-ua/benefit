@@ -33,6 +33,17 @@ namespace Benefit.Web
               );
 
             routes.MapRoute(
+                name: RouteConstants.SellerCatalogRouteName + "Reviews",
+                url: RouteConstants.SellerCatalogRoutePrefix + "/{id}/reviews",
+                defaults: new
+                {
+                    controller = "Seller",
+                    action = "Reviews",
+                    id = UrlParameter.Optional
+                }
+            );
+
+            routes.MapRoute(
                 name: RouteConstants.SellerCatalogRouteName,
                 url: RouteConstants.SellerCatalogRoutePrefix + "/{id}/{category}/{options}",
                 defaults: new

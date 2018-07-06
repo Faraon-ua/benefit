@@ -211,10 +211,10 @@
                                     </p>
 
                                     @*<div class="x-product-info__item">
-                                        <div class="x-product-info__inline">
-                                            <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
-                                        </div>
-                                    </div>*@
+                                            <div class="x-product-info__inline">
+                                                <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
+                                            </div>
+                                        </div>*@
                                     <div class="x-product-info__item">
                                         <div class="x-product-info__inline">
                                             <div class="x-product-presence" data-qaid="product_presence">
@@ -331,7 +331,7 @@
                                         <div class="x-rating__mask"></div>
                                     </div>
                                     <div class="x-rating__info">
-                                        <a href="@sellerUrl" data-qaid="company_rating"> @Model.Product.Seller.Reviews.Count відгуків про @Model.Product.Seller.Name</a>
+                                        <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName+"Reviews", new {id=Model.Product.Seller.UrlName})" data-qaid="company_rating"> @Model.Product.Seller.Reviews.Count відгуків про @Model.Product.Seller.Name</a>
                                     </div>
                                 </div>
                             </div>

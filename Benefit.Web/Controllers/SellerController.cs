@@ -63,5 +63,13 @@ namespace Benefit.Web.Controllers
             viewModel.Seller = seller;
             return View("~/Views/Catalog/ProductsCatalog.cshtml", viewModel);
         }
+
+        [FetchCategories]
+        public ActionResult Reviews(string id)
+        {
+            var seller = db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.UrlName == id);
+            if(seller == null) throw  new HttpException(404, "Not Found");
+            return View(seller);
+        }
     }
 }

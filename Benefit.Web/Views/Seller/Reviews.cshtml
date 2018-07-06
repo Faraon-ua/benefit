@@ -1,0 +1,76 @@
+﻿@using System.Web.Mvc.Html
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@model Benefit.Domain.Models.Seller
+
+@{
+    ViewBag.Title = "Відгуки - " + Model.Name;
+}
+@section styles
+{
+    <link href="~/Content/v3/css/product.css" rel="stylesheet" />
+}
+<!--end-title_content-->
+<div class="wraps hover_shine" id="content">
+    @Html.Partial("_FlashMessage")
+    <section class="page-top maxwidth-theme">
+        @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { IsNews = false, Page = new InfoPage() { Name = "Відгуки - " + Model.Name } })
+        <h1 id="pagetitle" class="no-padding no-margin">Відгуки - @Model.Name</h1>
+        <div class="margin-top-10">
+            <div class="x-rating__progress pull-left">
+                <div class="x-rating__bar" style="width: @(Model.AvarageRating * 20)%"></div>
+                <div class="x-rating__mask"></div>
+            </div>
+        </div>
+    </section>
+    <div class="wrapper_inner wide_page">
+        <div class="middle ">
+            <div class="container">
+                <div class="maxwidth-theme">
+                    <div class="head-block top">
+                        <div class="bottom_border"></div>
+                    </div>
+                    <div class="wrapper_inner ">
+                        <div class="right_block  wide_">
+                            <div class="middle ">
+                                <div class="container">
+                                    <div class="detail services">
+                                        <div class="line_block share top ">
+                                            <div class="share_wrapp">
+                                                <div class="text btn transparent">Поделиться</div>
+                                                <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
+                                            </div>
+                                        </div>
+                                        <div class="content">
+                                            @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                                            {
+                                                CanReview = true,
+                                                SellerId = Model.Id,
+                                                TargetName = Model.Name,
+                                                Reviews = Model.Reviews
+                                            })
+                                            @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                                            {
+                                                CanReview = true,
+                                                SellerId = Model.Id,
+                                                TargetName = Model.Name,
+                                            })
+                                        </div>
+                                        <div class="wraps goods-block with-padding">
+                                            <div style="clear: both"></div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="clear: both"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left_block">
+                        @Html.Partial("_SocialGroups")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
