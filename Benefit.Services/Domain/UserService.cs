@@ -89,6 +89,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.ReferedBenefitCardSellers)
                 .Include(entry => entry.ReferedWebSiteSellers)
                 .Include(entry => entry.OwnedSellers)
+                .Include(entry => entry.Personnels)
                 .FirstOrDefault(entry => entry.Id == id);
             return user;
         }

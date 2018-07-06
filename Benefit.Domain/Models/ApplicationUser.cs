@@ -75,7 +75,7 @@ namespace Benefit.Domain.Models
         public bool HasSellers {
             get
             {
-                return OwnedSellers.Any() || ReferedBenefitCardSellers.Any() || ReferedWebSiteSellers.Any();
+                return OwnedSellers.Any() || ReferedBenefitCardSellers.Any() || ReferedWebSiteSellers.Any() || Personnels.Any();
             }
         }
     }
