@@ -151,7 +151,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return RedirectToAction("CreateOrUpdate", new { id = category.Id });
             }
 
-            ViewBag.ParentCategoryId = new SelectList(db.Categories.Where(entry => entry.Id != category.Id), "Id", "ExpandedName", category.ParentCategoryId);
+            ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
+            {
+                Text = entry.Name,
+                Value = entry.Id,
+                Level = entry.HierarchicalLevel
+            });
             return View(category);
         }
 
