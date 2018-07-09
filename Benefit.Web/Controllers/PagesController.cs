@@ -1,11 +1,8 @@
 ﻿using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
-using Benefit.Domain.Models.Enums;
-using Benefit.Services;
 using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers

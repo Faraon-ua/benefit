@@ -8,6 +8,16 @@
 }
 @section meta{
     <meta name="description" content="@Model.ShortContent">
+
+    <meta property="og:url" content="@Request.Url.AbsoluteUri" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="@Model.Name" />
+    <meta property="og:description" content="@Model.ShortContent" />
+    <meta property="og:image" content="~/Images/NewsLogo/@Model.ImageUrl" />
+}
+@section image_src
+{
+    <link rel="image_src" href="~/Images/NewsLogo/@Model.ImageUrl" />
 }
 @*@section scripts{
         <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -103,10 +113,16 @@
                                 <div class="row">
                                     <div class="col-md-6 share">
                                         <div class="line_block">
-                                            <div class="share_wrapp">
-                                                <div class="text btn transparent">Поделиться</div>
-                                                <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
-                                            </div>
+                                            <a href="https://www.facebook.com/sharer/sharer.php?u=@Request.Url.AbsoluteUri" target="_blank" style="color: #3B5998;">
+                                                <i class="fa fa-facebook-square" style="font-size: 3em;"></i>
+                                            </a>
+                                            <a href="https://twitter.com/share?url=@Request.Url.AbsoluteUri&text=@Model.Name" target="_blank" style="color: #28AEDB;">
+                                                <i class="fa fa-twitter-square" style="font-size: 3em;"></i>
+                                            </a>
+                                            <a href="https://plus.google.com/share?url=@Request.Url.AbsoluteUri"
+                                               onclick=" javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false; " style="color: #DC4E40;">
+                                                <i class="fa fa-google-plus-square" style="font-size: 3em;"></i>
+                                            </a>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
