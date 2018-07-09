@@ -5,6 +5,10 @@ namespace Benefit.DataTransfer.ViewModels.Base
 {
     public class NavigationEntitiesViewModel<T>
     {
+        public NavigationEntitiesViewModel()
+        {
+            Items = new List<T>();
+        }
         public Category Category { get; set; }
         public Seller Seller { get; set; }
         public List<T> CurrentRegionItems { get; set; }

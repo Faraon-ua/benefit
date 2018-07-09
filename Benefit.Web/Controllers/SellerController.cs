@@ -19,7 +19,6 @@ namespace Benefit.Web.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private SellerService SellerService = new SellerService();
 
-
         [FetchCategories]
         public ActionResult Index(string id, string category = null, string options = null)
         {
@@ -43,20 +42,16 @@ namespace Benefit.Web.Controllers
                     .OrderByDescending(s => s.Count())
                     .Select(entry => entry.Key)
                     .Take(ListConstants.DefaultTakePerPage + 1).ToList();
-                if (productIds.Any())
+                viewModel.Items.AddRange(db.Products.Where(entry => productIds.Contains(entry.Id)).ToList());
+                if (productIds.Count < ListConstants.DefaultTakePerPage)
                 {
-                    viewModel.Items = db.Products
-                        .Where(entry => productIds.Contains(entry.Id)).ToList();
-                }
-                else
-                {
-                    viewModel.Items = db.Products.Where(entry => entry.SellerId == seller.Id).Take(ListConstants.DefaultTakePerPage + 1).ToList();
+                    viewModel.Items.AddRange(db.Products.Where(entry => entry.SellerId == seller.Id).Take(ListConstants.DefaultTakePerPage + 1).ToList());
                 }
             }
             else
             {
                 var selectedCat = categories.FindByUrlIdRecursively(category, null);
-                if(selectedCat == null) throw new HttpException(404, "Not Found");
+                if (selectedCat == null) throw new HttpException(404, "Not Found");
                 viewModel.Category = selectedCat;
                 viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
