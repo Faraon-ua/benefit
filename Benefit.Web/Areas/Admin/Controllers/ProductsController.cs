@@ -309,18 +309,20 @@ namespace Benefit.Web.Areas.Admin.Controllers
             //todo: add check for seller role
             var ownerId = User.Identity.GetUserId();
             var seller = db.Sellers.FirstOrDefault(entry => ownerId == entry.Owner.Id) ?? db.Sellers.FirstOrDefault(entry => entry.Id == product.SellerId);
-            if (User.IsInRole(DomainConstants.AdminRoleName))
+            var categories = db.Categories.Where(
+                entry =>
+                    entry.SellerCategories.Where(sc => !sc.IsDefault)
+                        .Select(sc => sc.SellerId)
+                        .Contains(Seller.CurrentAuthorizedSellerId)).ToList();
+            categories =
+                categories.Union(
+                    db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == product.SellerId)).ToList().SortByHierarchy().ToList();
+            ViewBag.Categories = categories.Select(entry => new HierarchySelectItem()
             {
-                ViewBag.CategoryId = new SelectList(db.Categories, "Id", "ExpandedName", product.CategoryId);
-            }
-            else
-            {
-                ViewBag.CategoryId = new SelectList(db.Categories.Where(
-                    entry =>
-                        entry.SellerCategories.Where(sc => !sc.IsDefault)
-                            .Select(sc => sc.SellerId)
-                            .Contains(Seller.CurrentAuthorizedSellerId)), "Id", "ExpandedName", product.CategoryId);
-            }
+                Text = entry.Name,
+                Value = entry.Id,
+                Level = entry.HierarchicalLevel
+            });
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name");
             var resultCurrencies =
                 db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank)
