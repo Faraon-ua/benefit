@@ -1,4 +1,6 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
+@using Benefit.Web.Helpers
 @model Benefit.Domain.Models.Product
 
 @{
@@ -32,6 +34,25 @@
             } else {
                 tag_input.after('<textarea id="' + tag_input.attr('id') + '" name="' + tag_input.attr('name') + '" rows="3">' + tag_input.val() + '</textarea>').remove();
             }
+
+            var removeReviewUrl = '@Url.Action("RemoveReview","Reviews")';
+
+            $(".remove-review").click(function () {
+                if (!confirm("Видалити відгук?")) {
+                    return;
+                }
+                var id = $(this).attr("data-review-id");
+                var row = $(this).parent().parent();
+                $.post(removeReviewUrl,
+                    { reviewId: id },
+                    function (data) {
+                        if (!data.error) {
+                            row.remove();
+                            flashMessage("Відгук видалено", true);
+                        }
+                    }
+                );
+            });
 
             $("body").on("change", "select.product-option-value", function () {
                 var selectedText = $(this).find("option:selected").text();
@@ -218,6 +239,12 @@
                         Характеристики
                     </a>
                 </li>
+                <li>
+                    <a href="#reviews" data-toggle="tab">
+                        <i class="green icon-edit bigger-110"></i>
+                        Відгуки
+                    </a>
+                </li>
                 @*
                     <li>
                         <a href="#recommendations" data-toggle="tab">
@@ -246,6 +273,9 @@
             </div>
             <div class="tab-pane" id="images">
                 @Html.Partial("_Images", Model)
+            </div>
+            <div class="tab-pane" id="reviews">
+                @Html.Partial("~/Areas/Admin/Views/Reviews/_ReviewsList.cshtml", Model.Reviews)
             </div>
             <div class="tab-pane" id="recommendations">
             </div>

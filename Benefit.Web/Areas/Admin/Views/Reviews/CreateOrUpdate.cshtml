@@ -1,0 +1,49 @@
+﻿@model Benefit.Domain.Models.Review
+
+@{
+    ViewBag.Title = "Відгук";
+}
+@using (Html.BeginForm())
+{
+    <div class="form-horizontal">
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.Stamp)
+        @Html.HiddenFor(model => model.ProductId)
+        @Html.HiddenFor(model => model.SellerId)
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Коментар</label>
+            <div class="col-sm-9">
+                @Html.TextAreaFor(model => model.Message, new { @class = "col-xs-10 col-sm-5" })
+                @Html.ValidationMessageFor(model => model.Message)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Імя користувача</label>
+            <div class="col-sm-9">
+                @Html.TextBoxFor(model => model.UserFullName, new { @class = "col-xs-10 col-sm-5" })
+                @Html.ValidationMessageFor(model => model.UserFullName)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Рейтинг</label>
+            <div class="col-sm-9">
+                @Html.TextBoxFor(model => model.Rating, new { @class = "col-xs-10 col-sm-5" })
+                @Html.ValidationMessageFor(model => model.Rating)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right" for="IsActive">Активний</label>
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.IsActive)
+                @Html.ValidationMessageFor(model => model.IsActive)
+            </div>
+        </div>
+
+        <hr/>
+        <input type="submit" value="Зберегти" class="btn btn-success" />
+    </div>
+}

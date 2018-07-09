@@ -208,7 +208,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult CreateOrUpdate(string id)
         {
             //todo: add check for seller role
-            var product = db.Products.Include("Category").Include(entry => entry.Category.ProductParameters).FirstOrDefault(entry => entry.Id == id) ??
+            var product = db.Products
+                              .Include(entry=>entry.Category)
+                              .Include(entry => entry.Category.ProductParameters)
+                              .Include(entry => entry.Reviews)
+                              .FirstOrDefault(entry => entry.Id == id) ??
                           new Product()
                           {
                               Id = Guid.NewGuid().ToString(),

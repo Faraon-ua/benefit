@@ -32,6 +32,24 @@
         var getPromotionFormUrl = '@Url.Action("GetPromotionForm")';
         var addPromotionUrl = '@Url.Action("CreateOrUpdatePromotion")';
         var deletePromotionUrl = '@Url.Action("DeletePromotion")';
+        var removeReviewUrl = '@Url.Action("RemoveReview","Reviews")';
+
+        $(".remove-review").click(function () {
+            if (!confirm("Видалити відгук?")) {
+                return;
+            }
+            var id = $(this).attr("data-review-id");
+            var row = $(this).parent().parent();
+            $.post(removeReviewUrl,
+                { reviewId: id },
+                function (data) {
+                    if (!data.error) {
+                        row.remove();
+                        flashMessage("Відгук видалено", true);
+                    }
+                }
+            );
+        });
 
         function GenerateLicenseKey() {
             $("#Seller_TerminalLicense").val(guid());
@@ -419,6 +437,12 @@
                     Персонал
                 </a>
             </li>
+            <li>
+                <a href="#reviews" data-toggle="tab">
+                    <i class="green icon-edit bigger-110"></i>
+                    Відгуки
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content" style="min-height: 450px;">
@@ -471,6 +495,9 @@
             </div>*@
             <div class="tab-pane" id="personell">
                 @Html.Partial("~/Areas/Admin/Views/Personnel/_PersonnelList.cshtml", Model.Seller.Personnels)
+            </div>
+            <div class="tab-pane" id="reviews">
+                @Html.Partial("~/Areas/Admin/Views/Reviews/_ReviewsList.cshtml", Model.Seller.Reviews)
             </div>
         </div>
     </div>

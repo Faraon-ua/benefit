@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -56,6 +57,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.Reviews.Remove(review);
             db.SaveChanges();
             return Content(string.Empty);
+        }
+
+        public ActionResult CreateOrUpdate(string id)
+        {
+            var review = db.Reviews.Find(id);
+            if (review == null) return HttpNotFound();
+            return View(review);
+        }
+
+        [HttpPost]
+        public ActionResult CreateOrUpdate(Review review)
+        {
+            if (ModelState.IsValid)
+            {
+                db.Entry(review).State = EntityState.Modified;
+                db.SaveChanges();
+                TempData["SuccessMessage"] = "Відгук збережено";
+                return RedirectToAction("CreateOrUpdate", new {id = review.Id});
+            }
+
+            return View(review);
         }
     }
 }

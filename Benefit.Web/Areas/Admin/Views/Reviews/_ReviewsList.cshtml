@@ -1,0 +1,50 @@
+﻿@using Benefit.Common.Extensions
+@model IEnumerable<Benefit.Domain.Models.Review>
+<table class="table table-striped table-bordered table-hover">
+    <thead>
+        <tr>
+            <th>
+                Час
+            </th>
+            <th>
+                Користувач
+            </th>
+            <th>
+                Рейтинг
+            </th>
+            <th>
+                Коментар
+            </th>
+            <th>
+                Дії
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model.Where(entry => entry.ParentReview == null))
+        {
+            <tr>
+                <td>
+                    @review.Stamp.ToLocalDateTimeWithFormat()
+                </td>
+                <td>
+                    @review.UserFullName
+                </td>
+                <td>
+                    @review.Rating
+                </td>
+                <td class="word-break-all">
+                    @review.Message
+                </td>
+                <td>
+                    <a href="@Url.Action("CreateOrUpdate", "Reviews", new {id=review.Id})" target="_blank" class="btn btn-xs btn-info accept-review" data-review-id="@review.Id">
+                        <i class="icon-edit-sign bigger-120"></i>
+                    </a>
+                    <a class="btn btn-xs btn-danger remove-review" data-review-id="@review.Id">
+                        <i class="icon-trash bigger-120"></i>
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
