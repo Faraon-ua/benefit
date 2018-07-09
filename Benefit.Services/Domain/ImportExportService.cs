@@ -66,6 +66,8 @@ namespace Benefit.Services.Domain
             var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
             var dbProductIds = dbProducts.Select(entry => entry.Id).ToList();
             var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
+            //additional check all over DB
+            productIdsToAdd = productIdsToAdd.Where(entry => !db.Products.Select(pr=>pr.Id).Contains(entry)).ToList();
             var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
 
             var productsToAddList = new List<Product>();

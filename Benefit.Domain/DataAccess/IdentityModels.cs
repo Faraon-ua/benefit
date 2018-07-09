@@ -188,7 +188,7 @@ namespace Benefit.Domain.DataAccess
                 }
                 transaction.Commit();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 transaction.Rollback();
             }
