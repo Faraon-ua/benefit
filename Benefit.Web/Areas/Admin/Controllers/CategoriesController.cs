@@ -97,12 +97,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                Id = Guid.NewGuid().ToString(),
                                ParentCategoryId = parentCategoryId
                            };
-            ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
+            var categories = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
             {
                 Text = entry.Name,
                 Value = entry.Id,
                 Level = entry.HierarchicalLevel
-            });
+            }).ToList();
+            categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 0 });
+            ViewBag.Categories = categories;
             category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
             return View(category);
         }
