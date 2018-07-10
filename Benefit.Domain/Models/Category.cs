@@ -53,7 +53,7 @@ namespace Benefit.Domain.Models
         [MaxLength(64)]
         [Index]
         public string Name { get; set; }
-        [MaxLength(70)]
+        [MaxLength(100)]
         public string Title { get; set; }
         [Required]
         [MaxLength(128)]

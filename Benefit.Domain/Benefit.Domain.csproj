@@ -482,6 +482,10 @@
     <Compile Include="Migrations\201806151404500_AddHasNewContentToImport.Designer.cs">
       <DependentUpon>201806151404500_AddHasNewContentToImport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807100906301_UpdateTitleDescriptionLength.cs" />
+    <Compile Include="Migrations\201807100906301_UpdateTitleDescriptionLength.Designer.cs">
+      <DependentUpon>201807100906301_UpdateTitleDescriptionLength.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -838,6 +842,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201806151404500_AddHasNewContentToImport.resx">
       <DependentUpon>201806151404500_AddHasNewContentToImport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807100906301_UpdateTitleDescriptionLength.resx">
+      <DependentUpon>201807100906301_UpdateTitleDescriptionLength.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

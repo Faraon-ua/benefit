@@ -47,7 +47,7 @@ namespace Benefit.Domain.Models
         [MaxLength(256)]
         [Index]
         public string Name { get; set; }
-        [MaxLength(70)]
+        [MaxLength(100)]
         public string Title { get; set; }
         [Required]
         [MaxLength(128)]
@@ -86,7 +86,7 @@ namespace Benefit.Domain.Models
         public string SearchTags { get; set; }
         [MaxLength(100)]
         public string AltText { get; set; }
-        [MaxLength(160)]
+        [MaxLength(210)]
         public string ShortDescription { get; set; }
         [Required]
         [MaxLength(128)]
