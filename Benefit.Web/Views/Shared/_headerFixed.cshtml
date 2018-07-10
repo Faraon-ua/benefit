@@ -1,8 +1,9 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Domain.Models
+@using Benefit.Web.Helpers
 @{
     var categories = ViewBag.Categories as List<Category>;
-    var isMainPage = ViewContext.RouteData.GetRequiredString("action") == "Index" && ViewContext.RouteData.GetRequiredString("controller") == "Home";
+    var isMainPage = RouteDataHelper.ActionName == "index" && RouteDataHelper.ControllerName == "home";
 }
 
 <div id="headerfixed" style="top: 0px;">

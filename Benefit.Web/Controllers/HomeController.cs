@@ -209,6 +209,7 @@ namespace Benefit.Web.Controllers
             return View("~/Views/SellerArea/Gallery.cshtml");
         }
 
+        [FetchCategories]
         public ActionResult Map()
         {
             /*

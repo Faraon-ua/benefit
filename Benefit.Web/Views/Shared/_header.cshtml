@@ -4,7 +4,7 @@
 
 @{
     var categories = ViewBag.Categories as List<Category>;
-    var isMainPage = ViewContext.RouteData.GetRequiredString("action") == "Index" && ViewContext.RouteData.GetRequiredString("controller") == "Home";
+    var isMainPage = RouteDataHelper.ActionName == "index" && RouteDataHelper.ControllerName == "home";
 }
 
 <header id="header" class="header-v4 header-wrapper">

@@ -1,25 +1,14 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
 @using Benefit.Services.Domain
 @model List<Benefit.Domain.Models.Category>
 @{
     ViewBag.Title = "Мапа закладів";
 }
-@section LeftAside{
-    @*<ul>
-            @foreach (var cat in Model)
-            {
-                <li>
-                    <input type="checkbox" data-category-id="@cat.Id" name="@cat.Id" id="@cat.Id" />
-                    <label for="@cat.Id">@cat.Name</label>
-                </li>
-            }
-        </ul>*@
-    <div class="vertical_menu" id="right-menu">
-    </div>
-}
 @section meta
 {
-    <meta name="description" content="Карта закладів Benefit Card"/>
+    <meta name="description" content="Карта закладів Benefit Card" />
 }
 @section scripts
 {
@@ -74,6 +63,43 @@
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0Ryf-Uk4SouHzTJPPuUXAVSmaAQ5X-oM&callback=initMap" async defer></script>
 }
-<div id="map" style="height: 600px;width: 100%;">
-</div>
 
+<!--end-title_content-->
+<div class="wraps hover_shine" id="content">
+    <section class="page-top maxwidth-theme">
+        @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { IsNews = false, Page = new InfoPage() { Name = "Карта закладів Benefit Card" } })
+        <h1 id="pagetitle" class="no-padding no-margin">Карта закладів Benefit Card</h1>
+    </section>
+    <div class="wrapper_inner wide_page">
+        <div class="middle ">
+            <div class="container">
+                <div class="maxwidth-theme">
+                    <div class="head-block top">
+                        <div class="bottom_border"></div>
+                    </div>
+                    <div class="wrapper_inner ">
+                        <div class="right_block  wide_">
+                            <div class="middle ">
+                                <div class="container">
+                                    <div class="detail services">
+                                        <div class="content">
+                                            <div id="map" style="height: 600px;width: 100%;">
+                                            </div>
+                                        </div>
+                                        <div class="wraps goods-block with-padding">
+                                            <div style="clear: both"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="clear: both"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="left_block">
+                        @Html.Partial("_SocialGroups")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
