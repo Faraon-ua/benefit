@@ -11,6 +11,7 @@
 {
     <meta name="description" content="@(Model.Category == null ? string.Empty : Model.Category.MetaDescription)">
 }
+
 <div class="wraps hover_shine">
     <div class="wrapper_inner front">
         <section>
@@ -54,8 +55,8 @@
                                     </div>
                                 </div>
                             </div>
-                            <br style="clear: both;"/>
-                            <br/>
+                            <br style="clear: both;" />
+                            <br />
                             <p>
                                 @Model.Category.Description
                             </p>
@@ -72,3 +73,7 @@
         </div>
     </div>
 </div>
+@if (!string.IsNullOrEmpty(Model.Category.Tag))
+{
+    @Html.Action("ShowMessagePopup", "Home", new { message = Model.Category.Tag })
+}

@@ -108,6 +108,16 @@
 
                     <div class="form-group">
                         <div class="col-md-1">
+                            <label class="text-left control-label" for="Tag">Popup текст</label>
+                        </div>
+                        <div class="col-md-10">
+                            @Html.TextAreaFor(model => model.Tag)
+                            @Html.ValidationMessageFor(model => model.Tag)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-1">
                             <label class="text-left control-label" for="MetaDescription">Meta Description(210)</label>
                         </div>
                         <div class="col-md-10">

@@ -63,6 +63,8 @@ namespace Benefit.Domain.Models
         [MaxLength(256)]
         public string MetaDescription { get; set; }
         public string Description { get; set; }
+        [MaxLength(250)]
+        public string Tag { get; set; }
         public string ImageUrl { get; set; }
         public int Order { get; set; }
         public bool IsActive { get; set; }

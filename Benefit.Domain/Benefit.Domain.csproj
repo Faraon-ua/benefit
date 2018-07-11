@@ -486,6 +486,10 @@
     <Compile Include="Migrations\201807100906301_UpdateTitleDescriptionLength.Designer.cs">
       <DependentUpon>201807100906301_UpdateTitleDescriptionLength.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807110944386_AddCategoryTag.cs" />
+    <Compile Include="Migrations\201807110944386_AddCategoryTag.Designer.cs">
+      <DependentUpon>201807110944386_AddCategoryTag.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -845,6 +849,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807100906301_UpdateTitleDescriptionLength.resx">
       <DependentUpon>201807100906301_UpdateTitleDescriptionLength.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807110944386_AddCategoryTag.resx">
+      <DependentUpon>201807110944386_AddCategoryTag.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

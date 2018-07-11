@@ -319,6 +319,7 @@ $(function () {
             }
         });
 
+    $(".message-modal").modal();
     $("body").on("click", ".goto_back", function () {
         $("#basket_modal").modal('hide');
     });
@@ -381,7 +382,7 @@ $(function () {
             width: '500',
             minChars: 3,
             serviceUrl: routePrefix + '/Home/SearchRegion',
-            onSelect: function(suggestion) {
+            onSelect: function (suggestion) {
                 var result = suggestion.value.substring(0, suggestion.value.indexOf(" ("));
                 $(".select_place_container .inside").text(result);
                 $(".region-search-txt").val(result);

@@ -291,5 +291,10 @@ namespace Benefit.Web.Controllers
         {
             return View("~/Views/SellerArea/About.cshtml");
         }
+
+        public ActionResult ShowMessagePopup(string message)
+        {
+            return PartialView("_Message", message);
+        }
     }
 }
