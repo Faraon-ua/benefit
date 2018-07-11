@@ -1,6 +1,7 @@
 ﻿@using Benefit.Common.Extensions
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
+@using Benefit.Services
 @model InfoPage
 
 @{
@@ -77,8 +78,11 @@
 
 <!--end-title_content-->
     <div class="wraps hover_shine" id="content" itemscope itemtype="http://schema.org/Article">
-        <meta itemprop="image" content="~/Images/NewsLogo/@Model.ImageUrl" />
-        <meta itemprop="datePublished" content="@Model.CreatedOn.ToLocalTimeWithDateFormat()" />
+        <meta itemprop="headline" content="@Model.Name" />
+        <meta itemprop="author" content="Benefit Company" />
+        <meta itemprop="publisher" content="Benefit Company" />
+        <meta itemprop="image" content="@SettingsService.BaseHostName/Images/NewsLogo/@Model.ImageUrl" />
+        <meta itemprop="datePublished" content="@Model.CreatedOn.ToLocalTime()" />
 
         <section class="page-top maxwidth-theme">
             @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { IsNews = true, Page = Model })

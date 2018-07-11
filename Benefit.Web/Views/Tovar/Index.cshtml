@@ -384,6 +384,7 @@
                         <div class="detail_text">
                             @Html.Partial("_ReviewsPartial", new ReviewsViewModel
                             {
+                                ApplyMicrodata = false,
                                 CanReview = Model.CanReview,
                                 ProductId = Model.Product.Id,
                                 TargetName = Model.Product.Name,
@@ -468,10 +469,6 @@
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
                         <meta itemprop="description" content="@Model.Product.ShortDescription" />
                         <meta itemprop="image" content="@image_src_str" />
-                        @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
-                        {
-                            <link itemprop="availability" href="http://schema.org/InStock" />
-                        }
                         @{
                             var parentCat = Model.Product.Category.MappedParentCategory ?? Model.Product.Category;
                         }
@@ -531,7 +528,10 @@
                                                 <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                                     <meta itemprop="price" content="@Model.Product.Price" />
                                                     <meta itemprop="priceCurrency" content="UAH" />
-                                                    <link itemprop="availability" href="http://schema.org/InStock" />
+                                                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+                                                    {
+                                                        <link itemprop="availability" href="http://schema.org/InStock" />
+                                                    }
                                                 </div>
                                                 <div class="price_matrix_block">
                                                     <div class="price_matrix_wrapper ">
@@ -657,6 +657,7 @@
                                     <div class="detail_text">
                                         @Html.Partial("_ReviewsPartial", new ReviewsViewModel
                                         {
+                                            ApplyMicrodata = true,
                                             CanReview = Model.CanReview,
                                             ProductId = Model.Product.Id,
                                             TargetName = Model.Product.Name,

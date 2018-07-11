@@ -6,6 +6,7 @@ namespace Benefit.DataTransfer.ViewModels
     public class ReviewsViewModel
     {
         public string TargetName { get; set; }
+        public bool ApplyMicrodata { get; set; }
         public bool CanReview { get; set; }
         public string ProductId { get; set; }
         public string SellerId { get; set; }

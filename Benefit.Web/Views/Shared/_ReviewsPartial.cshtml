@@ -1,49 +1,93 @@
 ﻿@using Benefit.Common.Extensions
 @using Benefit.DataTransfer.ViewModels
-@model Benefit.DataTransfer.ViewModels.ReviewsViewModel
+@model ReviewsViewModel
 
 @if (Model.Reviews.Any())
 {
     foreach (var review in Model.Reviews.OrderByDescending(entry => entry.Stamp))
     {
-        <div itemprop="review" itemscope itemtype="http://schema.org/Review">
-            <strong itemprop="author">@review.UserFullName</strong>
-            <span itemprop="datePublished">@review.Stamp.ToLocalDateTimeWithFormat()</span>
-            <br>
-            <div style="margin: 10px 0;" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
-                <meta itemprop="ratingValue" content="@review.Rating" />
-                @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
+        if (Model.ApplyMicrodata)
+        {
+            <div itemprop="review" itemscope itemtype="http://schema.org/Review">
+                <strong itemprop="author">@review.UserFullName</strong>
+                <span itemprop="datePublished">@review.Stamp.ToLocalDateTimeWithFormat()</span>
+                <br>
+                <div style="margin: 10px 0;" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                    <meta itemprop="ratingValue" content="@review.Rating"/>
+                    @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
+                    {
+                        SmallStars = true,
+                        IsActive = false,
+                        Rating = review.Rating
+                    })
+                </div>
+                <span itemprop="description">
+                    @review.Message
+                </span>
+                @if (User.Identity.IsAuthenticated)
                 {
-                    SmallStars = true,
-                    IsActive = false,
-                    Rating = review.Rating
-                })
-            </div>
-            <span itemprop="description">
-                @review.Message
-            </span>
-            @if (User.Identity.IsAuthenticated)
-            {
-                <a href="#" class="review-comment" data-review-id="@review.Id">Відповісти</a>
-                <div class="hidden">
+                    <a href="#" class="review-comment" data-review-id="@review.Id">Відповісти</a>
+                    <div class="hidden">
 
-                </div>
-            }
-            @foreach (var comment in review.ChildReviews.Where(entry => entry.IsActive).OrderByDescending(entry => entry.Stamp))
-            {
-                <div class="recall_item">
-                    <div class="margin-left-30">
-                        <div class="recall_item_head">
-                            <div class="recall_name bold">@comment.UserFullName</div>
-                            <div class="recall_time">@comment.Stamp.ToLocalDateTimeWithFormat()</div>
-                        </div>
-                        <p class="recall_main word-break-all">
-                            @comment.Message
-                        </p>
                     </div>
+                }
+                @foreach (var comment in review.ChildReviews.Where(entry => entry.IsActive).OrderByDescending(entry => entry.Stamp))
+                {
+                    <div class="recall_item">
+                        <div class="margin-left-30">
+                            <div class="recall_item_head">
+                                <div class="recall_name bold">@comment.UserFullName</div>
+                                <div class="recall_time">@comment.Stamp.ToLocalDateTimeWithFormat()</div>
+                            </div>
+                            <p class="recall_main word-break-all">
+                                @comment.Message
+                            </p>
+                        </div>
+                    </div>
+                }
+                <hr>
+            </div>
+        }
+        else
+        {
+            <div>
+                <strong>@review.UserFullName</strong>
+                <span>@review.Stamp.ToLocalDateTimeWithFormat()</span>
+                <br>
+                <div style="margin: 10px 0;">
+                    @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
+                    {
+                        SmallStars = true,
+                        IsActive = false,
+                        Rating = review.Rating
+                    })
                 </div>
-            }
-            <hr>
-        </div>
+                <span>
+                    @review.Message
+                </span>
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <a href="#" class="review-comment" data-review-id="@review.Id">Відповісти</a>
+                    <div class="hidden">
+
+                    </div>
+                }
+                @foreach (var comment in review.ChildReviews.Where(entry => entry.IsActive).OrderByDescending(entry => entry.Stamp))
+                {
+                    <div class="recall_item">
+                        <div class="margin-left-30">
+                            <div class="recall_item_head">
+                                <div class="recall_name bold">@comment.UserFullName</div>
+                                <div class="recall_time">@comment.Stamp.ToLocalDateTimeWithFormat()</div>
+                            </div>
+                            <p class="recall_main word-break-all">
+                                @comment.Message
+                            </p>
+                        </div>
+                    </div>
+                }
+                <hr>
+            </div>
+        }
     }
 }
