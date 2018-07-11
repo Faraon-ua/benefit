@@ -6,11 +6,12 @@
 {
     foreach (var review in Model.Reviews.OrderByDescending(entry => entry.Stamp))
     {
-        <div>
-            <strong>@review.UserFullName</strong>
-            @review.Stamp.ToLocalDateTimeWithFormat()
+        <div itemprop="review" itemscope itemtype="http://schema.org/Review">
+            <strong itemprop="author">@review.UserFullName</strong>
+            <span itemprop="datePublished">@review.Stamp.ToLocalDateTimeWithFormat()</span>
             <br>
-            <div style="margin: 10px 0;">
+            <div style="margin: 10px 0;" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
+                <meta itemprop="ratingValue" content="@review.Rating" />
                 @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
                 {
                     SmallStars = true,
@@ -18,7 +19,9 @@
                     Rating = review.Rating
                 })
             </div>
-            @review.Message
+            <span itemprop="description">
+                @review.Message
+            </span>
             @if (User.Identity.IsAuthenticated)
             {
                 <a href="#" class="review-comment" data-review-id="@review.Id">Відповісти</a>

@@ -464,8 +464,14 @@
                 <div class="container">
                     <div class="catalog_detail detail" itemscope itemtype="http://schema.org/Product">
                         <meta itemprop="name" content="@Model.Product.Name" />
+                        <meta itemprop="productID" content="@Model.Product.SKU" />
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
                         <meta itemprop="description" content="@Model.Product.ShortDescription" />
+                        <meta itemprop="image" content="@image_src_str" />
+                        @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+                        {
+                            <link itemprop="availability" href="http://schema.org/InStock" />
+                        }
                         @{
                             var parentCat = Model.Product.Category.MappedParentCategory ?? Model.Product.Category;
                         }
@@ -549,12 +555,19 @@
                                                             }
                                                         </div>
                                                         <div class="x-product-info__inline">
-                                                            <div class="x-product-info__inline">
+                                                            <div class="x-product-info__inline" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+                                                                @if (Model.Product.AvarageRating.HasValue)
+                                                                {
+                                                                    <meta itemprop="ratingValue" content="@Model.Product.AvarageRating" />
+                                                                    <meta itemprop="reviewCount" content="@Model.Product.Reviews.Count" />
+                                                                    <meta itemprop="bestRating" content="@Model.Product.Reviews.Max(entry => entry.Rating)" />
+                                                                    <meta itemprop="worstRating" content="@Model.Product.Reviews.Min(entry => entry.Rating)" />
+                                                                }
                                                                 @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
                                                                 {
                                                                     SmallStars = true,
                                                                     IsActive = true,
-                                                                    Rating = 0
+                                                                    Rating = Model.Product.AvarageRating
                                                                 })
                                                             </div>
                                                         </div>
@@ -601,7 +614,7 @@
                                         <div style="padding-top: 20px; text-align: left;">
                                             <a href="#" class="dark_link">@Model.Product.Seller.Name</a>
                                             <br>@Model.Product.Seller.PrimaryRegionName<br>
-                                            <a href="@sellerUrl" class="dark_link">Всі товари постачальника</a>
+                                            <a href="@sellerUrl" class="dark_link" itemprop="brand">Всі товари постачальника</a>
                                         </div>
                                     </div>
 
