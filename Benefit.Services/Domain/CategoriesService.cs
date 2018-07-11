@@ -80,9 +80,11 @@ namespace Benefit.Services.Domain
 
             if (parent == null)
             {
+                var mainPage = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "golovna");
                 parent = new Category()
                 {
                     Name = "Каталог",
+                    Title = "Каталог товарів та послуг" + (mainPage == null ? string.Empty : mainPage.Title),
                     ChildCategories = cachedCats.ToList()
                 };
             }
