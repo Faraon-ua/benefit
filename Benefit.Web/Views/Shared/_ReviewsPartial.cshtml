@@ -14,6 +14,8 @@
                 <br>
                 <div style="margin: 10px 0;" itemprop="reviewRating" itemscope itemtype="http://schema.org/Rating">
                     <meta itemprop="ratingValue" content="@review.Rating"/>
+                    <meta itemprop="bestRating" content="5" />
+                    <meta itemprop="worstRating" content="0" />
                     @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
                     {
                         SmallStars = true,

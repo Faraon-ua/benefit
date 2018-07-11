@@ -77,74 +77,79 @@
 }
 
 <!--end-title_content-->
-    <div class="wraps hover_shine" id="content" itemscope itemtype="http://schema.org/Article">
-        <meta itemprop="headline" content="@Model.Name" />
-        <meta itemprop="author" content="Benefit Company" />
-        <meta itemprop="publisher" content="Benefit Company" />
-        <meta itemprop="image" content="@SettingsService.BaseHostName/Images/NewsLogo/@Model.ImageUrl" />
-        <meta itemprop="datePublished" content="@Model.CreatedOn.ToLocalTime()" />
 
-        <section class="page-top maxwidth-theme">
-            @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { IsNews = true, Page = Model })
-            <h1 id="pagetitle" class="no-padding no-margin" itemprop="name">@Model.Name</h1>
-        </section>
-        <div class="wrapper_inner wide_page">
-            <div class="middle ">
-                <div class="container">
-                    <div class="maxwidth-theme">
-                        <div class="head-block top">
-                            <div class="bottom_border"></div>
-                        </div>
-                        <div class="wrapper_inner ">
-                            <div class="right_block  wide_">
-                                <div class="middle ">
-                                    <div class="container">
-                                        <div class="detail services">
-                                            <div class="line_block share top ">
-                                                <div class="share_wrapp">
-                                                    <div class="text btn transparent">Поделиться</div>
-                                                    <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
-                                                </div>
+<div class="wraps hover_shine" id="content" itemscope itemtype="http://schema.org/Article">
+    <meta itemprop="headline" content="@Model.Name" />
+    <meta itemprop="author" content="Benefit Company" />
+    <meta itemprop="publisher" content="Benefit Company" />
+    <meta itemprop="image" content="@SettingsService.BaseHostName/Images/NewsLogo/@Model.ImageUrl" />
+    <meta itemprop="datePublished" content="@Model.CreatedOn.ToLocalTime()" />
+    <div itemprop="publisher" itemscope itemtype="http://schema.org/Organization" style="display: none">
+        <span itemprop="name">Benefit Company</span>
+        <span itemprop="logo">@SettingsService.BaseHostName/Content/img/logo.png</span>
+    </div>
+
+    <section class="page-top maxwidth-theme">
+        @Html.Partial("_BreadcrumbsPartial", new BreadCrumbsViewModel() { IsNews = true, Page = Model })
+        <h1 id="pagetitle" class="no-padding no-margin" itemprop="name">@Model.Name</h1>
+    </section>
+    <div class="wrapper_inner wide_page">
+        <div class="middle ">
+            <div class="container">
+                <div class="maxwidth-theme">
+                    <div class="head-block top">
+                        <div class="bottom_border"></div>
+                    </div>
+                    <div class="wrapper_inner ">
+                        <div class="right_block  wide_">
+                            <div class="middle ">
+                                <div class="container">
+                                    <div class="detail services">
+                                        <div class="line_block share top ">
+                                            <div class="share_wrapp">
+                                                <div class="text btn transparent">Поделиться</div>
+                                                <div class="ya-share2 yashare-auto-init shares" data-services="vkontakte,facebook,odnoklassniki,moimir,twitter,viber,whatsapp,skype,telegram"></div>
                                             </div>
-                                            <div class="content" itemprop="description">
-                                                @Html.Raw(Model.Content)
-                                            </div>
-                                            <div class="wraps goods-block with-padding">
-                                                <div style="clear: both"></div>
-                                            </div>
+                                        </div>
+                                        <div class="content" itemprop="description">
+                                            @Html.Raw(Model.Content)
+                                        </div>
+                                        <div class="wraps goods-block with-padding">
+                                            <div style="clear: both"></div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div style="clear: both"></div>
-                                    <hr class="bottoms">
-                                    <div class="row">
-                                        <div class="col-md-6 share">
-                                            <div class="line_block">
-                                                <a href="https://www.facebook.com/sharer/sharer.php?u=@Request.Url.AbsoluteUri" target="_blank" style="color: #3B5998;">
-                                                    <i class="fa fa-facebook-square" style="font-size: 3em;"></i>
-                                                </a>
-                                                <a href="https://twitter.com/share?url=@Request.Url.AbsoluteUri&text=@Model.Name" target="_blank" style="color: #28AEDB;">
-                                                    <i class="fa fa-twitter-square" style="font-size: 3em;"></i>
-                                                </a>
-                                                <a href="https://plus.google.com/share?url=@Request.Url.AbsoluteUri"
-                                                   onclick=" javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false; " style="color: #DC4E40;">
-                                                    <i class="fa fa-google-plus-square" style="font-size: 3em;"></i>
-                                                </a>
-                                            </div>
+                                <div style="clear: both"></div>
+                                <hr class="bottoms">
+                                <div class="row">
+                                    <div class="col-md-6 share">
+                                        <div class="line_block">
+                                            <a href="https://www.facebook.com/sharer/sharer.php?u=@Request.Url.AbsoluteUri" target="_blank" style="color: #3B5998;">
+                                                <i class="fa fa-facebook-square" style="font-size: 3em;"></i>
+                                            </a>
+                                            <a href="https://twitter.com/share?url=@Request.Url.AbsoluteUri&text=@Model.Name" target="_blank" style="color: #28AEDB;">
+                                                <i class="fa fa-twitter-square" style="font-size: 3em;"></i>
+                                            </a>
+                                            <a href="https://plus.google.com/share?url=@Request.Url.AbsoluteUri"
+                                               onclick=" javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=600,width=600');return false; " style="color: #DC4E40;">
+                                                <i class="fa fa-google-plus-square" style="font-size: 3em;"></i>
+                                            </a>
                                         </div>
-                                        <div class="col-md-6">
-                                            <a class="back-url url-block" href="@Url.Action("index", "news")"><i class="fa fa-angle-left"></i><span>Назад до новин</span></a>
-                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <a class="back-url url-block" href="@Url.Action("index", "news")"><i class="fa fa-angle-left"></i><span>Назад до новин</span></a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="left_block">
-                            @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", lastNews)
-                        </div>
+                    </div>
+                    <div class="left_block">
+                        @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", lastNews)
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 <div id="seller-application-container"></div>
