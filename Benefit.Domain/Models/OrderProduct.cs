@@ -22,6 +22,8 @@ namespace Benefit.Domain.Models
         public string ProductId { get; set; }
         public string ProductName { get; set; }
         [NotMapped]
+        public string SellerId { get; set; }
+        [NotMapped]
         public string ProductUrlName { get; set; }
         [NotMapped]
         public int ProductSku { get; set; }

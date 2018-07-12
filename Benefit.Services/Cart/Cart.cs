@@ -16,6 +16,7 @@ namespace Benefit.Services.Cart
     {
         private static readonly TimeSpan SlidingExpiration = new TimeSpan(6, 0, 0);
         private static Logger _logger = LogManager.GetCurrentClassLogger();
+        private ApplicationDbContext db = new ApplicationDbContext();
         public string SessionKey;
 
         public List<Order> Orders { get; set; }
@@ -40,7 +41,8 @@ namespace Benefit.Services.Cart
 
         public CartEditResult AddProduct(OrderProduct orderProduct, string sellerId)
         {
-            var order = Orders.FirstOrDefault(entry => entry.SellerId == sellerId);
+            var seller = db.Sellers.Find(sellerId);
+            var order = Orders.FirstOrDefault(entry => entry.SellerId == sellerId || entry.SellerId == seller.AssociatedSellerId);
             if (order == null)
             {
                 order = new Order()
@@ -56,47 +58,53 @@ namespace Benefit.Services.Cart
             }
             else
             {
-                using (var db = new ApplicationDbContext())
+                var product =
+                    db.Products
+                        .Include(entry => entry.Seller)
+                        .Include(entry => entry.Currency)
+                        .Include(entry => entry.Images)
+                        .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                orderProduct.ProductName = product.Name;
+                if (!string.IsNullOrEmpty(product.ExternalId))
                 {
-                    var product =
-                        db.Products
-                            .Include(entry => entry.Seller)
-                            .Include(entry => entry.Currency)
-                            .Include(entry => entry.Images)
-                            .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
-                    orderProduct.ProductName = product.Name;
-                    if (!string.IsNullOrEmpty(product.ExternalId))
-                    {
-                        orderProduct.ProductName += string.Format(" ({0})", product.ExternalId);
-                    }
-                    orderProduct.ProductUrlName = product.UrlName;
-                    orderProduct.ProductSku = product.SKU;
-                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                    orderProduct.ProductImageUrl = image == null ? null : image.ImageUrl;
+                    orderProduct.ProductName += string.Format(" ({0})", product.ExternalId);
+                }
+                orderProduct.SellerId = product.SellerId;
+                orderProduct.ProductUrlName = product.UrlName;
+                orderProduct.ProductSku = product.SKU;
+                var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                orderProduct.ProductImageUrl = image == null ? null : image.ImageUrl;
+                if (product.Currency != null)
+                {
+                    orderProduct.ProductPrice = product.Price * product.Currency.Rate;
+                }
+                else
+                {
+                    orderProduct.ProductPrice = product.Price;
+                }
+                if (product.WholesalePrice.HasValue && product.WholesaleFrom.HasValue)
+                {
                     if (product.Currency != null)
                     {
-                        orderProduct.ProductPrice = product.Price * product.Currency.Rate;
+                        orderProduct.WholesaleProductPrice = product.WholesalePrice.Value * product.Currency.Rate;
                     }
-                    if (product.WholesalePrice.HasValue && product.WholesaleFrom.HasValue)
+                    else
                     {
-                        if (product.Currency != null)
-                        {
-                            orderProduct.WholesaleProductPrice = product.WholesalePrice.Value * product.Currency.Rate;
-                        }
-                        orderProduct.WholesaleFrom = product.WholesaleFrom.Value;
+                        orderProduct.WholesaleProductPrice = product.WholesalePrice.Value;
                     }
-                    foreach (var orderProductOption in orderProduct.OrderProductOptions)
-                    {
-                        var productOption = db.ProductOptions.Find(orderProductOption.ProductOptionId);
-                        orderProductOption.ProductOptionName = productOption.Name;
-                        orderProductOption.ProductOptionPriceGrowth = productOption.PriceGrowth;
-                        orderProductOption.EditableAmount = productOption.EditableAmount;
-                    }
-                    order.SellerUrlName = product.Seller.UrlName;
-                    order.SellerName = product.Seller.Name;
-                    order.SellerPrimaryRegionName = product.Seller.PrimaryRegionName;
-                    order.SellerUserDiscount = product.Seller.UserDiscount;
+                    orderProduct.WholesaleFrom = product.WholesaleFrom.Value;
                 }
+                foreach (var orderProductOption in orderProduct.OrderProductOptions)
+                {
+                    var productOption = db.ProductOptions.Find(orderProductOption.ProductOptionId);
+                    orderProductOption.ProductOptionName = productOption.Name;
+                    orderProductOption.ProductOptionPriceGrowth = productOption.PriceGrowth;
+                    orderProductOption.EditableAmount = productOption.EditableAmount;
+                }
+                order.SellerUrlName = product.Seller.UrlName;
+                order.SellerName = product.Seller.Name;
+                order.SellerPrimaryRegionName = product.Seller.PrimaryRegionName;
+                order.SellerUserDiscount = product.Seller.UserDiscount;
                 order.SellerId = sellerId;
                 order.OrderProducts.Add(orderProduct);
             }

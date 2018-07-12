@@ -490,6 +490,10 @@
     <Compile Include="Migrations\201807110944386_AddCategoryTag.Designer.cs">
       <DependentUpon>201807110944386_AddCategoryTag.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807121100512_AddAssociatedSeller.cs" />
+    <Compile Include="Migrations\201807121100512_AddAssociatedSeller.Designer.cs">
+      <DependentUpon>201807121100512_AddAssociatedSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -852,6 +856,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807110944386_AddCategoryTag.resx">
       <DependentUpon>201807110944386_AddCategoryTag.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807121100512_AddAssociatedSeller.resx">
+      <DependentUpon>201807121100512_AddAssociatedSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using Newtonsoft.Json;
 
 namespace Benefit.Domain.Models
 {
+    public class ShippingMethodComparer: IEqualityComparer<ShippingMethod>
+    {
+        public bool Equals(ShippingMethod x, ShippingMethod y)
+        {
+            return x.Name == y.Name;
+        }
+
+        public int GetHashCode(ShippingMethod obj)
+        {
+            return obj.Id.GetHashCode();
+        }
+    }
+
     public class ShippingMethod
     {
         [Key]
