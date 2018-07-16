@@ -94,7 +94,10 @@ namespace Benefit.Web.Controllers
             if (model.Order == null) throw new HttpException(404, "Not found");
             using (var db = new ApplicationDbContext())
             {
-                var seller = db.Sellers.Include(entry => entry.Promotions).Include(entry => entry.AssociatedSeller).FirstOrDefault(entry => entry.Id == id);
+                var seller = db.Sellers
+                    .Include(entry => entry.Promotions)
+                    .Include(entry => entry.AssociatedSellers)
+                    .FirstOrDefault(entry => entry.Id == id);
                 var userId = User.Identity.GetUserId();
                 if (seller == null) throw new HttpException(404, "Not found");
 
@@ -139,10 +142,12 @@ namespace Benefit.Web.Controllers
                     }
                 }
 
+                var sellersInOrder = model.Order.OrderProducts.Select(entry => entry.SellerId).Distinct().Count();
                 model.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == id).ToList();
-                if (seller.AssociatedSeller != null)
+                if (sellersInOrder > 1 && seller.AssociatedSellers.Any())
                 {
-                    var associatedShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == seller.AssociatedSellerId).ToList();
+                    var associatedSellerIds = seller.AssociatedSellers.Select(ac => ac.Id).ToList();
+                    var associatedShippingMethods = db.ShippingMethods.Where(entry => associatedSellerIds.Contains(entry.SellerId)).ToList();
                     model.ShippingMethods = model.ShippingMethods
                         .Intersect(associatedShippingMethods, new ShippingMethodComparer()).ToList();
                 }
@@ -157,17 +162,17 @@ namespace Benefit.Web.Controllers
                     model.PaymentTypes.Add(PaymentType.Acquiring);
                 if (seller.IsBonusesPaymentActive)
                     model.PaymentTypes.Add(PaymentType.Bonuses);
-                if (seller.AssociatedSeller != null)
+                if (sellersInOrder > 1 && seller.AssociatedSellers.Any())
                 {
-                    if (!seller.AssociatedSeller.IsPrePaidPaymentActive)
+                    if (!seller.AssociatedSellers.Any(entry => entry.IsPrePaidPaymentActive))
                         model.PaymentTypes.Remove(PaymentType.PrePaid);
-                    if (!seller.AssociatedSeller.IsPostPaidPaymentActive)
+                    if (!seller.AssociatedSellers.Any(entry => entry.IsPostPaidPaymentActive))
                         model.PaymentTypes.Remove(PaymentType.PostPaid);
-                    if (!seller.AssociatedSeller.IsCashPaymentActive)
+                    if (!seller.AssociatedSellers.Any(entry => entry.IsCashPaymentActive))
                         model.PaymentTypes.Remove(PaymentType.Cash);
-                    if (!seller.AssociatedSeller.IsAcquiringActive)
+                    if (!seller.AssociatedSellers.Any(entry => entry.IsAcquiringActive))
                         model.PaymentTypes.Remove(PaymentType.Acquiring);
-                    if (!seller.AssociatedSeller.IsBonusesPaymentActive)
+                    if (!seller.AssociatedSellers.Any(entry => entry.IsBonusesPaymentActive))
                         model.PaymentTypes.Remove(PaymentType.Bonuses);
                 }
             }

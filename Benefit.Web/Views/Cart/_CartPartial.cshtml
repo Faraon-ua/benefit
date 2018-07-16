@@ -135,8 +135,12 @@
                                 </table>
                                 var сartSum = order.OrderProducts.Sum(entry => entry.ProductPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
                                 var actualCartSum = order.OrderProducts.Sum(entry => entry.ActualPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
+                                var bonuses = (order.OrderProducts.Sum(entry => entry.BonusesAcquired));
                                 <p class="basket_modal_saving" style="display: @(actualCartSum < сartSum ? "" : "none")">Економія: <span>@((сartSum - actualCartSum).ToString("F"))</span></p>
-                                <p class="basket_modal_bonus">Бонус: <span>@((actualCartSum * order.SellerUserDiscount / 100).ToString("F"))</span></p>
+                                if (bonuses > 0)
+                                {
+                                    <p class="basket_modal_bonus">Бонус: <span>@(bonuses.ToString("F"))</span></p>
+                                }
                                 <p class="basket_modal_price">Всього: <span>@actualCartSum.ToString("F")</span></p>
                                 <div class="basket_modal_kontrols clearfix">
                                     <a href="#" class="continue-purchase goto_back btn btn-small-xs bold" style="line-height: 2.7em;">Продовжити покупки</a>

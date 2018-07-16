@@ -60,7 +60,7 @@ namespace Benefit.Services.Cart
             {
                 var product =
                     db.Products
-                        .Include(entry => entry.Seller)
+                        .Include(entry => entry.Seller.SellerCategories)
                         .Include(entry => entry.Currency)
                         .Include(entry => entry.Images)
                         .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
@@ -70,6 +70,11 @@ namespace Benefit.Services.Cart
                     orderProduct.ProductName += string.Format(" ({0})", product.ExternalId);
                 }
                 orderProduct.SellerId = product.SellerId;
+                var sellerCategory =
+                    product.Seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == product.CategoryId) ??
+                    product.Seller.SellerCategories.FirstOrDefault(entry =>
+                        entry.CategoryId == product.Category.MappedParentCategoryId);
+
                 orderProduct.ProductUrlName = product.UrlName;
                 orderProduct.ProductSku = product.SKU;
                 var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
@@ -94,6 +99,17 @@ namespace Benefit.Services.Cart
                     }
                     orderProduct.WholesaleFrom = product.WholesaleFrom.Value;
                 }
+                //fetch amount of bonuses to be acquired for this product
+                int totalBonusesDiscount = seller.TotalDiscount;
+                if (sellerCategory != null)
+                {
+                    if (sellerCategory.CustomDiscount.HasValue)
+                        totalBonusesDiscount = (int)sellerCategory.CustomDiscount;
+                }
+                var userDiscount = totalBonusesDiscount <= 10
+                    ? totalBonusesDiscount / 2
+                    : 5 + totalBonusesDiscount - 10;
+                orderProduct.BonusesAcquired = orderProduct.ActualPrice * userDiscount / 100;
                 foreach (var orderProductOption in orderProduct.OrderProductOptions)
                 {
                     var productOption = db.ProductOptions.Find(orderProductOption.ProductOptionId);
@@ -105,7 +121,7 @@ namespace Benefit.Services.Cart
                 order.SellerName = product.Seller.Name;
                 order.SellerPrimaryRegionName = product.Seller.PrimaryRegionName;
                 order.SellerUserDiscount = product.Seller.UserDiscount;
-                order.SellerId = sellerId;
+                order.SellerId = seller.AssociatedSellerId == null ? sellerId : seller.AssociatedSellerId;
                 order.OrderProducts.Add(orderProduct);
             }
             HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);

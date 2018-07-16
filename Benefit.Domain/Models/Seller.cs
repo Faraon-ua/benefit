@@ -25,6 +25,7 @@ namespace Benefit.Domain.Models
             Personnels = new Collection<Personnel>();
             Promotions = new Collection<Promotion>();
             InfoPages = new Collection<InfoPage>();
+            Reviews = new Collection<Review>();
         }
 
         [Key]
@@ -116,6 +117,7 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string AssociatedSellerId { get; set; }
         public Seller AssociatedSeller { get; set; }
+        public virtual ICollection<Seller> AssociatedSellers { get; set; }
         public virtual ICollection<SellerCategory> SellerCategories { get; set; }
         public virtual ICollection<Category> MappedCategories { get; set; }
         public virtual ICollection<Currency> Currencies { get; set; }

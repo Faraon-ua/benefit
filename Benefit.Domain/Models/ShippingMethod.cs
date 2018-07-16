@@ -13,7 +13,7 @@ namespace Benefit.Domain.Models
 
         public int GetHashCode(ShippingMethod obj)
         {
-            return obj.Id.GetHashCode();
+            return obj.Name.GetHashCode();
         }
     }
 

@@ -42,7 +42,9 @@ namespace Benefit.Services.Domain
 
             order.Sum = order.GetOrderSum();
             order.Description = model.Comment;
-            order.PersonalBonusesSum = order.SumWithDiscount * seller.UserDiscount / 100;
+            //order.PersonalBonusesSum = order.SumWithDiscount * seller.UserDiscount / 100;
+            order.PersonalBonusesSum = order.OrderProducts.Sum(entry=>entry.BonusesAcquired);
+
             order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.SumWithDiscount / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
             order.SellerName = seller.Name;
 
