@@ -3,11 +3,12 @@ using System.Web;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers
 {
-    public class PagesController : Controller
+    public class PagesController : BaseController
     {
         ApplicationDbContext db = new ApplicationDbContext();
 

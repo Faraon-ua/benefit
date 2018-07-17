@@ -8,13 +8,14 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
+using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Controllers
 {
-    public class TovarController : Controller
+    public class TovarController : BaseController
     {
         //
         // GET: /Tovar/

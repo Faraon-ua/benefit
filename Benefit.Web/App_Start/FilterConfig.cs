@@ -7,7 +7,6 @@ namespace Benefit.Web
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new PasswordFilterAttribute());
             filters.Add(new SubdomainFilterAttribute());
             filters.Add(new HandleErrorAttribute());
             filters.Add(new UserFilterAttribute());
