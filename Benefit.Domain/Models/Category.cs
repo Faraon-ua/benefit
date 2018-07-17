@@ -44,6 +44,7 @@ namespace Benefit.Domain.Models
             ProductParameters = new Collection<ProductParameter>();
             ChildCategories = new Collection<Category>();
             SellerCategories = new Collection<SellerCategory>();
+            MappedCategories = new Collection<Category>();
         }
 
         [Key]

@@ -116,6 +116,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var productOption = db.ProductOptions.Include("ChildProductOptions").FirstOrDefault(entry => entry.Id == id);
             db.ProductOptions.RemoveRange(productOption.ChildProductOptions);
             db.ProductOptions.Remove(productOption);
+            foreach (var option in db.ProductOptions.Where(entry=>entry.BindedProductOptionId == id))
+            {
+                option.BindedProductOptionId = null;
+            }
             db.SaveChanges();
             return RedirectToAction("Index", new { categoryId, sellerId, productId });
         }
@@ -124,7 +128,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var option = db.ProductOptions.Find(optionId);
             if (option != null)
             {
-                option.BindedProductOptionId = connectToOptionId;
+                option.BindedProductOptionId = string.IsNullOrEmpty(connectToOptionId)? null : connectToOptionId;
             }
             db.SaveChanges();
             return new HttpStatusCodeResult(200);

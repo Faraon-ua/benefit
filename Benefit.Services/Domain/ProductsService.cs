@@ -48,6 +48,17 @@ namespace Benefit.Services.Domain
                 },
                 CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == userId && entry.OrderProducts.Any(pr => pr.ProductId == product.Id))
             };
+            var category = product.Category.IsSellerCategory ? product.Category.MappedParentCategory : product.Category;
+            var catsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
+            catsIds.Add(category.Id);
+            result.RelatedProducts = db.Products
+                .Include(entry => entry.Seller)
+                .Include(entry => entry.Images)
+                .Where(entry =>
+                    entry.IsActive && entry.Seller.IsActive &&
+                    entry.AvailabilityState != ProductAvailabilityState.NotInStock && entry.Images.Any() &&
+                    catsIds.Contains(entry.CategoryId)).OrderBy(a => Guid.NewGuid()).Take(5)
+                .ToList();
 
             return result;
         }
