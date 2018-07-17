@@ -736,19 +736,30 @@
                             var img = relatedProduct.Images.First();
                             <li class="item_block">
                                 <div class="item_wrap item has-item">
-                                    <div class="inner_wrap">
+                                    <div class="inner_wrap img" style="width: 100%">
                                         <div class="item-title">
                                             <a href="@productDetailsUrl" class="dark_link">@relatedProduct.Name</a>
                                         </div>
-                                        <a href="@productDetailsUrl" class="thumb">
-                                            @if (img.IsAbsoluteUrl)
-                                            {
-                                                <img class="noborder" src="@img.ImageUrl" alt="@relatedProduct.AltText" title="@relatedProduct.Title">
-                                            }
-                                            else
-                                            {
-                                                <img class="noborder" src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl">
-                                            }
+                                        <a href="@productDetailsUrl" title="@relatedProduct.Title">
+                                            <div class="row">
+                                                <div class="span2">
+                                                    @if (img == null)
+                                                    {
+                                                        <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@relatedProduct.AltText" title="@relatedProduct.Title">
+                                                    }
+                                                    else
+                                                    {
+                                                        if (img.IsAbsoluteUrl)
+                                                        {
+                                                            <img src="@img.ImageUrl" alt="@relatedProduct.AltText" title="@relatedProduct.Title">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Images/ProductGallery/@relatedProduct.Id/@img.ImageUrl" alt="@relatedProduct.AltText" title="@relatedProduct.Title">
+                                                        }
+                                                    }
+                                                </div>
+                                            </div>
                                         </a>
 
                                         <div class="rating">
