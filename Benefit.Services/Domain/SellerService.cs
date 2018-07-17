@@ -382,7 +382,7 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case ProductSortOption.Rating:
-                    items = items.OrderByDescending(entry=>entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenBy(entry=>entry.SKU);
+                    items = items.OrderByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.Order:
                     items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
@@ -394,10 +394,10 @@ namespace Benefit.Services.Domain
                     items = items.OrderByDescending(entry => entry.Name).ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.PriceAsc:
-                    items = items.OrderBy(entry => entry.Price).ThenBy(entry=>entry.SKU);
+                    items = items.OrderBy(entry => entry.Price).ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.PriceDesc:
-                    items = items.OrderByDescending(entry => entry.Price).ThenBy(entry=>entry.SKU);
+                    items = items.OrderByDescending(entry => entry.Price).ThenBy(entry => entry.SKU);
                     break;
             }
 
@@ -426,7 +426,7 @@ namespace Benefit.Services.Domain
                         .Union(items.Select(entry => entry.Seller.UrlName))
                         .Union(items.Select(entry => entry.OriginCountry))
                         .Distinct()
-                        .Select(entry=>entry.ToLower())
+                        .Select(entry => entry.ToLower())
                         .ToList();
                 productParameters.InsertRange(0, generalParams);
                 var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
@@ -457,7 +457,7 @@ namespace Benefit.Services.Domain
             {
                 if (entry.Currency != null)
                 {
-                    entry.Price = (double) (entry.Price * entry.Currency.Rate);
+                    entry.Price = (double)(entry.Price * entry.Currency.Rate);
                 }
             });
 
@@ -527,13 +527,24 @@ namespace Benefit.Services.Domain
             var seller = db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.UrlName == sellerUrl);
             //            if (seller == null) return null;
             result.Seller = seller;
-            var category = db.Categories.Include(entry => entry.ProductParameters.Select(pr => pr.ProductParameterValues)).FirstOrDefault(entry => entry.UrlName == categoryUrl);
+            var category = db.Categories
+                .Include(entry => entry.ProductParameters.Select(pr => pr.ProductParameterValues))
+                .FirstOrDefault(entry => entry.UrlName == categoryUrl);
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
             var catalog = GetSellerCatalogProducts(seller == null ? null : seller.Id, categoryId, options);
             result.Items = catalog.Products.ToList();
             result.PagesCount = (catalog.ProductsNumber - 1) / ListConstants.DefaultTakePerPage + 1;
             result.ProductParameters = catalog.ProductParameters;
+            if (category != null)
+            {
+                result.CategoryToSellerDiscountPercent = db.SellerCategories
+                    .Include(entry => entry.Seller)
+                    .Where(entry => entry.CategoryId == category.Id).ToDictionary(entry => entry.SellerId,
+                        entry => entry.CustomDiscount.HasValue
+                            ? entry.CustomDiscount.Value
+                            : entry.Seller.UserDiscount);
+            }
 
             //todo: add breadcrumbs
             result.Breadcrumbs = new BreadCrumbsViewModel()

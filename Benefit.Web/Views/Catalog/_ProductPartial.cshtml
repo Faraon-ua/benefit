@@ -11,6 +11,8 @@
     var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.Seller.UrlName });
     var reviewsCount = Model.Reviews.Count;
     var availableForPurchase = Model.AvailableForPurchase(RegionService.GetRegionId());
+    var categoryToSellerDiscountPercent = ViewBag.CategoryToSellerDiscountPercent as Dictionary<string, double>;
+    var categoryDiscount = categoryToSellerDiscountPercent.ContainsKey(Model.SellerId) ? categoryToSellerDiscountPercent[Model.SellerId] : Model.Seller.UserDiscount;
 }
 
 <div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6">
@@ -39,9 +41,9 @@
             </a>
 
             <div class="stickers">
-                @if (Model.Seller.UserDiscount > 0)
+                @if (categoryDiscount > 0)
                 {
-                    <div class="sticker_sale_text">@Model.Seller.UserDiscount %</div>
+                    <div class="sticker_sale_text">@categoryDiscount %</div>
                 }
                 @*<div class="sticker_khit">Хит</div>*@
                 @*<div class="sticker_aktsiya">Сове</div>*@
