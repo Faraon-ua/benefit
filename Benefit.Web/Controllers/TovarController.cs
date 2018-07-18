@@ -74,6 +74,7 @@ namespace Benefit.Web.Controllers
             {
                 ModelState.AddModelError("Rating", "Рейтинг не вказано");
             }
+
             if (ModelState.IsValid)
             {
                 using (var db = new ApplicationDbContext())
@@ -85,9 +86,12 @@ namespace Benefit.Web.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Відгук невірно оформлений<br/>" + ModelState.ModelStateErrors();
+                return Json(new
+                {
+                    error = "Відгук невірно оформлений<br/>" + ModelState.ModelStateErrors()
+                });
             }
-            return Redirect(Request.UrlReferrer.AbsoluteUri);
+            return new HttpStatusCodeResult(200);
         }
 
         [HttpGet]

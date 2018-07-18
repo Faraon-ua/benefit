@@ -123,6 +123,24 @@ function processRating(ratingStars, e, isClick) {
 }
 
 $(function () {
+    $(".submit-review").click(function () {
+        var parent = $(this).parents(".review-form");
+        var rating = parent.find("#Rating").val();
+        var message = parent.find("#Message").val();
+        $.post(submitReviewUrl,
+            {
+                Message: message,
+                Rating: rating
+            },
+            function(data) {
+                if (data.error) {
+                    flashMessage(data.error, true, true);
+                } else {
+                    location.href = location.href;
+                }
+            });
+    });
+
     $(".section-menu").hover(function () {
         $("#bg").css("background", "rgba(0, 0, 0, 0.3)");
         $("#bg").css("z-index", "100");

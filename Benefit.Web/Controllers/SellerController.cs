@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Benefit.Domain.DataAccess;
@@ -10,11 +8,12 @@ using Benefit.DataTransfer.ViewModels.Base;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
+using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers
 {
-    public class SellerController : Controller
+    public class SellerController : BaseController
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private SellerService SellerService = new SellerService();

@@ -2,54 +2,56 @@
 @using Benefit.DataTransfer.ViewModels
 @model Benefit.DataTransfer.ViewModels.ReviewsViewModel
 
-@using (Html.BeginForm("AddReview", "Tovar"))
-{
+@{
     var placeholder = User.Identity.IsAuthenticated ? "Текст відгуку" : "Залишити відгук може лише авторизований користувач";
-    <div style="padding: 0 20px 20px 20px">
-        <input type="hidden" name="SellerId" value="@Model.SellerId" />
-        <input type="hidden" name="ProductId" value="@Model.ProductId" />
-        <h3>Залишити відгук</h3>
+}
+<script>
+    var submitReviewUrl = '@Url.Action("AddReview","Tovar")';
+</script>
+<div style="padding: 0 20px 20px 20px" class="review-form">
+    <input type="hidden" name="SellerId" value="@Model.SellerId" />
+    <input type="hidden" name="ProductId" value="@Model.ProductId" />
+    <h3>Залишити відгук</h3>
+    <div>
         <div>
-            <div>
-                <textarea name="Message" placeholder="@placeholder"></textarea>
+            <textarea name="Message" id="Message" placeholder="@placeholder"></textarea>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-sm-6">
+                Ваша оцінка:
+                @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
+                {
+                    SmallStars = false,
+                    IsActive = true,
+                    Rating = 0
+                })
+                <input type="hidden" name="Rating" id="Rating" class="rating-value" />
             </div>
-            <br>
-            <div class="row">
-                <div class="col-sm-6">
-                    Ваша оцінка:
-                    @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
-                    {
-                        SmallStars = false,
-                        IsActive = true,
-                        Rating = 0
-                    })
-                    <input type="hidden" name="Rating" class="rating-value" />
-                </div>
-                <div class="col-sm-6">
-                    <div class="bx-soa-cart-total-button-container" style="float: right;">
+            <div class="col-sm-6">
+                <div class="bx-soa-cart-total-button-container" style="float: right;">
 
-                        @if (User.Identity.IsAuthenticated)
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (Model.CanReview || User.IsInRole(DomainConstants.AdminRoleName))
                         {
-                            if (Model.CanReview || User.IsInRole(DomainConstants.AdminRoleName))
-                            {
-                                <input type="submit" class="btn btn-default btn-lg" value="Залишити відгук" />
-                            }
-                            else
-                            {
-                                <div class="title-to-tooltip" title="Залишити відгук може тільки клієнт цього постачальника" style="display: inline-block;">
-                                    <button type="submit" class="btn btn-success" disabled="disabled">Залишити відгук</button>
-                                </div>
-                            }
+                            <input type="button" class="submit-review btn btn-default btn-lg" value="Залишити відгук" />
                         }
                         else
                         {
-                            <p>
-                                <a href="@Url.Action("login", "account", new {returnUrl = Request.Url.PathAndQuery})">Увійдіть</a>, щоб залишити коментар
-                            </p>
+                            <div class="title-to-tooltip" title="Залишити відгук може тільки клієнт цього постачальника" style="display: inline-block;">
+                                <button type="button" class="btn btn-success" disabled="disabled">Залишити відгук</button>
+                            </div>
                         }
-                    </div>
+                    }
+                    else
+                    {
+                        <p>
+                            <a href="@Url.Action("login", "account", new {returnUrl = Request.Url.PathAndQuery})">Увійдіть</a>, щоб залишити коментар
+                        </p>
+                    }
                 </div>
             </div>
         </div>
     </div>
-}
+</div>

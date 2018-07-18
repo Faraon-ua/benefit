@@ -44,6 +44,7 @@
 }
 @section scripts
 {
+    <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/v3/ubislider.min.js"></script>
     <script src="~/Scripts/v3/products.js"></script>
     <script>
@@ -138,7 +139,6 @@
     </script>
 }
 <div class="wraps hover_shine product-page" id="content">
-    @Html.Partial("_FlashMessage")
     <!--title_content-->
     <div class="top_inner_block_wrapper maxwidth-theme hidden-xs" style="height: 0px;">
         <section class="page-top maxwidth-theme">
@@ -373,6 +373,8 @@
                             </div>
                         </div>
                         <div class="col-md-6">
+                            @Html.Partial("_FlashMessage")
+
                             @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
                             {
                                 CanReview = Model.CanReview,
