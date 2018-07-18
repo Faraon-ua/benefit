@@ -3,7 +3,7 @@ using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers.Base
 {
-    [AccessPassword]
+    //[AccessPassword]
     public class BaseController : Controller
     {
     

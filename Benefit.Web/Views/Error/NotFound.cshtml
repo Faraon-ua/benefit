@@ -2,4 +2,20 @@
     ViewBag.Title = "Сторінку не знайдено";
 }
 
-<p style="font-size: 2em;">Упс... помилка 404. Тобто сторінка, яку Ви шукали, десь поділась. Але поки ми її шукаємо, ви можете знайти щось цікавеньке <a href="/">ТУТ</a></p>
+<div class="container">
+    <div class="row" style="padding: 50px 0;">
+        <div class="col-md-3 col-lg-3 col-sm-12" style="text-align: center;">
+            <img src="~/Content/img/404-bear.png" />
+        </div>
+        <div class="col-md-9 col-lg-9 col-sm-12" style="text-align: center; font-weight: bold;">
+            <p style="color: #787878; text-transform: uppercase;font-size: 1.3em; ">Упс... Сторінку не знайдено</p>
+            <p style="color: #000;font-size: 10em; line-height: 1em;">404</p>
+            <p style="color: #303030; text-transform: uppercase;font-size: 1.3em; ">
+                Сторінка, яку ви шукаєте, нажаль, не існує.
+                <br />
+                Давайте спробуємо пошукати ще.
+            </p>
+            <a class="btn btn-danger btn-lg" href="@Url.Action("index","home")">На головну</a>
+        </div>
+    </div>
+</div>
