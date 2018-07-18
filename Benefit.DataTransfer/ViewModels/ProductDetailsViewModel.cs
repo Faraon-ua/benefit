@@ -15,5 +15,6 @@ namespace Benefit.DataTransfer.ViewModels
         public BreadCrumbsViewModel Breadcrumbs { get; set; }
         public bool CanReview { get; set; }
         public List<Product> RelatedProducts { get; set; }
+        public double DiscountPercent { get; set; }
     }
 }

@@ -13,18 +13,18 @@ namespace Benefit.Services.Domain
     public class ProductsService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        public ProductDetailsViewModel GetProductDetails(IEnumerable<Category> cachedCats,string urlName, string userId)
+        public ProductDetailsViewModel GetProductDetails(IEnumerable<Category> cachedCats, string urlName, string userId)
         {
-            var delimeterPos = urlName.LastIndexOf("-")+1;
+            var delimeterPos = urlName.LastIndexOf("-") + 1;
             var sku = urlName.Substring(delimeterPos, urlName.Length - delimeterPos);
             var product = db.Products
                 .Include(entry => entry.Category.MappedParentCategory)
-                .Include(entry => entry.Seller.ShippingMethods.Select(addr=>addr.Region))
-                .Include(entry => entry.Seller.Addresses.Select(addr=>addr.Region))
+                .Include(entry => entry.Seller.ShippingMethods.Select(addr => addr.Region))
+                .Include(entry => entry.Seller.Addresses.Select(addr => addr.Region))
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Currency)
-                .Include(entry => entry.ProductParameterProducts.Select(pr=>pr.ProductParameter))
-                .Include(entry => entry.Reviews.Select(rev=>rev.ChildReviews))
+                .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
+                .Include(entry => entry.Reviews.Select(rev => rev.ChildReviews))
                 .FirstOrDefault(entry => entry.SKU.ToString() == sku);
             if (product == null) return null;
             if (!product.Seller.IsActive || !product.Category.IsActive)
@@ -48,6 +48,20 @@ namespace Benefit.Services.Domain
                 },
                 CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == userId && entry.OrderProducts.Any(pr => pr.ProductId == product.Id))
             };
+            var sellerCategory = db.SellerCategories.FirstOrDefault(entry =>
+                                     entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId) ??
+                                 db.SellerCategories.FirstOrDefault(entry =>
+                                     entry.CategoryId == product.Category.MappedParentCategoryId &&
+                                     entry.SellerId == product.SellerId);
+            if (sellerCategory != null && sellerCategory.CustomDiscount.HasValue)
+            {
+                result.DiscountPercent = sellerCategory.CustomDiscount.Value;
+            }
+            else
+            {
+                result.DiscountPercent = product.Seller.UserDiscount;
+            }
+
             var category = product.Category.IsSellerCategory ? product.Category.MappedParentCategory : product.Category;
             var catsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
             catsIds.Add(category.Id);
@@ -72,7 +86,7 @@ namespace Benefit.Services.Domain
                     entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId &&
                     entry.ParentProductOptionId == null).ToList();
             productOptions.InsertRange(0, categoryProductOptions);
-            productOptions.ForEach(entry=>entry.ChildProductOptions = entry.ChildProductOptions.OrderBy(po=>po.Order).ToList());
+            productOptions.ForEach(entry => entry.ChildProductOptions = entry.ChildProductOptions.OrderBy(po => po.Order).ToList());
             return productOptions.OrderBy(entry => entry.Order).ToList();
         }
 

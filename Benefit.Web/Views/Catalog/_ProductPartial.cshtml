@@ -12,7 +12,11 @@
     var reviewsCount = Model.Reviews.Count;
     var availableForPurchase = Model.AvailableForPurchase(RegionService.GetRegionId());
     var categoryToSellerDiscountPercent = ViewBag.CategoryToSellerDiscountPercent as Dictionary<string, double>;
-    var categoryDiscount = categoryToSellerDiscountPercent.ContainsKey(Model.SellerId) ? categoryToSellerDiscountPercent[Model.SellerId] : Model.Seller.UserDiscount;
+    var categoryDiscount = Model.Seller.UserDiscount;
+    if (categoryToSellerDiscountPercent != null && categoryToSellerDiscountPercent.ContainsKey(Model.SellerId))
+    {
+        categoryDiscount = categoryToSellerDiscountPercent[Model.SellerId];
+    }
 }
 
 <div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6">
