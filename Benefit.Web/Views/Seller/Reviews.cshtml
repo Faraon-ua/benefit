@@ -45,7 +45,6 @@
                                             </div>
                                         </div>
                                         <div class="content">
-                                            @Html.Partial("_FlashMessage")
 
                                             @Html.Partial("_ReviewsPartial", new ReviewsViewModel
                                             {
@@ -54,6 +53,8 @@
                                                 TargetName = Model.Name,
                                                 Reviews = Model.Reviews
                                             })
+                                            @Html.Partial("_FlashMessage")
+
                                             @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
                                             {
                                                 CanReview = true,
