@@ -296,5 +296,23 @@ namespace Benefit.Web.Controllers
         {
             return PartialView("_Message", message);
         }
+
+        public ActionResult PasswordProtect()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult PasswordProtect(string password)
+        {
+            if (password == "aabbccee")
+            {
+                Session["AccessPassword"] = true;
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError("password", "пароль невірний");
+            return View();
+        }
     }
 }

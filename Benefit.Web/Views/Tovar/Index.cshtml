@@ -741,7 +741,7 @@
                                 var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", relatedProduct.UrlName, relatedProduct.SKU)});
                                 var img = relatedProduct.Images.First();
                                 <li class="item_block">
-                                    <div class="item_wrap item has-item">
+                                    <div class="item_wrap item has-item" style="overflow: hidden;">
                                         <div class="inner_wrap img" style="width: 100%">
                                             <div class="item-title">
                                                 <a href="@productDetailsUrl" class="dark_link">@relatedProduct.Name</a>

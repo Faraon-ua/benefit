@@ -1747,7 +1747,7 @@ ul.menu>li>a{position:relative}
 .front_slider>li{overflow:hidden}
 .flexslider .slides>li .img,.flexslider .slides>li .text{width:50%}
 .flexslider .slides>li.image .img{width:100%}
-.flexslider .slides>li .img img{margin:0 auto;max-height:100%}
+.flexslider .slides>li .img img{margin:0 auto;max-height: 100%;max-width: 90%;}
 .flexslider .slides img{display:inline-block;border-radius:0}
 .flexslider,.no-js .slides>li:first-child,.slides:after{display:block}
 .slides:after{content:"\0020";clear:both;visibility:hidden;line-height:0;height:0}

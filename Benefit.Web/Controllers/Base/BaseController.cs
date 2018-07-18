@@ -3,7 +3,7 @@ using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers.Base
 {
-    [Authorize(Roles = "Admin,SellerModerator")]
+    [AccessPassword]
     public class BaseController : Controller
     {
     

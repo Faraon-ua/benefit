@@ -291,6 +291,7 @@
     <Compile Include="Controllers\SellerController.cs" />
     <Compile Include="Controllers\TovarController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
+    <Compile Include="Filters\AccessPasswordFilterAttribute.cs" />
     <Compile Include="Filters\CabinetFilterAttribute.cs" />
     <Compile Include="Filters\FetchLastNewsAttribute.cs" />
     <Compile Include="Filters\FetchCategoriesAttribute.cs" />
@@ -1466,6 +1467,7 @@
     <Content Include="Views\Seller\_SellerMenu.cshtml" />
     <Content Include="Views\Seller\Reviews.cshtml" />
     <Content Include="Views\Shared\_Message.cshtml" />
+    <Content Include="Views\Home\PasswordProtect.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
