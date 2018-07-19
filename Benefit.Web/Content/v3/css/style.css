@@ -4,8 +4,10 @@
 }
 
 .seller-menu li {
-    padding: 5px 0px;
+    padding: 3px 0px;
 }
+    .seller-menu li a { color: #68686f; }
+    .seller-menu li a.active { color: #9e1414; }
 
 input[type="checkbox"].editable-amount:checked ~ .display-after-checked {
     display: inline-block;

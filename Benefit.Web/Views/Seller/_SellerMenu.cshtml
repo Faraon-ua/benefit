@@ -1,5 +1,6 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Domain.Models
+@using Benefit.Web.Helpers
 @model IEnumerable<Category>
 @{
     var seller = ViewBag.Seller as Seller;
@@ -9,7 +10,7 @@
     @foreach (var category in Model)
     {
         <li>
-            <h4 class="no-margin parent-cat" style="text-align: left;">
+            <h4 class="no-margin parent-cat" style="text-align: left; font-size: 1.2em;">
                 <a href="#">
                     @category.Name
                 </a>
@@ -21,7 +22,7 @@
                     @foreach (var childCat in category.ChildCategories)
                     {
                         <li>
-                            <h5 class="no-margin-top no-margin-bottom margin-left-30 parent-cat">
+                            <h5 class="no-margin-top no-margin-bottom margin-left-30 parent-cat" style="font-size: 1.1em;">
                                 <a href="#">
                                     @childCat.Name
                                 </a>
@@ -33,9 +34,9 @@
                                     @foreach (var subCat in childCat.ChildCategories)
                                     {
                                         <li>
-                                            @if (Request.QueryString["category"] != null && Request.QueryString["category"] == subCat.UrlName)
+                                            @if (RouteDataHelper.CategoryRoute == subCat.UrlName)
                                             {
-                                                <b>@subCat.Name</b>
+                                                <a href="#" class="active underlined">@subCat.Name</a>
                                             }
                                             else
                                             {

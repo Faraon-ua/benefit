@@ -19,5 +19,16 @@ namespace Benefit.Web.Helpers
                 return HttpContext.Current.Request.RequestContext.RouteData.Values["action"].ToString().ToLower();
             }
         }
+
+        public static string CategoryRoute
+        {
+            get
+            {
+                return
+                    HttpContext.Current.Request.RequestContext.RouteData.Values["category"] == null
+                        ? string.Empty
+                        : HttpContext.Current.Request.RequestContext.RouteData.Values["category"].ToString().ToLower();
+            }
+        }
     }
 }
