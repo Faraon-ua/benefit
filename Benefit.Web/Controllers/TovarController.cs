@@ -36,9 +36,12 @@ namespace Benefit.Web.Controllers
             var productResult = ProductsService.GetProductDetails(cats, productUrl, User.Identity.GetUserId());
             var viewedProducts = Session[DomainConstants.ViewedProductsSessionKey] as List<Product> ??
                                  new List<Product>();
-            viewedProducts.Insert(0, productResult.Product);
-            viewedProducts = viewedProducts.Take(10).ToList();
-            Session[DomainConstants.ViewedProductsSessionKey] = viewedProducts;
+            if (!viewedProducts.Contains(productResult.Product, new ProductComparer()))
+            {
+                viewedProducts.Insert(0, productResult.Product);
+                viewedProducts = viewedProducts.Take(10).ToList();
+                Session[DomainConstants.ViewedProductsSessionKey] = viewedProducts;
+            }
             productResult.ViewedProducts = viewedProducts;
             if (productResult == null) throw new HttpException(404, "Not found");
             var seller = ViewBag.Seller as Seller;

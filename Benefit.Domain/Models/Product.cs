@@ -9,6 +9,19 @@ using Benefit.Common.Constants;
 
 namespace Benefit.Domain.Models
 {
+    public class ProductComparer : IEqualityComparer<Product>
+    {
+        public bool Equals(Product x, Product y)
+        {
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Product obj)
+        {
+            return obj.Id.GetHashCode();
+        }
+    }
+
     public enum ProductAvailabilityState
     {
         [Description("#73d36a")]
