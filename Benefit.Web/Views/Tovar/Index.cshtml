@@ -338,7 +338,6 @@
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </td>
                 </tr>
@@ -631,6 +630,19 @@
                                             <a href="#" class="dark_link">@Model.Product.Seller.Name</a>
                                             <br>@Model.Product.Seller.PrimaryRegionName<br>
                                             <a href="@sellerUrl" class="dark_link" itemprop="brand">Всі товари постачальника</a>
+                                        </div>
+                                        <div class="x-company-info__parts">
+                                            <div class="x-company-info__title">Рейтинг постачальника</div>
+                                            <div class="x-rating">
+
+                                                <div class="x-rating__progress">
+                                                    <div class="x-rating__bar" style="width: @(Model.Product.Seller.AvarageRating * 20)%"></div>
+                                                    <div class="x-rating__mask"></div>
+                                                </div>
+                                                <div class="x-rating__info">
+                                                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName+"Reviews", new {id=Model.Product.Seller.UrlName})" data-qaid="company_rating"> @Model.Product.Seller.Reviews.Count відгуків про @Model.Product.Seller.Name</a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
