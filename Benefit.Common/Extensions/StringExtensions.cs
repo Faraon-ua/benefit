@@ -24,6 +24,7 @@ namespace Benefit.Common.Extensions
             words.Add("(", "");
             words.Add(")", "");
             words.Add("№", "n");
+            words.Add("*", "");
             words.Add("+", "plus");
             words.Add("%", "proc");
             words.Add("/", "-");

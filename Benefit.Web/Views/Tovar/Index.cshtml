@@ -730,87 +730,16 @@
 
 @if (Model.RelatedProducts.Any())
 {
-    <br style="clear: both;"/>
-    <div class="viewed_product_block">
-        <div class="wrapper_inner">
-            <div class="similar_products_wrapp">
-                <div class="viewed_block horizontal">
-                    <h3 class="title_block sm">Покупці, які переглядали цей товар, також цікавляться</h3>
-                    <div class="outer_wrap flexslider shadow items border custom_flex top_right" data-plugin-options='{"animation": "slide", "directionNav": true, "itemMargin":10, "controlNav" :false, "animationLoop": true, "slideshow": false, "counts": [5,4,3,2,1]}'>
-                        <ul class="rows_block slides">
-                            @foreach (var relatedProduct in Model.RelatedProducts)
-                            {
-                                var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", relatedProduct.UrlName, relatedProduct.SKU)});
-                                var img = relatedProduct.Images.First();
-                                <li class="item_block">
-                                    <div class="item_wrap item has-item" style="overflow: hidden;">
-                                        <div class="inner_wrap img" style="width: 100%">
-                                            <div class="item-title">
-                                                <a href="@productDetailsUrl" class="dark_link">@relatedProduct.Name</a>
-                                            </div>
-                                            <a href="@productDetailsUrl" title="@relatedProduct.Title">
-                                                <div class="row">
-                                                    <div class="span2">
-                                                        @if (img == null)
-                                                        {
-                                                            <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@relatedProduct.AltText" title="@relatedProduct.Title">
-                                                        }
-                                                        else
-                                                        {
-                                                            if (img.IsAbsoluteUrl)
-                                                            {
-                                                                <img src="@img.ImageUrl" alt="@relatedProduct.AltText" title="@relatedProduct.Title">
-                                                            }
-                                                            else
-                                                            {
-                                                                <img src="~/Images/ProductGallery/@relatedProduct.Id/@img.ImageUrl" alt="@relatedProduct.AltText" title="@relatedProduct.Title">
-                                                            }
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </a>
-
-                                            <div class="rating">
-                                                <span class="x-product-info__rating-text">Рейтинг товара</span>
-                                                <div class="x-product-info__inline">
-                                                    @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
-                                                    {
-                                                        SmallStars = true,
-                                                        IsActive = false,
-                                                        Rating = relatedProduct.AvarageRating
-                                                    })
-                                                </div>
-                                            </div>
-
-                                            <div class="cost prices clearfix">
-                                                <div class="price_matrix_block">
-                                                    <div class="price_matrix_wrapper ">
-                                                        <div class="price" data-currency="UAH" data-value="relatedProduct.Price">
-                                                            <span class="values_wrapper">
-                                                                <span class="price_value">@relatedProduct.Price.ToString("F")</span>
-                                                                <span class="price_currency"> грн</span>
-                                                            </span>
-                                                        </div>
-                                                        @if (relatedProduct.OldPrice.HasValue)
-                                                        {
-                                                            <div class="price discount" data-currency="UAH" data-value="@relatedProduct.OldPrice">
-                                                                <span class="values_wrapper"><span class="price_value">@relatedProduct.OldPrice</span><span class="price_currency"> грн</span></span>
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </div>
-                                    </div>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    ViewBag.RelatedProductsHeading = "Покупці, які переглядали цей товар, також цікавляться";
+    @Html.Partial("_RelatedProducts", Model.RelatedProducts)
+}
+@{
+    var viewedProducts = Model.ViewedProducts.Where(entry => entry.Id != Model.Product.Id);
+}
+@if (viewedProducts.Any())
+{
+    ViewBag.RelatedProductsHeading = "Переглянуті товари";
+    @Html.Partial("_RelatedProducts", viewedProducts)
 }
 @if (Model.ProductOptions.Any())
 {

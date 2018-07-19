@@ -1468,6 +1468,7 @@
     <Content Include="Views\Seller\Reviews.cshtml" />
     <Content Include="Views\Shared\_Message.cshtml" />
     <Content Include="Views\Home\PasswordProtect.cshtml" />
+    <Content Include="Views\Tovar\_RelatedProducts.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

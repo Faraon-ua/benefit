@@ -34,6 +34,12 @@ namespace Benefit.Web.Controllers
         {
             var cats = ViewBag.Categories as List<Category>;
             var productResult = ProductsService.GetProductDetails(cats, productUrl, User.Identity.GetUserId());
+            var viewedProducts = Session[DomainConstants.ViewedProductsSessionKey] as List<Product> ??
+                                 new List<Product>();
+            viewedProducts.Insert(0, productResult.Product);
+            viewedProducts = viewedProducts.Take(10).ToList();
+            Session[DomainConstants.ViewedProductsSessionKey] = viewedProducts;
+            productResult.ViewedProducts = viewedProducts;
             if (productResult == null) throw new HttpException(404, "Not found");
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
