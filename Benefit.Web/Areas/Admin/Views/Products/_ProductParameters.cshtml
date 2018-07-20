@@ -1,11 +1,23 @@
-﻿@model Benefit.Domain.Models.Product
+﻿@using Benefit.Domain.Models
+@model Product
+@{
+    var parameters = new List<ProductParameter>();
+    if (Model.Category != null)
+    {
+        parameters = Model.Category.ProductParameters.OrderBy(entry => entry.Order).ToList();
+        if (!parameters.Any() && Model.Category.MappedParentCategory != null)
+        {
+            parameters = Model.Category.MappedParentCategory.ProductParameters.OrderBy(entry => entry.Order).ToList();
+        }
+    }
+}
 @if (Model.Category == null)
 {
     <div>Редагування характеристик доступно після збереження продукта</div>
 }
 else
 {
-    foreach (var parameter in Model.Category.ProductParameters.OrderBy(entry=>entry.Order))
+    foreach (var parameter in parameters)
     {
         <div class="row">
             @{

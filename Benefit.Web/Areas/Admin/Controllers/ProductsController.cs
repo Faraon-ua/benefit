@@ -211,6 +211,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var product = db.Products
                               .Include(entry=>entry.Category)
                               .Include(entry => entry.Category.ProductParameters)
+                              .Include(entry => entry.Category.MappedParentCategory.ProductParameters)
                               .Include(entry => entry.Reviews)
                               .FirstOrDefault(entry => entry.Id == id) ??
                           new Product()

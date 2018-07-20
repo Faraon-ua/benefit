@@ -24,17 +24,17 @@ namespace Benefit.Common.Extensions
             words.Add("(", "");
             words.Add(")", "");
             words.Add("№", "n");
-            words.Add("*", "");
             words.Add("+", "plus");
             words.Add("%", "proc");
             words.Add("/", "-");
             words.Add("\\", "-proc");
             words.Add("&", "");
             words.Add("*", "x");
-            words.Add(".", "");
             words.Add("\"", "");
             words.Add("'", "");
+            words.Add(".", "");
             words.Add(",", "");
+            words.Add(" ", "-");
             words.Add("а", "a");
             words.Add("б", "b");
             words.Add("в", "v");
@@ -111,7 +111,6 @@ namespace Benefit.Common.Extensions
             words.Add("Ї", "ji");
             words.Add("Є", "e");
             words.Add("Ґ", "g");
-            words.Add(" ", "-");
 
             return words.Aggregate(value, (current, pair) => current.Replace(pair.Key, pair.Value)).ToLower();
         }
