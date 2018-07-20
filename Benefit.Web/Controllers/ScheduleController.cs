@@ -8,6 +8,7 @@ using Benefit.Services.Admin;
 using Benefit.Services.Domain;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
+using System.Data.Entity;
 
 namespace Benefit.Web.Controllers
 {
@@ -28,6 +29,54 @@ namespace Benefit.Web.Controllers
             var siteMapHelper = new SiteMapHelper();
             var count = siteMapHelper.Generate(Url);
             return Content(count.ToString());
+        }
+
+        public ActionResult FetchFeaturedProducts()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                foreach (var product in db.Products.Where(entry=>entry.IsFeatured))
+                {
+                    product.IsFeatured = false;
+                }
+                foreach (var product in db.Products.Where(entry => entry.IsNewProduct))
+                {
+                    product.IsNewProduct = false;
+                }
+
+                foreach (var seller in db.Sellers.Where(entry=>entry.AreProductsFeatured))
+                {
+                    var featuredProduct =
+                        db.Products
+                            .Include(entry => entry.Images)
+                            .Where(entry =>
+                                entry.IsActive &&
+                                (entry.AvailabilityState == ProductAvailabilityState.Available ||
+                                 entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
+                                entry.Images.Any() && entry.SellerId == seller.Id).OrderBy(entry => Guid.NewGuid())
+                            .FirstOrDefault();
+                    if (featuredProduct != null)
+                    {
+                        featuredProduct.IsFeatured = true;
+                    }
+                    var newProduct =
+                        db.Products
+                            .Include(entry => entry.Images)
+                            .Where(entry =>
+                                entry.IsActive &&
+                                (entry.AvailabilityState == ProductAvailabilityState.Available ||
+                                 entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
+                                entry.Images.Any() && entry.SellerId == seller.Id).OrderBy(entry => Guid.NewGuid())
+                            .FirstOrDefault();
+                    if (newProduct != null)
+                    {
+                        newProduct.IsNewProduct = true;
+                    }
+                }
+
+                db.SaveChanges();
+            }
+            return Content("Ok");
         }
 
         public ActionResult SaveCompanyRevenue()

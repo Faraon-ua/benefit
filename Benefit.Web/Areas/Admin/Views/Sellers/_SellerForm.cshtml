@@ -119,6 +119,14 @@
             @Html.CheckBoxFor(m => m.Seller.IsFeatured)
         </div>
     </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Товари на головній сторінці</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.Seller.AreProductsFeatured)
+        </div>
+    </div>
 
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Benefit Card</label>

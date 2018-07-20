@@ -71,7 +71,7 @@ namespace Benefit.Services.Domain
                 .Where(entry =>
                     entry.IsActive && entry.Seller.IsActive &&
                     entry.AvailabilityState != ProductAvailabilityState.NotInStock && entry.Images.Any() &&
-                    catsIds.Contains(entry.CategoryId)).OrderBy(a => Guid.NewGuid()).Take(5)
+                    catsIds.Contains(entry.CategoryId)).OrderBy(entry => Guid.NewGuid()).Take(5)
                 .ToList();
 
             return result;
