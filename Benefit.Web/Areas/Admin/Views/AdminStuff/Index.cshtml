@@ -46,6 +46,12 @@
     </legend>
     <a class="btn btn-info" href="@Url.Action("ClearCategoriesCache", "AdminStuff")">Очистити кеш</a>
 </fieldset>
+<fieldset>
+    <legend>
+        Згенерувати рекомендовані та нові товари
+    </legend>
+    <a class="btn btn-info" target="_blank" href="@Url.Action("FetchFeaturedProducts", "Schedule", new {key=SettingsService.ScheduleKey, area=string.Empty})">Згенерувати</a>
+</fieldset>
 @*<fieldset>
         <legend>
             Термінація
