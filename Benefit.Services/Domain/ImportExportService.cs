@@ -153,7 +153,7 @@ namespace Benefit.Services.Domain
             foreach (var product in productsToAddList)
             {
                 product.SKU = maxSku;
-                product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
+                product.UrlName = product.UrlName.Insert(0, maxSku++ + "-").Truncate(128);
             }
 
             db.InsertIntoMembers(productsToAddList);
@@ -212,7 +212,7 @@ namespace Benefit.Services.Domain
                         IsSellerCategory = true,
                         SellerId = sellerId,
                         Name = catName.Truncate(64),
-                        UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128),
+                        UrlName = string.Format("{0}-{1}", catId, catName.Translit()).Truncate(128),
                         IsActive = true,
                         LastModified = DateTime.UtcNow,
                         LastModifiedBy = "ImportFrom1C"
@@ -227,7 +227,7 @@ namespace Benefit.Services.Domain
                         SellerId = sellerId
                     });
                     dbCategory.Name = catName.Truncate(64);
-                    dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
+                    dbCategory.UrlName = string.Format("{0}-{1}", catId, catName.Translit()).Truncate(128);
                     db.Entry(dbCategory).State = EntityState.Modified;
                 }
             }
