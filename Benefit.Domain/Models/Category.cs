@@ -67,6 +67,10 @@ namespace Benefit.Domain.Models
         [MaxLength(250)]
         public string Tag { get; set; }
         public string ImageUrl { get; set; }
+        [MaxLength(250)]
+        public string BannerImageUrl { get; set; }
+        [MaxLength(250)]
+        public string BannerUrl { get; set; }
         public int Order { get; set; }
         public bool IsActive { get; set; }
         public DateTime LastModified { get; set; }

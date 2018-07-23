@@ -52,6 +52,12 @@
                     Список товарів
                 </a>
             </li>
+            <li>
+                <a href="#banner" data-toggle="tab">
+                    <i class="green icon-picture bigger-110"></i>
+                    Баннер
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -227,6 +233,26 @@
 
             <div id="products" class="tab-pane">
                 @Html.ActionLink("Переглянути товари категорії", "Index", "Products", new { CategoryId = Model.Id }, new { target = "_blank" })
+            </div>
+            <div id="banner" class="tab-pane">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-1">Url</label>
+                        <div class="col-md-10">
+                            @Html.TextBoxFor(model => model.BannerUrl, new  { @class="col-md-6" })
+                            @Html.ValidationMessageFor(model => model.Name)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-1">
+                            <label class="text-left control-label">Зображення</label>
+                        </div>
+                        <div class="col-md-10">
+                            <img src="~/Images/CategoryBanner/@Model.BannerImageUrl" />
+                            <input type="file" id="CategoryBannerImage" name="categoryBannerImage" />
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="control-group">

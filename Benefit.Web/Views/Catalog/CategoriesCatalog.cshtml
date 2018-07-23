@@ -68,6 +68,12 @@
 
         <div class="left_block hidden-xs">
             <div class="left_catalog">
+                @if (Model.Category.BannerImageUrl != null)
+                {
+                    <a href="@Model.Category.BannerUrl">
+                        <img src="~/Images/CategoryBanner/@Model.Category.BannerImageUrl" style="width: 100%;"/>
+                    </a>
+                }
                 @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", ViewBag.LastNews as IEnumerable<InfoPage>)
             </div>
         </div>

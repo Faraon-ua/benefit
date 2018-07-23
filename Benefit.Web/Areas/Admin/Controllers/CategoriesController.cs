@@ -112,7 +112,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, SuperAdmin")]
-        public ActionResult CreateOrUpdate(Category category, HttpPostedFileBase categoryImage)
+        public ActionResult CreateOrUpdate(Category category, HttpPostedFileBase categoryImage, HttpPostedFileBase categoryBannerImage)
         {
             if (db.Categories.Any(entry => entry.UrlName == category.UrlName && entry.Id != category.Id))
             {
@@ -134,7 +134,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (categoryImage != null && categoryImage.ContentLength > 0)
                 {
-                    //todo: add image resizing
                     var fileName = Path.GetFileName(categoryImage.FileName);
                     var dotIndex = fileName.IndexOf('.');
                     var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
@@ -147,6 +146,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 else
                 {
                     db.Entry(category).Property(entry => entry.ImageUrl).IsModified = false;
+                }
+                if (categoryBannerImage != null && categoryBannerImage.ContentLength > 0)
+                {
+                    var fileName = Path.GetFileName(categoryBannerImage.FileName);
+                    var dotIndex = fileName.IndexOf('.');
+                    var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
+                    var path = Path.Combine(Server.MapPath("~/Images/CategoryBanner/"), category.Id + fileExt);
+                    category.BannerImageUrl = category.Id + fileExt;
+                    categoryBannerImage.SaveAs(path);
+                }
+                else
+                {
+                    db.Entry(category).Property(entry => entry.BannerImageUrl).IsModified = false;
                 }
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Категорію було збережено";

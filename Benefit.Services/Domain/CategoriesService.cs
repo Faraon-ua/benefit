@@ -99,6 +99,7 @@ namespace Benefit.Services.Domain
             //{
             //    categories = categories.SelectMany(entry => entry.ChildCategories).ToList();
             //}
+            parent.BannerImageUrl = parent.BannerImageUrl ?? parent.ParentCategory.BannerImageUrl;
             var catsModel = new CategoriesViewModel()
             {
                 Category = parent,
