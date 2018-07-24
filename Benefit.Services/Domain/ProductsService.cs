@@ -13,6 +13,33 @@ namespace Benefit.Services.Domain
     public class ProductsService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+
+        public bool AddToFavorites(string userId, string productId)
+        {
+            if (db.Favorites.FirstOrDefault(entry => entry.UserId == userId && entry.ProductId == productId) != null) return false;
+            var favorite = new Favorite()
+            {
+                UserId = userId,
+                ProductId = productId
+            };
+            db.Favorites.Add(favorite);
+            db.SaveChanges();
+            return true;
+        }
+
+        public void RemoveFromFavorites(string userId, string productId)
+        {
+            var favorite = db.Favorites.FirstOrDefault(entry => entry.UserId == userId && entry.ProductId == productId);
+            if (favorite == null) return;
+            db.Favorites.Remove(favorite);
+            db.SaveChanges();
+        }
+
+        public List<Product> GetFavorites(string userId)
+        {
+            return db.Favorites.Include(entry=>entry.Product).Where(entry => entry.UserId == userId).Select(entry=>entry.Product).ToList();
+        }
+
         public ProductDetailsViewModel GetProductDetails(IEnumerable<Category> cachedCats, string urlName, string userId)
         {
             var delimeterPos = urlName.LastIndexOf("-") + 1;

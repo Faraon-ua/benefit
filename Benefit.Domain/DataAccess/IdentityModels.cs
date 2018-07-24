@@ -56,6 +56,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<PromotionAccomplishment> PromotionAccomplishments { get; set; }
         public DbSet<ExportImport> ExportImports { get; set; }
         public DbSet<NotificationChannel> NotificationChannels { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
 
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

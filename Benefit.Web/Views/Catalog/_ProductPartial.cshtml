@@ -17,11 +17,21 @@
     {
         categoryDiscount = categoryToSellerDiscountPercent[Model.SellerId];
     }
+    var isFavorites = ViewBag.IsFavorites as bool?;
 }
 
 <div class="product-item col-m-25 col-md-3 col-sm-4 col-xs-6">
+    @if (isFavorites.GetValueOrDefault(false))
+    {
+        <div class="margin-bottom-5">
+            <a href="#" class="remove-from-favorites" data-product-id="@Model.Id">
+                <i class="fa fa-remove"></i>
+                Видалити із улюблених
+            </a>
+        </div>
+    }
     <div class="item" id="@Model.Id">
-        <div class="img" style="text-align: left;position: relative;overflow: hidden;">
+        <div class="img" style="text-align: left; position: relative; overflow: hidden;">
             <a href="@productDetailsUrl" title="@Model.Title">
                 <div class="row">
                     <div class="span2">
@@ -111,11 +121,11 @@
                         <div class="minus">-</div>
                         @if (Model.IsWeightProduct)
                         {
-                            <input class="text quantity" name="quantity" type="text" value="0.1" data-weight-product="true"/>
+                            <input class="text quantity" name="quantity" type="text" value="0.1" data-weight-product="true" />
                         }
                         else
                         {
-                            <input class="text quantity" name="quantity" type="text" value="1" data-weight-product="false"/>
+                            <input class="text quantity" name="quantity" type="text" value="1" data-weight-product="false" />
                         }
                         <div class="plus">+</div>
                     </div>
@@ -142,7 +152,7 @@
                     </a>
                 }
                 <div class="button_block hidden-lg"></div>
-                <br class="clear"/>
+                <br class="clear" />
             </div>
             <div class="item-stock" style="padding-top: 10px; text-align: left;">
                 <a href="@sellerUrl">@Model.Seller.Name</a><br>

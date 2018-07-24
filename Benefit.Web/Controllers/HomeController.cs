@@ -54,17 +54,33 @@ namespace Benefit.Web.Controllers
             using (var db = new ApplicationDbContext())
             {
                 mainPageViewModel.FeaturedProducts = db.Products
+                    .Include(entry => entry.Currency)
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller.ShippingMethods)
                     .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList();
                 mainPageViewModel.NewProducts = db.Products
+                    .Include(entry => entry.Currency)
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller.ShippingMethods)
                     .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList();
+                foreach (var featuredProduct in mainPageViewModel.FeaturedProducts)
+                {
+                    if (featuredProduct.Currency != null)
+                    {
+                        featuredProduct.Price = featuredProduct.Price * featuredProduct.Currency.Rate;
+                    }
+                }
+                foreach (var newProduct in mainPageViewModel.NewProducts)
+                {
+                    if (newProduct.Currency != null)
+                    {
+                        newProduct.Price = newProduct.Price * newProduct.Currency.Rate;
+                    }
+                }
                 mainPageViewModel.News = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive)
                     .OrderByDescending(entry => entry.CreatedOn).Take(5).ToList();
                 mainPageViewModel.News.ForEach(entry =>

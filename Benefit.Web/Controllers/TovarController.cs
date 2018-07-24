@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
+using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
@@ -71,6 +72,49 @@ namespace Benefit.Web.Controllers
                 return PartialView("_ProductOptions", result);
             }
             return Content(string.Empty);
+        }
+
+        [HttpPost]
+        public ActionResult AddToFavorites(string productId)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+                if (ProductsService.AddToFavorites(User.Identity.GetUserId(), productId))
+                {
+                    return Json(new { message = "Товар додано до улюблених" }, JsonRequestBehavior.AllowGet);
+                }
+                return Json(new { message = "Товар вже додано до улюблених" }, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(
+                new
+                {
+                    message = string.Format(
+                        "Ви маєте бути залоговані, щоб додати товар до улюблених. Пройдіть сюди щоб залогуватись <a href='{0}'>Увійти</a>",
+                        Url.Action("Login", "Account"))
+                }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult RemoveFromFavorites(string productId)
+        {
+            ProductsService.RemoveFromFavorites(User.Identity.GetUserId(), productId);
+            return Json(new { message = "Товар видалено із улюблених" }, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize]
+        [FetchCategories]
+        public ActionResult Favorites()
+        {
+            var userId = User.Identity.GetUserId();
+            var products = ProductsService.GetFavorites(userId);
+            var model = new ProductsViewModel
+            {
+                Category = new Category() { Name = "Улюблені товари", Title = "Улюблені товари", UrlName = "favorites" },
+                Items = products,
+                Breadcrumbs = new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Улюблені товари" } }
+            };
+            return View("~/Views/Catalog/ProductsCatalog.cshtml", model);
         }
 
         [HttpPost]

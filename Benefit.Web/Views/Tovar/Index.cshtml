@@ -4,6 +4,7 @@
 @using Benefit.Services
 @using Benefit.Services.Domain
 @using Benefit.DataTransfer.ViewModels;
+@using Microsoft.AspNet.Identity
 @model ProductDetailsViewModel
 
 @{
@@ -48,7 +49,34 @@
     <script src="~/Scripts/v3/ubislider.min.js"></script>
     <script src="~/Scripts/v3/products.js"></script>
     <script>
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
+        var addToFavoritesUrl = '@Url.Action("AddToFavorites", "Tovar", new {productId = Model.Product.Id})';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar", new {productId = Model.Product.Id})';
+        var sellerId = '@Model.Product.SellerId';
+
         $(function () {
+            $(".add-to-favorites").click(function (e) {
+                e.preventDefault();
+                $.post(addToFavoritesUrl,
+                    null,
+                    function(data) {
+                        alert(data.message);
+                        $(".remove-from-favorites").show();
+                        $(".add-to-favorites").hide();
+                    });
+            });
+
+            $(".remove-from-favorites").click(function (e) {
+                e.preventDefault();
+                $.post(removeFromFavoritesUrl,
+                    null,
+                    function(data) {
+                        alert(data.message);
+                        $(".remove-from-favorites").hide();
+                        $(".add-to-favorites").show();
+                    });
+            });
+
             $(".wholesalePices").click(function (e) {
                 e.preventDefault();
                 $(this).next("p").show();
@@ -64,76 +92,75 @@
                 position: 'vertical'
             });
 
-            var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
-            var sellerId = '@Model.Product.SellerId';
+
 
             $("#buy-product, #buy-product-with-options").click(function () {
-               var buttonId = $(this).attr("id");
-                    if (buttonId == "buy-product") {
-                        //if there are options to show
-                        if ($("#product_modal").length > 0) {
-                            //show options
-                            $("#product_modal").modal("show");
-                            return;
-                        }
+                var buttonId = $(this).attr("id");
+                if (buttonId == "buy-product") {
+                    //if there are options to show
+                    if ($("#product_modal").length > 0) {
+                        //show options
+                        $("#product_modal").modal("show");
+                        return;
                     }
+                }
 
-                    $(this).attr("disabled", "disabled");
-                    $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
-                    $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
+                $(this).attr("disabled", "disabled");
+                $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
+                $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
 
-                    var productAmount = $(".quantity").val();
-                    var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
-                        var id = $(this).attr("id");
-                        var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
-                        if (!amount) {
-                            amount = 1;
-                        }
-                        return {
-                            ProductOptionId: id,
-                            Amount: amount
-                        };
-                    }).get();
+                var productAmount = $(".quantity").val();
+                var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
+                    var id = $(this).attr("id");
+                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                    if (!amount) {
+                        amount = 1;
+                    }
+                    return {
+                        ProductOptionId: id,
+                        Amount: amount
+                    };
+                }).get();
 
-                    var available = $("#available-amount");
-                    var amount = $(".quantity").val();
+                var available = $("#available-amount");
+                var amount = $(".quantity").val();
 
-                    if (available.length > 0) {
-                        available = parseFloat(available.text());
-                        var amount = parseFloat(amount);
-                        if (amount > available) {
-                            alert("Не можливо замовити більше товарів, ніж є в наявності");
+                if (available.length > 0) {
+                    available = parseFloat(available.text());
+                    var amount = parseFloat(amount);
+                    if (amount > available) {
+                        alert("Не можливо замовити більше товарів, ніж є в наявності");
+                        $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                        $(".product_info_wrap").css("opacity", 1);
+                        return;
+                    }
+                } else {
+                    available = "";
+                }
+
+                var product = {
+                    ProductId: '@Model.Product.Id',
+                    IsWeightProduct: '@Model.Product.IsWeightProduct',
+                    Amount: amount,
+                    AvailableAmount: available,
+                    OrderProductOptions: productOptions
+                };
+
+                var order = {
+                    product: product,
+                    amount: productAmount
+                };
+                $.post(addToCartUrl,
+                    order,
+                    function (data) {
+                        $('#product_modal').modal('hide');
+                        setTimeout(function f() {
                             $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                            $(".product_info_wrap").css("opacity", 1);
-                            return;
-                        }
-                    } else {
-                        available = "";
-                    }
-
-                    var product = {
-                        ProductId: '@Model.Product.Id',
-                        IsWeightProduct: '@Model.Product.IsWeightProduct',
-                        Amount: amount,
-                        AvailableAmount: available,
-                        OrderProductOptions: productOptions
-                    };
-
-                    var order = {
-                        product: product,
-                        amount: productAmount
-                    };
-                    $.post(addToCartUrl,
-                        order,
-                        function (data) {
-                            $('#product_modal').modal('hide');
-                            setTimeout(function f() {
-                                $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                                $(".product_info_wrap,.item_main_info").css("opacity", 1);
-                                $(".button_block  ").removeClass("loadings");
-                                setCartSummary(data);
-                            }, 1000);
-                        });
+                            $(".product_info_wrap,.item_main_info").css("opacity", 1);
+                            $(".button_block  ").removeClass("loadings");
+                            setCartSummary(data);
+                        }, 1000);
+                    });
             });
         });
     </script>
@@ -243,6 +270,30 @@
                                                     </div>
                                                 </div>
                                             </div>
+                                        </div>
+                                        <div class="margin-top-10">
+                                            @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
+                                            {
+                                                <a href="#" class="remove-from-favorites">
+                                                    <i class="fa fa-remove"></i>
+                                                    Видалити із улюблених
+                                                </a>
+                                                <a href="#" class="add-to-favorites" style="display: none;">
+                                                    <i class="fa fa-heart"></i>
+                                                    Додати до улюблених
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a href="#" class="add-to-favorites">
+                                                    <i class="fa fa-heart"></i>
+                                                    Додати до улюблених
+                                                </a>
+                                                <a href="#" class="remove-from-favorites" style="display: none;">
+                                                    <i class="fa fa-remove"></i>
+                                                    Видалити із улюблених
+                                                </a>
+                                            }
                                         </div>
                                     </div>
                                     <div class="x-product-info__item" data-qaid="product-labels"></div>
@@ -588,7 +639,30 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                <div class="margin-top-10">
+                                                    @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
+                                                    {
+                                                        <a href="#" class="remove-from-favorites">
+                                                            <i class="fa fa-remove"></i>
+                                                            Видалити із улюблених
+                                                        </a>
+                                                        <a href="#" class="add-to-favorites" style="display: none;">
+                                                            <i class="fa fa-heart"></i>
+                                                            Додати до улюблених
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a href="#" class="add-to-favorites">
+                                                            <i class="fa fa-heart"></i>
+                                                            Додати до улюблених
+                                                        </a>
+                                                        <a href="#" class="remove-from-favorites" style="display: none;">
+                                                            <i class="fa fa-remove"></i>
+                                                            Видалити із улюблених
+                                                        </a>
+                                                    }
+                                                </div>
                                             </div>
                                         </div>
                                         @if (Model.Product.WholesalePrice.HasValue && Model.Product.WholesaleFrom.HasValue)

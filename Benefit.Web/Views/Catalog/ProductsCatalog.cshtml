@@ -19,6 +19,8 @@
     ViewBag.Title = title.ToString();
     ViewBag.SelectedCategory = Model.Category;
     ViewBag.CategoryToSellerDiscountPercent = Model.CategoryToSellerDiscountPercent;
+    var isFavorites = (Model.Category != null && Model.Category.UrlName == "favorites");
+    ViewBag.IsFavorites = isFavorites;
 }
 @section meta
 {
@@ -33,11 +35,23 @@
     <script>
         var options = "";
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
         @{
             var categoryId = Model.Category == null ? "" : Model.Category.Id;
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
         }
         $(function () {
+            $(".remove-from-favorites").click(function (e) {
+                e.preventDefault();
+                var link = $(this);
+                var id = link.attr("data-product-id");
+                $.post(removeFromFavoritesUrl + "?productId=" + id,
+                    null,
+                    function() {
+                        link.parents(".product-item").remove();
+                    });
+            });
+
             $("#reset-filters").click(function () {
                 location.href = location.href.substring(0, location.href.indexOf(lastSegment));
             });
@@ -230,7 +244,7 @@
                             </div>
 
                             <div class="sort_header view_block">
-                                @if (Model.Category != null)
+                                @if (Model.Category != null && !isFavorites)
                                 {
                                     <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
                                         <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>

@@ -502,6 +502,10 @@
     <Compile Include="Migrations\201807230841150_AddBannerUrlToCategory.Designer.cs">
       <DependentUpon>201807230841150_AddBannerUrlToCategory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807240838354_AddFavorites.cs" />
+    <Compile Include="Migrations\201807240838354_AddFavorites.Designer.cs">
+      <DependentUpon>201807240838354_AddFavorites.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -510,6 +514,7 @@
     <Compile Include="Models\Enums\SellerStatus.cs" />
     <Compile Include="Models\Excel\ExcelProduct.cs" />
     <Compile Include="Models\ExportImport.cs" />
+    <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -873,6 +878,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807230841150_AddBannerUrlToCategory.resx">
       <DependentUpon>201807230841150_AddBannerUrlToCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807240838354_AddFavorites.resx">
+      <DependentUpon>201807240838354_AddFavorites.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

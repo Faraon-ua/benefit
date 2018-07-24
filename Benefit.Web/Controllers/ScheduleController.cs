@@ -20,7 +20,7 @@ namespace Benefit.Web.Controllers
         public ActionResult ProcessImportTasks()
         {
             var importService = new ImportExportService();
-            Task.Run(() => importService.ImportFromPromua()); 
+            Task.Run(() => importService.ImportFromPromua());
             return Content("Ok");
         }
 
@@ -35,7 +35,7 @@ namespace Benefit.Web.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                foreach (var product in db.Products.Where(entry=>entry.IsFeatured))
+                foreach (var product in db.Products.Where(entry => entry.IsFeatured))
                 {
                     product.IsFeatured = false;
                 }
@@ -44,16 +44,20 @@ namespace Benefit.Web.Controllers
                     product.IsNewProduct = false;
                 }
 
-                foreach (var seller in db.Sellers.Where(entry=>entry.AreProductsFeatured))
+                foreach (var seller in db.Sellers.Where(entry => entry.AreProductsFeatured))
                 {
                     var featuredProduct =
                         db.Products
                             .Include(entry => entry.Images)
+                            .Include(entry => entry.Category)
                             .Where(entry =>
                                 entry.IsActive &&
                                 (entry.AvailabilityState == ProductAvailabilityState.Available ||
                                  entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
-                                entry.Images.Any() && entry.SellerId == seller.Id).OrderBy(entry => Guid.NewGuid())
+                                entry.Images.Any() && entry.SellerId == seller.Id &&
+                                (!entry.Category.IsSellerCategory ||
+                                 (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)))
+                            .OrderBy(entry => Guid.NewGuid())
                             .FirstOrDefault();
                     if (featuredProduct != null)
                     {
@@ -66,7 +70,10 @@ namespace Benefit.Web.Controllers
                                 entry.IsActive &&
                                 (entry.AvailabilityState == ProductAvailabilityState.Available ||
                                  entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
-                                entry.Images.Any() && entry.SellerId == seller.Id).OrderBy(entry => Guid.NewGuid())
+                                entry.Images.Any() && entry.SellerId == seller.Id &&
+                                (!entry.Category.IsSellerCategory ||
+                                 (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)))
+                            .OrderBy(entry => Guid.NewGuid())
                             .FirstOrDefault();
                     if (newProduct != null)
                     {
