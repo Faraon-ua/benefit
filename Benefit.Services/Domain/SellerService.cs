@@ -362,6 +362,24 @@ namespace Benefit.Services.Domain
                         case "vendor":
                             items = items.Where(entry => optionValues.Contains(entry.Vendor));
                             break;
+                        case "available":
+                            if (optionValues.Any())
+                            {
+                                if (optionValues.First() == "available")
+                                {
+                                    items = items.Where(entry =>
+                                        entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable ||
+                                        entry.AvailabilityState == ProductAvailabilityState.Available ||
+                                        entry.AvailabilityState == ProductAvailabilityState.Ending ||
+                                        entry.AvailabilityState == ProductAvailabilityState.OnDemand);
+                                }
+                                if (optionValues.First() == "notavailable")
+                                {
+                                    items = items.Where(entry =>
+                                            entry.AvailabilityState == ProductAvailabilityState.NotInStock);
+                                }
+                            }
+                            break;
                         case "country":
                             items = items.Where(entry => optionValues.Contains(entry.OriginCountry));
                             break;
@@ -428,6 +446,8 @@ namespace Benefit.Services.Domain
                         .Distinct()
                         .Select(entry => entry.ToLower())
                         .ToList();
+                productParametersInItems.Add("available");
+                productParametersInItems.Add("notavailable");
                 productParameters.InsertRange(0, generalParams);
                 var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
                 foreach (var productParameterName in productParameterNames)
@@ -467,6 +487,27 @@ namespace Benefit.Services.Domain
         public List<ProductParameter> FetchGeneralProductParameters(IQueryable<Product> items, bool fetchSellers)
         {
             var productParametersList = new List<ProductParameter>();
+
+            var availableList = new List<ProductParameterValue>
+            {
+                new ProductParameterValue()
+                {
+                    ParameterValue = "Є в наявності",
+                    ParameterValueUrl = "available"
+                },
+                new ProductParameterValue()
+                {
+                    ParameterValue = "Немає в наявності",
+                    ParameterValueUrl = "notavailable"
+                }
+            };
+            productParametersList.Add(new ProductParameter()
+            {
+                Name = "Наявність",
+                UrlName = "available",
+                Type = typeof(string).ToString(),
+                ProductParameterValues = availableList
+            });
             if (fetchSellers)
             {
                 var sellersParams =

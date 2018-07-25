@@ -56,7 +56,7 @@ function setCartSummary(data) {
 function setFavorites(number) {
     $(".favorites-number").text(number);
     if (number == 0) {
-        $(".favorites-number").css("background-color", "#b0b0b0");
+        $(".favorites-number").css("background-color", "#919191");
     }
     else {
         $(".favorites-number:not(.no-red)").css("background-color", "#e52929");
