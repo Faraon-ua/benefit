@@ -10,7 +10,7 @@
         }
     });
 
-    $(".basket-link, #order-cart, .order-edit").click(function (e) {
+    $(".basket-link:not(.no-action), #order-cart, .order-edit").click(function (e) {
         e.preventDefault();
         $("#cart-container").load(cartUrl,
             function () {

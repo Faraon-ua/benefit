@@ -48,10 +48,11 @@
                             @if (User.Identity.IsAuthenticated)
                             {
                                 <div class="wrap_icon inner-table-block baskets">
-                                    <a rel="nofollow" class="delay with_price lg " href="@Url.Action("favorites","tovar")" title="Улюблені товари">
-                                        <span class="js-basket-block"><i class="svg svg-wish "></i>
+                                    <a rel="nofollow" class="delay with_price lg basket-link no-action disabled" href="@Url.Action("favorites","tovar")" title="Улюблені товари">
+                                        <span class="js-basket-block">
+                                            <i class="svg svg-wish "></i>
                                             <span class="title dark_link">&nbsp;</span>
-                                            @*<span class="count">1</span>*@
+                                            <span class="count favorites-number">0</span>
                                         </span>
                                     </a>
                                 </div>

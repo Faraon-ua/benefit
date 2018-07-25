@@ -193,6 +193,20 @@
                     </ul>
                 </div>
 
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="menu middle">
+                        <ul>
+                            <li>
+                                <a rel="nofollow" class="dark-color" href="@Url.Action("Favorites", "Tovar")" style="padding-left: 20px;">
+                                    <i class="fa fa-heart"></i>
+                                    <span style="padding-left: 20px;">Улюблені товари (<span class="favorites-number no-red">0</span>)</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                }
+
                 <div class="menu middle">
                     <ul>
                         <li>

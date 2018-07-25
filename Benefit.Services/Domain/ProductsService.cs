@@ -14,9 +14,9 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public bool AddToFavorites(string userId, string productId)
+        public int AddToFavorites(string userId, string productId)
         {
-            if (db.Favorites.FirstOrDefault(entry => entry.UserId == userId && entry.ProductId == productId) != null) return false;
+            if (db.Favorites.FirstOrDefault(entry => entry.UserId == userId && entry.ProductId == productId) != null) return 0;
             var favorite = new Favorite()
             {
                 UserId = userId,
@@ -24,15 +24,16 @@ namespace Benefit.Services.Domain
             };
             db.Favorites.Add(favorite);
             db.SaveChanges();
-            return true;
+            return db.Favorites.Count(entry => entry.UserId == userId);
         }
 
-        public void RemoveFromFavorites(string userId, string productId)
+        public int RemoveFromFavorites(string userId, string productId)
         {
             var favorite = db.Favorites.FirstOrDefault(entry => entry.UserId == userId && entry.ProductId == productId);
-            if (favorite == null) return;
+            if (favorite == null) return 0;
             db.Favorites.Remove(favorite);
             db.SaveChanges();
+            return db.Favorites.Count(entry => entry.UserId == userId);
         }
 
         public List<Product> GetFavorites(string userId)

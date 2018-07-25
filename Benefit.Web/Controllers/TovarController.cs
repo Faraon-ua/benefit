@@ -79,9 +79,10 @@ namespace Benefit.Web.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                if (ProductsService.AddToFavorites(User.Identity.GetUserId(), productId))
+                var favoritesCount = ProductsService.AddToFavorites(User.Identity.GetUserId(), productId);
+                if (favoritesCount > 0)
                 {
-                    return Json(new { message = "Товар додано до улюблених" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { message = "Товар додано до улюблених", count = favoritesCount }, JsonRequestBehavior.AllowGet);
                 }
                 return Json(new { message = "Товар вже додано до улюблених" }, JsonRequestBehavior.AllowGet);
             }
@@ -98,8 +99,8 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         public ActionResult RemoveFromFavorites(string productId)
         {
-            ProductsService.RemoveFromFavorites(User.Identity.GetUserId(), productId);
-            return Json(new { message = "Товар видалено із улюблених" }, JsonRequestBehavior.AllowGet);
+            var favoritesCount = ProductsService.RemoveFromFavorites(User.Identity.GetUserId(), productId);
+            return Json(new { message = "Товар видалено із улюблених", count = favoritesCount }, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]

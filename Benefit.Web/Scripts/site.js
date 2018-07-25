@@ -53,6 +53,19 @@ function setCartSummary(data) {
     }
 }
 
+function setFavorites(number) {
+    $(".favorites-number").text(number);
+    if (number == 0) {
+        $(".favorites-number").css("background-color", "#b0b0b0");
+    }
+    else {
+        $(".favorites-number:not(.no-red)").css("background-color", "#e52929");
+        $(".favorites-number").siblings(".svg").css("opacity", "1");
+        $(".favorites-number").parents("a").removeClass("disabled");
+        $(".favorites-number").parents("a").unbind("click");
+    }
+}
+
 // удаляет cookie с именем name
 function deleteCookie(name) {
     setCookie(name, "", {
@@ -132,7 +145,7 @@ $(function () {
                 Message: message,
                 Rating: rating
             },
-            function(data) {
+            function (data) {
                 if (data.error) {
                     flashMessage(data.error, true, true);
                 } else {
@@ -416,11 +429,14 @@ $(function () {
         $(".cart-items-number").text(getCookie("cartNumber"));
         $(".cart-items-number").parent().removeClass("disabled");
         $("#cart-items-price").text(getCookie("cartPrice") + " грн");
-        $(".basket-link .svg").css("opacity", "1");
+        $(".cart-items-number").siblings(".svg").css("opacity", "1");
         if (getCookie("cartNumber") !== "0") {
             $(".cart-items-number").css("background-color", "#e52929");
         }
         $(".cart-summary").show();
+    }
+    if (getCookie("favoritesNumber")) {
+        setFavorites(getCookie("favoritesNumber"));
     }
 
     if (getCookie("regionName")) {

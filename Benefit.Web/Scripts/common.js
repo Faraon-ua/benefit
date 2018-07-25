@@ -126,6 +126,10 @@ function ReAssignIndexesToChildren(id, itemSelector) {
 }
 
 $(function () {
+    $("a.disabled").click(function(e) {
+        e.preventDefault();
+    });
+
     try {
         $('.number-input').mask("#");
     } catch (err) {

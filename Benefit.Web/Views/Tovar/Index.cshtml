@@ -63,6 +63,10 @@
                         alert(data.message);
                         $(".remove-from-favorites").show();
                         $(".add-to-favorites").hide();
+                        if (data.count !== undefined) {
+                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            setFavorites(data.count);
+                        }
                     });
             });
 
@@ -74,6 +78,10 @@
                         alert(data.message);
                         $(".remove-from-favorites").hide();
                         $(".add-to-favorites").show();
+                        if (data.count !== undefined) {
+                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            setFavorites(data.count);
+                        }
                     });
             });
 
