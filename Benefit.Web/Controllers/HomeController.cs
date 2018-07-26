@@ -16,6 +16,7 @@ using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Benefit.Web.Models;
+using Benefit.Web.Models.ViewModels;
 
 namespace Benefit.Web.Controllers
 {
@@ -308,9 +309,14 @@ namespace Benefit.Web.Controllers
             return View("~/Views/SellerArea/About.cshtml");
         }
 
-        public ActionResult ShowMessagePopup(string message)
+        [ValidateInput(false)]
+        public ActionResult ShowMessagePopup(string message, bool showButtons)
         {
-            return PartialView("_Message", message);
+            return PartialView("_Message", new MessagePopupViewModel()
+            {
+                Message = message,
+                ShowButtons = showButtons
+            });
         }
 
         public ActionResult PasswordProtect()

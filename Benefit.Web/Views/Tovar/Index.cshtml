@@ -53,39 +53,48 @@
         var addToFavoritesUrl = '@Url.Action("AddToFavorites", "Tovar", new {productId = Model.Product.Id})';
         var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar", new {productId = Model.Product.Id})';
         var sellerId = '@Model.Product.SellerId';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
 
-        $(function () {
-            $(".add-to-favorites").click(function (e) {
+        $(function() {
+            $(".add-to-favorites").click(function(e) {
                 e.preventDefault();
                 $.post(addToFavoritesUrl,
                     null,
                     function(data) {
-                        alert(data.message);
-                        $(".remove-from-favorites").show();
-                        $(".add-to-favorites").hide();
                         if (data.count !== undefined) {
+                            alert(data.message);
                             setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            $(".remove-from-favorites").show();
+                            $(".add-to-favorites").hide();
                             setFavorites(data.count);
+                        } else {
+                            $.post(showMessagePopupUrl,
+                                { message: data.message, showButtons: false },
+                                function (popupHtml) {
+                                    $(".modal-container").html(popupHtml);
+                                    $(".message-modal").modal();
+                                }
+                            );
                         }
                     });
             });
 
-            $(".remove-from-favorites").click(function (e) {
+            $(".remove-from-favorites").click(function(e) {
                 e.preventDefault();
                 $.post(removeFromFavoritesUrl,
                     null,
                     function(data) {
                         alert(data.message);
-                        $(".remove-from-favorites").hide();
-                        $(".add-to-favorites").show();
                         if (data.count !== undefined) {
                             setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            $(".remove-from-favorites").hide();
+                            $(".add-to-favorites").show();
                             setFavorites(data.count);
                         }
                     });
             });
 
-            $(".wholesalePices").click(function (e) {
+            $(".wholesalePices").click(function(e) {
                 e.preventDefault();
                 $(this).next("p").show();
                 $(this).hide();
@@ -101,8 +110,7 @@
             });
 
 
-
-            $("#buy-product, #buy-product-with-options").click(function () {
+            $("#buy-product, #buy-product-with-options").click(function() {
                 var buttonId = $(this).attr("id");
                 if (buttonId == "buy-product") {
                     //if there are options to show
@@ -118,17 +126,19 @@
                 $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
 
                 var productAmount = $(".quantity").val();
-                var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
-                    var id = $(this).attr("id");
-                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
-                    if (!amount) {
-                        amount = 1;
-                    }
-                    return {
-                        ProductOptionId: id,
-                        Amount: amount
-                    };
-                }).get();
+                var productOptions =
+                    $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked")
+                        .map(function() {
+                            var id = $(this).attr("id");
+                            var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                            if (!amount) {
+                                amount = 1;
+                            }
+                            return {
+                                ProductOptionId: id,
+                                Amount: amount
+                            };
+                        }).get();
 
                 var available = $("#available-amount");
                 var amount = $(".quantity").val();
@@ -160,14 +170,15 @@
                 };
                 $.post(addToCartUrl,
                     order,
-                    function (data) {
+                    function(data) {
                         $('#product_modal').modal('hide');
                         setTimeout(function f() {
-                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                            $(".product_info_wrap,.item_main_info").css("opacity", 1);
-                            $(".button_block  ").removeClass("loadings");
-                            setCartSummary(data);
-                        }, 1000);
+                                $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                                $(".product_info_wrap,.item_main_info").css("opacity", 1);
+                                $(".button_block  ").removeClass("loadings");
+                                setCartSummary(data);
+                            },
+                            1000);
                     });
             });
         });
@@ -381,7 +392,7 @@
                                     </div>
                                 </div>
                                 <div class="x-company-info__item">
-                                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id=Model.Product.Seller.UrlName})" class="dark_link">Всі товари постачальника</a>
+                                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id = Model.Product.Seller.UrlName})" class="dark_link">Всі товари постачальника</a>
                                 </div>
                             </div>
                             <div class="x-company-info__parts">
@@ -393,7 +404,7 @@
                                         <div class="x-rating__mask"></div>
                                     </div>
                                     <div class="x-rating__info">
-                                        <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName+"Reviews", new {id=Model.Product.Seller.UrlName})" data-qaid="company_rating"> @Model.Product.Seller.Reviews.Count відгуків про @Model.Product.Seller.Name</a>
+                                        <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName + "Reviews", new {id = Model.Product.Seller.UrlName})" data-qaid="company_rating"> @Model.Product.Seller.Reviews.Count відгуків про @Model.Product.Seller.Name</a>
                                     </div>
                                 </div>
                             </div>
@@ -522,7 +533,7 @@
             </div>
         </div>
     </div>
-    <div class="wrapper_inner visible-xs" style="padding:0;">
+    <div class="wrapper_inner visible-xs" style="padding: 0;">
         <div class="wrapper_inner ">
             <div class="middle ">
                 <div class="container">
@@ -536,7 +547,7 @@
                             var parentCat = Model.Product.Category.MappedParentCategory ?? Model.Product.Category;
                         }
                         <div style="padding-top: 5px;">
-                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = parentCat.UrlName })" style="font-size:16px;font-weight:bold;">
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = parentCat.UrlName})" style="font-size: 16px; font-weight: bold;">
                                 < @parentCat.Name
                             </a>
                         </div>
@@ -722,7 +733,7 @@
                                                     <div class="x-rating__mask"></div>
                                                 </div>
                                                 <div class="x-rating__info">
-                                                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName+"Reviews", new {id=Model.Product.Seller.UrlName})" data-qaid="company_rating"> @Model.Product.Seller.Reviews.Count відгуків про @Model.Product.Seller.Name</a>
+                                                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName + "Reviews", new {id = Model.Product.Seller.UrlName})" data-qaid="company_rating"> @Model.Product.Seller.Reviews.Count відгуків про @Model.Product.Seller.Name</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -821,7 +832,7 @@
         </div>
     </div>
 </div>
-
+<div class="modal-container"></div>
 @if (Model.RelatedProducts.Any())
 {
     ViewBag.RelatedProductsHeading = "Покупці, які переглядали цей товар, також цікавляться";

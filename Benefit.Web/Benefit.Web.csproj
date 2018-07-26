@@ -321,6 +321,7 @@
     <Compile Include="Models\ImagesViewModel.cs" />
     <Compile Include="Models\Admin\SellerViewModel.cs" />
     <Compile Include="Models\ViewModels\HierarchySelectViewModel.cs" />
+    <Compile Include="Models\ViewModels\MessagePopupViewModel.cs" />
     <Compile Include="Models\ViewModels\ProductOptionsViewModel.cs" />
     <Compile Include="Models\Templates.cs" />
     <Compile Include="Properties\Annotations.cs" />

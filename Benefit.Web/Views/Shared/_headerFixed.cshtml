@@ -179,13 +179,21 @@
                     }
                 </div>
             </div>
+            
+            <a rel="nofollow" class="basket-link inner-table-block nopadding lg no-action" href="@Url.Action("Favorites","Tovar")">
+                <span class="js-basket-block">
+                    <i class="fa fa-heart" style="color: white; font-size: 2em;"></i>
+                    <span class="title dark_link">Улюблені товари</span>
+                    <span class="count favorites-number">0</span>
+                </span>
+            </a>
 
             <a rel="nofollow" class="basket-link basket  inner-table-block nopadding lg " href="@Url.Action("index","cart")">
                 <span class="js-basket-block">
                     <?xml version="1.0" encoding="iso-8859-1"?>
                     <i class="fa fa-shopping-cart" style="color: white; font-size: 2em;"></i>
 
-@*                    <i class="svg svg-basket " aria-hidden="true"></i>*@
+                    @*                    <i class="svg svg-basket " aria-hidden="true"></i>*@
                     <span class="title dark_link">Кошик</span>
                     <span class="count cart-items-number">0</span>
                 </span>

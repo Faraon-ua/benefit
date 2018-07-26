@@ -81,5 +81,5 @@
 </div>
 @if (!string.IsNullOrEmpty(Model.Category.Tag))
 {
-    @Html.Action("ShowMessagePopup", "Home", new { message = Model.Category.Tag })
+    @Html.Action("ShowMessagePopup", "Home", new { message = Model.Category.Tag, showButtons = true })
 }
