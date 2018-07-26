@@ -480,6 +480,40 @@
                     <div class="stores_wrapp col-md-6">
                         <!--'start_frame_cache_lEnm5l'-->
                         <div class="stores_block_wrap">
+                            @if (!string.IsNullOrEmpty(Model.Product.Vendor))
+                            {
+                                <div class="stores_block wo_image">
+                                    <div class="stores_text_wrapp ">
+                                        <div class="main_info">
+                                            <span>
+                                                <a class="title_stores">Виробник</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="item-stock">
+                                        <span class="value">
+                                                <span>@Model.Product.Vendor</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            }
+                            @if (!string.IsNullOrEmpty(Model.Product.OriginCountry))
+                            {
+                                <div class="stores_block wo_image">
+                                    <div class="stores_text_wrapp ">
+                                        <div class="main_info">
+                                            <span>
+                                                <a class="title_stores">Країна виробник</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="item-stock">
+                                        <span class="value">
+                                            <span>@Model.Product.OriginCountry</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            }
                             @foreach (var productParameter in Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null))
                             {
                                 <div class="stores_block wo_image">
