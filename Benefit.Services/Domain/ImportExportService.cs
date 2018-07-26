@@ -196,6 +196,8 @@ namespace Benefit.Services.Domain
             var sellerCats = new List<SellerCategory>();
             var seller = db.Sellers.Include(entry => entry.SellerCategories)
                 .FirstOrDefault(entry => entry.Id == sellerId);
+            var sellerCatsDiscount = seller.SellerCategories.Where(entry => entry.CustomDiscount.HasValue)
+                .ToDictionary(entry => entry.CategoryId, entry => entry.CustomDiscount.Value);
             db.SellerCategories.RemoveRange(seller.SellerCategories.Where(entry => !entry.IsDefault));
             foreach (var xmlCategory in xmlCategories)
             {
@@ -233,6 +235,14 @@ namespace Benefit.Services.Domain
             }
 
             sellerCats = sellerCats.Where(entry => entry.CategoryId != null).Distinct(new SellerCategoryComparer()).ToList();
+            foreach (var d in sellerCatsDiscount)
+            {
+                var sellerCat = sellerCats.FirstOrDefault(entry => entry.CategoryId == d.Key);
+                if (sellerCat != null)
+                {
+                    sellerCat.CustomDiscount = d.Value;
+                }
+            }
             db.SellerCategories.AddRange(sellerCats);
             if (hasNewContent)
             {
