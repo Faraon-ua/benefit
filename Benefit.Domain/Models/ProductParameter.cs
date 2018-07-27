@@ -36,16 +36,7 @@ namespace Benefit.Domain.Models
         public virtual Category Category { get; set; }
         public virtual ICollection<ProductParameterValue> ProductParameterValues { get; set; }
         public virtual ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
-
-
-        /*[MaxLength(32)]
-        public string Type { get; set; }
-        [MaxLength(128)]
-        public string Value { get; set; }
-        [MaxLength(10)]
-        public bool IsVerified { get; set; }
-        [MaxLength(128)]
-        public string ProductId { get; set; }
-        public virtual Product Product { get; set; }*/
+        [NotMapped]
+        public bool SkipCheckInItems { get; set; }
     }
 }

@@ -37,8 +37,41 @@
                 </div>
             }
         </div>
-        
-        @foreach (var filter in Model.OrderBy(entry => entry.Order))
+
+        @{
+            var priceFilter = Model.FirstOrDefault(entry => entry.UrlName == "price");
+        }
+        @if (priceFilter != null)
+        {
+            var lowerBound = priceFilter.ProductParameterValues.First().ParameterValue;
+            var upperBound = priceFilter.ProductParameterValues.Last().ParameterValue;
+            <div class="bx_filter_parameters_box active filter-section" data-filter-name="price">
+                <span class="bx_filter_container_modef"></span>
+                <div class="bx_filter_parameters_box_title icons_fa">Ціна</div>
+                <div class="bx_filter_block">
+                    <div>
+                        <input readonly="readonly" type="text" value="@lowerBound" class="width-30" id="price-lower-bound"/>
+                        <label class="padding-horizontal-10"> - </label>
+                        <input readonly="readonly" type="text" value="@upperBound" class="width-30" id="price-upper-bound"/>
+                        <label class="padding-horizontal-10"> грн</label>
+                    </div>
+                    <div class="bx_filter_parameters_box_container numbers">
+                        <div class="wrapp_all_inputs wrap_md">
+                            <input id="price-slider" type="text" class="span2" value="" data-slider-min="@lowerBound" data-slider-max="@upperBound" data-slider-value="[@lowerBound,@upperBound]" />
+                        </div>
+                    </div>
+                    <div class="margin-top-10">
+                        <input type="checkbox" data-filter-value="@lowerBound-@upperBound" id="price-filter" name="price-filter" class="hidden">
+                        <label class="bx_filter_param_label last" for="price-filter">
+                            <span class="bx_filter_input_checkbox">
+                                <span class="bx_filter_param_text">Фільтрувати за ціною</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        }
+        @foreach (var filter in Model.Where(entry=>entry.DisplayInFilters).OrderBy(entry => entry.Order))
         {
             if (filter.ProductParameterValues.Any())
             {

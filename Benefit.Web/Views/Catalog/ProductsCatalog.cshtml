@@ -26,12 +26,17 @@
 {
     <meta name="description" content="@(Model.Category == null ? Model.Seller.ShortDescription : Model.Category.MetaDescription)">
 }
+@section styles
+{
+    <link href="~/Content/css/bootstrap-slider.css" rel="stylesheet" />
+}
 @section scripts{
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
     </script>
     <script src="~/Scripts/v3/products.js"></script>
+    <script src="~/Scripts/bootstrap-slider.min.js"></script>
     <script>
         var options = "";
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
@@ -41,6 +46,12 @@
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
         }
         $(function () {
+            var priceSlider = $('#price-slider').slider().on('change', function (data) {
+                    $("#price-lower-bound").val(data.value.newValue[0]);
+                    $("#price-upper-bound").val(data.value.newValue[1]);
+                    $("#price-filter").attr("data-filter-value", data.value.newValue[0] + "-" + data.value.newValue[1]);
+            }).data('slider');
+
             $(".remove-from-favorites").click(function (e) {
                 e.preventDefault();
                 var link = $(this);
@@ -115,33 +126,65 @@
             {<text>
                  if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
                      options = lastSegment;
-                     $.each(options.split(";"), function (i, urlSegment) {
-                         if (urlSegment === "") return;
-                         var optKeyValue = urlSegment.split("=");
-                         var optionName = optKeyValue[0];
-                         var optionValues = optKeyValue[1].split(",");
-                         if (optionName === "sort") {
-                             var optionValue = optionValues[0];
-                             sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
-                             $(".sort_btn span").removeClass("badge");
-                         } else {
-                             $.each(optionValues, function (j, optValue) {
-                                 showFiltersReset = true;
-                                 var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue));
-                                 if (checkbox.length === 0) {
-                                     checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + decodeURI(optValue).replace(" ", "") + "]")
+                     $.each(options.split(";"),
+                         function(i, urlSegment) {
+                             if (urlSegment === "") return;
+                             var optKeyValue = urlSegment.split("=");
+                             var optionName = optKeyValue[0];
+                             var optionValues = optKeyValue[1].split(",");
+                             if (optionName)
+                                 if (optionName === "sort") {
+                                     var optionValue = optionValues[0];
+                                     sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
+                                     $(".sort_btn span").removeClass("badge");
+                                     return true;
                                  }
-                                 checkbox.prop('checked', true);
-                                 var optionvalueText = checkbox.attr("text");
+                             if (optionName === "price") {
+                                 var optionValue = optionValues[0];
+                                 var prices = optionValue.split('-');
+                                 var lowerPrice = parseInt(prices[0]);
+                                 var upperPrice = parseInt(prices[1]);
+                                 $("#price-lower-bound").val(lowerPrice);
+                                 $("#price-upper-bound").val(upperPrice);
+                                 $("#price-filter").prop('checked', true);
+                                 $("#price-slider").data('slider').setValue([lowerPrice, upperPrice]);
                                  $(".selected-filters").append(
-                                     "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" + optionName + "' data-option-value='" + optValue+"'>" + optionvalueText + " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                     "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='price' data-option-value='price-filter'>" +
+                                     optionValue+
+                                     " грн<i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
                                  );
-                             });
+                                 return true;
+                             }
+                             $.each(optionValues,
+                                 function(j, optValue) {
+                                     showFiltersReset = true;
+                                     var checkbox = $(".filter-section[data-filter-name=" +
+                                         optionName +
+                                         "] input#" +
+                                         decodeURI(optValue));
+                                     if (checkbox.length === 0) {
+                                         checkbox = $(".filter-section[data-filter-name=" +
+                                             optionName +
+                                             "] input[name=" +
+                                             decodeURI(optValue).replace(" ", "") +
+                                             "]");
+                                     }
+                                     checkbox.prop('checked', true);
+                                     var optionvalueText = checkbox.attr("text");
+                                     $(".selected-filters").append(
+                                         "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" +
+                                         optionName +
+                                         "' data-option-value='" +
+                                         optValue +
+                                         "'>" +
+                                         optionvalueText +
+                                         " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                     );
+                                 });
                              if (showFiltersReset) {
                                  $("#reset-filters").show();
                              }
-                         }
-                     });
+                         });
                  }
              </text>
             }
@@ -167,6 +210,9 @@
 
                         var currentOption = '';
                         var selectedValues = parent.find("input[type=checkbox]:checked").map(function () {
+                            if ($(this).attr("data-filter-value")) {
+                                return $(this).attr("data-filter-value");
+                            }
                             return $(this).attr("id");
                         }).get();
 

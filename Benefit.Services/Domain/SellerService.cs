@@ -383,6 +383,12 @@ namespace Benefit.Services.Domain
                         case "country":
                             items = items.Where(entry => optionValues.Contains(entry.OriginCountry));
                             break;
+                        case "price":
+                            var prices = optionValues[0].Split('-');
+                            var lowerPrice = int.Parse(prices[0]);
+                            var upperPrice = int.Parse(prices[1]);
+                            items = items.Where(entry => entry.Price > lowerPrice && entry.Price < upperPrice);
+                            break;
                         default:
                             items =
                             items.Where(
@@ -449,7 +455,7 @@ namespace Benefit.Services.Domain
                 productParametersInItems.Add("available");
                 productParametersInItems.Add("notavailable");
                 productParameters.InsertRange(0, generalParams);
-                var productParameterNames = productParameters.Select(entry => entry.UrlName).Distinct().ToList();
+                var productParameterNames = productParameters.Where(entry=>!entry.SkipCheckInItems).Select(entry => entry.UrlName).Distinct().ToList();
                 foreach (var productParameterName in productParameterNames)
                 {
                     var parameters = productParameters.Where(entry => entry.UrlName == productParameterName).ToList();
@@ -488,6 +494,26 @@ namespace Benefit.Services.Domain
         {
             var productParametersList = new List<ProductParameter>();
 
+            productParametersList.Add(new ProductParameter()
+            {
+                Name = "Ціна",
+                UrlName = "price",
+                Type = typeof(string).ToString(),
+                SkipCheckInItems = true,
+                DisplayInFilters = false,
+                ProductParameterValues = new List<ProductParameterValue>
+                {
+                    new ProductParameterValue()
+                    {
+
+                        ParameterValue = ((int)items.Min(entry=>entry.Price)).ToString(),
+                    },
+                    new ProductParameterValue()
+                    {
+                        ParameterValue = ((int)items.Max(entry=>entry.Price)).ToString(),
+                    }
+                }
+            });
             var availableList = new List<ProductParameterValue>
             {
                 new ProductParameterValue()
@@ -506,6 +532,7 @@ namespace Benefit.Services.Domain
                 Name = "Наявність",
                 UrlName = "available",
                 Type = typeof(string).ToString(),
+                DisplayInFilters = true,
                 ProductParameterValues = availableList
             });
             if (fetchSellers)

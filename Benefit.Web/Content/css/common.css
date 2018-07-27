@@ -299,6 +299,10 @@
     padding: 10px;
 }
 
+.padding-horizontal-10 {
+    padding: 0 10px;
+}
+
 .padding-vertical-5px {
     padding-top: 5px !important;
     padding-bottom: 5px !important;

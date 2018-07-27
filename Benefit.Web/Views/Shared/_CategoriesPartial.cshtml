@@ -43,7 +43,7 @@
                                                 <div style="padding: 5px; clear: both;">
                                                     @foreach (var childCat in subCat.ChildCategories)
                                                     {
-                                                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, })/available=available;/" class="pull-left child-category">
+                                                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, })" class="pull-left child-category">
                                                             <img src="~/Images/CategoryLogo/@childCat.ImageUrl" style="width: 85px; height: 85px;" />
                                                             <div style="height: 50px; overflow: hidden;">
                                                                 @childCat.Name

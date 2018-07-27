@@ -91,7 +91,7 @@ namespace Benefit.Web.Controllers
                 new
                 {
                     message = string.Format(
-                        "Ви маєте бути залоговані, щоб додати товар до улюблених. Пройдіть сюди щоб залогуватись <a href='{0}'>Увійти</a>",
+                        "<a href='{0}'>Авторизуйтесь</a>,<br> щоб додати товар до улюбленого",
                         Url.Action("Login", "Account"))
                 }, JsonRequestBehavior.AllowGet);
         }
