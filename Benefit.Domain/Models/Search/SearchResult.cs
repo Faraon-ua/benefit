@@ -14,7 +14,8 @@ namespace Benefit.Domain.Models.Search
         public string Term { get; set; }
         public string SellerId { get; set; }
         public List<ProductParameter> ProductParameters { get; set; } 
-        public List<Product> Products { get; set; } 
+        public List<Product> Products { get; set; }
+        public int PagesCount { get; set; }
         public List<Seller> CurrentRegionSellers { get; set; } 
         public List<Seller> Sellers { get; set; } 
     }

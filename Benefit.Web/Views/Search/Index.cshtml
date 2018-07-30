@@ -20,20 +20,31 @@
         var term = '@Model.Term';
 
         $(function() {
-            $(".ajax_load_btn").click(function(e) {
+            $(".ajax_load_btn, .paging").click(function (e) {
+                debugger;
                 e.preventDefault();
                 var moreBtn = $(this);
-                var currentPage = parseInt(moreBtn.attr("data-page"));
+                var page = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
                 $.get(searchProductsUrl + "?term=@Model.Term&options="+options+"&sellerId=@Model.SellerId&page=" +
-                    (currentPage + 1) //  + "&options=" + options
-                    ,
-                    function (data) {
-                        if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                            moreBtn.hide();
+                    page +
+                    "&options=" +
+                    options,
+                    function(data) {
+                        if (moreBtn.hasClass("ajax_load_btn")) {
+                            if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                                moreBtn.hide();
+                            }
+                            $(".product-item:last").after(data.products);
+                            moreBtn.attr("data-page", page + 1);
+                            $(".paging[data-page=" + page + "]").addClass("cur");
+                        } else {
+                            $(".products-wrapper").html(data.products);
+                            $("html, body").animate({ scrollTop: 0 }, 600);
+                            $(".paging").removeClass("cur");
+                            $(".paging[data-page=" + page + "]").addClass("cur");
+                            $(".ajax_load_btn").attr("data-page", (page + 1));
                         }
-                        $(".product-item:last").after(data.products);
-                        moreBtn.attr("data-page", currentPage + 1);
                         $(".loader").hide();
                     });
             });
@@ -141,7 +152,7 @@
                         <div class="inner_wrapper">
                             <div class="sections_wrapper">
                                 <div class="list items">
-                                    <div class="row margin0">
+                                    <div class="row margin0 products-wrapper">
                                         @foreach (var product in Model.Products.Take(ListConstants.DefaultTakePerPage))
                                         {
                                             @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
@@ -155,7 +166,7 @@
                                             <span class="more_text_ajax">Показати ще</span>
                                         </div>
                                     }
-                                    @*@if (Model.PagesCount > 1)
+                                    @if (Model.PagesCount > 1)
                                     {
                                         <div class="module-pagination">
                                             <div class="nums">
@@ -166,7 +177,7 @@
                                                 }
                                             </div>
                                         </div>
-                                    }*@
+                                    }
                                 </div>
                             </div>
                         </div>

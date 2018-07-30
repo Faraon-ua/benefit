@@ -35,12 +35,12 @@ namespace Benefit.Web.Controllers
                 {
                     seller.FeaturedProducts = db.Products
                         .Include(entry => entry.Images)
-                        .Include(entry => entry.Seller.ShippingMethods)
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sm=>sm.Region))
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.IsFeatured).ToList();
                     seller.PromotionProducts = db.Products
                         .Include(entry => entry.Images)
-                        .Include(entry => entry.Seller.ShippingMethods)
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).ToList();
                 }
@@ -59,14 +59,14 @@ namespace Benefit.Web.Controllers
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
-                    .Include(entry => entry.Seller.ShippingMethods)
+                    .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                     .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList();
                 mainPageViewModel.NewProducts = db.Products
                     .Include(entry => entry.Currency)
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Category)
-                    .Include(entry => entry.Seller.ShippingMethods)
+                    .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                     .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList();
                 foreach (var featuredProduct in mainPageViewModel.FeaturedProducts)
                 {

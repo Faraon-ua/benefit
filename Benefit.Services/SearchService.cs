@@ -190,6 +190,7 @@ namespace Benefit.Services
                 ProductParameterValues = countryFilters
             });
 
+            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
             result.Products = productResult.Skip(skip)
                 .Take(take + 1)
                 .ToList();

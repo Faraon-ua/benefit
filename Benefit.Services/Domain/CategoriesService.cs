@@ -99,7 +99,8 @@ namespace Benefit.Services.Domain
             //{
             //    categories = categories.SelectMany(entry => entry.ChildCategories).ToList();
             //}
-            parent.BannerImageUrl = parent.BannerImageUrl ?? parent.ParentCategory.BannerImageUrl;
+            if (parent.BannerImageUrl == null && parent.ParentCategory != null)
+                parent.BannerImageUrl = parent.ParentCategory.BannerImageUrl;
             var catsModel = new CategoriesViewModel()
             {
                 Category = parent,
@@ -236,7 +237,7 @@ namespace Benefit.Services.Domain
 
             var productParameters = category.ProductParameters.ToList();
             var productParameterIds = productParameters.Select(entry => entry.Id).ToList();
-            var productParameterValues = 
+            var productParameterValues =
                 db.ProductParameterValues.Where(
                     entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
             var productParameterProducts = db.ProductParameterProducts.Where(
