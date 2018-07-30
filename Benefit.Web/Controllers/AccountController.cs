@@ -83,6 +83,8 @@ namespace Benefit.Web.Controllers
                     else
                     {
                         await SignInAsync(user, model.RememberMe);
+                        var productsService = new ProductsService();
+                        CookiesService.Instance.AddCookie("favoritesNumber", productsService.GetFavorites(user.Id).Count.ToString());
                         if (isAjaxRequest)
                         {
                             return Json(new { returnUrl }, JsonRequestBehavior.AllowGet);
@@ -597,6 +599,10 @@ namespace Benefit.Web.Controllers
             if (Session[DomainConstants.SellerSessionIdKey] != null)
             {
                 CookiesService.Instance.RemoveCookie(DomainConstants.SellerSessionIdKey);
+            }
+            if (Request.Cookies["favoritesNumber"] != null)
+            {
+                CookiesService.Instance.RemoveCookie("favoritesNumber");
             }
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");

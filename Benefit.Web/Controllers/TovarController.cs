@@ -75,7 +75,7 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddToFavorites(string productId)
+        public ActionResult AddToFavorites(string productId, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -92,7 +92,7 @@ namespace Benefit.Web.Controllers
                 {
                     message = string.Format(
                         "<a href='{0}'>Авторизуйтесь</a>,<br> щоб додати товар до улюбленого",
-                        Url.Action("Login", "Account"))
+                        Url.Action("Login", "Account", new { returnUrl }))
                 }, JsonRequestBehavior.AllowGet);
         }
 

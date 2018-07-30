@@ -155,6 +155,18 @@
                                             <span class="more_text_ajax">Показати ще</span>
                                         </div>
                                     }
+                                    @*@if (Model.PagesCount > 1)
+                                    {
+                                        <div class="module-pagination">
+                                            <div class="nums">
+                                                <a href="#" class="paging dark_link cur" data-page="0">1</a>
+                                                @for (int i = 2; i <= Model.PagesCount; i++)
+                                                {
+                                                    <a href="#" class="paging dark_link" data-page="@(i-1)">@i</a>
+                                                }
+                                            </div>
+                                        </div>
+                                    }*@
                                 </div>
                             </div>
                         </div>

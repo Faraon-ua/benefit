@@ -45,14 +45,18 @@
             var categoryId = Model.Category == null ? "" : Model.Category.Id;
             var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
         }
-        $(function () {
-            var priceSlider = $('#price-slider').slider().on('change', function (data) {
-                    $("#price-lower-bound").val(data.value.newValue[0]);
-                    $("#price-upper-bound").val(data.value.newValue[1]);
-                    $("#price-filter").attr("data-filter-value", data.value.newValue[0] + "-" + data.value.newValue[1]);
-            }).data('slider');
+        $(function() {
+            if ($('#price-slider').length > 0) {
+                $('#price-slider').slider().on('change',
+                    function(data) {
+                        $("#price-lower-bound").val(data.value.newValue[0]);
+                        $("#price-upper-bound").val(data.value.newValue[1]);
+                        $("#price-filter").attr("data-filter-value",
+                            data.value.newValue[0] + "-" + data.value.newValue[1]);
+                    }).data('slider');
+            }
 
-            $(".remove-from-favorites").click(function (e) {
+            $(".remove-from-favorites").click(function(e) {
                 e.preventDefault();
                 var link = $(this);
                 var id = link.attr("data-product-id");
@@ -67,44 +71,52 @@
                     });
             });
 
-            $("#reset-filters").click(function () {
+            $("#reset-filters").click(function() {
                 location.href = location.href.substring(0, location.href.indexOf(lastSegment));
             });
 
             $('body').on("click",
                 ".remove-filter",
-                function () {
+                function() {
                     var optionName = $(this).parent().attr("data-option-name");
                     var optValue = decodeURI($(this).parent().attr("data-option-value"));
                     var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
                     if (checkbox.length === 0) {
-                        checkbox = $(".filter-section[data-filter-name=" + optionName + "] input[name=" + optValue.replace(" ", "") + "]");
+                        checkbox = $(".filter-section[data-filter-name=" +
+                            optionName +
+                            "] input[name=" +
+                            optValue.replace(" ", "") +
+                            "]");
                     }
                     checkbox.click();
                 });
 
-            $(".ajax_load_btn, .paging").click(function (e) {
+            $(".ajax_load_btn, .paging").click(function(e) {
                 e.preventDefault();
                 var moreBtn = $(this);
                 var page = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
-                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&page=" + page + "&options=" + options, function (data) {
-                    if (moreBtn.hasClass("ajax_load_btn")) {
-                        if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                            moreBtn.hide();
+                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&page=" +
+                    page +
+                    "&options=" +
+                    options,
+                    function(data) {
+                        if (moreBtn.hasClass("ajax_load_btn")) {
+                            if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                                moreBtn.hide();
+                            }
+                            $(".product-item:last").after(data.products);
+                            moreBtn.attr("data-page", page + 1);
+                            $(".paging[data-page=" + page + "]").addClass("cur");
+                        } else {
+                            $(".products-wrapper").html(data.products);
+                            $("html, body").animate({ scrollTop: 0 }, 600);
+                            $(".paging").removeClass("cur");
+                            $(".paging[data-page=" + page + "]").addClass("cur");
+                            $(".ajax_load_btn").attr("data-page", (page + 1));
                         }
-                        $(".product-item:last").after(data.products);
-                        moreBtn.attr("data-page", page + 1);
-                        $(".paging[data-page=" + page + "]").addClass("cur");
-                    } else {
-                        $(".products-wrapper").html(data.products);
-                        $("html, body").animate({ scrollTop: 0 }, 600);
-                        $(".paging").removeClass("cur");
-                        $(".paging[data-page=" + page + "]").addClass("cur");
-                        $(".ajax_load_btn").attr("data-page", (page + 1));
-                    }
-                    $(".loader").hide();
-                });
+                        $(".loader").hide();
+                    });
             });
 
             $(".bx_filter_parameters_box_title").click(function() {
@@ -112,7 +124,7 @@
                 $(this).next().slideToggle();
             });
 
-            $(".filter_opener").click(function(){
+            $(".filter_opener").click(function() {
                 $(this).toggleClass("opened");
                 $(".bx_filter_vertical, .bx_filter").slideToggle(333);
             });
@@ -150,7 +162,7 @@
                                  $("#price-slider").data('slider').setValue([lowerPrice, upperPrice]);
                                  $(".selected-filters").append(
                                      "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='price' data-option-value='price-filter'>" +
-                                     optionValue+
+                                     optionValue +
                                      " грн<i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
                                  );
                                  return true;
@@ -193,60 +205,63 @@
             @if (Model.Category != null)
             {
                 <text>
-                    $('body').on('change click', "#productFilters input[type=checkbox], .sort_btn", function (e) {
-                        e.preventDefault();
-                        $(".loader").show();
-                        var parts = location.href.split('/');
-                        var lastSegment = (parts.pop() || parts.pop()).replace("#",""); // handle potential trailing slash
-                        var options = "";
+                    $('body').on('change click',
+                        "#productFilters input[type=checkbox], #productFilters button, .sort_btn",
+                        function(e) {
+                            e.preventDefault();
+                            $(".loader").show();
+                            var parts = location.href.split('/');
+                            var lastSegment =
+                                (parts.pop() || parts.pop()).replace("#", ""); // handle potential trailing slash
+                            var options = "";
 
-                        if (lastSegment != '@Model.Category.UrlName') {
-                            options = lastSegment;
-                        }
-
-                        var parent = $(this).parents(".filter-section");
-                        var optionName = parent.attr("data-filter-name");
-                        var optionNameIndex = options.indexOf(optionName);
-
-                        var currentOption = '';
-                        var selectedValues = parent.find("input[type=checkbox]:checked").map(function () {
-                            if ($(this).attr("data-filter-value")) {
-                                return $(this).attr("data-filter-value");
+                            if (lastSegment != '@Model.Category.UrlName') {
+                                options = lastSegment;
                             }
-                            return $(this).attr("id");
-                        }).get();
 
-                        if ($(this).attr("class").indexOf("sort_btn") >= 0) {
-                            var val = $(this).attr("data-sort-value");
-                            selectedValues.push(val);
-                        }
-                        if (selectedValues.length > 0) {
-                            currentOption = optionName;
-                            currentOption += "=";
-                            currentOption += selectedValues.join();
-                            currentOption += ";";
-                        }
+                            var parent = $(this).parents(".filter-section");
+                            var optionName = parent.attr("data-filter-name");
+                            var optionNameIndex = options.indexOf(optionName);
 
-                        if (optionNameIndex >= 0) {
-                            var ending = options.indexOf(";", optionNameIndex);
-                            var oldOption = options.substring(optionNameIndex, ending + 1);
-                            options = options.replace(oldOption, currentOption);
-                        } else {
-                            options += currentOption;
-                        }
-                        if (lastSegment !== '@Model.Category.UrlName') {
-                            var locBuilder = location.href.replace(lastSegment + "/", "") + options;
-                            if (options.length > 0)
-                                locBuilder += "/";
-                            location.href = locBuilder;
-                        } else {
-                            var locBuilder = location.href;
-                            if (location.href[location.href.length - 1] !== "/") {
-                                locBuilder += "/";
+                            var currentOption = '';
+                            var selectedValues = parent.find("input[type=checkbox]:checked, button").map(function() {
+                                if ($(this).attr("data-filter-value")) {
+                                    return $(this).attr("data-filter-value");
+                                }
+                                return $(this).attr("id");
+                            }).get();
+
+                            if ($(this).attr("class").indexOf("sort_btn") >= 0) {
+                                var val = $(this).attr("data-sort-value");
+                                selectedValues.push(val);
                             }
-                            window.location.href = locBuilder + options + "/";
-                        }
-                    });
+                            if (selectedValues.length > 0) {
+                                currentOption = optionName;
+                                currentOption += "=";
+                                currentOption += selectedValues.join();
+                                currentOption += ";";
+                            }
+
+                            if (optionNameIndex >= 0) {
+                                var ending = options.indexOf(";", optionNameIndex);
+                                var oldOption = options.substring(optionNameIndex, ending + 1);
+                                options = options.replace(oldOption, currentOption);
+                            } else {
+                                options += currentOption;
+                            }
+                            if (lastSegment !== '@Model.Category.UrlName') {
+                                var locBuilder = location.href.replace(lastSegment + "/", "") + options;
+                                if (options.length > 0)
+                                    locBuilder += "/";
+                                location.href = locBuilder;
+                            } else {
+                                var locBuilder = location.href;
+                                if (location.href[location.href.length - 1] !== "/") {
+                                    locBuilder += "/";
+                                }
+                                window.location.href = locBuilder + options + "/";
+                            }
+                        });
                 </text>
             }
         });

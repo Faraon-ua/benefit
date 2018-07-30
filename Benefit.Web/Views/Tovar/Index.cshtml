@@ -50,7 +50,7 @@
     <script src="~/Scripts/v3/products.js"></script>
     <script>
         var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
-        var addToFavoritesUrl = '@Url.Action("AddToFavorites", "Tovar", new {productId = Model.Product.Id})';
+        var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {productId = Model.Product.Id, returnUrl = Request.Url.PathAndQuery}))';
         var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar", new {productId = Model.Product.Id})';
         var sellerId = '@Model.Product.SellerId';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';

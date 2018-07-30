@@ -33,6 +33,7 @@ namespace Benefit.Common.Extensions
             words.Add("\"", "");
             words.Add("'", "");
             words.Add(".", "");
+            words.Add(":", "");
             words.Add(",", "");
             words.Add(" ", "-");
             words.Add("а", "a");

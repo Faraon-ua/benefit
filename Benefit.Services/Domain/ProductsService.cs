@@ -98,6 +98,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Images)
                 .Where(entry =>
                     entry.IsActive && entry.Seller.IsActive &&
+                    entry.Id != product.Id &&
                     entry.AvailabilityState != ProductAvailabilityState.NotInStock && entry.Images.Any() &&
                     catsIds.Contains(entry.CategoryId)).OrderBy(entry => Guid.NewGuid()).Take(5)
                 .ToList();

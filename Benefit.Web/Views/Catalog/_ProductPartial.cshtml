@@ -2,6 +2,7 @@
 @using Benefit.Common.Helpers
 @using Benefit.Domain.Models
 @using Benefit.Services.Domain
+@using Microsoft.AspNet.Identity
 @model Product
 
 @{
@@ -94,6 +95,32 @@
                 </div>
                 <div class="article_block"></div>
             </div>
+            @*<div>
+                <div class="margin-top-5 margin-bottom-5">
+                    @if (User.Identity.IsAuthenticated && Model.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
+                    {
+                        <a href="#" class="remove-from-favorites">
+                            <i class="fa fa-remove"></i>
+                            Видалити із улюблених
+                        </a>
+                        <a href="#" class="add-to-favorites" style="display: none;">
+                            <i class="fa fa-heart"></i>
+                            Додати до улюблених
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="#" class="add-to-favorites">
+                            <i class="fa fa-heart"></i>
+                            Додати до улюблених
+                        </a>
+                        <a href="#" class="remove-from-favorites" style="display: none;">
+                            <i class="fa fa-remove"></i>
+                            Видалити із улюблених
+                        </a>
+                    }
+                </div>
+            </div>*@
 
             <div class="cost prices clearfix">
                 <div class="price_matrix_block">
