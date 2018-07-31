@@ -547,6 +547,7 @@ namespace Benefit.Services.Domain
                 {
                     Name = "Постачальник",
                     UrlName = "seller",
+                    DisplayInFilters = true,
                     Type = typeof(string).ToString(),
                     ProductParameterValues = sellersParams
                 });
@@ -565,6 +566,7 @@ namespace Benefit.Services.Domain
                     Name = "Виробник",
                     UrlName = "vendor",
                     Type = typeof(string).ToString(),
+                    DisplayInFilters = true,
                     ProductParameterValues = vendorParams
                 });
             }
@@ -582,6 +584,7 @@ namespace Benefit.Services.Domain
                     Name = "Країна виробник",
                     UrlName = "country",
                     Type = typeof(string).ToString(),
+                    DisplayInFilters = true,
                     ProductParameterValues = originCountryParams
                 });
             }

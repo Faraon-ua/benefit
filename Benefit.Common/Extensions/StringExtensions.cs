@@ -21,19 +21,20 @@ namespace Benefit.Common.Extensions
         public static string Translit(this string value)
         {
             var words = new Dictionary<string, string>();
+            words.Add(":", "");
+            words.Add("%", "proc");
             words.Add("(", "");
             words.Add(")", "");
+            words.Add("*", "x");
+            words.Add("$", "");
+            words.Add("&", "");
             words.Add("№", "n");
             words.Add("+", "plus");
-            words.Add("%", "proc");
             words.Add("/", "-");
             words.Add("\\", "-proc");
-            words.Add("&", "");
-            words.Add("*", "x");
             words.Add("\"", "");
             words.Add("'", "");
             words.Add(".", "");
-            words.Add(":", "");
             words.Add(",", "");
             words.Add(" ", "-");
             words.Add("а", "a");
