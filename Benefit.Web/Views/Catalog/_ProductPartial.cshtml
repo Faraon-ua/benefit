@@ -60,8 +60,11 @@
                 {
                     <div class="sticker_sale_text">@categoryDiscount %</div>
                 }
+                @if (Model.Seller.SafePurchase)
+                {
+                    <div class="sticker_safe">Безпечна покупка</div>
+                }
                 @*<div class="sticker_khit">Хит</div>*@
-                @*<div class="sticker_aktsiya">Сове</div>*@
             </div>
 
             <a href="@productDetailsUrl" class="dark_link" style="font-size: 16px; font-weight: bold; height: 66px; display: block; overflow: hidden;">@Model.Name</a>
@@ -96,31 +99,31 @@
                 <div class="article_block"></div>
             </div>
             @*<div>
-                <div class="margin-top-5 margin-bottom-5">
-                    @if (User.Identity.IsAuthenticated && Model.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
-                    {
-                        <a href="#" class="remove-from-favorites">
-                            <i class="fa fa-remove"></i>
-                            Видалити із улюблених
-                        </a>
-                        <a href="#" class="add-to-favorites" style="display: none;">
-                            <i class="fa fa-heart"></i>
-                            Додати до улюблених
-                        </a>
-                    }
-                    else
-                    {
-                        <a href="#" class="add-to-favorites">
-                            <i class="fa fa-heart"></i>
-                            Додати до улюблених
-                        </a>
-                        <a href="#" class="remove-from-favorites" style="display: none;">
-                            <i class="fa fa-remove"></i>
-                            Видалити із улюблених
-                        </a>
-                    }
-                </div>
-            </div>*@
+                    <div class="margin-top-5 margin-bottom-5">
+                        @if (User.Identity.IsAuthenticated && Model.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
+                        {
+                            <a href="#" class="remove-from-favorites">
+                                <i class="fa fa-remove"></i>
+                                Видалити із улюблених
+                            </a>
+                            <a href="#" class="add-to-favorites" style="display: none;">
+                                <i class="fa fa-heart"></i>
+                                Додати до улюблених
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" class="add-to-favorites">
+                                <i class="fa fa-heart"></i>
+                                Додати до улюблених
+                            </a>
+                            <a href="#" class="remove-from-favorites" style="display: none;">
+                                <i class="fa fa-remove"></i>
+                                Видалити із улюблених
+                            </a>
+                        }
+                    </div>
+                </div>*@
 
             <div class="cost prices clearfix">
                 <div class="price_matrix_block">

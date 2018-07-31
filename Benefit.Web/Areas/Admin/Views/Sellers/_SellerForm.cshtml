@@ -111,6 +111,14 @@
             @Html.CheckBoxFor(m => m.Seller.IsActive)
         </div>
     </div>
+    
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Безпечна покупка</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.Seller.SafePurchase)
+        </div>
+    </div>
 
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Висвітлювати на головній сторінці</label>

@@ -5050,7 +5050,7 @@ body .tabs_slider .catalog_item:hover .inner_wrap{border-color:#fff;box-shadow:0
 
 .catalog_item .image_wrapper_block{margin:0 auto 10px;position:relative}
 
-.stickers{width:200px;left:0;padding-top:10px;z-index:3;line-height:0px;text-align:left;padding-right:50px;padding-bottom:10px;font-size:0}
+.stickers{width:200px;left:0;padding-top:10px;z-index:3;line-height:0px;text-align:left;padding-bottom:10px;font-size:0}
 .stickers > div{display:inline-block}
 .stickers [class*="sticker_"]{background-color:#4fad00;width:auto;margin:0 3px 6px;letter-spacing:.5px;position:relative;display:inline-block;color:#fff;font-size:10px;line-height:12px;padding:5px 10px 4px;text-transform:uppercase;border-radius:2px}
 .container .catalog_detail .stickers [class*="sticker_"]{padding-bottom:5px}
@@ -5059,6 +5059,7 @@ body .tabs_slider .catalog_item:hover .inner_wrap{border-color:#fff;box-shadow:0
 .stickers *{text-align:left}
 .stickers .sticker_sale_text{background-image:none;background-color:#e52929;display:inline-block;color:#fff;width:auto;font-size:10px;line-height:12px;position:relative;box-sizing:border-box}
 .stickers .sticker_hit,.stickers .sticker_khit{background-color:#2992d9}
+.stickers .sticker_safe{ background-color: #4fad00;}
 .stickers .sticker_stock,.stickers .sticker_aktsiya{background-color:#ffc438;color:#1d2029}
 .stickers .sticker_recommend,.stickers .sticker_sovetuem{background-color:#893ca9}
 .item .stickers{left:0}

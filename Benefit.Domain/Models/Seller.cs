@@ -57,6 +57,7 @@ namespace Benefit.Domain.Models
         public string UrlName { get; set; }
         public int? AvarageRating { get; set; }
         public SellerStatus Status { get; set; }
+        public bool SafePurchase { get; set; }
         #region Terminal
         public bool TerminalOrderNotification { get; set; }
         public bool TerminalBillEnabled { get; set; }

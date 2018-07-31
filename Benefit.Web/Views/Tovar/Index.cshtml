@@ -238,9 +238,13 @@
                                     <h1 class="x-title">@Model.Product.Name</h1>
                                     @if (Model.DiscountPercent > 0)
                                     {
-                                        <span style="color: white; background: red; padding: 3px;">Бонус: @Model.DiscountPercent%</span>
+                                        <span style="color: white; background: red; padding: 5px;">Бонус: @Model.DiscountPercent%</span>
                                     }
-                                    <div class="x-product-info__identity">
+                                    @if (Model.Product.Seller.SafePurchase)
+                                    {
+                                        <span style="color: white; background: #4fad00; padding: 5px;">Безпечна покупка</span>
+                                    }
+                                    <div class="x-product-info__identity margin-top-5">
                                         <div class="x-product-info__identity-item">
                                             <span>Код:&nbsp;</span>
                                             <span data-qaid="product-sku" itemprop="sku">@Model.Product.SKU</span>

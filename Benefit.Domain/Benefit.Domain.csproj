@@ -506,6 +506,10 @@
     <Compile Include="Migrations\201807240838354_AddFavorites.Designer.cs">
       <DependentUpon>201807240838354_AddFavorites.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201807311409321_AddSafePurchaseToSeller.cs" />
+    <Compile Include="Migrations\201807311409321_AddSafePurchaseToSeller.Designer.cs">
+      <DependentUpon>201807311409321_AddSafePurchaseToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -881,6 +885,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201807240838354_AddFavorites.resx">
       <DependentUpon>201807240838354_AddFavorites.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201807311409321_AddSafePurchaseToSeller.resx">
+      <DependentUpon>201807311409321_AddSafePurchaseToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
