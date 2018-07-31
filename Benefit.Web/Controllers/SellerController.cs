@@ -40,8 +40,14 @@ namespace Benefit.Web.Controllers
                     .GroupBy(entry => entry)
                     .OrderByDescending(s => s.Count())
                     .Select(entry => entry.Key)
-                    .Take(ListConstants.DefaultTakePerPage + 1).ToList();
-                viewModel.Items.AddRange(db.Products.Where(entry => productIds.Contains(entry.Id)).ToList());
+                    .Take(ListConstants.DefaultTakePerPage * 2).ToList();
+                viewModel.Items.AddRange(db.Products.Include(entry => entry.Images)
+                    .Where(entry =>
+                        productIds.Contains(entry.Id) &&
+                        (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable ||
+                         entry.AvailabilityState == ProductAvailabilityState.Available) && entry.Images.Any())
+                    .ToList().OrderBy(entry => productIds.IndexOf(entry.Id))
+                    .Take(ListConstants.DefaultTakePerPage + 1));
                 if (productIds.Count < ListConstants.DefaultTakePerPage)
                 {
                     viewModel.Items.AddRange(db.Products.Where(entry => entry.SellerId == seller.Id).Take(ListConstants.DefaultTakePerPage + 1).ToList());

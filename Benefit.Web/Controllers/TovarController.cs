@@ -91,8 +91,8 @@ namespace Benefit.Web.Controllers
                 new
                 {
                     message = string.Format(
-                        "<a href='{0}'>Авторизуйтесь</a> або зареєструйтесь,<br> щоб додати товар до улюбленого",
-                        Url.Action("Login", "Account", new { returnUrl }))
+                        "<a href='{0}'>Авторизуйтесь</a> або <a href='{1}#reg'>зареєструйтесь</a>,<br> щоб додати товар до улюбленого",
+                        Url.Action("login", "account", new { returnUrl }), Url.Action("login", "account", new { returnUrl }))
                 }, JsonRequestBehavior.AllowGet);
         }
 

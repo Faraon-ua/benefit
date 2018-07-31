@@ -139,13 +139,13 @@ $(function () {
     $(".show-more-options").click(function(e) {
         e.preventDefault();
         $(this).parent().prev().css("max-height", "");
-        $(".show-less-options").show();
+        $(this).parent().find(".show-less-options").show();
         $(this).hide();
     });
     $(".show-less-options").click(function (e) {
         e.preventDefault();
         $(this).parent().prev().css("max-height", "215px");
-        $(".show-more-options").show();
+        $(this).parent().find(".show-more-options").show();
         $(this).hide();
     });
 
