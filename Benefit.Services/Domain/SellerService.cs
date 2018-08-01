@@ -15,6 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Caching;
+using Benefit.Common.Extensions;
 
 namespace Benefit.Services.Domain
 {
@@ -450,7 +451,7 @@ namespace Benefit.Services.Domain
                         .Union(items.Select(entry => entry.Seller.UrlName))
                         .Union(items.Select(entry => entry.OriginCountry))
                         .Distinct()
-                        .Select(entry => entry.ToLower())
+                        .Select(entry => entry.ToLower().Replace("&", string.Empty))
                         .ToList();
                 productParametersInItems.Add("available");
                 productParametersInItems.Add("notavailable");
@@ -557,7 +558,7 @@ namespace Benefit.Services.Domain
                    items.Select(entry => entry.Vendor).Distinct().ToList().Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
                    {
                        ParameterValue = entry,
-                       ParameterValueUrl = entry
+                       ParameterValueUrl = entry.Replace("&","")
                    }).OrderBy(entry => entry.ParameterValue).ToList();
             if (vendorParams.Count >= 1)
             {
