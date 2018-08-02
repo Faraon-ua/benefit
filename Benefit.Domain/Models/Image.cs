@@ -21,6 +21,7 @@ namespace Benefit.Domain.Models
         [MaxLength(256)]
         public string ImageUrl { get; set; }
         public bool IsAbsoluteUrl { get; set; }
+        public bool IsImported { get; set; }
         public ImageType ImageType { get; set; }
         public int Order { get; set; }
         [MaxLength(128)]

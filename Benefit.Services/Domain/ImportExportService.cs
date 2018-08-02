@@ -73,7 +73,7 @@ namespace Benefit.Services.Domain
             var productsToAddList = new List<Product>();
             var imagesToAddList = new List<Image>();
 
-            var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
+            var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId) && entry.IsImported).ToList();
             db.DeleteWhereColumnIn(existingImages);
 
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
@@ -118,7 +118,8 @@ namespace Benefit.Services.Domain
                         ImageUrl = new Uri(SettingsService.BaseHostName).Append("FTP").Append("LocalUser").Append(sellerUrl).Append(xmlImage.Value).AbsoluteUri,
                         IsAbsoluteUrl = true,
                         Order = order++,
-                        ProductId = product.Id
+                        ProductId = product.Id,
+                        IsImported = true
                     }));
                 }
             });
@@ -146,7 +147,8 @@ namespace Benefit.Services.Domain
                         ImageUrl = new Uri(SettingsService.BaseHostName).Append("FTP").Append("LocalUser").Append(sellerUrl).Append(xmlImage.Value).AbsoluteUri,
                         IsAbsoluteUrl = true,
                         Order = order++,
-                        ProductId = product.Id
+                        ProductId = product.Id,
+                        IsImported = true
                     }));
                 }
             });
