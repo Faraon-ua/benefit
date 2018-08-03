@@ -169,7 +169,7 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case SellerSortOption.Rating:
-                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry => entry.Reviews.Count);
+                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry=>entry.Status).ThenByDescending(entry => entry.Reviews.Count);
                     break;
                 case SellerSortOption.NameAsc:
                     sellers = sellers.OrderBy(entry => entry.Name);
