@@ -5,7 +5,7 @@
 
 @{
     //var sellerUrl = Url.SubdomainAction(Model.UrlName, "Index", "Home", null);
-    var sellerUrl = "#";
+    var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.UrlName });
     var logo = Model.Images.FirstOrDefault(entry => entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo);
     var logoUrl = logo == null ? "" : logo.ImageUrl;
     var address = Model.Addresses.FirstOrDefault();

@@ -51,7 +51,7 @@ namespace Benefit.Web
                     controller = "Seller",
                     action = "Index",
                     id = UrlParameter.Optional,
-                    category  = UrlParameter.Optional,
+                    category = UrlParameter.Optional,
                     options = UrlParameter.Optional
                 }
             );
