@@ -61,6 +61,13 @@
                             <span style="color: #ed1e1e; font-weight: bold;">@todayShedule.StartHour:00 - @todayShedule.EndHour:00</span>
                         }
                     }
+                    @if (Model.Latitude.HasValue && Model.Longitude.HasValue)
+                    {
+                        <a target="_blank" href="http://maps.google.com/maps?q=@Model.Latitude,@Model.Longitude" style="margin-left: 25px; ">
+                            <i class="fa fa-map-marker" style="font-size: 1.8em;color: rgb(229, 41, 41);"></i>
+                            на мапі
+                        </a>
+                    }
                     @if (Model.IsAcquiringActive)
                     {
                         <span>
