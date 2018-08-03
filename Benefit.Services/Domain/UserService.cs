@@ -41,13 +41,13 @@ namespace Benefit.Services.Domain
             var authValues = new Dictionary<string, string>
                 {
                     {"grant_type", "client_credentials"},
-                    {"client_id", "81cbe7e753aee8266585f7aa4d112bcf"},
-                    {"client_secret", "f459f5679fe6c3e8dc0000079dc6a5c2"}
+                    {"client_id", "7e27ce1dac21e41636bffd1fda438479"},
+                    {"client_secret", "413dec132624858344ba2013976ef3c4"}
                 };
             string postBody = JsonConvert.SerializeObject(authValues);
             var content = new StringContent(postBody, Encoding.UTF8, "application/json");
 
-            var authResult = await httpClientService.PostObectToService<SPAuthDto>(SettingsService.SendPulse.SendPulseAuthUrl, content);
+            var authResult = await httpClientService.PostObectToService<SPAuthDto>(SettingsService.SendPulse.SendPulseAuthUrl, content).ConfigureAwait(false);
 
             var addEmailUrl = SettingsService.SendPulse.SendPulseAddEmailUrl.Replace("{id}",
                 SettingsService.SendPulse.SendPulseFinLikbezAddressBookId);

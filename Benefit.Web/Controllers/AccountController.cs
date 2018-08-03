@@ -218,7 +218,8 @@ namespace Benefit.Web.Controllers
                     await UserManager.SendEmailAsync(user.Id,
                        "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\""
                        + callbackUrl + "\">це посилання</a>");
-
+                    var userService = new UserService();
+                    userService.SubscribeSendPulse(user.Email);
                     //if shipping address provided - create db entry
                     Address shippingAddress = null;
                     if (!string.IsNullOrEmpty(model.ShippingAddress))

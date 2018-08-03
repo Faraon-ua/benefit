@@ -25,7 +25,7 @@ namespace Benefit.Services
                     {
                         return JsonSerializer.Create().Deserialize<T>(reader);
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
                         return default(T);
                     }
