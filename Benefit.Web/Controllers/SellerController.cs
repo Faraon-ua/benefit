@@ -41,7 +41,9 @@ namespace Benefit.Web.Controllers
                     .OrderByDescending(s => s.Count())
                     .Select(entry => entry.Key)
                     .Take(ListConstants.DefaultTakePerPage * 2).ToList();
-                viewModel.Items.AddRange(db.Products.Include(entry => entry.Images)
+                viewModel.Items.AddRange(db.Products
+                    .Include(entry => entry.Images)
+                    .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
                     .Where(entry =>
                         productIds.Contains(entry.Id) &&
                         (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable ||
@@ -50,7 +52,13 @@ namespace Benefit.Web.Controllers
                     .Take(ListConstants.DefaultTakePerPage + 1));
                 if (productIds.Count < ListConstants.DefaultTakePerPage)
                 {
-                    viewModel.Items.AddRange(db.Products.Where(entry => entry.SellerId == seller.Id).Take(ListConstants.DefaultTakePerPage + 1).ToList());
+                    viewModel.Items.AddRange(
+                        db.Products
+                            .Include(entry => entry.Images)
+                            .Where(entry => entry.SellerId == seller.Id)
+                            .OrderBy(entry => entry.AvailabilityState)
+                            .ThenByDescending(entry => entry.Images.Any())
+                            .Take(ListConstants.DefaultTakePerPage + 1).ToList());
                 }
             }
             else

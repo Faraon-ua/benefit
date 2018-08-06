@@ -5,7 +5,7 @@
 
 @{
     //var sellerUrl = Url.SubdomainAction(Model.UrlName, "Index", "Home", null);
-    var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.UrlName });
+    var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.UrlName, category = string.Empty, options = string.Empty });
     var logo = Model.Images.FirstOrDefault(entry => entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo);
     var logoUrl = logo == null ? "" : logo.ImageUrl;
     var address = Model.Addresses.FirstOrDefault();
@@ -101,7 +101,7 @@
                 <br><br>
 
                 @*<a href="#">Детальніше </a><br>*@
-                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id=Model.UrlName})"> Всі товари</a><br>
+                <a href="@sellerUrl"> Всі товари</a><br>
                 <a href="@sellerUrl" class="small btn btn-default">
                     Детальніше
                 </a>
