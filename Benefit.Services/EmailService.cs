@@ -40,6 +40,7 @@ namespace Benefit.Services
         public async Task<bool> SendEmail(string toad, string body, string subjectcontent)
         {
             var usermail = Mailbodplain(new List<string> { toad }, body, DisplayName, subjectcontent);
+            usermail.IsBodyHtml = true;
             var client = new SmtpClient() { EnableSsl = true, DeliveryMethod = SmtpDeliveryMethod.Network };
 
             client.Send(usermail);
@@ -140,7 +141,8 @@ namespace Benefit.Services
                     "Назва компанії або ФОП: {4}</br>" +
                     "Телефон: {5}</br>" +
                     "Email: {6}</br>" +
-                    "Коментар: {7}</br>",
+                    "Коментар: {7}</br>" +
+                    "Пакет: {8} </br> ",
                     sellerApplication.BusinessType,
                     sellerApplication.HasEcommerceWebSite ? sellerApplication.WebSiteAddress : "немає",
                     Enumerations.GetEnumDescription(sellerApplication.Status),
@@ -148,7 +150,8 @@ namespace Benefit.Services
                     sellerApplication.CompanyName,
                     sellerApplication.Phone,
                     sellerApplication.Email,
-                    sellerApplication.Comment);
+                    sellerApplication.Comment,
+                    Enumerations.GetEnumDescription(sellerApplication.Status));
             SendEmail(BenefitBusinessEmail, body, "Нова заявка постачальника");
         }
 
