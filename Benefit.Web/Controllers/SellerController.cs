@@ -42,6 +42,7 @@ namespace Benefit.Web.Controllers
                     .Select(entry => entry.Key)
                     .Take(ListConstants.DefaultTakePerPage * 2).ToList();
                 viewModel.Items.AddRange(db.Products
+                    .Include(entry => entry.Currency)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
                     .Where(entry =>
@@ -54,6 +55,7 @@ namespace Benefit.Web.Controllers
                 {
                     viewModel.Items.AddRange(
                         db.Products
+                            .Include(entry => entry.Currency)
                             .Include(entry => entry.Images)
                             .Where(entry => entry.SellerId == seller.Id)
                             .OrderBy(entry => entry.AvailabilityState)
@@ -68,7 +70,11 @@ namespace Benefit.Web.Controllers
                 viewModel.Category = selectedCat;
                 viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
-
+            viewModel.Items.ForEach(entry=>
+            {
+                if(entry.Currency!=null)
+                entry.Price = entry.Price * entry.Currency.Rate;
+            });
             viewModel.Breadcrumbs = null;
             viewModel.Seller = seller;
             return View("~/Views/Catalog/ProductsCatalog.cshtml", viewModel);

@@ -6,31 +6,229 @@
     Layout = "_SellerLayout.cshtml";
     var seller = ViewBag.Seller;
 }
-
+@section styles
+{
+    <link href="~/Content/css/bootstrap-slider.css" rel="stylesheet" />
+}
 @section scripts
 {
+    <script src="~/Scripts/bootstrap-slider.min.js"></script>
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
 
-        $(function() {
-            $(".ajax_load_btn").click(function (e) {
+        $(function () {
+            if ($('#price-slider').length > 0) {
+                $('#price-slider').slider().on('change',
+                    function (data) {
+                        $("#price-lower-bound").val(data.value.newValue[0]);
+                        $("#price-upper-bound").val(data.value.newValue[1]);
+                        $("#price-filter").attr("data-filter-value",
+                            data.value.newValue[0] + "-" + data.value.newValue[1]);
+                    }).data('slider');
+            }
+
+            $(".ajax_load_btn").click(function(e) {
                 e.preventDefault();
                 var moreBtn = $(this);
                 var currentPage = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
-                $.get(getProductsUrl + "?categoryId=@Model.Category.Id&sellerId=@seller.Id&page=" + (currentPage + 1) + "&layout=1",// + "&options=" + options
-                function (data) {
-                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                        moreBtn.hide();
-                    }
-                    $(".product-item:last").after(data.products);
-                    moreBtn.attr("data-page", currentPage + 1);
-                    $(".loader").hide();
-                });
+                $.get(getProductsUrl +
+                    "?categoryId=@Model.Category.Id&sellerId=@seller.Id&page=" +
+                    (currentPage + 1) +
+                    "&layout=1", // + "&options=" + options
+                    function(data) {
+                        if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                            moreBtn.hide();
+                        }
+                        $(".product-item:last").after(data.products);
+                        moreBtn.attr("data-page", currentPage + 1);
+                        $(".loader").hide();
+                    });
             });
-        })
+
+            $(".remove-from-favorites").click(function(e) {
+                e.preventDefault();
+                var link = $(this);
+                var id = link.attr("data-product-id");
+                $.post(removeFromFavoritesUrl + "?productId=" + id,
+                    null,
+                    function(data) {
+                        link.parents(".product-item").remove();
+                        if (data.count !== undefined) {
+                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            setFavorites(data.count);
+                        }
+                    });
+            });
+
+            $("#reset-filters").click(function() {
+                location.href = location.href.substring(0, location.href.indexOf(lastSegment));
+            });
+
+            $('body').on("click",
+                ".remove-filter",
+                function() {
+                    var optionName = $(this).parent().attr("data-option-name");
+                    var optValue = decodeURI($(this).parent().attr("data-option-value"));
+                    var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
+                    if (checkbox.length === 0) {
+                        checkbox = $(".filter-section[data-filter-name=" +
+                            optionName +
+                            "] input[name=" +
+                            optValue.replace(" ", "") +
+                            "]");
+                    }
+                    checkbox.click();
+                });
+
+            $(".bx_filter_parameters_box_title").click(function() {
+                $(this).parent().toggleClass("active");
+                $(this).next().slideToggle();
+            });
+
+            $(".filter_opener").click(function() {
+                $(this).toggleClass("opened");
+                $(".bx_filter_vertical, .bx_filter").slideToggle(333);
+            });
+
+            //select all checkboxes from url
+            var showFiltersReset = false;
+            var parts = location.href.split('/');
+            var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
+            var sortControl = $(".sort_btn[data-sort-value=Rating]");
+            @if (Model.Category != null)
+            {<text>
+                 if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
+                     options = lastSegment;
+                     $.each(options.split(";"),
+                         function(i, urlSegment) {
+                             if (urlSegment === "") return;
+                             var optKeyValue = urlSegment.split("=");
+                             var optionName = optKeyValue[0];
+                             var optionValues = optKeyValue[1].split(",");
+                             if (optionName)
+                                 if (optionName === "sort") {
+                                     var optionValue = optionValues[0];
+                                     sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
+                                     $(".sort_btn span").removeClass("badge");
+                                     return true;
+                                 }
+                             if (optionName === "price") {
+                                 var optionValue = optionValues[0];
+                                 var prices = optionValue.split('-');
+                                 var lowerPrice = parseInt(prices[0]);
+                                 var upperPrice = parseInt(prices[1]);
+                                 $("#price-lower-bound").val(lowerPrice);
+                                 $("#price-upper-bound").val(upperPrice);
+                                 $("#price-filter").prop('checked', true);
+                                 $("#price-slider").data('slider').setValue([lowerPrice, upperPrice]);
+                                 $(".selected-filters").append(
+                                     "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='price' data-option-value='price-filter'>" +
+                                     optionValue +
+                                     " грн<i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                 );
+                                 return true;
+                             }
+                             $.each(optionValues,
+                                 function(j, optValue) {
+                                     showFiltersReset = true;
+                                     var checkbox = $(".filter-section[data-filter-name=" +
+                                         optionName +
+                                         "] input#" +
+                                         decodeURI(optValue));
+                                     if (checkbox.length === 0) {
+                                         checkbox = $(".filter-section[data-filter-name=" +
+                                             optionName +
+                                             "] input[name=" +
+                                             decodeURI(optValue).replace(" ", "") +
+                                             "]");
+                                     }
+                                     checkbox.prop('checked', true);
+                                     var optionvalueText = checkbox.attr("text");
+                                     $(".selected-filters").append(
+                                         "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" +
+                                         optionName +
+                                         "' data-option-value='" +
+                                         optValue +
+                                         "'>" +
+                                         optionvalueText +
+                                         " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                     );
+                                 });
+                             if (showFiltersReset) {
+                                 $("#reset-filters").show();
+                             }
+                         });
+                 }
+             </text>
+            }
+            sortControl.find("span").addClass("badge");
+
+            @if (Model.Category != null)
+            {
+                <text>
+                    $('body').on('change click',
+                        "#productFilters input[type=checkbox], #productFilters button, .sort_btn",
+                        function(e) {
+                            e.preventDefault();
+                            $(".loader").show();
+                            var parts = location.href.split('/');
+                            var lastSegment =
+                                (parts.pop() || parts.pop()).replace("#", ""); // handle potential trailing slash
+                            var options = "";
+
+                            if (lastSegment != '@Model.Category.UrlName') {
+                                options = lastSegment;
+                            }
+
+                            var parent = $(this).parents(".filter-section");
+                            var optionName = parent.attr("data-filter-name");
+                            var optionNameIndex = options.indexOf(optionName);
+
+                            var currentOption = '';
+                            var selectedValues = parent.find("input[type=checkbox]:checked, button").map(function() {
+                                if ($(this).attr("data-filter-value")) {
+                                    return $(this).attr("data-filter-value");
+                                }
+                                return $(this).attr("id");
+                            }).get();
+
+                            if ($(this).attr("class").indexOf("sort_btn") >= 0) {
+                                var val = $(this).attr("data-sort-value");
+                                selectedValues.push(val);
+                            }
+                            if (selectedValues.length > 0) {
+                                currentOption = optionName;
+                                currentOption += "=";
+                                currentOption += selectedValues.join();
+                                currentOption += ";";
+                            }
+
+                            if (optionNameIndex >= 0) {
+                                var ending = options.indexOf(";", optionNameIndex);
+                                var oldOption = options.substring(optionNameIndex, ending + 1);
+                                options = options.replace(oldOption, currentOption);
+                            } else {
+                                options += currentOption;
+                            }
+                            if (lastSegment !== '@Model.Category.UrlName') {
+                                var locBuilder = location.href.replace(lastSegment + "/", "") + options;
+                                if (options.length > 0)
+                                    locBuilder += "/";
+                                location.href = locBuilder;
+                            } else {
+                                var locBuilder = location.href;
+                                if (location.href[location.href.length - 1] !== "/") {
+                                    locBuilder += "/";
+                                }
+                                window.location.href = locBuilder + options + "/";
+                            }
+                        });
+                </text>
+            }
+        });
     </script>
     <script src="~/Scripts/site.js"></script>
     <script src="~/Scripts/v3/products.js"></script>
@@ -42,6 +240,7 @@
 <div class="container" itemscope="" itemtype="http://schema.org/Product">
     <div class="row">
         <div class="content-aside col-xs-12 m-b-2">
+            @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
             @*<div class="hidden-md-down">
                     <ul class="list-none post-list m-b-2">
                         <div class="h3 text-caps">Новости</div>

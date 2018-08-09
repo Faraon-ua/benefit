@@ -8,7 +8,7 @@
 <div class="bx_filter bx_filter_vertical">
     <div class="bx_filter_section" id="productFilters">
         <div class="bx_filter_parameters_box title">
-            @if (seller != null)
+            @if (seller != null && categories != null)
             {
                 @Html.Partial("~/Views/Seller/_SellerMenu.cshtml", categories)
             }
@@ -57,7 +57,7 @@
                     </div>
                     <div class="bx_filter_parameters_box_container numbers">
                         <div class="wrapp_all_inputs wrap_md">
-                            <input id="price-slider" type="text" class="span2" value="" data-slider-min="@lowerBound" data-slider-max="@upperBound" data-slider-value="[@lowerBound,@upperBound]" />
+                            <input id="price-slider" type="text" class="span2" value="" data-slider-tooltip="hide" data-slider-min="@lowerBound" data-slider-max="@upperBound" data-slider-value="[@lowerBound,@upperBound]" />
                         </div>
                     </div>
                     <div class="margin-top-10">

@@ -20,9 +20,12 @@
     <meta name="robots" content="index,follow">
     <meta name="format-detection" content="telephone=no">
 
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet">
     <link href="~/Content/seller/css/style.css" rel="stylesheet" />
     <link href="~/Content/seller/css/main.css" rel="stylesheet" />
     <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
+    <link href="~/Content/css/common.css" rel="stylesheet" />
+    @RenderSection("styles", required: false)
 
     <style type="text/css">
         body {
@@ -267,7 +270,7 @@
 
     <script src="~/Scripts/seller/jquery.js"></script>
     <script src="~/Scripts/seller/jquery-migrate-1.js"></script>
-    <script src="~/Scripts/seller/jquery-ui.js"></script>
+    @*<script src="~/Scripts/seller/jquery-ui.js"></script>*@
     <script src="~/Scripts/seller/main.js"></script>
     <script src="~/Scripts/seller/custom.js"></script>
     <script src="~/Scripts/jquery.autocomplete.min.js"></script>

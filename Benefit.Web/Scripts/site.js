@@ -363,7 +363,9 @@ $(function () {
             }
         });
 
-    $(".message-modal").modal();
+    if ($.fn.modal) {
+        $(".message-modal").modal();
+    }
     $("body").on("click", ".goto_back", function () {
         $("#basket_modal").modal('hide');
     });
