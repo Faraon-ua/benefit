@@ -55,6 +55,8 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
+        [MaxLength(60)]
+        public string Domain { get; set; }
         public int? AvarageRating { get; set; }
         public SellerStatus Status { get; set; }
         public bool SafePurchase { get; set; }

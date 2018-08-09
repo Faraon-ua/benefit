@@ -26,6 +26,13 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Доменне ім'я</label>
+
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.Seller.Domain, new { @class = "col-xs-10 col-sm-5" })
+        </div>
+    </div>
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Текст кнопки каталога</label>
 
         <div class="col-sm-9">

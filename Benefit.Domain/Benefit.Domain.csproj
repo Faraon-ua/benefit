@@ -514,6 +514,10 @@
     <Compile Include="Migrations\201808021125463_AddIsImportedToImage.Designer.cs">
       <DependentUpon>201808021125463_AddIsImportedToImage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808091016295_AddSellerDomain.cs" />
+    <Compile Include="Migrations\201808091016295_AddSellerDomain.Designer.cs">
+      <DependentUpon>201808091016295_AddSellerDomain.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -895,6 +899,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808021125463_AddIsImportedToImage.resx">
       <DependentUpon>201808021125463_AddIsImportedToImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808091016295_AddSellerDomain.resx">
+      <DependentUpon>201808091016295_AddSellerDomain.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

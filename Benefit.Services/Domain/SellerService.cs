@@ -210,7 +210,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Schedules)
                 .Include(entry => entry.Addresses)
                 .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
-                .FirstOrDefault(entry => entry.UrlName == urlName);
+                .FirstOrDefault(entry => entry.UrlName == urlName || entry.Domain == urlName);
             return seller;
         }
 
