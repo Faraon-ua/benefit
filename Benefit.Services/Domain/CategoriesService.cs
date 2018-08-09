@@ -227,12 +227,17 @@ namespace Benefit.Services.Domain
         public void Delete(string id)
         {
             var category = db.Categories
+                .Include(entry => entry.MappedCategories)
                 .Include(entry => entry.SellerCategories)
                 .Include(entry => entry.ProductParameters)
                 .Include(entry => entry.ProductOptions)
                 .FirstOrDefault(entry => entry.Id == id);
             if (category == null) return;
-
+            var mappedCatsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
+            foreach (var mappedCategoryId in mappedCatsIds)
+            {
+                Delete(mappedCategoryId);
+            }
             db.SellerCategories.RemoveRange(category.SellerCategories);
 
             var productParameters = category.ProductParameters.ToList();
