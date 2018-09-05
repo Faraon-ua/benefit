@@ -1,10 +1,10 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
 @using Benefit.Services.Domain
 @model Benefit.Domain.Models.Product
 @{
     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
     var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-    var availableForPurchase = Model.AvailableForPurchase(RegionService.GetRegionId());
 }
 
 <div class="col-sm-6 col-xl-3 col-xs-6 product-item">
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                     <div class="fn_variants preview_form">
-                        @if (availableForPurchase.Key)
+                        @if (Model.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.AvailabilityState == ProductAvailabilityState.Available)
                         {
                             <button class="button fn_is_stock btn btn-primary product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">Купити</button>
                         }

@@ -133,7 +133,7 @@
                                  return true;
                              }
                              $.each(optionValues,
-                                 function(j, optValue) {
+                                 function (j, optValue) {
                                      showFiltersReset = true;
                                      var checkbox = $(".filter-section[data-filter-name=" +
                                          optionName +
@@ -234,7 +234,10 @@
     <script src="~/Scripts/site.js"></script>
     <script src="~/Scripts/v3/products.js"></script>
 }
-
+@section LeftAside
+{
+    @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
+}
 <div class="col-md-8 col-xl-9 content">
     @Html.Partial("~/views/sellerarea/megashop/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
 

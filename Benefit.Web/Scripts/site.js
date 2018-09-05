@@ -307,10 +307,10 @@ $(function () {
         });
     });
 
-    $('input:checkbox').prop('checked', false);
+    //$('input:checkbox').prop('checked', false);
 
     $(document).keyup(function (e) {
-        if (e.keyCode == 27) {
+        if (e.keyCode == 27 && $.fn.modal) {
             $(".modal").modal("hide");
         }
     });

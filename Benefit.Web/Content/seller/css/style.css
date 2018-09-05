@@ -3200,3 +3200,7 @@ button.button, input.button, .button, #header ul.menu.full.opened li:not(.search
     white-space: nowrap;
     text-align: center;
 }
+.bg-site-button {
+    background: #b01616;
+    color: #fff;
+}

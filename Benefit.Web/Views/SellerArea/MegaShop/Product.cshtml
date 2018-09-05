@@ -3,6 +3,7 @@
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @using Benefit.Services.Domain
+@using Microsoft.AspNet.Identity
 @using Image = System.Drawing.Image
 @model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
 
@@ -45,7 +46,47 @@
         $(function() {
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
             var sellerId = '@Model.Product.SellerId';
+            var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
+            var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {productId = Model.Product.Id, returnUrl = Request.Url.PathAndQuery}))';
+            var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar", new {productId = Model.Product.Id})';
 
+            $(".add-to-favorites").click(function (e) {
+                e.preventDefault();
+                $.post(addToFavoritesUrl,
+                    null,
+                    function (data) {
+                        if (data.count !== undefined) {
+                            alert(data.message);
+                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            $(".remove-from-favorites").show();
+                            $(".add-to-favorites").hide();
+                            setFavorites(data.count);
+                        } else {
+                            $.post(showMessagePopupUrl,
+                                { message: data.message, showButtons: false },
+                                function (popupHtml) {
+                                    $(".modal-container").html(popupHtml);
+                                    $(".message-modal").modal();
+                                }
+                            );
+                        }
+                    });
+            });
+
+            $(".remove-from-favorites").click(function (e) {
+                e.preventDefault();
+                $.post(removeFromFavoritesUrl,
+                    null,
+                    function (data) {
+                        alert(data.message);
+                        if (data.count !== undefined) {
+                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            $(".remove-from-favorites").hide();
+                            $(".add-to-favorites").show();
+                            setFavorites(data.count);
+                        }
+                    });
+            });
             $("#buy-product, #buy-product-with-options").click(function () {
                //var buttonId = $(this).attr("id");
                //     if (buttonId == "buy-product") {
@@ -178,9 +219,36 @@
                             </div>
 
                             <div class="row">
-
                                 <div class="col-sm-6">
-                                    <a href="#" data-id="22" class="fn_wishlist product_wish" title="Додати до улюблених" data-result-text="Из избранного" data-language="product_add_favorite"><i class="wish_icon"></i></a>
+                                    @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
+                                    {
+                                        <a href="#" class="product_wish add-to-favorites" title="Додати до улюблених" style="display: none;">
+                                            <i class="wish_icon"></i>
+                                        </a>
+
+                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених">
+                                            <i class="no_stock" style="top: -12px;"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" class="product_wish add-to-favorites" title="Додати до улюблених">
+                                            <i class="wish_icon"></i>
+                                        </a>
+
+                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" style="display: none;">
+                                            <i class="no_stock" style="top: -12px;"></i>
+                                        </a>
+
+                                        @*<a href="#" class="add-to-favorites">
+                                                <i class="fa fa-heart"></i>
+                                                Додати до улюблених
+                                            </a>
+                                            <a href="#" class="remove-from-favorites" style="display: none;">
+                                                <i class="fa fa-remove"></i>
+                                                Видалити із улюблених
+                                            </a>*@
+                                    }
                                 </div>
 
                                 @*<div class="col-sm-6">
@@ -232,8 +300,10 @@
                                         </span>
                                     }
                                 </div>
-
-                                <button id="buy-product" class="fn_is_stock button" type="submit" data-language="product_add_cart">Купити</button>
+                                @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+                                {
+                                    <button id="buy-product" class="fn_is_stock button" type="submit" data-language="product_add_cart">Купити</button>
+                                }
                             </form>
 
                             <div class="product_share">
@@ -310,3 +380,4 @@
         </div>
     </div>
 </div>
+<div class="modal-container"></div>

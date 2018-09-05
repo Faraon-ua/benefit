@@ -719,6 +719,7 @@
     <Content Include="Content\css\media.css" />
     <Content Include="Content\seller\css\main.css" />
     <Content Include="Content\seller\css\style.css" />
+    <Content Include="Content\seller\megashop\style.css" />
     <Content Include="Content\sounds\newOrder.mp3" />
     <Content Include="Content\v3\css\menu.css" />
     <Content Include="Content\v3\css\product.css" />
@@ -1493,7 +1494,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Models\ViewModels\" />
     <Folder Include="Areas\Cabinet\Views\BasePartner\" />
-    <Folder Include="Content\seller\megashop\" />
     <Folder Include="Content\UserFiles\" />
     <Folder Include="Images\CategoryLogo\" />
     <Folder Include="Images\MainPageBanners\" />
