@@ -60,7 +60,10 @@ namespace Benefit.Web.Controllers
             {
                 if (ViewBag.Seller != null)
                 {
-                    return View("~/views/sellerarea/categoriescatalog.cshtml", catsModel);
+                    var viewPath = string.Format("~/views/sellerarea/{0}/categoriescatalog.cshtml",
+                        (ViewBag.Seller as Seller).EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
+                        .ToString());
+                    return View(viewPath, catsModel);
                 }
                 return View("CategoriesCatalog", catsModel);
             }
@@ -68,19 +71,22 @@ namespace Benefit.Web.Controllers
             var catalog = SellerService.GetSellerProductsCatalog(cachedCats, ViewBag.SellerUrl, categoryUrl, options);
             if (ViewBag.Seller != null)
             {
-                return View("~/views/sellerarea/productscatalog.cshtml", catalog);
+                var viewPath = string.Format("~/views/sellerarea/{0}/productscatalog.cshtml",
+                    (ViewBag.Seller as Seller).EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
+                    .ToString());
+                return View(viewPath, catalog);
             }
             return View("ProductsCatalog", catalog);
         }
 
-        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page, LayoutTemplate layout = LayoutTemplate.Default)
+        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page, SellerEcommerceTemplate? layout)
         {
             var skip = page * ListConstants.DefaultTakePerPage;
             var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, ListConstants.DefaultTakePerPage, false).Products;
             var templateName = "_ProductPartial";
-            if (layout == LayoutTemplate.BenefitOnline)
+            if (layout.HasValue)
             {
-                templateName = "~/Views/SellerArea/_ProductPartial.cshtml";
+                templateName = string.Format("~/Views/SellerArea/{0}/_ProductPartial.cshtml", layout.ToString());
             }
             var productsHtml = string.Join("", products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString(templateName, entry)));
             return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);

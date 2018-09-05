@@ -275,7 +275,9 @@ $(function () {
             });
     });
 
-    $('.battery, .title-to-tooltip').tooltip();
+    if ($.fn.tooltip) {
+        $('.battery, .title-to-tooltip').tooltip();
+    }
 
     $(".review-rating").mousemove(function (e) {
         if (!$(".rating-value").val()) {

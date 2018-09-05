@@ -5,7 +5,7 @@ namespace Benefit.Domain.Models
 {
     public class BenefitCard
     {
-        [MaxLength(10)]
+        [MaxLength(20)]
         [Key, Column(Order = 0)]
         public string Id { get; set; }
         [MaxLength(16)]

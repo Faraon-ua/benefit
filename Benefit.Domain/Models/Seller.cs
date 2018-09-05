@@ -11,6 +11,12 @@ using Benefit.Domain.Models.Enums;
 
 namespace Benefit.Domain.Models
 {
+    public enum SellerEcommerceTemplate
+    {
+        Default,
+        MegaShop
+    }
+
     public class Seller
     {
         public Seller()
@@ -100,6 +106,7 @@ namespace Benefit.Domain.Models
         public bool IsFeatured { get; set; }
         public bool AreProductsFeatured { get; set; }
         public bool HasEcommerce { get; set; }
+        public SellerEcommerceTemplate? EcommerceTemplate { get; set; }
         public int TotalDiscount { get; set; }
         public double UserDiscount { get; set; }
         public DateTime RegisteredOn { get; set; }

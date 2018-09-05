@@ -1,0 +1,38 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+
+@{
+    ViewBag.Title = "Відгуки";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+<div class="fn_ajax_content margin-top-10">
+    <div class="block">
+        <h1 class="h1">
+            <span data-page="3">Відгуки</span>
+        </h1>
+        <div class="row padding">
+            <div class="col-md-6">
+                @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                {
+                    CanReview = false,
+                    SellerId = seller.Id,
+                    TargetName = seller.Name,
+                    Reviews = seller.ApprovedReviews
+                })
+            </div>
+            <div class="col-md-6">
+                @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                {
+                    CanReview = true,
+                    SellerId = seller.Id,
+                    TargetName = seller.Name,
+                })
+            </div>
+        </div>
+
+    </div>
+</div>
+@section scripts{
+    <script src="~/Scripts/site.js"></script>
+}

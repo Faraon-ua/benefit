@@ -1,0 +1,37 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.CategoriesViewModel
+
+@{
+    ViewBag.Title = Model.Category.Name;
+    Layout = "_SellerLayout.cshtml";
+}
+<div class="col-md-8 col-xl-9 content">
+    <section class="breadcrumb" id="content_link">
+        @Html.Partial("~/views/sellerarea/megashop/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+    </section>
+    <div class="fn_ajax_content">
+        <h1 class="h2">
+            <span data-page="8">
+                @Model.Category.Name
+            </span>
+        </h1>
+
+        <div class="brands row">
+            @foreach (var cat in Model.Items)
+            {
+                <div class="col-xs-6 col-sm-4 col-xl-3">
+                    <div class="brands_item" data-brand="1">
+                        <a class="brand_image" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })">
+                            <img class="brand_img" src="~/Images/CategoryLogo/@cat.ImageUrl">
+                            <div style="line-height: 1.3em; height: 40px;">@cat.Name</div>
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+        <br style="clear: both;" />
+        <article>
+            <p>@Model.Category.Description</p>
+        </article>
+    </div>
+</div>

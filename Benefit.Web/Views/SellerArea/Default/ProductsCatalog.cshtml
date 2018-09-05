@@ -1,0 +1,328 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
+
+@{
+    ViewBag.Title = Model.Category.Name;
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller;
+}
+@section styles
+{
+    <link href="~/Content/css/bootstrap-slider.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Scripts/bootstrap-slider.min.js"></script>
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+        var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
+
+        $(function () {
+            if ($('#price-slider').length > 0) {
+                $('#price-slider').slider().on('change',
+                    function (data) {
+                        $("#price-lower-bound").val(data.value.newValue[0]);
+                        $("#price-upper-bound").val(data.value.newValue[1]);
+                        $("#price-filter").attr("data-filter-value",
+                            data.value.newValue[0] + "-" + data.value.newValue[1]);
+                    }).data('slider');
+            }
+
+            $(".ajax_load_btn").click(function(e) {
+                e.preventDefault();
+                var moreBtn = $(this);
+                var currentPage = parseInt(moreBtn.attr("data-page"));
+                $(".loader").show();
+                $.get(getProductsUrl +
+                    "?categoryId=@Model.Category.Id&sellerId=@seller.Id&page=" +
+                    (currentPage + 1) +
+                    "&layout=0", // + "&options=" + options
+                    function(data) {
+                        if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                            moreBtn.hide();
+                        }
+                        $(".product-item:last").after(data.products);
+                        moreBtn.attr("data-page", currentPage + 1);
+                        $(".loader").hide();
+                    });
+            });
+
+            $(".remove-from-favorites").click(function(e) {
+                e.preventDefault();
+                var link = $(this);
+                var id = link.attr("data-product-id");
+                $.post(removeFromFavoritesUrl + "?productId=" + id,
+                    null,
+                    function(data) {
+                        link.parents(".product-item").remove();
+                        if (data.count !== undefined) {
+                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            setFavorites(data.count);
+                        }
+                    });
+            });
+
+            $("#reset-filters").click(function() {
+                location.href = location.href.substring(0, location.href.indexOf(lastSegment));
+            });
+
+            $('body').on("click",
+                ".remove-filter",
+                function() {
+                    var optionName = $(this).parent().attr("data-option-name");
+                    var optValue = decodeURI($(this).parent().attr("data-option-value"));
+                    var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
+                    if (checkbox.length === 0) {
+                        checkbox = $(".filter-section[data-filter-name=" +
+                            optionName +
+                            "] input[name=" +
+                            optValue.replace(" ", "") +
+                            "]");
+                    }
+                    checkbox.click();
+                });
+
+            $(".bx_filter_parameters_box_title").click(function() {
+                $(this).parent().toggleClass("active");
+                $(this).next().slideToggle();
+            });
+
+            $(".filter_opener").click(function() {
+                $(this).toggleClass("opened");
+                $(".bx_filter_vertical, .bx_filter").slideToggle(333);
+            });
+
+            //select all checkboxes from url
+            var showFiltersReset = false;
+            var parts = location.href.split('/');
+            var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
+            var sortControl = $(".sort_btn[data-sort-value=Rating]");
+            @if (Model.Category != null)
+            {<text>
+                 if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
+                     options = lastSegment;
+                     $.each(options.split(";"),
+                         function(i, urlSegment) {
+                             if (urlSegment === "") return;
+                             var optKeyValue = urlSegment.split("=");
+                             var optionName = optKeyValue[0];
+                             var optionValues = optKeyValue[1].split(",");
+                             if (optionName)
+                                 if (optionName === "sort") {
+                                     var optionValue = optionValues[0];
+                                     sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
+                                     $(".sort_btn span").removeClass("badge");
+                                     return true;
+                                 }
+                             if (optionName === "price") {
+                                 var optionValue = optionValues[0];
+                                 var prices = optionValue.split('-');
+                                 var lowerPrice = parseInt(prices[0]);
+                                 var upperPrice = parseInt(prices[1]);
+                                 $("#price-lower-bound").val(lowerPrice);
+                                 $("#price-upper-bound").val(upperPrice);
+                                 $("#price-filter").prop('checked', true);
+                                 $("#price-slider").data('slider').setValue([lowerPrice, upperPrice]);
+                                 $(".selected-filters").append(
+                                     "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='price' data-option-value='price-filter'>" +
+                                     optionValue +
+                                     " грн<i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                 );
+                                 return true;
+                             }
+                             $.each(optionValues,
+                                 function(j, optValue) {
+                                     showFiltersReset = true;
+                                     var checkbox = $(".filter-section[data-filter-name=" +
+                                         optionName +
+                                         "] input#" +
+                                         decodeURI(optValue));
+                                     if (checkbox.length === 0) {
+                                         checkbox = $(".filter-section[data-filter-name=" +
+                                             optionName +
+                                             "] input[name=" +
+                                             decodeURI(optValue).replace(" ", "") +
+                                             "]");
+                                     }
+                                     checkbox.prop('checked', true);
+                                     var optionvalueText = checkbox.attr("text");
+                                     $(".selected-filters").append(
+                                         "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" +
+                                         optionName +
+                                         "' data-option-value='" +
+                                         optValue +
+                                         "'>" +
+                                         optionvalueText +
+                                         " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                                     );
+                                 });
+                             if (showFiltersReset) {
+                                 $("#reset-filters").show();
+                             }
+                         });
+                 }
+             </text>
+            }
+            sortControl.find("span").addClass("badge");
+
+            @if (Model.Category != null)
+            {
+                <text>
+                    $('body').on('change click',
+                        "#productFilters input[type=checkbox], #productFilters button, .sort_btn",
+                        function(e) {
+                            e.preventDefault();
+                            $(".loader").show();
+                            var parts = location.href.split('/');
+                            var lastSegment =
+                                (parts.pop() || parts.pop()).replace("#", ""); // handle potential trailing slash
+                            var options = "";
+
+                            if (lastSegment != '@Model.Category.UrlName') {
+                                options = lastSegment;
+                            }
+
+                            var parent = $(this).parents(".filter-section");
+                            var optionName = parent.attr("data-filter-name");
+                            var optionNameIndex = options.indexOf(optionName);
+
+                            var currentOption = '';
+                            var selectedValues = parent.find("input[type=checkbox]:checked, button").map(function() {
+                                if ($(this).attr("data-filter-value")) {
+                                    return $(this).attr("data-filter-value");
+                                }
+                                return $(this).attr("id");
+                            }).get();
+
+                            if ($(this).attr("class").indexOf("sort_btn") >= 0) {
+                                var val = $(this).attr("data-sort-value");
+                                selectedValues.push(val);
+                            }
+                            if (selectedValues.length > 0) {
+                                currentOption = optionName;
+                                currentOption += "=";
+                                currentOption += selectedValues.join();
+                                currentOption += ";";
+                            }
+
+                            if (optionNameIndex >= 0) {
+                                var ending = options.indexOf(";", optionNameIndex);
+                                var oldOption = options.substring(optionNameIndex, ending + 1);
+                                options = options.replace(oldOption, currentOption);
+                            } else {
+                                options += currentOption;
+                            }
+                            if (lastSegment !== '@Model.Category.UrlName') {
+                                var locBuilder = location.href.replace(lastSegment + "/", "") + options;
+                                if (options.length > 0)
+                                    locBuilder += "/";
+                                location.href = locBuilder;
+                            } else {
+                                var locBuilder = location.href;
+                                if (location.href[location.href.length - 1] !== "/") {
+                                    locBuilder += "/";
+                                }
+                                window.location.href = locBuilder + options + "/";
+                            }
+                        });
+                </text>
+            }
+        });
+    </script>
+    <script src="~/Scripts/site.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
+}
+
+<section class="breadcrumb" id="content_link">
+    @Html.Partial("~/views/sellerarea/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+</section>
+<div class="container" itemscope="" itemtype="http://schema.org/Product">
+    <div class="row">
+        <div class="content-aside col-xs-12 m-b-2">
+            @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
+            @*<div class="hidden-md-down">
+                    <ul class="list-none post-list m-b-2">
+                        <div class="h3 text-caps">Новости</div>
+                        <li class="post-block p-y-sm">
+                            <div class="data">26.07.2019</div>
+                            <a class="name" href="blog/letraset-s-obraztsami-lorem-ipsum-v-60-h-godah" data-post="4">Letraset с образцами Lorem Ipsum в 60-х годах</a>
+                        </li>
+                        <li class="post-block p-y-sm">
+                            <div class="data">26.07.2018</div>
+                            <a class="name" href="blog/lorem-ipsum-yavlyaetsya-standartnoj-ryboj" data-post="5">Lorem Ipsum является стандартной "рыбой"</a>
+                        </li>
+                        <li class="post-block p-y-sm">
+                            <div class="data">03.05.2016</div>
+                            <a class="name" href="blog/aldus-pagemaker-v-shablonah-kotoryh-ispolzuetsya-lorem-ipsum" data-post="3">Aldus PageMaker, в шаблонах которых используется Lorem Ipsum</a>
+                        </li>
+                        <a class="m-t-sm btn btn-info" href="blog">Все новости</a>
+                    </ul>
+                    <hr class="sm">
+                </div>*@
+        </div>
+
+        <div class="content-main col-xs-12 m-b-2" id="fn-content">
+            <div class="page-header m-t-0 p-t-0 m-b-2 ld-b">
+                <h1 data-category="3">@Model.Category.Name</h1>
+            </div>
+            @*<div class="h3 text-caps m-t-2">
+                    <span>Быстрый</span> выбор
+                </div>*@
+            @*<div class='row filter'>
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm'>
+                        <div class='title'>Торговая марка:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="catalog/pylesosy" selected>Все варианты</option>
+                            <option brand_id="7" value="catalog/pylesosy/dyson">Dyson</option>
+                            <option brand_id="8" value="catalog/pylesosy/electrolux">Electrolux</option>
+                        </select>
+                    </div>
+
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm '>
+                        <div class='title' data-feature="84">Труба всасывания:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="/simpla_clear/catalog/pylesosy" selected>Все варианты</option>
+                            <option value="/simpla_clear/catalog/pylesosy?84=%D1%82%D0%B5%D0%BB%D0%B5%D1%81%D0%BA%D0%BE%D0%BF%D0%B8%D1%87%D0%B5%D1%81%D0%BA%D0%B0%D1%8F">телескопическая</option>
+                        </select>
+                    </div>
+                    <div class='col-md-6 col-lg-4 col-xl-3 m-y-sm '>
+                        <div class='title' data-feature="87">Турбощетка в комплекте:</div>
+                        <select onchange="location = this.value+'#content_link';">
+                            <option value="/simpla_clear/catalog/pylesosy" selected>Все варианты</option>
+                            <option value="/simpla_clear/catalog/pylesosy?87=%D0%B5%D1%81%D1%82%D1%8C">есть</option>
+                        </select>
+                    </div>
+                </div>*@
+
+            @*<div class="row m-x-0">
+                    <ul class="col-xs-12 col-xl-6 m-b-1 list-inline sort">
+                        <li><a class="active" href="/simpla_clear/catalog/pylesosy?sort=position" data-sort="position">умолчанию</a></li>
+                        <li><a href="/simpla_clear/catalog/pylesosy?sort=price" data-sort="price">цене</a></li>
+                        <li><a href="/simpla_clear/catalog/pylesosy?sort=name" data-sort="name">названию</a></li>
+                    </ul>
+                    <div class="col-xs-12 col-xl-6 m-b-1 text-xl-right"></div>
+                </div>*@
+
+            <div class="row m-x-0 gridBlock">
+                <!-- товар -->
+                @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
+                {
+                    @Html.Partial("~/Views/SellerArea/Default/_ProductPartial.cshtml", product)
+                }
+            </div>
+            @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+            {
+                <div class="ajax_load_btn" data-page="0">
+                    <span class="more_text_ajax">Показати ще</span>
+                </div>
+            }
+            <br style="clear: both;" />
+            <article>
+                <div class="readmore_js">
+                    <p>@Model.Category.Description</p>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>

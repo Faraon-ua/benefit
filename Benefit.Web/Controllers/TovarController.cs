@@ -48,7 +48,8 @@ namespace Benefit.Web.Controllers
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {
-                return View("~/views/sellerarea/product.cshtml", productResult);
+                var viewName = seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default).ToString();
+                return View(string.Format("~/views/sellerarea/{0}/product.cshtml", viewName), productResult);
             }
             return View(productResult);
         }

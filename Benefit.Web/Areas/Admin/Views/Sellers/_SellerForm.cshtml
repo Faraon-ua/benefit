@@ -158,6 +158,14 @@
             @Html.CheckBoxFor(m => m.Seller.HasEcommerce)
         </div>
     </div>
+    
+<div class="form-group">
+    <label class="col-sm-3 control-label no-padding-right">Шаблон Ecommerce</label>
+
+    <div class="col-sm-9">
+        @Html.EnumDropDownListFor(m => m.Seller.EcommerceTemplate, "Не має", new { @class = "col-xs-10 col-sm-5" })
+    </div>
+</div>
 
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Загальна знижка</label>

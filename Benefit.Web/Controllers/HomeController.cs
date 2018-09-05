@@ -47,7 +47,9 @@ namespace Benefit.Web.Controllers
 
                 if (seller.HasEcommerce)
                 {
-                    return View("~/views/sellerarea/home.cshtml", seller);
+                    var viewName = string.Format("~/views/sellerarea/{0}/home.cshtml",
+                        seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                    return View(viewName, seller);
                 }
                 return View("~/views/sellerareabc/home.cshtml", seller);
             }
@@ -202,28 +204,40 @@ namespace Benefit.Web.Controllers
         [FetchCategories]
         public ActionResult Contacts()
         {
-            return View("~/Views/SellerArea/Contacts.cshtml");
+            var seller = ViewBag.Seller as Seller;
+            var viewName = string.Format("~/views/sellerarea/{0}/Contacts.cshtml",
+                seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+            return View(viewName, seller);
         }
 
         [FetchSeller]
         [FetchCategories]
         public ActionResult Reviews()
         {
-            return View("~/Views/SellerArea/Reviews.cshtml");
+            var seller = ViewBag.Seller as Seller;
+            var layoutName = string.Format("~/Views/SellerArea/{0}/Reviews.cshtml",
+                seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+            return View(layoutName);
         }
 
         [FetchSeller]
         [FetchCategories]
         public ActionResult catalog()
         {
-            return View("~/Views/SellerArea/Catalog.cshtml");
+            var seller = ViewBag.Seller as Seller;
+            var viewName = string.Format("~/views/sellerarea/{0}/Catalog.cshtml",
+                seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+            return View(viewName, seller);
         }
 
         [FetchSeller]
         [FetchCategories]
         public ActionResult gallery()
         {
-            return View("~/Views/SellerArea/Gallery.cshtml");
+            var seller = ViewBag.Seller as Seller;
+            var viewName = string.Format("~/views/sellerarea/{0}/Gallery.cshtml",
+                seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+            return View(viewName, seller);
         }
 
         [FetchCategories]
@@ -306,7 +320,10 @@ namespace Benefit.Web.Controllers
         [FetchCategories]
         public ActionResult About()
         {
-            return View("~/Views/SellerArea/About.cshtml");
+            var seller = ViewBag.Seller as Seller;
+            var layoutName = string.Format("~/Views/SellerArea/{0}/About.cshtml",
+                seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+            return View(layoutName);
         }
 
         [ValidateInput(false)]

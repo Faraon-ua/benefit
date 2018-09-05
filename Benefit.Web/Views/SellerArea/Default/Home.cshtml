@@ -60,7 +60,7 @@
                 <div class="slick-products gridBlock">
                     @foreach (var product in Model.FeaturedProducts)
                     {
-                        @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                        @Html.Partial("~/Views/SellerArea/Default/_ProductPartial.cshtml", product)
                     }
                 </div>
             }
@@ -73,7 +73,7 @@
                 <div class="slick-products gridBlock">
                     @foreach (var product in Model.PromotionProducts)
                     {
-                        @Html.Partial("~/Views/SellerArea/_ProductPartial.cshtml", product)
+                        @Html.Partial("~/Views/SellerArea/Default/_ProductPartial.cshtml", product)
                     }
                 </div>
             }

@@ -1,0 +1,614 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Helpers
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
+@{
+    var seller = ViewBag.Seller as Seller;
+    var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+    var todayShedule = seller.Schedules.FirstOrDefault(entry => entry.Day == DateTime.Now.DayOfWeek);
+    var categories = ViewBag.Categories as List<Category>;
+}
+<!DOCTYPE html>
+<html prefix="og: http://ogp.me/ns#" lang="uk">
+<head>
+    <title>Хиты продаж</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <meta name="robots" content="index,follow">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta property="og:title" content="Интернет-магазин на Benefit">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="#">
+    <meta property="og:image" content="images/logo.png">
+    <meta property="og:site_name" content="Интернет-магазин на Benefit">
+    <meta property="og:description" content="Этот магазин является демонстрацией скрипта интернет-магазина  Okay . Все материалы на этом сайте присутствуют исключительно в демострационных целях.">
+
+    <link rel="image_src" href="images/logo.png">
+
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="Интернет-магазин на Benefit">
+    <meta name="twitter:description" content="Этот магазин является демонстрацией скрипта интернет-магазина  Okay . Все материалы на этом сайте присутствуют исключительно в демострационных целях.">
+    <meta name="twitter:image" content="images/logo.png">
+
+    <script src="~/Scripts/seller/megashop/jquery-2.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/seller/megashop/slick.js"></script>
+    <script src="~/Scripts/seller/megashop/jquery_002.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&amp;subset=cyrillic" rel="stylesheet">
+
+    <link href="~/Content/seller/megashop/libs.css" rel="stylesheet">
+    <link href="~/Content/seller/megashop/style.css" rel="stylesheet">
+    <link href="~/Content/seller/megashop/responsive.css" rel="stylesheet">
+    <link href="~/Content/css/common.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+    @RenderSection("styles", false)
+</head>
+
+<body>
+    <header class="header">
+
+        <nav class="top_line">
+            <div class="container">
+                <div class="row">
+                    <div class="informers col-md-3 col-lg-4 col-xl-3">
+                        <div class="fn_menu_switch menu_switch lg-hidden">
+                            <i class="menu_i"></i>
+                        </div>
+
+                        <a id="wishlist" class="informer" href="@Url.Action("favorites", "tovar")">
+                            <i class="wish_icon"></i>
+                            <span class="informer_name tablet-hidden" data-language="wishlist_header">Улюблене</span>
+                        </a>
+
+
+                        @*<div id="comparison" class="informer">
+                                <i class="compare_icon"></i>
+                                <span class="informer_name tablet-hidden" data-language="index_comparison">Порівняння</span>
+
+                            </div>*@
+                    </div>
+
+
+
+
+                    <div class="fn_account account_switch md-hidden">
+                        <i class="account_icon"></i>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <div class="header_top">
+            <div class="container">
+                <div class="row">
+
+                    <div class="logo_wrap col-md-3">
+                        <a class="logo" href="/">
+                            <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" />
+                        </a>
+                    </div>
+
+                    <div class="col-md-6 search_wrap">
+                        <form id="fn_search" class="search" action="all-products">
+                            <input class="fn_search search_input" type="text" name="keyword" value="" data-language="index_search" placeholder="Пошук товарів" />
+                            <button class="search_button" type="submit">
+                                <svg class="search_icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="18" height="18" viewBox="0 0 24 24">
+                                    <path fill="currentColor" d="M9.578 15.236c3.124 0 5.658-2.534 5.658-5.658s-2.534-5.658-5.658-5.658-5.658 2.534-5.658 5.658 2.534 5.658 5.658 5.658zM17.123 15.236l6.248 6.248-1.886 1.886-6.248-6.248v-1.002l-0.354-0.354c-1.415 1.238-3.301 1.945-5.305 1.945-4.538 0-8.193-3.595-8.193-8.134s3.654-8.193 8.193-8.193 8.134 3.654 8.134 8.193c0 2.004-0.707 3.89-1.945 5.305l0.354 0.354h1.002z"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="col-md-3 account_wrap">
+                        <a class="fn_account account_switch mobile-hidden" href="@Url.Action("index", "Panel", new {area = "Cabinet"})">
+                            <i class="account_icon"></i>
+                            <span data-language="index_account">Мій кабінет</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="main_nav">
+            <div class="container">
+
+                <div class="fn_menu_catalog categories_heading md-hidden">
+                    <i class="catmenu_i"></i>
+                    <span data-language="index_categories">Каталог товарів</span>
+                    <i class="angle_icon"></i>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 col-xl-3">
+                        <div class="categories_heading mobile-hidden">
+                            <i class="catmenu_i"></i>
+                            <span data-language="index_categories">Каталог товарів</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-8 col-xl-9">
+                        <ul class="menu tablet-hidden">
+                            <li class="menu_item">
+                                <a class="menu_link" href="/">Головна</a>
+                            </li>
+                            <li class="menu_item">
+                                <a class="menu_link" href="@Url.Action("reviews", "home")">Відгуки</a>
+                            </li>
+                            <li class="menu_item">
+                                <a class="menu_link" href="@Url.Action("gallery", "home")">Фотогалерея</a>
+                            </li>
+                            <li class="menu_item">
+                                <a class="menu_link" href="@Url.Action("about", "home")">Про нас</a>
+                            </li>
+                            <li class="menu_item">
+                                <a class="menu_link" href="@Url.Action("contacts", "home")">Контакти</a>
+                            </li>
+                        </ul>
+
+                        <a id="cart_informer" href="@Url.Action("order", "cart", new { id=seller.Id })">
+                            <div class="cart_info">
+                                <span class="cart_counter cart-items-number">0</span>
+                                <span class="cart_title small-hidden" data-language="index_cart">Кошик</span>
+                                @*<span class="cart_total small-hidden">0 грн.</span>*@
+                            </div>
+
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="main">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 col-xl-3">
+                    <nav class="categories_nav mobile-hidden">
+
+                        <ul class="level_1 categories_menu">
+                            @foreach (var cat in categories)
+                            {
+                                <li class="category_item parent">
+                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" data-category="1">
+                                        <span>@cat.Name</span>
+                                    </a>
+                                    @if (cat.ChildCategories.Any())
+                                    {
+                                        <i class="fn_switch cat_switch xl-hidden"></i>
+                                        <ul class="level_2 subcategory large-hidden">
+                                            @foreach (var subCat in cat.ChildCategories)
+                                            {
+                                                <li class="category_item parent">
+                                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" data-category="2">
+                                                        <span>@subCat.Name</span>
+                                                    </a>
+
+                                                    @if (subCat.ChildCategories.Any())
+                                                    {
+                                                        <i class="fn_switch cat_switch xl-hidden"></i>
+                                                        <ul class="level_3 subcategory large-hidden">
+                                                            @foreach (var childCat in subCat.ChildCategories)
+                                                            {
+                                                                <li class="category_item">
+                                                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" data-category="3">@childCat.Name</a>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+                @Html.Partial("_FlashMessage")
+                @RenderBody()
+            </div>
+        </div>
+    </div>
+
+    <div class="to_top"></div>
+
+
+    <footer class="footer">
+        <div class="footer_top">
+            <div class="container">
+                <div class="row">
+                    @foreach (var page in seller.InfoPages.OrderBy(entry => entry.Order).Take(3))
+                    {
+                        <a class="col-xs-6 col-lg-4 col-xl-4 advantage" href="@Url.RouteUrl("pagesRoute", new {id = page.UrlName})">
+                            @*<i class="advantage_1"></i>*@
+                            <img src="~/Images/NewsLogo/@page.ImageUrl" />
+                            <div class="advantage_text">
+                                <span data-language="advantage_1">@page.Name</span>
+                            </div>
+                        </a>
+
+                        @*<div class="col-xs-12 col-md-6 col-lg-4 p-a-1" style="float: none; display: inline-block;">
+                                <div class="text-plus-icon">
+                                    <div class="col-md-2" style="border: none;">
+                                        <img src="~/Images/NewsLogo/@page.ImageUrl" />
+                                    </div>
+                                    <div class="col-md-10">
+                                        <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })" class="name">@page.Name</a>
+                                        <div class="small">@page.ShortContent</div>
+                                    </div>
+                                </div>
+                            </div>*@
+                    }
+                    @*<div class="col-xs-6 col-lg-4 col-xl-2 advantage">
+                            <i class="advantage_2"></i>
+                            <div class="advantage_text">
+                                <span data-language="advantage_2">Бесплатная доставка от 4000 рублей</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-lg-4 col-xl-2 advantage">
+                            <i class="advantage_3"></i>
+                            <div class="advantage_text">
+                                <span data-language="advantage_3">Возможна оплата наличными</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-lg-4 col-xl-2 advantage">
+                            <i class="advantage_4"></i>
+                            <div class="advantage_text">
+                                <span data-language="advantage_4">Качество товара гаранируется</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-lg-4 col-xl-2 advantage">
+                            <i class="advantage_5"></i>
+                            <div class="advantage_text">
+                                <span data-language="advantage_5">Защищенные способы оплаты</span>
+                            </div>
+                        </div>
+                        <div class="col-xs-6 col-lg-4 col-xl-2 advantage">
+                            <i class="advantage_6"></i>
+                            <div class="advantage_text">
+                                <span data-language="advantage_6">Скидки постоянным клиентами</span>
+                            </div>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+
+        <div class="footer_bottom">
+            <div class="container">
+                <div class="row">
+
+                    <div class="foot col-sm-6 col-lg-3 col-xs-6" style="text-align:center;">
+                        <div class="h3">
+                            <span>Інформація</span>
+                        </div>
+                        <div class="foot_menu">
+                            <div class="foot_item"><a href="#">Головна</a></div>
+                            <div class="foot_item"><a href="#">Блог</a></div>
+                            <div class="foot_item"><a href="#">Блог</a></div>
+                            <div class="foot_item"><a href="#">Блог</a></div>
+                        </div>
+                    </div>
+
+
+                    <div class="foot col-sm-6 col-lg-3 col-xs-6" style="text-align:center;">
+                        <div class="h3">
+                            <span data-language="index_categories">Каталог товарів</span>
+                        </div>
+                        <div class="foot_menu">
+                            <div class="foot_item">
+                                <a href="#">Мебель для дома</a>
+                            </div>
+                            <div class="foot_item">
+                                <a href="#">Гаджеты</a>
+                            </div>
+                            <div class="foot_item">
+                                <a href="#">Детские игрушки</a>
+                            </div>
+                            <div class="foot_item">
+                                <a href="#">Техника для дома</a>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="foot col-sm-6 col-lg-3 col-xs-6" style="text-align:center;">
+                        <div class="h3">
+                            <span data-language="index_contacts">Контакти</span>
+                        </div>
+                        <div class="footer_contacts">
+                            <div class="foot_item">
+                                <a href="tel:+38%20099%2099%2099%20999" data-language="company_phone_1">+38 099 99 99 999</a>
+                            </div>
+                            <div class="foot_item">
+                                <span data-language="company_open_hours">Пн - Пт: с 09:00 до 20:00</span>
+                            </div>
+                            <div class="foot_item">
+                                <span data-language="company_open_hours_2">Вс 09:00-17:00</span>
+                            </div>
+                            <div class="foot_item">
+                                <span data-language="company_email">info@domen.com</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="foot col-sm-6 col-lg-3 col-xs-6" style="text-align:center;">
+                        <div class="h3">
+                            <span data-language="index_contacts">Приєднуйтесь</span>
+                        </div>
+                        <div class="foot_social">
+                            <a class="fb" href="https://facebook.com/" target="_blank" title="Facebook">
+
+
+
+
+                                <svg version="1.1" viewBox="0 0 67 67" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
+                                <path d="M29.765,50.32h6.744V33.998h4.499l0.596-5.624h-5.095  l0.007-2.816c0-1.466,0.14-2.253,2.244-2.253h2.812V17.68h-4.5c-5.405,0-7.307,2.729-7.307,7.317v3.377h-3.369v5.625h3.369V50.32z   M34,64C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#3A589B;"></path>
+</svg>
+
+
+
+
+                            </a>
+                            <a class="gp" href="https://vk.com/" target="_blank" title="В контакте">
+
+
+
+
+
+                                <svg version="1.1" viewBox="0 0 67 67" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
+                                <path d="M32.963,35.002c1.609-1.608,1.734-3.845,1.734-5.102  c0-5.051-2.99-12.875-8.796-12.875c-1.81,0-3.77,0.91-4.9,2.31c-1.181,1.468-1.533,3.353-1.533,5.162  c0,4.7,2.714,12.465,8.746,12.465C29.948,36.962,31.833,36.107,32.963,35.002z M4,34c0,7.405,2.683,14.184,7.129,19.415  c0.839-1.41,2.14-2.797,4.066-3.937c4.348-2.664,10.204-3.017,13.37-3.218c-0.98-1.257-2.111-2.589-2.111-4.774  c0-1.182,0.352-1.885,0.704-2.715c-0.779,0.076-1.533,0.151-2.237,0.151c-7.414,0-11.611-5.529-11.611-10.983  c0-3.217,1.483-6.791,4.473-9.377c3.996-3.284,8.746-3.845,12.516-3.845H44.7l-4.474,2.516h-4.322  c1.607,1.329,4.951,4.127,4.951,9.449c0,5.178-2.941,7.615-5.856,9.926c-0.93,0.906-1.96,1.886-1.96,3.418  c0,1.533,1.03,2.389,1.81,3.017l2.513,1.96c3.092,2.564,5.881,4.951,5.881,9.777c0,3.182-1.484,6.376-4.379,8.826  c-1.557,0.255-3.153,0.388-4.781,0.393c2.938-1.289,4.461-3.646,4.461-6.48c0-3.568-2.287-5.453-7.615-9.248  c-0.553-0.051-0.905-0.051-1.608-0.051c-0.628,0-4.398,0.127-7.338,1.106c-1.533,0.553-6.006,2.237-6.006,7.213  c0,0.541,0.058,1.065,0.17,1.569C8.775,52.645,4,43.88,4,34z M61.73,22.532L61.73,22.532c0.44,1.063,0.821,2.159,1.139,3.281  C62.552,24.691,62.171,23.596,61.73,22.532L61.73,22.532L61.73,22.532L61.73,22.532z M34,64C17.432,64,4,50.568,4,34  C4,17.431,17.432,4,34,4c12.507,0,23.227,7.653,27.73,18.532l0,0h-5.966v-7.814h-3.349v7.814h-7.814v3.281h7.814v7.882h3.349v-7.882  h7.104C63.605,28.415,64,31.162,64,34C64,50.568,50.568,64,34,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#D6492F;"></path>
+</svg>
+
+
+
+                            </a>
+                            <a class="tw" href="https://twitter.com/" target="_blank" title="Twitter">
+
+
+
+
+
+
+                                <svg version="1.1" viewBox="0 0 67 67" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink"><path d="M38.167,22.283c-2.619,0.953-4.274,3.411-4.086,6.101  l0.063,1.038l-1.048-0.127c-3.813-0.487-7.145-2.139-9.974-4.915l-1.383-1.377l-0.356,1.017c-0.754,2.267-0.272,4.661,1.299,6.271  c0.838,0.89,0.649,1.017-0.796,0.487c-0.503-0.169-0.943-0.296-0.985-0.233c-0.146,0.149,0.356,2.076,0.754,2.839  c0.545,1.06,1.655,2.097,2.871,2.712l1.027,0.487l-1.215,0.021c-1.173,0-1.215,0.021-1.089,0.467  c0.419,1.377,2.074,2.839,3.918,3.475l1.299,0.444l-1.131,0.678c-1.676,0.976-3.646,1.526-5.616,1.567  C20.775,43.256,20,43.341,20,43.405c0,0.211,2.557,1.397,4.044,1.864c4.463,1.377,9.765,0.783,13.746-1.568  c2.829-1.674,5.657-5,6.978-8.221c0.713-1.715,1.425-4.851,1.425-6.354c0-0.975,0.063-1.102,1.236-2.267  c0.692-0.678,1.341-1.419,1.467-1.631c0.21-0.403,0.188-0.403-0.88-0.043c-1.781,0.636-2.033,0.551-1.152-0.402  c0.649-0.678,1.425-1.907,1.425-2.267c0-0.063-0.314,0.042-0.671,0.233c-0.377,0.212-1.215,0.53-1.844,0.72l-1.131,0.361l-1.027-0.7  c-0.566-0.381-1.361-0.805-1.781-0.932C40.766,21.902,39.131,21.944,38.167,22.283z M34,64C17.432,64,4,50.568,4,34  C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#598DCA;"></path></svg>
+
+
+                            </a>
+                            <a class="ins" href="#" target="_blank" title="Instagram">
+
+
+
+
+
+
+
+                                <svg version="1.1" viewBox="0 0 67 67" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
+                                <path d="M43.271,26.578v-0.006c0.502,0,1.005,0.01,1.508-0.002  c0.646-0.016,1.172-0.57,1.172-1.217c0-0.963,0-1.927,0-2.89c0-0.691-0.547-1.24-1.236-1.241c-0.961,0-1.922-0.001-2.883,0  c-0.688,0.001-1.236,0.552-1.236,1.243c-0.001,0.955-0.004,1.91,0.003,2.865c0.001,0.143,0.028,0.291,0.073,0.426  c0.173,0.508,0.639,0.82,1.209,0.823C42.344,26.579,42.808,26.578,43.271,26.578z M34,27.817c-3.384-0.002-6.135,2.721-6.182,6.089  c-0.049,3.46,2.72,6.201,6.04,6.272c3.454,0.074,6.248-2.686,6.321-6.043C40.254,30.675,37.462,27.815,34,27.817z M22.046,31.116  v0.082c0,4.515-0.001,9.03,0,13.545c0,0.649,0.562,1.208,1.212,1.208c7.16,0.001,14.319,0.001,21.479,0  c0.656,0,1.215-0.557,1.215-1.212c0.001-4.509,0-9.02,0-13.528v-0.094h-2.912c0.411,1.314,0.537,2.651,0.376,4.014  c-0.161,1.363-0.601,2.631-1.316,3.803s-1.644,2.145-2.779,2.918c-2.944,2.006-6.821,2.182-9.946,0.428  c-1.579-0.885-2.819-2.12-3.685-3.713c-1.289-2.373-1.495-4.865-0.739-7.451C23.983,31.116,23.021,31.116,22.046,31.116z   M46.205,49.255c0.159-0.026,0.318-0.049,0.475-0.083c1.246-0.265,2.264-1.304,2.508-2.557c0.025-0.137,0.045-0.273,0.067-0.409  V21.794c-0.021-0.133-0.04-0.268-0.065-0.401c-0.268-1.367-1.396-2.428-2.78-2.618c-0.058-0.007-0.113-0.02-0.17-0.03H21.761  c-0.147,0.027-0.296,0.047-0.441,0.08c-1.352,0.308-2.352,1.396-2.545,2.766c-0.008,0.057-0.02,0.114-0.029,0.171V46.24  c0.028,0.154,0.05,0.311,0.085,0.465c0.299,1.322,1.427,2.347,2.77,2.52c0.064,0.008,0.13,0.021,0.195,0.03H46.205z M34,64  C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4s30,13.431,30,30C64,50.568,50.568,64,34,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#517FA6;"></path>
+</svg>
+
+                            </a>
+                            <a class="yt" href="#" target="_blank" title="You Tube">
+
+
+
+
+
+
+
+
+                                <svg version="1.1" viewBox="0 0 67 67" xml:space="preserve" xmlns="http://www.w3.org/2000/svg" xlink="http://www.w3.org/1999/xlink">
+                                <path d="M43.527,41.34c-0.278,0-0.478,0.078-0.6,0.244  c-0.121,0.156-0.18,0.424-0.18,0.796v0.896h1.543V42.38c0-0.372-0.062-0.64-0.185-0.796C43.989,41.418,43.792,41.34,43.527,41.34z   M37.509,41.309c0.234,0,0.417,0.076,0.544,0.23c0.123,0.154,0.185,0.383,0.185,0.682v4.584c0,0.286-0.053,0.487-0.153,0.611  c-0.1,0.127-0.256,0.189-0.47,0.189c-0.148,0-0.287-0.033-0.421-0.096c-0.135-0.062-0.274-0.171-0.415-0.313v-5.531  c0.119-0.122,0.239-0.213,0.36-0.271C37.26,41.335,37.383,41.309,37.509,41.309z M42.748,44.658v1.672  c0,0.468,0.057,0.792,0.17,0.974c0.118,0.181,0.313,0.269,0.592,0.269c0.289,0,0.491-0.076,0.606-0.229  c0.114-0.153,0.175-0.489,0.175-1.013v-0.405h1.795v0.456c0,0.911-0.217,1.596-0.657,2.059c-0.435,0.459-1.089,0.687-1.958,0.687  c-0.781,0-1.398-0.242-1.847-0.731c-0.448-0.486-0.676-1.157-0.676-2.014v-3.986c0-0.768,0.249-1.398,0.742-1.882  c0.493-0.485,1.128-0.727,1.911-0.727c0.799,0,1.413,0.225,1.843,0.674c0.429,0.448,0.642,1.093,0.642,1.935v2.264H42.748z   M39.623,48.495c-0.271,0.336-0.669,0.501-1.187,0.501c-0.343,0-0.646-0.062-0.912-0.192c-0.267-0.129-0.519-0.327-0.746-0.601  v0.681h-1.764V36.852h1.764v3.875c0.237-0.27,0.485-0.478,0.748-0.617c0.267-0.142,0.534-0.211,0.805-0.211  c0.554,0,0.975,0.189,1.265,0.565c0.294,0.379,0.438,0.933,0.438,1.66v4.926C40.034,47.678,39.897,48.159,39.623,48.495z   M31.958,48.884v-0.976c-0.325,0.361-0.658,0.636-1.009,0.822c-0.349,0.191-0.686,0.282-1.014,0.282  c-0.405,0-0.705-0.129-0.913-0.396c-0.201-0.266-0.305-0.658-0.305-1.189v-7.422h1.744v6.809c0,0.211,0.037,0.362,0.107,0.457  c0.077,0.095,0.196,0.141,0.358,0.141c0.128,0,0.292-0.062,0.488-0.188c0.197-0.125,0.375-0.283,0.542-0.475v-6.744h1.744v8.878  H31.958z M25.916,38.6v10.284h-1.968V38.6h-2.034v-1.748h6.036V38.6H25.916z M33.994,32.978c0-0.001,12.08,0.018,13.514,1.45  c1.439,1.435,1.455,8.514,1.455,8.555c0,0-0.012,7.117-1.455,8.556C46.074,52.969,33.994,53,33.994,53s-12.079-0.031-13.516-1.462  c-1.438-1.435-1.441-8.502-1.441-8.556c0-0.041,0.004-7.12,1.441-8.555C21.916,32.996,33.994,32.977,33.994,32.978z M43.52,29.255  h-1.966v-1.08c-0.358,0.397-0.736,0.703-1.13,0.909c-0.392,0.208-0.771,0.312-1.14,0.312c-0.458,0-0.797-0.146-1.027-0.437  c-0.229-0.291-0.345-0.727-0.345-1.311v-8.172h1.962v7.497c0,0.231,0.045,0.399,0.127,0.502c0.08,0.104,0.216,0.156,0.399,0.156  c0.143,0,0.327-0.069,0.548-0.206c0.22-0.137,0.423-0.312,0.605-0.527v-7.422h1.966V29.255z M32.847,27.588  c0.139,0.147,0.339,0.219,0.6,0.219c0.266,0,0.476-0.075,0.634-0.223c0.157-0.152,0.235-0.358,0.235-0.618v-5.327  c0-0.214-0.08-0.387-0.241-0.519c-0.16-0.131-0.37-0.196-0.628-0.196c-0.241,0-0.435,0.065-0.586,0.196  c-0.148,0.132-0.225,0.305-0.225,0.519v5.327C32.636,27.233,32.708,27.439,32.847,27.588z M31.408,19.903  c0.528-0.449,1.241-0.674,2.132-0.674c0.812,0,1.48,0.237,2.001,0.711c0.517,0.473,0.777,1.083,0.777,1.828v5.051  c0,0.836-0.255,1.491-0.762,1.968c-0.513,0.476-1.212,0.714-2.106,0.714c-0.858,0-1.547-0.246-2.064-0.736  c-0.513-0.492-0.772-1.153-0.772-1.984v-5.068C30.613,20.954,30.877,20.351,31.408,19.903z M25.262,16h-2.229l2.634,8.003v5.252  h2.213v-5.5L30.454,16h-2.25l-1.366,5.298h-0.139L25.262,16z M34,64C17.432,64,4,50.568,4,34C4,17.431,17.432,4,34,4  s30,13.431,30,30C64,50.568,50.568,64,34,64z" style="fill-rule:evenodd;clip-rule:evenodd;fill:#CF3427;"></path>
+</svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="copyright">
+            <span>© 2018</span>
+            <a href="#" target="_blank">
+                <span data-language="index_copyright">Интернет-магазин на Benefit</span>
+            </a>
+        </div>
+    </footer>
+
+
+
+    <div class="hidden">
+        <form id="fn_callback" class="callback_form popup fn_validate_callback" method="post" novalidate="novalidate">
+
+
+            <div class="popup_heading">
+                <span data-language="callback_header">Заказ обратного звонка</span>
+            </div>
+
+
+
+            <div class="form_group">
+                <input class="form_input" name="name" data-language="form_name" placeholder="Имя*" type="text">
+            </div>
+
+
+            <div class="form_group">
+                <input class="form_input" name="phone" data-language="form_phone" placeholder="Номер телефона*" type="text">
+            </div>
+
+
+            <div class="form_group">
+                <textarea class="form_textarea" rows="3" name="message" data-language="form_enter_message" placeholder="Введите сообщение"></textarea>
+            </div>
+
+
+            <div class="center">
+
+                <div class="captcha">
+                    <div class="secret_number">37 + ? =  40</div>
+                    <input class="form_input input_captcha" name="captcha_code" placeholder="Введите капчу*" type="text">
+                </div>
+            </div>
+
+
+            <div class="center">
+                <input class="button" name="callback" data-language="callback_order" value="Заказать" type="submit">
+            </div>
+
+        </form>
+    </div>
+
+    <script src="~/Scripts/seller/megashop/jquery_003.js"></script>
+
+
+    <script>
+        /* Глобальный обьект */
+        /* все глобальные переменные добавляем в оъект и работаем с ним!!! */
+        var okay = {};
+
+
+        okay.is_preorder = 1;
+
+
+        $(document).ready(function () {
+            $('select[name=variant]').each(function () {
+                var first_in_stock = $(this).find('option[data-stock!="0"]').first();
+                first_in_stock.attr('selected', true);
+                first_in_stock.trigger('change');
+            });
+        });
+
+        var form_enter_name = 'Введите имя';
+        var form_enter_phone = 'Введите номер';
+        var form_error_captcha = 'Неверно введена капча';
+        var form_enter_email = 'Введите email';
+        var form_enter_password = 'Введите пароль';
+        var form_enter_message = 'Введите сообщение';
+
+        if ($(".fn_validate_product").size() > 0) {
+            $(".fn_validate_product").validate({
+                rules: {
+                    name: "required",
+                    text: "required",
+                    captcha_code: "required"
+                },
+                messages: {
+                    name: form_enter_name,
+                    text: form_enter_message,
+                    captcha_code: form_error_captcha
+                }
+            });
+        }
+        if ($(".fn_validate_callback").size() > 0) {
+            $(".fn_validate_callback").validate({
+                rules: {
+                    name: "required",
+                    phone: "required",
+                },
+                messages: {
+                    name: form_enter_name,
+                    phone: form_enter_phone,
+                }
+
+            });
+        }
+        if ($(".fn_validate_subscribe").size() > 0) {
+            $(".fn_validate_subscribe").validate({
+                rules: {
+                    subscribe_email: "required",
+                },
+                messages: {
+                    subscribe_email: form_enter_email
+                }
+            });
+        }
+        if ($(".fn_validate_post").size() > 0) {
+            $(".fn_validate_post").validate({
+                rules: {
+                    name: "required",
+                    text: "required",
+                    captcha_code: "required"
+                },
+                messages: {
+                    name: form_enter_name,
+                    text: form_enter_message,
+                    captcha_code: form_error_captcha
+                }
+            });
+        }
+
+        if ($(".fn_validate_feedback").size() > 0) {
+            $(".fn_validate_feedback").validate({
+                rules: {
+                    name: "required",
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    message: "required",
+                    captcha_code: "required"
+                },
+                messages: {
+                    name: form_enter_name,
+                    email: form_enter_email,
+                    message: form_enter_message,
+                    captcha_code: form_error_captcha
+                }
+            });
+        }
+
+        if ($(".fn_validate_cart").size() > 0) {
+            $(".fn_validate_cart").validate({
+                rules: {
+                    name: "required",
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    captcha_code: "required"
+                },
+                messages: {
+                    name: form_enter_name,
+                    email: form_enter_email,
+                    captcha_code: form_error_captcha
+                }
+            });
+        }
+
+        if ($(".fn_validate_login").size() > 0) {
+            $(".fn_validate_login").validate({
+                rules: {
+                    email: "required",
+                    password: "required",
+                },
+                messages: {
+                    email: form_enter_email,
+                    password: form_enter_password
+                }
+            });
+        }
+
+        if ($(".fn_validate_register").size() > 0) {
+            $(".fn_validate_register").validate({
+                rules: {
+                    name: "required",
+                    email: {
+                        required: true,
+                        email: true
+                    },
+                    password: "required",
+                    captcha_code: "required"
+                },
+                messages: {
+                    name: form_enter_name,
+                    email: form_enter_email,
+                    captcha_code: form_error_captcha,
+                    password: form_enter_password
+                }
+            });
+        }
+
+    </script>
+
+    <script src="~/Scripts/seller/megashop/okay.js"></script>
+    @RenderSection("scripts", false)
+</body>
+</html>

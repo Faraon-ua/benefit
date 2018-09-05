@@ -1,4 +1,9 @@
-﻿.no-hover-underline:hover {
+﻿.col-centered{
+    float: none;
+    margin: 0 auto;
+}
+
+.no-hover-underline:hover {
     text-decoration: none !important;
 }
 

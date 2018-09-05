@@ -1,0 +1,37 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.BreadCrumbsViewModel
+
+<ol class="breadcrumbs">
+    <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+        <a itemprop="url" href="/" data-language="breadcrumb_home">
+            <span itemprop="title">Головна</span>
+        </a>
+    </li>
+
+    @if (Model.Categories != null)
+    {
+        foreach (var breadCrumb in Model.Categories)
+        {
+            if (Model.Categories.Last().Key.Id == breadCrumb.Key.Id && Model.Product == null)
+            {
+                <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    @breadCrumb.Key.Name
+                </li>
+            }
+            else
+            {
+                <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                    <a itemprop="url" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = breadCrumb.Key.UrlName})">@breadCrumb.Key.Name</a>
+                </li>
+            }
+        }
+    }
+
+    @if (Model.Product != null)
+    {
+        <li>
+            @Model.Product.Name
+        </li>
+
+    }
+</ol>

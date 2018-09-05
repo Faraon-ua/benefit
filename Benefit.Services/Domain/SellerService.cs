@@ -15,7 +15,6 @@ using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Caching;
-using Benefit.Common.Extensions;
 
 namespace Benefit.Services.Domain
 {
@@ -506,12 +505,11 @@ namespace Benefit.Services.Domain
                 {
                     new ProductParameterValue()
                     {
-
-                        ParameterValue = ((int)items.Min(entry=>entry.Price)).ToString(),
+                        ParameterValue = ((int)items.Select(entry=>entry.Price).DefaultIfEmpty(0).Min()).ToString(),
                     },
                     new ProductParameterValue()
                     {
-                        ParameterValue = ((int)items.Max(entry=>entry.Price)).ToString(),
+                        ParameterValue = ((int)items.Select(entry=>entry.Price).DefaultIfEmpty(0).Max()).ToString(),
                     }
                 }
             });

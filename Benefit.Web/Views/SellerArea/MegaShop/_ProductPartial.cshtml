@@ -1,0 +1,62 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Services.Domain
+@model Benefit.Domain.Models.Product
+@{
+    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
+    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+    var availableForPurchase = Model.AvailableForPurchase(RegionService.GetRegionId());
+}
+
+<div class="col-sm-6 col-xl-3 col-xs-6 product-item">
+    <div class="products_item">
+        <div class="preview fn_product">
+            <div class="fn_transfer clearfix">
+                <a class="preview_image" href="@productDetailsUrl">
+                    @if (image == null)
+                    {
+                        <img class="fn_img preview_img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
+                    }
+                    else
+                    {
+                        if (image.IsAbsoluteUrl)
+                        {
+                            <img class="fn_img preview_img" src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                        }
+                        else
+                        {
+                            <img class="fn_img preview_img" src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                        }
+                    }
+                </a>
+                <div class="overlay_buttons">
+                    @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
+                    <a href="#" data-id="114" class="fn_wishlist wishlist_button" title="В избранное" data-result-text="Из избранного"><i class="wish_icon"></i></a>
+                </div>
+                <div class="preview_details">
+                    <a class="product_name" data-product="114" href="@productDetailsUrl">@Model.Name</a>
+                    <div class="price_container">
+                        @if (Model.OldPrice.HasValue)
+                        {
+                            <div class="old_price hidden">
+                                <span class="fn_old_price">@Model.OldPrice</span> <span>грн</span>
+                            </div>
+                        }
+                        <div class="price">
+                            <span class="fn_price">@Model.Price</span> <span>грн</span>
+                        </div>
+                    </div>
+                    <div class="fn_variants preview_form">
+                        @if (availableForPurchase.Key)
+                        {
+                            <button class="button fn_is_stock btn btn-primary product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">Купити</button>
+                        }
+                        else
+                        {
+                            <a class="button fn_is_preorder btn btn-primary product_buy" href="@productDetailsUrl">Детальніше</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -518,6 +518,14 @@
     <Compile Include="Migrations\201808091016295_AddSellerDomain.Designer.cs">
       <DependentUpon>201808091016295_AddSellerDomain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201808100924423_AddSellerEcommerceTemplate.cs" />
+    <Compile Include="Migrations\201808100924423_AddSellerEcommerceTemplate.Designer.cs">
+      <DependentUpon>201808100924423_AddSellerEcommerceTemplate.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201808211002494_ExtendBenefitCardId.cs" />
+    <Compile Include="Migrations\201808211002494_ExtendBenefitCardId.Designer.cs">
+      <DependentUpon>201808211002494_ExtendBenefitCardId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -902,6 +910,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808091016295_AddSellerDomain.resx">
       <DependentUpon>201808091016295_AddSellerDomain.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808100924423_AddSellerEcommerceTemplate.resx">
+      <DependentUpon>201808100924423_AddSellerEcommerceTemplate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201808211002494_ExtendBenefitCardId.resx">
+      <DependentUpon>201808211002494_ExtendBenefitCardId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

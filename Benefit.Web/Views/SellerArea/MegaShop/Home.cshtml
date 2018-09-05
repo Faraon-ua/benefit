@@ -1,0 +1,209 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@using Benefit.Services.Domain
+@model Seller
+@{
+    Layout = "_SellerLayout.cshtml";
+    ViewBag.Title = "Головна";
+    var categories = ViewBag.Categories;
+}
+@section scripts
+{
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+    </script>
+    <script src="~/Scripts/site.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
+}
+
+<div class="col-md-8 col-xl-9 content">
+    <div class="fn_banner_group1 banners tablet-hidden">
+        @foreach (var image in Model.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+        {
+            <div>
+                <img src="~/Images/SellerGallery/@Model.Id/@image.ImageUrl" alt="@Model.AltText" />
+            </div>
+        }
+    </div>
+
+    <div class="fn_ajax_content">
+        <div class="featured_products block">
+            <div class="h1 slidehead">
+                <a href="bestsellers"><span data-language="main_recommended_products">Рекомендовані товари</span></a>
+            </div>
+
+            <div class=" clearfix">
+                @foreach (var product in Model.FeaturedProducts)
+                {
+                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
+                    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                    var availableForPurchase = product.AvailableForPurchase(RegionService.GetRegionId());
+
+                    <div class="products_item col-xl-3 col-xs-6">
+                        <div class="preview fn_product">
+                            <div class="fn_transfer clearfix">
+                                <a class="preview_image" href="@productDetailsUrl">
+                                    @if (image == null)
+                                    {
+                                        <img class="fn_img preview_img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
+                                    }
+                                    else
+                                    {
+                                        if (image.IsAbsoluteUrl)
+                                        {
+                                            <img class="fn_img preview_img" src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                                        }
+                                        else
+                                        {
+                                            <img class="fn_img preview_img" src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                                        }
+                                    }
+                                </a>
+                                <div class="overlay_buttons">
+                                    @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
+                                    <a href="#" data-id="114" class="fn_wishlist wishlist_button" title="В избранное" data-result-text="Из избранного"><i class="wish_icon"></i></a>
+                                </div>
+                                <div class="preview_details">
+                                    <a class="product_name" data-product="114" href="@productDetailsUrl">@product.Name</a>
+                                    <div class="price_container">
+                                        @if (product.OldPrice.HasValue)
+                                        {
+                                            <div class="old_price hidden">
+                                                <span class="fn_old_price">@product.OldPrice</span> <span>грн</span>
+                                            </div>
+                                        }
+                                        <div class="price">
+                                            <span class="fn_price">@product.Price</span> <span>грн</span>
+                                        </div>
+                                    </div>
+                                    <div class="fn_variants preview_form">
+                                        @if (availableForPurchase.Key)
+                                        {
+                                            <button class="button fn_is_stock btn btn-primary product_buy" data-product-id="@product.Id" data-seller-id="@product.Seller.Id" data-is-weight-product="@product.IsWeightProduct">Купити</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="button fn_is_preorder hidden btn btn-primary product_buy" data-product-id="@product.Id" data-seller-id="@product.Seller.Id" data-is-weight-product="@product.IsWeightProduct" disabled="disabled">Детальніше</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="discounted_products block">
+            <div class="h1 slidehead">
+                <a href="discounted"><span data-language="main_discount_products">Новинки</span></a>
+            </div>
+            <div class=" clearfix">
+                @foreach (var product in Model.PromotionProducts)
+                {
+                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
+                    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                    var availableForPurchase = product.AvailableForPurchase(RegionService.GetRegionId());
+
+                    <div class="products_item col-xl-3 col-xs-6">
+                        <div class="preview fn_product">
+                            <div class="fn_transfer clearfix">
+                                <a class="preview_image" href="@productDetailsUrl">
+                                    @if (image == null)
+                                    {
+                                        <img class="fn_img preview_img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
+                                    }
+                                    else
+                                    {
+                                        if (image.IsAbsoluteUrl)
+                                        {
+                                            <img class="fn_img preview_img" src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                                        }
+                                        else
+                                        {
+                                            <img class="fn_img preview_img" src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                                        }
+                                    }
+                                </a>
+                                <div class="overlay_buttons">
+                                    @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
+                                    <a href="#" data-id="114" class="fn_wishlist wishlist_button" title="В избранное" data-result-text="Из избранного"><i class="wish_icon"></i></a>
+                                </div>
+                                <div class="preview_details">
+                                    <a class="product_name" data-product="114" href="@productDetailsUrl">@product.Name</a>
+                                    <div class="price_container">
+                                        @if (product.OldPrice.HasValue)
+                                        {
+                                            <div class="old_price hidden">
+                                                <span class="fn_old_price">@product.OldPrice</span> <span>грн</span>
+                                            </div>
+                                        }
+                                        <div class="price">
+                                            <span class="fn_price">@product.Price</span> <span>грн</span>
+                                        </div>
+                                    </div>
+                                    <div class="fn_variants preview_form">
+                                        @if (availableForPurchase.Key)
+                                        {
+                                            <button class="button fn_is_stock btn btn-primary product_buy" data-product-id="@product.Id" data-seller-id="@product.Seller.Id" data-is-weight-product="@product.IsWeightProduct">Купити</button>
+                                        }
+                                        else
+                                        {
+                                            <button class="button fn_is_preorder hidden btn btn-primary product_buy" data-product-id="@product.Id" data-seller-id="@product.Seller.Id" data-is-weight-product="@product.IsWeightProduct" disabled="disabled">Детальніше</button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+
+        @*<div class="block">
+            <div class="h1 slidehead">
+                <span data-language="main_brands">Бренды</span>
+            </div>
+
+            <div class="fn_all_brands all_brands">
+
+                <div class="fleft">
+                    <a class="all_brands_item" href="brands/puff" data-brand="1">
+                        <div class="brand_image">
+                            <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
+                        </div>
+                        <span>Puff</span>
+                    </a>
+                </div>
+                <div class="fleft">
+                    <a class="all_brands_item" href="brands/puff" data-brand="1">
+                        <div class="brand_image">
+                            <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
+                        </div>
+                        <span>Puff</span>
+                    </a>
+                </div>
+                <div class="fleft">
+                    <a class="all_brands_item" href="brands/puff" data-brand="1">
+                        <div class="brand_image">
+                            <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
+                        </div>
+                        <span>Puff</span>
+                    </a>
+                </div>
+                <div class="fleft">
+                    <a class="all_brands_item" href="brands/puff" data-brand="1">
+                        <div class="brand_image">
+                            <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
+                        </div>
+                        <span>Puff</span>
+                    </a>
+                </div>
+
+            </div>
+        </div>*@
+    </div>
+</div>
