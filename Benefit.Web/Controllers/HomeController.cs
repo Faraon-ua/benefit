@@ -24,7 +24,7 @@ namespace Benefit.Web.Controllers
     {
         [FetchSeller]
         [FetchCategories]
-        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
+        //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
             //handle seller subdomain

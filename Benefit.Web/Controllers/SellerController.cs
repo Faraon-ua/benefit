@@ -70,10 +70,12 @@ namespace Benefit.Web.Controllers
                 viewModel.Category = selectedCat;
                 viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
-            viewModel.Items.ForEach(entry=>
+            viewModel.Items.ForEach(entry =>
             {
-                if(entry.Currency!=null)
-                entry.Price = entry.Price * entry.Currency.Rate;
+                if (entry.Currency != null)
+                {
+                    entry.Price = entry.Price * entry.Currency.Rate;
+                }
             });
             viewModel.Breadcrumbs = null;
             viewModel.Seller = seller;

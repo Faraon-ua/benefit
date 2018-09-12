@@ -1667,7 +1667,7 @@ a {
     border: 1px solid #e5e5e5;
     position: relative;
     overflow: hidden;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
 
 .padding {
@@ -2675,7 +2675,10 @@ a {
 .purchase_image {
     font-size: 0;
 }
-
+.purchase_image img {
+    max-width: 50px;
+    max-height: 50px;
+}
     .purchase_remove a {
         text-decoration: none;
     }

@@ -79,7 +79,7 @@ function CalculateCartSum(sellerId) {
     var products = wrap.find("tr.basket_modal_table_row.product").map(function () {
         var actualPrice = parseFloat($(this).find(".actual-product-price").text());
         var oldPrice = parseFloat($(this).attr("data-original-price"));
-        var amount = parseFloat($(this).find(".product_modal_amount").val());
+        var amount = parseFloat($(this).find(".quantity").val());
         var productOptionSum = $(this).nextUntil(".product").map(function () {
             var optionPrice = parseFloat($(this).attr("data-original-price"));
             var optionAmount = parseFloat($(this).find(".quantity").val());

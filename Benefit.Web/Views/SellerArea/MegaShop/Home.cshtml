@@ -38,7 +38,7 @@
                 @foreach (var product in Model.FeaturedProducts)
                 {
                     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
-                    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
                     var availableForPurchase = product.AvailableForPurchase(RegionService.GetRegionId());
 
                     <div class="products_item col-xl-3 col-xs-6">
@@ -104,7 +104,7 @@
                 @foreach (var product in Model.PromotionProducts)
                 {
                     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
-                    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
                     var availableForPurchase = product.AvailableForPurchase(RegionService.GetRegionId());
 
                     <div class="products_item col-xl-3 col-xs-6">

@@ -83,6 +83,7 @@ namespace Benefit.Web.Controllers
             return Json(new { redirectUrl = Url.Action("order", "cart", new { id = sellerId }), orderSummary.ProductsNumber, orderSummary.Price });
         }
 
+        [FetchSeller]
         [FetchCategories]
         public ActionResult Order(string id)
         {
@@ -177,17 +178,37 @@ namespace Benefit.Web.Controllers
                 }
             }
 
+            var domainSeller = ViewBag.Seller as Seller;
+            if (domainSeller != null)
+            {
+                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
+                    SellerEcommerceTemplate.MegaShop)
+                {
+                    return View("~/views/sellerarea/megashop/cart.cshtml", model);
+                }
+            }
             return View(model);
         }
 
         [FetchCategories]
+        [FetchSeller]
         public ActionResult OrderCompleted(string number)
         {
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                if (seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
+                    SellerEcommerceTemplate.MegaShop)
+                {
+                    return View("~/views/sellerarea/megashop/OrderCompleted.cshtml", model: number);
+                }
+            }
             return View(model: number);
         }
 
         [HttpPost]
         [FetchCategories]
+        [FetchSeller]
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
             completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
@@ -242,6 +263,15 @@ namespace Benefit.Web.Controllers
             }
 
             TempData["ErrorMessage"] = ModelState.ModelStateErrors();
+            var domainSeller = ViewBag.Seller as Seller;
+            if (domainSeller != null)
+            {
+                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
+                    SellerEcommerceTemplate.MegaShop)
+                {
+                    return View("~/views/sellerarea/megashop/cart.cshtml", completeOrder);
+                }
+            }
             return View(completeOrder);
         }
 
