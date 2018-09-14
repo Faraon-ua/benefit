@@ -10,18 +10,44 @@
 @section styles
 {
     <link href="~/Content/css/bootstrap-slider.css" rel="stylesheet" />
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
 }
 @section scripts
 {
+    <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
     <script src="~/Scripts/bootstrap-slider.min.js"></script>
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
+        var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
 
         $(function () {
+            $(".add-to-favorites").click(function (e) {
+                var btn = $(this);
+                var productId = btn.attr("data-product-id");
+                $.post(addToFavoritesUrl +"&productId="+productId,
+                    null,
+                    function (data) {
+                        if (data.count !== undefined) {
+                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            btn.hide();
+                            setFavorites(data.count);
+                        } else {
+                            $.post(showMessagePopupUrl,
+                                { message: data.message, showButtons: false },
+                                function (popupHtml) {
+                                    $(".modal-container").html(popupHtml);
+                                    $(".message-modal").modal();
+                                }
+                            );
+                        }
+                    });
+            });
+
             if ($('#price-slider').length > 0) {
-                $('#price-slider').slider().on('change',
+                $('#price-slider').bootstrapSlider().on('change',
                     function (data) {
                         $("#price-lower-bound").val(data.value.newValue[0]);
                         $("#price-upper-bound").val(data.value.newValue[1]);
@@ -253,7 +279,7 @@
 
         <h1 class="h1"><span data-category="3">@Model.Category.Name</span>  </h1>
 
-        <div class="fn_products_sort clearfix sort_header margin-top-10">
+        <div class="fn_products_sort clearfix sort_header margin-top-10 visible-lg">
             <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
                 <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
 
@@ -309,10 +335,6 @@
             </div>
         }
         <br style="clear: both;" />
-        <article style="margin-bottom: 10px;">
-            <div class="readmore_js">
-                <p>@Model.Category.Description</p>
-            </div>
-        </article>
     </div>
 </div>
+<div class="modal-container"></div>

@@ -42,6 +42,9 @@
 @section scripts
 {
     <script src="~/Scripts/site.js"></script>
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
     <script>
         $(function() {
             var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
@@ -160,12 +163,13 @@
 }
 @section styles{
     <link href="~/Content/seller/css/jquery.fancybox.min.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
 }
 <div class="col-md-8 col-xl-9 content">
     @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
     <div class="fn_ajax_content">
         <div class="block padding">
-            <div class="fn_product product" itemscope="" itemtype="http://schema.org/Product">
+            <div class="fn_product product product_info_wrap" itemscope="" itemtype="http://schema.org/Product">
                 <h1 class="h2">
                     <span itemprop="name">@Model.Product.Name</span>
                 </h1>
@@ -222,7 +226,7 @@
                                 <div class="col-sm-6">
                                     @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
                                     {
-                                        <a href="#" class="product_wish add-to-favorites" title="Додати до улюблених" style="display: none;">
+                                        <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" style="display: none;">
                                             <i class="wish_icon"></i>
                                         </a>
 
@@ -232,7 +236,7 @@
                                     }
                                     else
                                     {
-                                        <a href="#" class="product_wish add-to-favorites" title="Додати до улюблених">
+                                        <a href="#" class="product_wish add-to-favorites product_wish" title="Додати до улюблених">
                                             <i class="wish_icon"></i>
                                         </a>
 
@@ -296,7 +300,7 @@
                                     @if (Model.Product.OldPrice.HasValue)
                                     {
                                         <span class="old_price">
-                                            <span class="fn_old_price">@Model.Product.OldPrice.Value</span> грн
+                                            <span class="fn_old_price">@Model.Product.OldPrice.Value.ToString("F")</span> грн
                                         </span>
                                     }
                                 </div>
@@ -312,7 +316,7 @@
                         </div>
                     </div>
                 </div>
-
+                @Html.Partial("_FlashMessage")
                 <div class="tabs clearfix">
                     <div class="tab_navigation">
                         <a href="#description" data-language="product_description" class="selected">Опис</a>

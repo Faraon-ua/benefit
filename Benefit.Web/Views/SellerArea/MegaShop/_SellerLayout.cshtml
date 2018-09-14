@@ -7,6 +7,7 @@
     var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
     var todayShedule = seller.Schedules.FirstOrDefault(entry => entry.Day == DateTime.Now.DayOfWeek);
     var categories = ViewBag.Categories as List<Category>;
+    var viewedProducts = Session[DomainConstants.ViewedProductsSessionKey] as List<Product>;
 }
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" lang="uk">
@@ -206,6 +207,42 @@
                     @RenderSection("LeftAside", false)
                 </div>
                 @RenderBody()
+                @if (viewedProducts != null && viewedProducts.Any())
+                {
+                    <div class="col-md-4 col-lg-3 sidebar_bottom">
+                        <div class="block">
+                            <div class="h1">Ви переглядали</div>
+                            <div class="browsed">
+
+                                @foreach (var product in viewedProducts)
+                                {
+                                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
+                                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                                    <div class="browsed_item clearfix">
+                                        <a class="browsed_image" href="@productDetailsUrl">
+                                            @if (image == null)
+                                            {
+                                                <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@product.Title" title="@product.Title">
+                                            }
+                                            else
+                                            {
+                                                if (image.IsAbsoluteUrl)
+                                                {
+                                                    <img src="@image.ImageUrl" alt="@product.Title" title="@product.Title">
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/Images/ProductGallery/@product.Id/@image.ImageUrl" alt="@product.Title" title="@product.Title">
+                                                }
+                                            }
+                                        </a>
+                                        <a class="browsed_name" href="@productDetailsUrl">@product.Name</a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -226,49 +263,7 @@
                                 <span data-language="advantage_1">@page.Name</span>
                             </div>
                         </a>
-
-                        @*<div class="col-xs-12 col-md-6 col-lg-4 p-a-1" style="float: none; display: inline-block;">
-                                <div class="text-plus-icon">
-                                    <div class="col-md-2" style="border: none;">
-                                        <img src="~/Images/NewsLogo/@page.ImageUrl" />
-                                    </div>
-                                    <div class="col-md-10">
-                                        <a href="@Url.RouteUrl("pagesRoute", new { id = page.UrlName })" class="name">@page.Name</a>
-                                        <div class="small">@page.ShortContent</div>
-                                    </div>
-                                </div>
-                            </div>*@
                     }
-                    @*<div class="col-xs-6 col-lg-4 col-xl-2 advantage">
-                            <i class="advantage_2"></i>
-                            <div class="advantage_text">
-                                <span data-language="advantage_2">Бесплатная доставка от 4000 рублей</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-6 col-lg-4 col-xl-2 advantage">
-                            <i class="advantage_3"></i>
-                            <div class="advantage_text">
-                                <span data-language="advantage_3">Возможна оплата наличными</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-6 col-lg-4 col-xl-2 advantage">
-                            <i class="advantage_4"></i>
-                            <div class="advantage_text">
-                                <span data-language="advantage_4">Качество товара гаранируется</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-6 col-lg-4 col-xl-2 advantage">
-                            <i class="advantage_5"></i>
-                            <div class="advantage_text">
-                                <span data-language="advantage_5">Защищенные способы оплаты</span>
-                            </div>
-                        </div>
-                        <div class="col-xs-6 col-lg-4 col-xl-2 advantage">
-                            <i class="advantage_6"></i>
-                            <div class="advantage_text">
-                                <span data-language="advantage_6">Скидки постоянным клиентами</span>
-                            </div>
-                        </div>*@
                 </div>
             </div>
         </div>
@@ -282,31 +277,24 @@
                             <span>Інформація</span>
                         </div>
                         <div class="foot_menu">
-                            <div class="foot_item"><a href="#">Головна</a></div>
-                            <div class="foot_item"><a href="#">Блог</a></div>
-                            <div class="foot_item"><a href="#">Блог</a></div>
-                            <div class="foot_item"><a href="#">Блог</a></div>
+                            @foreach (var page in seller.InfoPages.OrderBy(entry => entry.Order).Take(3))
+                            {
+                                <div class="foot_item"><a href="@Url.RouteUrl("pagesRoute", new {id = page.UrlName})">@page.Name</a></div>
+                            }
                         </div>
                     </div>
-
 
                     <div class="foot col-sm-6 col-lg-3 col-xs-6" style="text-align:center;">
                         <div class="h3">
                             <span data-language="index_categories">Каталог товарів</span>
                         </div>
                         <div class="foot_menu">
-                            <div class="foot_item">
-                                <a href="#">Мебель для дома</a>
-                            </div>
-                            <div class="foot_item">
-                                <a href="#">Гаджеты</a>
-                            </div>
-                            <div class="foot_item">
-                                <a href="#">Детские игрушки</a>
-                            </div>
-                            <div class="foot_item">
-                                <a href="#">Техника для дома</a>
-                            </div>
+                            @foreach (var cat in categories)
+                            {
+                                <div class="foot_item">
+                                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })">@cat.Name</a>
+                                </div>
+                            }
                         </div>
                     </div>
 

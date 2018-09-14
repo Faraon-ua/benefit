@@ -71,11 +71,11 @@
                                         @if (product.OldPrice.HasValue)
                                         {
                                             <div class="old_price hidden">
-                                                <span class="fn_old_price">@product.OldPrice</span> <span>грн</span>
+                                                <span class="fn_old_price">@product.OldPrice.Value.ToString("F")</span> <span>грн</span>
                                             </div>
                                         }
                                         <div class="price">
-                                            <span class="fn_price">@product.Price</span> <span>грн</span>
+                                            <span class="fn_price">@product.Price.ToString("F")</span> <span>грн</span>
                                         </div>
                                     </div>
                                     <div class="fn_variants preview_form">
@@ -137,11 +137,11 @@
                                         @if (product.OldPrice.HasValue)
                                         {
                                             <div class="old_price hidden">
-                                                <span class="fn_old_price">@product.OldPrice</span> <span>грн</span>
+                                                <span class="fn_old_price">@product.OldPrice.Value.ToString("F")</span> <span>грн</span>
                                             </div>
                                         }
                                         <div class="price">
-                                            <span class="fn_price">@product.Price</span> <span>грн</span>
+                                            <span class="fn_price">@product.Price.ToString("F")</span> <span>грн</span>
                                         </div>
                                     </div>
                                     <div class="fn_variants preview_form">

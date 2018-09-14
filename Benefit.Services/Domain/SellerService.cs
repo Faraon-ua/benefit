@@ -306,6 +306,7 @@ namespace Benefit.Services.Domain
             var result = new ProductsWithParametersList();
 
             var items = db.Products
+                .Include(entry => entry.Favorites)
                 .Include(entry => entry.Currency)
                 .Include(entry => entry.Category.ParentCategory.ParentCategory)
                 .Include(entry => entry.Seller)
