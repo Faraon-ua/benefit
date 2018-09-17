@@ -1,4 +1,5 @@
-﻿@using Benefit.Domain.Models
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
 
 @{
     ViewBag.Title = "Контакти";
@@ -6,67 +7,71 @@
     var seller = ViewBag.Seller as Seller;
     var address = seller.Addresses.FirstOrDefault();
 }
-<div class="fn_ajax_content margin-top-10">
-    <div class="block">
-        <h1 class="h1">
-            <span data-page="3">Контакти</span>
-        </h1>
-        <div class="padding">
-            <p>
-                @if (address != null)
-                {
-                    <div class="provider_address">
-                        <span>
-                            @address.Region.Name_ua
-                            @if (!string.IsNullOrEmpty(address.AddressLine))
-                            {
-                                <br />
-                                <span>@address.AddressLine</span>
-                            }
-                        </span>
-                    </div>
-                }
-            </p>
-            <div class="organization_hours">
-                @{
-                    //todo: refactor schedules
-                    var monSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Monday);
-                    var satSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Saturday);
-                    var sunSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Sunday);
-                }
-                Пн.-Пт.
-                @if (monSchedule.StartHour == null)
-                {
-                    <span>вихідний</span>
-                }
-                else
-                {
-                    <span>@monSchedule.StartHour:@monSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @monSchedule.EndHour:@monSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
-                }
-                <br />
-                Сб.
-                @if (satSchedule.StartHour == null)
-                {
-                    <span>вихідний</span>
-                }
-                else
-                {
-                    <span>@satSchedule.StartHour:@satSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @satSchedule.EndHour:@satSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
-                }
-                <br />
-                Нд.
-                @if (sunSchedule.StartHour == null)
-                {
-                    <span>вихідний</span>
-                }
-                else
-                {
-                    <span>@sunSchedule.StartHour:@sunSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @sunSchedule.EndHour:@sunSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
-                }
-            </div>
 
-            <div id="map" style="width: 100%; height:400px;"></div>
-            <script>
+<div class="col-md-8 col-xl-9 content">
+    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Контакти" } })
+
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <h1 class="h1">
+                <span data-page="3">Контакти</span>
+            </h1>
+            <div class="padding">
+                <p>
+                    @if (address != null)
+                    {
+                        <div class="provider_address">
+                            <span>
+                                @address.Region.Name_ua
+                                @if (!string.IsNullOrEmpty(address.AddressLine))
+                                {
+                                    <br />
+                                    <span>@address.AddressLine</span>
+                                }
+                            </span>
+                        </div>
+                    }
+                </p>
+                <div class="organization_hours">
+                    @{
+                        //todo: refactor schedules
+                        var monSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Monday);
+                        var satSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Saturday);
+                        var sunSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Sunday);
+                    }
+                    Пн.-Пт.
+                    @if (monSchedule.StartHour == null)
+                    {
+                        <span>вихідний</span>
+                    }
+                    else
+                    {
+                        <span>@monSchedule.StartHour:@monSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @monSchedule.EndHour:@monSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
+                    }
+                    <br />
+                    Сб.
+                    @if (satSchedule.StartHour == null)
+                    {
+                        <span>вихідний</span>
+                    }
+                    else
+                    {
+                        <span>@satSchedule.StartHour:@satSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @satSchedule.EndHour:@satSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
+                    }
+                    <br />
+                    Нд.
+                    @if (sunSchedule.StartHour == null)
+                    {
+                        <span>вихідний</span>
+                    }
+                    else
+                    {
+                        <span>@sunSchedule.StartHour:@sunSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @sunSchedule.EndHour:@sunSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
+                    }
+                </div>
+
+                <div id="map" style="width: 100%; height:400px;"></div>
+                <script>
         var map;
         function initMap() {
             map = new google.maps.Map(document.getElementById('map'), {
@@ -120,8 +125,9 @@
                 };
             })(marker, content, infowindow));
         }
-            </script>
-            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0Ryf-Uk4SouHzTJPPuUXAVSmaAQ5X-oM&callback=initMap" async defer></script>
+                </script>
+                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0Ryf-Uk4SouHzTJPPuUXAVSmaAQ5X-oM&callback=initMap" async defer></script>
+            </div>
         </div>
     </div>
 </div>

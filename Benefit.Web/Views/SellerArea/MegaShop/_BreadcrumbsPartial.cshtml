@@ -8,6 +8,13 @@
         </a>
     </li>
 
+    @if (Model.Page != null)
+    {
+        <li>
+            @Model.Page.Name
+        </li>
+    }
+
     @if (Model.Categories != null)
     {
         foreach (var breadCrumb in Model.Categories)

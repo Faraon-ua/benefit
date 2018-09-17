@@ -20,7 +20,20 @@
         $(function () {
             SetRegionsAutocomplete();
 
-            $("#save-order").click(function() {
+            $(".delivery_address_item").click(function () {
+                var addressId = $(this).attr("data-address-id");
+                $("#AddressId").val(addressId);
+                $(".delivery_address_item").removeClass("active");
+                $(".delivery_address_item").hide();
+                $(this).addClass("active");
+                $(this).show();
+            });
+            $(".chose_new_address").click(function (e) {
+                e.preventDefault();
+                $(".delivery_address_item").show();
+            });
+
+            $("#save-order").click(function () {
                 var btn = $(this);
                 btn.find(".btn").attr("disabled", "disabled");
                 showLoader();
@@ -163,162 +176,177 @@
                 </div>
             </div>
         }
-        <form action="@Url.Action("order", "cart", new {id = Model.SellerId})" method="post">
-            <input type="hidden" name="SellerId" value="@Model.SellerId" />
-            <div class="block">
-                <h1 class="h1 no_border"><span data-language="cart_header">Кошик</span></h1>
-                <div id="fn_purchases">
-                    <table class="purchase">
-                        <tbody>
-                            @foreach (var product in Model.Order.OrderProducts)
-                            {
-                                var productUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) });
-                                var hasWholesale = product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue;
-                                var showWholesale = hasWholesale && product.Amount >= product.WholesaleFrom.Value;
-                                var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
-                                var oldProductSum = product.ProductPrice * product.Amount;
-                                var actualProductSum = (showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice) * product.Amount;
-                                <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-seller-id="@product.SellerId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
-                                    <td class="purchase_image">
-                                        <a href="@productUrl">
-                                            @if (product.ProductImageUrl != null)
-                                            {
-                                                if (product.ProductImageUrl.Contains("http"))
+        <div id="order-form-wrap">
+
+            <form action="@Url.Action("order", "cart", new {id = Model.SellerId})" method="post">
+                <input type="hidden" name="SellerId" value="@Model.SellerId" />
+                <div class="block">
+                    <h1 class="h1 no_border"><span data-language="cart_header">Кошик</span></h1>
+                    <div id="fn_purchases">
+                        <table class="purchase">
+                            <tbody>
+                                @foreach (var product in Model.Order.OrderProducts)
+                                {
+                                    var productUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) });
+                                    var hasWholesale = product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue;
+                                    var showWholesale = hasWholesale && product.Amount >= product.WholesaleFrom.Value;
+                                    var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                                    var oldProductSum = product.ProductPrice * product.Amount;
+                                    var actualProductSum = (showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice) * product.Amount;
+                                    <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-seller-id="@product.SellerId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
+                                        <td class="purchase_image">
+                                            <a href="@productUrl">
+                                                @if (product.ProductImageUrl != null)
                                                 {
-                                                    <img src="@product.ProductImageUrl">
+                                                    if (product.ProductImageUrl.Contains("http"))
+                                                    {
+                                                        <img src="@product.ProductImageUrl">
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl">
+                                                    }
                                                 }
                                                 else
                                                 {
-                                                    <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl">
+                                                    <img src="~/Images/ProductGallery/default_product_thumbnail.png">
                                                 }
-                                            }
-                                            else
-                                            {
-                                                <img src="~/Images/ProductGallery/default_product_thumbnail.png">
-                                            }
-                                        </a>
-                                    </td>
+                                            </a>
+                                        </td>
 
 
-                                    <td class="text_left">
-                                        <a class="purchase_name" href="@productUrl">@product.ProductName</a>
-                                        <i></i>
-                                    </td>
+                                        <td class="text_left">
+                                            <a class="purchase_name" href="@productUrl">@product.ProductName</a>
+                                            <i></i>
+                                        </td>
 
-                                    <td>
-                                        <span class="nowrap actual-product-price">
-                                            @((showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice).ToString("F"))
-                                        </span>
-                                    </td>
+                                        <td>
+                                            <span class="nowrap actual-product-price">
+                                                @((showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice).ToString("F"))
+                                            </span>
+                                        </td>
 
-                                    <td class="purchase_amount basket_modal">
-                                        <div class="fn_is_preorder amount" data-weight-product="@product.IsWeightProduct">
-                                            <input class="input_amount quantity" value="@product.Amount" data-max="50" type="text">
-                                            <span class="plus"></span>
-                                            <span class="minus"></span>
-                                        </div>
-                                    </td>
-
-
-                                    <td class="purchase_sum">
-                                        <del class="old-product-total" style="display: @(showWholesale ? "" : "none")">
-                                            @((oldProductSum + productOptionsSum).ToString("F"))
-                                        </del>
-                                        <span class="actual-product-total">
-                                            @((actualProductSum + productOptionsSum).ToString("F"))
-                                        </span>
-                                    </td>
+                                        <td class="purchase_amount basket_modal">
+                                            <div class="fn_is_preorder amount" data-weight-product="@product.IsWeightProduct">
+                                                <input class="input_amount quantity" value="@product.Amount" data-max="50" type="text">
+                                                <span class="plus"></span>
+                                                <span class="minus"></span>
+                                            </div>
+                                        </td>
 
 
-                                    <td class="purchase_remove">
-                                        <a href="cart/remove/116" onclick="ajax_remove(116);return false;" title="Удалить из корзины">
-                                            <svg class="remove_icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 20 20">
-                                                <path fill="currentColor" d="M15.833 5.346l-1.179-1.179-4.654 4.654-4.654-4.654-1.179 1.179 4.654 4.654-4.654 4.654 1.179 1.179 4.654-4.654 4.654 4.654 1.179-1.179-4.654-4.654z"></path>
-                                            </svg>
-                                        </a>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="coupon text_left"></td>
+                                        <td class="purchase_sum">
+                                            <del class="old-product-total" style="display: @(showWholesale ? "" : "none")">
+                                                @((oldProductSum + productOptionsSum).ToString("F"))
+                                            </del>
+                                            <span class="actual-product-total">
+                                                @((actualProductSum + productOptionsSum).ToString("F"))
+                                            </span>
+                                        </td>
 
-                                <td colspan="2" class="purchase_total">
 
-                                    <span data-language="cart_total_price">Всього:</span>
-                                    <span class="total_sum nowrap pay-total basket_modal_price">
-                                        <span>
-                                            @Model.Order.GetOrderSum().ToString("F")
-                                        </span>
-                                    </span>
-                                </td>
-
-                                <td></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-
-                </div>
-            </div>
-
-            <div id="fn_ajax_deliveries">
-                <div class="block">
-                    <div class="h1">
-                        <span data-language="cart_delivery">Способи доставки</span>
-                    </div>
-
-                    <div class="delivery">
-                        @foreach (var shipping in Model.ShippingMethods)
-                        {
-                            <div class="delivery_item">
-                                <input class="input_delivery" type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id" data-skip-address="@shipping.SkipOrderAddress">
-
-                                <label class="delivery_label" for="@shipping.Id">
-                                    <span class="delivery_name">
-                                        @shipping.Name
-                                    </span>
-                                </label>
-                            </div>
-                        }
-                    </div>
-                </div>
-
-                <div class="fn_delivery_payment block" id="fn_delivery_payment_1">
-
-                    <div class="h1"><span data-language="cart_payment">Методи оплати</span></div>
-
-                    <div class="delivery">
-                        @foreach (var payment in Model.PaymentTypes)
-                        {
-                            <div class="delivery_item">
-                                <input class="input_delivery" type="radio" id="@payment.ToString()" name="PaymentType" value="@payment.ToString()">
-                                <label class="delivery_label active" for="@payment.ToString()">
-                                    <span class="delivery_name">
-                                        @Enumerations.GetEnumDescription(payment)
-                                    </span>
-                                </label>
-                                @if (payment == PaymentType.Bonuses)
-                                {
-                                    <a href="@Url.RouteUrl("pagesRoute", new {id = "faq"})#vukorustatu_bonysu" target="_blank">
-                                        <span class="label label-info label-as-badge" style="font-size: 1em; display: inline-block;">
-                                            <strong>?</strong>
-                                        </span>
-                                    </a>
+                                        <td class="purchase_remove">
+                                            <a href="cart/remove/116" onclick="ajax_remove(116);return false;" title="Удалить из корзины">
+                                                <svg class="remove_icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 20 20">
+                                                    <path fill="currentColor" d="M15.833 5.346l-1.179-1.179-4.654 4.654-4.654-4.654-1.179 1.179 4.654 4.654-4.654 4.654 1.179 1.179 4.654-4.654 4.654 4.654 1.179-1.179-4.654-4.654z"></path>
+                                                </svg>
+                                            </a>
+                                        </td>
+                                    </tr>
                                 }
-                            </div>
-                        }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="3" class="coupon text_left"></td>
+
+                                    <td colspan="2" class="purchase_total">
+
+                                        <span data-language="cart_total_price">Всього:</span>
+                                        <span class="total_sum nowrap pay-total basket_modal_price">
+                                            <span>
+                                                @Model.Order.GetOrderSum().ToString("F")
+                                            </span>
+                                        </span>
+                                    </td>
+
+                                    <td></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
                     </div>
                 </div>
-                <div class="block">
-                    <div class="delivery" style="padding-bottom: 15px;">
-                        <div class="form_group">
-                            <textarea class="form_textarea" rows="5" name="comment" data-language="cart_order_comment" placeholder="Коментар до замовлення"></textarea>
+
+                <div id="fn_ajax_deliveries">
+                    <div class="block">
+                        <div class="h1">
+                            <span data-language="cart_delivery">Способи доставки</span>
+                        </div>
+
+                        <div class="delivery">
+                            @foreach (var shipping in Model.ShippingMethods)
+                            {
+                                <div class="delivery_item">
+                                    <input class="input_delivery" type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id" data-skip-address="@shipping.SkipOrderAddress">
+
+                                    <label class="delivery_label" for="@shipping.Id">
+                                        <span class="delivery_name">
+                                            @shipping.Name
+                                        </span>
+                                    </label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="block">
+                            <div class="h1">
+                                <span data-language="cart_delivery">Адреса доставки</span>
+                            </div>
+
+                            <div class="delivery">
+                                @Html.Partial("~/Views/Cart/_ShippingAddresses.cshtml", Model)
+                            </div>
+                        </div>
+                    }
+
+                    <div class="fn_delivery_payment block" id="fn_delivery_payment_1">
+
+                        <div class="h1"><span data-language="cart_payment">Методи оплати</span></div>
+
+                        <div class="delivery">
+                            @foreach (var payment in Model.PaymentTypes)
+                            {
+                                <div class="delivery_item">
+                                    <input class="input_delivery" type="radio" id="@payment.ToString()" name="PaymentType" value="@payment.ToString()">
+                                    <label class="delivery_label active" for="@payment.ToString()">
+                                        <span class="delivery_name">
+                                            @Enumerations.GetEnumDescription(payment)
+                                        </span>
+                                    </label>
+                                    @if (payment == PaymentType.Bonuses)
+                                    {
+                                        <a href="@Url.RouteUrl("pagesRoute", new {id = "faq"})#vukorustatu_bonysu" target="_blank">
+                                            <span class="label label-info label-as-badge" style="font-size: 1em; display: inline-block;">
+                                                <strong>?</strong>
+                                            </span>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <div class="block">
+                        <div class="delivery" style="padding-bottom: 15px;">
+                            <div class="form_group">
+                                <textarea class="form_textarea" rows="5" name="comment" data-language="cart_order_comment" placeholder="Коментар до замовлення"></textarea>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </form>
-        <buton id="save-order" class="button" name="checkout" data-language="cart_checkout" type="button" style="margin-bottom: 10px;">Оформити замовлення</buton>
+            </form>
+            <buton id="save-order" class="button" name="checkout" data-language="cart_checkout" type="button" style="margin-bottom: 10px;">Оформити замовлення</buton>
+        </div>
     </div>
 </div>

@@ -1,3 +1,27 @@
+.delivery_address_title {
+    margin-bottom: 20px;
+    font-size: 15px;
+}
+
+.delivery_address_item {
+    margin-bottom: 17px;
+    padding: 20px 40px 30px;
+    width: 100%;
+    max-width: 284px;
+    border: 2px solid #cccccc;
+    float: left;
+    margin-right: 15px;
+}
+
+    .delivery_address_item.active {
+        border: 2px solid #6ab545;
+    }
+
+    .delivery_address_item .adress_phone {
+        margin-bottom: 0;
+    }
+
+
 .hidden {
     display: none !important;
     visibility: hidden !important;
@@ -2879,6 +2903,7 @@ a {
     background-color: #55c03e;
     font-size: 0;
     cursor: pointer;
+    display: block;
 }
 
 .catmenu_i {

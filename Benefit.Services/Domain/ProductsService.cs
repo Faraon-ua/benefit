@@ -119,6 +119,7 @@ namespace Benefit.Services.Domain
             catsIds.Add(category.Id);
             result.RelatedProducts = db.Products
                 .Include(entry => entry.Seller)
+                .Include(entry => entry.Currency)
                 .Include(entry => entry.Images)
                 .Where(entry =>
                     entry.IsActive && entry.Seller.IsActive &&
@@ -126,7 +127,13 @@ namespace Benefit.Services.Domain
                     entry.AvailabilityState != ProductAvailabilityState.NotInStock && entry.Images.Any() &&
                     catsIds.Contains(entry.CategoryId)).OrderBy(entry => Guid.NewGuid()).Take(5)
                 .ToList();
-
+            foreach (var relatedProduct in result.RelatedProducts)
+            {
+                if (relatedProduct.Currency != null)
+                {
+                    relatedProduct.Price = relatedProduct.Price * relatedProduct.Currency.Rate;
+                }
+            }
             return result;
         }
 

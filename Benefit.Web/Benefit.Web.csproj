@@ -1482,13 +1482,13 @@
     <Content Include="Views\SellerArea\MegaShop\CategoriesCatalog.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\Contacts.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\Gallery.cshtml" />
-    <Content Include="Views\SellerArea\MegaShop\Page.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\Product.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\ProductsCatalog.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\Reviews.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\Cart.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\OrderCompleted.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\NotFound.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\Page.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

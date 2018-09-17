@@ -6,31 +6,35 @@
     Layout = "_SellerLayout.cshtml";
     var seller = ViewBag.Seller as Seller;
 }
-<div class="fn_ajax_content margin-top-10">
-    <div class="block">
-        <h1 class="h1">
-            <span data-page="3">Відгуки</span>
-        </h1>
-        <div class="row padding">
-            <div class="col-md-6">
-                @Html.Partial("_ReviewsPartial", new ReviewsViewModel
-                {
-                    CanReview = false,
-                    SellerId = seller.Id,
-                    TargetName = seller.Name,
-                    Reviews = seller.ApprovedReviews
-                })
-            </div>
-            <div class="col-md-6">
-                @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
-                {
-                    CanReview = true,
-                    SellerId = seller.Id,
-                    TargetName = seller.Name,
-                })
+
+<div class="col-md-8 col-xl-9 content">
+    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Відгуки" } })
+
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <h1 class="h1">
+                <span data-page="3">Відгуки</span>
+            </h1>
+            <div class="row padding">
+                <div class="col-md-6">
+                    @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                    {
+                        CanReview = false,
+                        SellerId = seller.Id,
+                        TargetName = seller.Name,
+                        Reviews = seller.ApprovedReviews
+                    })
+                </div>
+                <div class="col-md-6">
+                    @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                    {
+                        CanReview = true,
+                        SellerId = seller.Id,
+                        TargetName = seller.Name,
+                    })
+                </div>
             </div>
         </div>
-
     </div>
 </div>
 @section scripts{

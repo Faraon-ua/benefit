@@ -41,7 +41,10 @@ namespace Benefit.Web.Controllers
             result.SellerId = searchSellerId;
             if (!string.IsNullOrEmpty(searchSellerId))
             {
-                return View("~/Views/SellerArea/ProductsCatalog.cshtml", new ProductsViewModel
+                var seller = ViewBag.Seller as Seller;
+                var viewName = string.Format("~/Views/SellerArea/{0}/ProductsCatalog.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName, new ProductsViewModel
                 {
                     Items = result.Products,
                     Category = new Category()

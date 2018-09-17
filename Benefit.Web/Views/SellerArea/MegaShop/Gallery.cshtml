@@ -1,21 +1,27 @@
-﻿@using Benefit.Domain.Models
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
 @{
     Layout = "_SellerLayout.cshtml";
     var seller = ViewBag.Seller as Seller;
     ViewBag.Title = "Фотогалерея";
 }
-<div class="fn_ajax_content margin-top-10">
-    <div class="block">
-        <h1 class="h1">
-            <span>Фотогалерея @seller.Name</span>
-        </h1>
-        <div class="seller-catalog padding" style="margin-bottom: 30px;">
-            @foreach (var img in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
-            {
-                <a href="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" data-fancybox="gallery">
-                    <img src="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" width="200" />
-                </a>
-            }
+
+<div class="col-md-8 col-xl-9 content">
+    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Галерея" } })
+
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <h1 class="h1">
+                <span>Фотогалерея @seller.Name</span>
+            </h1>
+            <div class="seller-catalog padding" style="margin-bottom: 30px;">
+                @foreach (var img in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+                {
+                    <a href="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" data-fancybox="gallery">
+                        <img src="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" width="200" />
+                    </a>
+                }
+            </div>
         </div>
     </div>
 </div>

@@ -22,7 +22,9 @@ namespace Benefit.Web.Controllers
                 var seller = ViewBag.Seller as Seller;
                 var page = db.InfoPages.FirstOrDefault(entry => entry.UrlName == id && entry.SellerId == seller.Id);
                 if (page == null) throw new HttpException(404, "Not found");
-                return View("~/Views/SellerArea/Page.cshtml", page);
+                var viewName = string.Format("~/views/sellerarea/{0}/Page.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName, page);
             }
             else
             {
