@@ -1,0 +1,158 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+
+@{
+    ViewBag.Title = "Авторизація";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+@section styles
+{
+    <link href="~/Content/css/validation-errors.css" rel="stylesheet" />
+    <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
+    <link href="~/Content/css/address.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+    <script src="~/Scripts/address.js"></script>
+    <script>
+        var referalUserUrl = '@Url.Action("GetReferalName","Account")';
+        var registeredCardUrl = '@Url.Action("CheckRegisteredCard", "Account")';
+
+        function GetReferalName() {
+            var externalId = $("#ReferalNumber").val();
+            $.get(referalUserUrl + "?id=" + externalId, function (data) {
+                if (data) {
+                    $("#referal-name").text("Наставник: " + data);
+                } else {
+                    $("#referal-name").text("Даний реєстраційний номер не існує");
+                }
+            });
+        }
+
+        $(function () {
+            //$('[data-toggle="tooltip"]').tooltip();
+            SetRegionsAutocomplete();
+
+            if ($("#ReferalNumber").val()) {
+                GetReferalName();
+            }
+
+            $("#ReferalNumber").focusout(function () {
+                GetReferalName();
+            });
+
+            $("#CardNumber").focusout(function () {
+                var cardNumber = $("#CardNumber").val();
+                if (cardNumber !== "") {
+                    $.get(registeredCardUrl + "?id=" + cardNumber, function (data) {
+                        if (data) {
+                            $("#ReferalNumber").val(data.ExternalNumber);
+                            $("#ReferalNumber").attr("readonly", "readonly");
+                            $("#referal-name").text("Наставник: " + data.FullName);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+
+<div class="col-md-8 col-xl-9 content">
+    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Авторизація" } })
+
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <h1 class="h1">
+                <span data-page="3">Авторизація</span>
+            </h1>
+            <div class="padding">
+                @Html.ValidationSummary()
+                <div class="tabs clearfix">
+                    <div class="tab_navigation">
+                        <a href="#login" data-language="product_description" class="selected">Постійний клієнт</a>
+                        <a href="#registration" data-language="product_description">Новий клієнт</a>
+                    </div>
+
+                    <div class="tab_container">
+                        <div id="registration" class="tab product_description" itemprop="description">
+                            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("FirstName", null, new { @class = "form_input", placeholder = "Ім'я *" })
+                                        @Html.ValidationMessage("FirstName")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("LastName", null, new { @class = "form_input", placeholder = "Прізвище *" })
+                                        @Html.ValidationMessage("LastName")
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("PhoneNumber", null, new { @class = "form_input", placeholder = "Номер телефону *", type = "tel" })
+                                        @Html.ValidationMessage("PhoneNumber")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("Email", null, new { @class = "form_input", placeholder = "Email *", type = "email" })
+                                        @Html.ValidationMessage("Email")
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @{
+                                            var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
+                                            var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
+                                            var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
+                                            var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
+                                        }
+                                        @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "form_input regionSearch", placeholder = "Місто *" })
+                                        @Html.Hidden("RegionId", regionIdCookieVal)
+                                        @Html.ValidationMessage("RegionId")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("CardNumber", null, new { @class = "form_input", placeholder = "Номер картки (за наявності)" })
+                                        @Html.ValidationMessage("CardNumber")
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("ReferalNumber", null, new { @class = "form_input", placeholder = "Реєстраційний код (за наявності)" })
+                                        @Html.ValidationMessage("ReferalNumber")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("Password", null, new { @class = "form_input", placeholder = "Пароль *", type = "password" })
+                                        @Html.ValidationMessage("Password")
+                                    </div>
+                                </div>
+                                <button class="button btn-ajax-login" name="register" data-language="login_sign_in" type="submit">Реєстрація</button>
+                            }
+                        </div>
+                        <div id="login" class="tab product_description" itemprop="description" style="display: block;">
+                            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("UserName", null, new { @class = "form_input", type = "email", placeholder = "Логін" })
+                                        @Html.ValidationMessage("UserName")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @Html.Password("Password", null, new { @class = "form_input", placeholder = "Пароль" })
+                                        @Html.ValidationMessage("Password")
+                                    </div>
+                                </div>
+                                <button class="button btn-ajax-login" name="login" data-language="login_sign_in" type="submit">Увійти</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

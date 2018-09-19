@@ -1489,6 +1489,8 @@
     <Content Include="Views\SellerArea\MegaShop\OrderCompleted.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\NotFound.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\Page.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\Login.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\PostRegister.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,26 +1,26 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using Benefit.Common.Constants;
+﻿using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Domain;
+using Benefit.Web.Controllers.Base;
+using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
+using Benefit.Web.Models;
 using Facebook;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using Benefit.Web.Models;
 using Microsoft.Owin.Security.DataProtection;
-using System.Data.Entity;
-using Benefit.Web.Controllers.Base;
-using Benefit.Web.Filters;
 using Newtonsoft.Json;
+using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Benefit.Web.Controllers
 {
@@ -56,9 +56,17 @@ namespace Benefit.Web.Controllers
         [AllowAnonymous]
         [FetchLastNews]
         [FetchCategories]
+        [FetchSeller]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                var viewName = string.Format("~/views/sellerarea/{0}/Login.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName, seller);
+            }
             return View();
         }
 
@@ -68,6 +76,7 @@ namespace Benefit.Web.Controllers
         [AllowAnonymous]
         [FetchLastNews]
         [FetchCategories]
+        [FetchSeller]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
@@ -105,10 +114,14 @@ namespace Benefit.Web.Controllers
             {
                 return Json(new { error = ModelState.ModelStateErrors() }, JsonRequestBehavior.AllowGet);
             }
-            else
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
             {
-                return View(model);
+                var viewName = string.Format("~/views/sellerarea/{0}/Login.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName, seller);
             }
+            return View(model);
         }
 
         //
@@ -120,7 +133,10 @@ namespace Benefit.Web.Controllers
             if (ReferalNumber == null)
             {
                 ReferalNumber = CookiesService.Instance.GetCookieValue<int>(RouteConstants.ReferalCookieName);
-                if (ReferalNumber == 0) ReferalNumber = null;
+                if (ReferalNumber == 0)
+                {
+                    ReferalNumber = null;
+                }
             }
             else
             {
@@ -131,8 +147,16 @@ namespace Benefit.Web.Controllers
 
         [AllowAnonymous]
         [FetchCategories]
+        [FetchSeller]
         public ActionResult PostRegister()
         {
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                var viewName = string.Format("~/views/sellerarea/{0}/PostRegister.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName);
+            }
             return View();
         }
 
@@ -150,6 +174,7 @@ namespace Benefit.Web.Controllers
         [AllowAnonymous]
         [FetchLastNews]
         [FetchCategories]
+        [FetchSeller]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
@@ -208,7 +233,7 @@ namespace Benefit.Web.Controllers
                     user.ReferalId = referal.Id;
                 }
 
-               
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -257,15 +282,18 @@ namespace Benefit.Web.Controllers
                     AddErrors(result);
                 }
             }
-
             if (isAjaxRequest)
             {
                 return Json(new { error = ModelState.ModelStateErrors() }, JsonRequestBehavior.AllowGet);
             }
-            else
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
             {
-                return View("Login", model);
+                var viewName = string.Format("~/views/sellerarea/{0}/Login.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName, seller);
             }
+            return View("Login", model);
         }
 
         [FetchCategories]

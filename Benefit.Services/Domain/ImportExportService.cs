@@ -1,4 +1,11 @@
-﻿using System;
+﻿using Benefit.Common.Extensions;
+using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
+using Benefit.Domain.Models.Excel;
+using Benefit.Web.Helpers;
+using Benefit.Web.Models.Admin;
+using NLog;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
@@ -8,13 +15,6 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
-using Benefit.Common.Extensions;
-using Benefit.Domain.DataAccess;
-using Benefit.Domain.Models;
-using Benefit.Domain.Models.Excel;
-using Benefit.Web.Helpers;
-using Benefit.Web.Models.Admin;
-using NLog;
 
 namespace Benefit.Services.Domain
 {
@@ -26,7 +26,7 @@ namespace Benefit.Services.Domain
         private ImagesService ImagesService = new ImagesService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private string originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-        Object lockObj = new Object();
+        object lockObj = new object();
 
         #region 1C
 
@@ -67,7 +67,7 @@ namespace Benefit.Services.Domain
             var dbProductIds = dbProducts.Select(entry => entry.Id).ToList();
             var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
             //additional check all over DB
-            productIdsToAdd = productIdsToAdd.Where(entry => !db.Products.Select(pr=>pr.Id).Contains(entry)).ToList();
+            productIdsToAdd = productIdsToAdd.Where(entry => !db.Products.Select(pr => pr.Id).Contains(entry)).ToList();
             var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
 
             var productsToAddList = new List<Product>();
@@ -209,7 +209,10 @@ namespace Benefit.Services.Domain
                 if (dbCategory == null)
                 {
                     if (!hasNewContent)
+                    {
                         hasNewContent = true;
+                    }
+
                     dbCategory = new Category()
                     {
                         Id = catId,
@@ -300,7 +303,10 @@ namespace Benefit.Services.Domain
                 else
                 {
                     if (!hasNewContent)
+                    {
                         hasNewContent = true;
+                    }
+
                     dbCategory.Name = catName.Truncate(64);
                     dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
 
@@ -485,13 +491,14 @@ namespace Benefit.Services.Domain
                 }
 
                 productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
-                productParameterProductsToAdd.AddRange(productParams);
-
+                lock (lockObj)
+                {
+                    productParameterProductsToAdd.AddRange(productParams);
+                }
                 lock (lockObj)
                 {
                     productsToAddList.Add(product);
                 }
-
                 var order = 0;
                 lock (lockObj)
                 {
@@ -620,7 +627,10 @@ namespace Benefit.Services.Domain
             {
                 if (importTask.LastSync.HasValue &&
                     (DateTime.UtcNow - importTask.LastSync.Value).TotalDays < importTask.SyncPeriod)
+                {
                     continue;
+                }
+
                 XDocument xml = null;
                 try
                 {
@@ -682,7 +692,11 @@ namespace Benefit.Services.Domain
             var result = new ProductImportResults();
             var catalog = new LinqToExcel.ExcelQueryFactory(xlsPath);
             var worksheetName = catalog.GetWorksheetNames().FirstOrDefault();
-            if (worksheetName == null) throw new Exception("Файл імпорту не містить листів");
+            if (worksheetName == null)
+            {
+                throw new Exception("Файл імпорту не містить листів");
+            }
+
             var worksheet = catalog.Worksheet(worksheetName);
 
             var excelProducts =
@@ -719,7 +733,10 @@ namespace Benefit.Services.Domain
             {
                 var product = entry.Product;
                 if (product.Description == null)
+                {
                     product.Description = product.Name;
+                }
+
                 product.CategoryId = entry.Category.Id;
                 var curr = currencies.FirstOrDefault(cur => cur.Name == entry.CurrencyName);
                 product.CurrencyId = curr == null ? null : curr.Id;
@@ -842,7 +859,9 @@ namespace Benefit.Services.Domain
                 var destPath = Path.Combine(originalDirectory, "Images", imageType.ToString(), productId);
                 var isExists = Directory.Exists(destPath);
                 if (!isExists)
+                {
                     Directory.CreateDirectory(destPath);
+                }
 
                 foreach (var img in excelProduct.ImagesList.Split(','))
                 {

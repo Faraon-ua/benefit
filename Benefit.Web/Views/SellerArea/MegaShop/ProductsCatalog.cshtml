@@ -1,5 +1,6 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Domain.Models
+@using Benefit.Web.Helpers
 @model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
 
 @{
@@ -278,25 +279,27 @@
     <div class="fn_ajax_content">
 
         <h1 class="h1"><span data-category="3">@Model.Category.Name</span>  </h1>
+        @if (RouteDataHelper.ControllerName.ToLower() != "search")
+        {
+            <div class="fn_products_sort clearfix sort_header margin-top-10 visible-lg">
+                <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
+                    <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
 
-        <div class="fn_products_sort clearfix sort_header margin-top-10 visible-lg">
-            <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
-                <span style="display: table-cell; vertical-align: middle;">Показати спочатку: </span>
-
-                <a href="" data-sort-value="Rating" class="sort_btn" rel="nofollow">
-                    <span class="padding-10">По рейтингу</span>
-                </a>
-                <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
-                    <span class="padding-10">По алфавіту</span>
-                </a>
-                <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
-                    <span class="padding-10">Дешеві</span>
-                </a>
-                <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
-                    <span class="padding-10">Дорогі</span>
-                </a>
+                    <a href="" data-sort-value="Rating" class="sort_btn" rel="nofollow">
+                        <span class="padding-10">По рейтингу</span>
+                    </a>
+                    <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                        <span class="padding-10">По алфавіту</span>
+                    </a>
+                    <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
+                        <span class="padding-10">Дешеві</span>
+                    </a>
+                    <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
+                        <span class="padding-10">Дорогі</span>
+                    </a>
+                </div>
             </div>
-        </div>
+        }
 
         <div id="fn_products_content" class="fn_categories products row">
             @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))

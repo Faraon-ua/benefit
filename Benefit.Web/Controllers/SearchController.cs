@@ -50,6 +50,7 @@ namespace Benefit.Web.Controllers
                     Category = new Category()
                     {
                         Name = "Пошук",
+                        UrlName = "search",
                         Description = string.Format("Результати пошуку по запиту '{0}'", result.Term)
                     },
                     Breadcrumbs = new BreadCrumbsViewModel()
