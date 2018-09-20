@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -92,6 +94,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
             db.SaveChanges();
             TempData["SuccessMessage"] = "Дані імпорту оновлено";
             return RedirectToAction("Index");
+        }
+
+        public ActionResult YmlImport(string sellerId)
+        {
+            var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
+            if (importTask == null) return Json(new {error = "Дані іморту ще не задано"}, JsonRequestBehavior.AllowGet);
+            var importExportService = new ImportExportService();
+            Task.Run(() => importExportService.ImportFromYml(importTask)); 
+            return Json(new {message = "Іморт запущено"}, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

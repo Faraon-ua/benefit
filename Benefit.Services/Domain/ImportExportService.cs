@@ -333,7 +333,7 @@ namespace Benefit.Services.Domain
             {
                 xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Ид").Value).ToList();
             }
-            if (importType == SyncType.Promua)
+            if (importType == SyncType.Yml)
             {
                 xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
             }
@@ -606,7 +606,7 @@ namespace Benefit.Services.Domain
             {
                 xmlProductIds = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
             }
-            if (importType == SyncType.Promua)
+            if (importType == SyncType.Yml)
             {
                 xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
             }
@@ -618,11 +618,63 @@ namespace Benefit.Services.Domain
             });
         }
 
-        public void ImportFromPromua()
+        public void ImportFromYml(ExportImport importTask)
+        {
+            XDocument xml = null;
+            try
+            {
+                xml = XDocument.Load(importTask.FileUrl);
+            }
+            catch (Exception ex)
+            {
+                importTask.LastUpdateStatus = false;
+                importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
+                importTask.LastSync = DateTime.UtcNow;
+                db.Entry(importTask).State = EntityState.Modified;
+                db.SaveChanges();
+                return;
+            }
+
+            try
+            {
+                var root = xml.Element("yml_catalog").Element("shop");
+                var xmlCategories = root.Descendants("categories").First().Elements().ToList();
+                CreateAndUpdatePromUaCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
+                db.SaveChanges();
+                DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Yml);
+                db.SaveChanges();
+
+                var xmlProducts = root.Descendants("offers").First().Elements().ToList();
+                AddAndUpdatePromUaProducts(xmlProducts, importTask.SellerId);
+                db.SaveChanges();
+                DeletePromUaProducts(xmlProducts, importTask.SellerId, SyncType.Yml);
+                db.SaveChanges();
+
+                //todo:handle exceptions
+
+                importTask.LastUpdateStatus = true;
+                importTask.LastUpdateMessage = null;
+                importTask.LastSync = DateTime.UtcNow;
+                db.Entry(importTask).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+                importTask.LastUpdateStatus = false;
+                importTask.LastUpdateMessage =
+                    "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
+                importTask.LastSync = DateTime.UtcNow;
+                db.Entry(importTask).State = EntityState.Modified;
+                db.SaveChanges();
+            }
+        }
+
+        public void ProcessYmlImportTasks()
         {
             var importTasks =
                 db.ExportImports.Include(entry => entry.Seller.MappedCategories).Where(
-                    entry => entry.IsActive && entry.IsImport && entry.SyncType == SyncType.Promua).ToList();
+                    entry => entry.IsActive && entry.IsImport && entry.SyncType == SyncType.Yml).ToList();
             foreach (var importTask in importTasks)
             {
                 if (importTask.LastSync.HasValue &&
@@ -630,56 +682,7 @@ namespace Benefit.Services.Domain
                 {
                     continue;
                 }
-
-                XDocument xml = null;
-                try
-                {
-                    xml = XDocument.Load(importTask.FileUrl);
-                }
-                catch (Exception ex)
-                {
-                    importTask.LastUpdateStatus = false;
-                    importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
-                    importTask.LastSync = DateTime.UtcNow;
-                    db.Entry(importTask).State = EntityState.Modified;
-                    db.SaveChanges();
-                    continue;
-                }
-
-                try
-                {
-                    var root = xml.Element("yml_catalog").Element("shop");
-                    var xmlCategories = root.Descendants("categories").First().Elements().ToList();
-                    CreateAndUpdatePromUaCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
-                    db.SaveChanges();
-                    DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Promua);
-                    db.SaveChanges();
-
-                    var xmlProducts = root.Descendants("offers").First().Elements().ToList();
-                    AddAndUpdatePromUaProducts(xmlProducts, importTask.SellerId);
-                    db.SaveChanges();
-                    DeletePromUaProducts(xmlProducts, importTask.SellerId, SyncType.Promua);
-                    db.SaveChanges();
-
-                    //todo:handle exceptions
-
-                    importTask.LastUpdateStatus = true;
-                    importTask.LastUpdateMessage = null;
-                    importTask.LastSync = DateTime.UtcNow;
-                    db.Entry(importTask).State = EntityState.Modified;
-                    db.SaveChanges();
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex);
-                    importTask.LastUpdateStatus = false;
-                    importTask.LastUpdateMessage =
-                        "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
-                    importTask.LastSync = DateTime.UtcNow;
-                    db.Entry(importTask).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return;
-                }
+                ImportFromYml(importTask);
             }
         }
 

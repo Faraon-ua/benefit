@@ -20,7 +20,7 @@ namespace Benefit.Web.Controllers
         public ActionResult ProcessImportTasks()
         {
             var importService = new ImportExportService();
-            Task.Run(() => importService.ImportFromPromua());
+            Task.Run(() => importService.ProcessYmlImportTasks());
             return Content("Ok");
         }
 
