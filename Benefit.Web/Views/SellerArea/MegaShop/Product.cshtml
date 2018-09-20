@@ -201,8 +201,6 @@
                                                 <span class="rating_starOn" style="width: 0px; cursor: pointer;"></span>
                                             </span>
                                             <span class="rating_text"></span>
-
-
                                             <span class="hidden">(0.0)</span>
                                         </div>*@
                                 </div>
@@ -213,11 +211,11 @@
 
                                     @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
                                     {
-                                        <span class="in_stock fn_in_stock" data-language="product_in_stock">В нявності</span>
+                                        <span class="in_stock" data-language="product_in_stock">В нявності</span>
                                     }
                                     else
                                     {
-                                        <span class="no_stock fn_not_stock hidden" data-language="product_out_of_stock">Немає</span>
+                                        <span class="no_stock" data-language="product_out_of_stock">Немає</span>
                                     }
                                 </div>
                             </div>

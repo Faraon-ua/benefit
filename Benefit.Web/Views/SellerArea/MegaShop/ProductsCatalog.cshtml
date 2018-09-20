@@ -21,16 +21,18 @@
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
-        var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
-        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
+        var addToFavoritesUrl =
+            '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
+        var options = "";
 
-        $(function () {
-            $(".add-to-favorites").click(function (e) {
+        $(function() {
+            $(".add-to-favorites").click(function(e) {
                 var btn = $(this);
                 var productId = btn.attr("data-product-id");
-                $.post(addToFavoritesUrl +"&productId="+productId,
+                $.post(addToFavoritesUrl + "&productId=" + productId,
                     null,
-                    function (data) {
+                    function(data) {
                         if (data.count !== undefined) {
                             setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
                             btn.hide();
@@ -38,7 +40,7 @@
                         } else {
                             $.post(showMessagePopupUrl,
                                 { message: data.message, showButtons: false },
-                                function (popupHtml) {
+                                function(popupHtml) {
                                     $(".modal-container").html(popupHtml);
                                     $(".message-modal").modal();
                                 }
@@ -49,7 +51,7 @@
 
             if ($('#price-slider').length > 0) {
                 $('#price-slider').bootstrapSlider().on('change',
-                    function (data) {
+                    function(data) {
                         $("#price-lower-bound").val(data.value.newValue[0]);
                         $("#price-upper-bound").val(data.value.newValue[1]);
                         $("#price-filter").attr("data-filter-value",
@@ -57,21 +59,31 @@
                     }).data('slider');
             }
 
-            $(".ajax_load_btn").click(function(e) {
+            $(".ajax_load_btn, .paging").click(function(e) {
                 e.preventDefault();
                 var moreBtn = $(this);
-                var currentPage = parseInt(moreBtn.attr("data-page"));
+                var page = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
                 $.get(getProductsUrl +
-                    "?categoryId=@Model.Category.Id&sellerId=@seller.Id&page=" +
-                    (currentPage + 1) +
-                    "&layout=1", // + "&options=" + options
-                    function(data) {
-                        if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                            moreBtn.hide();
+                    "?layout=1&categoryId=@Model.Category.Id&sellerId=@seller.Id&page=" +
+                    page +
+                    "&options=" +
+                    options,
+                    function (data) {
+                        if (moreBtn.hasClass("ajax_load_btn")) {
+                            if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                                moreBtn.hide();
+                            }
+                            $(".product-item:last").after(data.products);
+                            moreBtn.attr("data-page", page + 1);
+                            $(".paging[data-page=" + (page+1) + "]").parent().addClass("active");
+                        } else {
+                            $(".products-wrapper").html(data.products);
+                            $("html, body").animate({ scrollTop: 0 }, 600);
+                            $(".paging").parent().removeClass("active");
+                            $(".paging[data-page=" + page + "]").parent().addClass("active");
+                            $(".ajax_load_btn").attr("data-page", (page + 1));
                         }
-                        $(".product-item:last").after(data.products);
-                        moreBtn.attr("data-page", currentPage + 1);
                         $(".loader").hide();
                     });
             });
@@ -160,7 +172,7 @@
                                  return true;
                              }
                              $.each(optionValues,
-                                 function (j, optValue) {
+                                 function(j, optValue) {
                                      showFiltersReset = true;
                                      var checkbox = $(".filter-section[data-filter-name=" +
                                          optionName +
@@ -205,7 +217,6 @@
                             var parts = location.href.split('/');
                             var lastSegment =
                                 (parts.pop() || parts.pop()).replace("#", ""); // handle potential trailing slash
-                            var options = "";
 
                             if (lastSegment != '@Model.Category.UrlName') {
                                 options = lastSegment;
@@ -301,41 +312,31 @@
             </div>
         }
 
-        <div id="fn_products_content" class="fn_categories products row">
+        <div id="fn_products_content" class="fn_categories products row products-wrapper">
             @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
             {
                 @Html.Partial("~/Views/SellerArea/megashop/_ProductPartial.cshtml", product)
             }
         </div>
-        @*<div class="fn_pagination">
-                <ul class="pagination">
-                    <li class="page_item active">
-                        <span class="page_link">1</span>
-                    </li>
-
-                    <li class="page_item">
-                        <a class="page_link" href="http://templates.demookay.com/demos/4lf2i6pmmn40nseceumq4jg1a2/catalog/gadzhety/page-2">2</a>
-                    </li>
-
-
-                    <li class="page_item">
-                        <a class="page_link" href="http://templates.demookay.com/demos/4lf2i6pmmn40nseceumq4jg1a2/catalog/gadzhety/page-all" data-language="pagination_all">все</a>
-                    </li>
-
-
-                    <li class="page_item">
-                        <a class="page_link" href="http://templates.demookay.com/demos/4lf2i6pmmn40nseceumq4jg1a2/catalog/gadzhety/page-2">
-                            <span>вперёд »</span>
-                        </a>
-                    </li>
-                </ul>
-
-            </div>*@
         @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
         {
             <div class="ajax_load_btn" data-page="0">
                 <span class="more_text_ajax">Показати ще</span>
             </div>
+        }
+        @if (Model.PagesCount > 1)
+        {
+            <ul class="pagination">
+                <li class="page_item active paging" data-page="0">
+                    <a class="page_link paging" href="#" data-page="0">1</a>
+                </li>
+                @for (int i = 2; i <= Model.PagesCount; i++)
+                {
+                    <li class="page_item">
+                        <a class="page_link paging" href="#" data-page="@(i - 1)">@i</a>
+                    </li>
+                }
+            </ul>
         }
         <br style="clear: both;" />
     </div>
