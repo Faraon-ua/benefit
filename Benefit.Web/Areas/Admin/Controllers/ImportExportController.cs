@@ -1,24 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using System.Xml;
-using System.Xml.Linq;
-using Benefit.Common.Constants;
+﻿using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
 using Benefit.Services.Domain;
-using Benefit.Web.Models.Admin;
 using NLog;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
+using System.Web;
+using System.Web.Mvc;
+using System.Xml;
+using System.Xml.Linq;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -98,11 +95,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult YmlImport(string sellerId)
         {
-            var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
-            if (importTask == null) return Json(new {error = "Дані іморту ще не задано"}, JsonRequestBehavior.AllowGet);
+            var importTask = db.ExportImports
+                .AsNoTracking()
+                .Include(entry => entry.Seller)
+                .FirstOrDefault(entry => entry.SellerId == sellerId);
+            if (importTask == null)
+            {
+                return Json(new { error = "Дані іморту ще не задано" }, JsonRequestBehavior.AllowGet);
+            }
+
             var importExportService = new ImportExportService();
-            Task.Run(() => importExportService.ImportFromYml(importTask)); 
-            return Json(new {message = "Іморт запущено"}, JsonRequestBehavior.AllowGet);
+            Task.Run(() => importExportService.ImportFromYml(importTask.Id));
+            return Json(new { message = "Іморт запущено" }, JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]

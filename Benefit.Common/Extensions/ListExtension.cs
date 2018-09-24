@@ -9,7 +9,8 @@ namespace Benefit.Common.Extensions
     {
         public static DataTable ToDataTable<T>(this IList<T> list)
         {
-            var props = typeof(T).GetProperties().Where(p => p.PropertyType.IsSimpleType()).ToList();
+            var props = typeof(T).GetProperties().Where(p => p.PropertyType.IsSimpleType() && p.GetCustomAttributes(true).All(entry=>entry.GetType().Name != "NotMappedAttribute")).ToList();
+
             var table = new DataTable();
             foreach (var prop in props)
             {

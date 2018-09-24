@@ -346,7 +346,7 @@ namespace Benefit.Services.Domain
             }
         }
 
-        private void AddAndUpdatePromUaProducts(List<XElement> xmlProducts, string sellerId)
+        private void AddAndUpdateYmlProducts(List<XElement> xmlProducts, string sellerId)
         {
             var maxSku = db.Products.Max(entry => entry.SKU) + 1;
             var xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
@@ -410,7 +410,7 @@ namespace Benefit.Services.Domain
                         UrlName = parameter.Name.Translit().Truncate(64),
                         MeasureUnit = parameter.Unit,
                         CategoryId = categoryGroupParams.Key,
-                        AddedBy = "PromUaImport",
+                        AddedBy = "YmlImport",
                         DisplayInFilters = parameter.Unit == null,
                         IsVerified = true,
                         Type = typeof(string).ToString()
@@ -491,17 +491,11 @@ namespace Benefit.Services.Domain
                 }
 
                 productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
-                lock (lockObj)
-                {
-                    productParameterProductsToAdd.AddRange(productParams);
-                }
-                lock (lockObj)
-                {
-                    productsToAddList.Add(product);
-                }
                 var order = 0;
                 lock (lockObj)
                 {
+                    productParameterProductsToAdd.AddRange(productParams);
+                    productsToAddList.Add(product);
                     imagesToAddList.AddRange(xmlProduct.Elements("picture").Select(xmlImage => new Image()
                     {
                         Id = Guid.NewGuid().ToString(),
@@ -618,8 +612,11 @@ namespace Benefit.Services.Domain
             });
         }
 
-        public void ImportFromYml(ExportImport importTask)
+        public void ImportFromYml(string importTaskId)
         {
+            var importTask = db.ExportImports
+                .Include(entry => entry.Seller)
+                .FirstOrDefault(entry => entry.Id == importTaskId);
             XDocument xml = null;
             try
             {
@@ -645,7 +642,7 @@ namespace Benefit.Services.Domain
                 db.SaveChanges();
 
                 var xmlProducts = root.Descendants("offers").First().Elements().ToList();
-                AddAndUpdatePromUaProducts(xmlProducts, importTask.SellerId);
+                AddAndUpdateYmlProducts(xmlProducts, importTask.SellerId);
                 db.SaveChanges();
                 DeletePromUaProducts(xmlProducts, importTask.SellerId, SyncType.Yml);
                 db.SaveChanges();
@@ -682,7 +679,7 @@ namespace Benefit.Services.Domain
                 {
                     continue;
                 }
-                ImportFromYml(importTask);
+                ImportFromYml(importTask.Id);
             }
         }
 
