@@ -58,7 +58,6 @@ namespace Benefit.Domain.DataAccess
         public DbSet<NotificationChannel> NotificationChannels { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
 
-
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ApplicationUser>().Property(e => e.Email).HasColumnAnnotation(

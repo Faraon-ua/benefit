@@ -8,6 +8,8 @@
 {
     <script>
         var launchYmlImportUrl = '@Url.Action("YmlImport","ImportExport", new {sellerId = Model.Id})';
+        var getImportStatusUrl = '@Url.Action("YmlImportStatus","ImportExport", new {sellerId = Model.Id})';
+        var intervalId;
 
         $(function() {
             $("#1CCommerceML").click(function() {
@@ -43,13 +45,24 @@
                 });
             });
 
-            $("#launch-yml-import").click(function() {
+            $("#launch-yml-import").click(function () {
+                $("#yml-importing-process").show();
                 $.get(launchYmlImportUrl,
                     function(data) {
                         if (data.error) {
                             flashMessage(data.error, true, true);
                         } else {
                             flashMessage(data.message, false, true);
+                            intervalId = setInterval(function f() {
+                                $.get(getImportStatusUrl,
+                                    function (data) {
+                                        if (!data.active) {
+                                            $("#yml-importing-process").hide();
+                                            clearInterval(intervalId);
+                                            location.reload();
+                                        }
+                                    });
+                            }, 5000);
                         }
                     });
             });

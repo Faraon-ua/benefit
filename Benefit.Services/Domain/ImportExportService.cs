@@ -617,6 +617,10 @@ namespace Benefit.Services.Domain
             var importTask = db.ExportImports
                 .Include(entry => entry.Seller)
                 .FirstOrDefault(entry => entry.Id == importTaskId);
+            //show that import task is processing
+            importTask.IsImport = true;
+            db.SaveChanges();
+
             XDocument xml = null;
             try
             {
@@ -651,9 +655,7 @@ namespace Benefit.Services.Domain
 
                 importTask.LastUpdateStatus = true;
                 importTask.LastUpdateMessage = null;
-                importTask.LastSync = DateTime.UtcNow;
-                db.Entry(importTask).State = EntityState.Modified;
-                db.SaveChanges();
+                
             }
             catch (Exception ex)
             {
@@ -661,6 +663,10 @@ namespace Benefit.Services.Domain
                 importTask.LastUpdateStatus = false;
                 importTask.LastUpdateMessage =
                     "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
+            }
+            finally
+            {
+                importTask.IsImport = false;
                 importTask.LastSync = DateTime.UtcNow;
                 db.Entry(importTask).State = EntityState.Modified;
                 db.SaveChanges();

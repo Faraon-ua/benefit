@@ -43,7 +43,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         Id = Guid.NewGuid().ToString(),
                         IsActive = true,
-                        IsImport = true,
+                        IsImport = false,
                         SyncType = syncType,
                         SellerId = Seller.CurrentAuthorizedSellerId
                     };
@@ -222,6 +222,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             TempData["SuccessMessage"] = "Файл успішно завантажено, тепер можна застосувати імпорт";
 
             return RedirectToAction("Index");
+        }
+
+        public ActionResult YmlImportStatus(string sellerId)
+        {
+            var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
+            return Json(new {status = (importTask != null && importTask.IsImport)}, JsonRequestBehavior.AllowGet);
         }
     }
 }
