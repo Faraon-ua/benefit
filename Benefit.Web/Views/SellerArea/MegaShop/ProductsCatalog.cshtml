@@ -12,10 +12,12 @@
 {
     <link href="~/Content/css/bootstrap-slider.css" rel="stylesheet" />
     <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
 }
 @section scripts
 {
     <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/bootstrap-slider.min.js"></script>
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
@@ -32,7 +34,7 @@
                 var productId = btn.attr("data-product-id");
                 $.post(addToFavoritesUrl + "&productId=" + productId,
                     null,
-                    function(data) {
+                    function (data) {
                         if (data.count !== undefined) {
                             setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
                             btn.hide();

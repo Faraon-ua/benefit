@@ -174,7 +174,7 @@
                         <ul class="level_1 categories_menu">
                             @foreach (var cat in categories)
                             {
-                                <li class="category_item parent">
+                                <li class="category_item @(cat.ChildCategories.Any()?"parent" : "")">
                                     <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" data-category="1">
                                         <span>@cat.Name</span>
                                     </a>

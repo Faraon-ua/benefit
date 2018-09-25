@@ -176,7 +176,7 @@ $(function () {
     });
 
     $('body').on('click', '.basket_modal .plus, .basket_modal .minus', function () {
-        var completeOrderBtn = $(this).parents(".order-wrap").find(".complete-order");
+        var completeOrderBtn = $(this).parents(".order-wrap").find(".save-order");
         completeOrderBtn.attr("disabled", "disabled");
         var tr = $(this).parents("tr");
         var productId = tr.attr("data-product-id");
@@ -372,7 +372,7 @@ $(function () {
         $("#basket_modal").modal('hide');
     });
 
-    $("body").on("click", ".complete-order", function () {
+    $("body").on("click", ".save-order", function () {
         var btn = $(this);
         btn.attr("disabled", "disabled");
         var wrap = $(this).parents(".order-wrap");

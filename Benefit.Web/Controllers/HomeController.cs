@@ -34,11 +34,13 @@ namespace Benefit.Web.Controllers
                 using (var db = new ApplicationDbContext())
                 {
                     seller.FeaturedProducts = db.Products
+                        .Include(entry => entry.Favorites)
                         .Include(entry => entry.Images)
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm=>sm.Region))
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.IsFeatured).ToList();
                     seller.PromotionProducts = db.Products
+                        .Include(entry => entry.Favorites)
                         .Include(entry => entry.Images)
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>

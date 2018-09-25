@@ -266,6 +266,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="sku">
+                                        @if (Model.DiscountPercent > 0)
+                                        {
+                                            <span style="color: white; background: red; padding: 5px;">Кешбек @Model.DiscountPercent%</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
 
                             <form class="fn_variants" action="/cart">
                                 <div class="row">

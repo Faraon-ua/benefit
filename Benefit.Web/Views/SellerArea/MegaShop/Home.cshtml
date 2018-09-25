@@ -2,20 +2,53 @@
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @using Benefit.Services.Domain
+@using Microsoft.AspNet.Identity
 @model Seller
 @{
     Layout = "_SellerLayout.cshtml";
     ViewBag.Title = "Головна";
     var categories = ViewBag.Categories;
 }
+@section styles{
+    <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
+}
 @section scripts
 {
+    <script src="~/Scripts/site.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+        var addToFavoritesUrl =
+            '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
+
+        $(function() {
+            $(".add-to-favorites").click(function (e) {
+                var btn = $(this);
+                var productId = btn.attr("data-product-id");
+                $.post(addToFavoritesUrl + "&productId=" + productId,
+                    null,
+                    function (data) {
+                        if (data.count !== undefined) {
+                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
+                            btn.hide();
+                            setFavorites(data.count);
+                        } else {
+                            $.post(showMessagePopupUrl,
+                                { message: data.message, showButtons: false },
+                                function (popupHtml) {
+                                    $(".modal-container").html(popupHtml);
+                                    $(".message-modal").modal();
+                                }
+                            );
+                        }
+                    });
+            });
+        });
     </script>
-    <script src="~/Scripts/site.js"></script>
-    <script src="~/Scripts/v3/products.js"></script>
 }
 
 <div class="col-md-8 col-xl-9 content">
@@ -34,7 +67,7 @@
                 <a href="bestsellers"><span data-language="main_recommended_products">Рекомендовані товари</span></a>
             </div>
 
-            <div class=" clearfix">
+            <div class="clearfix">
                 @foreach (var product in Model.FeaturedProducts)
                 {
                     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
@@ -62,10 +95,15 @@
                                     }
                                     <img class="promo_img" src="~/Content/seller/megashop/images/hit.png" alt="hit.png" title="hit.png">
                                 </a>
-                                <div class="overlay_buttons">
-                                    @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
-                                    <a href="#" data-id="114" class="fn_wishlist wishlist_button" title="В избранное" data-result-text="Из избранного"><i class="wish_icon"></i></a>
-                                </div>
+                                @if (product.Favorites.All(entry => entry.UserId != User.Identity.GetUserId()))
+                                {
+                                    <div class="overlay_buttons">
+                                        @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
+                                        <a href="#" data-product-id="@product.Id" class="fn_wishlist wishlist_button add-to-favorites" title="В избранное" data-result-text="Из избранного">
+                                            <i class="wish_icon"></i>
+                                        </a>
+                                    </div>
+                                }
                                 <div class="preview_details">
                                     <a class="product_name" data-product="114" href="@productDetailsUrl">@product.Name</a>
                                     <div class="price_container">
@@ -129,10 +167,15 @@
                                     }
                                     <img class="promo_img" src="~/Content/seller/megashop/images/hit.png" alt="hit.png" title="hit.png">
                                 </a>
-                                <div class="overlay_buttons">
-                                    @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
-                                    <a href="#" data-id="114" class="fn_wishlist wishlist_button" title="В избранное" data-result-text="Из избранного"><i class="wish_icon"></i></a>
-                                </div>
+                                @if (product.Favorites.All(entry => entry.UserId != User.Identity.GetUserId()))
+                                {
+                                    <div class="overlay_buttons">
+                                        @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
+                                        <a href="#" data-product-id="@product.Id" class="fn_wishlist wishlist_button add-to-favorites" title="В избранное" data-result-text="Из избранного">
+                                            <i class="wish_icon"></i>
+                                        </a>
+                                    </div>
+                                }
                                 <div class="preview_details">
                                     <a class="product_name" data-product="114" href="@productDetailsUrl">@product.Name</a>
                                     <div class="price_container">
@@ -166,46 +209,47 @@
 
 
         @*<div class="block">
-            <div class="h1 slidehead">
-                <span data-language="main_brands">Бренды</span>
-            </div>
-
-            <div class="fn_all_brands all_brands">
-
-                <div class="fleft">
-                    <a class="all_brands_item" href="brands/puff" data-brand="1">
-                        <div class="brand_image">
-                            <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
-                        </div>
-                        <span>Puff</span>
-                    </a>
-                </div>
-                <div class="fleft">
-                    <a class="all_brands_item" href="brands/puff" data-brand="1">
-                        <div class="brand_image">
-                            <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
-                        </div>
-                        <span>Puff</span>
-                    </a>
-                </div>
-                <div class="fleft">
-                    <a class="all_brands_item" href="brands/puff" data-brand="1">
-                        <div class="brand_image">
-                            <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
-                        </div>
-                        <span>Puff</span>
-                    </a>
-                </div>
-                <div class="fleft">
-                    <a class="all_brands_item" href="brands/puff" data-brand="1">
-                        <div class="brand_image">
-                            <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
-                        </div>
-                        <span>Puff</span>
-                    </a>
+                <div class="h1 slidehead">
+                    <span data-language="main_brands">Бренды</span>
                 </div>
 
-            </div>
-        </div>*@
+                <div class="fn_all_brands all_brands">
+
+                    <div class="fleft">
+                        <a class="all_brands_item" href="brands/puff" data-brand="1">
+                            <div class="brand_image">
+                                <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
+                            </div>
+                            <span>Puff</span>
+                        </a>
+                    </div>
+                    <div class="fleft">
+                        <a class="all_brands_item" href="brands/puff" data-brand="1">
+                            <div class="brand_image">
+                                <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
+                            </div>
+                            <span>Puff</span>
+                        </a>
+                    </div>
+                    <div class="fleft">
+                        <a class="all_brands_item" href="brands/puff" data-brand="1">
+                            <div class="brand_image">
+                                <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
+                            </div>
+                            <span>Puff</span>
+                        </a>
+                    </div>
+                    <div class="fleft">
+                        <a class="all_brands_item" href="brands/puff" data-brand="1">
+                            <div class="brand_image">
+                                <img class="brand_img" src="http://marta.simplamarket.net/files/brands_resized/chillout.150x90.png" alt="Puff" title="Puff">
+                            </div>
+                            <span>Puff</span>
+                        </a>
+                    </div>
+
+                </div>
+            </div>*@
     </div>
 </div>
+<div class="modal-container"></div>
