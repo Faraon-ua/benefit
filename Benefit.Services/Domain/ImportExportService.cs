@@ -260,7 +260,7 @@ namespace Benefit.Services.Domain
 
         #region PromUa
 
-        private void CreateAndUpdatePromUaCategories(List<XElement> xmlCategories, string sellerUrlName,
+        private void CreateAndUpdateYmlCategories(List<XElement> xmlCategories, string sellerUrlName,
             string sellerId, Category parent = null)
         {
             var hasNewContent = false;
@@ -272,26 +272,27 @@ namespace Benefit.Services.Domain
             else
             {
                 xmlCats = xmlCategories.Where(entry =>
-                    entry.Attribute("parentId") != null && entry.Attribute("parentId").Value == parent.Id).ToList();
+                    entry.Attribute("parentId") != null && entry.Attribute("parentId").Value == parent.ExternalIds).ToList();
             }
 
             foreach (var xmlCategory in xmlCats)
             {
                 var catId = xmlCategory.Attribute("id").Value;
                 var catName = xmlCategory.Value.Replace("\n", "").Replace("\r", "").Trim();
-                var dbCategory = db.Categories.FirstOrDefault(entry => entry.Id == catId);
+                var dbCategory =
+                    db.Categories.FirstOrDefault(entry => entry.ExternalIds == catId && entry.SellerId == sellerId) ??
+                    db.Categories.FirstOrDefault(entry => entry.Id == catId && entry.SellerId == sellerId);
                 if (dbCategory == null)
                 {
                     dbCategory = new Category()
                     {
-                        Id = catId,
-                        ParentCategoryId = xmlCategory.Attribute("parentId") == null
-                            ? null
-                            : xmlCategory.Attribute("parentId").Value,
+                        Id = Guid.NewGuid().ToString(),
+                        ExternalIds = catId,
+                        ParentCategoryId = parent == null ? null : parent.Id,
                         IsSellerCategory = true,
                         SellerId = sellerId,
                         Name = catName.Truncate(64),
-                        UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128),
+                        UrlName = string.Format("{0}-{1}-{2}", sellerId, catId, catName.Translit()).Truncate(128),
                         Description = catName,
                         MetaDescription = catName,
                         IsActive = true,
@@ -306,17 +307,15 @@ namespace Benefit.Services.Domain
                     {
                         hasNewContent = true;
                     }
-
+                    dbCategory.ExternalIds = catId;
+                    dbCategory.ParentCategoryId = parent == null ? null : parent.Id;
                     dbCategory.Name = catName.Truncate(64);
-                    dbCategory.UrlName = string.Format("{0}_{1}", catId, catName.Translit()).Truncate(128);
-
-                    dbCategory.ParentCategoryId = xmlCategory.Attribute("parentId") == null
-                        ? null
-                        : xmlCategory.Attribute("parentId").Value;
+                    dbCategory.UrlName =
+                        string.Format("{0}-{1}-{2}", sellerId, catId, catName.Translit()).Truncate(128);
                     db.Entry(dbCategory).State = EntityState.Modified;
                 }
 
-                CreateAndUpdatePromUaCategories(xmlCategories, sellerUrlName, sellerId, dbCategory);
+                CreateAndUpdateYmlCategories(xmlCategories, sellerUrlName, sellerId, dbCategory);
             }
             if (hasNewContent)
             {
@@ -640,7 +639,7 @@ namespace Benefit.Services.Domain
             {
                 var root = xml.Element("yml_catalog").Element("shop");
                 var xmlCategories = root.Descendants("categories").First().Elements().ToList();
-                CreateAndUpdatePromUaCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
+                CreateAndUpdateYmlCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
                 db.SaveChanges();
                 DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Yml);
                 db.SaveChanges();
