@@ -260,13 +260,23 @@
                                     <td colspan="3" class="coupon text_left"></td>
 
                                     <td colspan="2" class="purchase_total">
-
-                                        <span data-language="cart_total_price">Всього:</span>
-                                        <span class="total_sum nowrap pay-total basket_modal_price">
-                                            <span>
-                                                @Model.Order.GetOrderSum().ToString("F")
+                                        @{
+                                            var bonuses = (Model.Order.OrderProducts.Sum(entry => entry.BonusesAcquired));
+                                        }
+                                        <div>
+                                            <span data-language="cart_total_price">Кешбек:</span>
+                                            <span class="total_sum nowrap pay-total basket_modal_bonus">
+                                                <span>@(bonuses.ToString("F"))</span>
                                             </span>
-                                        </span>
+                                        </div>
+                                        <div>
+                                            <span data-language="cart_total_price">Всього:</span>
+                                            <span class="total_sum nowrap pay-total basket_modal_price">
+                                                <span>
+                                                    @Model.Order.GetOrderSum().ToString("F")
+                                                </span>
+                                            </span>
+                                        </div>
                                     </td>
 
                                     <td></td>

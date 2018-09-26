@@ -353,7 +353,9 @@ namespace Benefit.Services.Domain
             var dbProductIds = dbProducts.Select(entry => entry.Id).ToList();
             var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
             var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
-
+            var xmlCategoryIds = xmlProducts.Select(pr => pr.Element("categoryId").Value).Distinct().ToList();
+            var categories = db.Categories
+                .Where(entry => xmlCategoryIds.Contains(entry.ExternalIds) && entry.SellerId == sellerId).ToList();
             var productsToAddList = new List<Product>();
             var imagesToAddList = new List<Image>();
 
@@ -367,7 +369,7 @@ namespace Benefit.Services.Domain
             var productParameterProductsToAdd = new List<ProductParameterProduct>();
             var productsGroupByCategoryId = xmlProducts.GroupBy(entry => entry.Element("categoryId").Value).ToList();
 
-            var categryIds = productsGroupByCategoryId.Select(pr => pr.Key).ToList();
+            var categryIds = categories.Select(pr => pr.Id).ToList();
             var existingProductParameters =
                 db.ProductParameters.Where(
                     entry => categryIds.Contains(entry.CategoryId)).ToList();
@@ -408,7 +410,7 @@ namespace Benefit.Services.Domain
                         Name = parameter.Name.Truncate(64),
                         UrlName = parameter.Name.Translit().Truncate(64),
                         MeasureUnit = parameter.Unit,
-                        CategoryId = categoryGroupParams.Key,
+                        CategoryId = categories.FirstOrDefault(entry=>entry.ExternalIds == categoryGroupParams.Key).Id,
                         AddedBy = "YmlImport",
                         DisplayInFilters = parameter.Unit == null,
                         IsVerified = true,
@@ -454,7 +456,7 @@ namespace Benefit.Services.Domain
                     UrlName = urlName,
                     Vendor = xmlProduct.Element("vendor").GetValueOrDefault(null),
                     OriginCountry = xmlProduct.Element("country_of_origin").GetValueOrDefault(null),
-                    CategoryId = xmlProduct.Element("categoryId").Value,
+                    CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id,
                     SellerId = sellerId,
                     Description = string.IsNullOrEmpty(descr) ? name : descr,
                     IsWeightProduct = false,
@@ -519,7 +521,7 @@ namespace Benefit.Services.Domain
                 product.Name = name;
                 product.ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null);
                 product.UrlName = name.Translit().Truncate(128);
-                product.CategoryId = xmlProduct.Element("categoryId").Value;
+                product.CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id;
                 product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                 product.Price = double.Parse(xmlProduct.Element("price").Value);
                 product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
@@ -531,21 +533,6 @@ namespace Benefit.Services.Domain
                 product.LastModifiedBy = "PromUaImport";
                 product.AltText = name.Truncate(100);
                 product.ShortDescription = name;
-
-                var order = 0;
-
-                lock (lockObj)
-                {
-                    imagesToAddList.AddRange(xmlProduct.Elements("picture").Select(xmlImage => new Image()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ImageType = ImageType.ProductGallery,
-                        ImageUrl = xmlImage.Value,
-                        IsAbsoluteUrl = true,
-                        Order = order++,
-                        ProductId = product.Id
-                    }));
-                }
 
                 var productParams = new List<ProductParameterProduct>();
                 foreach (var param in xmlProduct.Elements("param"))
@@ -566,7 +553,21 @@ namespace Benefit.Services.Domain
                 }
 
                 productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
-                productParameterProductsToAdd.AddRange(productParams);
+
+                var order = 0;
+                lock (lockObj)
+                {
+                    imagesToAddList.AddRange(xmlProduct.Elements("picture").Select(xmlImage => new Image()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ImageType = ImageType.ProductGallery,
+                        ImageUrl = xmlImage.Value,
+                        IsAbsoluteUrl = true,
+                        Order = order++,
+                        ProductId = product.Id
+                    }));
+                    productParameterProductsToAdd.AddRange(productParams);
+                }
             });
 
             foreach (var product in productsToAddList)
