@@ -486,6 +486,10 @@ namespace Benefit.Services.Domain
                 {
                     entry.Price = (double)(entry.Price * entry.Currency.Rate);
                 }
+                if (!entry.Seller.IsActive || !entry.Category.IsActive)
+                {
+                    entry.AvailabilityState = ProductAvailabilityState.NotInStock;
+                }
             });
 
             return result;

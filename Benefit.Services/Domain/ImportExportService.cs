@@ -297,7 +297,7 @@ namespace Benefit.Services.Domain
                         MetaDescription = catName,
                         IsActive = true,
                         LastModified = DateTime.UtcNow,
-                        LastModifiedBy = "ImportFromPromua"
+                        LastModifiedBy = "ImportFromYml"
                     };
                     db.Categories.Add(dbCategory);
                 }
@@ -307,6 +307,8 @@ namespace Benefit.Services.Domain
                     {
                         hasNewContent = true;
                     }
+
+                    dbCategory.IsActive = true;
                     dbCategory.ExternalIds = catId;
                     dbCategory.ParentCategoryId = parent == null ? null : parent.Id;
                     dbCategory.Name = catName.Truncate(64);
@@ -345,7 +347,7 @@ namespace Benefit.Services.Domain
             }
         }
 
-        private void AddAndUpdateYmlProducts(List<XElement> xmlProducts, string sellerId)
+        private void AddAndUpdateYmlProducts(List<XElement> xmlProducts, string sellerId, IEnumerable<string> categoryIds)
         {
             var maxSku = db.Products.Max(entry => entry.SKU) + 1;
             var xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
@@ -367,7 +369,8 @@ namespace Benefit.Services.Domain
             var productParametersToAdd = new List<ProductParameter>();
             var productParameterValuesToAdd = new List<ProductParameterValue>();
             var productParameterProductsToAdd = new List<ProductParameterProduct>();
-            var productsGroupByCategoryId = xmlProducts.GroupBy(entry => entry.Element("categoryId").Value).ToList();
+            var productsGroupByCategoryId = xmlProducts.GroupBy(entry => entry.Element("categoryId").Value)
+                .Where(entry => categoryIds.Contains(entry.Key)).ToList();
 
             var categryIds = categories.Select(pr => pr.Id).ToList();
             var existingProductParameters =
@@ -404,13 +407,18 @@ namespace Benefit.Services.Domain
 
                 foreach (var parameter in xmlParameters)
                 {
+                    var cat = categories.FirstOrDefault(entry => entry.ExternalIds == categoryGroupParams.Key);
+                    if (cat == null)
+                    {
+                        var a = 1;
+                    }
                     var productParameter = new ProductParameter()
                     {
                         Id = Guid.NewGuid().ToString(),
                         Name = parameter.Name.Truncate(64),
                         UrlName = parameter.Name.Translit().Truncate(64),
                         MeasureUnit = parameter.Unit,
-                        CategoryId = categories.FirstOrDefault(entry=>entry.ExternalIds == categoryGroupParams.Key).Id,
+                        CategoryId = cat.Id,
                         AddedBy = "YmlImport",
                         DisplayInFilters = parameter.Unit == null,
                         IsVerified = true,
@@ -448,6 +456,12 @@ namespace Benefit.Services.Domain
                 var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
                 var currencyId = xmlProduct.Element("currencyId").Value;
                 var urlName = name.Translit().Truncate(128);
+                var category =
+                    categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value);
+                if (category == null)
+                {
+                    return;
+                }
                 var product = new Product()
                 {
                     Id = xmlProduct.Attribute("id").Value,
@@ -456,7 +470,7 @@ namespace Benefit.Services.Domain
                     UrlName = urlName,
                     Vendor = xmlProduct.Element("vendor").GetValueOrDefault(null),
                     OriginCountry = xmlProduct.Element("country_of_origin").GetValueOrDefault(null),
-                    CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id,
+                    CategoryId = category.Id,
                     SellerId = sellerId,
                     Description = string.IsNullOrEmpty(descr) ? name : descr,
                     IsWeightProduct = false,
@@ -513,6 +527,12 @@ namespace Benefit.Services.Domain
             {
                 var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToUpdate);
                 var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToUpdate);
+                var category =
+                    categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value);
+                if (category == null)
+                {
+                    return;
+                }
 
                 var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
                 var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
@@ -640,13 +660,14 @@ namespace Benefit.Services.Domain
             {
                 var root = xml.Element("yml_catalog").Element("shop");
                 var xmlCategories = root.Descendants("categories").First().Elements().ToList();
+                var xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
                 CreateAndUpdateYmlCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
                 db.SaveChanges();
                 DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Yml);
                 db.SaveChanges();
 
                 var xmlProducts = root.Descendants("offers").First().Elements().ToList();
-                AddAndUpdateYmlProducts(xmlProducts, importTask.SellerId);
+                AddAndUpdateYmlProducts(xmlProducts, importTask.SellerId, xmlCategoryIds);
                 db.SaveChanges();
                 DeletePromUaProducts(xmlProducts, importTask.SellerId, SyncType.Yml);
                 db.SaveChanges();
@@ -655,7 +676,7 @@ namespace Benefit.Services.Domain
 
                 importTask.LastUpdateStatus = true;
                 importTask.LastUpdateMessage = null;
-                
+
             }
             catch (Exception ex)
             {
