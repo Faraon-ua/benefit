@@ -16,6 +16,15 @@
 
 <div class="col-sm-6 col-xl-3 col-xs-6 product-item">
     <div class="products_item" id="@Model.Id">
+        @if (isFavorites.GetValueOrDefault(false))
+        {
+            <div class="margin-bottom-5">
+                <a href="#" class="remove-from-favorites" data-product-id="@Model.Id">
+                    <i class="fa fa-remove"></i>
+                    Видалити із улюблених
+                </a>
+            </div>
+        }
         <div class="preview fn_product">
             <div class="fn_transfer clearfix">
                 <div class="stickers">

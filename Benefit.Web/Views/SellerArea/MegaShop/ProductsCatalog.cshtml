@@ -7,10 +7,12 @@
     ViewBag.Title = Model.Category.Name;
     Layout = "_SellerLayout.cshtml";
     var seller = ViewBag.Seller;
+    var isFavorites = (Model.Category != null && Model.Category.UrlName == "favorites");
+    ViewBag.IsFavorites = isFavorites;
 }
 @section styles
 {
-    <link href="~/Content/css/bootstrap-slider.css" rel="stylesheet" />
+    <link href="~/Content/seller/megashop/bootstrap-slider.css" rel="stylesheet" />
     <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
     <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
 }
@@ -25,32 +27,11 @@
         var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
         var addToFavoritesUrl =
             '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
         var options = "";
 
         $(function() {
-            $(".add-to-favorites").click(function(e) {
-                var btn = $(this);
-                var productId = btn.attr("data-product-id");
-                $.post(addToFavoritesUrl + "&productId=" + productId,
-                    null,
-                    function (data) {
-                        if (data.count !== undefined) {
-                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
-                            btn.hide();
-                            setFavorites(data.count);
-                        } else {
-                            $.post(showMessagePopupUrl,
-                                { message: data.message, showButtons: false },
-                                function(popupHtml) {
-                                    $(".modal-container").html(popupHtml);
-                                    $(".message-modal").modal();
-                                }
-                            );
-                        }
-                    });
-            });
-
             if ($('#price-slider').length > 0) {
                 $('#price-slider').bootstrapSlider().on('change',
                     function(data) {
@@ -90,22 +71,7 @@
                     });
             });
 
-            $(".remove-from-favorites").click(function(e) {
-                e.preventDefault();
-                var link = $(this);
-                var id = link.attr("data-product-id");
-                $.post(removeFromFavoritesUrl + "?productId=" + id,
-                    null,
-                    function(data) {
-                        link.parents(".product-item").remove();
-                        if (data.count !== undefined) {
-                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
-                            setFavorites(data.count);
-                        }
-                    });
-            });
-
-            $("#reset-filters").click(function() {
+            $("#reset-filters").click(function () {
                 location.href = location.href.substring(0, location.href.indexOf(lastSegment));
             });
 
@@ -292,7 +258,7 @@
     <div class="fn_ajax_content">
 
         <h1 class="h1"><span data-category="3">@Model.Category.Name</span>  </h1>
-        @if (RouteDataHelper.ControllerName.ToLower() != "search")
+        @if (RouteDataHelper.ControllerName.ToLower() != "search" && RouteDataHelper.ActionName.ToLower() != "favorites")
         {
             <div class="fn_products_sort clearfix sort_header margin-top-10 visible-lg">
                 <div class="sort_filter visible-lg filter-section" data-filter-name="sort">

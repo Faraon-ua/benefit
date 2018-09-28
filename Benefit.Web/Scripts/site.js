@@ -35,7 +35,6 @@ function setCookie(name, value, options) {
             updatedCookie += "=" + propValue;
         }
     }
-
     document.cookie = updatedCookie;
 }
 
@@ -136,7 +135,63 @@ function processRating(ratingStars, e, isClick) {
 }
 
 $(function () {
-    $(".show-more-options").click(function(e) {
+    $(".add-to-favorites").click(function (e) {
+        e.preventDefault();
+        var btn = $(this);
+        var productId = btn.attr("data-product-id");
+        $.post(addToFavoritesUrl + "&productId=" + productId,
+            null,
+            function (data) {
+                if (data.count !== undefined) {
+                    if (typeof sellerUrlName === 'undefined') {
+                        alert(data.message);
+                    }
+                    setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/", domain: "." + location.host.replace(data.sellerurl + ".", "") });
+                    if (typeof sellerUrlName !== 'undefined') {
+                        setCookie(sellerUrlName + "-favoritesNumber",
+                            data.sellercount,
+                            { expires: 31536000, path: "/", domain: "." + location.host.replace(sellerUrlName + ".", "") });
+                    }
+                    $(".remove-from-favorites").show();
+                    $(".add-to-favorites[data-product-id=" + productId + "]").hide();
+                    $(".seller-favorites-number").text(data.sellercount);
+                    setFavorites(data.count);
+                } else {
+                    $.post(showMessagePopupUrl,
+                        { message: data.message, showButtons: false },
+                        function (popupHtml) {
+                            $(".modal-container").html(popupHtml);
+                            $(".message-modal").modal();
+                        }
+                    );
+                }
+            });
+    });
+
+    $(".remove-from-favorites").click(function (e) {
+        e.preventDefault();
+        var link = $(this);
+        var id = link.attr("data-product-id");
+        $.post(removeFromFavoritesUrl + "?productId=" + id,
+            null,
+            function (data) {
+                alert(data.message);
+                if (data.count !== undefined) {
+                    setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/", domain: "." + location.host.replace(data.sellerurl + ".", "") });
+                    setCookie(data.sellerurl + "-favoritesNumber",
+                        data.sellercount,
+                        { expires: 31536000, path: "/", domain: "." + location.host.replace(data.sellerurl + ".", "") });
+
+                    $(".remove-from-favorites[data-product-id=" + id + "]").hide();
+                    $(".add-to-favorites").show();
+                    setFavorites(data.count);
+                    link.parents(".product-item").remove();
+                    $(".seller-favorites-number").text(data.sellercount);
+                }
+            });
+    });
+
+    $(".show-more-options").click(function (e) {
         e.preventDefault();
         $(this).parent().prev().css("max-height", "");
         $(this).parent().find(".show-less-options").show();
@@ -451,6 +506,9 @@ $(function () {
             $(".cart-items-number").css("background-color", "#e52929");
         }
         $(".cart-summary").show();
+    }
+    if (typeof sellerUrlName !== 'undefined' && getCookie(sellerUrlName + "-favoritesNumber") !== undefined) {
+        $(".seller-favorites-number").text(getCookie(sellerUrlName + "-favoritesNumber"));
     }
     if (getCookie("favoritesNumber")) {
         setFavorites(getCookie("favoritesNumber"));

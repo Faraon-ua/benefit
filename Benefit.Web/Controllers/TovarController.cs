@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Benefit.Common.Constants;
+﻿using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.DataAccess;
@@ -13,6 +8,11 @@ using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Microsoft.AspNet.Identity;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Benefit.Web.Controllers
 {
@@ -44,7 +44,11 @@ namespace Benefit.Web.Controllers
                 Session[DomainConstants.ViewedProductsSessionKey] = viewedProducts;
             }
             productResult.ViewedProducts = viewedProducts;
-            if (productResult == null) throw new HttpException(404, "Not found");
+            if (productResult == null)
+            {
+                throw new HttpException(404, "Not found");
+            }
+
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {
@@ -61,7 +65,10 @@ namespace Benefit.Web.Controllers
             {
                 product = db.Products.Find(productId);
             }
-            if (product == null) return HttpNotFound();
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
 
             var result = new ProductDetailsViewModel()
             {
@@ -81,9 +88,9 @@ namespace Benefit.Web.Controllers
             if (User.Identity.IsAuthenticated)
             {
                 var favoritesCount = ProductsService.AddToFavorites(User.Identity.GetUserId(), productId);
-                if (favoritesCount > 0)
+                if (favoritesCount != null)
                 {
-                    return Json(new { message = "Товар додано до улюблених", count = favoritesCount }, JsonRequestBehavior.AllowGet);
+                    return Json(new { message = "Товар додано до улюблених", favoritesCount.count, favoritesCount.sellercount, favoritesCount.sellerurl }, JsonRequestBehavior.AllowGet);
                 }
                 return Json(new { message = "Товар вже додано до улюблених" }, JsonRequestBehavior.AllowGet);
             }
@@ -101,11 +108,12 @@ namespace Benefit.Web.Controllers
         public ActionResult RemoveFromFavorites(string productId)
         {
             var favoritesCount = ProductsService.RemoveFromFavorites(User.Identity.GetUserId(), productId);
-            return Json(new { message = "Товар видалено із улюблених", count = favoritesCount }, JsonRequestBehavior.AllowGet);
+            return Json(new { message = "Товар видалено із улюблених", favoritesCount.count, favoritesCount.sellercount, favoritesCount.sellerurl }, JsonRequestBehavior.AllowGet);
         }
 
         [Authorize]
         [FetchCategories]
+        [FetchSeller]
         public ActionResult Favorites()
         {
             var userId = User.Identity.GetUserId();
@@ -116,6 +124,15 @@ namespace Benefit.Web.Controllers
                 Items = products,
                 Breadcrumbs = new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Улюблені товари" } }
             };
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                model.Items = model.Items.Where(entry => entry.SellerId == seller.Id).ToList();
+                var viewPath = string.Format("~/views/sellerarea/{0}/productscatalog.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
+                    .ToString());
+                return View(viewPath, model);
+            }
             return View("~/Views/Catalog/ProductsCatalog.cshtml", model);
         }
 

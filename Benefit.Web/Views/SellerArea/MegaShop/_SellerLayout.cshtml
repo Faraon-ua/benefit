@@ -49,8 +49,7 @@
 
 <body>
     <header class="header">
-
-        <nav class="top_line">
+        <nav class="top_line lg-hidden">
             <div class="container">
                 <div class="row">
                     <div class="informers col-md-3 col-lg-4 col-xl-3">
@@ -159,6 +158,11 @@
                                 @*<span class="cart_total small-hidden">0 грн.</span>*@
                             </div>
 
+                        </a>
+                        <a id="cart_informer" class="mobile-hidden" href="@Url.Action("favorites","tovar")">
+                            <div class="favorit_info">
+                                <span class="cart_counter seller-favorites-number">0</span>
+                            </div>
                         </a>
                     </div>
                 </div>
@@ -449,15 +453,13 @@
 
     <script src="~/Scripts/seller/megashop/jquery_003.js"></script>
 
-
     <script>
+        var sellerUrlName = '@seller.UrlName';
         /* Глобальный обьект */
         /* все глобальные переменные добавляем в оъект и работаем с ним!!! */
         var okay = {};
 
-
         okay.is_preorder = 1;
-
 
         $(document).ready(function () {
             $('select[name=variant]').each(function () {

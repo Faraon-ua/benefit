@@ -50,50 +50,13 @@
     <script src="~/Scripts/v3/products.js"></script>
     <script>
         var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
-        var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {productId = Model.Product.Id, returnUrl = Request.Url.PathAndQuery}))';
-        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar", new {productId = Model.Product.Id})';
+        var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
         var sellerId = '@Model.Product.SellerId';
+        var sellerUrlName = '@Model.Product.Seller.UrlName';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
 
         $(function() {
-            $(".add-to-favorites").click(function(e) {
-                e.preventDefault();
-                $.post(addToFavoritesUrl,
-                    null,
-                    function(data) {
-                        if (data.count !== undefined) {
-                            alert(data.message);
-                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
-                            $(".remove-from-favorites").show();
-                            $(".add-to-favorites").hide();
-                            setFavorites(data.count);
-                        } else {
-                            $.post(showMessagePopupUrl,
-                                { message: data.message, showButtons: false },
-                                function (popupHtml) {
-                                    $(".modal-container").html(popupHtml);
-                                    $(".message-modal").modal();
-                                }
-                            );
-                        }
-                    });
-            });
-
-            $(".remove-from-favorites").click(function(e) {
-                e.preventDefault();
-                $.post(removeFromFavoritesUrl,
-                    null,
-                    function(data) {
-                        alert(data.message);
-                        if (data.count !== undefined) {
-                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
-                            $(".remove-from-favorites").hide();
-                            $(".add-to-favorites").show();
-                            setFavorites(data.count);
-                        }
-                    });
-            });
-
             $(".wholesalePices").click(function(e) {
                 e.preventDefault();
                 $(this).next("p").show();
@@ -297,22 +260,22 @@
                                         <div class="margin-top-10">
                                             @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
                                             {
-                                                <a href="#" class="remove-from-favorites">
+                                                <a href="#" class="remove-from-favorites" data-product-id="@Model.Product.Id">
                                                     <i class="fa fa-remove"></i>
                                                     Видалити із улюблених
                                                 </a>
-                                                <a href="#" class="add-to-favorites" style="display: none;">
+                                                <a href="#" class="add-to-favorites" style="display: none;" data-product-id="@Model.Product.Id">
                                                     <i class="fa fa-heart"></i>
                                                     Додати до улюблених
                                                 </a>
                                             }
                                             else
                                             {
-                                                <a href="#" class="add-to-favorites">
+                                                <a href="#" class="add-to-favorites" data-product-id="@Model.Product.Id">
                                                     <i class="fa fa-heart"></i>
                                                     Додати до улюблених
                                                 </a>
-                                                <a href="#" class="remove-from-favorites" style="display: none;">
+                                                <a href="#" class="remove-from-favorites" style="display: none;" data-product-id="@Model.Product.Id">
                                                     <i class="fa fa-remove"></i>
                                                     Видалити із улюблених
                                                 </a>

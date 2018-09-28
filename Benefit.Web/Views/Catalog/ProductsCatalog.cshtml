@@ -56,21 +56,6 @@
                     }).data('slider');
             }
 
-            $(".remove-from-favorites").click(function(e) {
-                e.preventDefault();
-                var link = $(this);
-                var id = link.attr("data-product-id");
-                $.post(removeFromFavoritesUrl + "?productId=" + id,
-                    null,
-                    function(data) {
-                        link.parents(".product-item").remove();
-                        if (data.count !== undefined) {
-                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
-                            setFavorites(data.count);
-                        }
-                    });
-            });
-
             $("#reset-filters").click(function() {
                 location.href = location.href.substring(0, location.href.indexOf(lastSegment));
             });

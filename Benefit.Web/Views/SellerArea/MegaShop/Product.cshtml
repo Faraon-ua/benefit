@@ -1,11 +1,8 @@
-﻿@using Benefit.Common.Extensions
-@using Benefit.Common.Helpers
-@using Benefit.DataTransfer.ViewModels
+﻿@using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @using Benefit.Services.Domain
 @using Microsoft.AspNet.Identity
-@using Image = System.Drawing.Image
-@model Benefit.DataTransfer.ViewModels.ProductDetailsViewModel
+@model ProductDetailsViewModel
 
 @{
     ViewBag.Title = Model.Product.Name;
@@ -46,117 +43,81 @@
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
     <script>
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
+        var sellerId = '@Model.Product.SellerId';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
+        var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new { returnUrl = Request.Url.PathAndQuery}))';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
         $(function() {
-            var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
-            var sellerId = '@Model.Product.SellerId';
-            var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
-            var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {productId = Model.Product.Id, returnUrl = Request.Url.PathAndQuery}))';
-            var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar", new {productId = Model.Product.Id})';
 
-            $(".add-to-favorites").click(function (e) {
-                e.preventDefault();
-                $.post(addToFavoritesUrl,
-                    null,
-                    function (data) {
-                        if (data.count !== undefined) {
-                            alert(data.message);
-                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
-                            $(".remove-from-favorites").show();
-                            $(".add-to-favorites").hide();
-                            setFavorites(data.count);
-                        } else {
-                            $.post(showMessagePopupUrl,
-                                { message: data.message, showButtons: false },
-                                function (popupHtml) {
-                                    $(".modal-container").html(popupHtml);
-                                    $(".message-modal").modal();
-                                }
-                            );
-                        }
-                    });
-            });
 
-            $(".remove-from-favorites").click(function (e) {
-                e.preventDefault();
-                $.post(removeFromFavoritesUrl,
-                    null,
-                    function (data) {
-                        alert(data.message);
-                        if (data.count !== undefined) {
-                            setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/" });
-                            $(".remove-from-favorites").hide();
-                            $(".add-to-favorites").show();
-                            setFavorites(data.count);
-                        }
-                    });
-            });
             $("#buy-product, #buy-product-with-options").click(function () {
-               //var buttonId = $(this).attr("id");
-               //     if (buttonId == "buy-product") {
-               //         //if there are options to show
-               //         if ($("#product_modal").length > 0) {
-               //             //show options
-               //             $("#product_modal").modal("show");
-               //             return;
-               //         }
-               //     }
+                //var buttonId = $(this).attr("id");
+                //     if (buttonId == "buy-product") {
+                //         //if there are options to show
+                //         if ($("#product_modal").length > 0) {
+                //             //show options
+                //             $("#product_modal").modal("show");
+                //             return;
+                //         }
+                //     }
 
-                    $(this).attr("disabled", "disabled");
-                    $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
-                    $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
+                $(this).attr("disabled", "disabled");
+                $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
+                $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
 
-                    var productAmount = $(".quantity").val();
-                    var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
-                        var id = $(this).attr("id");
-                        var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
-                        if (!amount) {
-                            amount = 1;
-                        }
-                        return {
-                            ProductOptionId: id,
-                            Amount: amount
-                        };
-                    }).get();
-
-                    var available = $("#available-amount");
-                    var amount = $(".quantity").val();
-
-                    if (available.length > 0) {
-                        available = parseFloat(available.text());
-                        var amount = parseFloat(amount);
-                        if (amount > available) {
-                            alert("Не можливо замовити більше товарів, ніж є в наявності");
-                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                            $(".product_info_wrap").css("opacity", 1);
-                            return;
-                        }
-                    } else {
-                        available = "";
+                var productAmount = $(".quantity").val();
+                var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
+                    var id = $(this).attr("id");
+                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                    if (!amount) {
+                        amount = 1;
                     }
-
-                    var product = {
-                        ProductId: '@Model.Product.Id',
-                        IsWeightProduct: '@Model.Product.IsWeightProduct',
-                        Amount: amount,
-                        AvailableAmount: available,
-                        OrderProductOptions: productOptions
+                    return {
+                        ProductOptionId: id,
+                        Amount: amount
                     };
+                }).get();
 
-                    var order = {
-                        product: product,
-                        amount: productAmount
-                    };
-                    $.post(addToCartUrl,
-                        order,
-                        function (data) {
-                            //$('#product_modal').modal('hide');
-                            setTimeout(function f() {
-                                $("#buy-product, #buy-product-with-options").removeAttr('disabled');
-                                $(".product_info_wrap,.item_main_info").css("opacity", 1);
-                                $(".button_block  ").removeClass("loadings");
-                                setCartSummary(data);
-                            }, 1000);
-                        });
+                var available = $("#available-amount");
+                var amount = $(".quantity").val();
+
+                if (available.length > 0) {
+                    available = parseFloat(available.text());
+                    var amount = parseFloat(amount);
+                    if (amount > available) {
+                        alert("Не можливо замовити більше товарів, ніж є в наявності");
+                        $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                        $(".product_info_wrap").css("opacity", 1);
+                        return;
+                    }
+                } else {
+                    available = "";
+                }
+
+                var product = {
+                    ProductId: '@Model.Product.Id',
+                    IsWeightProduct: '@Model.Product.IsWeightProduct',
+                    Amount: amount,
+                    AvailableAmount: available,
+                    OrderProductOptions: productOptions
+                };
+
+                var order = {
+                    product: product,
+                    amount: productAmount
+                };
+                $.post(addToCartUrl,
+                    order,
+                    function (data) {
+                        //$('#product_modal').modal('hide');
+                        setTimeout(function f() {
+                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                            $(".product_info_wrap,.item_main_info").css("opacity", 1);
+                            $(".button_block  ").removeClass("loadings");
+                            setCartSummary(data);
+                        }, 1000);
+                    });
             });
         })
     </script>
@@ -224,32 +185,23 @@
                                 <div class="col-sm-6">
                                     @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
                                     {
-                                        <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" style="display: none;">
+                                        <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" style="display: none;" data-product-id="@Model.Product.Id">
                                             <i class="wish_icon"></i>
                                         </a>
 
-                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених">
+                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" data-product-id="@Model.Product.Id">
                                             <i class="no_stock" style="top: -12px;"></i>
                                         </a>
                                     }
                                     else
                                     {
-                                        <a href="#" class="product_wish add-to-favorites product_wish" title="Додати до улюблених">
+                                        <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" data-product-id="@Model.Product.Id">
                                             <i class="wish_icon"></i>
                                         </a>
 
-                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" style="display: none;">
+                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" style="display: none;" data-product-id="@Model.Product.Id">
                                             <i class="no_stock" style="top: -12px;"></i>
                                         </a>
-
-                                        @*<a href="#" class="add-to-favorites">
-                                                <i class="fa fa-heart"></i>
-                                                Додати до улюблених
-                                            </a>
-                                            <a href="#" class="remove-from-favorites" style="display: none;">
-                                                <i class="fa fa-remove"></i>
-                                                Видалити із улюблених
-                                            </a>*@
                                     }
                                 </div>
 

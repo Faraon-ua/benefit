@@ -1,3 +1,17 @@
+.favorit_info {
+    display: block;
+    position: relative;
+    height: 50px;
+    color: #fff;
+    font-size: 14px;
+    line-height: 18px;
+    padding: 8px 13px 0 50px;
+    background: #ffb017 url(images/favorite.svg) no-repeat 10px 10px;
+}
+.favorit_info:hover {
+    color: #fff;
+}
+
 .delivery_address_title {
     margin-bottom: 20px;
     font-size: 15px;

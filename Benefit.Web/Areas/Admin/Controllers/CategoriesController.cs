@@ -194,7 +194,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Mapping(string selectedSellerId = null)
         {
             var sellerId = selectedSellerId ?? Seller.CurrentAuthorizedSellerId;
-            var categoriesToMap = db.Categories.Include(entry => entry.ChildCategories.Select(ch => ch.ChildCategories)).Where(entry => entry.SellerId == sellerId && entry.IsSellerCategory && entry.ParentCategoryId == null).ToList();
+            var categoriesToMap = db.Categories
+                .Include(entry => entry.ChildCategories.Select(ch =>
+                    ch.ChildCategories.Select(sub => sub.ChildCategories.Select(chsub => chsub.ChildCategories))))
+                .Where(entry => entry.SellerId == sellerId && entry.IsSellerCategory && entry.ParentCategoryId == null)
+                .ToList();
             SetMappedCategories(categoriesToMap);
             ViewBag.RootCategories = db.Categories.Where(entry => entry.IsActive && !entry.IsSellerCategory && entry.ParentCategoryId == null && entry.Order > 0).OrderBy(entry => entry.Order).ToList();
             var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);

@@ -143,36 +143,36 @@ $(document).on('click', '.fn_comparison', function(e){
 });
 
 /* Функция добавления / удаления в папку избранного */
-$(document).on('click', '.fn_wishlist', function(e){
+$(document).on('click', '.fn_wishlist', function (e) {
     e.preventDefault();
     var button = $( this ),
         action = $( this ).hasClass( 'selected' ) ? 'delete' : '';
     /* ajax запрос */
-    $.ajax( {
-        url: "ajax/wishlist.php",
-        data: { id: $( this ).data( 'id' ), action: action },
-        dataType: 'json',
-        success: function(data) {
-            $( '#wishlist' ).html( data.info );
-            /* Смена класса кнопки */
-            if (action == '') {
-                button.addClass( 'selected' );
-            } else {
-                button.removeClass( 'selected' );
-            }
-            /* Смена тайтла */
-            if( button.attr( 'title' ) ) {
-                var text = button.data( 'result-text' ),
-                    title = button.attr( 'title' );
-                button.data( 'result-text', title );
-                button.attr( 'title', text );
-            }
-            /* Если находимся на странице сравнения - перезагрузить */
-            if( $( '.fn_wishlist_page' ).size() ) {
-                window.location = window.location;
-            }
-        }
-    } );
+    //$.ajax( {
+    //    url: "ajax/wishlist.php",
+    //    data: { id: $( this ).data( 'id' ), action: action },
+    //    dataType: 'json',
+    //    success: function(data) {
+    //        $( '#wishlist' ).html( data.info );
+    //        /* Смена класса кнопки */
+    //        if (action == '') {
+    //            button.addClass( 'selected' );
+    //        } else {
+    //            button.removeClass( 'selected' );
+    //        }
+    //        /* Смена тайтла */
+    //        if( button.attr( 'title' ) ) {
+    //            var text = button.data( 'result-text' ),
+    //                title = button.attr( 'title' );
+    //            button.data( 'result-text', title );
+    //            button.attr( 'title', text );
+    //        }
+    //        /* Если находимся на странице сравнения - перезагрузить */
+    //        if( $( '.fn_wishlist_page' ).size() ) {
+    //            window.location = window.location;
+    //        }
+    //    }
+    //} );
     /* Улеталка */
     if( !button.hasClass( 'selected' ) ) {
         transfer( $( '#wishlist' ), $( this ) );
@@ -669,7 +669,6 @@ function transfer(informer, thisEl) {
         dx = o1.left - o2.left,
         dy = o1.top - o2.top,
         distance = Math.sqrt(dx * dx + dy * dy);
-
     thisEl.closest( '.fn_transfer' ).find( '.fn_img' ).effect( "transfer", {
         to: informer,
         className: "transfer_class"

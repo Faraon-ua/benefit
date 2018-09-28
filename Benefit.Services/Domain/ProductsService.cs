@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Benefit.DataTransfer.ViewModels;
+using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
+using Benefit.Domain.Models.XmlModels;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Threading.Tasks;
-using Benefit.DataTransfer.ViewModels;
-using Benefit.Domain.DataAccess;
-using Benefit.Domain.Models;
-using Benefit.Domain.Models.XmlModels;
+using Benefit.DataTransfer.Results;
 
 namespace Benefit.Services.Domain
 {
@@ -14,9 +15,18 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public int AddToFavorites(string userId, string productId)
+        public FavoritesResult AddToFavorites(string userId, string productId)
         {
-            if (db.Favorites.FirstOrDefault(entry => entry.UserId == userId && entry.ProductId == productId) != null) return 0;
+            var product = db.Products
+                .Include(entry=>entry.Favorites)
+                .Include(entry=>entry.Seller)
+                .FirstOrDefault(entry => entry.Id == productId);
+            if (product == null) return null;
+            if (product.Favorites.FirstOrDefault(entry => entry.UserId == userId) != null)
+            {
+                return null;
+            }
+
             var favorite = new Favorite()
             {
                 UserId = userId,
@@ -24,21 +34,43 @@ namespace Benefit.Services.Domain
             };
             db.Favorites.Add(favorite);
             db.SaveChanges();
-            return db.Favorites.Count(entry => entry.UserId == userId);
+            var userFavorites = db.Favorites.Include(entry => entry.Product)
+                .Where(entry =>entry.UserId == userId).ToList();
+            return new FavoritesResult()
+            {
+                sellerurl = product.Seller.UrlName,
+                sellercount = userFavorites.Count(entry=>entry.Product.SellerId == product.SellerId),
+                count = db.Favorites.Count(entry => entry.UserId == userId)
+            };
         }
 
-        public int RemoveFromFavorites(string userId, string productId)
+        public FavoritesResult RemoveFromFavorites(string userId, string productId)
         {
+            var product = db.Products
+                .Include(entry => entry.Favorites)
+                .Include(entry => entry.Seller)
+                .FirstOrDefault(entry => entry.Id == productId);
             var favorite = db.Favorites.FirstOrDefault(entry => entry.UserId == userId && entry.ProductId == productId);
-            if (favorite == null) return 0;
+            if (favorite == null || product == null)
+            {
+                return null;
+            }
+
             db.Favorites.Remove(favorite);
             db.SaveChanges();
-            return db.Favorites.Count(entry => entry.UserId == userId);
+            var userFavorites = db.Favorites.Include(entry => entry.Product)
+                .Where(entry => entry.UserId == userId).ToList();
+            return new FavoritesResult()
+            {
+                sellerurl = product.Seller.UrlName,
+                sellercount = userFavorites.Count(entry => entry.Product.SellerId == product.SellerId),
+                count = db.Favorites.Count(entry => entry.UserId == userId)
+            };
         }
 
         public List<Product> GetFavorites(string userId)
         {
-            return db.Favorites.Include(entry=>entry.Product).Where(entry => entry.UserId == userId).Select(entry=>entry.Product).ToList();
+            return db.Favorites.Include(entry => entry.Product).Where(entry => entry.UserId == userId).Select(entry => entry.Product).ToList();
         }
 
         public ProductDetailsViewModel GetProductDetails(IEnumerable<Category> cachedCats, string urlName, string userId)
@@ -54,7 +86,11 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
                 .Include(entry => entry.Reviews.Select(rev => rev.ChildReviews))
                 .FirstOrDefault(entry => entry.SKU.ToString() == sku);
-            if (product == null) return null;
+            if (product == null)
+            {
+                return null;
+            }
+
             if (!string.IsNullOrEmpty(product.Vendor))
             {
                 product.ProductParameterProducts.Add(new ProductParameterProduct()
@@ -215,7 +251,11 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.ProductOptions)
                     .Include(entry => entry.ProductParameterProducts)
                     .FirstOrDefault(entry => entry.Id == productId);
-            if (product == null) return;
+            if (product == null)
+            {
+                return;
+            }
+
             var imagesService = new ImagesService();
             imagesService.DeleteAll(product.Images, productId, ImageType.ProductGallery, true, false);
 
