@@ -11,7 +11,7 @@ namespace Benefit.Web.Controllers
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         public ActionResult Index()
         {
             var news = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive).OrderByDescending(entry => entry.CreatedOn).Take(ListConstants.NewsTakePerPage).ToList();

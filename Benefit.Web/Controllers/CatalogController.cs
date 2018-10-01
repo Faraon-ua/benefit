@@ -31,8 +31,8 @@ namespace Benefit.Web.Controllers
             return PartialView("_BaseCategoriesPartial", categories);
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {

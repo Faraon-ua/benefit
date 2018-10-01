@@ -29,8 +29,8 @@ namespace Benefit.Web.Controllers
             SellerService = new SellerService();
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult Index(string productUrl)
         {
             var cats = ViewBag.Categories as List<Category>;
@@ -112,8 +112,8 @@ namespace Benefit.Web.Controllers
         }
 
         [Authorize]
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult Favorites()
         {
             var userId = User.Identity.GetUserId();

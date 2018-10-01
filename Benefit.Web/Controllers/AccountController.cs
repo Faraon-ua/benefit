@@ -55,8 +55,8 @@ namespace Benefit.Web.Controllers
         // GET: /Account/Login
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -75,8 +75,8 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
@@ -146,8 +146,8 @@ namespace Benefit.Web.Controllers
         }
 
         [AllowAnonymous]
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult PostRegister()
         {
             var seller = ViewBag.Seller as Seller;
@@ -161,7 +161,7 @@ namespace Benefit.Web.Controllers
         }
 
         [AllowAnonymous]
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         [HttpPost]
         public ActionResult PostRegister(string email)
         {
@@ -173,8 +173,8 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
@@ -296,7 +296,7 @@ namespace Benefit.Web.Controllers
             return View("Login", model);
         }
 
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         [HttpGet]
         [AllowAnonymous]
         public async Task<ActionResult> ForgotPassword()
@@ -304,7 +304,7 @@ namespace Benefit.Web.Controllers
             return View();
         }
 
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -325,7 +325,7 @@ namespace Benefit.Web.Controllers
 
         //
         // GET: /Account/ResetPassword
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         [HttpGet]
         [AllowAnonymous]
         public ActionResult ResetPassword(string userId, string code = null)
@@ -338,7 +338,7 @@ namespace Benefit.Web.Controllers
 
         //
         // POST: /Account/ResetPassword
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -365,13 +365,13 @@ namespace Benefit.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         public ActionResult ResetPasswordConfirmation()
         {
             return View();
         }
 
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         [AllowAnonymous]
         public async Task<ActionResult> ConfirmEmail(string userId, string code)
         {

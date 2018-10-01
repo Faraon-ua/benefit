@@ -22,8 +22,8 @@ namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order = 0)]
+        [FetchCategories(Order = 1)]
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
         public async Task<ActionResult> Index()
         {
@@ -202,8 +202,8 @@ namespace Benefit.Web.Controllers
             return Content(output);
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult Contacts()
         {
             var seller = ViewBag.Seller as Seller;
@@ -212,8 +212,8 @@ namespace Benefit.Web.Controllers
             return View(viewName, seller);
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult Reviews()
         {
             var seller = ViewBag.Seller as Seller;
@@ -222,8 +222,8 @@ namespace Benefit.Web.Controllers
             return View(layoutName);
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult catalog()
         {
             var seller = ViewBag.Seller as Seller;
@@ -232,8 +232,8 @@ namespace Benefit.Web.Controllers
             return View(viewName, seller);
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult gallery()
         {
             var seller = ViewBag.Seller as Seller;
@@ -242,7 +242,7 @@ namespace Benefit.Web.Controllers
             return View(viewName, seller);
         }
 
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         public ActionResult Map()
         {
             /*
@@ -298,14 +298,14 @@ namespace Benefit.Web.Controllers
         }
 
         [FetchLastNews]
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         public ActionResult Anketa(SellerStatus status)
         {
             return View(new AnketaViewModel { Status = status });
         }
 
         [FetchLastNews]
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         [HttpPost]
         public ActionResult Anketa(AnketaViewModel anketa)
         {
@@ -318,8 +318,8 @@ namespace Benefit.Web.Controllers
             return View(anketa);
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult About()
         {
             var seller = ViewBag.Seller as Seller;

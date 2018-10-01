@@ -26,7 +26,7 @@ namespace Benefit.Web.Controllers
         public UserService UserService = new UserService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         public ActionResult Index()
         {
             return View();
@@ -83,8 +83,8 @@ namespace Benefit.Web.Controllers
             return Json(new { redirectUrl = Url.Action("order", "cart", new { id = sellerId }), orderSummary.ProductsNumber, orderSummary.Price });
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult Order(string id)
         {
             var model = new CompleteOrderViewModel
@@ -190,8 +190,8 @@ namespace Benefit.Web.Controllers
             return View(model);
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult OrderCompleted(string number)
         {
             var seller = ViewBag.Seller as Seller;
@@ -207,8 +207,8 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpPost]
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
             completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);

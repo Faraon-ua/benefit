@@ -32,8 +32,8 @@ namespace Benefit.Web.Controllers
                 JsonRequestBehavior.AllowGet);
         }
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         public ActionResult Index(string term, string options, string searchSellerId)
         {
             searchSellerId = searchSellerId == string.Empty ? null : searchSellerId;

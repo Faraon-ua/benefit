@@ -18,7 +18,7 @@ namespace Benefit.Web.Controllers
         private ApplicationDbContext db = new ApplicationDbContext();
         private SellerService SellerService = new SellerService();
 
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         public ActionResult Index(string id, string category = null, string options = null)
         {
             var viewModel = new NavigationEntitiesViewModel<Product>();
@@ -82,7 +82,7 @@ namespace Benefit.Web.Controllers
             return View("~/Views/Catalog/ProductsCatalog.cshtml", viewModel);
         }
 
-        [FetchCategories]
+        [FetchCategories(Order = 1)]
         public ActionResult Reviews(string id)
         {
             var seller = db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.UrlName == id);

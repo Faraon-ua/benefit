@@ -12,8 +12,8 @@ namespace Benefit.Web.Controllers
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
-        [FetchSeller]
-        [FetchCategories]
+        [FetchSeller(Order=0)]
+        [FetchCategories(Order = 1)]
         [FetchLastNews]
         public ActionResult Index(string id)
         {
