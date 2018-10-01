@@ -328,7 +328,7 @@ namespace Benefit.Services.Domain
 
         private void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories, SyncType importType)
         {
-            var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.Id).ToList();
+            var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.ExternalIds).ToList();
             List<string> xmlCategoryIds = null;
             if (importType == SyncType.OneCCommerceMl)
             {
@@ -341,7 +341,7 @@ namespace Benefit.Services.Domain
             var catIdsToRemove = currentSellercategoyIds.Except(xmlCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {
-                var dbCategory = db.Categories.Find(catId);
+                var dbCategory = db.Categories.FirstOrDefault(entry=>entry.ExternalIds == catId);
                 dbCategory.IsActive = false;
                 db.Entry(dbCategory).State = EntityState.Modified;
             }
