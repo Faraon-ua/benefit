@@ -6,8 +6,8 @@ namespace Benefit.Web.Controllers
 {
     public class ErrorController : Controller
     {
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         public ActionResult NotFound()
         {
             var domainSeller = ViewBag.Seller as Seller;

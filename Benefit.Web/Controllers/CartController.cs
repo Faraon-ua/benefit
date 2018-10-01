@@ -190,8 +190,8 @@ namespace Benefit.Web.Controllers
             return View(model);
         }
 
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         public ActionResult OrderCompleted(string number)
         {
             var seller = ViewBag.Seller as Seller;
@@ -207,8 +207,8 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpPost]
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
             completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);

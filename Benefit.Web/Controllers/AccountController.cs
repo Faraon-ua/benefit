@@ -55,8 +55,8 @@ namespace Benefit.Web.Controllers
         // GET: /Account/Login
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         public ActionResult Login(string returnUrl)
         {
             ViewBag.ReturnUrl = returnUrl;
@@ -75,8 +75,8 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
@@ -146,8 +146,8 @@ namespace Benefit.Web.Controllers
         }
 
         [AllowAnonymous]
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         public ActionResult PostRegister()
         {
             var seller = ViewBag.Seller as Seller;
@@ -173,8 +173,8 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false)
         {

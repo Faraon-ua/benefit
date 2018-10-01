@@ -112,8 +112,8 @@ namespace Benefit.Web.Controllers
         }
 
         [Authorize]
-        [FetchCategories]
         [FetchSeller]
+        [FetchCategories]
         public ActionResult Favorites()
         {
             var userId = User.Identity.GetUserId();
