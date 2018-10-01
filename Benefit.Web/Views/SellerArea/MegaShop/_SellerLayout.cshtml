@@ -213,6 +213,9 @@
                             }
                         </ul>
                     </nav>
+                </div>
+                @RenderBody()
+                <div class="col-md-4 col-lg-3 sidebar_bottom">
                     @RenderSection("LeftAside", false)
                     @if (viewedProducts != null && viewedProducts.Any())
                     {
@@ -249,13 +252,11 @@
                         </div>
                     }
                 </div>
-                @RenderBody()
             </div>
         </div>
     </div>
 
     <div class="to_top"></div>
-
 
     <footer class="footer">
         <div class="footer_top">
