@@ -53,18 +53,56 @@
                     "&options=" +
                     options,
                     function (data) {
+                        var maxNumber = parseInt($(".paging:not(.next)").last().attr("data-page"));
+                        $(".paging").parent().show();
+                        $(".split").remove();
                         if (moreBtn.hasClass("ajax_load_btn")) {
                             if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
                                 moreBtn.hide();
+                                $(".paging.next").parent().hide();
+                            } else {
+                                $(".paging.next").parent().show();
                             }
                             $(".product-item:last").after(data.products);
                             moreBtn.attr("data-page", page + 1);
-                            $(".paging[data-page=" + (page+1) + "]").parent().addClass("active");
+                            $(".paging[data-page=" + (page + 1) + "]:not(.prev):not(.next)").parent().addClass("active");
                         } else {
+                            if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                                $(".ajax_load_btn").hide();
+                                $(".paging.next").parent().hide();
+                            } else {
+                                $(".ajax_load_btn").show();
+                                $(".paging.next").parent().show();
+                            }
+                            var visibleLinks = $("a[data-page=0],a[data-page=1],a[data-page=" +
+                                maxNumber +
+                                "],a[data-page=" +
+                                (maxNumber - 1) +
+                                "],a[data-page=" +
+                                page +
+                                "],a[data-page=" +
+                                (page + 1) +
+                                "],a[data-page=" +
+                                (page - 1) +
+                                "]").not(".prev,.next");
+                            $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
+                            if (page > 3) {
+                                $(".paging[data-page=" + (page - 1) + "]").parent().before("<li class='page_item split'>...</li>");
+                            }
+                            if (page < (maxNumber - 1)) {
+                                $(".paging[data-page=" + (page + 1) + "]").parent().after("<li class='page_item split'>...</li>");
+                            }
                             $(".products-wrapper").html(data.products);
                             $("html, body").animate({ scrollTop: 0 }, 600);
                             $(".paging").parent().removeClass("active");
-                            $(".paging[data-page=" + page + "]").parent().addClass("active");
+                            $(".paging[data-page=" + page + "]:not(.prev):not(.next)").parent().addClass("active");
+                            if (page > 0) {
+                                $(".paging.prev").parent().show();
+                            } else {
+                                $(".paging.prev").parent().hide();
+                            }
+                            $(".paging.prev").attr("data-page", (page - 1));
+                            $(".paging.next").attr("data-page", (page + 1));
                             $(".ajax_load_btn").attr("data-page", (page + 1));
                         }
                         $(".loader").hide();
@@ -100,6 +138,16 @@
                 $(this).toggleClass("opened");
                 $(".bx_filter_vertical, .bx_filter").slideToggle(333);
             });
+
+            var pagesMaxNumber = parseInt('@Model.PagesCount')-1;
+            //hide redundant pages
+            var visibleLinks = $("a[data-page=0],a[data-page=1],a[data-page=2],a[data-page=" +
+                pagesMaxNumber +
+                "],a[data-page=" +
+                (pagesMaxNumber - 1) +
+                "]").not(".prev,.next");
+            $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
+            $(".paging[data-page=2]").parent().after("<li class='page_item split'>...</li>");
 
             //select all checkboxes from url
             var showFiltersReset = false;
@@ -237,7 +285,6 @@
             }
         });
     </script>
-    <script src="~/Scripts/site.js"></script>
     <script src="~/Scripts/v3/products.js"></script>
 }
 @section LeftAside
@@ -295,7 +342,10 @@
         @if (Model.PagesCount > 1)
         {
             <ul class="pagination">
-                <li class="page_item active paging" data-page="0">
+                <li class="page_item" data-page="0" style="display: none;">
+                    <a class="page_link paging prev" href="#" data-page="0"><< Назад</a>
+                </li>
+                <li class="page_item active" data-page="0">
                     <a class="page_link paging" href="#" data-page="0">1</a>
                 </li>
                 @for (int i = 2; i <= Model.PagesCount; i++)
@@ -304,6 +354,9 @@
                         <a class="page_link paging" href="#" data-page="@(i - 1)">@i</a>
                     </li>
                 }
+                <li class="page_item" data-page="1">
+                    <a class="page_link paging next" href="#" data-page="1">Вперед >></a>
+                </li>
             </ul>
         }
         <br style="clear: both;" />
