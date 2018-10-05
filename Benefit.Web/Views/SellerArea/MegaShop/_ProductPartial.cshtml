@@ -18,11 +18,13 @@
     <div class="products_item" id="@Model.Id">
         @if (isFavorites.GetValueOrDefault(false))
         {
-            <div class="margin-bottom-5">
-                <a href="#" class="remove-from-favorites" data-product-id="@Model.Id">
+            <div class="padding_5">
+                <input type="checkbox" class="doublesize-checkbox margin-5 select-product"/>
+                <a href="#" class="remove-from-favorites pull-right" data-product-id="@Model.Id">
                     <i class="fa fa-remove"></i>
-                    Видалити із улюблених
+                    Видалити
                 </a>
+                <div class="clearfix"></div>
             </div>
         }
         <div class="preview fn_product">

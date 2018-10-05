@@ -1,4 +1,8 @@
-﻿.col-centered{
+﻿.no-border {
+    border: none !important;
+}
+
+.col-centered{
     float: none;
     margin: 0 auto;
 }
@@ -244,7 +248,9 @@
 .no-margin-right {
     margin-right: 0 !important;
 }
-
+.margin-5 {
+    margin: 5px;
+}
 .margin-top-0 {
     margin-top: 0px;
 }
@@ -302,6 +308,10 @@
 
 .padding-10 {
     padding: 10px;
+}
+
+.padding-15 {
+    padding: 15px;
 }
 
 .padding-horizontal-10 {

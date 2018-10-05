@@ -122,7 +122,8 @@ namespace Benefit.Web.Controllers
             {
                 Category = new Category() { Name = "Улюблені товари", Title = "Улюблені товари", UrlName = "favorites" },
                 Items = products,
-                Breadcrumbs = new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Улюблені товари" } }
+                Breadcrumbs = new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Улюблені товари" } },
+                IsFavorites = true
             };
             var seller = ViewBag.Seller as Seller;
             if (seller != null)

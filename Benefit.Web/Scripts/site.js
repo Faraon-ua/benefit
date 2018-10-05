@@ -135,7 +135,7 @@ function processRating(ratingStars, e, isClick) {
 }
 
 $(function () {
-    $(".add-to-favorites").click(function (e) {
+    $('body').on('click','.add-to-favorites', function (e) {
         e.preventDefault();
         var btn = $(this);
         var productId = btn.attr("data-product-id");
@@ -175,7 +175,7 @@ $(function () {
         $.post(removeFromFavoritesUrl + "?productId=" + id,
             null,
             function (data) {
-                alert(data.message);
+                //alert(data.message);
                 if (data.count !== undefined) {
                     setCookie("favoritesNumber", data.count, { expires: 31536000, path: "/", domain: "." + location.host.replace(data.sellerurl + ".", "") });
                     setCookie(data.sellerurl + "-favoritesNumber",

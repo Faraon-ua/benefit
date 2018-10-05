@@ -42,17 +42,34 @@
                     }).data('slider');
             }
 
+            $("#remove-all").click(function() {
+                $(".remove-from-favorites").click();
+            });
+
+            $("#remove-selected").click(function () {
+                $(".select-product:checked").siblings(".remove-from-favorites ").click();
+            });
+
+            $("#buy-all").click(function () {
+                $(this).attr("disabled", "disabled");
+                $(".product_buy").click();
+            });
+
             $(".ajax_load_btn, .paging").click(function(e) {
                 e.preventDefault();
+                $(".products-wrapper").css("opacity", "0.3");
                 var moreBtn = $(this);
                 var page = parseInt(moreBtn.attr("data-page"));
                 $(".loader").show();
+                if (!moreBtn.hasClass("ajax_load_btn")) {
+                    $("html, body").animate({ scrollTop: 0 }, 1000);
+                }
                 $.get(getProductsUrl +
                     "?layout=1&categoryId=@Model.Category.Id&sellerId=@seller.Id&page=" +
                     page +
                     "&options=" +
                     options,
-                    function (data) {
+                    function(data) {
                         var maxNumber = parseInt($(".paging:not(.next)").last().attr("data-page"));
                         $(".paging").parent().show();
                         $(".split").remove();
@@ -65,7 +82,8 @@
                             }
                             $(".product-item:last").after(data.products);
                             moreBtn.attr("data-page", page + 1);
-                            $(".paging[data-page=" + (page + 1) + "]:not(.prev):not(.next)").parent().addClass("active");
+                            $(".paging[data-page=" + (page + 1) + "]:not(.prev):not(.next)").parent()
+                                .addClass("active");
                         } else {
                             if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
                                 $(".ajax_load_btn").hide();
@@ -87,13 +105,14 @@
                                 "]").not(".prev,.next");
                             $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
                             if (page > 3) {
-                                $(".paging[data-page=" + (page - 1) + "]").parent().before("<li class='page_item split'>...</li>");
+                                $(".paging[data-page=" + (page - 1) + "]").parent()
+                                    .before("<li class='page_item split'>...</li>");
                             }
                             if (page < (maxNumber - 1)) {
-                                $(".paging[data-page=" + (page + 1) + "]").parent().after("<li class='page_item split'>...</li>");
+                                $(".paging[data-page=" + (page + 1) + "]").parent()
+                                    .after("<li class='page_item split'>...</li>");
                             }
                             $(".products-wrapper").html(data.products);
-                            $("html, body").animate({ scrollTop: 0 }, 600);
                             $(".paging").parent().removeClass("active");
                             $(".paging[data-page=" + page + "]:not(.prev):not(.next)").parent().addClass("active");
                             if (page > 0) {
@@ -105,11 +124,12 @@
                             $(".paging.next").attr("data-page", (page + 1));
                             $(".ajax_load_btn").attr("data-page", (page + 1));
                         }
+                        $(".products-wrapper").css("opacity", "1");
                         $(".loader").hide();
                     });
             });
 
-            $("#reset-filters").click(function () {
+            $("#reset-filters").click(function() {
                 location.href = location.href.substring(0, location.href.indexOf(lastSegment));
             });
 
@@ -139,7 +159,7 @@
                 $(".bx_filter_vertical, .bx_filter").slideToggle(333);
             });
 
-            var pagesMaxNumber = parseInt('@Model.PagesCount')-1;
+            var pagesMaxNumber = parseInt('@Model.PagesCount') - 1;
             //hide redundant pages
             var visibleLinks = $("a[data-page=0],a[data-page=1],a[data-page=2],a[data-page=" +
                 pagesMaxNumber +
@@ -305,7 +325,15 @@
     <div class="fn_ajax_content">
 
         <h1 class="h1"><span data-category="3">@Model.Category.Name</span>  </h1>
-        @if (RouteDataHelper.ControllerName.ToLower() != "search" && RouteDataHelper.ActionName.ToLower() != "favorites")
+        @if (Model.IsFavorites)
+        {
+            <div class="padding-15">
+                <button id="remove-all" type="button" class="button btn-danger no-border">Видалити всі</button>
+                <button id="remove-selected" type="button" class="button no-border margin-left-30">Видалити обрані</button>
+                <button id="buy-all" type="button" class="button btn-success no-border margin-left-30">Купити всі</button>
+            </div>
+        }
+        @if (RouteDataHelper.ControllerName.ToLower() != "search" && !Model.IsFavorites)
         {
             <div class="fn_products_sort clearfix sort_header margin-top-10 visible-lg">
                 <div class="sort_filter visible-lg filter-section" data-filter-name="sort">
@@ -328,36 +356,42 @@
         }
 
         <div id="fn_products_content" class="fn_categories products row products-wrapper">
-            @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
+            @{
+                var take = Model.IsFavorites ? Model.Items.Count : ListConstants.DefaultTakePerPage;
+            }
+            @foreach (var product in Model.Items.Take(take))
             {
                 @Html.Partial("~/Views/SellerArea/megashop/_ProductPartial.cshtml", product)
             }
         </div>
-        @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+        @if (!Model.IsFavorites)
         {
-            <div class="ajax_load_btn" data-page="0">
-                <span class="more_text_ajax">Показати ще</span>
-            </div>
-        }
-        @if (Model.PagesCount > 1)
-        {
-            <ul class="pagination">
-                <li class="page_item" data-page="0" style="display: none;">
-                    <a class="page_link paging prev" href="#" data-page="0"><< Назад</a>
-                </li>
-                <li class="page_item active" data-page="0">
-                    <a class="page_link paging" href="#" data-page="0">1</a>
-                </li>
-                @for (int i = 2; i <= Model.PagesCount; i++)
-                {
-                    <li class="page_item">
-                        <a class="page_link paging" href="#" data-page="@(i - 1)">@i</a>
-                    </li>
-                }
-                <li class="page_item" data-page="1">
-                    <a class="page_link paging next" href="#" data-page="1">Вперед >></a>
-                </li>
-            </ul>
+             if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+             {
+                 <div class="ajax_load_btn" data-page="0">
+                     <span class="more_text_ajax">Показати ще</span>
+                 </div>
+             }
+             if (Model.PagesCount > 1)
+             {
+                 <ul class="pagination">
+                     <li class="page_item" data-page="0" style="display: none;">
+                         <a class="page_link paging prev" href="#" data-page="0"><< Назад</a>
+                     </li>
+                     <li class="page_item active" data-page="0">
+                         <a class="page_link paging" href="#" data-page="0">1</a>
+                     </li>
+                     @for (int i = 2; i <= Model.PagesCount; i++)
+                     {
+                         <li class="page_item">
+                             <a class="page_link paging" href="#" data-page="@(i - 1)">@i</a>
+                         </li>
+                     }
+                     <li class="page_item" data-page="1">
+                         <a class="page_link paging next" href="#" data-page="1">Вперед >></a>
+                     </li>
+                 </ul>
+             }
         }
         <br style="clear: both;" />
     </div>
