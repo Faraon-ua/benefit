@@ -62,6 +62,13 @@ namespace Benefit.Web.Controllers
                             .ThenByDescending(entry => entry.Images.Any())
                             .Take(ListConstants.DefaultTakePerPage + 1).ToList());
                 }
+                viewModel.Items.ForEach(entry =>
+                {
+                    if (entry.Currency != null)
+                    {
+                        entry.Price = entry.Price * entry.Currency.Rate;
+                    }
+                });
             }
             else
             {
@@ -70,13 +77,7 @@ namespace Benefit.Web.Controllers
                 viewModel.Category = selectedCat;
                 viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
-            viewModel.Items.ForEach(entry =>
-            {
-                if (entry.Currency != null)
-                {
-                    entry.Price = entry.Price * entry.Currency.Rate;
-                }
-            });
+           
             viewModel.Breadcrumbs = null;
             viewModel.Seller = seller;
             return View("~/Views/Catalog/ProductsCatalog.cshtml", viewModel);
