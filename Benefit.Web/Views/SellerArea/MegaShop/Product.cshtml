@@ -233,16 +233,14 @@
                                     <div class="col-sm-6 amount_wrap fn_is_stock">
                                         <span class="details_label quontity_label" data-language="product_quantity">Кількість<span class="fn_units"></span>:</span>
 
-
-                                        <div class="amount fn_product_amount">
-                                            <input class="input_amount quantity" name="amount" value="1" data-max="10" type="text">
+                                        <div class="amount fn_product_amount" data-weight-product="@Model.Product.IsWeightProduct">
+                                            <input class="input_amount quantity" name="amount" value="1" data-max="50" type="text">
                                             <span class="plus"></span>
                                             <span class="minus"></span>
                                         </div>
                                     </div>
 
                                     @*<div class="col-sm-6">
-
                                             <select name="variant" class="fn_variant variant_select hidden">
                                                 <option value="22" data-price="2 899" data-stock="3" selected="selected">Кресло мешок груша L Cats</option>
                                             </select>
@@ -253,7 +251,7 @@
 
                                     <span class="price ">
                                         <span class="fn_price" itemprop="price" content="@Model.Product.Price">@Model.Product.Price.ToString("F")</span>
-                                        <span itemprop="priceCurrency" content="UAH">грн</span>
+                                        <span itemprop="priceCurrency" content="UAH">грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
                                     </span>
 
                                     @if (Model.Product.OldPrice.HasValue)

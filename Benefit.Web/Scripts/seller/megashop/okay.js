@@ -101,7 +101,12 @@ $( document ).on( 'click', '.fn_product_amount span', function() {
     } else if ( $( this ).hasClass( 'minus' ) ) {
         action = 'minus';
     }
-    amount_change( input, action );
+    var step = 1;
+    var isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+    if (isWeightProduct) {
+        step = 0.1;
+    }
+    amount_change( input, action, step );
 } );
 
 /* Функция добавления / удаления в папку сравнения */
@@ -629,10 +634,9 @@ function ajax_change_amount(object, variant_id) {
 }
 
 /* Функция изменения количества товаров */
-function amount_change(input, action) {
+function amount_change(input, action, step) {
     var max_val,
         curr_val = parseFloat( input.val() ),
-        step = 1,
         id = input.data('id');
         if(isNaN(curr_val)){
             curr_val = okay.amount;
@@ -646,20 +650,16 @@ function amount_change(input, action) {
     }
     /* Изменение кол-ва товара */
     if( action == 'plus' ) {
-        input.val( Math.min( max_val, Math.max( 1, curr_val + step ) ) );
+        input.val((curr_val + step).toFixed(1) );
         input.trigger('change');
     } else if( action == 'minus' ) {
-        input.val( Math.min( max_val, Math.max( 1, (curr_val - step) ) ) );
+        input.val((curr_val - step).toFixed(1) );
         input.trigger('change');
     } else if( action == 'keyup' ) {
-        input.val( Math.min( max_val, Math.max( 1, curr_val ) ) );
+        input.val((curr_val).toFixed(1) );
         input.trigger('change');
     }
-    okay.amount = parseInt( input.val() );
-    /* в корзине */
-    if( $('div').is('#fn_purchases') && ( (max_val != curr_val && action == 'plus' ) || ( curr_val != 1 && action == 'minus' ) ) ) {
-        ajax_change_amount( input, id );
-    }
+    okay.amount = parseFloat( input.val() );
 }
 
 /* Функция анимации добавления товара в корзину */
