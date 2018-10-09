@@ -123,6 +123,7 @@
 }
 @section styles{
     <link href="~/Content/seller/css/jquery.fancybox.min.css" rel="stylesheet" />
+    <link href="~/Content/seller/megashop/jquery.css" rel="stylesheet" />
     <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
 }
 <div class="col-md-8 col-xl-9 content">
@@ -141,6 +142,27 @@
                                 <img class="fn_img product_img" itemprop="image" src="@img_src" alt="@Model.Product.AltText" title="@Model.Product.Title">
                             </a>
                         </div>
+                        @if (Model.Product.Images.Count > 1)
+                        {
+                            <div class="fn_images images clearfix">
+                                @for (var i = 1; i < Model.Product.Images.Count; i++)
+                                {
+                                    var img = Model.Product.Images.ElementAt(i);
+                                    <div class="images_item">
+                                        <a class="images_link" href="@img.ImageUrl" data-fancybox="group" data-caption="@Model.Product.Name">
+                                            @if (img.IsAbsoluteUrl)
+                                            {
+                                                <img src="@img.ImageUrl" alt="@Model.Product.AltText" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" />
+                                            }
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        }
                     </div>
                     <div class="col-xl-6">
                         <div class="product_details" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
