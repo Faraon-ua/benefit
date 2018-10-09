@@ -69,11 +69,11 @@
                         @if (Model.OldPrice.HasValue)
                         {
                             <div class="old_price hidden">
-                                <span class="fn_old_price">@Model.OldPrice.Value.ToString("F")</span> <span>грн</span>
+                                <span class="fn_old_price">@Model.OldPrice.Value.ToString("F")</span> <span>грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span>
                             </div>
                         }
                         <div class="price">
-                            <span class="fn_price">@Model.Price.ToString("F")</span> <span>грн</span>
+                            <span class="fn_price">@Model.Price.ToString("F")</span> <span>грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span>
                         </div>
                     </div>
                     <div class="fn_variants preview_form">

@@ -303,8 +303,8 @@ namespace Benefit.Services.Domain
 
         public ProductsWithParametersList GetSellerCatalogProducts(string sellerId, string categoryId, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage, bool fetchParameters = true)
         {
+            var regionId = RegionService.GetRegionId();
             var result = new ProductsWithParametersList();
-
             var items = db.Products
                 .Include(entry => entry.Favorites)
                 .Include(entry => entry.Currency)
@@ -342,7 +342,7 @@ namespace Benefit.Services.Domain
             var sort = ProductSortOption.Rating;
             if (options != null)
             {
-                var optionSegments = options.Split(';');
+                var optionSegments = options.Split(';').OrderBy(entry=>entry.Contains("page=")).ToList();
                 foreach (var optionSegment in optionSegments)
                 {
                     if (optionSegment == string.Empty) continue;
@@ -353,6 +353,31 @@ namespace Benefit.Services.Domain
                     {
                         case "sort":
                             sort = (ProductSortOption)Enum.Parse(typeof(ProductSortOption), optionValues.First());
+                            break;
+                        case "page":
+                            var page = int.Parse(optionValues[0]);
+                            switch (sort)
+                            {
+                                case ProductSortOption.Rating:
+                                    items = items.OrderByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
+                                    break;
+                                case ProductSortOption.Order:
+                                    items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
+                                    break;
+                                case ProductSortOption.NameAsc:
+                                    items = items.OrderBy(entry => entry.Name).ThenBy(entry => entry.SKU);
+                                    break;
+                                case ProductSortOption.NameDesc:
+                                    items = items.OrderByDescending(entry => entry.Name).ThenBy(entry => entry.SKU);
+                                    break;
+                                case ProductSortOption.PriceAsc:
+                                    items = items.OrderBy(entry => entry.Price).ThenBy(entry => entry.SKU);
+                                    break;
+                                case ProductSortOption.PriceDesc:
+                                    items = items.OrderByDescending(entry => entry.Price).ThenBy(entry => entry.SKU);
+                                    break;
+                            }
+                            items = items.Skip(ListConstants.DefaultTakePerPage*(page-1));
                             break;
                         case "seller":
                             var sellerIds =
@@ -403,7 +428,6 @@ namespace Benefit.Services.Domain
                     }
                 }
             }
-            var regionId = RegionService.GetRegionId();
             switch (sort)
             {
                 case ProductSortOption.Rating:

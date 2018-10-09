@@ -30,6 +30,10 @@
         var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
         var options = "";
+        var showFiltersReset = false;
+        var parts = location.href.split('/');
+        var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
+        var sortControl = $(".sort_btn[data-sort-value=Rating]");
 
         $(function() {
             if ($('#price-slider').length > 0) {
@@ -46,11 +50,11 @@
                 $(".remove-from-favorites").click();
             });
 
-            $("#remove-selected").click(function () {
+            $("#remove-selected").click(function() {
                 $(".select-product:checked").siblings(".remove-from-favorites ").click();
             });
 
-            $("#buy-all").click(function () {
+            $("#buy-all").click(function() {
                 $(this).attr("disabled", "disabled");
                 $(".product_buy").click();
             });
@@ -60,6 +64,14 @@
                 $(".products-wrapper").css("opacity", "0.3");
                 var moreBtn = $(this);
                 var page = parseInt(moreBtn.attr("data-page"));
+
+                var pageUrl;
+                if (lastSegment === '@Model.Category.UrlName') {
+                    pageUrl = lastSegment + "/page=" + (page + 1) + ";/";
+                } else {
+                    pageUrl = lastSegment.replace(/page=\d/g, 'page=' + (page + 1));
+                }
+                history.pushState("history", "page " + page, pageUrl);
                 $(".loader").show();
                 if (!moreBtn.hasClass("ajax_load_btn")) {
                     $("html, body").animate({ scrollTop: 0 }, 1000);
@@ -160,20 +172,32 @@
             });
 
             var pagesMaxNumber = parseInt('@Model.PagesCount') - 1;
+            var currentPage = 0;
+            if (lastSegment !== '@Model.Category.UrlName') {
+                var result = lastSegment.match(/page=(\d)/i);
+                if (result[1]) {
+                    currentPage = parseInt(result[1]) - 1;
+                    $(".paging").parent().removeClass("active");
+                    $("a[data-page=" + currentPage + "]").parent().addClass("active");
+                }
+            }
             //hide redundant pages
             var visibleLinks = $("a[data-page=0],a[data-page=1],a[data-page=2],a[data-page=" +
                 pagesMaxNumber +
                 "],a[data-page=" +
                 (pagesMaxNumber - 1) +
+                "],a[data-page=" +
+                currentPage +
+                "],a[data-page=" +
+                (currentPage + 1) +
+                "],a[data-page=" +
+                (currentPage - 1) +
                 "]").not(".prev,.next");
             $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
             $(".paging[data-page=2]").parent().after("<li class='page_item split'>...</li>");
 
             //select all checkboxes from url
-            var showFiltersReset = false;
-            var parts = location.href.split('/');
-            var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
-            var sortControl = $(".sort_btn[data-sort-value=Rating]");
+
             @if (Model.Category != null)
             {<text>
                  if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
@@ -287,18 +311,22 @@
                                 options = options.replace(oldOption, currentOption);
                             } else {
                                 options += currentOption;
+                                options = options.replace(/page=\d/g, 'page=1');
                             }
+                            //check for page
+                            if (options.indexOf('page=') === -1) {
+                                options += "page=1;";
+                            }
+                            var locBuilder;
                             if (lastSegment !== '@Model.Category.UrlName') {
-                                var locBuilder = location.href.replace(lastSegment + "/", "") + options;
-                                if (options.length > 0)
-                                    locBuilder += "/";
+                                locBuilder = location.href.replace(lastSegment, "") + options;
                                 location.href = locBuilder;
                             } else {
-                                var locBuilder = location.href;
+                                locBuilder = location.href;
                                 if (location.href[location.href.length - 1] !== "/") {
                                     locBuilder += "/";
                                 }
-                                window.location.href = locBuilder + options + "/";
+                                window.location.href = locBuilder + options;
                             }
                         });
                 </text>
@@ -366,32 +394,32 @@
         </div>
         @if (!Model.IsFavorites)
         {
-             if (Model.Items.Count > ListConstants.DefaultTakePerPage)
-             {
-                 <div class="ajax_load_btn" data-page="0">
-                     <span class="more_text_ajax">Показати ще</span>
-                 </div>
-             }
-             if (Model.PagesCount > 1)
-             {
-                 <ul class="pagination">
-                     <li class="page_item" data-page="0" style="display: none;">
-                         <a class="page_link paging prev" href="#" data-page="0"><< Назад</a>
-                     </li>
-                     <li class="page_item active" data-page="0">
-                         <a class="page_link paging" href="#" data-page="0">1</a>
-                     </li>
-                     @for (int i = 2; i <= Model.PagesCount; i++)
-                     {
-                         <li class="page_item">
-                             <a class="page_link paging" href="#" data-page="@(i - 1)">@i</a>
-                         </li>
-                     }
-                     <li class="page_item" data-page="1">
-                         <a class="page_link paging next" href="#" data-page="1">Вперед >></a>
-                     </li>
-                 </ul>
-             }
+            if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+            {
+                <div class="ajax_load_btn" data-page="0">
+                    <span class="more_text_ajax">Показати ще</span>
+                </div>
+            }
+            if (Model.PagesCount > 1)
+            {
+                <ul class="pagination">
+                    <li class="page_item" data-page="0" style="display: none;">
+                        <a class="page_link paging prev" href="#" data-page="0"><< Назад</a>
+                    </li>
+                    <li class="page_item active" data-page="0">
+                        <a class="page_link paging" href="#" data-page="0">1</a>
+                    </li>
+                    @for (int i = 2; i <= Model.PagesCount; i++)
+                    {
+                        <li class="page_item">
+                            <a class="page_link paging" href="#" data-page="@(i - 1)">@i</a>
+                        </li>
+                    }
+                    <li class="page_item" data-page="1">
+                        <a class="page_link paging next" href="#" data-page="1">Вперед >></a>
+                    </li>
+                </ul>
+            }
         }
         <br style="clear: both;" />
     </div>
