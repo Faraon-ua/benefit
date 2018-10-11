@@ -378,6 +378,7 @@ namespace Benefit.Services.Domain
                                     items = items.OrderByDescending(entry => entry.Price).ThenBy(entry => entry.SKU);
                                     break;
                             }
+                            result.ProductsNumber = items.Count();
                             items = items.Skip(ListConstants.DefaultTakePerPage*(page-1));
                             break;
                         case "seller":
@@ -503,8 +504,12 @@ namespace Benefit.Services.Domain
                 result.ProductParameters = productParameters;
             }
 
-            result.ProductsNumber = items.Count();
-            result.Products = items.Skip(skip).Take(take + 1).ToList();
+            if (result.ProductsNumber == 0)
+            {
+                result.ProductsNumber = items.Count();
+            }
+
+            result.Products = items.Take(take + 1).ToList();
             result.Products.ForEach(entry =>
             {
                 if (entry.Currency != null)

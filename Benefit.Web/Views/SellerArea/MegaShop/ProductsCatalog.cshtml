@@ -174,7 +174,7 @@
             var pagesMaxNumber = parseInt('@Model.PagesCount') - 1;
             var currentPage = 0;
             if (lastSegment !== '@Model.Category.UrlName') {
-                var result = lastSegment.match(/page=(\d)/i);
+                var result = lastSegment.match(/page=(\d+)/i);
                 if (result[1]) {
                     currentPage = parseInt(result[1]) - 1;
                     $(".paging").parent().removeClass("active");
@@ -208,13 +208,14 @@
                              var optKeyValue = urlSegment.split("=");
                              var optionName = optKeyValue[0];
                              var optionValues = optKeyValue[1].split(",");
-                             if (optionName)
+                             if (optionName) {
                                  if (optionName === "sort") {
                                      var optionValue = optionValues[0];
                                      sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
                                      $(".sort_btn span").removeClass("badge");
                                      return true;
                                  }
+                             }
                              if (optionName === "price") {
                                  var optionValue = optionValues[0];
                                  var prices = optionValue.split('-');
@@ -223,7 +224,7 @@
                                  $("#price-lower-bound").val(lowerPrice);
                                  $("#price-upper-bound").val(upperPrice);
                                  $("#price-filter").prop('checked', true);
-                                 $("#price-slider").data('slider').setValue([lowerPrice, upperPrice]);
+                                 $("#price-slider").data('bootstrapSlider').setValue([lowerPrice, upperPrice]);
                                  $(".selected-filters").append(
                                      "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='price' data-option-value='price-filter'>" +
                                      optionValue +
@@ -232,7 +233,10 @@
                                  return true;
                              }
                              $.each(optionValues,
-                                 function(j, optValue) {
+                                 function (j, optValue) {
+                                     if (optionName == "page") {
+                                         return;
+                                     }
                                      showFiltersReset = true;
                                      var checkbox = $(".filter-section[data-filter-name=" +
                                          optionName +

@@ -17,9 +17,11 @@
             <div class="seller-catalog padding" style="margin-bottom: 30px;">
                 @foreach (var img in seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
                 {
-                    <a href="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" data-fancybox="gallery">
-                        <img src="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" width="200" />
-                    </a>
+                    <div class="col-lg-3 gallery">
+                        <a href="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" data-fancybox="gallery">
+                            <img src="~/Images/SellerGallery/@seller.Id/@img.ImageUrl" width="200" />
+                        </a>
+                    </div>
                 }
             </div>
         </div>
