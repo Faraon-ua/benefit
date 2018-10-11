@@ -762,6 +762,7 @@
     <Content Include="Content\seller\megashop\images\Therm_4000.jpg" />
     <Content Include="Content\seller\megashop\images\up-arrow.png" />
     <Content Include="Content\seller\megashop\images\vaillant.jpg" />
+    <Content Include="Content\seller\megashop\jquery.css" />
     <Content Include="Content\seller\megashop\libs.css" />
     <Content Include="Content\seller\megashop\responsive.css" />
     <Content Include="Content\seller\megashop\style.css" />
@@ -1536,6 +1537,7 @@
     <Content Include="Views\SellerArea\MegaShop\Page.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\Login.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\PostRegister.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\_ViewedProducts.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

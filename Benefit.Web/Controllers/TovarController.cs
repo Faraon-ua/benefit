@@ -29,7 +29,7 @@ namespace Benefit.Web.Controllers
             SellerService = new SellerService();
         }
 
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult Index(string productUrl)
         {
@@ -56,6 +56,20 @@ namespace Benefit.Web.Controllers
                 return View(string.Format("~/views/sellerarea/{0}/product.cshtml", viewName), productResult);
             }
             return View(productResult);
+        }
+
+        [FetchSeller]
+        public ActionResult GetViewedProducts()
+        {
+            var viewedProducts = Session[DomainConstants.ViewedProductsSessionKey] as List<Product>;
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                var viewName = seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default).ToString();
+                return PartialView(string.Format("~/views/sellerarea/{0}/_ViewedProducts.cshtml", viewName), viewedProducts);
+            }
+            return PartialView("_ViewedProducts.cshtml", viewedProducts);
+
         }
 
         public ActionResult GetProductOptions(string productId)
@@ -112,7 +126,7 @@ namespace Benefit.Web.Controllers
         }
 
         [Authorize]
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult Favorites()
         {

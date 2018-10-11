@@ -7,7 +7,6 @@
     var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
     var todayShedule = seller.Schedules.FirstOrDefault(entry => entry.Day == DateTime.Now.DayOfWeek);
     var categories = ViewBag.Categories as List<Category>;
-    var viewedProducts = Session[DomainConstants.ViewedProductsSessionKey] as List<Product>;
 }
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" lang="uk">
@@ -38,7 +37,7 @@
     <script src="~/Scripts/seller/megashop/slick.js"></script>
     <script src="~/Scripts/seller/megashop/jquery_002.js"></script>
     <script src="~/Scripts/site.js"></script>
-    
+
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i&amp;subset=cyrillic" rel="stylesheet">
     <link href="~/Content/seller/megashop/libs.css" rel="stylesheet">
     <link href="~/Content/seller/megashop/style.css" rel="stylesheet">
@@ -218,39 +217,9 @@
                 </div>
                 @RenderBody()
                 <div class="col-md-4 col-lg-3 sidebar_bottom">
-                    @if (viewedProducts != null && viewedProducts.Any())
-                    {
-                        <div class="block">
-                            <div class="h1">Ви переглядали</div>
-                            <div class="browsed">
-                                @foreach (var product in viewedProducts)
-                                {
-                                    var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
-                                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                                    <div class="browsed_item clearfix">
-                                        <a class="browsed_image" href="@productDetailsUrl">
-                                            @if (image == null)
-                                            {
-                                                <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@product.Title" title="@product.Title">
-                                            }
-                                            else
-                                            {
-                                                if (image.IsAbsoluteUrl)
-                                                {
-                                                    <img src="@image.ImageUrl" alt="@product.Title" title="@product.Title">
-                                                }
-                                                else
-                                                {
-                                                    <img src="~/Images/ProductGallery/@product.Id/@image.ImageUrl" alt="@product.Title" title="@product.Title">
-                                                }
-                                            }
-                                        </a>
-                                        <a class="browsed_name" href="@productDetailsUrl">@product.Name</a>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    }
+                    <div id="viewed-products-wrap">
+                       
+                    </div>
                 </div>
             </div>
         </div>
@@ -456,6 +425,7 @@
 
     <script>
         var sellerUrlName = '@seller.UrlName';
+        var viewedProductsUrl= '@Url.Action("GetViewedProducts","Tovar")';
         /* Глобальный обьект */
         /* все глобальные переменные добавляем в оъект и работаем с ним!!! */
         var okay = {};
@@ -468,6 +438,8 @@
                 first_in_stock.attr('selected', true);
                 first_in_stock.trigger('change');
             });
+
+            $("#viewed-products-wrap").load(viewedProductsUrl);
         });
 
         var form_enter_name = 'Введите имя';

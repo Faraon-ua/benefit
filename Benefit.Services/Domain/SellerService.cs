@@ -331,6 +331,7 @@ namespace Benefit.Services.Domain
                 }
                 allIds.Add(categoryId);
                 items = items.Where(entry => allIds.Contains(entry.CategoryId));
+                var a = items.Where(entry => allIds.Contains(entry.CategoryId)).ToList();
             }
             if (!string.IsNullOrEmpty(sellerId))
             {

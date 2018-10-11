@@ -610,27 +610,6 @@ function ajax_change_amount(object, variant_id) {
         coupon_code = $( 'input[name="coupon_code"]' ).val(),
         delivery_id = $( 'input[name="delivery_id"]:checked' ).val(),
         payment_id = $( 'input[name="payment_method_id"]:checked' ).val();
-    /* ajax запрос */
-    $.ajax( {
-        url: 'ajax/cart_ajax.php',
-        data: {
-            coupon_code: coupon_code,
-            action: 'update_citem',
-            variant_id: variant_id,
-            amount: amount
-        },
-        dataType: 'json',
-        success: function(data) {
-            if( data.result == 1 ) {
-                ajax_set_result( data );
-                $( '#deliveries_' + delivery_id ).trigger( 'click' );
-                $( '#payment_' + delivery_id + '_' + payment_id ).trigger( 'click' );
-            } else {
-                $( '#cart_informer' ).html( data.cart_informer );
-                $(".fn_ajax_content").html( data.content );
-            }
-        }
-    } );
 }
 
 /* Функция изменения количества товаров */
@@ -685,32 +664,6 @@ function transfer(informer, thisEl) {
     } );
 }
 
-/* Аяксовый купон */
-function ajax_coupon() {
-    var coupon_code = $('input[name="coupon_code"]').val(),
-        delivery_id = $('input[name="delivery_id"]:checked').val(),
-        payment_id = $('input[name="payment_method_id"]:checked').val();
-    /* ajax запрос */
-    $.ajax( {
-        url: 'ajax/cart_ajax.php',
-        data: {
-            coupon_code: coupon_code,
-            action: 'coupon_apply'
-        },
-        dataType: 'json',
-        success: function(data) {
-            if( data.result == 1 ) {
-                ajax_set_result( data );
-                $( '#deliveries_' + delivery_id ).trigger( 'click' );
-                $( '#payment_' + delivery_id + '_' + payment_id ).trigger( 'click' );
-            } else {
-                $( '#cart_informer' ).html( data.cart_informer );
-                $(".fn_ajax_content").html( data.content );
-            }
-        }
-    } );
-}
-
 /* Изменение способа доставки */
 function change_payment_method($id) {
     $( "#fn_delivery_payment_" + $id + " [name='payment_method_id']" ).first().trigger('click');
@@ -718,33 +671,6 @@ function change_payment_method($id) {
     $( "#fn_delivery_payment_" + $id ).show();
     $( 'input[name="delivery_id"]' ).parent().removeClass( 'active' );
     $( '#deliveries_' + $id ).parent().addClass( 'active' );
-}
-
-/* Аяксовое удаление товаров в корзине */
-function ajax_remove(variant_id) {
-    var coupon_code = $('input[name="coupon_code"]').val(),
-        delivery_id = $('input[name="delivery_id"]:checked').val(),
-        payment_id = $('input[name="payment_method_id"]:checked').val();
-    /* ajax запрос */
-    $.ajax( {
-        url: 'ajax/cart_ajax.php',
-        data: {
-            coupon_code: coupon_code,
-            action: 'remove_citem',
-            variant_id: variant_id
-        },
-        dataType: 'json',
-        success: function(data) {
-            if( data.result == 1 ) {
-                ajax_set_result( data );
-                $( '#deliveries_' + delivery_id ).trigger( 'click' );
-                $( '#payment_' + delivery_id + '_' + payment_id ).trigger( 'click' );
-            } else {
-                $( '#cart_informer' ).html( data.cart_informer );
-                $(".fn_ajax_content").html( data.content );
-            }
-        }
-    } );
 }
 
 /* Формирование ровных строчек для характеристик */
