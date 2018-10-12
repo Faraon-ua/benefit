@@ -69,7 +69,7 @@
                 if (lastSegment === '@Model.Category.UrlName') {
                     pageUrl = lastSegment + "/page=" + (page + 1) + ";/";
                 } else {
-                    pageUrl = lastSegment.replace(/page=\d/g, 'page=' + (page + 1));
+                    pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
                 }
                 history.pushState("history", "page " + page, pageUrl);
                 $(".loader").show();
@@ -104,26 +104,7 @@
                                 $(".ajax_load_btn").show();
                                 $(".paging.next").parent().show();
                             }
-                            var visibleLinks = $("a[data-page=0],a[data-page=1],a[data-page=" +
-                                maxNumber +
-                                "],a[data-page=" +
-                                (maxNumber - 1) +
-                                "],a[data-page=" +
-                                page +
-                                "],a[data-page=" +
-                                (page + 1) +
-                                "],a[data-page=" +
-                                (page - 1) +
-                                "]").not(".prev,.next");
-                            $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
-                            if (page > 3) {
-                                $(".paging[data-page=" + (page - 1) + "]").parent()
-                                    .before("<li class='page_item split'>...</li>");
-                            }
-                            if (page < (maxNumber - 1)) {
-                                $(".paging[data-page=" + (page + 1) + "]").parent()
-                                    .after("<li class='page_item split'>...</li>");
-                            }
+                           
                             $(".products-wrapper").html(data.products);
                             $(".paging").parent().removeClass("active");
                             $(".paging[data-page=" + page + "]:not(.prev):not(.next)").parent().addClass("active");
@@ -135,6 +116,26 @@
                             $(".paging.prev").attr("data-page", (page - 1));
                             $(".paging.next").attr("data-page", (page + 1));
                             $(".ajax_load_btn").attr("data-page", (page + 1));
+                        }
+                        var visibleLinks = $("a[data-page=0],a[data-page=1],a[data-page=" +
+                            maxNumber +
+                            "],a[data-page=" +
+                            (maxNumber - 1) +
+                            "],a[data-page=" +
+                            page +
+                            "],a[data-page=" +
+                            (page + 1) +
+                            "],a[data-page=" +
+                            (page - 1) +
+                            "]").not(".prev,.next");
+                        $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
+                        if (page > 3) {
+                            $(".paging[data-page=" + (page - 1) + "]").parent()
+                                .before("<li class='page_item split'>...</li>");
+                        }
+                        if (page < (maxNumber - 1)) {
+                            $(".paging[data-page=" + (page + 1) + "]").parent()
+                                .after("<li class='page_item split'>...</li>");
                         }
                         $(".products-wrapper").css("opacity", "1");
                         $(".loader").hide();
@@ -179,6 +180,7 @@
                     currentPage = parseInt(result[1]) - 1;
                     $(".paging").parent().removeClass("active");
                     $("a[data-page=" + currentPage + "]").parent().addClass("active");
+                    $(".ajax_load_btn").attr("data-page", currentPage);
                 }
             }
             //hide redundant pages

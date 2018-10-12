@@ -1,14 +1,14 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using Benefit.Domain.DataAccess;
+﻿using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Admin;
 using Benefit.Services.Domain;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
+using System;
 using System.Data.Entity;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace Benefit.Web.Controllers
 {
@@ -95,7 +95,11 @@ namespace Benefit.Web.Controllers
                         entry =>
                             entry.Stamp.Year == DateTime.UtcNow.Year && entry.Stamp.Month == DateTime.UtcNow.Month &&
                             entry.Stamp.Day == DateTime.UtcNow.Day);
-                if (existing != null) return Content("Company revenue was already saved");
+                if (existing != null)
+                {
+                    return Content("Company revenue was already saved");
+                }
+
                 var revenue = new CompanyRevenue
                 {
                     Id = Guid.NewGuid().ToString(),
