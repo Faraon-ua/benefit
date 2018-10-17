@@ -93,7 +93,7 @@ $(document).on('change', '.fn_variant', function() {
 });
 
 /* Количество товара в карточке и корзине */
-$( document ).on( 'click', '.fn_product_amount span', function() {
+$( document ).on( 'click', '.fn_product_amount:not(.partial) span', function() {
     var input = $( this ).parent().find( 'input' ),
         action;
     if ( $( this ).hasClass( 'plus' ) ) {

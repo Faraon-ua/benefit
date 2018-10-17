@@ -86,7 +86,7 @@
                                 <img src="~/Content/seller/megashop/images/basket.png">
                             </button>
                             <button class="button fn_is_stock small-hidden product_buy" type="submit" style="padding:9px 15px 9px 15px; font-size:14px;" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">Купити</button>
-                            <div class="amount fn_product_amount counter" data-weight-product="@Model.IsWeightProduct">
+                            <div class="amount fn_product_amount counter partial" data-weight-product="@Model.IsWeightProduct">
                                 <input class="input_amount quantity" type="text" name="quantity" value="1" data-weight-product="@Model.IsWeightProduct">
                                 <span class="plus"></span>
                                 <span class="minus"></span>
