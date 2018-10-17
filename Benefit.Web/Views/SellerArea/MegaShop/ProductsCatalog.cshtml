@@ -67,18 +67,20 @@
 
                 var pageUrl;
                 if (lastSegment === '@Model.Category.UrlName') {
-                    pageUrl = lastSegment + "/page=" + (page + 1) + ";/";
+                    pageUrl = lastSegment + "/page=" + (page + 1) + ";";
                 } else {
                     pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
                 }
                 history.pushState("history", "page " + page, pageUrl);
+                parts = location.href.split('/');
+                lastSegment = (parts.pop() || parts.pop()).replace("#", "");
                 $(".loader").show();
                 if (!moreBtn.hasClass("ajax_load_btn")) {
                     $("html, body").animate({ scrollTop: 0 }, 1000);
                 }
                 $.get(getProductsUrl +
                     "?layout=1&categoryId=@Model.Category.Id&sellerId=@seller.Id&page=" +
-                    page +
+                    (page + 1) +
                     "&options=" +
                     options,
                     function(data) {
@@ -94,7 +96,7 @@
                             }
                             $(".product-item:last").after(data.products);
                             moreBtn.attr("data-page", page + 1);
-                            $(".paging[data-page=" + (page + 1) + "]:not(.prev):not(.next)").parent()
+                            $(".paging[data-page=" + page + "]:not(.prev):not(.next)").parent()
                                 .addClass("active");
                         } else {
                             if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
@@ -317,7 +319,7 @@
                                 options = options.replace(oldOption, currentOption);
                             } else {
                                 options += currentOption;
-                                options = options.replace(/page=\d/g, 'page=1');
+                                options = options.replace(/page=\d+/g, 'page=1');
                             }
                             //check for page
                             if (options.indexOf('page=') === -1) {

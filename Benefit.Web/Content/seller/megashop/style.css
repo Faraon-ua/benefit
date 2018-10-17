@@ -2648,23 +2648,31 @@ a {
     position: relative;
     display: inline-block;
     vertical-align: top;
-    padding: 6px 30px;
     font-family: inherit;
-    font-size: 13px;
     line-height: 19px;
     color: #fff;
     border: 2px solid #FF9F00;
-    background-color: #FF9F00;
+    background-color:#FF9F00;
     border-radius: 2px;
     text-decoration: none;
     text-align: center;
     cursor: pointer;
+    padding:9px 15px 9px 15px; font-size:14px;
+}
+.disable_button {
+    background-color: #d3d4d5;
+    border: 2px solid #d3d4d5;
+    color: #fff;
+}
+.disable_button:hover {
+    background-color: #c2c2c2;
+    border: 2px solid #c2c2c2;
 }
 
-.disable_button {
-    background-color: #fff;
-    cursor: default;
-    color: #333;
+.fn_is_stock:hover {
+    background-color: #ff820b;
+    border-color: #ff820b;
+    color: #fff;
 }
 
 .button:hover {
@@ -3403,7 +3411,7 @@ a {
 .product_name {
     display: block;
     font-size: 13px;
-    color: #105BD5;
+    color: #00006b;
     margin-bottom: 5px;
     text-decoration: none;
     height: 35px;

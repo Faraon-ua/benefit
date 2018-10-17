@@ -301,7 +301,7 @@ namespace Benefit.Services.Domain
             return cacheCats as List<Category>;
         }
 
-        public ProductsWithParametersList GetSellerCatalogProducts(string sellerId, string categoryId, string options, int skip = 0, int take = ListConstants.DefaultTakePerPage, bool fetchParameters = true)
+        public ProductsWithParametersList GetSellerCatalogProducts(string sellerId, string categoryId, string options, int take = ListConstants.DefaultTakePerPage, bool fetchParameters = true)
         {
             var regionId = RegionService.GetRegionId();
             var result = new ProductsWithParametersList();
@@ -331,7 +331,6 @@ namespace Benefit.Services.Domain
                 }
                 allIds.Add(categoryId);
                 items = items.Where(entry => allIds.Contains(entry.CategoryId));
-                var a = items.Where(entry => allIds.Contains(entry.CategoryId)).ToList();
             }
             if (!string.IsNullOrEmpty(sellerId))
             {

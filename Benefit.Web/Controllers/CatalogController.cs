@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
@@ -81,8 +82,15 @@ namespace Benefit.Web.Controllers
 
         public ActionResult GetProducts(string categoryId, string sellerId, string options, int page, SellerEcommerceTemplate? layout)
         {
-            var skip = page * ListConstants.DefaultTakePerPage;
-            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, skip, ListConstants.DefaultTakePerPage, false).Products;
+            if (options.Contains("page"))
+            {
+                options = Regex.Replace(options, "page=\\d+", "page=" + page);
+            }
+            else
+            {
+                options += "page=" + page;
+            }
+            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, ListConstants.DefaultTakePerPage, false).Products;
             var templateName = "_ProductPartial";
             if (layout.HasValue)
             {

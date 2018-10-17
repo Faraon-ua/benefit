@@ -418,33 +418,33 @@ $(function(){
 	});
 
 
-    $('.featured_products .product_name').matchHeight({
-        byRow: false
-    });
-    $('.featured_products .preview_details').matchHeight({
-        byRow: false
-    });
-    $('.new_products .product_name').matchHeight({
-        byRow: false
-    });
-    $('.new_products .preview_details').matchHeight({
-        byRow: false
-    });
-    $('.discounted_products .product_name').matchHeight({
-        byRow: false
-    });
-    $('.discounted_products .preview_details').matchHeight({
-        byRow: false
-    });
-    $('.related .product_name').matchHeight({
-        byRow: false
-    });
-    $('.related .preview_details').matchHeight({
-        byRow: false
-    });
-    $('.fn_categories .product_name').matchHeight();
-    $('.fn_categories .preview_details').matchHeight();
-    $('.fn_blog_item').matchHeight();
+    //$('.featured_products .product_name').matchHeight({
+    //    byRow: false
+    //});
+    //$('.featured_products .preview_details').matchHeight({
+    //    byRow: false
+    //});
+    //$('.new_products .product_name').matchHeight({
+    //    byRow: false
+    //});
+    //$('.new_products .preview_details').matchHeight({
+    //    byRow: false
+    //});
+    //$('.discounted_products .product_name').matchHeight({
+    //    byRow: false
+    //});
+    //$('.discounted_products .preview_details').matchHeight({
+    //    byRow: false
+    //});
+    //$('.related .product_name').matchHeight({
+    //    byRow: false
+    //});
+    //$('.related .preview_details').matchHeight({
+    //    byRow: false
+    //});
+    //$('.fn_categories .product_name').matchHeight();
+    //$('.fn_categories .preview_details').matchHeight();
+    //$('.fn_blog_item').matchHeight();
 
     /* Зум картинок в карточке */
     $('[data-fancybox]').fancybox({
