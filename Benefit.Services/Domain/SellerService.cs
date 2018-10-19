@@ -9,7 +9,6 @@ using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -25,11 +24,19 @@ namespace Benefit.Services.Domain
         public string AddNotificationChannel(string sellerId, string channelAddress, NotificationChannelType channelType)
         {
             var seller = db.Sellers.Find(sellerId);
-            if (seller == null) return null;
+            if (seller == null)
+            {
+                return null;
+            }
+
             var existingNotification =
                 db.NotificationChannels.FirstOrDefault(
                     entry => entry.SellerId == sellerId && entry.Address == channelAddress);
-            if (existingNotification != null) return seller.Name;
+            if (existingNotification != null)
+            {
+                return seller.Name;
+            }
+
             var notificationCHannel = new NotificationChannel()
             {
                 Id = Guid.NewGuid().ToString(),
@@ -116,7 +123,11 @@ namespace Benefit.Services.Domain
                 var optionSegments = options.Split(';');
                 foreach (var optionSegment in optionSegments)
                 {
-                    if (optionSegment == string.Empty) continue;
+                    if (optionSegment == string.Empty)
+                    {
+                        continue;
+                    }
+
                     var optionKeyValue = optionSegment.Split('=');
                     var optionKey = optionKeyValue.First();
                     var optionValues = optionKeyValue.Last().Split(',');
@@ -168,7 +179,7 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case SellerSortOption.Rating:
-                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry=>entry.Status).ThenByDescending(entry => entry.Reviews.Count);
+                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry => entry.Status).ThenByDescending(entry => entry.Reviews.Count);
                     break;
                 case SellerSortOption.NameAsc:
                     sellers = sellers.OrderBy(entry => entry.Name);
@@ -342,10 +353,14 @@ namespace Benefit.Services.Domain
             var sort = ProductSortOption.Rating;
             if (options != null)
             {
-                var optionSegments = options.Split(';').OrderBy(entry=>entry.Contains("page=")).ToList();
+                var optionSegments = options.Split(';').OrderBy(entry => entry.Contains("page=")).ToList();
                 foreach (var optionSegment in optionSegments)
                 {
-                    if (optionSegment == string.Empty) continue;
+                    if (optionSegment == string.Empty)
+                    {
+                        continue;
+                    }
+
                     var optionKeyValue = optionSegment.Split('=');
                     var optionKey = optionKeyValue.First();
                     var optionValues = optionKeyValue.Last().Split(',');
@@ -378,7 +393,7 @@ namespace Benefit.Services.Domain
                                     break;
                             }
                             result.ProductsNumber = items.Count();
-                            items = items.Skip(ListConstants.DefaultTakePerPage*(page-1));
+                            items = items.Skip(ListConstants.DefaultTakePerPage * (page - 1));
                             break;
                         case "seller":
                             var sellerIds =
@@ -414,7 +429,7 @@ namespace Benefit.Services.Domain
                             var prices = optionValues[0].Split('-');
                             var lowerPrice = int.Parse(prices[0]);
                             var upperPrice = int.Parse(prices[1]);
-                            items = items.Where(entry => entry.Price > lowerPrice && entry.Price < upperPrice);
+                            items = items.Where(entry => entry.Price * (entry.Currency == null ? 1 : entry.Currency.Rate) > lowerPrice && entry.Price * (entry.Currency == null ? 1 : entry.Currency.Rate) < upperPrice);
                             break;
                         default:
                             items =
@@ -481,7 +496,7 @@ namespace Benefit.Services.Domain
                 productParametersInItems.Add("available");
                 productParametersInItems.Add("notavailable");
                 productParameters.InsertRange(0, generalParams);
-                var productParameterNames = productParameters.Where(entry=>!entry.SkipCheckInItems).Select(entry => entry.UrlName).Distinct().ToList();
+                var productParameterNames = productParameters.Where(entry => !entry.SkipCheckInItems).Select(entry => entry.UrlName).Distinct().ToList();
                 foreach (var productParameterName in productParameterNames)
                 {
                     var parameters = productParameters.Where(entry => entry.UrlName == productParameterName).ToList();
@@ -539,11 +554,17 @@ namespace Benefit.Services.Domain
                 {
                     new ProductParameterValue()
                     {
-                        ParameterValue = ((int)items.Select(entry=>entry.Price).DefaultIfEmpty(0).Min()).ToString(),
+                        ParameterValue =
+                        ((int) items
+                            .Select(entry => entry.Price * (entry.Currency == null ? 1 : entry.Currency.Rate))
+                            .DefaultIfEmpty(0).Min()).ToString()
                     },
                     new ProductParameterValue()
                     {
-                        ParameterValue = ((int)items.Select(entry=>entry.Price).DefaultIfEmpty(0).Max()).ToString(),
+                        ParameterValue =
+                        ((int) items
+                            .Select(entry => entry.Price * (entry.Currency == null ? 1 : entry.Currency.Rate))
+                            .DefaultIfEmpty(0).Max()).ToString()
                     }
                 }
             });
@@ -590,7 +611,7 @@ namespace Benefit.Services.Domain
                    items.Select(entry => entry.Vendor).Distinct().ToList().Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
                    {
                        ParameterValue = entry,
-                       ParameterValueUrl = entry.Replace("&","")
+                       ParameterValueUrl = entry.Replace("&", "")
                    }).OrderBy(entry => entry.ParameterValue).ToList();
             if (vendorParams.Count >= 1)
             {

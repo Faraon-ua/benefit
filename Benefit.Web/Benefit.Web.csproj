@@ -1384,6 +1384,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\owl.carousel.min.js" />
+    <Content Include="Scripts\v3\product-filters.js" />
     <Content Include="Scripts\scripts.js" />
     <Content Include="Scripts\seller\jquery-migrate-1.js" />
     <Content Include="Scripts\seller\jquery.js" />

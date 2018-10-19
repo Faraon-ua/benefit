@@ -64,6 +64,10 @@
                 ".remove-filter",
                 function() {
                     var optionName = $(this).parent().attr("data-option-name");
+                    if (optionName === "price") {
+                        location.href = location.href.replace(/price=\d+-\d+;/g, '');
+                        return;
+                    }
                     var optValue = decodeURI($(this).parent().attr("data-option-value"));
                     var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
                     if (checkbox.length === 0) {
