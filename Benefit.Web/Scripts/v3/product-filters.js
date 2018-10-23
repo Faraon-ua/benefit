@@ -104,6 +104,9 @@ $(function() {
                     $(".paging[data-page=" + (page - 1) + "]").parent()
                         .before("<li class='page_item split'>...</li>");
                 }
+                if (page >= pagesMaxNumber) {
+                    $(".paging.next").parent().hide();
+                }
                 if (page < (maxNumber - 1)) {
                     $(".paging[data-page=" + (page + 1) + "]").parent()
                         .after("<li class='page_item split'>...</li>");
@@ -171,6 +174,12 @@ $(function() {
         (currentPage - 1) +
         "]").not(".prev,.next");
     $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
+    if (currentPage >= pagesMaxNumber) {
+        $(".paging.next").parent().hide();
+    }
+    if (currentPage >0) {
+        $(".paging.prev").parent().show();
+    }
     $(".paging[data-page=2]").parent().after("<li class='page_item split'>...</li>");
 
     //select all checkboxes from url
