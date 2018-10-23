@@ -239,7 +239,7 @@
                                 options += currentOption;
                             }
                             if (lastSegment !== '@Model.Category.UrlName') {
-                                var locBuilder = location.href.replace(lastSegment + "/", "") + options;
+                                var locBuilder = location.href.replace(lastSegment, "") + options;
                                 if (options.length > 0)
                                     locBuilder += "/";
                                 location.href = locBuilder;
@@ -248,7 +248,7 @@
                                 if (location.href[location.href.length - 1] !== "/") {
                                     locBuilder += "/";
                                 }
-                                window.location.href = locBuilder + options + "/";
+                                window.location.href = locBuilder + options;
                             }
                         });
                 </text>

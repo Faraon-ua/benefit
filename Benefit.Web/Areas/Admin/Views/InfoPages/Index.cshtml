@@ -47,15 +47,12 @@
 
 <div class="tabbable">
     <ul class="nav nav-tabs" id="myTab">
-        @if (User.IsInRole(DomainConstants.AdminRoleName))
-        {
-            <li class="active">
-                <a data-toggle="tab" href="#news">
-                    <i class="green icon-book bigger-110"></i>
-                    Новини
-                </a>
-            </li>
-        }
+        <li class="active">
+            <a data-toggle="tab" href="#news">
+                <i class="green icon-book bigger-110"></i>
+                Новини
+            </a>
+        </li>
         <li>
             <a data-toggle="tab" href="#pages">
                 <i class="green icon-desktop bigger-110"></i>
@@ -65,11 +62,53 @@
     </ul>
 
     <div class="tab-content">
-        @if (User.IsInRole(DomainConstants.AdminRoleName))
-        {
-            <div id="news" class="tab-pane in active">
-                <ol class="dd-list width-30" id="infoPages">
-                    @foreach (var page in Model.Where(entry => entry.IsNews))
+        <div id="news" class="tab-pane in active">
+            <ol class="dd-list width-30" id="infoPages">
+                @{
+                    var news = Model.Where(entry => entry.IsNews);
+                }
+                @if (news.Any())
+                {
+                     foreach (var page in news)
+                     {
+                         <li class="dd-item cursor-move" data-pageid="@page.Id">
+                             <div class="dd-handle">
+                                 @page.Name
+
+                                 <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new {id = page.Id})" onclick="return confirm('Видалити сторінку @page.Name?');">
+                                     <i class="icon-trash"></i>
+                                 </a>
+                                 <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new {id = page.Id})">
+                                     <i class="icon-edit"></i>
+                                 </a>
+                                 <div style="clear: both;"></div>
+                             </div>
+                         </li>
+                    }
+                }
+                else
+                {
+                    <p>Немає жодної новини, створіть нову</p>
+                }
+            </ol>
+            @* @if (Model.Count() > 2)
+                {
+                    <hr />
+                    <div class="control-group">
+                        <button id="savePagesOrder" class="btn btn-success width-20" onclick="SaveCatOrder();">Зберегти сортування</button>
+                        @Html.ActionLink("Cкасувати", "Index", "InfoPages", null, new { @class = "btn btn-danger width-20" })
+                    </div>
+                }*@
+        </div>
+        <div id="pages" class="tab-pane">
+            <ol class="dd-list width-30" id="infoPages">
+                @{
+                    var pages = Model.Where(entry => !entry.IsNews);
+                }
+                @if (pages.Any())
+                {
+
+                    foreach (var page in pages)
                     {
                         <li class="dd-item cursor-move" data-pageid="@page.Id">
                             <div class="dd-handle">
@@ -85,34 +124,10 @@
                             </div>
                         </li>
                     }
-                </ol>
-                @* @if (Model.Count() > 2)
-                    {
-                        <hr />
-                        <div class="control-group">
-                            <button id="savePagesOrder" class="btn btn-success width-20" onclick="SaveCatOrder();">Зберегти сортування</button>
-                            @Html.ActionLink("Cкасувати", "Index", "InfoPages", null, new { @class = "btn btn-danger width-20" })
-                        </div>
-                    }*@
-            </div>
-        }
-        <div id="pages" class="tab-pane @(Seller.CurrentAuthorizedSellerId == null ? "": "in active")">
-            <ol class="dd-list width-30" id="infoPages">
-                @foreach (var page in Model.Where(entry => !entry.IsNews))
+                }
+                else
                 {
-                    <li class="dd-item cursor-move" data-pageid="@page.Id">
-                        <div class="dd-handle">
-                            @page.Name
-
-                            <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new {id = page.Id})" onclick="return confirm('Видалити сторінку @page.Name?');">
-                                <i class="icon-trash"></i>
-                            </a>
-                            <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new {id = page.Id})">
-                                <i class="icon-edit"></i>
-                            </a>
-                            <div style="clear: both;"></div>
-                        </div>
-                    </li>
+                    <p>Немає жодної інформаційної сторінки, створіть нову</p>   
                 }
             </ol>
         </div>

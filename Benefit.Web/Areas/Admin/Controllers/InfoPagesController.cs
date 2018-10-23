@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
+using Benefit.Common.Extensions;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
@@ -32,7 +33,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (Seller.CurrentAuthorizedSellerId != null)
             {
-                if (db.InfoPages.Count(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId) > 3)
+                if (db.InfoPages.Count(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && !entry.IsNews) > 3)
                 {
                     TempData["ErrorMessage"] = "Ви не можете створити більшу кількість сторінок";
                     return RedirectToAction("Index");
@@ -67,6 +68,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateOrUpdate(InfoPage infopage)
         {
+            if (infopage.UrlName == null)
+            {
+                infopage.UrlName = infopage.Name.Translit();
+                ModelState.Remove("UrlName");
+            }
             if (ModelState.IsValid)
             {
                 if (Seller.CurrentAuthorizedSellerId != null)

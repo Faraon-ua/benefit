@@ -61,18 +61,7 @@
                             <i class="wish_icon"></i>
                             <span class="informer_name tablet-hidden" data-language="wishlist_header">Улюблене</span>
                         </a>
-
-
-                        @*<div id="comparison" class="informer">
-                                <i class="compare_icon"></i>
-                                <span class="informer_name tablet-hidden" data-language="index_comparison">Порівняння</span>
-
-                            </div>*@
                     </div>
-
-
-
-
                     <div class="fn_account account_switch md-hidden">
                         <i class="account_icon"></i>
                     </div>
@@ -143,6 +132,12 @@
                             <li class="menu_item">
                                 <a class="menu_link" href="@Url.Action("gallery", "home")">Фотогалерея</a>
                             </li>
+                            @if (seller.InfoPages.Any(entry => entry.IsNews && entry.IsActive))
+                            {
+                                <li class="menu_item">
+                                    <a class="menu_link" href="@Url.Action("Index", "News")">Новини</a>
+                                </li>
+                            }
                             <li class="menu_item">
                                 <a class="menu_link" href="@Url.Action("about", "home")">Про нас</a>
                             </li>
@@ -155,7 +150,6 @@
                             <div class="cart_info">
                                 <span class="cart_counter cart-items-number">0</span>
                                 <span class="cart_title small-hidden" data-language="index_cart">Кошик</span>
-                                @*<span class="cart_total small-hidden">0 грн.</span>*@
                             </div>
 
                         </a>
@@ -218,7 +212,7 @@
                 @RenderBody()
                 <div class="col-md-4 col-lg-3 sidebar_bottom">
                     <div id="viewed-products-wrap">
-                       
+
                     </div>
                 </div>
             </div>
@@ -231,10 +225,9 @@
         <div class="footer_top">
             <div class="container">
                 <div class="row">
-                    @foreach (var page in seller.InfoPages.OrderBy(entry => entry.Order).Take(3))
+                    @foreach (var page in seller.InfoPages.Where(entry => !entry.IsNews).OrderBy(entry => entry.Order).Take(3))
                     {
                         <a class="col-xs-6 col-lg-4 col-xl-4 advantage" href="@Url.RouteUrl("pagesRoute", new {id = page.UrlName})">
-                            @*<i class="advantage_1"></i>*@
                             <img src="~/Images/NewsLogo/@page.ImageUrl" />
                             <div class="advantage_text">
                                 <span data-language="advantage_1">@page.Name</span>
@@ -254,7 +247,7 @@
                             <span>Інформація</span>
                         </div>
                         <div class="foot_menu">
-                            @foreach (var page in seller.InfoPages.OrderBy(entry => entry.Order).Take(3))
+                            @foreach (var page in seller.InfoPages.Where(entry=>!entry.IsNews).OrderBy(entry => entry.Order).Take(3))
                             {
                                 <div class="foot_item"><a href="@Url.RouteUrl("pagesRoute", new {id = page.UrlName})">@page.Name</a></div>
                             }
@@ -377,49 +370,6 @@
             </a>
         </div>
     </footer>
-
-
-
-    <div class="hidden">
-        <form id="fn_callback" class="callback_form popup fn_validate_callback" method="post" novalidate="novalidate">
-
-
-            <div class="popup_heading">
-                <span data-language="callback_header">Заказ обратного звонка</span>
-            </div>
-
-
-
-            <div class="form_group">
-                <input class="form_input" name="name" data-language="form_name" placeholder="Имя*" type="text">
-            </div>
-
-
-            <div class="form_group">
-                <input class="form_input" name="phone" data-language="form_phone" placeholder="Номер телефона*" type="text">
-            </div>
-
-
-            <div class="form_group">
-                <textarea class="form_textarea" rows="3" name="message" data-language="form_enter_message" placeholder="Введите сообщение"></textarea>
-            </div>
-
-
-            <div class="center">
-
-                <div class="captcha">
-                    <div class="secret_number">37 + ? =  40</div>
-                    <input class="form_input input_captcha" name="captcha_code" placeholder="Введите капчу*" type="text">
-                </div>
-            </div>
-
-
-            <div class="center">
-                <input class="button" name="callback" data-language="callback_order" value="Заказать" type="submit">
-            </div>
-
-        </form>
-    </div>
 
     <script src="~/Scripts/seller/megashop/jquery_003.js"></script>
 

@@ -718,7 +718,6 @@ td.visible-print {
 }
 
 .stickers {
-    width: 200px;
     left: 0;
     padding-top: 10px;
     z-index: 3;

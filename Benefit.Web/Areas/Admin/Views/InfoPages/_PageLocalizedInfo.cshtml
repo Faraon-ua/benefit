@@ -1,6 +1,9 @@
 ﻿@using System.Globalization
 @using Benefit.Domain.Models
 @model Benefit.Domain.Models.InfoPage
+@{
+    var isSellerMode = Seller.CurrentAuthorizedSellerId != null;
+}
 <div class="tabbable">
     <ul class="nav nav-tabs" id="myTab">
         @*<li class="active">
@@ -26,7 +29,7 @@
                     @Html.ValidationMessageFor(model => model.Name)
                 </div>
             </div>
-            <div class="form-group">
+            <div class="form-group @(isSellerMode ? "hidden":"")">
                 <label class="control-label col-md-1" for="UrlName">Url назва</label>
                 <div class="col-md-10">
                     @Html.TextBoxFor(model => model.UrlName, new { @class = "urlName" })
@@ -53,14 +56,15 @@
                     @Html.EditorFor(model => model.IsActive)
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-1" for="IsNews">Новина</label>
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.IsNews)
+                </div>
+            </div>
             @if (Seller.CurrentAuthorizedSellerId == null)
             {
-                <div class="form-group">
-                    <label class="control-label col-md-1" for="IsNews">Новина</label>
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.IsNews)
-                    </div>
-                </div>
                 <div class="form-group">
                     <label class="control-label col-md-1" for="Name">Дата створення</label>
                     <div class="col-md-10">

@@ -1,0 +1,43 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@model IEnumerable<InfoPage>
+@{
+    ViewBag.Title = "Новини";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+
+<div class="col-md-8 col-xl-9 content">
+    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Новини" } })
+
+    <div class="fn_ajax_content margin-top-10">
+        <div>
+            <h1 class="h2">
+                <span>Новини</span>
+            </h1>
+            <div class="blog row">
+                @foreach (var news in Model)
+                {
+                    <div class="col-sm-6 col-xl-4">
+                        <div class="fn_blog_item blog_item" style="height: 211px;">
+                            <div class="clearfix">
+                                <a class="blog_image" href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})">
+                                    <img class="blog_img" src="~/Images/NewsLogo/@news.ImageUrl" alt="@news.Title" title="@news.Title">
+                                </a>
+                                <div class="blog_header">
+                                    <a class="blog_name" href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})">@news.Name</a>
+                                    <div class="blog_date"><span>@news.CreatedOn.ToShortDateString()</span></div>
+                                </div>
+                            </div>
+                            <div class="blog_annotation">
+                                <p>
+                                    @news.ShortContent
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
