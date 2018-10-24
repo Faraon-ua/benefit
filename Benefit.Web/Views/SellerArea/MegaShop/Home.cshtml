@@ -1,4 +1,5 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @using Benefit.Services.Domain
@@ -8,6 +9,7 @@
     Layout = "_SellerLayout.cshtml";
     ViewBag.Title = "Головна";
     var categories = ViewBag.Categories;
+    var seller = ViewBag.Seller as Seller;
 }
 @section styles{
     <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
@@ -24,6 +26,33 @@
             '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
     </script>
+}
+@section LeftAside
+{
+    @{
+        var sellerNews = seller.InfoPages.Where(entry => entry.IsActive && entry.IsNews).OrderByDescending(entry=>entry.CreatedOn).Take(3).ToList();
+    }
+    @if (sellerNews.Any())
+    {
+        <div class="block">
+            <div class="h1">
+                <a href="@Url.Action("Index", "News")">
+                    <span data-language="main_news">Новини</span>
+                </a>
+            </div>
+            <div class="news">
+                @foreach (var news in sellerNews)
+                {
+                    <div class="news_item">
+                        <a class="news_name" href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})">@news.Name</a>
+                        <div class="news_date"><span>@news.CreatedOn.ToLocalTimeWithDateFormat()</span></div>
+                        <div class="news_annotation">
+                            <p>@news.ShortContent</p></div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
 }
 
 <div class="col-md-8 col-xl-9 content">

@@ -470,9 +470,12 @@ namespace Benefit.Services.Domain
             //fetch product parameters
             if (categoryId != null && fetchParameters)
             {
+                var categoryIds = db.Categories.Where(entry => entry.MappedParentCategoryId == categoryId)
+                    .Select(entry => entry.Id).ToList();
+                categoryIds.Add(categoryId);
                 var productParameters = db.ProductParameters
                     .Include(entry => entry.ProductParameterProducts)
-                    .Where(entry => entry.CategoryId == categoryId && entry.DisplayInFilters).ToList();
+                    .Where(entry => categoryIds.Contains(entry.CategoryId) && entry.DisplayInFilters).ToList();
                 if (sellerId != null)
                 {
                     var mappedCategories = db.Categories

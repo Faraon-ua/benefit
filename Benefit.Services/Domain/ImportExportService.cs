@@ -408,10 +408,6 @@ namespace Benefit.Services.Domain
                 foreach (var parameter in xmlParameters)
                 {
                     var cat = categories.FirstOrDefault(entry => entry.ExternalIds == categoryGroupParams.Key);
-                    if (cat == null)
-                    {
-                        var a = 1;
-                    }
                     var productParameter = new ProductParameter()
                     {
                         Id = Guid.NewGuid().ToString(),
