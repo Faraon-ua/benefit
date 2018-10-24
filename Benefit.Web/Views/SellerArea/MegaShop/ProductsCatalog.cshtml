@@ -34,6 +34,7 @@
         var categoryUrlName = '@Model.Category.UrlName.ToLower()';
         var sellerId = '@seller.Id';
         var pagesCount = parseInt('@Model.PagesCount');
+        var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
     </script>
     <script src="~/Scripts/v3/products.js"></script>
     <script src="~/Scripts/v3/product-filters.js"></script>
@@ -99,7 +100,7 @@
         {
             if (Model.Items.Count > ListConstants.DefaultTakePerPage)
             {
-                <div class="ajax_load_btn" data-page="0">
+                <div class="ajax_load_btn" data-page="1">
                     <span class="more_text_ajax">Показати ще</span>
                 </div>
             }

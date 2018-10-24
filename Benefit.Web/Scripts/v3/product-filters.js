@@ -28,7 +28,7 @@ $(function() {
         $(".product_buy").click();
     });
 
-    $(".ajax_load_btn, .paging").click(function(e) {
+    $(".ajax_load_btn, .paging").click(function (e) {
         e.preventDefault();
         $(".products-wrapper").css("opacity", "0.3");
         var moreBtn = $(this);
@@ -57,18 +57,20 @@ $(function() {
                 $(".paging").parent().show();
                 $(".split").remove();
                 if (moreBtn.hasClass("ajax_load_btn")) {
-                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                    if (data.number <= takePerPage) {
                         moreBtn.hide();
                         $(".paging.next").parent().hide();
+                        $(".ajax_load_btn").hide();
                     } else {
                         $(".paging.next").parent().show();
+                        $(".ajax_load_btn").show();
                     }
                     $(".product-item:last").after(data.products);
                     moreBtn.attr("data-page", page + 1);
                     $(".paging[data-page=" + page + "]:not(.prev):not(.next)").parent()
                         .addClass("active");
                 } else {
-                    if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
+                    if (data.number <= takePerPage) {
                         $(".ajax_load_btn").hide();
                         $(".paging.next").parent().hide();
                     } else {
@@ -158,7 +160,7 @@ $(function() {
             currentPage = parseInt(result[1]) - 1;
             $(".paging").parent().removeClass("active");
             $("a[data-page=" + currentPage + "]").parent().addClass("active");
-            $(".ajax_load_btn").attr("data-page", currentPage);
+            $(".ajax_load_btn").attr("data-page", currentPage+1);
         }
     }
     //hide redundant pages
@@ -176,6 +178,7 @@ $(function() {
     $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
     if (currentPage >= pagesMaxNumber) {
         $(".paging.next").parent().hide();
+        $(".ajax_load_btn").hide();
     }
     if (currentPage >0) {
         $(".paging.prev").parent().show();
