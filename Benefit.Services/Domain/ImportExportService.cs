@@ -599,6 +599,16 @@ namespace Benefit.Services.Domain
             db.InsertIntoMembers(productParameterValuesToAdd);
             productParameterProductsToAdd = productParameterProductsToAdd.Where(entry => entry != null).ToList();
             db.InsertIntoMembers(productParameterProductsToAdd);
+            var mappedProductParameters =
+                db.MappedProductParameters.Where(entry => entry.SellerId == sellerId).ToList();
+            foreach (var mappedProductParameter in mappedProductParameters)
+            {
+                var pp = productParametersToAdd.FirstOrDefault(entry => entry.Name == mappedProductParameter.Name);
+                if (pp != null)
+                {
+                    pp.ParentProductParameterId = mappedProductParameter.ProductParameterId;
+                }
+            }
             foreach (var image in imagesToAddList.Where(entry => entry.ImageUrl.Contains(SettingsService.BaseHostName)))
             {
                 var uri = new Uri(image.ImageUrl);

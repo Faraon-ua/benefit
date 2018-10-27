@@ -10,6 +10,8 @@ namespace Benefit.Domain.Models
         public ProductParameter()
         {
             ProductParameterValues = new Collection<ProductParameterValue>();
+            MappedProductParameters = new List<MappedProductParameter>();
+            ChildProductParameters = new List<ProductParameter>();
         }
         [Key]
         public string Id { get; set; }
@@ -34,8 +36,13 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string CategoryId { get; set; }
         public virtual Category Category { get; set; }
+        [MaxLength(128)]
+        public string ParentProductParameterId { get; set; }
+        public virtual ProductParameter ParentProductParameter { get; set; }
         public virtual ICollection<ProductParameterValue> ProductParameterValues { get; set; }
         public virtual ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
+        public virtual ICollection<MappedProductParameter> MappedProductParameters { get; set; }
+        public virtual ICollection<ProductParameter> ChildProductParameters { get; set; }
         [NotMapped]
         public bool SkipCheckInItems { get; set; }
     }

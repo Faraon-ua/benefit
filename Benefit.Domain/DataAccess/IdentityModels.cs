@@ -39,6 +39,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<ProductParameter> ProductParameters { get; set; }
         public DbSet<ProductParameterValue> ProductParameterValues { get; set; }
         public DbSet<ProductParameterProduct> ProductParameterProducts { get; set; }
+        public DbSet<MappedProductParameter> MappedProductParameters { get; set; }
         public DbSet<InfoPage> InfoPages { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Order> Orders { get; set; }

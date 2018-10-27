@@ -526,6 +526,10 @@
     <Compile Include="Migrations\201808211002494_ExtendBenefitCardId.Designer.cs">
       <DependentUpon>201808211002494_ExtendBenefitCardId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201810261300470_AddMappedProductParameter.cs" />
+    <Compile Include="Migrations\201810261300470_AddMappedProductParameter.Designer.cs">
+      <DependentUpon>201810261300470_AddMappedProductParameter.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -535,6 +539,7 @@
     <Compile Include="Models\Excel\ExcelProduct.cs" />
     <Compile Include="Models\ExportImport.cs" />
     <Compile Include="Models\Favorite.cs" />
+    <Compile Include="Models\MappedProductParameter.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
     <Compile Include="Models\Address.cs" />
@@ -916,6 +921,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201808211002494_ExtendBenefitCardId.resx">
       <DependentUpon>201808211002494_ExtendBenefitCardId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201810261300470_AddMappedProductParameter.resx">
+      <DependentUpon>201810261300470_AddMappedProductParameter.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

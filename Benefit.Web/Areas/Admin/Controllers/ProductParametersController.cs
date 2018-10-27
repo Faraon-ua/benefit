@@ -19,9 +19,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult Index(string categoryId)
         {
             if (categoryId == null) return HttpNotFound();
-            var category = db.Categories.Find(categoryId);
-            var productparameters = db.ProductParameters.Include(p => p.Category).Where(entry => entry.CategoryId == categoryId).OrderBy(entry=>entry.Order).ToList();
-            var model = new KeyValuePair<Category, IEnumerable<ProductParameter>>(category, productparameters);
+            var category = db.Categories
+                .Include(entry=>entry.MappedCategories.Select(mc=>mc.ProductParameters))
+                .Include(entry=>entry.MappedCategories.Select(mc=>mc.Seller))
+                .FirstOrDefault(entry=>entry.Id == categoryId);
+            var productparameters = db.ProductParameters
+                .Include(p => p.Category)
+                .Include(p => p.MappedProductParameters)
+                .Where(entry => entry.CategoryId == categoryId).OrderBy(entry=>entry.Order).ToList();
+            ViewBag.Category = category;
+            var model = new Dictionary<Seller, IEnumerable<ProductParameter>>
+            {
+                {new Seller()
+                {
+                    Name = "Основні"
+                }, productparameters}
+            };
+            var catsBySeller = category.MappedCategories.GroupBy(entry => entry.Seller).ToList();
+            foreach (var catBySeller in catsBySeller)
+            {
+                model.Add(catBySeller.Key, catBySeller.SelectMany(entry=>entry.ProductParameters));
+            }
             return View(model);
         }
 
@@ -37,6 +55,31 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             db.SaveChanges();
             return Json("Сортування параметрів збережено");
+        }
+
+        [HttpPost]
+        public ActionResult ConnectToParameter(string sourceId, string targetId)
+        {
+            var sourcePP = db.ProductParameters
+                .Include(entry => entry.Category.Seller)
+                .FirstOrDefault(entry => entry.Id == sourceId);
+            sourcePP.ParentProductParameterId = targetId;
+            if (!db.MappedProductParameters.Any(entry =>
+                entry.ProductParameterId == targetId && entry.SellerId == sourcePP.Category.SellerId &&
+                entry.Name == sourcePP.Name))
+            {
+                var mappedPP = new MappedProductParameter()
+                {
+                    ProductParameterId = targetId,
+                    SellerId = sourcePP.Category.SellerId,
+                    Name = sourcePP.Name
+                };
+                db.MappedProductParameters.Add(mappedPP);
+                db.Entry(sourcePP).State = EntityState.Modified;
+            }
+
+            db.SaveChanges();
+            return new HttpStatusCodeResult(200);
         }
 
         public ActionResult GetProductParameterDefinedValues(string parameterId, int? amount = null, string selectedValue = null, string selectedText = null)

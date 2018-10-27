@@ -133,8 +133,21 @@ $(function () {
     try {
         $('.number-input').mask("#");
     } catch (err) {
-
+        console.log(err);
     }
+
+    $(".show-more-options").click(function (e) {
+        e.preventDefault();
+        $(this).parent().prev().css("max-height", "");
+        $(this).parent().find(".show-less-options").show();
+        $(this).hide();
+    });
+    $(".show-less-options").click(function (e) {
+        e.preventDefault();
+        $(this).parent().prev().css("max-height", "305px");
+        $(this).parent().find(".show-more-options").show();
+        $(this).hide();
+    });
 
     setTimeout(function () {
         $("#flashMessage").html("");

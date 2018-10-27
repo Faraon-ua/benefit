@@ -1,22 +1,42 @@
-﻿@model  KeyValuePair<Benefit.Domain.Models.Category, IEnumerable<Benefit.Domain.Models.ProductParameter>>
+﻿@using Benefit.Domain.Models
+@model  Dictionary<Seller, IEnumerable<ProductParameter>>
 
 @{
-    ViewBag.Title = "Характеристики товарів для категорії " + Model.Key.Name;
+    var category = ViewBag.Category as Category;
+    ViewBag.Title = "Характеристики товарів для категорії " + category.Name;
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var generalParameters = Model.FirstOrDefault(entry => entry.Key.Id == null).Value;
 }
 @section styles{
     <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
 }
 
 @section scripts{
-    <script src="~/Scripts/common.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.full.min.js"></script>
     <script>
         var saveParametersOrdering = '@Url.Action("Index")';
+        var connectParamsUrl= '@Url.Action("ConnectToParameter")';
 
         $(function () {
             $(".parameters-list").sortable();
             $(".parameters-list").disableSelection();
+
+            $(".connect-parameters").click(function () {
+                var sourceId = $(this).attr("data-param-id");
+                var targetId = $(this).prev().val();
+                if (!targetId) {
+                    alert("Значення не обрано");
+                    return;
+                }
+                $.post(connectParamsUrl,
+                    {
+                        sourceId,
+                        targetId
+                    }, function() {
+                        alert("Характеристики сполучено");
+                    });
+            });
 
             $("#save-ordering").click(function () {
                 $("#save-ordering").prop("disabled", true);
@@ -41,7 +61,7 @@
         });
 
         function ProductParameterValue(parameterId, valueId) {
-            $("#dialogContainer").load(routePrefix + "/Admin/ProductParameters/ProductParameterValue?parameterId=" + parameterId + "&categoryId=@Model.Key.Id&valueId=" + valueId, function (response, status, xhr) {
+            $("#dialogContainer").load(routePrefix + "/Admin/ProductParameters/ProductParameterValue?parameterId=" + parameterId + "&categoryId=@category.Id&valueId=" + valueId, function (response, status, xhr) {
                 $("#dialog").removeClass('hide').dialog({
                     buttons: [
                         {
@@ -60,48 +80,89 @@
 <div id="dialogContainer">
 
 </div>
-<a class="btn btn-purple btn-sm" href="@Url.Action("CreateOrUpdate", new { categoryId = Model.Key.Id })">Додати характеристику</a>
+<a class="btn btn-purple btn-sm" href="@Url.Action("CreateOrUpdate", new { categoryId = category.Id })">Додати характеристику</a>
 <a class="btn btn-success btn-sm" href="#" id="save-ordering">Зберегти сортування</a>
 <br />
 <hr />
-@foreach (var parameter in Model.Value)
+@foreach (var sellerParameter in Model)
 {
-    <div class="row">
-        <div class="col-sm-4">
-            @if (parameter.Order != null)
-            {
-                <span>
-                    @parameter.Order)
-                </span>
-            }
-            @parameter.Name (@parameter.MeasureUnit)
-            <a href="@Url.Action("CreateOrUpdate", new {id = parameter.Id})">
-                <i class="icon-edit blue"></i>
-            </a>
-            <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = parameter.Id, categoryId = Model.Key.Id})">
-                <i class="icon-remove red"></i>
-            </a>
-            @if (parameter.Type == typeof(string).ToString())
-            {
-                <a onclick="ProductParameterValue('@parameter.Id')" href="#">+ Додати значення</a>
-            }
-        </div>
-        <ul class="parameters-list no-list-style col-sm-2" data-parameter-id="@parameter.Id">
-            @foreach (var prParValue in @parameter.ProductParameterValues.OrderBy(entry => entry.Order))
-            {
-                <li class="well well-sm clearfix margin-bottom-5 cursor-move" data-parameter-value-id="@prParValue.Id">
-                    @prParValue.ParameterValue
-                    <a onclick="ProductParameterValue('@parameter.Id','@prParValue.Id')" href="#">
+    if (sellerParameter.Value.Any())
+    {
+        <h2>@sellerParameter.Key.Name</h2>
+        foreach (var parameter in sellerParameter.Value)
+        {
+            <div class="row">
+                <div class="col-sm-4">
+                    @if (parameter.Order != null)
+                    {
+                        <span>
+                            @parameter.Order)
+                        </span>
+                    }
+                    @parameter.Name (@parameter.MeasureUnit)
+                    <a href="@Url.Action("CreateOrUpdate", new {id = parameter.Id})">
                         <i class="icon-edit blue"></i>
-
-                    </a>
-                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("DeleteValue", new {id = prParValue.Id, categoryId = Model.Key.Id})">
+                    </a> |
+                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = parameter.Id, categoryId = category.Id})">
                         <i class="icon-remove red"></i>
-                    </a>
-                </li>
-            }
-        </ul>
-    </div>
-    <br />
-    <hr />
+                    </a> |
+                    @if (parameter.Type == typeof(string).ToString())
+                    {
+                        <a onclick="ProductParameterValue('@parameter.Id')" href="#">+ Додати значення</a>
+                    } |
+                    @if (parameter.Category.IsSellerCategory)
+                    {
+                        <span>
+                            Сполучити із
+                            <select>
+                                <option>Не обрано</option>
+                                @foreach (var gParam in generalParameters)
+                                {
+                                    <option value="@gParam.Id" @(parameter.ParentProductParameterId == gParam.Id ? "selected" : "")>@gParam.Name</option>
+                                }
+                            </select>
+                            <button class="btn btn-info btn-xs connect-parameters" data-param-id="@parameter.Id">Сполучити</button>
+                        </span>
+                    }
+                </div>
+                @{
+                    var values = parameter.ProductParameterValues.OrderBy(entry => entry.Order).ToList();
+                }
+                <div class="col-sm-2">
+                    <div style="max-height: 305px; overflow: hidden;">
+                        <ul class="parameters-list no-list-style no-margin-left" data-parameter-id="@parameter.Id">
+                            @foreach (var prParValue in values)
+                            {
+                                <li class="well well-sm clearfix margin-bottom-5 cursor-move" data-parameter-value-id="@prParValue.Id">
+                                    @prParValue.ParameterValue
+                                    <a onclick="ProductParameterValue('@parameter.Id', '@prParValue.Id')" href="#">
+                                        <i class="icon-edit blue"></i>
+
+                                    </a>
+                                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("DeleteValue", new {id = prParValue.Id, categoryId = category.Id})">
+                                        <i class="icon-remove red"></i>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    @if (values.Count > 7)
+                    {
+                        <div>
+                            <a href="#" class="show-more-options" style="font-size: 0.9em;">
+                                <i class="fa fa-angle-down"></i>
+                                Ще
+                            </a>
+                            <a href="#" class="show-less-options" style="font-size: 0.9em; display: none;">
+                                <i class="fa fa-angle-up"></i>
+                                Згорнути
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+            <br />
+            <hr />
+        }
+    }
 }
