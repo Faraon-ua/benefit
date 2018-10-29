@@ -242,6 +242,16 @@ namespace Benefit.Web.Controllers
             return View(viewName, seller);
         }
 
+        [FetchSeller(Order = 0)]
+        [FetchCategories(Order = 1)]
+        public ActionResult delivery()
+        {
+            var seller = ViewBag.Seller as Seller;
+            var viewName = string.Format("~/views/sellerarea/{0}/Delivery.cshtml",
+                seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+            return View(viewName, seller);
+        }
+
         [FetchCategories(Order = 1)]
         public ActionResult Map()
         {

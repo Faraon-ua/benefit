@@ -1540,6 +1540,7 @@
     <Content Include="Views\SellerArea\MegaShop\PostRegister.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\_ViewedProducts.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\News.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\Delivery.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

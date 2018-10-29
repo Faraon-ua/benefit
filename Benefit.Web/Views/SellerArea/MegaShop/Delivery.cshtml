@@ -1,0 +1,23 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@{
+    ViewBag.Title = "Доставка та оплата";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+
+<div class="col-md-8 col-xl-9 content">
+
+    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Доставка та оплата" } })
+
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <h1 class="h1">
+                <span data-page="3">Доставка та оплата</span>
+            </h1>
+            <div class="padding">
+                @Html.Raw(seller.ShippingDescription)
+            </div>
+        </div>
+    </div>
+</div>
