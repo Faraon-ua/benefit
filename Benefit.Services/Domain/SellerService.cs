@@ -364,6 +364,10 @@ namespace Benefit.Services.Domain
 
                     var optionKeyValue = optionSegment.Split('=');
                     var optionKey = optionKeyValue.First();
+                    var optionKeysWithChildren = db.ProductParameters.Include(entry => entry.ChildProductParameters)
+                        .FirstOrDefault(entry => entry.UrlName == optionKey && entry.CategoryId == categoryId).ChildProductParameters
+                        .Select(entry => entry.UrlName).Distinct().ToList();
+                    optionKeysWithChildren.Add(optionKey);
                     var optionValues = optionKeyValue.Last().Split(',');
                     switch (optionKey)
                     {
@@ -436,7 +440,7 @@ namespace Benefit.Services.Domain
                             items =
                             items.Where(
                                 entry =>
-                                    entry.ProductParameterProducts.Any(pr => pr.ProductParameter.UrlName == optionKey) &&
+                                    entry.ProductParameterProducts.Any(pr => optionKeysWithChildren.Contains(pr.ProductParameter.UrlName)) &&
                                     optionValues.Any(
                                         optValue =>
                                             entry.ProductParameterProducts.Select(pr => pr.StartValue)
