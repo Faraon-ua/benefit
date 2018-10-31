@@ -40,9 +40,9 @@
         var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
         var hasCategory = "@((Model.Category == null).ToString().ToLower())" === 'false';
-        var categoryId = '@Model.Category.Id';
+        var categoryId = '@(Model.Category == null ? "" : Model.Category.Id)';
         var sellerId ='@(Model.Seller == null ? "" : Model.Seller.Id)';
-        var categoryUrlName = '@Model.Category.UrlName.ToLower()';
+        var categoryUrlName = '@(Model.Category == null ? "" : Model.Category.UrlName.ToLower())';
         var pagesCount = parseInt('@Model.PagesCount');
         var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
     </script>
