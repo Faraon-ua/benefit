@@ -3894,10 +3894,16 @@ select.input-group-sm > .form-control, select.input-group-sm > .input-group-addo
         color: #999
     }
 
+.pagination-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .pagination {
     padding-left: 0;
     margin: 20px 0;
-    border-radius: 4px
+    border-radius: 4px;
 }
 
     .pagination > li {
@@ -3906,7 +3912,6 @@ select.input-group-sm > .form-control, select.input-group-sm > .input-group-addo
 
         .pagination > li > a, .pagination > li > span {
             position: relative;
-            float: left;
             padding: 6px 12px;
             line-height: 1.428571429;
             text-decoration: none;

@@ -364,9 +364,12 @@ namespace Benefit.Services.Domain
 
                     var optionKeyValue = optionSegment.Split('=');
                     var optionKey = optionKeyValue.First();
-                    var optionKeysWithChildren = db.ProductParameters.Include(entry => entry.ChildProductParameters)
-                        .FirstOrDefault(entry => entry.UrlName == optionKey && entry.CategoryId == categoryId).ChildProductParameters
-                        .Select(entry => entry.UrlName).Distinct().ToList();
+                    var dbOptionKey = db.ProductParameters.Include(entry => entry.ChildProductParameters)
+                        .FirstOrDefault(entry => entry.UrlName == optionKey && entry.CategoryId == categoryId);
+                    var optionKeysWithChildren = dbOptionKey == null
+                        ? new List<string>()
+                        : dbOptionKey.ChildProductParameters
+                            .Select(entry => entry.UrlName).Distinct().ToList();
                     optionKeysWithChildren.Add(optionKey);
                     var optionValues = optionKeyValue.Last().Split(',');
                     switch (optionKey)

@@ -34,227 +34,21 @@
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+        var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
+        var addToFavoritesUrl =
+            '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
+        var hasCategory = "@((Model.Category == null).ToString().ToLower())" === 'false';
+        var categoryId = '@Model.Category.Id';
+        var sellerId ='@(Model.Seller == null ? "" : Model.Seller.Id)';
+        var categoryUrlName = '@Model.Category.UrlName.ToLower()';
+        var pagesCount = parseInt('@Model.PagesCount');
+        var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
     </script>
     <script src="~/Scripts/v3/products.js"></script>
+    <script src="~/Scripts/v3/product-filters.js"></script>
     <script src="~/Scripts/bootstrap-slider.min.js"></script>
-    <script>
-        var options = "";
-        var getProductsUrl = '@Url.Action("GetProducts", "Catalog")';
-        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
-        @{
-            var categoryId = Model.Category == null ? "" : Model.Category.Id;
-            var sellerId = Model.Seller == null ? "" : Model.Seller.Id;
-        }
-        $(function() {
-            if ($('#price-slider').length > 0) {
-                $('#price-slider').slider().on('change',
-                    function(data) {
-                        $("#price-lower-bound").val(data.value.newValue[0]);
-                        $("#price-upper-bound").val(data.value.newValue[1]);
-                        $("#price-filter").attr("data-filter-value",
-                            data.value.newValue[0] + "-" + data.value.newValue[1]);
-                    }).data('slider');
-            }
-
-            $("#reset-filters").click(function() {
-                location.href = location.href.substring(0, location.href.indexOf(lastSegment));
-            });
-
-            $('body').on("click",
-                ".remove-filter",
-                function() {
-                    var optionName = $(this).parent().attr("data-option-name");
-                    if (optionName === "price") {
-                        location.href = location.href.replace(/price=\d+-\d+;/g, '');
-                        return;
-                    }
-                    var optValue = decodeURI($(this).parent().attr("data-option-value"));
-                    var checkbox = $(".filter-section[data-filter-name=" + optionName + "] input#" + optValue);
-                    if (checkbox.length === 0) {
-                        checkbox = $(".filter-section[data-filter-name=" +
-                            optionName +
-                            "] input[name=" +
-                            optValue.replace(" ", "") +
-                            "]");
-                    }
-                    checkbox.click();
-                });
-
-            $(".ajax_load_btn, .paging").click(function(e) {
-                e.preventDefault();
-                var moreBtn = $(this);
-                var page = parseInt(moreBtn.attr("data-page"));
-                $(".loader").show();
-                $.get(getProductsUrl + "?categoryId=@categoryId&sellerId=@sellerId&page=" +
-                    page +
-                    "&options=" +
-                    options,
-                    function(data) {
-                        if (moreBtn.hasClass("ajax_load_btn")) {
-                            if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                                moreBtn.hide();
-                            }
-                            $(".product-item:last").after(data.products);
-                            moreBtn.attr("data-page", page + 1);
-                            $(".paging[data-page=" + page + "]").addClass("cur");
-                        } else {
-                            $(".products-wrapper").html(data.products);
-                            $("html, body").animate({ scrollTop: 0 }, 600);
-                            $(".paging").removeClass("cur");
-                            $(".paging[data-page=" + page + "]").addClass("cur");
-                            $(".ajax_load_btn").attr("data-page", (page + 1));
-                        }
-                        $(".loader").hide();
-                    });
-            });
-
-            $(".bx_filter_parameters_box_title").click(function() {
-                $(this).parent().toggleClass("active");
-                $(this).next().slideToggle();
-            });
-
-            $(".filter_opener").click(function() {
-                $(this).toggleClass("opened");
-                $(".bx_filter_vertical, .bx_filter").slideToggle(333);
-            });
-
-            //select all checkboxes from url
-            var showFiltersReset = false;
-            var parts = location.href.split('/');
-            var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
-            var sortControl = $(".sort_btn[data-sort-value=Rating]");
-            @if (Model.Category != null)
-            {<text>
-                 if (lastSegment.toLowerCase() != '@Model.Category.UrlName.ToLower()') {
-                     options = lastSegment;
-                     $.each(options.split(";"),
-                         function(i, urlSegment) {
-                             if (urlSegment === "") return;
-                             var optKeyValue = urlSegment.split("=");
-                             var optionName = optKeyValue[0];
-                             var optionValues = optKeyValue[1].split(",");
-                             if (optionName)
-                                 if (optionName === "sort") {
-                                     var optionValue = optionValues[0];
-                                     sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
-                                     $(".sort_btn span").removeClass("badge");
-                                     return true;
-                                 }
-                             if (optionName === "price") {
-                                 var optionValue = optionValues[0];
-                                 var prices = optionValue.split('-');
-                                 var lowerPrice = parseInt(prices[0]);
-                                 var upperPrice = parseInt(prices[1]);
-                                 $("#price-lower-bound").val(lowerPrice);
-                                 $("#price-upper-bound").val(upperPrice);
-                                 $("#price-filter").prop('checked', true);
-                                 $("#price-slider").data('slider').setValue([lowerPrice, upperPrice]);
-                                 $(".selected-filters").append(
-                                     "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='price' data-option-value='price-filter'>" +
-                                     optionValue +
-                                     " грн<i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
-                                 );
-                                 return true;
-                             }
-                             $.each(optionValues,
-                                 function(j, optValue) {
-                                     showFiltersReset = true;
-                                     var checkbox = $(".filter-section[data-filter-name=" +
-                                         optionName +
-                                         "] input#" +
-                                         decodeURI(optValue));
-                                     if (checkbox.length === 0) {
-                                         checkbox = $(".filter-section[data-filter-name=" +
-                                             optionName +
-                                             "] input[name=" +
-                                             decodeURI(optValue).replace(" ", "") +
-                                             "]");
-                                     }
-                                     checkbox.prop('checked', true);
-                                     var optionvalueText = checkbox.attr("text");
-                                     $(".selected-filters").append(
-                                         "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" +
-                                         optionName +
-                                         "' data-option-value='" +
-                                         optValue +
-                                         "'>" +
-                                         optionvalueText +
-                                         " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
-                                     );
-                                 });
-                             if (showFiltersReset) {
-                                 $("#reset-filters").show();
-                             }
-                         });
-                 }
-             </text>
-            }
-            sortControl.find("span").addClass("badge");
-
-            @if (Model.Category != null)
-            {
-                <text>
-                    $('body').on('change click',
-                        "#productFilters input[type=checkbox], #productFilters button, .sort_btn",
-                        function(e) {
-                            e.preventDefault();
-                            $(".loader").show();
-                            var parts = location.href.split('/');
-                            var lastSegment =
-                                (parts.pop() || parts.pop()).replace("#", ""); // handle potential trailing slash
-                            var options = "";
-
-                            if (lastSegment != '@Model.Category.UrlName') {
-                                options = lastSegment;
-                            }
-
-                            var parent = $(this).parents(".filter-section");
-                            var optionName = parent.attr("data-filter-name");
-                            var optionNameIndex = options.indexOf(optionName);
-
-                            var currentOption = '';
-                            var selectedValues = parent.find("input[type=checkbox]:checked, button").map(function() {
-                                if ($(this).attr("data-filter-value")) {
-                                    return $(this).attr("data-filter-value");
-                                }
-                                return $(this).attr("id");
-                            }).get();
-
-                            if ($(this).attr("class").indexOf("sort_btn") >= 0) {
-                                var val = $(this).attr("data-sort-value");
-                                selectedValues.push(val);
-                            }
-                            if (selectedValues.length > 0) {
-                                currentOption = optionName;
-                                currentOption += "=";
-                                currentOption += selectedValues.join();
-                                currentOption += ";";
-                            }
-
-                            if (optionNameIndex >= 0) {
-                                var ending = options.indexOf(";", optionNameIndex);
-                                var oldOption = options.substring(optionNameIndex, ending + 1);
-                                options = options.replace(oldOption, currentOption);
-                            } else {
-                                options += currentOption;
-                            }
-                            if (lastSegment !== '@Model.Category.UrlName') {
-                                var locBuilder = location.href.replace(lastSegment, "") + options;
-                                if (options.length > 0)
-                                    locBuilder += "/";
-                                location.href = locBuilder;
-                            } else {
-                                var locBuilder = location.href;
-                                if (location.href[location.href.length - 1] !== "/") {
-                                    locBuilder += "/";
-                                }
-                                window.location.href = locBuilder + options;
-                            }
-                        });
-                </text>
-            }
-        });
-    </script>
 }
 
 <div class="wraps hover_shine" id="content">
@@ -336,23 +130,36 @@
                                     </div>
                                 </div>
                                 <div class="bottom_nav margin-top-20">
-                                    @if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+                                    @if (!Model.IsFavorites)
                                     {
-                                        <div class="ajax_load_btn" data-page="1">
-                                            <span class="more_text_ajax">Показати ще</span>
-                                        </div>
-                                    }
-                                    @if (Model.PagesCount > 1)
-                                    {
-                                        <div class="module-pagination">
-                                            <div class="nums">
-                                                <a href="#" class="paging dark_link cur" data-page="0">1</a>
-                                                @for (int i = 2; i <= Model.PagesCount; i++)
-                                                {
-                                                    <a href="#" class="paging dark_link" data-page="@(i-1)">@i</a>
-                                                }
+                                        if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+                                        {
+                                            <div class="ajax_load_btn" data-page="1">
+                                                <span class="more_text_ajax">Показати ще</span>
                                             </div>
-                                        </div>
+                                        }
+                                        if (Model.PagesCount > 1)
+                                        {
+                                            <div class="pagination-wrap">
+                                                <ul class="pagination no-list-style">
+                                                    <li class="page_item" data-page="0" style="display: none;">
+                                                        <a class="page_link paging prev" href="#" data-page="0"><< Назад</a>
+                                                    </li>
+                                                    <li class="page_item active" data-page="0">
+                                                        <a class="page_link paging dark_link" href="#" data-page="0">1</a>
+                                                    </li>
+                                                    @for (int i = 2; i <= Model.PagesCount; i++)
+                                                    {
+                                                        <li class="page_item">
+                                                            <a class="page_link paging dark_link" href="#" data-page="@(i - 1)">@i</a>
+                                                        </li>
+                                                    }
+                                                    <li class="page_item" data-page="1">
+                                                        <a class="page_link paging next dark_link" href="#" data-page="1">Вперед >></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        }
                                     }
                                     @if (Model.Category != null)
                                     {

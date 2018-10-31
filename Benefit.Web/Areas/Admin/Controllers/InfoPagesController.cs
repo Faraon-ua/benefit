@@ -33,7 +33,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             if (Seller.CurrentAuthorizedSellerId != null)
             {
-                if (db.InfoPages.Count(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && !entry.IsNews) > 3)
+                if (db.InfoPages.Count(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && !entry.IsNews) > 4)
                 {
                     TempData["ErrorMessage"] = "Ви не можете створити більшу кількість сторінок";
                     return RedirectToAction("Index");

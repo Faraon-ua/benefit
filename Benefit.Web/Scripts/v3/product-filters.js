@@ -47,12 +47,20 @@ $(function() {
         if (!moreBtn.hasClass("ajax_load_btn")) {
             $("html, body").animate({ scrollTop: 0 }, 1000);
         }
-        $.get(getProductsUrl +
-            "?layout=1&categoryId="+categoryId+"&sellerId="+sellerId+"&page=" +
+        var getProductsWithDataUrl = getProductsUrl +
+            "?categoryId=" +
+            categoryId +
+            "&sellerId=" +
+            sellerId +
+            "&page=" +
             (page + 1) +
             "&options=" +
-            options,
-            function(data) {
+            options;
+        if (typeof productTemplateLayout !== 'undefined') {
+            getProductsWithDataUrl = getProductsWithDataUrl + "&layout=" + productTemplateLayout;
+        }
+        $.get(getProductsWithDataUrl,
+            function (data) {
                 var maxNumber = parseInt($(".paging:not(.next)").last().attr("data-page"));
                 $(".paging").parent().show();
                 $(".split").remove();
