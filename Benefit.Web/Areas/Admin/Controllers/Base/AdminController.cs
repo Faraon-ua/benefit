@@ -133,7 +133,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
         public ActionResult NewAddressForm(int number)
         {
             return PartialView("_AddressForm",
-                new KeyValuePair<int, Address>(number, new Address() { Id = Guid.NewGuid().ToString() }));
+                new KeyValuePair<int, Address>(number, new Address()));
         }
         public ActionResult NewShippingForm(int number)
         {
