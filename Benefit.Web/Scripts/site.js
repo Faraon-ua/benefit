@@ -422,7 +422,7 @@ $(function () {
         });
 
     if ($.fn.modal) {
-        $(".message-modal").modal();
+        $(".message-modal").modal({ backdrop: 'static', keyboard: false });
     }
     $("body").on("click", ".goto_back", function () {
         $("#basket_modal").modal('hide');

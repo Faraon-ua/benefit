@@ -276,3 +276,7 @@
     </div>
 </div>
 <div id="product-options-wrap"></div>
+@if (Model.Category!=null && !string.IsNullOrEmpty(Model.Category.Tag))
+{
+    @Html.Action("ShowMessagePopup", "Home", new { message = Model.Category.Tag, showButtons = true })
+}

@@ -9,8 +9,6 @@
 
 @{
     ViewBag.Title = Model.Product.Title ?? Model.Product.Name;
-}
-@{
     var image_src = Model.Product.Images.FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
     var image_src_str = string.Empty;
     if (image_src != null)
@@ -21,9 +19,14 @@
     //var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);
     var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.Product.Seller.UrlName });
     var sellerLogo = Model.Product.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
-    var sellerAddress = @Model.Product.Seller.Addresses.FirstOrDefault();
+    var sellerAddress = Model.Product.Seller.Addresses.FirstOrDefault();
     var sellerAddressStr = sellerAddress == null ? "" : string.Format("{0}, {1}", sellerAddress.Region.Name_ua, sellerAddress.AddressLine);
     var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+    var category = Model.Product.Category;
+    if (category.IsSellerCategory)
+    {
+        category = category.MappedParentCategory;
+    }
 }
 @section image_src
 {
@@ -459,7 +462,7 @@
                                     </div>
                                     <div class="item-stock">
                                         <span class="value">
-                                                <span>@Model.Product.Vendor</span>
+                                            <span>@Model.Product.Vendor</span>
                                         </span>
                                     </div>
                                 </div>
@@ -850,4 +853,8 @@
 @if (Model.ProductOptions.Any())
 {
     @Html.Partial("_ProductOptions", Model)
+}
+@if (!string.IsNullOrEmpty(category.Tag) && Request.UrlReferrer.LocalPath == string.Empty)
+{
+    @Html.Action("ShowMessagePopup", "Home", new { message = category.Tag, showButtons = true })
 }
