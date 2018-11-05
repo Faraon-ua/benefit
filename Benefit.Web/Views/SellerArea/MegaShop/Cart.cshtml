@@ -214,12 +214,12 @@
                                         </td>
 
 
-                                        <td class="text_left">
+                                        <td class="text_left" style="padding-bottom:20px;">
                                             <a class="purchase_name" href="@productUrl">@product.ProductName</a>
                                             <i></i>
                                         </td>
 
-                                        <td>
+                                        <td class="purchase_price">
                                             <span class="nowrap actual-product-price">
                                                 @((showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice).ToString("F"))
                                             </span>
