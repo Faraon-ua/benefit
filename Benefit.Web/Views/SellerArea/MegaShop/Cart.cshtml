@@ -192,7 +192,7 @@
                                     var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
                                     var oldProductSum = product.ProductPrice * product.Amount;
                                     var actualProductSum = (showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice) * product.Amount;
-                                    <tr class="basket_modal_table_row product" data-product-id="@product.ProductId" data-seller-id="@product.SellerId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
+                                    <tr class="basket_modal_table_row product purchase_tr" data-product-id="@product.ProductId" data-seller-id="@product.SellerId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
                                         <td class="purchase_image">
                                             <a href="@productUrl">
                                                 @if (product.ProductImageUrl != null)
