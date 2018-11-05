@@ -111,14 +111,14 @@ $(function() {
                     "]").not(".prev,.next");
                 $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
                 if (page > 3) {
-                    $(".paging[data-page=" + (page - 1) + "]").parent()
+                    $(".paging[data-page=" + (page - 1) + "]:not(.prev)").parent()
                         .before("<li class='page_item split'>...</li>");
                 }
                 if (page >= pagesMaxNumber) {
                     $(".paging.next").parent().hide();
                 }
                 if (page < (maxNumber - 1)) {
-                    $(".paging[data-page=" + (page + 1) + "]").parent()
+                    $(".paging[data-page=" + (page + 1) + "]:not(.next)").parent()
                         .after("<li class='page_item split'>...</li>");
                 }
                 $(".products-wrapper").css("opacity", "1");

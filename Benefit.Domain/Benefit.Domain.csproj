@@ -530,6 +530,10 @@
     <Compile Include="Migrations\201810261300470_AddMappedProductParameter.Designer.cs">
       <DependentUpon>201810261300470_AddMappedProductParameter.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201811050950534_OrderUserRequired.cs" />
+    <Compile Include="Migrations\201811050950534_OrderUserRequired.Designer.cs">
+      <DependentUpon>201811050950534_OrderUserRequired.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -924,6 +928,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201810261300470_AddMappedProductParameter.resx">
       <DependentUpon>201810261300470_AddMappedProductParameter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811050950534_OrderUserRequired.resx">
+      <DependentUpon>201811050950534_OrderUserRequired.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

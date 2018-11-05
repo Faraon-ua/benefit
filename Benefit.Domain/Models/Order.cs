@@ -69,6 +69,7 @@ namespace Benefit.Domain.Models
         public string SellerDiscountName { get; set; }
         public double? SellerDiscount { get; set; }
         [MaxLength(128)]
+        [Required]
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
         [MaxLength(64)]

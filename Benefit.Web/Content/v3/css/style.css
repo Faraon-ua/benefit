@@ -3917,7 +3917,10 @@ select.input-group-sm > .form-control, select.input-group-sm > .input-group-addo
             text-decoration: none;
             background-color: #fff;
             border: 1px solid #ddd;
-            margin-left: -1px
+            margin-left: -1px;
+            display: inline-block;
+            margin-bottom: 5px;
+            cursor: pointer;
         }
 
 .badge, .label {
