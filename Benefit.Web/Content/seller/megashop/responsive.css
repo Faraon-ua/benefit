@@ -484,18 +484,9 @@
 }
 }
 
-
 @media (max-width: 767px) {
 .mobile-hidden {
   display: none;
-}
-.purchase,
-.purchase tbody,
-.purchase tfoot,
-.purchase tr,
-.purchase td,
-.purchase th {
-  display: block;
 }
 .purchase tr {
   position: relative;
