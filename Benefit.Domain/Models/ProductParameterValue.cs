@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
@@ -32,5 +33,7 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string ProductParameterId { get; set; }
         public ProductParameter ProductParameter { get; set; }
+        [NotMapped]
+        public ProductParameterValue Parent { get; set; }
     }
 }

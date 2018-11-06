@@ -1,13 +1,12 @@
-﻿using System.Data.Entity;
-using System.Collections.Generic;
-using System.Linq;
-using Benefit.Common.Constants;
+﻿using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Search;
-using Benefit.Services.Domain;
 using NinjaNye.SearchExtensions;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
 
 namespace Benefit.Services
 {
@@ -69,7 +68,6 @@ namespace Benefit.Services
             term = term.ToLower();
             var translitTerm = term.Translit();
             var productsResult = db.Products
-                .Include(entry => entry.Category)
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Images)
                 .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce && entry.Category.IsActive);
@@ -78,10 +76,12 @@ namespace Benefit.Services
                 productsResult = productsResult.Where(entry => entry.SellerId == searchSellerId);
             }
             //var regionId = RegionService.GetRegionId();
-            var productResult = productsResult.Search(entry => entry.Name,
+            var productResult = productsResult
+                .Search(entry => entry.Name,
                     entry => entry.SearchTags,
-                    entry => entry.Category.Name
-                ).Containing(term.Split(new[] { ' ' }))
+                    entry => entry.Description,
+                    entry => entry.ShortDescription
+                ).Containing(term.Split(' '))
                 .ToRanked()
                 .Where(entry => entry.Item.IsActive)
                 .OrderBy(entry => entry.Item.AvailabilityState)
@@ -95,7 +95,11 @@ namespace Benefit.Services
                 var optionSegments = options.Split(';');
                 foreach (var optionSegment in optionSegments)
                 {
-                    if (optionSegment == string.Empty) continue;
+                    if (optionSegment == string.Empty)
+                    {
+                        continue;
+                    }
+
                     var optionKeyValue = optionSegment.Split('=');
                     var optionKey = optionKeyValue.First();
                     var optionValues = optionKeyValue.Last().Split(',');
@@ -128,6 +132,52 @@ namespace Benefit.Services
             }
 
             //fetch parameters 
+            var categoryResults = (from product in productResult
+                                   group product by product.CategoryId into groupResult
+                                   select new
+                                   {
+                                       Count = groupResult.Distinct().Count(),
+                                       CategoryId = groupResult.Key
+                                   }).OrderByDescending(y => y.Count).Where(entry => entry != null).ToList();
+            var categoryIds = categoryResults.Select(entry => entry.CategoryId);
+            var categories = db.Categories
+                .Include(entry => entry.MappedParentCategory.ParentCategory)
+                .Include(entry => entry.ParentCategory)
+                .Where(entry => categoryIds.Contains(entry.Id)).ToList();
+            categories.ForEach(entry =>
+            {
+                if (entry.MappedParentCategoryId != null)
+                {
+                    entry.ParentCategoryId = entry.MappedParentCategoryId;
+                    entry.ParentCategory = entry.MappedParentCategory;
+                }
+            });
+            var groupedCats = (from category in categories
+                group category by category.ParentCategoryId into groupResult
+                select new
+                {
+                    Count = groupResult.Distinct().Count(),
+                    CategoryId = groupResult.Key
+                }).OrderByDescending(y => y.Count).Where(entry => entry != null).ToList();
+
+            var categoryFilters = categoryIds.Select(entry => new ProductParameterValue()
+            {
+                ParameterValue = entry,
+                ParameterValueUrl = entry
+            }).OrderBy(entry => entry.ParameterValue).ToList();
+            //result.ProductParameters.Add(new ProductParameter()
+            //{
+            //    Name = "Категорія",
+            //    UrlName = "category",
+            //    Type = typeof(string).ToString(),
+            //    ProductParameterValues = categoryFilters
+            //});
+
+            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
+            result.Products = productResult.Skip(skip)
+                .Take(take + 1)
+                .ToList();
+
             var sellers = (from seller in productResult.Select(entry => entry.Seller)
                            group seller by seller.Id into groupResult
                            select new

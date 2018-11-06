@@ -500,6 +500,7 @@
 .purchase tr {
   position: relative;
   border-top: 1px solid #ddd;
+    width: 100%;
 }
 .purchase td,
 .purchase th {
