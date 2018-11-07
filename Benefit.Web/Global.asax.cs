@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -8,6 +9,7 @@ using System.Web.Optimization;
 using System.Web.Routing;
 using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
+using Benefit.Services;
 
 namespace Benefit.Web
 {
@@ -49,7 +51,7 @@ namespace Benefit.Web
         protected void Session_Start(object sender, EventArgs e)
         {
             HttpContext.Current.Session.Add("__MyAppSession", string.Empty);
-            HttpCookie cookie = new HttpCookie(DomainConstants.SessionCookieName, Session.SessionID.ToString());
+            HttpCookie cookie = new HttpCookie(DomainConstants.SessionCookieName, Session.SessionID);
             cookie.Expires = DateTime.Now.AddYears(1);
             var host = Request.Url.Host;
             var index = host.IndexOf(".");
@@ -58,8 +60,9 @@ namespace Benefit.Web
                 return;
             }
             var subdomain = host.Substring(0, index);
-            string[] blacklist = { "www", "benefit", "mail", "benefit-company", "uzhgorod" };
-            if (!blacklist.Contains(subdomain))
+            var blacklist = new List<string> { "www", "benefit", "mail", "benefit-company", "uzhgorod" };
+
+            if (!blacklist.Contains(subdomain) && host.Contains(SettingsService.BaseHostName))
             {
                 host = host.Replace(subdomain + ".", string.Empty);
             }

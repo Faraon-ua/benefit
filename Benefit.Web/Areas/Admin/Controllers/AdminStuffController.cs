@@ -33,7 +33,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult GenerateSitemap()
         {
             var siteMapHelper = new SiteMapHelper();
-            var count = siteMapHelper.Generate(Url);
+            var count = siteMapHelper.Generate(Url, Request.Url.Host);
             TempData["SuccessMessage"] = "Файл sitemap.xml згенеровано. Кількість лінків: " + count;
             return RedirectToAction("Index");
         }

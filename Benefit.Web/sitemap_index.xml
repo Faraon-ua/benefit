@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<sitemapindex xmlns="http://www.google.com/schemas/sitemap/0.84">
+  <sitemap>
+    <loc>sitemap1.xml</loc>
+    <lastmod>2018-11-07T02:04:44.8129421+02:00</lastmod>
+  </sitemap>
+  <sitemap>
+    <loc>sitemap2.xml</loc>
+    <lastmod>2018-11-07T02:04:44.8139393+02:00</lastmod>
+  </sitemap>
+</sitemapindex>

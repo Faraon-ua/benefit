@@ -1,13 +1,11 @@
 ﻿using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
-using Benefit.Services;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Web.Mvc;
 using System.Xml;
@@ -20,7 +18,7 @@ namespace Benefit.Web.Helpers
         private readonly string basePath = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
         private const int MaxUrlSetNumber = 50000;
 
-        public int Generate(UrlHelper urlHelper)
+        public int Generate(UrlHelper urlHelper, string host, string sellerId = null)
         {
             var siteMapCounter = 1;
             using (var db = new ApplicationDbContext())
@@ -29,35 +27,40 @@ namespace Benefit.Web.Helpers
                 var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
                 var urlSet = new XElement(ns + "urlset");
                 var count = 0;
-                foreach (var page in db.InfoPages.Where(entry => entry.SellerId == null))
+                foreach (var page in db.InfoPages.Where(entry => entry.SellerId == sellerId))
                 {
                     var url = new XElement(ns + "url");
-                    var loc = new XElement(ns + "loc", string.Concat(SettingsService.BaseHostName, urlHelper.RouteUrl("pagesRoute", new { id = page.UrlName })));
+                    var loc = new XElement(ns + "loc", string.Concat(host, urlHelper.RouteUrl("pagesRoute", new { id = page.UrlName })));
                     var lastmod = new XElement(ns + "lastmod", XmlConvert.ToString(page.LastModified));
                     url.Add(loc);
                     url.Add(lastmod);
                     urlSet.Add(url);
                     count++;
                 }
-                foreach (var seller in db.Sellers.Where(entry => entry.IsActive))
+
+                if (sellerId == null)
                 {
-                    var url = new XElement(ns + "url");
-                    var loc = new XElement(ns + "loc",
-                        string.Concat(
-                            urlHelper.SubdomainAction(seller.UrlName, "Index", "Home", new { area = "" })
+                    foreach (var seller in db.Sellers.Where(entry => entry.IsActive))
+                    {
+                        var url = new XElement(ns + "url");
+                        var loc = new XElement(ns + "loc",
+                            string.Concat(
+                                urlHelper.SubdomainAction(seller.UrlName, "Index", "Home", new {area = ""})
                             ));
-                    var lastmod = new XElement(ns + "lastmod", XmlConvert.ToString(seller.LastModified));
-                    url.Add(loc);
-                    url.Add(lastmod);
-                    urlSet.Add(url);
-                    count++;
+                        var lastmod = new XElement(ns + "lastmod", XmlConvert.ToString(seller.LastModified));
+                        url.Add(loc);
+                        url.Add(lastmod);
+                        urlSet.Add(url);
+                        count++;
+                    }
                 }
+                //todo: select only seller categories
                 foreach (var cat in db.Categories.Where(entry => !entry.IsSellerCategory && entry.IsActive).ToList())
                 {
                     var url = new XElement(ns + "url");
                     var loc = new XElement(ns + "loc",
                         string.Concat(
-                            SettingsService.BaseHostName,
+                            host,
                             urlHelper.RouteUrl(RouteConstants.CatalogRouteName,
                                 new
                                 {
@@ -73,11 +76,16 @@ namespace Benefit.Web.Helpers
 
                 const int ProductsPerPage = 10000;
                 var productsPage = 0;
-                List<Product> products = null;
+                IEnumerable<Product> products = null;
                 do
                 {
                     products = db.Products.Include(entry => entry.Seller)
-                        .Where(entry => entry.Seller.IsActive && entry.IsActive).OrderBy(entry => entry.SKU)
+                        .Where(entry => entry.Seller.IsActive && entry.IsActive);
+                    if (sellerId != null)
+                    {
+                        products = products.Where(entry => entry.SellerId == sellerId);
+                    }
+                    products = products.OrderBy(entry => entry.SKU)
                         .Skip(productsPage * ProductsPerPage).Take(ProductsPerPage).ToList();
 
                     foreach (var product in products)
@@ -85,7 +93,7 @@ namespace Benefit.Web.Helpers
                         var url = new XElement(ns + "url");
                         var loc = new XElement(ns + "loc",
                             string.Concat(
-                                SettingsService.BaseHostName,
+                                host,
                                 urlHelper.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) })
                             ));
                         var lastmod = new XElement(ns + "lastmod", XmlConvert.ToString(product.LastModified));
@@ -109,7 +117,7 @@ namespace Benefit.Web.Helpers
                         }
                     }
                     productsPage++;
-                } while (products.Count == ProductsPerPage);
+                } while (products.Count() == ProductsPerPage);
                 doc.Add(urlSet);
                 using (var stream = File.Create(Path.Combine(basePath, string.Format("sitemap{0}.xml", siteMapCounter))))
                 {

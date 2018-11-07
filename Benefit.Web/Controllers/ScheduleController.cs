@@ -27,7 +27,7 @@ namespace Benefit.Web.Controllers
         public ActionResult GenerateSiteMap()
         {
             var siteMapHelper = new SiteMapHelper();
-            var count = siteMapHelper.Generate(Url);
+            var count = siteMapHelper.Generate(Url, Request.Url.Host);
             return Content(count.ToString());
         }
 
