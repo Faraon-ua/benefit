@@ -237,9 +237,9 @@
         <div class="footer_top">
             <div class="container">
                 <div class="row">
-                    @foreach (var page in seller.InfoPages.Where(entry => !entry.IsNews).OrderBy(entry => entry.Order).Take(3))
+                    @foreach (var page in seller.InfoPages.Where(entry => !entry.IsNews).OrderBy(entry => entry.Order).Take(4))
                     {
-                        <a class="col-xs-6 col-lg-4 col-xl-4 advantage" href="@Url.RouteUrl("pagesRoute", new {id = page.UrlName})">
+                        <a class="col-xs-6 col-lg-3 col-xl-3 advantage" href="@Url.RouteUrl("pagesRoute", new {id = page.UrlName})">
                             <img src="~/Images/NewsLogo/@page.ImageUrl" />
                             <div class="advantage_text">
                                 <span data-language="advantage_1">@page.Name</span>
