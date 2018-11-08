@@ -18,8 +18,9 @@ namespace Benefit.Web.Helpers
         private readonly string basePath = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
         private const int MaxUrlSetNumber = 50000;
 
-        public int Generate(UrlHelper urlHelper, string host, string sellerId = null)
+        public int Generate(UrlHelper urlHelper, string host, Seller activeSeller = null)
         {
+            var sellerId = activeSeller == null ? null : activeSeller.Id;
             var siteMapCounter = 1;
             using (var db = new ApplicationDbContext())
             {

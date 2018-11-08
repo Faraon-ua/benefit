@@ -13,6 +13,8 @@ using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Helpers;
 using System.Data.Entity;
 using System.Web;
+using Benefit.Domain.Models;
+using Benefit.Web.Filters;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -30,10 +32,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View();
         }
 
+        [FetchSeller]
         public ActionResult GenerateSitemap()
         {
             var siteMapHelper = new SiteMapHelper();
-            var count = siteMapHelper.Generate(Url, Request.Url.Host);
+            var count = siteMapHelper.Generate(Url, Request.Url.Scheme + "://" + Request.Url.Host, (ViewBag.Seller as Seller));
             TempData["SuccessMessage"] = "Файл sitemap.xml згенеровано. Кількість лінків: " + count;
             return RedirectToAction("Index");
         }
