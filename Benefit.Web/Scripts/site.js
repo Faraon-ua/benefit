@@ -135,7 +135,7 @@ function processRating(ratingStars, e, isClick) {
 }
 
 $(function () {
-    $('body').on('click','.add-to-favorites', function (e) {
+    $('body').on('click', '.add-to-favorites', function (e) {
         e.preventDefault();
         var btn = $(this);
         var productId = btn.attr("data-product-id");

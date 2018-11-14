@@ -665,22 +665,22 @@
                                                 <div class="margin-top-10">
                                                     @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
                                                     {
-                                                        <a href="#" class="remove-from-favorites">
+                                                        <a href="#" class="remove-from-favorites" data-product-id="@Model.Product.Id">
                                                             <i class="fa fa-remove"></i>
                                                             Видалити із улюблених
                                                         </a>
-                                                        <a href="#" class="add-to-favorites" style="display: none;">
+                                                        <a href="#" class="add-to-favorites" style="display: none;" data-product-id="@Model.Product.Id">
                                                             <i class="fa fa-heart"></i>
                                                             Додати до улюблених
                                                         </a>
                                                     }
                                                     else
                                                     {
-                                                        <a href="#" class="add-to-favorites">
+                                                        <a href="#" class="add-to-favorites" data-product-id="@Model.Product.Id">
                                                             <i class="fa fa-heart"></i>
                                                             Додати до улюблених
                                                         </a>
-                                                        <a href="#" class="remove-from-favorites" style="display: none;">
+                                                        <a href="#" class="remove-from-favorites" style="display: none;" data-product-id="@Model.Product.Id">
                                                             <i class="fa fa-remove"></i>
                                                             Видалити із улюблених
                                                         </a>

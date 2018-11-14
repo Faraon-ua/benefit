@@ -136,10 +136,16 @@
                                 <a class="menu_link" href="/">Головна</a>
                             </li>
                             <li class="menu_item">
-                                <a class="menu_link" href="@Url.Action("reviews", "home")">Відгуки</a>
+                                <a class="menu_link" href="@Url.Action("about", "home")">Про нас</a>
                             </li>
                             <li class="menu_item">
                                 <a class="menu_link" href="@Url.Action("gallery", "home")">Фотогалерея</a>
+                            </li>
+                            <li class="menu_item">
+                                <a class="menu_link" href="@Url.Action("delivery", "home")">Доставка та оплата</a>
+                            </li>
+                            <li class="menu_item">
+                                <a class="menu_link" href="@Url.Action("reviews", "home")">Відгуки</a>
                             </li>
                             @if (seller.InfoPages.Any(entry => entry.IsNews && entry.IsActive))
                             {
@@ -147,12 +153,6 @@
                                     <a class="menu_link" href="@Url.Action("Index", "News")">Новини</a>
                                 </li>
                             }
-                            <li class="menu_item">
-                                <a class="menu_link" href="@Url.Action("delivery", "home")">Доставка та оплата</a>
-                            </li>
-                            <li class="menu_item">
-                                <a class="menu_link" href="@Url.Action("about", "home")">Про нас</a>
-                            </li>
                             <li class="menu_item">
                                 <a class="menu_link" href="@Url.Action("contacts", "home")">Контакти</a>
                             </li>

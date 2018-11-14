@@ -127,6 +127,18 @@ namespace Benefit.Domain.Models
         }
     }
 
+    public class CategoryProductsCount
+    {
+        public Category Category { get; set; }
+        public int ProductsCount { get; set; }
+    }
+
+    public class ParentCategoryChildren
+    {
+        public Category Category { get; set; }
+        public List<Category> Children { get; set; }
+    }
+
     public class CategoryComparer:IEqualityComparer<Category>
     {
         public bool Equals(Category x, Category y)

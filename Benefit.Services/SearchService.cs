@@ -105,6 +105,16 @@ namespace Benefit.Services
                     var optionValues = optionKeyValue.Last().Split(',');
                     switch (optionKey)
                     {
+                        case "category":
+                            var categories =
+                                db.Categories
+                                    .Include(entry=>entry.MappedCategories)
+                                    .Where(entry => optionValues.Contains(entry.UrlName));
+                            var mappedIds = categories.SelectMany(entry => entry.MappedCategories.Select(mc => mc.Id))
+                                .ToList();
+                            mappedIds.AddRange(categories.Select(entry=>entry.Id));
+                            productResult = productResult.Where(entry => mappedIds.Contains(entry.CategoryId));
+                            break;
                         case "seller":
                             var sellerIds =
                                 db.Sellers.Where(entry => optionValues.Contains(entry.UrlName))
@@ -132,51 +142,58 @@ namespace Benefit.Services
             }
 
             //fetch parameters 
-            var categoryResults = (from product in productResult
-                                   group product by product.CategoryId into groupResult
-                                   select new
-                                   {
-                                       Count = groupResult.Distinct().Count(),
-                                       CategoryId = groupResult.Key
-                                   }).OrderByDescending(y => y.Count).Where(entry => entry != null).ToList();
-            var categoryIds = categoryResults.Select(entry => entry.CategoryId);
-            var categories = db.Categories
+            var categoryIdResults = productResult.GroupBy(entry => entry.CategoryId, (key, g) =>
+            new
+            {
+                Count = g.Distinct().Count(),
+                CategoryId = key
+            }).Where(entry => entry.CategoryId != null).ToList();
+            var catIds = categoryIdResults.Select(entry => entry.CategoryId).ToList();
+            var categoriesInResults = db.Categories
                 .Include(entry => entry.MappedParentCategory.ParentCategory)
                 .Include(entry => entry.ParentCategory)
-                .Where(entry => categoryIds.Contains(entry.Id)).ToList();
-            categories.ForEach(entry =>
+                .Where(entry => catIds.Contains(entry.Id)).ToList();
+            var categoryResults = categoryIdResults.Select(entry => new
             {
-                if (entry.MappedParentCategoryId != null)
+                entry.Count,
+                Category = categoriesInResults.FirstOrDefault(cat => cat.Id == entry.CategoryId)
+            }).ToList();
+            categoryResults.ForEach(entry =>
                 {
-                    entry.ParentCategoryId = entry.MappedParentCategoryId;
-                    entry.ParentCategory = entry.MappedParentCategory;
-                }
-            });
-            var groupedCats = (from category in categories
-                group category by category.ParentCategoryId into groupResult
-                select new
-                {
-                    Count = groupResult.Distinct().Count(),
-                    CategoryId = groupResult.Key
-                }).OrderByDescending(y => y.Count).Where(entry => entry != null).ToList();
+                    if (entry.Category.MappedParentCategory != null)
+                    {
+                        entry.Category.ParentCategoryId = entry.Category.MappedParentCategoryId;
+                        entry.Category.ParentCategory = entry.Category.MappedParentCategory;
+                    }
+                });
 
-            var categoryFilters = categoryIds.Select(entry => new ProductParameterValue()
+            var groupedCategoryResults = categoryResults.GroupBy(entry => entry.Category.ParentCategory, (key, g) =>
+                  new
+                  {
+                      Parent = key,
+                      Items = g.ToList()
+                  }, new CategoryComparer())
+            .ToList();
+
+            var categoryFilters = groupedCategoryResults.Select(entry => new ProductParameterValue()
             {
-                ParameterValue = entry,
-                ParameterValueUrl = entry
+                ParameterValue = entry.Parent.Name,
+                ParameterValueUrl = entry.Parent.UrlName,
+                Children = entry.Items.OrderByDescending(item => item.Count).Select(item => new ProductParameterValue()
+                {
+                    ParameterValue = item.Category.Name,
+                    ParameterValueUrl = item.Category.UrlName,
+                    ProductsCount = item.Count
+                }).ToList()
             }).OrderBy(entry => entry.ParameterValue).ToList();
-            //result.ProductParameters.Add(new ProductParameter()
-            //{
-            //    Name = "Категорія",
-            //    UrlName = "category",
-            //    Type = typeof(string).ToString(),
-            //    ProductParameterValues = categoryFilters
-            //});
-
-            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
-            result.Products = productResult.Skip(skip)
-                .Take(take + 1)
-                .ToList();
+            result.ProductParameters.Add(new ProductParameter()
+            {
+                Name = "Категорія",
+                UrlName = "category",
+                Type = typeof(Category).ToString(),
+                ProductParameterValues = categoryFilters,
+                DisplayInFilters = true
+            });
 
             var sellers = (from seller in productResult.Select(entry => entry.Seller)
                            group seller by seller.Id into groupResult
@@ -197,7 +214,8 @@ namespace Benefit.Services
                 Name = "Постачальник",
                 UrlName = "seller",
                 Type = typeof(string).ToString(),
-                ProductParameterValues = sellerFilters
+                ProductParameterValues = sellerFilters,
+                DisplayInFilters = true
             });
 
             var vendors = (from product in productResult
@@ -217,7 +235,8 @@ namespace Benefit.Services
                 Name = "Виробник",
                 UrlName = "vendor",
                 Type = typeof(string).ToString(),
-                ProductParameterValues = vendorFilters
+                ProductParameterValues = vendorFilters,
+                DisplayInFilters = true
             });
 
             var originCountries = (from product in productResult
@@ -237,7 +256,8 @@ namespace Benefit.Services
                 Name = "Країна виробник",
                 UrlName = "country",
                 Type = typeof(string).ToString(),
-                ProductParameterValues = countryFilters
+                ProductParameterValues = countryFilters,
+                DisplayInFilters = true
             });
 
             result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
@@ -261,6 +281,10 @@ namespace Benefit.Services
             //    var currectRegionSellerIds = result.CurrentRegionSellers.Select(entry => entry.Id).ToList();
             //    result.Sellers = sellers.Where(entry => !currectRegionSellerIds.Contains(entry.Id)).ToList();
             //}
+            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
+            result.Products = productResult.Skip(skip)
+                .Take(take + 1)
+                .ToList();
 
             return result;
         }

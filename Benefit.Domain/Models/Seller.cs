@@ -148,6 +148,8 @@ namespace Benefit.Domain.Models
         public ICollection<Product> FeaturedProducts { get; set; }
         [NotMapped]
         public ICollection<Product> PromotionProducts { get; set; }
+        [NotMapped]
+        public ICollection<Product> NewProducts { get; set; }
 
         [NotMapped]
         public virtual string Specialization
