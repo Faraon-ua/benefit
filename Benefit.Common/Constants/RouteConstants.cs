@@ -1,4 +1,6 @@
-﻿namespace Benefit.Common.Constants
+﻿using System.Collections.Generic;
+
+namespace Benefit.Common.Constants
 {
     public class RouteConstants
     {
@@ -22,5 +24,10 @@
         public const string FullNameCookieName = "FullName";
         public const string RegionNameCookieName = "regionName";
         public const string RegionIdCookieName = "regionId";
+
+        public static Dictionary<string, string> Redirections = new Dictionary<string, string>
+        {
+            {"koshik24.benefit-company.com", "https://koshik24.com.ua"}
+        };
     }
 }

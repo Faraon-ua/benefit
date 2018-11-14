@@ -27,6 +27,12 @@ namespace Benefit.Web
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
+            if (RouteConstants.Redirections.ContainsKey(Request.Url.Host))
+            {
+                Response.StatusCode = 301;
+                Response.AddHeader("Location", RouteConstants.Redirections[Request.Url.Host]);
+                Response.End();
+            }
             if (HttpContext.Current.Request.QueryString.AllKeys.Contains(RouteConstants.ReferalUrlName))
             {
                 var referalCookie = new HttpCookie(RouteConstants.ReferalCookieName,
