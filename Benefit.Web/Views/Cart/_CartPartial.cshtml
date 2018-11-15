@@ -135,7 +135,7 @@
                                 </table>
                                 var сartSum = order.OrderProducts.Sum(entry => entry.ProductPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
                                 var actualCartSum = order.OrderProducts.Sum(entry => entry.ActualPrice * entry.Amount + entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount));
-                                var bonuses = (order.OrderProducts.Sum(entry => entry.BonusesAcquired));
+                                var bonuses = order.OrderProducts.Sum(entry => entry.BonusesAcquired * entry.Amount);
                                 <p class="basket_modal_saving" style="display: @(actualCartSum < сartSum ? "" : "none")">Економія: <span>@((сartSum - actualCartSum).ToString("F"))</span></p>
                                 if (bonuses > 0)
                                 {

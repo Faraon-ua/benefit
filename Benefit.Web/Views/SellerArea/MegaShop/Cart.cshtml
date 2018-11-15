@@ -260,7 +260,7 @@
 
                                     <td colspan="2" class="purchase_total">
                                         @{
-                                            var bonuses = (Model.Order.OrderProducts.Sum(entry => entry.BonusesAcquired));
+                                            var bonuses = Model.Order.OrderProducts.Sum(entry => entry.BonusesAcquired * entry.Amount);
                                         }
                                         <div>
                                             <span data-language="cart_total_price">Кешбек:</span>
