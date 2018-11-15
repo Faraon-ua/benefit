@@ -36,13 +36,14 @@ namespace Benefit.Web.Controllers
                     seller.FeaturedProducts = db.Products
                         .Include(entry => entry.Favorites)
                         .Include(entry => entry.Images)
-                        .Include(entry => entry.Seller.ShippingMethods.Select(sm=>sm.Region))
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.IsFeatured).ToList();
-                    seller.NewProducts = db.Products
+                    seller.NewProducts =
+                        db.Products
                         .Include(entry => entry.Favorites)
                         .Include(entry => entry.Images)
-                        .Include(entry => entry.Seller.ShippingMethods.Select(sm=>sm.Region))
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.IsNewProduct).ToList();
                     seller.PromotionProducts = db.Products
@@ -64,20 +65,25 @@ namespace Benefit.Web.Controllers
             var mainPageViewModel = new MainPageViewModel();
             using (var db = new ApplicationDbContext())
             {
-                mainPageViewModel.FeaturedProducts = db.Products
-                    .Include(entry => entry.Currency)
-                    .Include(entry => entry.Reviews)
-                    .Include(entry => entry.Images)
-                    .Include(entry => entry.Category)
-                    .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
-                    .Where(entry => entry.IsFeatured).OrderBy(entry => entry.Order).ToList();
-                mainPageViewModel.NewProducts = db.Products
-                    .Include(entry => entry.Currency)
-                    .Include(entry => entry.Reviews)
-                    .Include(entry => entry.Images)
-                    .Include(entry => entry.Category)
-                    .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
-                    .Where(entry => entry.IsNewProduct).OrderBy(entry => entry.Order).ToList();
+                mainPageViewModel.FeaturedProducts = (from element in db.Products.Include(entry => entry.Currency)
+                        .Include(entry => entry.Reviews)
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Category)
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
+                        .Where(entry => entry.IsFeatured).ToList()
+                    group element by element.SellerId
+                    into groups
+                    select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
+                mainPageViewModel.NewProducts = (from element in db.Products.Include(entry => entry.Currency)
+                        .Include(entry => entry.Reviews)
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Category)
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
+                        .Where(entry => entry.IsNewProduct).ToList()
+                    group element by element.SellerId
+                    into groups
+                    select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
+
                 foreach (var featuredProduct in mainPageViewModel.FeaturedProducts)
                 {
                     if (featuredProduct.Currency != null)

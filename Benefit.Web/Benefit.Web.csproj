@@ -1012,6 +1012,7 @@
     <Content Include="Areas\Admin\Views\Shared\_HierarchySelect.cshtml" />
     <Content Include="Areas\Admin\Views\Reviews\CreateOrUpdate.cshtml" />
     <Content Include="Areas\Admin\Views\Reviews\_ReviewsList.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Advertisement.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

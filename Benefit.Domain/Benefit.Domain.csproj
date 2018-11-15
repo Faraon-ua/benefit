@@ -534,6 +534,10 @@
     <Compile Include="Migrations\201811050950534_OrderUserRequired.Designer.cs">
       <DependentUpon>201811050950534_OrderUserRequired.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201811150831510_AddSellerWidget.cs" />
+    <Compile Include="Migrations\201811150831510_AddSellerWidget.Designer.cs">
+      <DependentUpon>201811150831510_AddSellerWidget.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -931,6 +935,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201811050950534_OrderUserRequired.resx">
       <DependentUpon>201811050950534_OrderUserRequired.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811150831510_AddSellerWidget.resx">
+      <DependentUpon>201811150831510_AddSellerWidget.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

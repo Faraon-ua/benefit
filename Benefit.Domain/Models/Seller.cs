@@ -51,6 +51,7 @@ namespace Benefit.Domain.Models
         public double? Longitude { get; set; }
         [MaxLength(160)]
         public string ShortDescription { get; set; }
+        public string Widget { get; set; }
         [MaxLength(160)]
         //internal site search
         public string SearchTags { get; set; }

@@ -1,4 +1,5 @@
-﻿using Benefit.Domain.DataAccess;
+﻿using Benefit.Common.Constants;
+using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Admin;
 using Benefit.Services.Domain;
@@ -46,7 +47,7 @@ namespace Benefit.Web.Controllers
 
                 foreach (var seller in db.Sellers.Where(entry => entry.AreProductsFeatured))
                 {
-                    var featuredProduct =
+                    var featuredProducts =
                         db.Products
                             .Include(entry => entry.Images)
                             .Include(entry => entry.Category)
@@ -58,12 +59,12 @@ namespace Benefit.Web.Controllers
                                 (!entry.Category.IsSellerCategory ||
                                  (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)))
                             .OrderBy(entry => Guid.NewGuid())
-                            .FirstOrDefault();
-                    if (featuredProduct != null)
+                            .Take(ListConstants.FeaturedProductsPerSellerNumber);
+                    foreach (var featuredProduct in featuredProducts)
                     {
                         featuredProduct.IsFeatured = true;
                     }
-                    var newProduct =
+                    var newProducts =
                         db.Products
                             .Include(entry => entry.Images)
                             .Where(entry =>
@@ -74,8 +75,8 @@ namespace Benefit.Web.Controllers
                                 (!entry.Category.IsSellerCategory ||
                                  (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)))
                             .OrderBy(entry => Guid.NewGuid())
-                            .FirstOrDefault();
-                    if (newProduct != null)
+                            .Take(ListConstants.FeaturedProductsPerSellerNumber);
+                    foreach (var newProduct in newProducts)
                     {
                         newProduct.IsNewProduct = true;
                     }

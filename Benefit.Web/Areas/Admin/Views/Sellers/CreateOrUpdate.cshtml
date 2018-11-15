@@ -350,8 +350,8 @@
     <div class="tabbable tabs-left">
         <ul class="nav nav-tabs">
             @{
-    var displayClass = User.IsInRole(DomainConstants.AdminRoleName) ? "" : "hidden";
-    var activeClass = User.IsInRole(DomainConstants.AdminRoleName) ? "" : "active";
+                var displayClass = User.IsInRole(DomainConstants.AdminRoleName) ? "" : "hidden";
+                var activeClass = User.IsInRole(DomainConstants.AdminRoleName) ? "" : "active";
             }
             <li class="active @displayClass">
                 <a href="#home" data-toggle="tab">
@@ -389,7 +389,7 @@
                     Сповіщення
                 </a>
             </li>
-             <li>
+            <li>
                 <a href="#security" data-toggle="tab">
                     <i class="red icon-lock bigger-110"></i>
                     Безпека
@@ -426,11 +426,11 @@
                 </a>
             </li>
             @*<li>
-                <a href="#currency" data-toggle="tab">
-                    <i class="blue icon-money bigger-110"></i>
-                    Курси валют
-                </a>
-            </li>*@
+                    <a href="#currency" data-toggle="tab">
+                        <i class="blue icon-money bigger-110"></i>
+                        Курси валют
+                    </a>
+                </li>*@
             <li>
                 <a href="#personell" data-toggle="tab">
                     <i class="pink icon-group bigger-110"></i>
@@ -441,6 +441,12 @@
                 <a href="#reviews" data-toggle="tab">
                     <i class="green icon-edit bigger-110"></i>
                     Відгуки
+                </a>
+            </li>
+            <li>
+                <a href="#advertisement" data-toggle="tab">
+                    <i class="purple icon-adver bigger-110"></i>
+                    Реклама
                 </a>
             </li>
         </ul>
@@ -490,14 +496,17 @@
             <div class="tab-pane" id="schedule">
                 @Html.Partial("_Schedules", Model.Seller.Schedules.ToList())
             </div>
-        @*    <div class="tab-pane" id="currency">
-                @Html.Partial("_Currencies", Model.Seller)
-            </div>*@
+            @*    <div class="tab-pane" id="currency">
+                    @Html.Partial("_Currencies", Model.Seller)
+                </div>*@
             <div class="tab-pane" id="personell">
                 @Html.Partial("~/Areas/Admin/Views/Personnel/_PersonnelList.cshtml", Model.Seller.Personnels)
             </div>
             <div class="tab-pane" id="reviews">
                 @Html.Partial("~/Areas/Admin/Views/Reviews/_ReviewsList.cshtml", Model.Seller.Reviews)
+            </div>
+            <div class="tab-pane" id="advertisement">
+                @Html.Partial("_Advertisement", Model)
             </div>
         </div>
     </div>
