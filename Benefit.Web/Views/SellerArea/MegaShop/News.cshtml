@@ -1,4 +1,5 @@
-﻿@using Benefit.DataTransfer.ViewModels
+﻿@using Benefit.Common.Extensions
+@using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @model IEnumerable<InfoPage>
 @{
@@ -26,7 +27,7 @@
                                 </a>
                                 <div class="blog_header">
                                     <a class="blog_name" href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})">@news.Name</a>
-                                    <div class="blog_date"><span>@news.CreatedOn.ToShortDateString()</span></div>
+                                    <div class="blog_date"><span>@news.CreatedOn.ToLocalTimeWithDateFormat()</span></div>
                                 </div>
                             </div>
                             <div class="blog_annotation">
