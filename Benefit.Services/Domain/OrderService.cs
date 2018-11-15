@@ -41,7 +41,9 @@ namespace Benefit.Services.Domain
             }
 
             order.Sum = order.GetOrderSum();
-            order.Description = model.Comment;
+            order.Description =
+                string.Format("{0}<br/>--------------------------------------------<br/> Заказ створено на {1}",
+                    model.Comment, HttpContext.Current.Request.Url.Host);
             //order.PersonalBonusesSum = order.SumWithDiscount * seller.UserDiscount / 100;
             order.PersonalBonusesSum = order.OrderProducts.Sum(entry=>entry.BonusesAcquired);
 
