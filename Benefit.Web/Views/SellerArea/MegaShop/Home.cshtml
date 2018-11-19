@@ -8,8 +8,11 @@
 @{
     Layout = "_SellerLayout.cshtml";
     ViewBag.Title = "Головна";
-    var categories = ViewBag.Categories;
     var seller = ViewBag.Seller as Seller;
+}
+@section meta
+{
+    <meta name="description" content="@seller.ShortDescription">
 }
 @section styles{
     <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />

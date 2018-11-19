@@ -1,7 +1,5 @@
 ﻿@using Benefit.Common.Constants
-@using Benefit.Common.Helpers
 @using Benefit.Domain.Models
-@using Benefit.Web.Helpers
 @{
     var seller = ViewBag.Seller as Seller;
     var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
@@ -11,20 +9,12 @@
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" lang="uk">
 <head>
-    <title>@seller.Name</title>
+    <title>@ViewBag.Title - @seller.Name</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta name="description" content="">
-    <meta name="keywords" content="">
     <meta name="robots" content="index,follow">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @RenderSection("meta", false)
 
-    <meta property="og:title" content="Интернет-магазин на Benefit">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="#">
-    <meta property="og:image" content="images/logo.png">
-    <meta property="og:site_name" content="Интернет-магазин на Benefit">
-    <meta property="og:description" content="Этот магазин является демонстрацией скрипта интернет-магазина  Okay . Все материалы на этом сайте присутствуют исключительно в демострационных целях.">
-    
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-128736942-1"></script>
     <script>
@@ -33,13 +23,6 @@
         gtag('js', new Date());
         gtag('config', 'UA-128736942-1');
     </script>
-
-    <link rel="image_src" href="images/logo.png">
-
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Интернет-магазин на Benefit">
-    <meta name="twitter:description" content="Этот магазин является демонстрацией скрипта интернет-магазина  Okay . Все материалы на этом сайте присутствуют исключительно в демострационных целях.">
-    <meta name="twitter:image" content="images/logo.png">
 
     <script src="~/Scripts/seller/megashop/jquery-2.js"></script>
     <script src="~/Scripts/jquery.validate.min.js"></script>

@@ -10,6 +10,10 @@
     var isFavorites = (Model.Category != null && Model.Category.UrlName == "favorites");
     ViewBag.IsFavorites = isFavorites;
 }
+@section meta
+{
+    <meta name="description" content="@(Model.Category == null ? Model.Seller.ShortDescription : Model.Category.MetaDescription)">
+}
 @section styles
 {
     <link href="~/Content/seller/megashop/bootstrap-slider.css" rel="stylesheet" />
