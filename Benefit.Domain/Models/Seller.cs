@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Benefit.Common.Constants;
+using Benefit.Domain.Models.Enums;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -6,8 +8,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
-using Benefit.Common.Constants;
-using Benefit.Domain.Models.Enums;
 
 namespace Benefit.Domain.Models
 {
@@ -41,16 +41,12 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index]
         public string Name { get; set; }
-        [MaxLength(80)]
-        public string Title { get; set; }
         public string Description { get; set; }
         [MaxLength(50)]
         public string PrimaryRegionName { get; set; }
         public int PrimaryRegionId { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
-        [MaxLength(160)]
-        public string ShortDescription { get; set; }
         public string Widget { get; set; }
         [MaxLength(160)]
         //internal site search
@@ -67,6 +63,14 @@ namespace Benefit.Domain.Models
         public int? AvarageRating { get; set; }
         public SellerStatus Status { get; set; }
         public bool SafePurchase { get; set; }
+        #region SEO
+        [MaxLength(80)]
+        public string Title { get; set; }
+        [MaxLength(250)]
+        public string SeoSuffix { get; set; }
+        [MaxLength(160)]
+        public string ShortDescription { get; set; }
+        #endregion
         #region Terminal
         public bool TerminalOrderNotification { get; set; }
         public bool TerminalBillEnabled { get; set; }
@@ -157,9 +161,21 @@ namespace Benefit.Domain.Models
         {
             get
             {
-                if (SellerCategories == null) return null;
-                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault) == null) return null;
-                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault).Category == null)  return null;
+                if (SellerCategories == null)
+                {
+                    return null;
+                }
+
+                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault) == null)
+                {
+                    return null;
+                }
+
+                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category == null)
+                {
+                    return null;
+                }
+
                 return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.Name;
             }
         }
@@ -169,9 +185,21 @@ namespace Benefit.Domain.Models
         {
             get
             {
-                if (SellerCategories == null) return null;
-                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault) == null) return null;
-                if (SellerCategories.FirstOrDefault(entry=>entry.IsDefault).Category == null)  return null;
+                if (SellerCategories == null)
+                {
+                    return null;
+                }
+
+                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault) == null)
+                {
+                    return null;
+                }
+
+                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category == null)
+                {
+                    return null;
+                }
+
                 return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.UrlName;
             }
         }

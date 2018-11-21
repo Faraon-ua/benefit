@@ -14,7 +14,6 @@ namespace Benefit.DataTransfer.ViewModels
         }
         public string SellerId { get; set; }
         public List<ShippingMethod> ShippingMethods { get; set; }
-        public bool RequireAddress { get; set; }
         public List<Address> Addresses { get; set; }
         public List<PaymentType> PaymentTypes { get; set; }
         [Required(ErrorMessage = "Оберіть метод доставки")]

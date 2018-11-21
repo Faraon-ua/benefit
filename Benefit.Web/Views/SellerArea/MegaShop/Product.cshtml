@@ -36,7 +36,7 @@
     var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
 }
 @section meta{
-    <meta name="description" content="@Model.Product.ShortDescription">
+    <meta name="description" content="@Model.Product.ShortDescription @seller.SeoSuffix">
 }
 @section scripts
 {

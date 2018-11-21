@@ -383,6 +383,12 @@
                     Зображення та опис
                 </a>
             </li>
+            <li>
+                <a href="#SEO" data-toggle="tab">
+                    <i class="orange2 icon-search bigger-110"></i>
+                    SEO
+                </a>
+            </li>
             <li class="@displayClass">
                 <a href="#notifications" data-toggle="tab">
                     <i class="green icon-bullhorn bigger-110"></i>
@@ -426,11 +432,11 @@
                 </a>
             </li>
             @*<li>
-                    <a href="#currency" data-toggle="tab">
-                        <i class="blue icon-money bigger-110"></i>
-                        Курси валют
-                    </a>
-                </li>*@
+            <a href="#currency" data-toggle="tab">
+                <i class="blue icon-money bigger-110"></i>
+                Курси валют
+            </a>
+        </li>*@
             <li>
                 <a href="#personell" data-toggle="tab">
                     <i class="pink icon-group bigger-110"></i>
@@ -454,6 +460,9 @@
         <div class="tab-content" style="min-height: 450px;">
             <div class="tab-pane in active @displayClass" id="home">
                 @Html.Partial("_SellerForm")
+            </div>
+            <div class="tab-pane" id="SEO">
+                @Html.Partial("_Seo")
             </div>
             <div class="tab-pane" id="terminal">
                 @Html.Partial("_TerminalForm")

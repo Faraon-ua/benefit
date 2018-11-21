@@ -12,56 +12,83 @@
 }
 @section scripts
 {
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0Ryf-Uk4SouHzTJPPuUXAVSmaAQ5X-oM"></script>
+
     <script>
         var map;
+        var mapDataUrl = '@Url.Action("GetMapData")';
 
         function initMap() {
-            map = new google.maps.Map(document.getElementById('map'), {
-                center: { lat: 50.127346, lng: 30.111094 },
-                zoom: 8
-            });
-            var location = '@HttpUtility.UrlDecode(RegionService.GetRegionName())';
-            var zoom = 13;
-            @if (RegionService.GetRegionId() == RegionConstants.AllUkraineRegionId)
-            {
-                <text>
-                    location = 'Україна';
-                    zoom = 6;
-                </text>
-            }
-            var geocoder = new google.maps.Geocoder();
-            geocoder.geocode({ 'address': location }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    map.setCenter(results[0].geometry.location);
-                    map.setZoom(zoom);
+                    map = new google.maps.Map(document.getElementById('map'),
+                        {
+                            center: { lat: 50.127346, lng: 30.111094 },
+                            zoom: 8
+                        });
+                    var location = '@HttpUtility.UrlDecode(RegionService.GetRegionName())';
+                    var zoom = 13;
+                    @if (RegionService.GetRegionId() == RegionConstants.AllUkraineRegionId)
+                    {
+                        <text>
+                            location = 'Україна';
+                            zoom = 6;
+                        </text>
+                    }
+                    var geocoder = new google.maps.Geocoder();
+                    geocoder.geocode({ 'address': location },
+                        function(results, status) {
+                            if (status == google.maps.GeocoderStatus.OK) {
+                                map.setCenter(results[0].geometry.location);
+                                map.setZoom(zoom);
+                            }
+                        });
                 }
-            });
-        }
 
-        var mapDataUrl = '@Url.Action("GetMapData")';
-        $.getJSON(mapDataUrl, function (data) {
-            for (var i = 0; i < data.length; i++) {
-                var content = "<strong>" + data[i].Name + "</strong><br/>" +
-                    "<span>" + data[i].Specialization + "</span><br/>" +
-                    "<span>Бонус: " + data[i].UserDiscount + "%</span><br/>" +
-                    "<a target='_blank' href='" + data[i].Url + "'>" + data[i].Url + "</a><br/>" +
-                    "<a href='https://www.google.com/maps/dir/?api=1&destination="+data[i].Latitude + "," + data[i].Longitude + "'>Прокласти маршрут</a><br/>";
-                var infowindow = new google.maps.InfoWindow();
-                var marker = new google.maps.Marker({
-                    position: { lat: data[i].Latitude, lng: data[i].Longitude },
-                    map: map,
-                    title: data[i].Name
-                });
-                google.maps.event.addListener(marker, 'click', (function (marker, content, infowindow) {
-                    return function () {
-                        infowindow.setContent(content);
-                        infowindow.open(map, marker);
-                    };
-                })(marker, content, infowindow));
-            }
+        
+        $(function() {
+            $(window).load(function() {
+                initMap();
+
+                $.getJSON(mapDataUrl,
+                    function(data) {
+                        for (var i = 0; i < data.length; i++) {
+                            var content = "<strong>" +
+                                data[i].Name +
+                                "</strong><br/>" +
+                                "<span>" +
+                                data[i].Specialization +
+                                "</span><br/>" +
+                                "<span>Бонус: " +
+                                data[i].UserDiscount +
+                                "%</span><br/>" +
+                                "<a target='_blank' href='" +
+                                data[i].Url +
+                                "'>" +
+                                data[i].Url +
+                                "</a><br/>" +
+                                "<a href='https://www.google.com/maps/dir/?api=1&destination=" +
+                                data[i].Latitude +
+                                "," +
+                                data[i].Longitude +
+                                "'>Прокласти маршрут</a><br/>";
+                            var infowindow = new google.maps.InfoWindow();
+                            var marker = new google.maps.Marker({
+                                position: { lat: data[i].Latitude, lng: data[i].Longitude },
+                                map: map,
+                                title: data[i].Name
+                            });
+                            google.maps.event.addListener(marker,
+                                'click',
+                                (function(marker, content, infowindow) {
+                                    return function() {
+                                        infowindow.setContent(content);
+                                        infowindow.open(map, marker);
+                                    };
+                                })(marker, content, infowindow));
+                        }
+                    });
+            });
         });
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0Ryf-Uk4SouHzTJPPuUXAVSmaAQ5X-oM&callback=initMap" async defer></script>
 }
 
 <!--end-title_content-->

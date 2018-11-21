@@ -1,13 +1,15 @@
 ﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
 @model Benefit.DataTransfer.ViewModels.NavigationEntities.CategoriesViewModel
 
 @{
     ViewBag.Title = Model.Category.Name;
     Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
 }
 @section meta
 {
-    <meta name="description" content="@(Model.Category == null ? string.Empty : Model.Category.MetaDescription)">
+    <meta name="description" content="@(Model.Category == null ? string.Empty : Model.Category.MetaDescription) @seller.SeoSuffix">
 }
 <div class="col-md-8 col-xl-9 content">
     <section class="breadcrumb" id="content_link">

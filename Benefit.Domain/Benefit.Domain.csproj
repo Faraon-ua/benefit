@@ -538,6 +538,10 @@
     <Compile Include="Migrations\201811150831510_AddSellerWidget.Designer.cs">
       <DependentUpon>201811150831510_AddSellerWidget.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201811201523108_AddSellerSeoInfo.cs" />
+    <Compile Include="Migrations\201811201523108_AddSellerSeoInfo.Designer.cs">
+      <DependentUpon>201811201523108_AddSellerSeoInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -938,6 +942,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201811150831510_AddSellerWidget.resx">
       <DependentUpon>201811150831510_AddSellerWidget.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201811201523108_AddSellerSeoInfo.resx">
+      <DependentUpon>201811201523108_AddSellerSeoInfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -50,6 +50,7 @@ namespace Benefit.Domain.Models
         [MaxLength(64)]
         public string ShippingName { get; set; }
         [MaxLength(256)]
+        [Required]
         public string ShippingAddress { get; set; }
         public double ShippingCost { get; set; }
         public DateTime Time { get; set; }

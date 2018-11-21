@@ -3,17 +3,12 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Xml;
-using System.Xml.Linq;
 using Benefit.Common.Constants;
 using Benefit.Web.Helpers;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models.Enums;
-using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
@@ -21,7 +16,6 @@ using Benefit.Web.Models;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
-using NLog;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers

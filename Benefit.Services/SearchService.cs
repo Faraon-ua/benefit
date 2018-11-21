@@ -66,7 +66,6 @@ namespace Benefit.Services
                 Term = term
             };
             term = term.ToLower();
-            var translitTerm = term.Translit();
             var productsResult = db.Products
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Images)
@@ -79,7 +78,6 @@ namespace Benefit.Services
             var productResult = productsResult
                 .Search(entry => entry.Name,
                     entry => entry.SearchTags,
-                    entry => entry.Description,
                     entry => entry.ShortDescription
                 ).Containing(term.Split(' '))
                 .ToRanked()

@@ -12,7 +12,7 @@
 }
 @section meta
 {
-    <meta name="description" content="@(Model.Category == null ? Model.Seller.ShortDescription : Model.Category.MetaDescription)">
+    <meta name="description" content="@(Model.Category == null ? Model.Seller.ShortDescription : Model.Category.MetaDescription) @seller.SeoSuffix">
 }
 @section styles
 {

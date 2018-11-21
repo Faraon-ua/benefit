@@ -6,7 +6,6 @@ using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
-using Benefit.Domain.Models.Search;
 using Benefit.Services;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;

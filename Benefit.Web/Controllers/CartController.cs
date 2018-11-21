@@ -224,7 +224,7 @@ namespace Benefit.Web.Controllers
                     ModelState.AddModelError("PaymentType", "Недостатньо бонусів на рахунку");
                 }
             }
-            if (completeOrder.RequireAddress && completeOrder.AddressId == null)
+            if (completeOrder.AddressId == null)
             {
                 ModelState.AddModelError("AddressId", "Оберіть адресу доставки");
             }
