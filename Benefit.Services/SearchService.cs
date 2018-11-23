@@ -3,7 +3,6 @@ using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Search;
-using NinjaNye.SearchExtensions;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -67,24 +66,24 @@ namespace Benefit.Services
             };
             term = term.ToLower();
             //var regionId = RegionService.GetRegionId();
-            var query = string.Format(@"Select SearchResults.* from
-            (
-                Select top 300 Id, Sum(Rank) as Rank From
+            var query = string.Format(@"
+            Select SearchResults.* from
+            (Select top 300 Id, Sum(Rank) as Rank From
                 (SELECT Id, Name, 5 as Rank
-            FROM[Benefit.com].[dbo].[Products]
-            where contains(Name, N'{0}') AND IsActive = 1 
-            union
-            SELECT Id, SearchTags, 4 as Rank
-            FROM[Benefit.com].[dbo].[Products]
-            where Name like N'%{0}%' AND IsActive = 1
-            union
-            SELECT Id, Name, 3 as Rank
-            FROM[Benefit.com].[dbo].[Products]
-            where Name like N'%{0}%' AND IsActive = 1
-            union
-            SELECT Id, Description, 2 as Rank
-            FROM[Benefit.com].[dbo].[Products]
-            where Description like N'%{0}%' AND IsActive = 1
+                    FROM Products
+                    where contains(Name, N'{0}') AND IsActive = 1 
+                    union
+                    SELECT Id, SearchTags, 4 as Rank
+                    FROM Products
+                    where Name like N'%{0}%' AND IsActive = 1
+                    union
+                    SELECT Id, Name, 3 as Rank
+                    FROM Products
+                    where SearchTags like N'%{0}%' AND IsActive = 1
+                    union
+                    SELECT Id, Description, 2 as Rank
+                    FROM Products
+                    where Description like N'%{0}%' AND IsActive = 1
                 ) as RankedResults
                 GROUP BY Id
             order by rank desc
