@@ -121,6 +121,9 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Favorite> Favorites { get; set; }
 
         [NotMapped]
+        public int SearchRank { get; set; }
+
+        [NotMapped]
         public virtual ICollection<Review> ApprovedReviews
         {
             get

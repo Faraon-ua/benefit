@@ -66,28 +66,47 @@ namespace Benefit.Services
                 Term = term
             };
             term = term.ToLower();
-            var productsResult = db.Products
+            //var regionId = RegionService.GetRegionId();
+            var query = string.Format(@"Select SearchResults.* from
+            (
+                Select top 300 Id, Sum(Rank) as Rank From
+                (SELECT Id, Name, 5 as Rank
+            FROM[Benefit.com].[dbo].[Products]
+            where contains(Name, N'{0}') AND IsActive = 1 
+            union
+            SELECT Id, SearchTags, 4 as Rank
+            FROM[Benefit.com].[dbo].[Products]
+            where Name like N'%{0}%' AND IsActive = 1
+            union
+            SELECT Id, Name, 3 as Rank
+            FROM[Benefit.com].[dbo].[Products]
+            where Name like N'%{0}%' AND IsActive = 1
+            union
+            SELECT Id, Description, 2 as Rank
+            FROM[Benefit.com].[dbo].[Products]
+            where Description like N'%{0}%' AND IsActive = 1
+                ) as RankedResults
+                GROUP BY Id
+            order by rank desc
+                ) as SearchResults
+            ", term);
+            var rankedSearchResults = db.Database.SqlQuery<RankedSqlResult>(query).ToDictionary(x => x.Id, x => x.Rank);
+            var searchedIds = rankedSearchResults.Select(entry => entry.Key).ToList();
+            var productResults = db.Products
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Images)
-                .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce && entry.Category.IsActive);
+                .Where(entry => searchedIds.Contains(entry.Id) && entry.Seller.IsActive && entry.Seller.HasEcommerce && entry.Category.IsActive);
             if (searchSellerId != null)
             {
-                productsResult = productsResult.Where(entry => entry.SellerId == searchSellerId);
+                productResults = productResults.Where(entry => entry.SellerId == searchSellerId);
             }
-            //var regionId = RegionService.GetRegionId();
-            var productResult = productsResult
-                .Search(entry => entry.Name,
-                    entry => entry.SearchTags,
-                    entry => entry.ShortDescription
-                ).Containing(term.Split(' '))
-                .ToRanked()
-                .Where(entry => entry.Item.IsActive)
-                .OrderBy(entry => entry.Item.AvailabilityState)
-                .ThenByDescending(entry => entry.Item.Images.Any())
-                .ThenBy(entry => entry.Hits)
-                .ThenBy(entry => entry.Item.SKU)
-                .Select(entry => entry.Item);
 
+            var productResult = productResults.ToList();
+            productResult.ForEach(entry=>entry.SearchRank = rankedSearchResults[entry.Id]);
+                productResult = productResult.OrderByDescending(entry => entry.SearchRank)
+                .ThenBy(entry => entry.AvailabilityState)
+                .ThenByDescending(entry => entry.Images.Any())
+                .ThenBy(entry => entry.SKU).ToList();
             if (options != null)
             {
                 var optionSegments = options.Split(';');
@@ -106,24 +125,24 @@ namespace Benefit.Services
                         case "category":
                             var categories =
                                 db.Categories
-                                    .Include(entry=>entry.MappedCategories)
+                                    .Include(entry => entry.MappedCategories)
                                     .Where(entry => optionValues.Contains(entry.UrlName));
                             var mappedIds = categories.SelectMany(entry => entry.MappedCategories.Select(mc => mc.Id))
                                 .ToList();
-                            mappedIds.AddRange(categories.Select(entry=>entry.Id));
-                            productResult = productResult.Where(entry => mappedIds.Contains(entry.CategoryId));
+                            mappedIds.AddRange(categories.Select(entry => entry.Id));
+                            productResult = productResult.Where(entry => mappedIds.Contains(entry.CategoryId)).ToList();
                             break;
                         case "seller":
                             var sellerIds =
                                 db.Sellers.Where(entry => optionValues.Contains(entry.UrlName))
                                     .Select(entry => entry.Id);
-                            productResult = productResult.Where(entry => sellerIds.Contains(entry.SellerId));
+                            productResult = productResult.Where(entry => sellerIds.Contains(entry.SellerId)).ToList();
                             break;
                         case "vendor":
-                            productResult = productResult.Where(entry => optionValues.Contains(entry.Vendor));
+                            productResult = productResult.Where(entry => optionValues.Contains(entry.Vendor)).ToList();
                             break;
                         case "country":
-                            productResult = productResult.Where(entry => optionValues.Contains(entry.OriginCountry));
+                            productResult = productResult.Where(entry => optionValues.Contains(entry.OriginCountry)).ToList();
                             break;
                         default:
                             productResult =
@@ -133,7 +152,7 @@ namespace Benefit.Services
                                     optionValues.Any(
                                         optValue =>
                                             entry.ProductParameterProducts.Select(pr => pr.StartValue)
-                                                .Contains(optValue)));
+                                                .Contains(optValue))).ToList();
                             break;
                     }
                 }
@@ -279,11 +298,6 @@ namespace Benefit.Services
             //    var currectRegionSellerIds = result.CurrentRegionSellers.Select(entry => entry.Id).ToList();
             //    result.Sellers = sellers.Where(entry => !currectRegionSellerIds.Contains(entry.Id)).ToList();
             //}
-            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
-            result.Products = productResult.Skip(skip)
-                .Take(take + 1)
-                .ToList();
-
             return result;
         }
     }
