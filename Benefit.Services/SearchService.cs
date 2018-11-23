@@ -6,6 +6,7 @@ using Benefit.Domain.Models.Search;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Benefit.Services
 {
@@ -64,24 +65,28 @@ namespace Benefit.Services
             {
                 Term = term
             };
-            term = term.ToLower();
+            term = Regex.Replace(term.ToLower(), "[^а-яА-Я0-9a-zA-Z]+", "");
             //var regionId = RegionService.GetRegionId();
             var query = string.Format(@"
             Select SearchResults.* from
             (Select top 300 Id, Sum(Rank) as Rank From
                 (SELECT Id, Name, 5 as Rank
                     FROM Products
+                    where Name like N'{0}%' AND IsActive = 1
+                    union
+                    SELECT Id, Name, 4 as Rank
+                    FROM Products
                     where contains(Name, N'{0}') AND IsActive = 1 
                     union
-                    SELECT Id, SearchTags, 4 as Rank
+                    SELECT Id, SearchTags, 3 as Rank
                     FROM Products
                     where Name like N'%{0}%' AND IsActive = 1
                     union
-                    SELECT Id, Name, 3 as Rank
+                    SELECT Id, Name, 2 as Rank
                     FROM Products
                     where SearchTags like N'%{0}%' AND IsActive = 1
                     union
-                    SELECT Id, Description, 2 as Rank
+                    SELECT Id, Description, 1 as Rank
                     FROM Products
                     where Description like N'%{0}%' AND IsActive = 1
                 ) as RankedResults
