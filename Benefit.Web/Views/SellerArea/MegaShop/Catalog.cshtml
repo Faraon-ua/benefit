@@ -4,6 +4,10 @@
     var seller = ViewBag.Seller as Seller;
     ViewBag.Title = seller.CatalogButtonName;
 }
+@section meta
+{
+    <meta name="description" content="@seller.CatalogButtonName @seller.SeoSuffix">
+}
 <div class="fn_ajax_content margin-top-10">
     <div class="block">
         <h1 class="h1">
@@ -15,7 +19,7 @@
             @foreach (var img in seller.Images.Where(entry => entry.ImageType == ImageType.SellerCatalog).OrderBy(entry => entry.Order))
             {
                 <a href="~/Images/SellerCatalog/@seller.Id/@img.ImageUrl" data-fancybox="gallery">
-                    <img src="~/Images/SellerCatalog/@seller.Id/@img.ImageUrl" width="200"/>
+                    <img src="~/Images/SellerCatalog/@seller.Id/@img.ImageUrl" width="200" />
                 </a>
             }
         </div>

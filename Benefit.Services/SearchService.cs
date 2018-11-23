@@ -65,7 +65,7 @@ namespace Benefit.Services
             {
                 Term = term
             };
-            term = Regex.Replace(term.ToLower(), "[^а-яА-Я0-9a-zA-Z]+", "");
+            term = Regex.Replace(term.ToLower(), "[^а-яА-Я0-9a-zA-Z ]+", "");
             //var regionId = RegionService.GetRegionId();
             var query = string.Format(@"
             Select SearchResults.* from

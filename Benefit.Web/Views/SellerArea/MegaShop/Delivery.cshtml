@@ -5,7 +5,10 @@
     Layout = "_SellerLayout.cshtml";
     var seller = ViewBag.Seller as Seller;
 }
-
+@section meta
+{
+    <meta name="description" content="Доставка та оплата @seller.SeoSuffix">
+}
 <div class="col-md-8 col-xl-9 content">
 
     @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Доставка та оплата" } })

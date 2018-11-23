@@ -5,6 +5,11 @@
 
 @{
     Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+@section meta
+{
+    <meta name="description" content="Кошик @seller.SeoSuffix">
 }
 @section scripts
 {
