@@ -6,6 +6,7 @@ using Benefit.Domain.Models.Search;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Benefit.Services
@@ -66,6 +67,24 @@ namespace Benefit.Services
                 Term = term
             };
             term = Regex.Replace(term.ToLower(), "[^а-яА-Я0-9a-zA-Z ]+", "");
+            var words = term.Split(' ');
+            if (words.Length > 1)
+            {
+                var searchTermBuilder = new StringBuilder();
+                for(var i=0; i< words.Length;i++)
+                {
+                    if (i < words.Length - 1)
+                    {
+                        searchTermBuilder.AppendFormat("\"{0}\" AND ", words[i]);
+                    }
+                    else
+                    {
+                        searchTermBuilder.AppendFormat("\"{0}\"", words[i]);
+                    }
+                }
+
+                term = searchTermBuilder.ToString();
+            }
             //var regionId = RegionService.GetRegionId();
             var query = string.Format(@"
             Select SearchResults.* from
@@ -97,6 +116,7 @@ namespace Benefit.Services
             var rankedSearchResults = db.Database.SqlQuery<RankedSqlResult>(query).ToDictionary(x => x.Id, x => x.Rank);
             var searchedIds = rankedSearchResults.Select(entry => entry.Key).ToList();
             var productResults = db.Products
+                .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Images)
                 .Where(entry => searchedIds.Contains(entry.Id) && entry.Seller.IsActive && entry.Seller.HasEcommerce && entry.Category.IsActive);
@@ -106,11 +126,11 @@ namespace Benefit.Services
             }
 
             var productResult = productResults.ToList();
-            productResult.ForEach(entry=>entry.SearchRank = rankedSearchResults[entry.Id]);
-                productResult = productResult.OrderByDescending(entry => entry.SearchRank)
-                .ThenBy(entry => entry.AvailabilityState)
-                .ThenByDescending(entry => entry.Images.Any())
-                .ThenBy(entry => entry.SKU).ToList();
+            productResult.ForEach(entry => entry.SearchRank = rankedSearchResults[entry.Id]);
+            productResult = productResult.OrderByDescending(entry => entry.SearchRank)
+            .ThenBy(entry => entry.AvailabilityState)
+            .ThenByDescending(entry => entry.Images.Any())
+            .ThenBy(entry => entry.SKU).ToList();
             if (options != null)
             {
                 var optionSegments = options.Split(';');
