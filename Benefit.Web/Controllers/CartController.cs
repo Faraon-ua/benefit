@@ -212,25 +212,48 @@ namespace Benefit.Web.Controllers
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
             completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
+            var user = UserService.GetUser(User.Identity.GetUserId());
             if (completeOrder.Order == null) throw new HttpException(404, "Not found");
 
             if (completeOrder.PaymentType == PaymentType.Bonuses)
             {
                 var sum = Cart.CurrentInstance.GetOrderSum();
-                var user = UserService.GetUser(User.Identity.GetUserId());
 
                 if (user.BonusAccount < sum)
                 {
                     ModelState.AddModelError("PaymentType", "Недостатньо бонусів на рахунку");
                 }
             }
-            if (completeOrder.AddressId == null)
-            {
-                ModelState.AddModelError("AddressId", "Оберіть адресу доставки");
-            }
 
             if (ModelState.IsValid)
             {
+                if (completeOrder.AddressId == null)
+                {
+                    if (string.IsNullOrEmpty(completeOrder.NewAddressLine))
+                    {
+                        ModelState.AddModelError("AddressId", "Оберіть адресу доставки");
+                    }
+                    else
+                    {
+                        var newAddress = new Address
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            AddressLine = completeOrder.NewAddressLine,
+                            FullName = user.FullName,
+                            Phone = user.PhoneNumber,
+                            RegionId = user.RegionId,
+                            UserId = user.Id
+                        };
+                        using (var db = new ApplicationDbContext())
+                        {
+                            db.Addresses.Add(newAddress);
+                            db.SaveChanges();
+                        }
+
+                        completeOrder.AddressId = newAddress.Id;
+                    }
+                }
+
                 completeOrder.Order.UserId = User.Identity.GetUserId();
                 var orderNumber = OrderService.AddOrder(completeOrder);
 
