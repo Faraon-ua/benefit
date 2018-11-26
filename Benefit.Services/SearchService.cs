@@ -67,11 +67,12 @@ namespace Benefit.Services
                 Term = term
             };
             term = Regex.Replace(term.ToLower(), "[^а-яА-Я0-9a-zA-Zії ]+", "");
+            var fullTextTerm = term;
             var words = term.Split(' ');
             if (words.Length > 1)
             {
                 var searchTermBuilder = new StringBuilder();
-                for(var i=0; i< words.Length;i++)
+                for (var i = 0; i < words.Length; i++)
                 {
                     if (i < words.Length - 1)
                     {
@@ -83,7 +84,7 @@ namespace Benefit.Services
                     }
                 }
 
-                term = searchTermBuilder.ToString();
+                fullTextTerm = searchTermBuilder.ToString();
             }
             //var regionId = RegionService.GetRegionId();
             var query = string.Format(@"
@@ -95,7 +96,7 @@ namespace Benefit.Services
                     union
                     SELECT Id, Name, 4 as Rank
                     FROM Products
-                    where contains(Name, N'{0}') AND IsActive = 1 
+                    where contains(Name, N'{1}') AND IsActive = 1 
                     union
                     SELECT Id, SearchTags, 3 as Rank
                     FROM Products
@@ -112,14 +113,19 @@ namespace Benefit.Services
                 GROUP BY Id
             order by rank desc
                 ) as SearchResults
-            ", term);
+            ", term, fullTextTerm);
             var rankedSearchResults = db.Database.SqlQuery<RankedSqlResult>(query).ToDictionary(x => x.Id, x => x.Rank);
             var searchedIds = rankedSearchResults.Select(entry => entry.Key).ToList();
             var productResults = db.Products
                 .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Images)
-                .Where(entry => searchedIds.Contains(entry.Id) && entry.Seller.IsActive && entry.Seller.HasEcommerce && entry.Category.IsActive);
+                .Include(entry => entry.Category)
+                .Where(entry => searchedIds.Contains(entry.Id)
+                                && entry.Seller.IsActive
+                                && entry.Seller.HasEcommerce
+                                && entry.Category.IsActive
+                                && ((entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null) || !entry.Category.IsSellerCategory));
             if (searchSellerId != null)
             {
                 productResults = productResults.Where(entry => entry.SellerId == searchSellerId);

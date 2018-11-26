@@ -151,13 +151,21 @@
         </section>
     </div>
 
-    <div class="wrapper_inner " style=" margin-top: 10px;">
+    <div class="wrapper_inner no-padding-top">
         <div class="right_block  wide_N">
             <div class="middle ">
                 <div class="container">
                     <div class="right_block1 clearfix catalog vertical" id="right_block_ajax">
-
+                        <div class="js_filter filter_horizontal">
+                            <div class="bx_filter bx_filter_vertical"></div>
+                        </div>
                         <div class="inner_wrapper">
+                            <div class="adaptive_filter margin-bottom-5">
+                                <a class="filter_opener">
+                                    <i class="fa fa-filter black"></i>
+                                    <span>Фільтри та сортування</span>
+                                </a>
+                            </div>
                             <div class="sections_wrapper">
                                 <div class="list items">
                                     <div class="row margin0 products-wrapper">
@@ -181,7 +189,7 @@
                                                 <a href="#" class="paging dark_link cur" data-page="0">1</a>
                                                 @for (int i = 2; i <= Model.PagesCount; i++)
                                                 {
-                                                    <a href="#" class="paging dark_link" data-page="@(i-1)">@i</a>
+                                                    <a href="#" class="paging dark_link" data-page="@(i - 1)">@i</a>
                                                 }
                                             </div>
                                         </div>
