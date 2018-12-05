@@ -151,25 +151,29 @@ namespace Benefit.Services.Domain
             }
 
             var category = product.Category.IsSellerCategory ? product.Category.MappedParentCategory : product.Category;
-            var catsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
-            catsIds.Add(category.Id);
-            result.RelatedProducts = db.Products
-                .Include(entry => entry.Seller)
-                .Include(entry => entry.Currency)
-                .Include(entry => entry.Images)
-                .Where(entry =>
-                    entry.IsActive && entry.Seller.IsActive &&
-                    entry.Id != product.Id &&
-                    entry.AvailabilityState != ProductAvailabilityState.NotInStock && entry.Images.Any() &&
-                    catsIds.Contains(entry.CategoryId)).OrderBy(entry => Guid.NewGuid()).Take(5)
-                .ToList();
-            foreach (var relatedProduct in result.RelatedProducts)
+            if (category != null)
             {
-                if (relatedProduct.Currency != null)
+                var catsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
+                catsIds.Add(category.Id);
+                result.RelatedProducts = db.Products
+                    .Include(entry => entry.Seller)
+                    .Include(entry => entry.Currency)
+                    .Include(entry => entry.Images)
+                    .Where(entry =>
+                        entry.IsActive && entry.Seller.IsActive &&
+                        entry.Id != product.Id &&
+                        entry.AvailabilityState != ProductAvailabilityState.NotInStock && entry.Images.Any() &&
+                        catsIds.Contains(entry.CategoryId)).OrderBy(entry => Guid.NewGuid()).Take(5)
+                    .ToList();
+                foreach (var relatedProduct in result.RelatedProducts)
                 {
-                    relatedProduct.Price = relatedProduct.Price * relatedProduct.Currency.Rate;
+                    if (relatedProduct.Currency != null)
+                    {
+                        relatedProduct.Price = relatedProduct.Price * relatedProduct.Currency.Rate;
+                    }
                 }
             }
+
             return result;
         }
 

@@ -854,7 +854,7 @@
 {
     @Html.Partial("_ProductOptions", Model)
 }
-@if (!string.IsNullOrEmpty(category.Tag) && Request.UrlReferrer.LocalPath == string.Empty)
+@if (category!= null && Request.UrlReferrer !=null && !string.IsNullOrEmpty(category.Tag) && Request.UrlReferrer.LocalPath == string.Empty)
 {
     @Html.Action("ShowMessagePopup", "Home", new { message = category.Tag, showButtons = true })
 }

@@ -8,6 +8,7 @@ namespace Benefit.DataTransfer.ViewModels
         public ProductDetailsViewModel()
         {
             ProductOptions = new List<ProductOption>();
+            RelatedProducts = new List<Product>();
         }
         public Product Product{ get; set; }
         public string CategoryUrl { get; set; }
