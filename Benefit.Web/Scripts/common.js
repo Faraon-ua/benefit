@@ -132,7 +132,7 @@ $(function () {
 
     if ($.fn.mask) {
         $('.number-input').mask("#");
-        $('.phone-input').mask("+38(000)00-00-000");
+        $('.phone-input').mask("+38(000)00-00-000", { placeholder: "+38(___)___-__-__" });
     } 
 
     $(".show-more-options").click(function (e) {

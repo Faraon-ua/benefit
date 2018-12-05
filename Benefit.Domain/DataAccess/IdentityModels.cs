@@ -71,7 +71,7 @@ namespace Benefit.Domain.DataAccess
                 IndexAnnotation.AnnotationName,
                 new IndexAnnotation(new IndexAttribute() { IsUnique = true }));
             modelBuilder.Entity<ApplicationUser>().Property(e => e.CardNumber).HasMaxLength(10);
-            modelBuilder.Entity<ApplicationUser>().Property(e => e.PhoneNumber).HasMaxLength(16);
+            modelBuilder.Entity<ApplicationUser>().Property(e => e.PhoneNumber).HasMaxLength(20);
             modelBuilder.Entity<ApplicationUser>().Property(e => e.Email).HasMaxLength(64);
             modelBuilder.Entity<IdentityUserLogin>().HasKey<string>(l => l.UserId);
             modelBuilder.Entity<IdentityRole>().HasKey<string>(r => r.Id);
