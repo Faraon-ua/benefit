@@ -53,11 +53,14 @@ namespace Benefit.Services.Domain
             var shipping = db.ShippingMethods.FirstOrDefault(entry => entry.Id == model.ShippingMethodId);
             order.ShippingCost = order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree ?? default(double)) : 0;
             order.ShippingName = shipping.Name;
-            var address = db.Addresses.FirstOrDefault(entry => entry.Id == model.AddressId);
-            if (address != null)
+            if (string.IsNullOrEmpty(order.ShippingAddress))
             {
-                order.ShippingAddress = string.Format("{0}; {1}; {2}, {3}", address.FullName, address.Phone,
-                    address.Region.Name_ua, address.AddressLine);
+                var address = db.Addresses.FirstOrDefault(entry => entry.Id == model.AddressId);
+                if (address != null)
+                {
+                    order.ShippingAddress = string.Format("{0}; {1}; {2}, {3}", address.FullName, address.Phone,
+                        address.Region.Name_ua, address.AddressLine);
+                }
             }
 
             order.Time = DateTime.UtcNow;

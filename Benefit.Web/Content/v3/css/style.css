@@ -5666,7 +5666,7 @@ button.close {
 }
 
 .hidden-xs {
-    display: inline-block !important
+    display: block !important
 }
 
 tr.hidden-xs {

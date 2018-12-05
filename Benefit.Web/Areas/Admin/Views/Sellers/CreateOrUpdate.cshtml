@@ -34,6 +34,15 @@
         var deletePromotionUrl = '@Url.Action("DeletePromotion")';
         var removeReviewUrl = '@Url.Action("RemoveReview","Reviews")';
 
+        $("body").on("change",
+            ".predefined-shipping",
+            function () {
+                var text = $(this).find("option:selected").text();
+                if ($(this).val() > 0) {
+                    $(this).next(".shipping-name ").val(text);
+                }
+            });
+
         $(".remove-review").click(function () {
             if (!confirm("Видалити відгук?")) {
                 return;

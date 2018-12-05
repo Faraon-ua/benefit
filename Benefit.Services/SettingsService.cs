@@ -82,6 +82,24 @@ namespace Benefit.Services
             }
         }
 
+        public class NovaPoshta
+        {
+            public static string ApiUrl
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["NovaPoshtaApiUrl"];
+                }
+            }
+            public static string ApiKey
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["NovaPoshtaApiKey"];
+                }
+            }
+        }
+
         public class Facebook
         {
             public static string VerificationToken

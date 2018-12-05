@@ -1,21 +1,33 @@
-﻿@model  KeyValuePair<int, Benefit.Domain.Models.ShippingMethod>
-
+﻿@using Benefit.Domain.Models
+@model  KeyValuePair<int, ShippingMethod>
+@{
+    var shippingMethodsSelectList = EnumHelper.GetSelectList(typeof(DefinedShippingType));
+    var intShippingType = (int) Model.Value.Type;
+    var selecteShippingType = shippingMethodsSelectList.FirstOrDefault(entry => entry.Value == intShippingType.ToString());
+    selecteShippingType.Selected = true;
+}
 <div class="belong-shipping bordered width-30 padding_5 margin-top-10 position-relative">
-    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].Name", Model.Key), Model.Value.Name, new { placeholder = "Назва методу доставки", @class = "width-90 text-bold" })
-    @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].Id", Model.Key), Model.Value.Id, new { data_number = Model.Key })
-    <br />
-    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].FreeStartsFrom", Model.Key), Model.Value.FreeStartsFrom, new { @class = "width-90 margin-top-10 mask-int-number", placeholder = "Безкоштовна доставка від (грн)" })
-    <br />
-    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].CostBeforeFree", Model.Key), Model.Value.CostBeforeFree, new { @class = "width-90 margin-top-10 mask-int-number", placeholder = "Вартість доставки до безкоштовної" })
-    <br />
-    <input type="text" placeholder="Місто, область" class="width-90 margin-top-10 regionSearch includeRegions" value="@(Model.Value.Region == null ? string.Empty : Model.Value.Region.ExpandedName)" />
+    @Html.DropDownList(string.Format("Seller.ShippingMethods[{0}].Type", Model.Key),
+        shippingMethodsSelectList,
+        null,
+        new { @class = "width-90 predefined-shipping" })
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].Name", Model.Key), Model.Value.Name, new {placeholder = "Назва методу доставки", @class = "width-90 text-bold margin-top-10 shipping-name" })
+    @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].Id", Model.Key), Model.Value.Id, new {data_number = Model.Key})
+    <br/>
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].FreeStartsFrom", Model.Key), Model.Value.FreeStartsFrom, new {@class = "width-90 margin-top-10 mask-int-number", placeholder = "Безкоштовна доставка від (грн)"})
+    <br/>
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].CostBeforeFree", Model.Key), Model.Value.CostBeforeFree, new {@class = "width-90 margin-top-10 mask-int-number", placeholder = "Вартість доставки до безкоштовної"})
+    <br/>
+    @Html.TextBox(string.Format("Seller.ShippingMethods[{0}].Description", Model.Key), Model.Value.Description, new {@class = "width-90 margin-top-10", placeholder = "Адреса складу/самовивозу" })
+    <br/>
+    <input type="text" placeholder="Місто, область" class="width-90 margin-top-10 regionSearch includeRegions" value="@(Model.Value.Region == null ? string.Empty : Model.Value.Region.ExpandedName)"/>
     @Html.Hidden(string.Format("Seller.ShippingMethods[{0}].RegionId", Model.Key), Model.Value.RegionId)
-    <br />
+    <br/>
     <div class="margin-top-10">
         @Html.CheckBox(string.Format("Seller.ShippingMethods[{0}].SkipOrderAddress", Model.Key), Model.Value.SkipOrderAddress)
         <label for="@string.Format("Seller_ShippingMethods_{0}__SkipOrderAddress", Model.Key)">Не обирати адресу при замовленні</label>
     </div>
-    <a href="#" class="position-absolute position-top position-right margin-right-10" onclick="$(this).parent().remove(); ReAssignIndexesToChildren('shipping', 'belong-shipping');">
+    <a href="#" class="position-absolute position-top position-right margin-right-10" onclick="$(this).parent().remove();ReAssignIndexesToChildren('shipping', 'belong-shipping');">
         <i class="icon-remove red"></i>
     </a>
 </div>

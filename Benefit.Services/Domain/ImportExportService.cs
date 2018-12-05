@@ -267,7 +267,7 @@ namespace Benefit.Services.Domain
             List<XElement> xmlCats = null;
             if (parent == null)
             {
-                xmlCats = xmlCategories.Where(entry => entry.Attribute("parentId") == null).ToList();
+                xmlCats = xmlCategories.Where(entry => entry.Attribute("parentId") == null || (entry.Attribute("parentId") != null && entry.Attribute("parentId").Value == "0")).ToList();
             }
             else
             {

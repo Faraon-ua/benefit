@@ -19,6 +19,7 @@ namespace Benefit.DataTransfer.ViewModels
         [Required(ErrorMessage = "Оберіть метод доставки")]
         public string ShippingMethodId { get; set; }
         public string AddressId { get; set; }
+        public string ShippingAddress { get; set; }
         public string NewAddressLine { get; set; }
         [Required(ErrorMessage = "Оберіть вид оплати")]
         public PaymentType? PaymentType { get; set; }

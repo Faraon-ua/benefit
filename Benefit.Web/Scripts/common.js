@@ -130,11 +130,10 @@ $(function () {
         e.preventDefault();
     });
 
-    try {
+    if ($.fn.mask) {
         $('.number-input').mask("#");
-    } catch (err) {
-        console.log(err);
-    }
+        $('.phone-input').mask("+38(000)00-00-000");
+    } 
 
     $(".show-more-options").click(function (e) {
         e.preventDefault();

@@ -1,20 +1,27 @@
-﻿@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+﻿@model CompleteOrderViewModel
 @using Benefit.Common.Constants
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
+@using Benefit.Services
 @using Newtonsoft.Json
 @{
     ViewBag.Title = "Оформлення замовлення";
+}
+@section styles
+{
+    <link href="~/Content/css/select2.min.css" rel="stylesheet" />
 }
 @section scripts
 {
     <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/jquery.autocomplete.min.js"></script>
     <script src="~/Scripts/address.js"></script>
+    <script src="~/Scripts/select2.min.js"></script>
 
     <script>
-        var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods))
-        var loginUrl = '@Url.Action("Login", "Account")' + '?returnUrl=@HttpUtility.UrlEncode(Url.Action("Order", "Cart"))&isAjaxRequest=true';
+        var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods));
+        var loginUrl = '@Url.Action("Login", "Account")' +
+            '?returnUrl=@HttpUtility.UrlEncode(Url.Action("Order", "Cart"))&isAjaxRequest=true';
         var token = $('[name=__RequestVerificationToken]').val();
         var isAuthenticated = ('@User.Identity.IsAuthenticated' === 'True');
 
@@ -22,10 +29,80 @@
             CalculateSummary();
             SetRegionsAutocomplete();
 
-            $("#save-order").click(function () {
+            var npCitiesRequestData = {
+                'modelName': 'Address',
+                "calledMethod": "getCities",
+                "methodProperties": {
+                    "FindByString": ""
+                },
+                "apiKey": "@SettingsService.NovaPoshta.ApiKey"
+            };
+            var npWarehousesRequestData = {
+                "modelName": "Address",
+                "calledMethod": "getWarehouses",
+                "methodProperties": {
+                    "CityRef": "[cityref]"
+                }
+            };
+
+            if ($(".nova-poshta").length > 0) {
+                $.post('@SettingsService.NovaPoshta.ApiUrl',
+                    JSON.stringify(npCitiesRequestData),
+                    function(res) {
+                        $.each(res.data,
+                            function(index, value) {
+                                $("#npCity").append($("<option></option>")
+                                    .attr("value", value.Ref)
+                                    .text(value.Description));
+                            });
+                        $("#npCity").select2().on('select2:select',
+                            function(e) {
+                                var data = e.params.data;
+                                $('#npWarehouse').children('option').remove();
+                                //fetch warehouses
+                                var strWarehouseData =
+                                    JSON.stringify(npWarehousesRequestData).replace("[cityref]", data.id);
+                                $.post('@SettingsService.NovaPoshta.ApiUrl',
+                                    strWarehouseData,
+                                    function(warRes) {
+                                        $.each(warRes.data,
+                                            function(index, warValue) {
+                                                $("#npWarehouse").append($("<option></option>")
+                                                    .attr("value", warValue.Ref)
+                                                    .text(warValue.Description));
+                                            });
+                                        $("#npWarehouse").select2();
+                                    });
+                            });
+                    });
+            }
+
+            $("input[name=ShippingMethodId]").change(function() {
+                $(".shipping-method").hide();
+                var shippingType = $(this).attr("data-shipping-type");
+                var shippinWrap = $(".shipping-method[data-shipping-type=" + shippingType + "]");
+                if (shippinWrap.length > 0) {
+                    shippinWrap.show();
+                } else {
+                    $("#shippingAddresses").show();
+                }
+            });
+
+            $("#save-order").click(function() {
                 var btn = $(this);
                 btn.find(".btn").attr("disabled", "disabled");
                 showLoader();
+                var shippingMethod = $("input[name=ShippingMethodId]:checked");
+                var shippingMethodType = shippingMethod.attr("data-shipping-type");
+                var address = "";
+                if (shippingMethodType == @((int) DefinedShippingType.NovaPoshta)) {
+                    address = shippingMethod.parent().text() +
+                        " " +
+                        $("#npCity option:selected").text() +
+                        " " +
+                        $("#npWarehouse option:selected").text();
+                }
+                $("#shippingAddress").val(address);
                 if (!isAuthenticated) {
                     var registerForm = $("#register-form");
                     var registerFormJson = getFormData(registerForm);
@@ -34,7 +111,7 @@
                             "__RequestVerificationToken": token,
                             "model": registerFormJson
                         },
-                        function (data) {
+                        function(data) {
                             if (data.error) {
                                 flashMessage(data.error, true, true);
                             } else {
@@ -134,24 +211,25 @@
                     var sum = parseFloat($("#order-total").text());
                     if (selectedPaymentType.attr("id") == "@PaymentType.Bonuses.ToString()") {
                         var checkBonusesUrl = '@Url.Action("CheckEnaughBonuses", "Cart")';
-                        $.get(checkBonusesUrl + "?sum=" + (orderSum - promotion), function(data) {
-                            if (data.total) {
-                                $("#bonuses-summary").show();
-                                //bonuses section
-                                $("#bonuses-discount").text(((sum - promotion) - 0.01).toFixed(2));
-                                $("#bonuses-total").text(((sum - promotion) - 0.01).toFixed(2));
+                        $.get(checkBonusesUrl + "?sum=" + (orderSum - promotion),
+                            function(data) {
+                                if (data.total) {
+                                    $("#bonuses-summary").show();
+                                    //bonuses section
+                                    $("#bonuses-discount").text(((sum - promotion) - 0.01).toFixed(2));
+                                    $("#bonuses-total").text(((sum - promotion) - 0.01).toFixed(2));
 
-                                //payment section
-                                $("#pay-total").text((shippingCost + 0.01).toFixed(2));
-                                $("#discount").text(((sum - promotion) - 0.01).toFixed(2));
-                                $("#discount-row").show();
-                            } else {
-                                //todo: add pretty windows
-                                alert("Недостатньо бонусів на рахунку");
-                                selectedPaymentType[0].checked = false;
-                                $("#checkout").attr("disabled", "disabled");
-                            }
-                        });
+                                    //payment section
+                                    $("#pay-total").text((shippingCost + 0.01).toFixed(2));
+                                    $("#discount").text(((sum - promotion) - 0.01).toFixed(2));
+                                    $("#discount-row").show();
+                                } else {
+                                    //todo: add pretty windows
+                                    alert("Недостатньо бонусів на рахунку");
+                                    selectedPaymentType[0].checked = false;
+                                    $("#checkout").attr("disabled", "disabled");
+                                }
+                            });
                     } else {
                         $("#bonuses-summary").hide();
                         $("#discount-row").hide();
@@ -228,7 +306,7 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Номер телефону *</label>
-                                    @Html.TextBox("PhoneNumber", null, new { type = "tel" })
+                                    @Html.TextBox("PhoneNumber", null, new { type = "tel", @class="phone-input" })
                                     @Html.ValidationMessage("PhoneNumber")
                                 </div>
                                 <div class="col-sm-6">
@@ -265,7 +343,7 @@
                                     @Html.ValidationMessage("Password")
                                 </div>
                                 <div class="col-sm-6">
-                                    <label> Реєстраційний код (за наявності)</label>
+                                    <label> Реферальний код (за наявності)</label>
                                     @Html.TextBox("ReferalNumber", null)
                                     <p style="text-align: center; font-size: 1.2em;" id="referal-name">
                                     </p>
@@ -273,7 +351,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <label> Номер картки (за наявності)</label>
+                                    <label> Номер картки Benefit Card (за наявності)</label>
                                     @Html.TextBox("CardNumber", null)
                                     @Html.ValidationMessage("CardNumber")
                                 </div>
@@ -295,32 +373,10 @@
         <div id="order-form-wrap">
             <form action="@Url.Action("order", new {id = Model.SellerId})" method="post">
                 <input type="hidden" name="SellerId" value="@Model.SellerId" />
-                <div class="card">
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#delivery" aria-controls="home" role="tab" data-toggle="tab">Способи доставки</a></li>
-                    </ul>
-
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="delivery">
-                            <div class="row">
-                                @foreach (var shipping in Model.ShippingMethods)
-                                {
-                                    <div class="col-sm-3">
-                                        <div class="radio-inline">
-                                            <label>
-                                                <input type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id" data-skip-address="@shipping.SkipOrderAddress">
-                                                @shipping.Name
-                                            </label>
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @Html.Partial("_ShippingMethods", Model)
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <div class="card">
+                    <div class="card shipping-method" data-shipping-type="3" style="display: none;" id="shippingAddresses">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active"><a href="#delivery" aria-controls="home" role="tab" data-toggle="tab">Адреса доставки</a></li>
                         </ul>

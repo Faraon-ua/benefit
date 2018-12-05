@@ -249,6 +249,7 @@ namespace Benefit.Web.Controllers
         {
             completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
             var user = UserService.GetUser(User.Identity.GetUserId());
+            ModelState.Remove("Order.UserId");
             if (completeOrder.Order == null)
             {
                 throw new HttpException(404, "Not found");
@@ -264,7 +265,7 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            if (completeOrder.AddressId == null && string.IsNullOrEmpty(completeOrder.NewAddressLine))
+            if (completeOrder.AddressId == null && string.IsNullOrEmpty(completeOrder.NewAddressLine) && string.IsNullOrEmpty(completeOrder.Order.ShippingAddress))
             {
                 ModelState.AddModelError("AddressId", "Оберіть адресу доставки");
             }
@@ -290,7 +291,8 @@ namespace Benefit.Web.Controllers
                     completeOrder.AddressId = newAddress.Id;
                 }
 
-                completeOrder.Order.UserId = User.Identity.GetUserId();
+                completeOrder.Order.UserId = user.Id;
+                completeOrder.Order.ShippingAddress = completeOrder.ShippingAddress;
                 var orderNumber = OrderService.AddOrder(completeOrder);
 
                 //order notifications
@@ -309,7 +311,7 @@ namespace Benefit.Web.Controllers
                     throw new HttpException(404, "Not found");
                 }
 
-                var userId = User.Identity.GetUserId();
+                var userId = user.Id;
                 completeOrder.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == completeOrder.Order.SellerId).ToList();
                 completeOrder.Addresses =
                     db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();

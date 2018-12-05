@@ -163,7 +163,7 @@ namespace Benefit.RestApi.Controllers
                     Status = OrderStatus.Finished,
                     UserId = user.Id,
                     Description = paymentIngest.BillNumber,
-                    ShippingAddress = null,
+                    ShippingAddress = "kassa",
                     ShippingCost = 0,
                     ShippingName = null,
                     Sum = paymentIngest.Sum,

@@ -289,6 +289,7 @@
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Areas\Admin\Controllers\TerminalController.cs" />
     <Compile Include="Controllers\SellerController.cs" />
+    <Compile Include="Controllers\ShippingController.cs" />
     <Compile Include="Controllers\TovarController.cs" />
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\AccessPasswordFilterAttribute.cs" />
@@ -671,6 +672,7 @@
     <Content Include="Content\css\order-print.css" />
     <Content Include="Content\css\owl.carousel.css" />
     <Content Include="Content\css\pygments.css" />
+    <Content Include="Content\css\select2.min.css" />
     <Content Include="Content\css\validation-errors.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
@@ -1386,6 +1388,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\owl.carousel.min.js" />
+    <Content Include="Scripts\select2.min.js" />
     <Content Include="Scripts\v3\product-filters.js" />
     <Content Include="Scripts\scripts.js" />
     <Content Include="Scripts\seller\jquery-migrate-1.js" />
@@ -1543,6 +1546,7 @@
     <Content Include="Views\SellerArea\MegaShop\_ViewedProducts.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\News.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\Delivery.cshtml" />
+    <Content Include="Views\Cart\_ShippingMethods.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1565,6 +1569,7 @@
     <Folder Include="Views\Localizations\" />
     <Folder Include="Views\Notifications\" />
     <Folder Include="Views\Schedule\" />
+    <Folder Include="Views\Shipping\" />
     <Folder Include="Views\Telegram\" />
   </ItemGroup>
   <ItemGroup>

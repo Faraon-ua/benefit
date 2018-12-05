@@ -1,0 +1,60 @@
+﻿@using Benefit.Domain.Models
+@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+@{
+    var np = Model.ShippingMethods.FirstOrDefault(entry => entry.Type == DefinedShippingType.NovaPoshta);
+    var self = Model.ShippingMethods.FirstOrDefault(entry => entry.Type == DefinedShippingType.Self);
+}
+<div class="card">
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#delivery" aria-controls="home" role="tab" data-toggle="tab">Способи доставки</a></li>
+    </ul>
+
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="delivery">
+            <div class="row">
+                @foreach (var shipping in Model.ShippingMethods)
+                {
+                    <div class="col-sm-3">
+                        <div class="radio-inline">
+                            <label>
+                                <input type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id" data-shipping-type="@((int)shipping.Type)" data-skip-address="@shipping.SkipOrderAddress">
+                                @shipping.Name
+                            </label>
+                        </div>
+                    </div>
+                }
+            </div>
+            @if (np != null)
+            {
+                <div class="nova-poshta container shipping-method" style="display: none;" data-shipping-type="1">
+                    <h3>Нова Пошта</h3>
+                    <hr/>
+                    <div class="row margin-top-10">
+                        <label class="col-md-3 col-xs-10">Оберіть місто</label>
+                        <div class="col-md-5 col-xs-10">
+                            <select id="npCity" class="no-ik" style="width: 100%;"></select>
+                        </div>
+                    </div>
+                    <div class="row margin-top-10">
+                        <label class="col-md-3 col-xs-10">Оберіть відділення</label>
+                        <div class="col-md-5 col-xs-10">
+                            <select id="npWarehouse" class="no-ik" style="width: 100%;"></select>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (self != null)
+            {
+                <div class="nova-poshta container shipping-method" style="display: none;" data-shipping-type="4">
+                    <h3>Самовивіз</h3>
+                    <hr/>
+                    <div class="row margin-top-10">
+                        <div class="col-md-5 col-xs-10">
+                            @self.Description
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

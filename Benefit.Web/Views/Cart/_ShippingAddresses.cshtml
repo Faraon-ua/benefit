@@ -31,5 +31,6 @@
         <a href="@Url.Action("useraddress", "panel", new { area = DomainConstants.CabinetAreaName })" class="add_new_address margin-left-10">+ Додати нову адресу</a>
     </div>
     @Html.Hidden("AddressId", Model.AddressId ?? defaultAddressId)
+    @Html.Hidden("ShippingAddress", Model.AddressId ?? defaultAddressId, new { id="shippingAddress" })
 </div>
 
