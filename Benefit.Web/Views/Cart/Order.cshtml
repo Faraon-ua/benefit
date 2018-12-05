@@ -330,9 +330,10 @@
                                     @Html.ValidationMessage("RegionId")
                                 </div>
                                 <div class="col-sm-6">
-                                    <label> Адреса доставки</label>
-                                    @Html.TextBox("ShippingAddress", null)
-                                    @Html.ValidationMessage("ShippingAddress")
+                                    <label> Реферальний код (за наявності)</label>
+                                    @Html.TextBox("ReferalNumber", null)
+                                    <p style="text-align: center; font-size: 1.2em;" id="referal-name">
+                                    </p>
                                 </div>
                             </div>
                             <br>
@@ -342,14 +343,6 @@
                                     @Html.TextBox("Password", null, new { type = "password" })
                                     @Html.ValidationMessage("Password")
                                 </div>
-                                <div class="col-sm-6">
-                                    <label> Реферальний код (за наявності)</label>
-                                    @Html.TextBox("ReferalNumber", null)
-                                    <p style="text-align: center; font-size: 1.2em;" id="referal-name">
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-sm-6">
                                     <label> Номер картки Benefit Card (за наявності)</label>
                                     @Html.TextBox("CardNumber", null)

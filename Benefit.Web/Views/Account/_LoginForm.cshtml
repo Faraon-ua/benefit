@@ -60,7 +60,7 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <label> Номер телефону *</label>
-                        @Html.TextBox("PhoneNumber", null, new { type = "tel" })
+                        @Html.TextBox("PhoneNumber", null, new { type = "tel", @class="phone-input" })
                         @Html.ValidationMessage("PhoneNumber")
                     </div>
                     <div class="col-sm-6">
@@ -86,7 +86,7 @@
                 <br>
                 <div class="row">
                     <div class="col-sm-6">
-                        <label> Реєстраційний код (за наявності)</label>
+                        <label> Реферальний код (за наявності)</label>
                         @Html.TextBox("ReferalNumber", null)
                         <p style="text-align: center; font-size: 1.2em;" id="referal-name">
                         </p>
