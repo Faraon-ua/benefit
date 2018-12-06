@@ -21,6 +21,7 @@ namespace Benefit.DataTransfer.ViewModels
         public string AddressId { get; set; }
         public string ShippingAddress { get; set; }
         public string NewAddressLine { get; set; }
+        public string UserId { get; set; }
         [Required(ErrorMessage = "Оберіть вид оплати")]
         public PaymentType? PaymentType { get; set; }
         public Order Order { get; set; }

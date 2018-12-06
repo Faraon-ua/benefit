@@ -11,7 +11,7 @@ namespace Benefit.Web.Models
         public string FullName { get; set; }
         public int? RegionId { get; set; }
         [Required]
-        [MaxLength(16)]
+        [MaxLength(20)]
         public string PhoneNumber { get; set; }
         [Required]
         [MaxLength(64)]

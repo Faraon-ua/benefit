@@ -10,7 +10,7 @@ namespace Benefit.Domain.Models
         [MaxLength(64)]
         public string FullName { get; set; }
         [Required]
-        [MaxLength(16)]
+        [MaxLength(20)]
         public string Phone { get; set; }
         [MaxLength(128)]
         public string Email { get; set; }

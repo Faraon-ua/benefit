@@ -30,7 +30,9 @@ namespace Benefit.Web
             if (RouteConstants.Redirections.ContainsKey(Request.Url.Host))
             {
                 Response.StatusCode = 301;
-                Response.AddHeader("Location", RouteConstants.Redirections[Request.Url.Host]);
+                var location =
+                    Request.Url.AbsoluteUri.Replace(Request.Url.Host, RouteConstants.Redirections[Request.Url.Host]);
+                Response.AddHeader("Location", location);
                 Response.End();
             }
             if (HttpContext.Current.Request.QueryString.AllKeys.Contains(RouteConstants.ReferalUrlName))

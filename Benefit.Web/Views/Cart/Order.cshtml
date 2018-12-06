@@ -116,6 +116,7 @@
                                 flashMessage(data.error, true, true);
                             } else {
                                 $("#AddressId").val(data.shippingAddressId);
+                                $("#UserId").val(data.userId);
                                 $("#order-form-wrap form").submit();
                             }
                             $('html,body').animate({ scrollTop: 0 }, 'fast');
@@ -367,8 +368,6 @@
             <form action="@Url.Action("order", new {id = Model.SellerId})" method="post">
                 <input type="hidden" name="SellerId" value="@Model.SellerId" />
                 @Html.Partial("_ShippingMethods", Model)
-                @if (User.Identity.IsAuthenticated)
-                {
                     <div class="card shipping-method" data-shipping-type="3" style="display: none;" id="shippingAddresses">
                         <ul class="nav nav-tabs" role="tablist">
                             <li role="presentation" class="active"><a href="#delivery" aria-controls="home" role="tab" data-toggle="tab">Адреса доставки</a></li>
@@ -382,7 +381,6 @@
                             </div>
                         </div>
                     </div>
-                }
                 <div class="card">
                     <ul class="nav nav-tabs" role="tablist">
                         <li role="presentation" class="active"><a href="#payment" aria-controls="home" role="tab" data-toggle="tab">Методи оплати</a></li>

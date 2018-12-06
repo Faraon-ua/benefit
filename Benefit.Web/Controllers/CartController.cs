@@ -159,7 +159,11 @@ namespace Benefit.Web.Controllers
                     model.ShippingMethods = model.ShippingMethods
                         .Intersect(associatedShippingMethods, new ShippingMethodComparer()).ToList();
                 }
-                model.Addresses = db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
+                if (userId != null)
+                {
+                    model.Addresses = db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId)
+                        .ToList();
+                }
                 if (seller.IsPrePaidPaymentActive)
                 {
                     model.PaymentTypes.Add(PaymentType.PrePaid);
@@ -248,7 +252,7 @@ namespace Benefit.Web.Controllers
         public ActionResult Order(CompleteOrderViewModel completeOrder)
         {
             completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
-            var user = UserService.GetUser(User.Identity.GetUserId());
+            var user = UserService.GetUser(User.Identity.GetUserId() ?? completeOrder.UserId);
             ModelState.Remove("Order.UserId");
             if (completeOrder.Order == null)
             {

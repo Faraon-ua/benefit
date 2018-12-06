@@ -27,7 +27,7 @@ namespace Benefit.Common.Constants
 
         public static Dictionary<string, string> Redirections = new Dictionary<string, string>
         {
-            {"koshik24.benefit-company.com", "https://koshik24.com.ua"}
+            {"koshik24.benefit-company.com", "koshik24.com.ua"}
         };
     }
 }

@@ -270,7 +270,7 @@ namespace Benefit.Web.Controllers
                     if (isAjaxRequest)
                     {
                         await SignInAsync(user, isPersistent: true);
-                        return Json(new { returnUrl, shippingAddressId = shippingAddress == null ? string.Empty : shippingAddress.Id }, JsonRequestBehavior.AllowGet);
+                        return Json(new { returnUrl, shippingAddressId = shippingAddress == null ? string.Empty : shippingAddress.Id, userId = user.Id }, JsonRequestBehavior.AllowGet);
                     }
                     else
                     {
