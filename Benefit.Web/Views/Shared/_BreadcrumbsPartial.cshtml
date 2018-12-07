@@ -1,7 +1,9 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Web.Helpers
 @model Benefit.DataTransfer.ViewModels.BreadCrumbsViewModel
-
+@{
+    var position = 1;
+}
 @*<div style="height: 50px; width: 100%;" class="visible-xs"></div>*@
 <div class="breadcrumbs hidden-xs" id="navigation" itemscope="" itemtype="http://schema.org/BreadcrumbList">
     <div class="bx-breadcrumb-item" id="bx_breadcrumb_0" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
@@ -9,7 +11,8 @@
             <span itemprop="name">
                 Головна
             </span>
-            <meta itemprop="position" content="1">
+            <meta itemprop="position" content="@position">
+            @{ position++; }
         </a>
     </div>
     @if (Model.IsNews)
@@ -20,6 +23,7 @@
             <a href="@newsUrl" title="Новини Benefit" itemprop="item">
                 <span itemprop="name">Новини</span>
             </a>
+            <meta itemprop="position" content="@position">
         </div>
     }
     @if (Model.Page != null)
@@ -29,6 +33,7 @@
             <a href="#" title="@Model.Page.Title" itemprop="item">
                 <span itemprop="name">@Model.Page.Name</span>
             </a>
+            <meta itemprop="position" content="@position">
         </div>
     }
     @if (Model.Seller != null && !Model.IsInfoPage)
@@ -39,6 +44,17 @@
             <a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null)" title="@Model.Seller.Name" itemprop="item">
                 <span itemprop="name">@Model.Seller.Name</span>
             </a>
+            <meta itemprop="position" content="@position">
+        </div>
+    }
+    @if (Model.Seller != null && Model.IsInfoPage)
+    {
+        <span class="separator">-</span>
+        <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
+            <a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null)" title="@Model.Seller.Name" itemprop="item">
+                <span itemprop="name">@Model.Seller.Name</span>
+            </a>
+            <meta itemprop="position" content="@position">
         </div>
     }
     @if (Model.Categories != null)
@@ -88,23 +104,18 @@
                         </div>
                     </div>
                 }
+                <meta itemprop="position" content="@position">
+                @{ position++; }
             </div>
         }
     }
-    @if (Model.Seller != null && Model.IsInfoPage)
-    {
-        <span class="separator">-</span>
-        <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
-            <a href="@Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null)" title="@Model.Seller.Name" itemprop="item">
-                <span itemprop="name">@Model.Seller.Name</span>
-            </a>
-        </div>
-    }
+  
     @if (Model.Product != null)
     {
         <span class="separator">-</span>
         <div class="bx-breadcrumb-item" id="bx_breadcrumb_1" itemprop="itemListElement" itemscope itemtype="http://schema.org/ListItem">
             <span itemprop="item">@Model.Product.Name</span>
+            <meta itemprop="position" content="@position">
         </div>
     }
 </div>

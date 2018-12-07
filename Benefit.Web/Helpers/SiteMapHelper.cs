@@ -135,7 +135,7 @@ namespace Benefit.Web.Helpers
                 for (int i = 1; i <= siteMapCounter; i++)
                 {
                     var sitemap = new XElement(xmlns + "sitemap");
-                    var loc = new XElement(xmlns + "loc", string.Format("sitemap{0}.xml", i));
+                    var loc = new XElement(xmlns + "loc", string.Format("{0}/sitemap{1}.xml", host, i));
                     var lastmod = new XElement(xmlns + "lastmod", XmlConvert.ToString(DateTime.Now));
                     sitemap.Add(loc);
                     sitemap.Add(lastmod);
