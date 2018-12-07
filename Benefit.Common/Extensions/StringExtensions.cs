@@ -37,6 +37,7 @@ namespace Benefit.Common.Extensions
             words.Add(".", "");
             words.Add(",", "");
             words.Add(" ", "-");
+            words.Add("\t", "-");
             words.Add("а", "a");
             words.Add("б", "b");
             words.Add("в", "v");
