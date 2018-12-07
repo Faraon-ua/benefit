@@ -26,11 +26,14 @@
             </div>
         </div>
     }
-    <div class="clearfix"></div>
-    <div class="address_choice_wrap">
-        <a href="#" class="chose_new_address">+ Обрати іншу адресу</a>
-        <a href="@Url.Action("useraddress", "panel", new { area = DomainConstants.CabinetAreaName })" class="add_new_address margin-left-10">+ Додати нову адресу</a>
-    </div>
+    else
+    {
+        <div class="clearfix"></div>
+        <div class="address_choice_wrap">
+            <a href="#" class="chose_new_address">+ Обрати іншу адресу</a>
+            <a href="@Url.Action("useraddress", "panel", new {area = DomainConstants.CabinetAreaName, returnUrl = Request.Url.AbsolutePath })" class="add_new_address margin-left-10">+ Додати нову адресу</a>
+        </div>
+    }
     @Html.Hidden("AddressId", Model.AddressId ?? defaultAddressId)
     @Html.Hidden("ShippingAddress", Model.AddressId ?? defaultAddressId, new { id="shippingAddress" })
 </div>

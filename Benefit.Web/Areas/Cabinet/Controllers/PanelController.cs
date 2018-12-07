@@ -138,8 +138,9 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             return RedirectToAction("Profile");
         }
 
-        public ActionResult UserAddress(string id)
+        public ActionResult UserAddress(string id, string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             Address address;
             var user = ViewBag.User as ApplicationUser;
             using (var db = new ApplicationDbContext())
@@ -154,7 +155,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
         }
 
         [HttpPost]
-        public ActionResult UserAddress(Address address)
+        public ActionResult UserAddress(Address address, string returnUrl)
         {
             var userId = RouteData.Values[DomainConstants.UserIdKey].ToString();
             if (address.RegionId == default(int))
@@ -177,7 +178,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                     }
                     db.SaveChanges();
                 }
-                return RedirectToAction("Profile");
+                return Redirect(returnUrl);
             }
             var user = ViewBag.User;
             ViewBag.User = user;

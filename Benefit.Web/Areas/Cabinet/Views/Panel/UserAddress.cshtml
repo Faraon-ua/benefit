@@ -16,7 +16,7 @@
         })
     </script>
 }
-@using (Html.BeginForm())
+@using (Html.BeginForm("useraddress","Panel", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post))
 {
     @Html.ValidationSummary()
     @Html.Partial("_UserAddressForm", Model)
