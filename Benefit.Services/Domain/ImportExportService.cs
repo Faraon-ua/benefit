@@ -233,6 +233,7 @@ namespace Benefit.Services.Domain
                         CategoryId = dbCategory.MappedParentCategoryId,
                         SellerId = sellerId
                     });
+                    dbCategory.IsActive = true;
                     dbCategory.Name = catName.Truncate(64);
                     dbCategory.UrlName = string.Format("{0}-{1}", catId, catName.Translit()).Truncate(128);
                     db.Entry(dbCategory).State = EntityState.Modified;

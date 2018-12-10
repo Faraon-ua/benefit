@@ -269,7 +269,7 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            if (completeOrder.AddressId == null && string.IsNullOrEmpty(completeOrder.NewAddressLine) && string.IsNullOrEmpty(completeOrder.Order.ShippingAddress))
+            if (completeOrder.AddressId == null && string.IsNullOrEmpty(completeOrder.NewAddressLine) && string.IsNullOrEmpty(completeOrder.ShippingAddress))
             {
                 ModelState.AddModelError("AddressId", "Оберіть адресу доставки");
             }

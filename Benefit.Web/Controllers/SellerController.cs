@@ -42,10 +42,12 @@ namespace Benefit.Web.Controllers
                     .Select(entry => entry.Key)
                     .Take(ListConstants.DefaultTakePerPage * 2).ToList();
                 viewModel.Items.AddRange(db.Products
+                    .Include(entry => entry.Category)
                     .Include(entry => entry.Currency)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
                     .Where(entry =>
+                        (!entry.Category.IsSellerCategory || (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId!=null)) &&
                         productIds.Contains(entry.Id) &&
                         (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable ||
                          entry.AvailabilityState == ProductAvailabilityState.Available) && entry.Images.Any())
