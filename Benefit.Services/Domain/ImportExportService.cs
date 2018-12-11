@@ -46,6 +46,9 @@ namespace Benefit.Services.Domain
                 var xmlProducts = xml.Descendants("Товары").First().Elements()
                     .Where(entry => entry.Element("Группы") != null)
                     .Where(entry => resultXmlCategoryIds.Contains(entry.Element("Группы").Element("Ид").Value)).ToList();
+                var ids = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
+                var xmlProductsSkipped = xml.Descendants("Товары").First().Elements()
+                    .Where(entry => !ids.Contains(entry.Element("Ид").Value)).ToList();
                 AddAndUpdate1СProducts(xmlProducts, seller.Id, seller.UrlName);
                 db.SaveChanges();
                 DeletePromUaProducts(xmlProducts, seller.Id, SyncType.OneCCommerceMl);
@@ -705,7 +708,7 @@ namespace Benefit.Services.Domain
         {
             var importTasks =
                 db.ExportImports.Include(entry => entry.Seller.MappedCategories).Where(
-                    entry => entry.IsActive && entry.IsImport && entry.SyncType == SyncType.Yml).ToList();
+                    entry => entry.IsActive && entry.SyncType == SyncType.Yml).ToList();
             foreach (var importTask in importTasks)
             {
                 if (importTask.LastSync.HasValue &&
