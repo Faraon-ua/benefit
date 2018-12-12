@@ -686,7 +686,7 @@ namespace Benefit.Services.Domain
 
                 importTask.LastUpdateStatus = true;
                 importTask.LastUpdateMessage = null;
-
+                _logger.Info(string.Format("Yml Import success at {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
             }
             catch (Exception ex)
             {
@@ -701,6 +701,7 @@ namespace Benefit.Services.Domain
                 importTask.LastSync = DateTime.UtcNow;
                 db.Entry(importTask).State = EntityState.Modified;
                 db.SaveChanges();
+                _logger.Info(string.Format("Yml results saved {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
             }
         }
 

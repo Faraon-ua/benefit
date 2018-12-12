@@ -37,17 +37,17 @@
                     <div class="span2">
                         @if (image == null)
                         {
-                            <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
+                            <img src="~/Images/ProductGallery/default_product_thumbnail.png" />
                         }
                         else
                         {
                             if (image.IsAbsoluteUrl)
                             {
-                                <img src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                                <img src="@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
                             }
                             else
                             {
-                                <img src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
+                                <img src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
                             }
                         }
                     </div>

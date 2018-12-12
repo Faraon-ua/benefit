@@ -149,11 +149,11 @@
                                 {
                                      if (image_src.IsAbsoluteUrl)
                                      {
-                                         <img class="fn_img product_img" itemprop="image" src="@img_src" alt="@Model.Product.AltText" title="@Model.Product.Title">
+                                         <img class="fn_img product_img" itemprop="image" src="@img_src" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
                                      }
                                      else
                                      {
-                                         <img class="fn_img product_img" itemprop="image" src="~/Images/ProductGallery/@Model.Product.Id/@img_src" alt="@Model.Product.AltText" title="@Model.Product.Title">
+                                         <img class="fn_img product_img" itemprop="image" src="~/Images/ProductGallery/@Model.Product.Id/@img_src" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
                                      }
                                 }
                             </a>
@@ -168,11 +168,11 @@
                                         <a class="images_link" href="@img.ImageUrl" data-fancybox="group" data-caption="@Model.Product.Name">
                                             @if (img.IsAbsoluteUrl)
                                             {
-                                                <img src="@img.ImageUrl" alt="@Model.Product.AltText" />
+                                                <img src="@img.ImageUrl" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
                                             }
                                             else
                                             {
-                                                <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="@Model.Product.AltText" />
+                                                <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
                                             }
                                         </a>
                                     </div>
