@@ -8,6 +8,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using CategoryProductsCount = Benefit.Domain.Models.Search.CategoryProductsCount;
 
 namespace Benefit.Services
 {
@@ -204,19 +205,30 @@ namespace Benefit.Services
                 .Include(entry => entry.MappedParentCategory.ParentCategory)
                 .Include(entry => entry.ParentCategory)
                 .Where(entry => catIds.Contains(entry.Id)).ToList();
-            var categoryResults = categoryIdResults.Select(entry => new
+            var categoryResults = categoryIdResults.Select(entry => new CategoryProductsCount()
             {
-                entry.Count,
+                Count = entry.Count,
                 Category = categoriesInResults.FirstOrDefault(cat => cat.Id == entry.CategoryId)
             }).ToList();
-            categoryResults.ForEach(entry =>
+
+            for (var i = 0; i < categoryResults.Count; i++)
+            {
+                if (categoryResults[i].Category.MappedParentCategory != null)
                 {
-                    if (entry.Category.MappedParentCategory != null)
+                    if (catIds.Contains(categoryResults[i].Category.MappedParentCategoryId))
                     {
-                        entry.Category.ParentCategoryId = entry.Category.MappedParentCategoryId;
-                        entry.Category.ParentCategory = entry.Category.MappedParentCategory;
+                        categoryResults[i] = null;
                     }
-                });
+                    else
+                    {
+                        categoryResults[i].Category.ParentCategoryId = categoryResults[i].Category.MappedParentCategory.ParentCategoryId;
+                        categoryResults[i].Category.ParentCategory = categoryResults[i].Category.MappedParentCategory.ParentCategory;
+                        categoryResults[i].Category = categoryResults[i].Category.MappedParentCategory;
+                    }
+                }
+            }
+
+            categoryResults = categoryResults.Where(entry => entry != null).ToList();
 
             var groupedCategoryResults = categoryResults.GroupBy(entry => entry.Category.ParentCategory, (key, g) =>
                   new

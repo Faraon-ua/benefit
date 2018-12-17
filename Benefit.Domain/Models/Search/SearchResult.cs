@@ -7,6 +7,11 @@ namespace Benefit.Domain.Models.Search
         public string Id { get; set; }
         public int Rank { get; set; }
     }
+    public class CategoryProductsCount
+    {
+        public Category Category { get; set; }
+        public int Count { get; set; }
+    }
     public class SearchResult
     {
         public SearchResult()
