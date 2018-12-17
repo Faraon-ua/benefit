@@ -153,7 +153,14 @@ $(function () {
                             { expires: 31536000, path: "/", domain: "." + location.host.replace(sellerUrlName + ".", "") });
                     }
                     $(".remove-from-favorites").show();
-                    $(".add-to-favorites[data-product-id=" + productId + "]").hide();
+                    var favLink = $(".add-to-favorites[data-product-id=" + productId + "]");
+                    if (favLink.hasClass("fav-switch")) {
+                        favLink.removeClass("add-to-favorites");
+                        favLink.addClass("remove-from-favorites");
+                        favLink.addClass("selected");
+                    } else {
+                        favLink.hide();
+                    }
                     $(".seller-favorites-number").text(data.sellercount);
                     setFavorites(data.count);
                 } else {
@@ -181,11 +188,17 @@ $(function () {
                     setCookie(data.sellerurl + "-favoritesNumber",
                         data.sellercount,
                         { expires: 31536000, path: "/", domain: "." + location.host.replace(data.sellerurl + ".", "") });
-
-                    $(".remove-from-favorites[data-product-id=" + id + "]").hide();
+                    var favLink = $(".remove-from-favorites[data-product-id=" + id + "]");
+                    if (favLink.hasClass("fav-switch")) {
+                        favLink.addClass("add-to-favorites");
+                        favLink.removeClass("remove-from-favorites");
+                        favLink.removeClass("selected");
+                    } else {
+                        favLink.hide();
+                        link.parents(".product-item").remove();
+                    }
                     $(".add-to-favorites").show();
                     setFavorites(data.count);
-                    link.parents(".product-item").remove();
                     $(".seller-favorites-number").text(data.sellercount);
                 }
             });

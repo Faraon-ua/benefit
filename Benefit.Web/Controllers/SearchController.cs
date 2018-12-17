@@ -46,6 +46,7 @@ namespace Benefit.Web.Controllers
                 return View(viewName, new ProductsViewModel
                 {
                     Items = result.Products,
+                    ProductParameters = result.ProductParameters,
                     Category = new Category()
                     {
                         Name = "Пошук",

@@ -46,15 +46,18 @@
 }
 @section LeftAside
 {
-    <div class="filters_block">
-        <div class="filters_heading fn_switch md-hidden">
-            <span data-language="filters">Фильтр</span>
-            <i class="angle_icon"></i>
+    @if (Model.ProductParameters.Any())
+    {
+        <div class="filters_block">
+            <div class="filters_heading fn_switch md-hidden">
+                <span data-language="filters">Фильтр</span>
+                <i class="angle_icon"></i>
+            </div>
+            <div class="filters mobile-hidden">
+                @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
+            </div>
         </div>
-        <div class="filters mobile-hidden">
-            @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
-        </div>
-    </div>
+    }
 }
 <div class="col-md-8 col-xl-9 content">
     @Html.Partial("~/views/sellerarea/megashop/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)

@@ -152,6 +152,10 @@ namespace Benefit.Services
                     var optionValues = optionKeyValue.Last().Split(',');
                     switch (optionKey)
                     {
+                        case "page":
+                            var page = int.Parse(optionValues[0]);
+                            productResult = productResult.Skip(ListConstants.DefaultTakePerPage * (page - 1)).ToList();
+                            break;
                         case "category":
                             var categories =
                                 db.Categories

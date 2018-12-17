@@ -56,13 +56,15 @@
                         }
                     }
                 </a>
-                @if (Model.Favorites.All(entry => entry.UserId != User.Identity.GetUserId()))
-                {
-                    <div class="overlay_buttons">
-                        @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
-                        <a href="#" data-product-id="@Model.Id" class="fn_wishlist wishlist_button add-to-favorites" title="В улюлене"><i class="wish_icon"></i></a>
-                    </div>
+                @{
+                    var favClass = Model.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()) ? "selected remove-from-favorites" : "add-to-favorites";
                 }
+                <div class="overlay_buttons">
+                    @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
+                    <a href="#" data-product-id="@Model.Id" class="fn_wishlist wishlist_button fav-switch @favClass" title="В улюлене">
+                        <i class="wish_icon"></i>
+                    </a>
+                </div>
                 <div class="preview_details" style="height: 140px;">
                     <a class="product_name" data-product="114" href="@productDetailsUrl">@Model.Name</a>
                     <div class="price_container">

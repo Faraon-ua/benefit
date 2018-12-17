@@ -10,128 +10,24 @@
 }
 @section scripts
 {
-    <script src="~/Scripts/v3/products.js"></script>
-    <script>
+    <script> 
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
-        var options = "";
-        var skip = parseInt('@ListConstants.DefaultTakePerPage');
-        var searchProductsUrl = '@Url.Action("GetProducts", "Search")';
+        var getProductsUrl = '@Url.Action("GetProducts", "Search")';
+        var addToFavoritesUrl =
+            '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
+        var hasCategory = true;
+        var categoryId = "";
+        var sellerId ="";
+        var categoryUrlName = 'search';
+        var pagesCount = parseInt('@Model.PagesCount');
+        var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
         var term = '@Model.Term';
-
-        $(function () {
-            $(".bx_filter_parameters_box_title").click(function() {
-                $(this).parent().toggleClass("active");
-                $(this).next().slideToggle();
-            });
-
-            $(".filter_opener").click(function() {
-                $(this).toggleClass("opened");
-                $(".bx_filter_vertical, .bx_filter").slideToggle(333);
-            });
-            $(".ajax_load_btn, .paging").click(function (e) {
-                e.preventDefault();
-                var moreBtn = $(this);
-                var page = parseInt(moreBtn.attr("data-page"));
-                $(".loader").show();
-                $.get(searchProductsUrl + "?term=@Model.Term&options="+options+"&sellerId=@Model.SellerId&page=" +
-                    page +
-                    "&options=" +
-                    options,
-                    function(data) {
-                        if (moreBtn.hasClass("ajax_load_btn")) {
-                            if (data.number <= parseInt('@ListConstants.DefaultTakePerPage')) {
-                                moreBtn.hide();
-                            }
-                            $(".product-item:last").after(data.products);
-                            moreBtn.attr("data-page", page + 1);
-                            $(".paging[data-page=" + page + "]").addClass("cur");
-                        } else {
-                            $(".products-wrapper").html(data.products);
-                            $("html, body").animate({ scrollTop: 0 }, 600);
-                            $(".paging").removeClass("cur");
-                            $(".paging[data-page=" + page + "]").addClass("cur");
-                            $(".ajax_load_btn").attr("data-page", (page + 1));
-                        }
-                        $(".loader").hide();
-                    });
-            });
-
-            var parts = location.href.split('/');
-            var lastSegmentWithQS = (parts.pop() || parts.pop()).replace('#', '');// handle potential trailing slash
-            var lastSegment = lastSegmentWithQS.substr(0, lastSegmentWithQS.indexOf('?'));
-            var query = lastSegmentWithQS.substr(lastSegmentWithQS.indexOf('?'), lastSegmentWithQS.length);
-            if (lastSegment !== "search") {
-                options = lastSegment;
-                $.each(options.split(";"),
-                    function(i, urlSegment) {
-                        if (urlSegment === "") return;
-                        var optKeyValue = urlSegment.split("=");
-                        var optionName = optKeyValue[0];
-                        var optionValues = optKeyValue[1].split(",");
-
-                        $.each(optionValues,
-                            function(j, optValue) {
-                                $(".filter-section[data-filter-name=" + optionName + "] input#" + decodeURI(optValue))
-                                    .prop('checked', true);
-                                $(".filter-section[data-filter-name=" +
-                                    optionName +
-                                    "] input[name=" +
-                                    decodeURI(optValue).replace(" ", "") +
-                                    "]").prop('checked', true);
-                            });
-                    });
-            }
-            $('body').on('change click',
-                "#productFilters input[type=checkbox], .sort_btn",
-                function(e) {
-                    e.preventDefault();
-                    $(".loader").show();
-                    //var parts = location.href.split('/');
-                    //var lastSegment = (parts.pop() || parts.pop()).replace("#", ""); // handle potential trailing slash
-                    var options = "";
-
-                    if (lastSegment != 'search') {
-                        options = lastSegment;
-                    }
-
-                    var parent = $(this).parents(".filter-section");
-                    var optionName = parent.attr("data-filter-name");
-                    var optionNameIndex = options.indexOf(optionName);
-
-                    var currentOption = '';
-                    var selectedValues = parent.find("input[type=checkbox]:checked").map(function() {
-                        return $(this).attr("id");
-                    }).get();
-
-                    if ($(this).attr("class").indexOf("sort_btn") >= 0) {
-                        var val = $(this).attr("data-sort-value");
-                        selectedValues.push(val);
-                    }
-                    if (selectedValues.length > 0) {
-                        currentOption = optionName;
-                        currentOption += "=";
-                        currentOption += selectedValues.join();
-                        currentOption += ";";
-                    }
-
-                    if (optionNameIndex >= 0) {
-                        var ending = options.indexOf(";", optionNameIndex);
-                        var oldOption = options.substring(optionNameIndex, ending + 1);
-                        options = options.replace(oldOption, currentOption);
-                    } else {
-                        options += currentOption;
-                    }
-                    var locBuilder = "";
-                    if (lastSegment === "search") {
-                        locBuilder = location.href.replace(lastSegmentWithQS, "search/" + options + query);
-                    } else {
-                        locBuilder = location.href.replace(lastSegmentWithQS, options + query);
-                    }
-                    location.href = locBuilder;
-                });
-        });
     </script>
+    <script src="~/Scripts/v3/products.js"></script>
+    <script src="~/Scripts/v3/product-filters.js"></script>
 }
 
 <div class="wraps hover_shine" id="content">
@@ -178,20 +74,30 @@
                                 <div class="bottom_nav margin-top-20">
                                     @if (Model.Products.Count > ListConstants.DefaultTakePerPage)
                                     {
-                                        <div class="ajax_load_btn" data-page="0">
+                                        <div class="ajax_load_btn" data-page="1">
                                             <span class="more_text_ajax">Показати ще</span>
                                         </div>
                                     }
                                     @if (Model.PagesCount > 1)
                                     {
-                                        <div class="module-pagination">
-                                            <div class="nums">
-                                                <a href="#" class="paging dark_link cur" data-page="0">1</a>
+                                        <div class="pagination-wrap">
+                                            <ul class="pagination no-list-style">
+                                                <li class="page_item" data-page="0" style="display: none;">
+                                                    <a class="page_link paging prev" href="#" data-page="0"><<</a>
+                                                </li>
+                                                <li class="page_item active" data-page="0">
+                                                    <a class="page_link paging dark_link" href="#" data-page="0">1</a>
+                                                </li>
                                                 @for (int i = 2; i <= Model.PagesCount; i++)
                                                 {
-                                                    <a href="#" class="paging dark_link" data-page="@(i - 1)">@i</a>
+                                                    <li class="page_item">
+                                                        <a class="page_link paging dark_link" href="#" data-page="@(i - 1)">@i</a>
+                                                    </li>
                                                 }
-                                            </div>
+                                                <li class="page_item" data-page="1">
+                                                    <a class="page_link paging next dark_link" href="#" data-page="1">>></a>
+                                                </li>
+                                            </ul>
                                         </div>
                                     }
                                 </div>
@@ -202,7 +108,10 @@
             </div>
         </div>
         <div class="left_block">
-            @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
+            @if (Model.ProductParameters.Any())
+            {
+                @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
+            }
         </div>
     </div>
 </div>

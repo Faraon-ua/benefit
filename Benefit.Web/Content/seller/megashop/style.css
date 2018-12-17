@@ -1,3 +1,7 @@
+.product-item {
+    padding: 0 !important;
+}
+
 .doublesize-checkbox {
     -ms-transform: scale(2); /* IE */
     -moz-transform: scale(2); /* FF */
@@ -94,10 +98,10 @@ td.visible-xs {
         display: none;
     }
     .purchase_amount{float:left;}
-    .purchase_sum{float:left;margin-top:10px;}
+    .purchase_sum{margin-top:10px;}
     .purchase_price{float:left;margin-top:10px;}
     .purchase_image{float:left;}
-    .text_left{float:left;width:80%;text-align:left;}
+    .text_left{width:80%;text-align:left;}
     .purchase_tr{float:left;}
     .purchase{float:left;}
     .visible-xs {
