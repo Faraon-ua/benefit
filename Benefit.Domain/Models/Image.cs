@@ -10,7 +10,8 @@ namespace Benefit.Domain.Models
         NewsLogo,
         UserAvatar,
         CategoryLogo,
-        SellerCatalog
+        SellerCatalog,
+        SellerFavicon
     }
     public class Image
     {

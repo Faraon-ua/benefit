@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using Benefit.Common.Constants;
 using Benefit.Web.Helpers;
@@ -225,7 +226,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-        public ActionResult CreateOrUpdate(SellerViewModel sellervm)
+        public ActionResult CreateOrUpdate(SellerViewModel sellervm, HttpPostedFileBase sellerLogo, HttpPostedFileBase sellerFavicon)
         {
             ApplicationUser owner = null;
             ApplicationUser websiteReferal = null;
@@ -328,14 +329,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                 }
 
-                var logo = Request.Files[0];
-                if (logo != null && logo.ContentLength != 0)
+                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                if (sellerLogo != null && sellerLogo.ContentLength != 0)
                 {
-                    var sellerLogo = Request.Files[0];
                     var fileName = Path.GetFileName(sellerLogo.FileName);
                     var dotIndex = fileName.IndexOf('.');
                     var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
-                    var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                     var pathString = Path.Combine(originalDirectory, "Images", ImageType.SellerLogo.ToString());
                     var img = new Image()
                     {
@@ -347,11 +346,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                     db.Images.RemoveRange(
                         db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerLogo));
-                    db.SaveChanges();
                     db.Images.Add(img);
                     sellerLogo.SaveAs(Path.Combine(pathString, img.ImageUrl));
                     var imagesService = new ImagesService();
                     imagesService.ResizeToSiteRatio(Path.Combine(pathString, img.ImageUrl), ImageType.SellerLogo);
+                }
+                if (sellerFavicon != null && sellerFavicon.ContentLength != 0)
+                {
+                    var fileName = Path.GetFileName(sellerFavicon.FileName);
+                    var dotIndex = fileName.IndexOf('.');
+                    var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
+                    var pathString = Path.Combine(originalDirectory, "Images", ImageType.SellerFavicon.ToString());
+                    var img = new Image()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ImageType = ImageType.SellerFavicon,
+                        SellerId = seller.Id
+                    };
+                    img.ImageUrl = img.Id + fileExt;
+
+                    db.Images.RemoveRange(
+                        db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerFavicon));
+                    db.Images.Add(img);
+                    sellerFavicon.SaveAs(Path.Combine(pathString, img.ImageUrl));
                 }
                 db.SaveChanges();
                 return RedirectToAction("CreateOrUpdate", new { id = seller.Id });

@@ -22,6 +22,15 @@
     }
     <img src="~/Images/SellerLogo/@imgSrc" class="sellerLogo" />
 </div>
+<div>
+    <h3>Favicon:</h3>
+    <input type="file" name="sellerFavicon" id="sellerFavicon" />
+    @{
+        var fav = Model.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerFavicon);
+        var favSrc = fav == null ? "" : fav.ImageUrl;
+    }
+    <img src="~/Images/SellerFavicon/@favSrc" class="sellerFavicon" />
+</div>
 @if (Model.Seller.Id != null)
 {
     <br />

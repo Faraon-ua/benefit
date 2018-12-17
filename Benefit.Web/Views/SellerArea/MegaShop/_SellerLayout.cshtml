@@ -3,6 +3,7 @@
 @{
     var seller = ViewBag.Seller as Seller;
     var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+    var sellerFavicon = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerFavicon);
     var todayShedule = seller.Schedules.FirstOrDefault(entry => entry.Day == DateTime.Now.DayOfWeek);
     var categories = ViewBag.Categories as List<Category>;
 }
@@ -36,6 +37,7 @@
     <link href="~/Content/seller/megashop/responsive.css" rel="stylesheet">
     <link href="~/Content/css/common.css" rel="stylesheet">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.2.0/css/all.css">
+    <link rel="icon" href="~/Images/SellerFavicon/@(sellerFavicon == null ? "" : sellerFavicon.ImageUrl)">
     @RenderSection("styles", false)
 </head>
 
@@ -46,9 +48,9 @@
                 <div class="row">
                     <div class="informers col-md-3 col-lg-4 col-xl-3">
                         <div class="fn_menu_switch menu_switch lg-hidden">
+
                             <i class="menu_i"></i>
                         </div>
-
                         <a class="informer" href="@Url.Action("favorites", "tovar")">
                             <i class="wish_icon"></i>
                             <span class="informer_name tablet-hidden" data-language="wishlist_header">Улюблене</span>
