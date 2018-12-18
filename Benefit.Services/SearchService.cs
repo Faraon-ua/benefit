@@ -268,11 +268,6 @@ namespace Benefit.Services
                 DisplayInFilters = true
             });
 
-            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
-            result.Products = productResult.Skip(skip)
-                .Take(take + 1)
-                .ToList();
-
             if (options != null)
             {
                 var optionSegments = options.Split(';');
@@ -328,6 +323,10 @@ namespace Benefit.Services
                 }
             }
 
+            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
+            result.Products = productResult.Skip(skip)
+                .Take(take + 1)
+                .ToList();
             //if (searchSellerId == null)
             //{
             //    var sellers =
