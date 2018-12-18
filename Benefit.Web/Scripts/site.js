@@ -243,37 +243,38 @@ $(function () {
         $("#bg").css("z-index", "-1");
     });
 
-    $('body').on('click', '.basket_modal .plus, .basket_modal .minus', function () {
+    $('body').on('click focusout', '.basket_modal .plus, .basket_modal .minus, .basket_modal .quantity', function () {
         var completeOrderBtn = $(this).parents(".order-wrap").find(".save-order");
         completeOrderBtn.attr("disabled", "disabled");
         var tr = $(this).parents("tr");
         var productId = tr.attr("data-product-id");
         var sellerId = tr.attr("data-seller-id");
         var productAmount = $(this).parent().children('.quantity');
+        var productCurrentValue = parseFloat(productAmount.val());
         var retailPrice = parseFloat(tr.attr('data-original-price'));
         var wholesalePrice = parseFloat(tr.attr('data-wholesale-price'));
         var wholesaleAmount = parseFloat(tr.attr('data-wholesale-from'));
-        var valueToAdd = 1;
-        var isMinus = $(this).hasClass("minus");
-        var isWeightProduct = false;
-        if ($(this).parent().attr("data-weight-product")) {
-            isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+        if (!$(this).hasClass("quantity")) {
+            var valueToAdd = 1;
+            var isMinus = $(this).hasClass("minus");
+            var isWeightProduct = false;
+            if ($(this).parent().attr("data-weight-product")) {
+                isWeightProduct = $(this).parent().attr("data-weight-product").toLowerCase() === "true";
+            }
+            if (isWeightProduct) {
+                valueToAdd = 0.1;
+            }
+            if (isMinus && productCurrentValue > valueToAdd) {
+                productCurrentValue = (productCurrentValue - valueToAdd);
+            }
+            if (!isMinus) {
+                productCurrentValue = (productCurrentValue + valueToAdd);
+            }
+            if (isWeightProduct) {
+                productCurrentValue = productCurrentValue.toFixed(1);
+            }
+            productAmount.val(productCurrentValue);
         }
-        if (isWeightProduct) {
-            valueToAdd = 0.1;
-        }
-        var productCurrentValue = parseFloat(productAmount.val());
-        if (isMinus && productCurrentValue > valueToAdd) {
-            productCurrentValue = (productCurrentValue - valueToAdd);
-        }
-        if (!isMinus) {
-            productCurrentValue = (productCurrentValue + valueToAdd);
-        }
-        if (isWeightProduct) {
-            productCurrentValue = productCurrentValue.toFixed(1);
-        }
-        productAmount.val(productCurrentValue);
-
         if (wholesaleAmount !== 0) {
             if (productCurrentValue >= wholesaleAmount) {
                 tr.find(".wholesale-hint").hide();

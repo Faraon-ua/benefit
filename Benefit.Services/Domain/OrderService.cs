@@ -45,7 +45,7 @@ namespace Benefit.Services.Domain
                 string.Format("{0}<br/>--------------------------------------------<br/> Заказ створено на {1}",
                     model.Comment, HttpContext.Current.Request.Url.Host);
             //order.PersonalBonusesSum = order.SumWithDiscount * seller.UserDiscount / 100;
-            order.PersonalBonusesSum = order.OrderProducts.Sum(entry=>entry.BonusesAcquired);
+            order.PersonalBonusesSum = order.OrderProducts.Sum(entry=>entry.BonusesAcquired * entry.Amount);
 
             order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.SumWithDiscount / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
             order.SellerName = seller.Name;

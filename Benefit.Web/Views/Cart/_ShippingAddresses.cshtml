@@ -35,6 +35,6 @@
         </div>
     }
     @Html.Hidden("AddressId", Model.AddressId ?? defaultAddressId)
-    @Html.Hidden("ShippingAddress", Model.AddressId ?? defaultAddressId, new { id="shippingAddress" })
+    @Html.Hidden("ShippingAddress", null, new { id="shippingAddress" })
 </div>
 
