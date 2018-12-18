@@ -138,68 +138,14 @@ namespace Benefit.Services
             .ThenBy(entry => entry.AvailabilityState)
             .ThenByDescending(entry => entry.Images.Any())
             .ThenBy(entry => entry.SKU).ToList();
-            if (options != null)
-            {
-                var optionSegments = options.Split(';');
-                foreach (var optionSegment in optionSegments)
-                {
-                    if (optionSegment == string.Empty)
-                    {
-                        continue;
-                    }
 
-                    var optionKeyValue = optionSegment.Split('=');
-                    var optionKey = optionKeyValue.First();
-                    var optionValues = optionKeyValue.Last().Split(',');
-                    switch (optionKey)
-                    {
-                        case "page":
-                            var page = int.Parse(optionValues[0]);
-                            productResult = productResult.Skip(ListConstants.DefaultTakePerPage * (page - 1)).ToList();
-                            break;
-                        case "category":
-                            var categories =
-                                db.Categories
-                                    .Include(entry => entry.MappedCategories)
-                                    .Where(entry => optionValues.Contains(entry.UrlName));
-                            var mappedIds = categories.SelectMany(entry => entry.MappedCategories.Select(mc => mc.Id))
-                                .ToList();
-                            mappedIds.AddRange(categories.Select(entry => entry.Id));
-                            productResult = productResult.Where(entry => mappedIds.Contains(entry.CategoryId)).ToList();
-                            break;
-                        case "seller":
-                            var sellerIds =
-                                db.Sellers.Where(entry => optionValues.Contains(entry.UrlName))
-                                    .Select(entry => entry.Id);
-                            productResult = productResult.Where(entry => sellerIds.Contains(entry.SellerId)).ToList();
-                            break;
-                        case "vendor":
-                            productResult = productResult.Where(entry => optionValues.Contains(entry.Vendor)).ToList();
-                            break;
-                        case "country":
-                            productResult = productResult.Where(entry => optionValues.Contains(entry.OriginCountry)).ToList();
-                            break;
-                        default:
-                            productResult =
-                                productResult.Where(
-                                entry =>
-                                    entry.ProductParameterProducts.Any(pr => pr.ProductParameter.UrlName == optionKey) &&
-                                    optionValues.Any(
-                                        optValue =>
-                                            entry.ProductParameterProducts.Select(pr => pr.StartValue)
-                                                .Contains(optValue))).ToList();
-                            break;
-                    }
-                }
-            }
-
-            //fetch parameters 
+            //fetch parameters
             var categoryIdResults = productResult.GroupBy(entry => entry.CategoryId, (key, g) =>
-            new
-            {
-                Count = g.Distinct().Count(),
-                CategoryId = key
-            }).Where(entry => entry.CategoryId != null).ToList();
+                new
+                {
+                    Count = g.Distinct().Count(),
+                    CategoryId = key
+                }).Where(entry => entry.CategoryId != null).ToList();
             var catIds = categoryIdResults.Select(entry => entry.CategoryId).ToList();
             var categoriesInResults = db.Categories
                 .Include(entry => entry.MappedParentCategory.ParentCategory)
@@ -257,7 +203,6 @@ namespace Benefit.Services
                 ProductParameterValues = categoryFilters,
                 DisplayInFilters = true
             });
-
             var sellers = (from seller in productResult.Select(entry => entry.Seller)
                            group seller by seller.Id into groupResult
                            select new
@@ -327,6 +272,61 @@ namespace Benefit.Services
             result.Products = productResult.Skip(skip)
                 .Take(take + 1)
                 .ToList();
+
+            if (options != null)
+            {
+                var optionSegments = options.Split(';');
+                foreach (var optionSegment in optionSegments)
+                {
+                    if (optionSegment == string.Empty)
+                    {
+                        continue;
+                    }
+
+                    var optionKeyValue = optionSegment.Split('=');
+                    var optionKey = optionKeyValue.First();
+                    var optionValues = optionKeyValue.Last().Split(',');
+                    switch (optionKey)
+                    {
+                        case "page":
+                            var page = int.Parse(optionValues[0]);
+                            productResult = productResult.Skip(ListConstants.DefaultTakePerPage * (page - 1)).ToList();
+                            break;
+                        case "category":
+                            var categories =
+                                db.Categories
+                                    .Include(entry => entry.MappedCategories)
+                                    .Where(entry => optionValues.Contains(entry.UrlName));
+                            var mappedIds = categories.SelectMany(entry => entry.MappedCategories.Select(mc => mc.Id))
+                                .ToList();
+                            mappedIds.AddRange(categories.Select(entry => entry.Id));
+                            productResult = productResult.Where(entry => mappedIds.Contains(entry.CategoryId)).ToList();
+                            break;
+                        case "seller":
+                            var sellerIds =
+                                db.Sellers.Where(entry => optionValues.Contains(entry.UrlName))
+                                    .Select(entry => entry.Id);
+                            productResult = productResult.Where(entry => sellerIds.Contains(entry.SellerId)).ToList();
+                            break;
+                        case "vendor":
+                            productResult = productResult.Where(entry => optionValues.Contains(entry.Vendor)).ToList();
+                            break;
+                        case "country":
+                            productResult = productResult.Where(entry => optionValues.Contains(entry.OriginCountry)).ToList();
+                            break;
+                        default:
+                            productResult =
+                                productResult.Where(
+                                entry =>
+                                    entry.ProductParameterProducts.Any(pr => pr.ProductParameter.UrlName == optionKey) &&
+                                    optionValues.Any(
+                                        optValue =>
+                                            entry.ProductParameterProducts.Select(pr => pr.StartValue)
+                                                .Contains(optValue))).ToList();
+                            break;
+                    }
+                }
+            }
 
             //if (searchSellerId == null)
             //{

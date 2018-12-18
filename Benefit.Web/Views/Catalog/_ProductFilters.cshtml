@@ -56,7 +56,7 @@
                     </div>
                 <div class="bx_filter_parameters_box_container">
                     <div style="overflow: hidden;">
-                        <ul class="no-list-style">
+                        <ul class="no-list-style no-padding">
                             @foreach (var parentCatValue in categoryFilter.ProductParameterValues.OrderByDescending(entry=>entry.Children.Sum(ch=>ch.ProductsCount)))
                             {
                                 <li>

@@ -134,7 +134,7 @@ $(function () {
     });
 
     $("#reset-filters").click(function () {
-        location.href = location.href.substring(0, location.href.indexOf(lastSegment));
+        location.href = location.href.substring(0, location.href.indexOf(lastSegment)) + location.search;
     });
 
     $('body').on("click",
