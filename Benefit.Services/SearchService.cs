@@ -163,7 +163,12 @@ namespace Benefit.Services
                 {
                     if (catIds.Contains(categoryResults[i].Category.MappedParentCategoryId))
                     {
+                        categoryResults.FirstOrDefault(entry =>
+                                entry != null &&
+                                entry.Category.Id == categoryResults[i].Category.MappedParentCategoryId).Count +=
+                            categoryResults[i].Count;
                         categoryResults[i] = null;
+
                     }
                     else
                     {
