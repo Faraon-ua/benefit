@@ -29,7 +29,7 @@
                         <div class="search-block inner-table-block">
                             <div class="search-wrapper">
                                 <div id="title-search_fixed">
-                                    @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search" }))
+                                    @using (Html.BeginForm("index", "search", new { area = string.Empty, options = string.Empty }, FormMethod.Get, new { @class = "search-form search" }))
                                     {
                                         <div class="search-input-div">
                                             <input class="search-input" name="term" aria-label="Пошук" placeholder="Я шукаю ..." />

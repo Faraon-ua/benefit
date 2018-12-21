@@ -39,9 +39,10 @@ $(function () {
         var page = parseInt(moreBtn.attr("data-page"));
         var pageUrl;
         if (lastSegment === categoryUrlName) {
-            pageUrl = lastSegment + "/page=" + (page + 1) + ";";
+            options = "page=" + (page + 1) + ";";
+            pageUrl = lastSegment + "/" + options;
         } else {
-            pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
+            options = pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
         }
         if (categoryUrlName === "search") {
             pageUrl += location.search;
@@ -282,7 +283,7 @@ $(function () {
                 var parts = location.href.split('/');
                 lastSegment =
                     (parts.pop() || parts.pop()).replace("#", ""); // handle potential trailing slash
-                lastSegment = lastSegment.substring(0, lastSegment.indexOf('?')); //handle query params
+                lastSegment = lastSegment.replace(location.search, ""); //handle query params
 
                 if (lastSegment != categoryUrlName) {
                     options = lastSegment;
@@ -310,7 +311,6 @@ $(function () {
                     currentOption += selectedValues.join();
                     currentOption += ";";
                 }
-
                 if (optionNameIndex >= 0) {
                     var ending = options.indexOf(";", optionNameIndex);
                     var oldOption = options.substring(optionNameIndex, ending + 1);
@@ -328,7 +328,7 @@ $(function () {
                     locBuilder = location.protocol + '//' + location.host + location.pathname.replace(lastSegment, "") + options + location.search;
                     location.href = locBuilder;
                 } else {
-                    locBuilder = location.href.substring(0, location.href.indexOf('?'));
+                    locBuilder = location.protocol + '//' + location.host + location.pathname.replace(location.search, "");
                     if (location.href[location.href.length - 1] !== "/") {
                         locBuilder += "/";
                     }

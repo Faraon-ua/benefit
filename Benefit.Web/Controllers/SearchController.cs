@@ -72,10 +72,15 @@ namespace Benefit.Web.Controllers
             return View(result);
         }
 
-        public ActionResult GetProducts(string term, string options, int page)
+        public ActionResult GetProducts(string term, string options, int page, SellerEcommerceTemplate? layout)
         {
             var result = SearchService.SearchProducts(term, options, ListConstants.DefaultTakePerPage * page);
-            var productsHtml = string.Join("", result.Products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString("~/Views/Catalog/_ProductPartial.cshtml", entry)));
+            var templateName = "~/Views/Catalog/_ProductPartial.cshtml";
+            if (layout.HasValue)
+            {
+                templateName = string.Format("~/Views/SellerArea/{0}/_ProductPartial.cshtml", layout.ToString());
+            }
+            var productsHtml = string.Join("", result.Products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString(templateName, entry)));
             return Json(new { number = result.Products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
         }
     }

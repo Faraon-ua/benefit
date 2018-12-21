@@ -75,7 +75,7 @@
                     </div>
 
                     <div class="col-md-6 search_wrap">
-                        @using (Html.BeginForm("index", "search", new { area = "" }, FormMethod.Get, new { @class = "search-form search", id = "fn-search" }))
+                        @using (Html.BeginForm("index", "search", new { area = string.Empty, options = string.Empty }, FormMethod.Get, new { @class = "search-form search", id = "fn-search" }))
                         {
                             <input class="fn_search search_input search-input" type="text" name="term" value="" data-language="index_search" placeholder="Пошук товарів" />
                             <input type="hidden" name="searchSellerId" value="@seller.Id" />
@@ -172,7 +172,7 @@
                             @foreach (var cat in categories)
                             {
                                 <li class="category_item @(cat.ChildCategories.Any()?"parent" : "")">
-                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" data-category="1">
+                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })" data-category="1">
                                         <span>@cat.Name</span>
                                     </a>
                                     @if (cat.ChildCategories.Any())
@@ -182,7 +182,7 @@
                                             @foreach (var subCat in cat.ChildCategories)
                                             {
                                                 <li class="category_item @(subCat.ChildCategories.Any()?"parent" : "")">
-                                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" data-category="2">
+                                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty })" data-category="2">
                                                         <span>@subCat.Name</span>
                                                     </a>
 
@@ -193,7 +193,7 @@
                                                             @foreach (var childCat in subCat.ChildCategories)
                                                             {
                                                                 <li class="category_item">
-                                                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" data-category="3">@childCat.Name</a>
+                                                                    <a class="category_link" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, options = string.Empty })" data-category="3">@childCat.Name</a>
                                                                 </li>
                                                             }
                                                         </ul>

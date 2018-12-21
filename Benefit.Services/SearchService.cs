@@ -275,7 +275,7 @@ namespace Benefit.Services
 
             if (options != null)
             {
-                var optionSegments = options.Split(';');
+                var optionSegments = options.Split(';').OrderBy(entry => entry.Contains("page=")).ToList();
                 foreach (var optionSegment in optionSegments)
                 {
                     if (optionSegment == string.Empty)
@@ -290,6 +290,7 @@ namespace Benefit.Services
                     {
                         case "page":
                             var page = int.Parse(optionValues[0]);
+                            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
                             productResult = productResult.Skip(ListConstants.DefaultTakePerPage * (page - 1)).ToList();
                             break;
                         case "category":
@@ -327,9 +328,12 @@ namespace Benefit.Services
                     }
                 }
             }
+            if (result.PagesCount == 0)
+            {
+                result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
+            }
 
-            result.PagesCount = (productResult.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
-            result.Products = productResult.Skip(skip)
+            result.Products = productResult
                 .Take(take + 1)
                 .ToList();
             //if (searchSellerId == null)
