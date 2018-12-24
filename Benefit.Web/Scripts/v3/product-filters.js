@@ -33,7 +33,7 @@ $(function () {
         e.preventDefault();
         parts = location.href.split('/');
         lastSegment = (parts.pop() || parts.pop()).replace("#", "");
-        lastSegment = lastSegment.substring(0, lastSegment.indexOf('?')); //handle query params
+        lastSegment = lastSegment.replace(location.search, ""); //handle query params
         $(".products-wrapper").css("opacity", "0.3");
         var moreBtn = $(this);
         var page = parseInt(moreBtn.attr("data-page"));
