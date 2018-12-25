@@ -40,6 +40,7 @@
     <meta property="og:title" content="@Model.Product.Name" />
     <meta property="og:description" content="@Model.Product.ShortDescription" />
     <meta property="og:image" content="@image_src_str" />
+    <meta property="og:site_name" content="Benefit Company" />
 }
 @section styles
 {
@@ -854,7 +855,7 @@
 {
     @Html.Partial("_ProductOptions", Model)
 }
-@if (category!= null && Request.UrlReferrer !=null && !string.IsNullOrEmpty(category.Tag) && Request.UrlReferrer.LocalPath == string.Empty)
+@if (category != null && Request.UrlReferrer != null && !string.IsNullOrEmpty(category.Tag) && Request.UrlReferrer.LocalPath == string.Empty)
 {
     @Html.Action("ShowMessagePopup", "Home", new { message = category.Tag, showButtons = true })
 }

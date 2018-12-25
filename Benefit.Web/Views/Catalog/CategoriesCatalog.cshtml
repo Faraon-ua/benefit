@@ -10,6 +10,12 @@
 @section meta
 {
     <meta name="description" content="@(Model.Category == null ? string.Empty : Model.Category.MetaDescription)">
+    <meta property="og:description" content="@(Model.Category == null ? string.Empty : Model.Category.MetaDescription)" />
+    <meta property="og:title" content="@Model.Category.Name" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = Model.Category.UrlName})" />
+    <meta property="og:image" content="~/Images/CategoryLogo/@Model.Category.ImageUrl" />
+    <meta property="og:site_name" content="Benefit Company" />
 }
 
 <div class="wraps hover_shine">
@@ -71,7 +77,7 @@
                 @if (Model.Category.BannerImageUrl != null)
                 {
                     <a href="@Model.Category.BannerUrl">
-                        <img src="~/Images/CategoryBanner/@Model.Category.BannerImageUrl" style="width: 100%;"/>
+                        <img src="~/Images/CategoryBanner/@Model.Category.BannerImageUrl" style="width: 100%;" />
                     </a>
                 }
                 @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", ViewBag.LastNews as IEnumerable<InfoPage>)
