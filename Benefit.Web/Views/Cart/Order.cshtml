@@ -1,5 +1,6 @@
 ﻿@model CompleteOrderViewModel
 @using Benefit.Common.Constants
+@using Benefit.Common.Helpers
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @using Benefit.Services
@@ -101,6 +102,9 @@
                         $("#npCity option:selected").text() +
                         " " +
                         $("#npWarehouse option:selected").text();
+                }
+                if (shippingMethodType == @((int) DefinedShippingType.Self)) {
+                    address = "@Enumerations.GetDisplayNameValue(DefinedShippingType.Self)";
                 }
                 $("#shippingAddress").val(address);
                 if (!isAuthenticated) {
