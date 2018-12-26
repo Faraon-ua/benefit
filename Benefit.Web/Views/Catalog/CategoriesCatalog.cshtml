@@ -14,7 +14,8 @@
     <meta property="og:title" content="@Model.Category.Name" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = Model.Category.UrlName})" />
-    <meta property="og:image" content="~/Images/CategoryLogo/@Model.Category.ImageUrl" />
+    <meta property="og:image" content="@string.Format("{0}://{1}/Images/CategoryLogo/{2}", Request.Url.Scheme, Request.Url.Host, Model.Category.ImageUrl)" />
+
     <meta property="og:site_name" content="Benefit Company" />
 }
 

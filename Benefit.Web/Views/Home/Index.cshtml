@@ -13,7 +13,7 @@
     <meta property="og:title" content="@Model.Description.Title" />
     <meta property="og:type" content="article" />
     <meta property="og:url" content="https://benefit-company.com" />
-    <meta property="og:image" content="~/Content/img/logo.png" />
+    <meta property="og:image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, "Content/img/logo.png")" />
     <meta property="og:site_name" content="Benefit Company" />
 }
 @section scripts

@@ -50,7 +50,7 @@ namespace Benefit.Web.Controllers
                     ProductParameters = result.ProductParameters,
                     Category = new Category()
                     {
-                        Name = "Пошук",
+                        Name = "Пошук: " + term,
                         UrlName = "search",
                         Description = string.Format("Результати пошуку по запиту '{0}'", result.Term)
                     },

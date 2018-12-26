@@ -200,14 +200,18 @@ namespace Benefit.Services
                     ProductsCount = item.Count
                 }).ToList()
             }).OrderBy(entry => entry.ParameterValue).ToList();
-            result.ProductParameters.Add(new ProductParameter()
+            if (categoryFilters.Any())
             {
-                Name = "Категорія",
-                UrlName = "category",
-                Type = typeof(Category).ToString(),
-                ProductParameterValues = categoryFilters,
-                DisplayInFilters = true
-            });
+                result.ProductParameters.Add(new ProductParameter()
+                {
+                    Name = "Категорія",
+                    UrlName = "category",
+                    Type = typeof(Category).ToString(),
+                    ProductParameterValues = categoryFilters,
+                    DisplayInFilters = true
+                });
+            }
+
             var sellers = (from seller in productResult.Select(entry => entry.Seller)
                            group seller by seller.Id into groupResult
                            select new
@@ -222,14 +226,17 @@ namespace Benefit.Services
                 ParameterValue = entry.Name,
                 ParameterValueUrl = entry.UrlName
             }).OrderBy(entry => entry.ParameterValue).ToList();
-            result.ProductParameters.Add(new ProductParameter()
+            if (sellerFilters.Any())
             {
-                Name = "Постачальник",
-                UrlName = "seller",
-                Type = typeof(string).ToString(),
-                ProductParameterValues = sellerFilters,
-                DisplayInFilters = true
-            });
+                result.ProductParameters.Add(new ProductParameter()
+                {
+                    Name = "Постачальник",
+                    UrlName = "seller",
+                    Type = typeof(string).ToString(),
+                    ProductParameterValues = sellerFilters,
+                    DisplayInFilters = true
+                });
+            }
 
             var vendors = (from product in productResult
                            group product by product.Vendor into groupResult
@@ -243,14 +250,17 @@ namespace Benefit.Services
                 ParameterValue = entry,
                 ParameterValueUrl = entry
             }).OrderBy(entry => entry.ParameterValue).ToList();
-            result.ProductParameters.Add(new ProductParameter()
+            if (vendorFilters.Any())
             {
-                Name = "Виробник",
-                UrlName = "vendor",
-                Type = typeof(string).ToString(),
-                ProductParameterValues = vendorFilters,
-                DisplayInFilters = true
-            });
+                result.ProductParameters.Add(new ProductParameter()
+                {
+                    Name = "Виробник",
+                    UrlName = "vendor",
+                    Type = typeof(string).ToString(),
+                    ProductParameterValues = vendorFilters,
+                    DisplayInFilters = true
+                });
+            }
 
             var originCountries = (from product in productResult
                                    group product by product.OriginCountry into groupResult
@@ -264,14 +274,17 @@ namespace Benefit.Services
                 ParameterValue = entry,
                 ParameterValueUrl = entry
             }).OrderBy(entry => entry.ParameterValue).ToList();
-            result.ProductParameters.Add(new ProductParameter()
+            if (countryFilters.Any())
             {
-                Name = "Країна виробник",
-                UrlName = "country",
-                Type = typeof(string).ToString(),
-                ProductParameterValues = countryFilters,
-                DisplayInFilters = true
-            });
+                result.ProductParameters.Add(new ProductParameter()
+                {
+                    Name = "Країна виробник",
+                    UrlName = "country",
+                    Type = typeof(string).ToString(),
+                    ProductParameterValues = countryFilters,
+                    DisplayInFilters = true
+                });
+            }
 
             if (options != null)
             {
