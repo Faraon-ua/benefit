@@ -7,6 +7,11 @@
 @section meta
 {
     @*<meta name="description" content="@Model.Category.Description">*@
+    <meta property="og:description" content="@ViewBag.Title" />
+    <meta property="og:title" content="Каталог постачальників" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" })" />
+    <meta property="og:site_name" content="Benefit Company" />
 }
 @section scripts{
     <script>

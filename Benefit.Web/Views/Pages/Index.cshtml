@@ -1,5 +1,4 @@
-﻿@using Benefit.Common.Extensions
-@using Benefit.DataTransfer.ViewModels
+﻿@using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
 @using Benefit.Services
 @model InfoPage
@@ -9,12 +8,12 @@
 }
 @section meta{
     <meta name="description" content="@Model.ShortContent">
-
     <meta property="og:url" content="@Request.Url.AbsoluteUri" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content="@Model.Name" />
     <meta property="og:description" content="@Model.ShortContent" />
-    <meta property="og:image" content="~/Images/NewsLogo/@Model.ImageUrl" />
+    <meta property="og:image" content="@string.Format("{0}://{1}/Images/NewsLogo/{2}", Request.Url.Scheme, Request.Url.Host, Model.ImageUrl)" />
+
 }
 @section image_src
 {
