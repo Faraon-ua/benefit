@@ -91,25 +91,29 @@ namespace Benefit.Services
             var query = string.Format(@"
             Select SearchResults.* from
             (Select top 300 Id, Sum(Rank) as Rank From
-                (SELECT Id, Name, 5 as Rank
+                (SELECT Id, SKU, 5 as Rank
                     FROM Products
-                    where Name like N'{0}%' AND IsActive = 1
+                    where SKU = {0} AND IsActive = 1
+                    union
+                    SELECT Id, Name, 5 as Rank
+                    FROM Products
+                    where Name like N'{0}%' AND IsActive = 1 AND (AvailabilityState = 0 OR AvailabilityState = 1)  
                     union
                     SELECT Id, Name, 4 as Rank
                     FROM Products
-                    where contains(Name, N'{1}') AND IsActive = 1 
+                    where contains(Name, N'{1}') AND IsActive = 1  AND (AvailabilityState = 0 OR AvailabilityState = 1)  
                     union
                     SELECT Id, SearchTags, 3 as Rank
                     FROM Products
-                    where Name like N'%{0}%' AND IsActive = 1
+                    where Name like N'%{0}%' AND IsActive = 1 AND (AvailabilityState = 0 OR AvailabilityState = 1)  
                     union
                     SELECT Id, Name, 2 as Rank
                     FROM Products
-                    where SearchTags like N'%{0}%' AND IsActive = 1
+                    where SearchTags like N'%{0}%' AND IsActive = 1 AND (AvailabilityState = 0 OR AvailabilityState = 1)  
                     union
                     SELECT Id, Description, 1 as Rank
                     FROM Products
-                    where Description like N'%{0}%' AND IsActive = 1
+                    where Description like N'%{0}%' AND IsActive = 1 AND (AvailabilityState = 0 OR AvailabilityState = 1)  
                 ) as RankedResults
                 GROUP BY Id
             order by rank desc
