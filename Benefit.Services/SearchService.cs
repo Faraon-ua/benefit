@@ -91,9 +91,9 @@ namespace Benefit.Services
             var query = string.Format(@"
             Select SearchResults.* from
             (Select top 300 Id, Sum(Rank) as Rank From
-                (SELECT Id, SKU, 5 as Rank
+                (SELECT Id, CONVERT(varchar, SKU) as Name, 5 as Rank
                     FROM Products
-                    where SKU = {0} AND IsActive = 1
+                    where CONVERT(varchar, SKU) = '{0}' AND IsActive = 1
                     union
                     SELECT Id, Name, 5 as Rank
                     FROM Products
