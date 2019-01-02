@@ -172,13 +172,13 @@ namespace Benefit.Services
                                 entry.Category.Id == categoryResults[i].Category.MappedParentCategoryId).Count +=
                             categoryResults[i].Count;
                         categoryResults[i] = null;
-
                     }
                     else
                     {
                         categoryResults[i].Category.ParentCategoryId = categoryResults[i].Category.MappedParentCategory.ParentCategoryId;
                         categoryResults[i].Category.ParentCategory = categoryResults[i].Category.MappedParentCategory.ParentCategory;
                         categoryResults[i].Category = categoryResults[i].Category.MappedParentCategory;
+                        catIds.Add(categoryResults[i].Category.Id);
                     }
                 }
             }
