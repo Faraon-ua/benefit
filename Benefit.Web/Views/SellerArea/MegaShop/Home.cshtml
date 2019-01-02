@@ -86,67 +86,7 @@
                 <div class="clearfix">
                     @foreach (var product in Model.FeaturedProducts)
                     {
-                        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
-                        var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                        var availableForPurchase = product.AvailableForPurchase(RegionService.GetRegionId());
-
-                        <div class="products_item col-xl-3 col-xs-6">
-                            <div class="preview fn_product">
-                                <div class="fn_transfer clearfix" id="@product.Id">
-                                    <a class="preview_image" href="@productDetailsUrl">
-                                        @if (image == null)
-                                        {
-                                            <img class="fn_img preview_img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
-                                        }
-                                        else
-                                        {
-                                            if (image.IsAbsoluteUrl)
-                                            {
-                                                <img class="fn_img preview_img" src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
-                                            }
-                                            else
-                                            {
-                                                <img class="fn_img preview_img" src="~/Images/ProductGallery/@product.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
-                                            }
-                                        }
-                                        <img class="promo_img" src="~/Content/seller/megashop/images/hit.png" alt="hit.png" title="hit.png">
-                                    </a>
-                                    @if (product.Favorites.All(entry => entry.UserId != User.Identity.GetUserId()))
-                                    {
-                                        <div class="overlay_buttons">
-                                            @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
-                                            <a href="#" data-product-id="@product.Id" class="fn_wishlist wishlist_button add-to-favorites" title="В избранное" data-result-text="Из избранного">
-                                                <i class="wish_icon"></i>
-                                            </a>
-                                        </div>
-                                    }
-                                    <div class="preview_details">
-                                        <a class="product_name" data-product="114" href="@productDetailsUrl">@product.Name</a>
-                                        <div class="price_container">
-                                            @if (product.OldPrice.HasValue)
-                                            {
-                                                <div class="old_price hidden">
-                                                    <span class="fn_old_price">@product.OldPrice.Value.ToString("F")</span> <span>грн/@(product.IsWeightProduct ? "кг" : "шт")</span>
-                                                </div>
-                                            }
-                                            <div class="price">
-                                                <span class="fn_price">@product.Price.ToString("F")</span> <span>грн/@(product.IsWeightProduct ? "кг" : "шт")</span>
-                                            </div>
-                                        </div>
-                                        <div class="fn_variants preview_form">
-                                            @if (availableForPurchase.Key)
-                                            {
-                                                <button class="button fn_is_stock btn btn-primary product_buy" data-product-id="@product.Id" data-seller-id="@product.Seller.Id" data-is-weight-product="@product.IsWeightProduct">Купити</button>
-                                            }
-                                            else
-                                            {
-                                                <a class="button btn btn-primary" href="@productDetailsUrl">Детальніше</a>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @Html.Partial("~/views/sellerarea/megashop/_ProductPartial.cshtml", product)
                     }
                 </div>
             </div>
@@ -160,67 +100,7 @@
                 <div class=" clearfix">
                     @foreach (var product in Model.NewProducts)
                     {
-                        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
-                        var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                        var availableForPurchase = product.AvailableForPurchase(RegionService.GetRegionId());
-
-                        <div class="products_item col-xl-3 col-xs-6">
-                            <div class="preview fn_product">
-                                <div class="fn_transfer clearfix" id="@product.Id">
-                                    <a class="preview_image" href="@productDetailsUrl">
-                                        @if (image == null)
-                                        {
-                                            <img class="fn_img preview_img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
-                                        }
-                                        else
-                                        {
-                                            if (image.IsAbsoluteUrl)
-                                            {
-                                                <img class="fn_img preview_img" src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
-                                            }
-                                            else
-                                            {
-                                                <img class="fn_img preview_img" src="~/Images/ProductGallery/@product.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
-                                            }
-                                        }
-                                        <img class="promo_img" src="~/Content/seller/megashop/images/hit.png" alt="hit.png" title="hit.png">
-                                    </a>
-                                    @if (product.Favorites.All(entry => entry.UserId != User.Identity.GetUserId()))
-                                    {
-                                        <div class="overlay_buttons">
-                                            @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
-                                            <a href="#" data-product-id="@product.Id" class="fn_wishlist wishlist_button add-to-favorites" title="В избранное" data-result-text="Из избранного">
-                                                <i class="wish_icon"></i>
-                                            </a>
-                                        </div>
-                                    }
-                                    <div class="preview_details">
-                                        <a class="product_name" data-product="114" href="@productDetailsUrl">@product.Name</a>
-                                        <div class="price_container">
-                                            @if (product.OldPrice.HasValue)
-                                            {
-                                                <div class="old_price hidden">
-                                                    <span class="fn_old_price">@product.OldPrice.Value.ToString("F")</span> <span>грн/@(product.IsWeightProduct ? "кг" : "шт")</span>
-                                                </div>
-                                            }
-                                            <div class="price">
-                                                <span class="fn_price">@product.Price.ToString("F")</span> <span>грн/@(product.IsWeightProduct ? "кг" : "шт")</span>
-                                            </div>
-                                        </div>
-                                        <div class="fn_variants preview_form">
-                                            @if (availableForPurchase.Key)
-                                            {
-                                                <button class="button fn_is_stock btn btn-primary product_buy" data-product-id="@product.Id" data-seller-id="@product.Seller.Id" data-is-weight-product="@product.IsWeightProduct">Купити</button>
-                                            }
-                                            else
-                                            {
-                                                <a class="button btn btn-primary" href="@productDetailsUrl">Детальніше</a>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @Html.Partial("~/views/sellerarea/megashop/_ProductPartial.cshtml", product)
                     }
                 </div>
             </div>
@@ -234,67 +114,7 @@
                 <div class=" clearfix">
                     @foreach (var product in Model.PromotionProducts)
                     {
-                        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
-                        var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                        var availableForPurchase = product.AvailableForPurchase(RegionService.GetRegionId());
-
-                        <div class="products_item col-xl-3 col-xs-6">
-                            <div class="preview fn_product">
-                                <div class="fn_transfer clearfix" id="@product.Id">
-                                    <a class="preview_image" href="@productDetailsUrl">
-                                        @if (image == null)
-                                        {
-                                            <img class="fn_img preview_img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
-                                        }
-                                        else
-                                        {
-                                            if (image.IsAbsoluteUrl)
-                                            {
-                                                <img class="fn_img preview_img" src="@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
-                                            }
-                                            else
-                                            {
-                                                <img class="fn_img preview_img" src="~/Images/ProductGallery/@product.Id/@image.ImageUrl" alt="@Model.Title" title="@Model.Title">
-                                            }
-                                        }
-                                        <img class="promo_img" src="~/Content/seller/megashop/images/hit.png" alt="hit.png" title="hit.png">
-                                    </a>
-                                    @if (product.Favorites.All(entry => entry.UserId != User.Identity.GetUserId()))
-                                    {
-                                        <div class="overlay_buttons">
-                                            @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
-                                            <a href="#" data-product-id="@product.Id" class="fn_wishlist wishlist_button add-to-favorites" title="В избранное" data-result-text="Из избранного">
-                                                <i class="wish_icon"></i>
-                                            </a>
-                                        </div>
-                                    }
-                                    <div class="preview_details">
-                                        <a class="product_name" data-product="114" href="@productDetailsUrl">@product.Name</a>
-                                        <div class="price_container">
-                                            @if (product.OldPrice.HasValue)
-                                            {
-                                                <div class="old_price hidden">
-                                                    <span class="fn_old_price">@product.OldPrice.Value.ToString("F")</span> <span>грн/@(product.IsWeightProduct ? "кг" : "шт")</span>
-                                                </div>
-                                            }
-                                            <div class="price">
-                                                <span class="fn_price">@product.Price.ToString("F")</span> <span>грн/@(product.IsWeightProduct ? "кг" : "шт")</span>
-                                            </div>
-                                        </div>
-                                        <div class="fn_variants preview_form">
-                                            @if (availableForPurchase.Key)
-                                            {
-                                                <button class="button fn_is_stock btn btn-primary product_buy" data-product-id="@product.Id" data-seller-id="@product.Seller.Id" data-is-weight-product="@product.IsWeightProduct">Купити</button>
-                                            }
-                                            else
-                                            {
-                                                <a class="button btn btn-primary" href="@productDetailsUrl">Детальніше</a>
-                                            }
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @Html.Partial("~/views/sellerarea/megashop/_ProductPartial.cshtml", product)
                     }
                 </div>
             </div>
