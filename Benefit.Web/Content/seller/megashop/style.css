@@ -1,3 +1,6 @@
+.more_text_ajax::after {
+    background-color: #FF9F00 !important;
+}
 .doublesize-checkbox {
     -ms-transform: scale(2); /* IE */
     -moz-transform: scale(2); /* FF */
