@@ -36,6 +36,8 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public int ProductsCount { get; set; }
         [NotMapped]
+        public bool Enabled { get; set; }
+        [NotMapped]
         public ICollection<ProductParameterValue> Children { get; set; }
     }
 }

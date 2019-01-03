@@ -11,7 +11,6 @@ using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
-using Benefit.Web.Models;
 
 namespace Benefit.Web.Controllers
 {

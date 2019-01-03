@@ -519,9 +519,13 @@ namespace Benefit.Services.Domain
                     (parameter.ProductParameterValues as List<ProductParameterValue>).AddRange(childValues);
                     if (options == null || !options.Contains(parameter.UrlName))
                     {
-                        parameter.ProductParameterValues =
-                            parameter.ProductParameterValues.Where(
-                                entry => productParametersInItems.Contains(entry.ParameterValueUrl.ToLower())).ToList();
+                        parameter.ProductParameterValues.Where(
+                                entry => productParametersInItems.Contains(entry.ParameterValueUrl.ToLower())).ToList()
+                            .ForEach(entry => entry.Enabled = true);
+                    }
+                    else
+                    {
+                        parameter.ProductParameterValues.ToList().ForEach(entry => entry.Enabled = true);
                     }
 
                     result.ProductParameters.Add(parameter);

@@ -131,13 +131,14 @@
                         <div style="max-height: 215px; overflow: hidden;">
                             @if (filter.Type == typeof(string).ToString())
                             {
-                                foreach (var filterValue in filter.ProductParameterValues.OrderBy(entry => entry.Order))
+                                foreach (var filterValue in filter.ProductParameterValues.OrderByDescending(entry=>entry.Enabled).ThenBy(entry => entry.Order))
                                 {
                                     var name = filterValue.ParameterValueUrl == null ? string.Empty : filterValue.ParameterValueUrl.Replace(" ", string.Empty);
+                                    var disClass = filterValue.Enabled ? string.Empty: "disabled";
                                     <div class="bx_filter_block limited_block">
                                         <div class="bx_filter_parameters_box_container">
                                             <input type="checkbox" id="@filterValue.ParameterValueUrl" name="@name" class="hidden" text="@filterValue.ParameterValue @filter.MeasureUnit">
-                                            <label class="bx_filter_param_label  last" for="@filterValue.ParameterValueUrl">
+                                            <label class="bx_filter_param_label last @disClass" for="@filterValue.ParameterValueUrl">
                                                 <span class="bx_filter_input_checkbox">
                                                     <span class="bx_filter_param_text">@filterValue.ParameterValue @filter.MeasureUnit</span>
                                                 </span>
