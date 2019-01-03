@@ -25,8 +25,7 @@ namespace Benefit.Web.Controllers
             var seller = db.Sellers
                 .Include(entry => entry.SellerCategories)
                 .FirstOrDefault(entry => entry.UrlName == id);
-            if (seller == null) return new HttpNotFoundResult();
-            ViewBag.Seller = seller;
+            ViewBag.Seller = seller ?? throw new HttpException(404, "Not found");
             var sellerCats = SellerService.GetAllSellerCategories(seller.UrlName);
             var categories = sellerCats.Where(entry => entry.ParentCategoryId == null).ToList();
             ViewBag.SellerCategories = categories;
