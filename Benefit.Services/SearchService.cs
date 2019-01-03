@@ -204,6 +204,7 @@ namespace Benefit.Services
                     ProductsCount = item.Count
                 }).ToList()
             }).OrderBy(entry => entry.ParameterValue).ToList();
+            categoryFilters.ForEach(entry=>entry.Enabled = true);
             if (categoryFilters.Any())
             {
                 result.ProductParameters.Add(new ProductParameter()
@@ -230,6 +231,7 @@ namespace Benefit.Services
                 ParameterValue = entry.Name,
                 ParameterValueUrl = entry.UrlName
             }).OrderBy(entry => entry.ParameterValue).ToList();
+            sellerFilters.ForEach(entry => entry.Enabled = true);
             if (sellerFilters.Any())
             {
                 result.ProductParameters.Add(new ProductParameter()
@@ -254,6 +256,7 @@ namespace Benefit.Services
                 ParameterValue = entry,
                 ParameterValueUrl = entry
             }).OrderBy(entry => entry.ParameterValue).ToList();
+            vendorFilters.ForEach(entry => entry.Enabled = true);
             if (vendorFilters.Any())
             {
                 result.ProductParameters.Add(new ProductParameter()
@@ -278,6 +281,7 @@ namespace Benefit.Services
                 ParameterValue = entry,
                 ParameterValueUrl = entry
             }).OrderBy(entry => entry.ParameterValue).ToList();
+            countryFilters.ForEach(entry => entry.Enabled = true);
             if (countryFilters.Any())
             {
                 result.ProductParameters.Add(new ProductParameter()
