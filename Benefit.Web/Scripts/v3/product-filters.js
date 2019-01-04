@@ -23,6 +23,9 @@ $(function () {
     $("#remove-selected").click(function () {
         $(".select-product:checked").siblings(".remove-from-favorites ").click();
     });
+    $("#buy-selected").click(function () {
+        $(".select-product:checked").closest(".product-item").find(".product_buy.lg-hidden").click();
+    });
 
     $("#buy-all").click(function () {
         $(this).attr("disabled", "disabled");

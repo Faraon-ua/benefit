@@ -1,3 +1,8 @@
+.remove-from-favorites {
+    font-size: 2em;
+    color: #d3413b;
+}
+
 .more_text_ajax::after {
     background-color: #FF9F00 !important;
 }

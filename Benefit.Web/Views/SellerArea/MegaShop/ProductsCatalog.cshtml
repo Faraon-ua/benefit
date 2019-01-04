@@ -70,9 +70,10 @@
             @if (Model.IsFavorites)
             {
                 <div class="padding-15">
-                    <button id="remove-all" type="button" class="button btn-danger no-border">Видалити всі</button>
-                    <button id="remove-selected" type="button" class="button no-border margin-left-30">Видалити обрані</button>
-                    <button id="buy-all" type="button" class="button btn-success no-border margin-left-30">Купити всі</button>
+                    @*<button id="remove-all" type="button" class="button btn-danger no-border">Видалити всі</button>
+                    <button id="remove-selected" type="button" class="button no-border margin-left-30">Видалити обрані</button>*@
+                    <button id="buy-all" type="button" class="button btn-success no-border">Купити всі</button>
+                    <button id="buy-selected" type="button" class="button no-border margin-left-30">Купити обрані</button>
                 </div>
             }
             @if (RouteDataHelper.ControllerName.ToLower() != "search" && !Model.IsFavorites)
