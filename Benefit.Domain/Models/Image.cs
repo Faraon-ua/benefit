@@ -11,7 +11,8 @@ namespace Benefit.Domain.Models
         UserAvatar,
         CategoryLogo,
         SellerCatalog,
-        SellerFavicon
+        SellerFavicon,
+        SellerSlider
     }
     public class Image
     {

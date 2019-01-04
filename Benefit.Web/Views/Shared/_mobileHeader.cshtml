@@ -86,7 +86,7 @@
                                 @foreach (var cat in categories)
                                 {
                                     <li>
-                                        <a class="dark-color @(cat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" title="@cat.Name">
+                                        <a class="dark-color @(cat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })" title="@cat.Name">
                                             <span>@cat.Name</span>
                                             @if (cat.ChildCategories.Any())
                                             {
@@ -105,7 +105,7 @@
                                                 @foreach (var subCat in cat.ChildCategories)
                                                 {
                                                     <li>
-                                                        <a class="dark-color @(subCat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" title="@subCat.Name">
+                                                        <a class="dark-color @(subCat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty })" title="@subCat.Name">
                                                             <span>@subCat.Name</span>
                                                             @if (subCat.ChildCategories.Any())
                                                             {
@@ -120,7 +120,7 @@
                                                                 @foreach (var childCat in subCat.ChildCategories)
                                                                 {
                                                                     <li>
-                                                                        <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName })" title="@childCat.Name">
+                                                                        <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, options = string.Empty })" title="@childCat.Name">
                                                                             <span>@childCat.Name</span>
                                                                         </a>
                                                                     </li>

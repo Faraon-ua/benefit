@@ -7,7 +7,7 @@
                 @foreach (var cat in Model)
                 {
                     <li class="li-depth-1">
-                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName })" class="a-depth-1">
+                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })" class="a-depth-1">
                             <div class="section-icon">
                                 <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" height="30">
                             </div>
@@ -21,7 +21,7 @@
                                     @foreach (var subCat in cat.ChildCategories)
                                     {
                                         <li class="li-depth-2">
-                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName })" class="a-depth-2">
+                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty })" class="a-depth-2">
                                                 <span>@subCat.Name</span>
                                                 @if (subCat.ChildCategories.Any())
                                                 {
