@@ -1,15 +1,15 @@
-﻿using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Benefit.Domain.DataAccess;
-using System.Data.Entity;
-using Benefit.Common.Constants;
+﻿using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels.Base;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
+using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
+using System.Data.Entity;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 
 namespace Benefit.Web.Controllers
 {
@@ -25,7 +25,11 @@ namespace Benefit.Web.Controllers
             var seller = db.Sellers
                 .Include(entry => entry.SellerCategories)
                 .FirstOrDefault(entry => entry.UrlName == id);
-            ViewBag.Seller = seller ?? throw new HttpException(404, "Not found");
+            if (seller == null)
+            {
+                throw new HttpException(404, "Not found");
+            }
+            ViewBag.Seller = seller;
             var sellerCats = SellerService.GetAllSellerCategories(seller.UrlName);
             var categories = sellerCats.Where(entry => entry.ParentCategoryId == null).ToList();
             ViewBag.SellerCategories = categories;
@@ -46,7 +50,7 @@ namespace Benefit.Web.Controllers
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
                     .Where(entry =>
-                        (!entry.Category.IsSellerCategory || (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId!=null)) &&
+                        (!entry.Category.IsSellerCategory || (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)) &&
                         productIds.Contains(entry.Id) &&
                         (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable ||
                          entry.AvailabilityState == ProductAvailabilityState.Available) && entry.Images.Any())
@@ -74,11 +78,15 @@ namespace Benefit.Web.Controllers
             else
             {
                 var selectedCat = categories.FindByUrlIdRecursively(category, null);
-                if (selectedCat == null) throw new HttpException(404, "Not Found");
+                if (selectedCat == null)
+                {
+                    throw new HttpException(404, "Not Found");
+                }
+
                 viewModel.Category = selectedCat;
                 viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
-           
+
             viewModel.Breadcrumbs = null;
             viewModel.Seller = seller;
             return View("~/Views/Catalog/ProductsCatalog.cshtml", viewModel);
@@ -88,7 +96,11 @@ namespace Benefit.Web.Controllers
         public ActionResult Reviews(string id)
         {
             var seller = db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.UrlName == id);
-            if (seller == null) throw new HttpException(404, "Not Found");
+            if (seller == null)
+            {
+                throw new HttpException(404, "Not Found");
+            }
+
             return View(seller);
         }
     }

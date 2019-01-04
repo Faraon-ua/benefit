@@ -778,7 +778,7 @@ namespace Benefit.Web.Controllers
                             JsonConvert.SerializeObject(new { card.ReferalUser.ExternalNumber, card.ReferalUser.FullName }),
                             "application/json");
                 }
-                return HttpNotFound();
+                throw new HttpException(404, "Not found");
             }
         }
 

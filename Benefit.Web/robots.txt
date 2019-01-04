@@ -4,4 +4,10 @@ Disallow: /pages/benefit_tv
 
 Disallow: /pages/faq
 
+Disallow: /search
+
+Disallow: /cart
+
+Disallow: /account
+
 Sitemap: https://benefit-company.com/sitemap/sitemap_index.xml

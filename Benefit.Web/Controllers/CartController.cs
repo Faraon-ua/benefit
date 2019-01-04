@@ -92,9 +92,19 @@ namespace Benefit.Web.Controllers
                 SellerId = id,
                 Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == id)
             };
+            var domainSeller = ViewBag.Seller as Seller;
+            var view = View(model);
+            if (domainSeller != null)
+            {
+                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
+                    SellerEcommerceTemplate.MegaShop)
+                {
+                    view = View("~/views/sellerarea/megashop/cart.cshtml", model);
+                }
+            }
             if (model.Order == null)
             {
-                throw new HttpException(404, "Not found");
+                return view;
             }
 
             using (var db = new ApplicationDbContext())
@@ -218,16 +228,7 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            var domainSeller = ViewBag.Seller as Seller;
-            if (domainSeller != null)
-            {
-                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
-                    SellerEcommerceTemplate.MegaShop)
-                {
-                    return View("~/views/sellerarea/megashop/cart.cshtml", model);
-                }
-            }
-            return View(model);
+            return view;
         }
 
         [FetchSeller(Order = 0)]
