@@ -39,13 +39,16 @@
     <meta property="og:type" content="article" />
     <meta property="og:title" content="@Model.Product.Name" />
     <meta property="og:description" content="@Model.Product.ShortDescription" />
-    @if (image_src.IsAbsoluteUrl)
+    @if (image_src != null)
     {
-        <meta property="og:image" content="@image_src_str" />
-    }
-    else
-    {
-        <meta property="og:image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)" />
+         if (image_src.IsAbsoluteUrl)
+         {
+             <meta property="og:image" content="@image_src_str"/>
+         }
+         else
+         {
+             <meta property="og:image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)"/>
+         }
     }
     <meta property="og:site_name" content="Benefit Company" />
 }
