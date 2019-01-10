@@ -19,11 +19,11 @@
     <label>Постачальник</label>
     <div class="row">
         <div class="col-xs-8 col-sm-11">
-            @Html.DropDownList("SellerId", Model.Sellers, "Не обрано", new {@class = "width-90 chosen-select"})
+            @Html.DropDownList("SellerId", Model.Sellers, "Не обрано", new { @class = "width-90 chosen-select" })
         </div>
     </div>
 }
-<br/>
+<br />
 <label>Характеристики</label>
 <div class="row">
     <div class="col-xs-8 col-sm-11">
@@ -37,7 +37,7 @@
         @Html.DropDownList("HasVendor", Model.HasVendor, "Не обрано", new { @class = "width-90" })
     </div>
 </div>
-<br/>
+<br />
 <label>Країна вирбник</label>
 <div class="row">
     <div class="col-xs-8 col-sm-11">
@@ -45,15 +45,21 @@
     </div>
 </div>
 <br />
+<label>Наявність</label>
 <div class="row">
+    <div class="col-xs-8 col-sm-11">
+        @Html.DropDownList("IsAvailable", Model.IsAvailable, "Не обрано", new { @class = "width-90" })
+    </div>
+</div>
+@*<div class="row">
     <div class="col-xs-8 col-sm-11">
         <label>
             @Html.CheckBoxFor(m => m.IsAvailable, new { @class = "ace" })
             <span class="lbl"> Тільки в наявності</span>
         </label>
     </div>
-</div>
-<br/>
+</div>*@
+<br />
 <div class="row">
     <div class="col-xs-8 col-sm-11">
         <label>
@@ -62,7 +68,7 @@
         </label>
     </div>
 </div>
-<br/>
+<br />
 <div class="row">
     <div class="col-xs-8 col-sm-11">
         <label>
@@ -71,16 +77,16 @@
         </label>
     </div>
 </div>
-<br/>
+<br />
 <hr />
 @*<div class="row">
-    <div class="col-xs-8 col-sm-11">
-        <label>
-            @Html.CheckBoxFor(m => m.HasImage, new { @class = "ace" })
-            <span class="lbl"> Без зображення</span>
-        </label>
-    </div>
-</div>*@
+        <div class="col-xs-8 col-sm-11">
+            <label>
+                @Html.CheckBoxFor(m => m.HasImage, new { @class = "ace" })
+                <span class="lbl"> Без зображення</span>
+            </label>
+        </div>
+    </div>*@
 <br />
 <div class="row">
     <button type="submit" class="btn btn-purple btn-sm">

@@ -189,7 +189,6 @@ $(function () {
                         data.sellercount,
                         { expires: 31536000, path: "/", domain: "." + location.host.replace(data.sellerurl + ".", "") });
                     var favLink = $(".remove-from-favorites[data-product-id=" + id + "]");
-                    debugger;
                     if (favLink.hasClass("fav-switch") && location.href.indexOf("favorites") < 0) {
                         favLink.addClass("add-to-favorites");
                         favLink.removeClass("remove-from-favorites");

@@ -67,7 +67,7 @@
 
 <div class="col-md-8 col-xl-9 content">
     <div class="fn_banner_group1 banners tablet-hidden">
-        @foreach (var image in Model.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+        @foreach (var image in Model.Images.Where(entry => entry.ImageType == ImageType.SellerSlider).OrderBy(entry => entry.Order))
         {
             <div>
                 <img src="~/Images/SellerGallery/@Model.Id/@image.ImageUrl" alt="@Model.AltText" />

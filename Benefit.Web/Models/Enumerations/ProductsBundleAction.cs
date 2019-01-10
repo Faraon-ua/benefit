@@ -9,6 +9,10 @@ namespace Benefit.Web.Models.Enumerations
     public enum ProductsBulkAction
     {
         [Display(Name = "Задати категорію")]
-        SetCategory
+        SetCategory,
+        [Display(Name = "Видалити обрані")]
+        DeleteSelected,
+        [Display(Name = "Видалити відфільтровані")]
+        DeleteAll
     }
 }

@@ -1,0 +1,38 @@
+﻿@using Benefit.Domain.Models
+@model Benefit.Web.Models.Admin.SellerViewModel
+
+<h3>Фотогалерея</h3>
+<div class="form-group">
+    <div>
+    @if (Model.Seller.Id != null)
+    {
+        <div class="dropzone" upload-type="SellerGallery">
+        </div>
+        <br />
+        if (Model.Seller.Images.Any(entry => entry.ImageType == ImageType.SellerGallery))
+        {
+            <br />
+            <p>Порядок зображень</p>
+            <div>
+                <ol class="dd-list" id="imagesOrder">
+                    @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+                    {
+                        <li class="cursor-move width-10" data-image-id="@image.Id">
+                            <div class="dd-handle">
+                                <img src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" height="70" />
+                            </div>
+                        </li>
+                    }
+                </ol>
+            </div>
+            <button class="btn btn-info" id="saveImagesOrder">Зберегти порядок</button>
+        }
+    }
+    else
+    {
+        <p>
+            Редагування зображеннь доступно для збереженного постачальника
+        </p>
+    }
+    </div>
+</div> 

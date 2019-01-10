@@ -40,10 +40,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return File(fileContent, System.Net.Mime.MediaTypeNames.Application.Octet, seller.UrlName + ".hex");
         }
 
-        public ActionResult GetSellerGallery(string id)
+        public ActionResult GetSellerGallery(string id, ImageType type)
         {
             var seller = db.Sellers.Find(id);
-            return Json(seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).Select(entry => new { entry.ImageUrl, entry.SellerId }), JsonRequestBehavior.AllowGet);
+            return Json(seller.Images.Where(entry => entry.ImageType == type).Select(entry => new { entry.ImageUrl, entry.SellerId }), JsonRequestBehavior.AllowGet);
         }
 
         private IEnumerable<Schedule> SetSellerSchedules()

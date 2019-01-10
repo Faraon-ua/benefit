@@ -10,7 +10,7 @@ namespace Benefit.Web.Models.Admin
         public string CategoryId { get; set; }
         public string SellerId { get; set; }
         public ProductSortOption? Sorting{ get; set; }
-        public bool IsAvailable { get; set; }
+        public bool? IsAvailable { get; set; }
         public bool HasImage { get; set; }
         public bool IsActive { get; set; }
         public int Page { get; set; }
@@ -30,7 +30,7 @@ namespace Benefit.Web.Models.Admin
         public IEnumerable<SelectListItem> HasParameters { get; set; }
         public IEnumerable<SelectListItem> HasVendor { get; set; }
         public IEnumerable<SelectListItem> HasOriginCountry { get; set; }
-        public bool IsAvailable { get; set; }
+        public IEnumerable<SelectListItem> IsAvailable { get; set; }
         public bool IsActive{ get; set; }
         public bool HasImage { get; set; }
         public string Search { get; set; }

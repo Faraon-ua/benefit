@@ -17,13 +17,21 @@
         var bulkProductsActionUrl = '@Url.Action("BulkProductsAction")';
         var hSelect;
         $(function () {
+            $("#products-bulk-action").change(function () {
+                if ($(this).val() > 0) {
+                    $("#move-to-categoryId").hide();
+                } else {
+                    $("#move-to-categoryId").show();
+                }
+            });
+
             $("#products-bulk-action-btn").click(function() {
                 var productIds = $(".product-select:checked").map(function () {
                     return $(this).attr("data-product-id");
                 }).get();
                 var action = $("#products-bulk-action").val();
                 var categoryId = $("[name=move-to-categoryId]").val();
-                $.post(bulkProductsActionUrl,
+                $.post(bulkProductsActionUrl + location.search,
                     {
                         "productIds": productIds,
                         "action": action,

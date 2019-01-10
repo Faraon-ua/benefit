@@ -83,6 +83,15 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
                                 SellerId = parentId
                             });
                             break;
+                        case ImageType.SellerSlider:
+                            db.Images.Add(new Image()
+                            {
+                                Id = imageId,
+                                ImageType = type,
+                                ImageUrl = string.Format("{0}.{1}", imageId, fileExt),
+                                SellerId = parentId
+                            });
+                            break;
                         case ImageType.ProductGallery:
                             db.Images.Add(new Image()
                             {

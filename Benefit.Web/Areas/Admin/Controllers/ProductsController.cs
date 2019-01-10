@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web.Mvc;
-using Benefit.Common.Constants;
+﻿using Benefit.Common.Constants;
 using Benefit.Common.Helpers;
-using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Services;
@@ -16,6 +11,11 @@ using Benefit.Web.Models;
 using Benefit.Web.Models.Admin;
 using Benefit.Web.Models.Enumerations;
 using Microsoft.AspNet.Identity;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Web.Mvc;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -29,7 +29,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             var product = db.Products.Find(id);
             if (product != null)
+            {
                 return Json(product.Images.Select(entry => new { entry.ImageUrl }), JsonRequestBehavior.AllowGet);
+            }
+
             return Json(null);
         }
 
@@ -40,112 +43,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             int resultsCount = 0;
             if (filters.HasValues || Seller.CurrentAuthorizedSellerId != null)
             {
-                IQueryable<Product> products =
-                    db.Products
-                        .Include(entry => entry.Images)
-                        .Include(entry => entry.ProductParameterProducts)
-                        .AsQueryable();
-                if (!string.IsNullOrEmpty(filters.CategoryId))
-                {
-                    var categoryIds = new List<string>();
-                    var category = db.Categories.Include(entry => entry.MappedCategories).FirstOrDefault(entry => entry.Id == filters.CategoryId);
-                    var children = category.GetAllChildrenRecursively().ToList();
-                    categoryIds.Add(category.Id);
-                    categoryIds.AddRange(children.Select(cat => cat.Id));
-                    categoryIds.AddRange(children.SelectMany(entry=>entry.MappedCategories).Select(entry=>entry.Id));
-                    categoryIds.AddRange(category.MappedCategories.Select(entry => entry.Id));
-                    products = products.Where(entry => categoryIds.Contains(entry.CategoryId));
-                }
-                if (!string.IsNullOrEmpty(filters.SellerId))
-                {
-                    products = products.Where(entry => entry.SellerId == filters.SellerId);
-                }
-                if (Seller.CurrentAuthorizedSellerId != null)
-                {
-                    products = products.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
-                }
-                if (filters.IsAvailable)
-                {
-                    products = products.Where(entry => entry.AvailabilityState != ProductAvailabilityState.NotInStock || entry.AvailableAmount > 0);
-                }
-                if (filters.HasImage)
-                {
-                    products = products.Where(entry => !entry.Images.Any());
-                }
-                if (filters.IsActive)
-                {
-                    products = products.Where(entry => entry.IsActive);
-                }
-                if (filters.HasParameters.HasValue)
-                {
-                    if (filters.HasParameters.Value)
-                    {
-                        products = products.Where(entry => entry.ProductParameterProducts.Any());
-                    }
-                    else
-                    {
-                        products = products.Where(entry => !entry.ProductParameterProducts.Any());
-                    }
-                }
-                if (filters.HasVendor.HasValue)
-                {
-                    if (filters.HasVendor.Value)
-                    {
-                        products = products.Where(entry => entry.Vendor != null);
-                    }
-                    else
-                    {
-                        products = products.Where(entry => entry.Vendor == null);
-                    }
-                }
-                if (filters.HasOriginCountry.HasValue)
-                {
-                    if (filters.HasOriginCountry.Value)
-                    {
-                        products = products.Where(entry => entry.OriginCountry != null);
-                    }
-                    else
-                    {
-                        products = products.Where(entry => entry.OriginCountry == null);
-                    }
-                }
-                if (!string.IsNullOrEmpty(filters.Search))
-                {
-                    filters.Search = filters.Search.ToLower();
-                    products = products.Where(entry => entry.SKU.ToString().Contains(filters.Search) ||
-                                                       entry.Name.ToString().Contains(filters.Search));
-                }
-                if (filters.Sorting.HasValue)
-                {
-                    switch (filters.Sorting.Value)
-                    {
-                        case ProductSortOption.Order:
-                            products = products.OrderBy(entry => entry.Order);
-                            break;
-                        case ProductSortOption.NameAsc:
-                            products = products.OrderBy(entry => entry.Name);
-                            break;
-                        case ProductSortOption.NameDesc:
-                            products = products.OrderByDescending(entry => entry.Name);
-                            break;
-                        case ProductSortOption.SKUAsc:
-                            products = products.OrderBy(entry => entry.SKU);
-                            break;
-                        case ProductSortOption.SKUDesc:
-                            products = products.OrderByDescending(entry => entry.SKU);
-                            break;
-                        case ProductSortOption.PriceAsc:
-                            products = products.OrderBy(entry => entry.Price);
-                            break;
-                        case ProductSortOption.PriceDesc:
-                            products = products.OrderByDescending(entry => entry.Price);
-                            break;
-                    }
-                }
-                else
-                {
-                    products = products.OrderBy(entry => entry.Name);
-                }
+                var products = GetFilteredProducts(filters);
                 resultsCount = products.Count();
                 var skip = filters.Page > 0 ? ListConstants.DefaultTakePerPage * (filters.Page - 1) : 0;
                 resultProducts = products.Skip(skip).Take(ListConstants.DefaultTakePerPage).ToList();
@@ -176,7 +74,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == Seller.CurrentAuthorizedSellerId)).ToList().SortByHierarchy().ToList();
                 productsViewModel.ProductFilters.Categories =
                     categories.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel }).ToList();
-                productsViewModel.ProductFilters.Categories.Insert(0, new HierarchySelectItem(){Text = "Не обрано", Value = string.Empty, Level = 0});
+                productsViewModel.ProductFilters.Categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 0 });
             }
             else
             {
@@ -202,6 +100,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 new SelectListItem() {Text = "Задано", Value = "true"},
                 new SelectListItem() {Text = "Не задано", Value = "false"}
             };
+            productsViewModel.ProductFilters.IsAvailable = new List<SelectListItem>()
+            {
+                new SelectListItem() {Text = "В наявності", Value = "true"},
+                new SelectListItem() {Text = "Немає в наявності", Value = "false"}
+            };
             return PartialView(productsViewModel);
         }
 
@@ -209,7 +112,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             //todo: add check for seller role
             var product = db.Products
-                              .Include(entry=>entry.Category)
+                              .Include(entry => entry.Category)
                               .Include(entry => entry.Category.ProductParameters)
                               .Include(entry => entry.Category.MappedParentCategory.ProductParameters)
                               .Include(entry => entry.Reviews)
@@ -367,20 +270,157 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json("success");
         }
 
-        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string categoryId)
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string categoryId, ProductFilterValues filters = null)
         {
-            if (action == ProductsBulkAction.SetCategory)
+            var productService = new ProductsService();
+            switch (action)
             {
-                db.Products.Where(entry => productIds.Contains(entry.Id))
-                    .ForEach(entry =>
+                case ProductsBulkAction.SetCategory:
+                    db.Products.Where(entry => productIds.Contains(entry.Id))
+                        .ForEach(entry =>
+                        {
+                            entry.CategoryId = categoryId;
+                            db.Entry(entry).State = EntityState.Modified;
+                        });
+                    break;
+                case ProductsBulkAction.DeleteSelected:
+                    foreach (var productId in productIds)
                     {
-                        entry.CategoryId = categoryId;
-                        db.Entry(entry).State = EntityState.Modified;
-                    });
+                        productService.Delete(productId);
+                    }
+                    break;
+                case ProductsBulkAction.DeleteAll:
+                    var products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
+                    foreach (var productId in products)
+                    {
+                        productService.Delete(productId);
+                    }
+                    break;
             }
+
             db.SaveChanges();
             TempData["SuccessMessage"] = "Товари успішно оброблено";
             return new HttpStatusCodeResult(200);
+        }
+
+        private IEnumerable<Product> GetFilteredProducts(ProductFilterValues filters)
+        {
+            IQueryable<Product> products =
+                    db.Products
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.ProductParameterProducts)
+                        .AsQueryable();
+            if (!string.IsNullOrEmpty(filters.CategoryId))
+            {
+                var categoryIds = new List<string>();
+                var category = db.Categories.Include(entry => entry.MappedCategories).FirstOrDefault(entry => entry.Id == filters.CategoryId);
+                var children = category.GetAllChildrenRecursively().ToList();
+                categoryIds.Add(category.Id);
+                categoryIds.AddRange(children.Select(cat => cat.Id));
+                categoryIds.AddRange(children.SelectMany(entry => entry.MappedCategories).Select(entry => entry.Id));
+                categoryIds.AddRange(category.MappedCategories.Select(entry => entry.Id));
+                products = products.Where(entry => categoryIds.Contains(entry.CategoryId));
+            }
+            if (!string.IsNullOrEmpty(filters.SellerId))
+            {
+                products = products.Where(entry => entry.SellerId == filters.SellerId);
+            }
+            if (Seller.CurrentAuthorizedSellerId != null)
+            {
+                products = products.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+            }
+            if (filters.HasImage)
+            {
+                products = products.Where(entry => !entry.Images.Any());
+            }
+            if (filters.IsActive)
+            {
+                products = products.Where(entry => entry.IsActive);
+            }
+            if (filters.HasParameters.HasValue)
+            {
+                if (filters.HasParameters.Value)
+                {
+                    products = products.Where(entry => entry.ProductParameterProducts.Any());
+                }
+                else
+                {
+                    products = products.Where(entry => !entry.ProductParameterProducts.Any());
+                }
+            }
+            if (filters.HasVendor.HasValue)
+            {
+                if (filters.HasVendor.Value)
+                {
+                    products = products.Where(entry => entry.Vendor != null);
+                }
+                else
+                {
+                    products = products.Where(entry => entry.Vendor == null);
+                }
+            }
+            if (filters.IsAvailable.HasValue)
+            {
+                if (filters.IsAvailable.Value)
+                {
+                    products = products.Where(entry =>
+                        entry.AvailabilityState != ProductAvailabilityState.NotInStock ||
+                        entry.AvailableAmount > 0);
+                }
+                else
+                {
+                    products = products.Where(entry => entry.AvailabilityState == ProductAvailabilityState.NotInStock);
+                }
+            }
+            if (filters.HasOriginCountry.HasValue)
+            {
+                if (filters.HasOriginCountry.Value)
+                {
+                    products = products.Where(entry => entry.OriginCountry != null);
+                }
+                else
+                {
+                    products = products.Where(entry => entry.OriginCountry == null);
+                }
+            }
+            if (!string.IsNullOrEmpty(filters.Search))
+            {
+                filters.Search = filters.Search.ToLower();
+                products = products.Where(entry => entry.SKU.ToString().Contains(filters.Search) ||
+                                                   entry.Name.ToString().Contains(filters.Search));
+            }
+            if (filters.Sorting.HasValue)
+            {
+                switch (filters.Sorting.Value)
+                {
+                    case ProductSortOption.Order:
+                        products = products.OrderBy(entry => entry.Order);
+                        break;
+                    case ProductSortOption.NameAsc:
+                        products = products.OrderBy(entry => entry.Name);
+                        break;
+                    case ProductSortOption.NameDesc:
+                        products = products.OrderByDescending(entry => entry.Name);
+                        break;
+                    case ProductSortOption.SKUAsc:
+                        products = products.OrderBy(entry => entry.SKU);
+                        break;
+                    case ProductSortOption.SKUDesc:
+                        products = products.OrderByDescending(entry => entry.SKU);
+                        break;
+                    case ProductSortOption.PriceAsc:
+                        products = products.OrderBy(entry => entry.Price);
+                        break;
+                    case ProductSortOption.PriceDesc:
+                        products = products.OrderByDescending(entry => entry.Price);
+                        break;
+                }
+            }
+            else
+            {
+                products = products.OrderBy(entry => entry.Name);
+            }
+            return products;
         }
     }
 }

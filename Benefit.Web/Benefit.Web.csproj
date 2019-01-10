@@ -309,9 +309,9 @@
     <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Helpers\UrlHelperExtension.cs" />
     <Compile Include="Helpers\VersionedFileHtmlHelper.cs" />
+    <Compile Include="Models\Admin\ProductFilters.cs" />
     <Compile Include="Models\ViewModels\AccountViewModels.cs" />
     <Compile Include="Models\Admin\OrdersFilters.cs" />
-    <Compile Include="Models\Admin\ProductFilters.cs" />
     <Compile Include="Models\Admin\ProductsViewModel.cs" />
     <Compile Include="Models\Admin\UserFilters.cs" />
     <Compile Include="Models\Admin\SellerFilters.cs" />
@@ -1016,6 +1016,8 @@
     <Content Include="Areas\Admin\Views\Reviews\_ReviewsList.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Advertisement.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Seo.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Gallery.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_Banners.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1389,6 +1391,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\owl.carousel.min.js" />
     <Content Include="Scripts\select2.min.js" />
+    <Content Include="Scripts\seller\fileupload.js" />
     <Content Include="Scripts\v3\product-filters.js" />
     <Content Include="Scripts\scripts.js" />
     <Content Include="Scripts\seller\jquery-migrate-1.js" />
