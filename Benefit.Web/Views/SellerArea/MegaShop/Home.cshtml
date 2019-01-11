@@ -70,7 +70,7 @@
         @foreach (var image in Model.Images.Where(entry => entry.ImageType == ImageType.SellerSlider).OrderBy(entry => entry.Order))
         {
             <div>
-                <img src="~/Images/SellerGallery/@Model.Id/@image.ImageUrl" alt="@Model.AltText" />
+                <img src="~/Images/SellerSlider/@Model.Id/@image.ImageUrl" alt="@Model.AltText" />
             </div>
         }
     </div>

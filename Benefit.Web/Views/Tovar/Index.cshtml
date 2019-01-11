@@ -241,10 +241,10 @@
                                     </p>
 
                                     @*<div class="x-product-info__item">
-                                            <div class="x-product-info__inline">
-                                                <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
-                                            </div>
-                                        </div>*@
+            <div class="x-product-info__inline">
+                <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
+            </div>
+        </div>*@
                                     <div class="x-product-info__item">
                                         <div class="x-product-info__inline">
                                             <div class="x-product-presence" data-qaid="product_presence">
@@ -337,6 +337,18 @@
                                                 <div class="x-product-conversion__item">
                                                     <a id="buy-product" class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#" style="background: #8f1b0a; color: white">
                                                         <span class="x-button__text js-buy-button__text">Купити</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="x-product-conversion" style="width: 30%; float: left; margin-top: 30px;">
+                                            <div class="x-product-conversion__col">
+                                                <div class="x-product-conversion__item">
+                                                    <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#related-products" style="background: #8f1b0a; color: white">
+                                                        <span class="x-button__text js-buy-button__text">Переглянути схожі товари</span>
                                                     </a>
                                                 </div>
                                             </div>
@@ -848,6 +860,7 @@
     </div>
 </div>
 <div class="modal-container"></div>
+<div id="related-products"></div>
 @if (Model.RelatedProducts.Any())
 {
     ViewBag.RelatedProductsHeading = "Покупці, які переглядали цей товар, також цікавляться";
