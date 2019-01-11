@@ -458,6 +458,17 @@ namespace Benefit.Services.Domain
                 var urlName = name.Translit().Truncate(128);
                 var category =
                     categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value);
+                double? oldPrice = null;
+                var oldPriceStr = xmlProduct.Element("oldprice").GetValueOrDefault(null) ??
+                                  xmlProduct.Element("price_old").GetValueOrDefault(null);
+                if (oldPriceStr != null)
+                {
+                    oldPrice = double.Parse(oldPriceStr);
+                    if (oldPrice == 0)
+                    {
+                        oldPrice = null;
+                    }
+                }
                 if (category == null)
                 {
                     return;
@@ -475,6 +486,7 @@ namespace Benefit.Services.Domain
                     Description = string.IsNullOrEmpty(descr) ? name : descr,
                     IsWeightProduct = false,
                     Price = double.Parse(xmlProduct.Element("price").Value),
+                    OldPrice = oldPrice,
                     CurrencyId = currencies.First(entry => entry.Name == currencyId).Id,
                     AvailabilityState = xmlProduct.Attribute("available").Value == "true"
                         ? ProductAvailabilityState.Available
@@ -537,6 +549,17 @@ namespace Benefit.Services.Domain
                 var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
                 var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
                 var currencyId = xmlProduct.Element("currencyId").Value;
+                double? oldPrice = null;
+                var oldPriceStr = xmlProduct.Element("oldprice").GetValueOrDefault(null) ??
+                                  xmlProduct.Element("price_old").GetValueOrDefault(null);
+                if (oldPriceStr != null)
+                {
+                    oldPrice = double.Parse(oldPriceStr);
+                    if (oldPrice == 0)
+                    {
+                        oldPrice = null;
+                    }
+                }
 
                 product.Name = name;
                 product.ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null);
@@ -544,6 +567,7 @@ namespace Benefit.Services.Domain
                 product.CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id;
                 product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                 product.Price = double.Parse(xmlProduct.Element("price").Value);
+                product.OldPrice = oldPrice;
                 product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
 
                 product.AvailabilityState = xmlProduct.Attribute("available").Value == "true"
