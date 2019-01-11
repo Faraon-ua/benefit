@@ -41,14 +41,14 @@
     <meta property="og:description" content="@Model.Product.ShortDescription" />
     @if (image_src != null)
     {
-         if (image_src.IsAbsoluteUrl)
-         {
-             <meta property="og:image" content="@image_src_str"/>
-         }
-         else
-         {
-             <meta property="og:image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)"/>
-         }
+        if (image_src.IsAbsoluteUrl)
+        {
+            <meta property="og:image" content="@image_src_str" />
+        }
+        else
+        {
+            <meta property="og:image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)" />
+        }
     }
     <meta property="og:site_name" content="Benefit Company" />
 }
@@ -241,10 +241,10 @@
                                     </p>
 
                                     @*<div class="x-product-info__item">
-            <div class="x-product-info__inline">
-                <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
-            </div>
-        </div>*@
+                                            <div class="x-product-info__inline">
+                                                <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
+                                            </div>
+                                        </div>*@
                                     <div class="x-product-info__item">
                                         <div class="x-product-info__inline">
                                             <div class="x-product-presence" data-qaid="product_presence">
@@ -722,30 +722,32 @@
                                                 </p>
                                             </div>
                                         }
-                                        <div class="counter_wrapp">
-                                            <div class="counter big_basket">
-                                                <div class="minus">-</div>
-                                                <input type="text" class="text quantity" name="quantity" value="1" data-weight-product="@Model.Product.IsWeightProduct" />
-                                                <div class="plus">+</div>
-                                            </div>
-                                            <div class="button_block ">
-                                                <!--noindex-->
-                                                @if (availableForPurchase.Key)
-                                                {
+                                        @if (availableForPurchase.Key)
+                                        {
+                                            <div class="counter_wrapp">
+
+                                                <div class="counter big_basket">
+                                                    <div class="minus">-</div>
+                                                    <input type="text" class="text quantity" name="quantity" value="1" data-weight-product="@Model.Product.IsWeightProduct" />
+                                                    <div class="plus">+</div>
+                                                </div>
+                                                <div class="button_block ">
+                                                    <!--noindex-->
                                                     <span id="buy-product" class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load">
                                                         <i></i><span>Купити</span>
                                                     </span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load bg-grey title-to-tooltip" disabled="disabled" title="@(string.IsNullOrEmpty(availableForPurchase.Value) ? string.Empty : " Доставка по вибраному регіону неможлива. Доставка здійснюється по:" + availableForPurchase.Value)">
-                                                        <i></i><span>Купити</span>
-                                                    </span>
-                                                }
-                                                <!--/noindex-->
+                                                    <!--/noindex-->
+                                                </div>
                                             </div>
+
                                             <br class="clear" />
-                                        </div>
+                                        }
+                                        else
+                                        {
+                                            <a href="#related-products" class="btn-lg btn btn-default">
+                                                <i></i><span>Переглянути схожі товари</span>
+                                            </a>
+                                        }
                                         <div style="padding-top: 20px; text-align: left;">
                                             <a href="#" class="dark_link">@Model.Product.Seller.Name</a>
                                             <br>@Model.Product.Seller.PrimaryRegionName<br>

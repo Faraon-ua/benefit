@@ -26,10 +26,13 @@
 {
     <meta name="description" content="@(Model.Category == null ? Model.Seller.ShortDescription : Model.Category.MetaDescription)">
     <meta property="og:description" content="@(Model.Category == null ? string.Empty : Model.Category.MetaDescription)" />
-    <meta property="og:title" content="@Model.Category.Name" />
+    <meta property="og:title" content="@(Model.Category == null ? Model.Seller.Name : Model.Category.Name)" />
     <meta property="og:type" content="article" />
-    <meta property="og:url" content="@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = Model.Category.UrlName}))" />
-    <meta property="og:image" content="@string.Format("{0}://{1}/Images/CategoryLogo/{2}", Request.Url.Scheme, Request.Url.Host, Model.Category.ImageUrl)" />
+    @if (Model.Category != null)
+    {
+        <meta property="og:url" content="@string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = Model.Category.UrlName}))"/>
+        <meta property="og:image" content="@string.Format("{0}://{1}/Images/CategoryLogo/{2}", Request.Url.Scheme, Request.Url.Host, Model.Category.ImageUrl)"/>
+    }
 
     <meta property="og:site_name" content="Benefit Company" />
 }
