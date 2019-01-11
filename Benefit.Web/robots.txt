@@ -10,4 +10,4 @@ Disallow: /cart
 
 Disallow: /account
 
-Sitemap: https://benefit-company.com/sitemap/sitemap_index.xml
+Sitemap: https://benefit-company.com/sitemap_index.xml
