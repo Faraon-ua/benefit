@@ -58,6 +58,8 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index(IsUnique = true)]
         public string UrlName { get; set; }
+        [MaxLength(128)]
+        public string RedirectUrl { get; set; }
         [MaxLength(60)]
         public string Domain { get; set; }
         public int? AvarageRating { get; set; }

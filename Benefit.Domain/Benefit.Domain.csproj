@@ -546,6 +546,10 @@
     <Compile Include="Migrations\201811271414487_AddShippingMethodPredefinedValues.Designer.cs">
       <DependentUpon>201811271414487_AddShippingMethodPredefinedValues.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201901141451205_AddSellerRedirectUrl.cs" />
+    <Compile Include="Migrations\201901141451205_AddSellerRedirectUrl.Designer.cs">
+      <DependentUpon>201901141451205_AddSellerRedirectUrl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -952,6 +956,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201811271414487_AddShippingMethodPredefinedValues.resx">
       <DependentUpon>201811271414487_AddShippingMethodPredefinedValues.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201901141451205_AddSellerRedirectUrl.resx">
+      <DependentUpon>201901141451205_AddSellerRedirectUrl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
