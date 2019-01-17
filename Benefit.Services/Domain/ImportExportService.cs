@@ -14,6 +14,7 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
+using System.Xml;
 using System.Xml.Linq;
 
 namespace Benefit.Services.Domain
@@ -47,7 +48,10 @@ namespace Benefit.Services.Domain
             var name = new XElement("name", "Интернет магазин Benefit-Company");
             var company = new XElement("company", "Benefit-Company");
             var url = new XElement("url", "https://benefit-company.com");
-            var email = new XElement("url", "info.benefitcompany@gmail.com");
+            var email = new XElement("email", "info.benefitcompany@gmail.com");
+            var currencies = new XElement("currencies");
+            var uah = new XElement("currency", new XAttribute("id","UAH"), new XAttribute("rate", "1"));
+            currencies.Add(uah);
             var categories = new XElement("categories");
             foreach (var category in sellerCategories)
             {
@@ -76,12 +80,17 @@ namespace Benefit.Services.Domain
                 var price = product.Price;
                 if (product.Currency != null)
                 {
-                    price += product.Currency.Rate;
+                    price *= product.Currency.Rate;
                 }
                 prod.Add(new XElement("price", price));
                 if (product.OldPrice.HasValue)
                 {
-                    prod.Add(new XElement("oldprice", product.OldPrice));
+                    var oldprice = product.OldPrice;
+                    if (product.Currency != null)
+                    {
+                        oldprice *= product.Currency.Rate;
+                    }
+                    prod.Add(new XElement("oldprice", oldprice));
                 }
                 prod.Add(new XElement("url", string.Format("https://benefit-company.com/t/{0}-{1}", product.UrlName, product.SKU)));
                 var categoryId = product.CategoryId;
@@ -112,6 +121,7 @@ namespace Benefit.Services.Domain
             shop.Add(company);
             shop.Add(url);
             shop.Add(email);
+            shop.Add(currencies);
             shop.Add(categories);
             shop.Add(offers);
             yml_catalog.Add(shop);
