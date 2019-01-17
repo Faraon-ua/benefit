@@ -203,6 +203,7 @@ namespace Benefit.Services.Domain
                     IsActive = true,
                     IsImported = true,
                     DoesCountForShipping = true,
+                    AddedOn = DateTime.UtcNow,
                     LastModified = DateTime.UtcNow,
                     LastModifiedBy = "1CImport",
                     AltText = name.Truncate(100),

@@ -221,6 +221,10 @@
                                     {
                                         <span style="color: white; background: #4fad00; padding: 5px;">Безпечна покупка</span>
                                     }
+                                    @if (DateTime.UtcNow - Model.Product.AddedOn < TimeSpan.FromDays(14))
+                                    {
+                                        <span style="color: white; background: #4fad00; padding: 5px;">Новинка</span>
+                                    }
                                     <div class="x-product-info__identity margin-top-5">
                                         <div class="x-product-info__identity-item">
                                             <span>Код:&nbsp;</span>
@@ -241,10 +245,10 @@
                                     </p>
 
                                     @*<div class="x-product-info__item">
-                                            <div class="x-product-info__inline">
-                                                <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
-                                            </div>
-                                        </div>*@
+                                        <div class="x-product-info__inline">
+                                            <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
+                                        </div>
+                                    </div>*@
                                     <div class="x-product-info__item">
                                         <div class="x-product-info__inline">
                                             <div class="x-product-presence" data-qaid="product_presence">

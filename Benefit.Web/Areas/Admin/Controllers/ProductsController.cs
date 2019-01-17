@@ -204,6 +204,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         maxSku = SettingsService.SkuMinValue;
                     }
                     product.SKU = (int)maxSku + 1;
+                    product.AddedOn = DateTime.UtcNow;
                     db.Products.Add(product);
                 }
                 db.SaveChanges();

@@ -17,7 +17,7 @@
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Url Назва</label>
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.UrlName, new {@class = "col-xs-10 col-sm-5 urlName"})
+            @Html.TextBoxFor(model => model.UrlName, new { @class = "col-xs-10 col-sm-5 urlName" })
             @Html.ValidationMessageFor(model => model.UrlName)
         </div>
     </div>
@@ -49,7 +49,7 @@
             @Html.TextBox("OldPrice", Model.OldPrice == null ? null : Model.OldPrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
             @Html.ValidationMessageFor(model => model.WholesalePrice)
         </div>
-    </div> 
+    </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Оптова Ціна</label>
         <div class="col-md-9">
@@ -67,7 +67,7 @@
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Виробник</label>
         <div class="col-md-9">
-            @Html.TextBoxFor(model => model.Vendor, new {@class = "col-xs-10 col-sm-5"})
+            @Html.TextBoxFor(model => model.Vendor, new { @class = "col-xs-10 col-sm-5" })
             @Html.ValidationMessageFor(model => model.Vendor)
         </div>
     </div>
@@ -113,7 +113,7 @@
             @Html.EditorFor(model => model.IsWeightProduct)
             @Html.ValidationMessageFor(model => model.IsWeightProduct)
         </div>
-    </div> 
+    </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right" for="IsImported">Імпортований із файлу</label>
         <div class="col-md-9">
@@ -183,6 +183,14 @@
             @Html.ValidationMessageFor(model => model.Description)
         </div>
     </div>
+
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Коли створено</label>
+        <div class="col-md-9">
+            @Html.TextBox("AddedOn", Model.AddedOn.ToLocalDateTimeWithFormat(), new { disabled = "true" })
+        </div>
+    </div>
+
 
     @if (Model.LastModifiedBy != null)
     {

@@ -63,6 +63,10 @@
                 {
                     <div class="sticker_safe">Безпечна покупка</div>
                 }
+                @if (DateTime.UtcNow - Model.AddedOn < TimeSpan.FromDays(14))
+                {
+                    <div class="sticker_safe">Новинка</div>
+                }
                 @*<div class="sticker_khit">Хит</div>*@
             </div>
 

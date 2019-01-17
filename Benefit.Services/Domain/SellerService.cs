@@ -455,7 +455,7 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case ProductSortOption.Rating:
-                    items = items.OrderByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
+                    items = items.OrderByDescending(entry=>entry.AddedOn).ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.Order:
                     items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);

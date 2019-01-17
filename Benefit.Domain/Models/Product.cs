@@ -86,6 +86,7 @@ namespace Benefit.Domain.Models
         #region advertisement
         public bool IsFeatured { get; set; }
         public bool IsNewProduct { get; set; }
+        public DateTime AddedOn { get; set; }
         public int Order { get; set; }
         #endregion
         public bool IsActive { get; set; }
