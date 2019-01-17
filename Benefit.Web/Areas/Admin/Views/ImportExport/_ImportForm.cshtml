@@ -1,5 +1,6 @@
 ﻿@using Benefit.Common.Extensions
-@model Benefit.Domain.Models.ExportImport
+@using Benefit.Domain.Models
+@model ExportImport
 
 <div id="yml-importing-process" style="display: none;">
     <div class="loader"></div>
@@ -16,7 +17,7 @@
         @Html.HiddenFor(model => model.SyncType)
 
         <div class="form-group">
-            <label class="control-label col-md-2" for="IsActive">Статус синхронізації</label>
+            <label class="control-label col-md-2" for="IsActive">Статус</label>
             <div class="col-md-10">
                 @Html.CheckBoxFor(m => m.IsActive)
             </div>
@@ -24,52 +25,65 @@
         <div class="form-group">
             <label class="control-label col-md-2" for="IsActive">URL</label>
             <div class="col-md-10">
-                @Html.TextBoxFor(model => model.FileUrl, new { @class = "col-md-8" })
+                @if (Model.SyncType != SyncType.YmlExport)
+                {
+                    @Html.TextBoxFor(model => model.FileUrl, new { @class = "col-md-8" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.FileUrl, new { @class = "col-md-8", @readonly = "readonly" })
+                }
                 @Html.ValidationMessageFor(model => model.FileUrl)
             </div>
         </div>
 
-        <div class="form-group">
-            <label class="control-label col-md-2" for="SyncPeriod">Частота оновлення</label>
-            <div class="col-md-10">
-                @Html.DropDownList("SyncPeriod", null, new { @class = "col-md-3" })
-            </div>
-        </div>
-
-        @if (Model.LastUpdateStatus.HasValue)
+        @if (Model.SyncType != SyncType.YmlExport)
         {
             <div class="form-group">
-                <label class="control-label col-md-2">Статус останнього оновлення</label>
+                <label class="control-label col-md-2" for="SyncPeriod">Частота оновлення</label>
                 <div class="col-md-10">
-                    @if (Model.LastUpdateStatus.GetValueOrDefault(false))
-                    {
-                        <i class="icon icon-check green bigger-200"></i>
-                    }
-                    else
-                    {
-                        <i class="icon icon-remove red bigger-200"></i>
-                        <div>Помилка: @Model.LastUpdateMessage</div>
-                    }
-                    <div>
-                        Час: @Model.LastSync.Value.ToLocalDateTimeWithFormat()
-                    </div>
-                    <div>
-                        Наступне оновлення відбудеться: @Model.LastSync.Value.AddDays(Model.SyncPeriod).ToLocalDateTimeWithFormat()
-                    </div>
+                    @Html.DropDownList("SyncPeriod", null, new { @class = "col-md-3" })
                 </div>
             </div>
-        }
-        else if (Model.Id != null)
-        {
-            <div class="col-md-offset-2">
-                Наступне оновлення відбудеться: @DateTime.UtcNow.ToLocalTime().EndOfDay().AddHours(3).ToLocalDateTimeWithFormat()
-            </div>
+
+            if (Model.LastUpdateStatus.HasValue)
+            {
+                <div class="form-group">
+                    <label class="control-label col-md-2">Статус останнього оновлення</label>
+                    <div class="col-md-10">
+                        @if (Model.LastUpdateStatus.GetValueOrDefault(false))
+                        {
+                            <i class="icon icon-check green bigger-200"></i>
+                        }
+                        else
+                        {
+                            <i class="icon icon-remove red bigger-200"></i>
+                            <div>Помилка: @Model.LastUpdateMessage</div>
+                        }
+                        <div>
+                            Час: @Model.LastSync.Value.ToLocalDateTimeWithFormat()
+                        </div>
+                        <div>
+                            Наступне оновлення відбудеться: @Model.LastSync.Value.AddDays(Model.SyncPeriod).ToLocalDateTimeWithFormat()
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (Model.Id != null)
+            {
+                <div class="col-md-offset-2">
+                    Наступне оновлення відбудеться: @DateTime.UtcNow.ToLocalTime().EndOfDay().AddHours(3).ToLocalDateTimeWithFormat()
+                </div>
+            }
         }
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Зберегти" class="btn btn-info" />
-                <button type="button" class="margin-left-30 btn btn-success" id="launch-yml-import">Запустити</button>
+                @if (Model.SyncType != SyncType.YmlExport)
+                {
+                    <button type="button" class="margin-left-30 btn btn-success" id="launch-yml-import">Запустити</button>
+                }
             </div>
         </div>
     </div>

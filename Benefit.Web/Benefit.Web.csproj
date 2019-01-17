@@ -278,6 +278,7 @@
     <Compile Include="Controllers\CartController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\ExportController.cs" />
     <Compile Include="Controllers\HelperController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\CatalogController.cs" />
@@ -1569,6 +1570,7 @@
     <Folder Include="Images\uploads\" />
     <Folder Include="Images\UserPictures\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\Export\" />
     <Folder Include="Views\Localizations\" />
     <Folder Include="Views\Notifications\" />
     <Folder Include="Views\Schedule\" />

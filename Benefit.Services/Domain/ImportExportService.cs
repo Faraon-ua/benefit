@@ -21,12 +21,105 @@ namespace Benefit.Services.Domain
     public class ImportExportService
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private SellerService SellerService = new SellerService();
         private CategoriesService categoriesService = new CategoriesService();
         private ProductsService productsService = new ProductsService();
         private ImagesService ImagesService = new ImagesService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
         private string originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
         object lockObj = new object();
+
+        #region Export
+
+        public string ExportSeller(string exportId)
+        {
+            var exportTask = db.ExportImports.Include(entry => entry.Seller).FirstOrDefault(entry => entry.Id == exportId);
+            if (exportTask == null || !exportTask.IsActive)
+            {
+                return null;
+            }
+
+            var sellerCategories = SellerService.GetAllSellerCategories(exportTask.Seller.UrlName);
+            var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
+            var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
+            var yml_catalog = new XElement(ns + "yml_catalog", new XAttribute("date", DateTime.Now.ToLocalDateTimeWithFormat()));
+            var shop = new XElement("shop");
+            var name = new XElement("name", "Интернет магазин Benefit-Company");
+            var company = new XElement("company", "Benefit-Company");
+            var url = new XElement("url", "https://benefit-company.com");
+            var email = new XElement("url", "info.benefitcompany@gmail.com");
+            var categories = new XElement("categories");
+            foreach (var category in sellerCategories)
+            {
+                var cat = new XElement("category") { Value = category.Name };
+                cat.Add(new XAttribute("id", category.Id));
+                categories.Add(cat);
+            }
+
+            var offers = new XElement("offers");
+
+            var products = db.Products
+                .Include(entry => entry.ProductParameterProducts.Select(pp=>pp.ProductParameter))
+                .Include(entry => entry.Images)
+                .Include(entry => entry.Currency)
+                .Include(entry => entry.Category.MappedParentCategory)
+                .Where(entry =>
+                entry.SellerId == exportTask.SellerId);
+            foreach (var product in products)
+            {
+                var prod = new XElement("offer", new XAttribute("id", product.Id));
+                var available = product.IsActive && product.AvailabilityState !=ProductAvailabilityState.NotInStock;
+                prod.Add(new XAttribute("available", available));
+                prod.Add(new XElement("name", product.Name));
+                prod.Add(new XElement("vendor", product.Vendor));
+                prod.Add(new XElement("vendorCode", product.SKU));
+                var price = product.Price;
+                if (product.Currency != null)
+                {
+                    price += product.Currency.Rate;
+                }
+                prod.Add(new XElement("price", price));
+                if (product.OldPrice.HasValue)
+                {
+                    prod.Add(new XElement("oldprice", product.OldPrice));
+                }
+                prod.Add(new XElement("url", string.Format("https://benefit-company.com/t/{0}-{1}", product.UrlName, product.SKU)));
+                var categoryId = product.CategoryId;
+                if (product.Category.MappedParentCategory != null)
+                {
+                    categoryId = product.Category.MappedParentCategoryId;
+                }
+                prod.Add(new XElement("categoryId", categoryId));
+                if (product.Images.Any())
+                {
+                    var picture = product.Images.First();
+                    var pictureUrl = picture.IsAbsoluteUrl
+                        ? picture.ImageUrl
+                        : string.Format("https://benefit-company.com/Images/ProductGallery/{0}/{1}", product.Id,
+                            picture.ImageUrl);
+                    prod.Add(new XElement("picture", pictureUrl));
+                }
+                prod.Add(new XElement("description", product.Description));
+                prod.Add(new XElement("country_of_origin", product.OriginCountry));
+                foreach (var parameterProduct in product.ProductParameterProducts)
+                {
+                    prod.Add(new XElement("param", new XAttribute("name", parameterProduct.ProductParameter.Name), parameterProduct.StartText));
+                }
+                offers.Add(prod);
+            }
+
+            shop.Add(name);
+            shop.Add(company);
+            shop.Add(url);
+            shop.Add(email);
+            shop.Add(categories);
+            shop.Add(offers);
+            yml_catalog.Add(shop);
+            doc.Add(yml_catalog);
+            return doc.ToString();
+        }
+
+        #endregion
 
         #region 1C
 
@@ -345,7 +438,7 @@ namespace Benefit.Services.Domain
             var catIdsToRemove = currentSellercategoyIds.Except(xmlCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {
-                var dbCategory = db.Categories.FirstOrDefault(entry=>entry.ExternalIds == catId);
+                var dbCategory = db.Categories.FirstOrDefault(entry => entry.ExternalIds == catId);
                 dbCategory.IsActive = false;
                 db.Entry(dbCategory).State = EntityState.Modified;
             }

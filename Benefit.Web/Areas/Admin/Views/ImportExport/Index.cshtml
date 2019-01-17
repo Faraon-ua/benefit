@@ -69,7 +69,7 @@
         });
     </script>
 }
-<h2>Імпорт</h2>
+<h2>Імпорт\Експорт</h2>
 <div class="tabbable">
     <ul class="nav nav-tabs" id="myTab">
         <li class="active">
@@ -87,10 +87,17 @@
                 1C Commerce ML
             </a>
         </li>
+        <li>
+            <a data-toggle="tab" href="#ymlexport">
+                YML Export
+            </a>
+        </li>
     </ul>
     <div class="tab-content">
         <div id="prom" class="tab-pane in active">
             @Html.Action("GetImportForm", new { syncType = SyncType.Yml })
+        </div><div id="ymlexport" class="tab-pane">
+            @Html.Action("GetImportForm", new { syncType = SyncType.YmlExport})
         </div>
         <div id="excel" class="tab-pane">
             <div>

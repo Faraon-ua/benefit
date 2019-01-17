@@ -37,14 +37,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult GetImportForm(SyncType syncType)
         {
+            var newId = Guid.NewGuid().ToString();
             var importTask =
                 db.ExportImports.FirstOrDefault(
                     entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == syncType) ?? new ExportImport()
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        IsActive = true,
+                        Id = newId,
+                        IsActive = false,
                         IsImport = false,
                         SyncType = syncType,
+                        FileUrl = string.Format("https://benefit-company.com/export?id={0}", newId),
                         SellerId = Seller.CurrentAuthorizedSellerId
                     };
 
@@ -89,7 +91,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 import.SyncPeriod = exportImport.SyncPeriod;
             }
             db.SaveChanges();
-            TempData["SuccessMessage"] = "Дані імпорту оновлено";
+            TempData["SuccessMessage"] = "Дані імпорту/експорту оновлено";
             return RedirectToAction("Index");
         }
 
