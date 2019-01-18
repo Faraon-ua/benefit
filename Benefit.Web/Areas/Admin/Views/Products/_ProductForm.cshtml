@@ -184,16 +184,15 @@
         </div>
     </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Коли створено</label>
-        <div class="col-md-9">
-            @Html.TextBox("AddedOn", Model.AddedOn.ToLocalDateTimeWithFormat(), new { disabled = "true" })
-        </div>
-    </div>
-
 
     @if (Model.LastModifiedBy != null)
     {
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Коли створено</label>
+            <div class="col-md-9">
+                @Html.TextBox("AddedOn", Model.AddedOn.ToString(), new { @readonly = "readonly" })
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-sm-3 control-label no-padding-right">Коли останній раз редагувалось</label>
             <div class="col-md-9">
