@@ -257,6 +257,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 ModelState.AddModelError("Currencies", "Курси валют заповнено невірно");
             }
 
+            if (db.Sellers.Any(entry => entry.UrlName == sellervm.Seller.UrlName))
+            {
+                ModelState.AddModelError("Currencies", "Постачальник з таким Url вже існує");
+            }
+
             if (ModelState.IsValid)
             {
                 var seller = sellervm.Seller;
