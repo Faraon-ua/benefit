@@ -19,7 +19,7 @@
         <tr class="adaptive_name">
             <td colspan="2">
                 <div class="desc_name">
-                    <a href="@sellerUrl" @(isExternalLink ? "rel=nofollow" : string.Empty)>
+                    <a href="@sellerUrl" @(isExternalLink ? "rel=nofollow" : string.Empty) @(isExternalLink ? "target=_blank" : string.Empty)>
                         <span>@Model.Name</span>
                     </a>
                 </div>
@@ -30,14 +30,14 @@
                 <div class="stickers">
                     <div class="sticker_sale_text">@Model.UserDiscount %</div>
                 </div>
-                <a href="@sellerUrl" class="thumb shine"  @(isExternalLink ? "rel=nofollow" : string.Empty)>
+                <a href="@sellerUrl" class="thumb shine"  @(isExternalLink ? "rel=nofollow" : string.Empty) @(isExternalLink ? "target=_blank" : string.Empty)>
                     <img src="~/Images/SellerLogo/@logoUrl" alt="@Model.AltText" title="@Model.Title" style="max-width: 230px; max-height: 230px;" />
                 </a>
             </td>
             <td class="description_wrapp">
                 <div class="description">
                     <div class="item-title">
-                        <a href="@sellerUrl" class="dark_link" style="font-size: 18px"  @(isExternalLink ? "rel=nofollow" : string.Empty)>@Model.Name</a>
+                        <a href="@sellerUrl" class="dark_link" style="font-size: 18px" @(isExternalLink ? "target=_blank" : string.Empty) @(isExternalLink ? "rel=nofollow" : string.Empty)>@Model.Name</a>
                         @if (address != null)
                         {
                             <span>@string.Format("{0}, {1}", address.Region.Name_ua, address.AddressLine)</span>
