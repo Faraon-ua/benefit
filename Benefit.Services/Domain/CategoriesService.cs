@@ -36,8 +36,9 @@ namespace Benefit.Services.Domain
                 .AsNoTracking()
                 .Include(entry => entry.ParentCategory)
                 .Include(entry => entry.ProductParameters.Select(pp => pp.ProductParameterValues))
-                .Where(entry => entry.Name == catName).ToList();
-            if (!categories.Any()) return null;
+                .Where(entry => entry.Name == catName && !entry.IsSellerCategory).ToList();
+            if (!categories.Any())
+                return null;
             if (categories.Count == 1) return categories.First();
             var parentName = parts[parts.Length - 2];
             var category = categories.First(entry => entry.ParentCategory.Name == parentName);

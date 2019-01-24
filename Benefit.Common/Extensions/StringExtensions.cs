@@ -20,6 +20,7 @@ namespace Benefit.Common.Extensions
 
         public static string Translit(this string value)
         {
+            if (value == null) return null;
             var words = new Dictionary<string, string>();
             words.Add(":", "");
             words.Add("%", "proc");

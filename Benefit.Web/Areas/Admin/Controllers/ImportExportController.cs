@@ -218,6 +218,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (!Directory.Exists(sellerPath))
                 {
                     Directory.CreateDirectory(sellerPath);
+                    var imagesPath = Path.Combine(sellerPath, "images");
+                    if (!Directory.Exists(imagesPath))
+                    {
+                        Directory.CreateDirectory(imagesPath);
+                    }
                 }
                 file.SaveAs(Path.Combine(sellerPath, "import.xls"));
             }

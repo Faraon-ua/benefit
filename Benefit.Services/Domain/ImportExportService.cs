@@ -634,7 +634,8 @@ namespace Benefit.Services.Domain
                         ImageUrl = xmlImage.Value,
                         IsAbsoluteUrl = true,
                         Order = order++,
-                        ProductId = product.Id
+                        ProductId = product.Id,
+                        IsImported = true
                     }));
                 }
             });
@@ -712,7 +713,8 @@ namespace Benefit.Services.Domain
                         ImageUrl = xmlImage.Value,
                         IsAbsoluteUrl = true,
                         Order = order++,
-                        ProductId = product.Id
+                        ProductId = product.Id,
+                        IsImported = true
                     }));
                     productParameterProductsToAdd.AddRange(productParams);
                 }
@@ -864,9 +866,10 @@ namespace Benefit.Services.Domain
             }
 
             var worksheet = catalog.Worksheet(worksheetName);
-
+            var rows = worksheet.ToList().Where(entry => !string.IsNullOrEmpty(entry["Category"].Value.ToString()))
+                .ToList();
             var excelProducts =
-                (from row in worksheet.AsNoTracking()
+                (from row in rows
                  let item = new ExcelProduct()
                  {
                      Product = new Product
