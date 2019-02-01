@@ -874,7 +874,7 @@ namespace Benefit.Services.Domain
                     {
                         Id = Guid.NewGuid().ToString(),
                         Name = cat,
-                        UrlName = cat.Translit(),
+                        UrlName = string.Format("{0}_{1}",sellerId, cat.Translit()),
                         ParentCategoryId = parentId,
                         IsSellerCategory = true,
                         SellerId = sellerId,
@@ -929,9 +929,8 @@ namespace Benefit.Services.Domain
                          Description = row["Description"].Cast<string>(),
                          ShortDescription = row["Meta description"].Cast<string>().Truncate(160),
                          UrlName = row["URL"].Cast<string>() ?? row["Product"].Cast<string>().Translit(),
-                         AvailableAmount = row["Stock"].Cast<int>()
+                         AvailableAmount = row["Stock"].Cast<int?>()
                      },
-                     //CategoryName = categoriesService.GetCategoryByFullName(row["Category"].Cast<string>()),
                      CategoryName = row["Category"].Cast<string>(),
                      ImagesList = row["Images"].Cast<string>(),
                      CurrencyName = row["Currency"].Cast<string>(),
@@ -989,17 +988,7 @@ namespace Benefit.Services.Domain
                 var curr = currencies.FirstOrDefault(cur => cur.Name == entry.CurrencyName);
                 product.CurrencyId = curr == null ? null : curr.Id;
                 product.OldPrice = product.OldPrice == default(double) ? (double?)null : product.OldPrice.Value;
-                if (entry.Visible > 0)
-                {
-                    product.AvailabilityState = product.AvailableAmount > 0
-                        ? ProductAvailabilityState.Available
-                        : ProductAvailabilityState.AlwaysAvailable;
-                }
-                else
-                {
-                    product.AvailabilityState = ProductAvailabilityState.NotInStock;
-                }
-
+                product.AvailabilityState = entry.Visible > 0 ? ProductAvailabilityState.Available : ProductAvailabilityState.NotInStock;
                 xlsProducts.Add(product);
             });
 
