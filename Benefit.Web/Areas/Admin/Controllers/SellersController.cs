@@ -192,7 +192,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     new Seller()
                     {
                         Schedules = SetSellerSchedules().ToList(),
-                        BusinessLevelIndexes = SetBusinessLevelIndexeses().ToList()
+                        BusinessLevelIndexes = SetBusinessLevelIndexeses().ToList(),
+                        CatalogButtonName = "Каталог"
                     }
             };
             if (!seller.Seller.Schedules.Any())

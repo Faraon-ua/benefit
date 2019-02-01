@@ -7,6 +7,7 @@
             Product = new Product();
         }
         public Product Product { get; set; }
+        public string CategoryName { get; set; }
         public Category Category { get; set; }
         public string ImagesList { get; set; }
         public string CurrencyName { get; set; }

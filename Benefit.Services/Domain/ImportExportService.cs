@@ -14,7 +14,6 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web;
-using System.Xml;
 using System.Xml.Linq;
 
 namespace Benefit.Services.Domain
@@ -50,7 +49,7 @@ namespace Benefit.Services.Domain
             var url = new XElement("url", "https://benefit-company.com");
             var email = new XElement("email", "info.benefitcompany@gmail.com");
             var currencies = new XElement("currencies");
-            var uah = new XElement("currency", new XAttribute("id","UAH"), new XAttribute("rate", "1"));
+            var uah = new XElement("currency", new XAttribute("id", "UAH"), new XAttribute("rate", "1"));
             currencies.Add(uah);
             var categories = new XElement("categories");
             foreach (var category in sellerCategories)
@@ -63,7 +62,7 @@ namespace Benefit.Services.Domain
             var offers = new XElement("offers");
 
             var products = db.Products
-                .Include(entry => entry.ProductParameterProducts.Select(pp=>pp.ProductParameter))
+                .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Currency)
                 .Include(entry => entry.Category.MappedParentCategory)
@@ -72,7 +71,7 @@ namespace Benefit.Services.Domain
             foreach (var product in products)
             {
                 var prod = new XElement("offer", new XAttribute("id", product.Id));
-                var available = product.IsActive && product.AvailabilityState !=ProductAvailabilityState.NotInStock;
+                var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
                 prod.Add(new XAttribute("available", available));
                 prod.Add(new XElement("name", product.Name));
                 prod.Add(new XElement("vendor", product.Vendor));
@@ -855,6 +854,48 @@ namespace Benefit.Services.Domain
 
         #region Excel
 
+        private void ProcessExcelCategories(IEnumerable<string> allCats, List<Category> allDbCats, string sellerId, string parentName, string parentId = null)
+        {
+            var cats = allCats.Select(entry =>
+            {
+                var startIndex = parentName == null ? 0 : entry.IndexOf(parentName) + parentName.Length + 1;
+                var indexOfSlash = entry.IndexOf("/", startIndex) > 0
+                    ? entry.IndexOf("/", startIndex)
+                    : entry.Length;
+                return entry.Substring(startIndex, indexOfSlash - startIndex);
+            }).Distinct().ToList();
+            foreach (var cat in cats)
+            {
+                var dbParentCat =
+                    db.Categories.FirstOrDefault(entry => entry.Name == cat && entry.SellerId == sellerId);
+                if (dbParentCat == null)
+                {
+                    dbParentCat = new Category()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = cat,
+                        UrlName = cat.Translit(),
+                        ParentCategoryId = parentId,
+                        IsSellerCategory = true,
+                        SellerId = sellerId,
+                        IsActive = true,
+                        LastModified = DateTime.UtcNow,
+                        LastModifiedBy = "Excel import"
+                    };
+                    db.Categories.Add(dbParentCat);
+                }
+                allDbCats.Add(dbParentCat);
+                var xlsCat = allCats.FirstOrDefault(entry => entry.Contains(cat));
+                if (xlsCat.IndexOf(cat) + cat.Length == xlsCat.Length)
+                {
+                    dbParentCat.ExpandedSlashName = xlsCat;
+                }
+
+                var childsCats = allCats.Where(entry => entry.Contains(cat + "/")).ToList();
+                ProcessExcelCategories(childsCats, allDbCats, sellerId, cat, dbParentCat.Id);
+            }
+        }
+
         public async Task<ProductImportResults> ImportFromExcel(string sellerId, string xlsPath)
         {
             var result = new ProductImportResults();
@@ -866,7 +907,9 @@ namespace Benefit.Services.Domain
             }
 
             var worksheet = catalog.Worksheet(worksheetName);
-            var rows = worksheet.ToList().Where(entry => !string.IsNullOrEmpty(entry["Category"].Value.ToString()))
+            var rows = worksheet.ToList().Where(entry =>
+                    !string.IsNullOrEmpty(entry["Category"].Value.ToString()) &&
+                    !string.IsNullOrEmpty(entry["SKU"].Value.ToString()))
                 .ToList();
             var excelProducts =
                 (from row in rows
@@ -888,13 +931,49 @@ namespace Benefit.Services.Domain
                          UrlName = row["URL"].Cast<string>() ?? row["Product"].Cast<string>().Translit(),
                          AvailableAmount = row["Stock"].Cast<int>()
                      },
-                     Category = categoriesService.GetCategoryByFullName(row["Category"].Cast<string>()),
+                     //CategoryName = categoriesService.GetCategoryByFullName(row["Category"].Cast<string>()),
+                     CategoryName = row["Category"].Cast<string>(),
                      ImagesList = row["Images"].Cast<string>(),
                      CurrencyName = row["Currency"].Cast<string>(),
-                     Visible = row["Visible"].Cast<int>()
+                     Visible = row["Visible"].Cast<int>(),
+
                  }
                  select item).ToList()
-                .Where(entry => entry.Category != null).ToList();
+                .Where(entry => !string.IsNullOrEmpty(entry.CategoryName)).ToList();
+
+            #region Excel Categories
+
+            var allCats = excelProducts.Select(entry => entry.CategoryName).Distinct().ToList();
+            var allDbCats = new List<Category>();
+
+            ProcessExcelCategories(allCats, allDbCats, sellerId, null);
+            db.SaveChanges();
+
+            #endregion
+
+            #region Parameters
+
+            var productParametersToAdd = new List<ProductParameter>();
+            var productParameterValuesToAdd = new List<ProductParameterValue>();
+            var productParameterProductsToAdd = new List<ProductParameterProduct>();
+
+            var categryIds = allDbCats.Select(pr => pr.Id).ToList();
+            var existingProductParameters =
+                db.ProductParameters.Where(
+                    entry => categryIds.Contains(entry.CategoryId)).ToList();
+            var productParameterIds = existingProductParameters.Select(pr => pr.Id).ToList();
+            var existingProductParameterValues =
+                db.ProductParameterValues.Where(
+                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+            var existingProductParameterProducts = db.ProductParameterProducts.Where(
+                entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+
+            db.DeleteWhereColumnIn(existingProductParameterProducts, "ProductParameterId");
+            db.DeleteWhereColumnIn(existingProductParameterValues);
+            db.DeleteWhereColumnIn(existingProductParameters);
+
+            
+            #endregion
 
             var currencies = db.Currencies.AsNoTracking().ToList();
             var xlsProducts = new List<Product>();
@@ -906,7 +985,7 @@ namespace Benefit.Services.Domain
                     product.Description = product.Name;
                 }
 
-                product.CategoryId = entry.Category.Id;
+                product.CategoryId = allDbCats.First(cat => entry.CategoryName.Contains(cat.Name)).Id;
                 var curr = currencies.FirstOrDefault(cur => cur.Name == entry.CurrencyName);
                 product.CurrencyId = curr == null ? null : curr.Id;
                 product.OldPrice = product.OldPrice == default(double) ? (double?)null : product.OldPrice.Value;
@@ -978,6 +1057,7 @@ namespace Benefit.Services.Domain
                     dbProduct.Price = xlsProductToUpdate.Price;
                     dbProduct.OldPrice = xlsProductToUpdate.OldPrice;
                     dbProduct.CurrencyId = xlsProductToUpdate.CurrencyId;
+                    dbProduct.IsWeightProduct = xlsProductToUpdate.IsWeightProduct;
                     dbProduct.AvailabilityState = xlsProductToUpdate.AvailabilityState;
                     dbProduct.AvailableAmount = xlsProductToUpdate.AvailableAmount;
                     dbProduct.ShortDescription = xlsProductToUpdate.ShortDescription;
@@ -988,30 +1068,68 @@ namespace Benefit.Services.Domain
                 });
             }
 
-            var allProductParameters = new List<ProductParameterProduct>();
             var columnNames = catalog.GetColumnNames(worksheetName).ToList();
             var parameterNames = columnNames.GetRange(columnNames.IndexOf("URL") + 1, columnNames.Count - columnNames.IndexOf("URL") - 1);
-            foreach (var excelProduct in excelProducts.Where(entry => !productIdsToDelete.Contains(entry.Product.ExternalId)))
+
+            foreach (var parameterName in parameterNames)
             {
-                var productParameters = excelProduct.Category.ProductParameters
-                    .Where(entry => parameterNames.Contains(entry.Name)).ToList();
-                var row = worksheet.FirstOrDefault(entry => entry["SKU"].Cast<string>() == excelProduct.Product.ExternalId);
-                foreach (var productParameter in productParameters)
+                var catsWithParam = rows.Where(entry => !string.IsNullOrEmpty(entry[parameterName].Value.ToString()))
+                    .Select(entry => entry["Category"].Value.ToString()).Distinct().ToList();
+                var dbCatsWithParam =
+                    allDbCats.Where(entry => catsWithParam.Contains(entry.ExpandedSlashName)).ToList();
+                foreach (var cat in dbCatsWithParam)
                 {
-                    allProductParameters.Add(new ProductParameterProduct()
+                    var productParameter = new ProductParameter()
                     {
-                        ProductId = excelProduct.Product.Id,
-                        ProductParameterId = productParameter.Id,
-                        StartValue = row[productParameter.Name].Cast<string>(),
-                        StartText = row[productParameter.Name].Cast<string>()
-                    });
+                        Id = Guid.NewGuid().ToString(),
+                        Name = parameterName.Truncate(64),
+                        UrlName = parameterName.Translit().Truncate(64),
+                        CategoryId = cat.Id,
+                        AddedBy = "YmlImport",
+                        DisplayInFilters = true,
+                        IsVerified = true,
+                        Type = typeof(string).ToString()
+                    };
+                    productParametersToAdd.Add(productParameter);
+
+                    var xmlProductParameterValues =
+                        rows.Where(entry => !string.IsNullOrEmpty(entry[parameterName].Value.ToString()))
+                            .Select(entry => entry[parameterName].Value.ToString()).Distinct().ToList();
+
+                    var productParameterValues =
+                        xmlProductParameterValues.Select(entry => new ProductParameterValue()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            ProductParameterId = productParameter.Id,
+                            IsVerified = true,
+                            ParameterValue = entry.Truncate(64),
+                            ParameterValueUrl = entry.Translit().Truncate(64)
+                        });
+                    productParameterValuesToAdd.AddRange(productParameterValues);
+                }
+
+                var productParameterRows =
+                    rows.Where(entry => !string.IsNullOrEmpty(entry[parameterName].Value.ToString())).ToList();
+                foreach (var productParameterRow in productParameterRows)
+                {
+                    var product = excelProducts.FirstOrDefault(entry =>
+                        entry.Product.ExternalId == productParameterRow["SKU"].Cast<string>());
+                    var productParameterProduct = new ProductParameterProduct()
+                    {
+                        ProductId = product.Product.Id,
+                        ProductParameterId = productParametersToAdd.FirstOrDefault(entry => entry.Name == parameterName).Id,
+                        StartValue = productParameterRow[parameterName].Value.ToString().Translit().Truncate(64),
+                        StartText = productParameterRow[parameterName].Value.ToString().Truncate(64)
+                    };
+                    productParameterProductsToAdd.Add(productParameterProduct);
                 }
             }
-            db.ProductParameterProducts.RemoveRange(
-                db.ProductParameterProducts.Where(entry => productIdsToUpdate.Keys.Contains(entry.ProductId)));
-            db.ProductParameterProducts.AddRange(allProductParameters);
-            db.SaveChanges();
 
+
+            db.ProductParameters.AddRange(productParametersToAdd);
+            db.ProductParameterValues.AddRange(productParameterValuesToAdd);
+            db.ProductParameterProducts.AddRange(productParameterProductsToAdd);
+            db.SaveChanges();
             //images
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var path = new DirectoryInfo(xlsPath);

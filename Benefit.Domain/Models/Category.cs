@@ -110,6 +110,9 @@ namespace Benefit.Domain.Models
         }
 
         [NotMapped]
+        public string ExpandedSlashName { get; set; }
+
+        [NotMapped]
         public int HierarchicalLevel
         {
             get
