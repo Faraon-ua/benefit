@@ -126,6 +126,15 @@
         });
     </script>
 }
+<div>
+    @if (Model.ProductId != null)
+    {
+        <a href="@Url.Action("Index", new {sellerId = Model.SellerId, categoryId = Model.Product.CategoryId})">
+            Редагування опцій категорії
+        </a>
+        <br/>
+    }
+</div>
 <div class="options-select-container clearfix" style="display: none;">
     <select class="form-control width-70 pull-left">
         @foreach (var group in Model.ProductOptions.OrderBy(entry => entry.Order))

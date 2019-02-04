@@ -16,6 +16,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
+using System.IO.Compression;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -204,29 +205,43 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult UploadExcelFile(string sellerUrlName, HttpPostedFileBase file)
+        public ActionResult UploadExcelFile(string sellerUrlName, HttpPostedFileBase import, HttpPostedFileBase images)
         {
-            if (file == null || file.ContentLength == 0)
+            if (import == null || import.ContentLength == 0)
             {
-                TempData["ErrorMessage"] = "Невірно вибраний файл";
+                TempData["ErrorMessage"] = "Невірно вибраний файл імпорту";
             }
             else
             {
                 var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                 var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
                 var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", sellerUrlName);
+                var imagesPath = Path.Combine(sellerPath, "images");
                 if (!Directory.Exists(sellerPath))
                 {
                     Directory.CreateDirectory(sellerPath);
-                    var imagesPath = Path.Combine(sellerPath, "images");
                     if (!Directory.Exists(imagesPath))
                     {
                         Directory.CreateDirectory(imagesPath);
                     }
                 }
-                file.SaveAs(Path.Combine(sellerPath, "import.xls"));
+                import.SaveAs(Path.Combine(sellerPath, "import.xls"));
+                if (images != null && images.ContentLength > 0)
+                {
+                    var imagesFile = Path.Combine(sellerPath, "images.zip");
+                    images.SaveAs(imagesFile);
+                    try
+                    {
+                        ZipFile.ExtractToDirectory(imagesFile, imagesPath);
+                        System.IO.File.Delete(imagesFile);
+                    }
+                    catch
+                    {
+                        TempData["ErrorMessage"] = "Не вдалось розархівувати файл із зображеннями";
+                    }
+                }
             }
-            TempData["SuccessMessage"] = "Файл успішно завантажено, тепер можна застосувати імпорт";
+            TempData["SuccessMessage"] = "Файли успішно завантажено, тепер можна застосувати імпорт";
 
             return RedirectToAction("Index");
         }

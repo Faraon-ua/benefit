@@ -97,7 +97,7 @@
         <div id="prom" class="tab-pane in active">
             @Html.Action("GetImportForm", new { syncType = SyncType.Yml })
         </div><div id="ymlexport" class="tab-pane">
-            @Html.Action("GetImportForm", new { syncType = SyncType.YmlExport})
+            @Html.Action("GetImportForm", new { syncType = SyncType.YmlExport })
         </div>
         <div id="excel" class="tab-pane">
             <div>
@@ -105,10 +105,15 @@
                 <h2 class="underlined">
                     Excel
                 </h2>
-                <p>1) Завантажте Excel файл (import.xls) та зображення (в папці Images) на наш FTP</p>
+                <p>1) Завантажте Excel файл (import.xls) та зображення (в архіві ZIP)</p>
                 @using (Html.BeginForm("UploadExcelFile", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
-                    <input type="file" name="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" value="Завантажити" />
+                    <p>
+                        import.xls <input type="file" name="import" accept=".xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" value="Файл імпорту" />
+                    </p>
+                    <p>
+                        images.zip <input type="file" name="images" accept="application/zip, application/octet-stream" value="Архів зображень" />
+                    </p>
                     <input type="hidden" name="sellerUrlName" value="@Model.UrlName" />
                     <br />
                     <input type="submit" value="Завантажити" class="btn btn-default" />
