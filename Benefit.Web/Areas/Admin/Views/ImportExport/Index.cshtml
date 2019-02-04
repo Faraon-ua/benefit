@@ -109,10 +109,10 @@
                 @using (Html.BeginForm("UploadExcelFile", "ImportExport", FormMethod.Post, new { enctype = "multipart/form-data" }))
                 {
                     <p>
-                        import.xls <input type="file" name="import" accept=".xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" value="Файл імпорту" />
+                        import.xls <input type="file" name="import" accept=".xlsx, .xls" value="Файл імпорту" />
                     </p>
                     <p>
-                        images.zip <input type="file" name="images" accept="application/zip, application/octet-stream" value="Архів зображень" />
+                        images.zip <input type="file" name="images" accept=".zip" value="Архів зображень" />
                     </p>
                     <input type="hidden" name="sellerUrlName" value="@Model.UrlName" />
                     <br />
