@@ -46,6 +46,12 @@
                 }
             };
 
+            $("body").on("click",
+                ".login-link",
+                function() {
+                    $(".login-tab").click();
+                });
+
             if ($(".nova-poshta").length > 0) {
                 $.post('@SettingsService.NovaPoshta.ApiUrl',
                     JSON.stringify(npCitiesRequestData),
@@ -265,8 +271,8 @@
         {
             <div class="card">
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#reg" aria-controls="home" role="tab" data-toggle="tab">Новий клієнт</a></li>
-                    <li role="presentation"><a href="#auth" aria-controls="home" role="tab" data-toggle="tab">Постійний клієнт</a></li>
+                    <li role="presentation" class="active register-tab"><a href="#reg" aria-controls="home" role="tab" data-toggle="tab">Новий клієнт</a></li>
+                    <li role="presentation"><a href="#auth" class="login-tab" aria-controls="home" role="tab" data-toggle="tab">Постійний клієнт</a></li>
                 </ul>
 
                 <!-- Tab panes -->
@@ -297,14 +303,21 @@
                         <form action="@Url.Action("Register", "Account")?isAjaxRequest=true&returnUrl=@Url.Action("Order", "Cart")" method="POST" id="register-form">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    <label> Ім'я *</label>
+                                    <label> Ім'я та прізвище *</label>
                                     @Html.TextBox("FirstName", null)
                                     @Html.ValidationMessage("FirstName")
                                 </div>
                                 <div class="col-sm-6">
-                                    <label> Прізвище *</label>
-                                    @Html.TextBox("LastName", null)
-                                    @Html.ValidationMessage("LastName")
+                                    @{
+                                        var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
+                                        var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
+                                        var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
+                                        var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
+                                    }
+                                    <label> Місто *</label>
+                                    @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "regionSearch" })
+                                    @Html.Hidden("RegionId", regionIdCookieVal)
+                                    @Html.ValidationMessage("RegionId")
                                 </div>
                             </div>
                             <br>
@@ -321,39 +334,6 @@
                                 </div>
                             </div>
                             <br>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    @{
-                                        var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
-                                        var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
-                                        var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
-                                        var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
-                                    }
-                                    <label> Місто *</label>
-                                    @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "regionSearch" })
-                                    @Html.Hidden("RegionId", regionIdCookieVal)
-                                    @Html.ValidationMessage("RegionId")
-                                </div>
-                                <div class="col-sm-6">
-                                    <label> Реферальний код (за наявності)</label>
-                                    @Html.TextBox("ReferalNumber", null)
-                                    <p style="text-align: center; font-size: 1.2em;" id="referal-name">
-                                    </p>
-                                </div>
-                            </div>
-                            <br>
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <label> Створіть свій пароль *</label>
-                                    @Html.TextBox("Password", null, new { type = "password" })
-                                    @Html.ValidationMessage("Password")
-                                </div>
-                                <div class="col-sm-6">
-                                    <label> Номер картки Benefit Card (за наявності)</label>
-                                    @Html.TextBox("CardNumber", null)
-                                    @Html.ValidationMessage("CardNumber")
-                                </div>
-                            </div>
                         </form>
                         <br>
                         <div class="row">

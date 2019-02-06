@@ -1,4 +1,5 @@
 ﻿using Benefit.Common.Constants;
+using Benefit.Common.Helpers;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
@@ -55,7 +56,7 @@ namespace Benefit.Web.Controllers
         // GET: /Account/Login
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult Login(string returnUrl)
         {
@@ -75,7 +76,7 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, bool isAjaxRequest = false)
@@ -146,7 +147,7 @@ namespace Benefit.Web.Controllers
         }
 
         [AllowAnonymous]
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult PostRegister()
         {
@@ -173,11 +174,17 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [FetchLastNews]
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false)
         {
+            if (isAjaxRequest)
+            {
+                ModelState.Remove("model.LastName");
+                ModelState.Remove("model.Password");
+                model.Password = StringHelper.RandomString(8);
+            }
             ApplicationUser referal;
             var externalNumber = SettingsService.MinUserExternalNumber;
             BenefitCard card;
@@ -200,11 +207,27 @@ namespace Benefit.Web.Controllers
                 }
                 if (db.Users.Any(entry => entry.Email == model.Email))
                 {
-                    ModelState.AddModelError("Email", "Цей Email вже зареєстрований");
+                    if (isAjaxRequest)
+                    {
+                        ModelState.AddModelError("Email", string.Format("Покупець з цією адресою ел.пошти вже зареєстрований! <a href='#' class='x-pseudo-link login-link'>Увійдіть з паролем</a> і ми збережемо це замовлення у Вашому особистому кабінеті",
+                            Url.Action("Login", "Account")));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Email", "Цей Email вже зареєстрований");
+                    }
                 }
                 if (db.Users.Any(entry => entry.PhoneNumber == model.PhoneNumber))
                 {
-                    ModelState.AddModelError("Email", "Цей телефон вже зареєстрований");
+                    if (isAjaxRequest)
+                    {
+                        ModelState.AddModelError("Email", string.Format("Покупець з цим номером телефону вже зареєстрований! <a href='#' class='x-pseudo-link login-link'>Увійдіть з паролем</a> і ми збережемо це замовлення у Вашому особистому кабінеті",
+                            Url.Action("Login", "Account")));
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("Phone", "Цей телефон вже зареєстрований");
+                    }
                 }
             }
 
@@ -213,7 +236,7 @@ namespace Benefit.Web.Controllers
                 var user = new ApplicationUser()
                 {
                     UserName = model.Email,
-                    FullName = string.Format("{0} {1}", model.FirstName, model.LastName),
+                    FullName = string.Format("{0} {1}", model.FirstName, model.LastName).Trim(),
                     RegionId = model.RegionId.GetValueOrDefault(RegionConstants.AllUkraineRegionId),
                     Email = model.Email,
                     IsActive = true,
@@ -233,16 +256,20 @@ namespace Benefit.Web.Controllers
                     user.ReferalId = referal.Id;
                 }
 
-
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     var callbackUrl = Url.Action("confirmEmail", "account",
                        new { userId = user.Id, code }, protocol: Request.Url.Scheme);
-                    await UserManager.SendEmailAsync(user.Id,
-                       "Підтвердження реєстрації на сайті Benefit Company", "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\""
-                       + callbackUrl + "\">це посилання</a>");
+                    var emailText = isAjaxRequest
+                        ? string.Format(
+                            "Вітаємо на сайті Benefit Company! <br/> Ваш акаунт було створено автоматично, ваш пароль <b>{0}</n>.<br>Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\"{1}\">це посилання</a>",
+                            model.Password, callbackUrl)
+                        : string.Format(
+                            "Будь ласка підтвердіть реєстрацію, натиснувши на <a href=\"{0}\">це посилання</a>",
+                            callbackUrl);
+                    await UserManager.SendEmailAsync(user.Id, "Реєстрація на сайті Benefit Company", emailText);
                     var userService = new UserService();
                     userService.SubscribeSendPulse(user.Email);
                     //if shipping address provided - create db entry
@@ -269,7 +296,6 @@ namespace Benefit.Web.Controllers
                     TempData["RegisteredEmail"] = user.Email;
                     if (isAjaxRequest)
                     {
-                        await SignInAsync(user, isPersistent: true);
                         return Json(new { returnUrl, shippingAddressId = shippingAddress == null ? string.Empty : shippingAddress.Id, userId = user.Id }, JsonRequestBehavior.AllowGet);
                     }
                     else
