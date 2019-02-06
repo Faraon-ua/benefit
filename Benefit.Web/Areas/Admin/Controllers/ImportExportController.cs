@@ -232,10 +232,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     images.SaveAs(imagesFile);
                     try
                     {
+                        var filePaths = Directory.GetFiles(imagesPath);
+                        foreach (var filePath in filePaths)
+                            System.IO.File.Delete(filePath);
                         ZipFile.ExtractToDirectory(imagesFile, imagesPath);
                         System.IO.File.Delete(imagesFile);
                     }
-                    catch
+                    catch(Exception ex)
                     {
                         TempData["ErrorMessage"] = "Не вдалось розархівувати файл із зображеннями";
                     }
