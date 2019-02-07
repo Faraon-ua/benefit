@@ -283,7 +283,7 @@ namespace Benefit.Services.Domain
                         .FirstOrDefault(entry => entry.UrlName == sellerUrl);
                 var all = new List<Category>();
                 var sellerCats = seller.SellerCategories.Select(entry => entry.Category);
-                var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null).Select(entry => entry.MappedParentCategory).ToList();
+                var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null && entry.IsActive).Select(entry => entry.MappedParentCategory).ToList();
                 all.AddRange(sellerCats);
                 all.AddRange(sellerMappedCats);
                 foreach (var sellerCat in sellerCats)

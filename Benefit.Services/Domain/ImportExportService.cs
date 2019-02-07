@@ -134,6 +134,7 @@ namespace Benefit.Services.Domain
 
         public bool ImportFrom1C(XDocument xml, Seller seller)
         {
+            _logger.Warn(string.Format("1c import started for {0} at {1}", seller.Name, DateTime.UtcNow.ToLocalDateTimeWithFormat()));
             try
             {
                 var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
