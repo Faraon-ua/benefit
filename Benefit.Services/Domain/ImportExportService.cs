@@ -1160,7 +1160,7 @@ namespace Benefit.Services.Domain
                         {
                             if (imagesPath.Exists)
                             {
-                                var ftpImage = new FileInfo(Path.Combine(imagesPath.Name, fileName));
+                                var ftpImage = new FileInfo(Path.Combine(imagesPath.FullName, fileName));
                                 if (ftpImage.Exists)
                                 {
                                     ftpImage.CopyTo(Path.Combine(destPath, ftpImage.Name), true);
