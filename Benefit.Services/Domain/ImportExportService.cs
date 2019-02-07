@@ -1115,6 +1115,17 @@ namespace Benefit.Services.Domain
                 }
             }
 
+            // map seller parameters to site parameters
+            var mappedProductParameters =
+                db.MappedProductParameters.Where(entry => entry.SellerId == sellerId).ToList();
+            foreach (var mappedProductParameter in mappedProductParameters)
+            {
+                var pp = productParametersToAdd.FirstOrDefault(entry => entry.Name == mappedProductParameter.Name);
+                if (pp != null)
+                {
+                    pp.ParentProductParameterId = mappedProductParameter.ProductParameterId;
+                }
+            }
 
             db.ProductParameters.AddRange(productParametersToAdd);
             db.ProductParameterValues.AddRange(productParameterValuesToAdd);
