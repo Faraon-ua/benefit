@@ -177,8 +177,9 @@ namespace Benefit.Web.Controllers
         [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false)
+        public async Task<ActionResult> Register(RegisterViewModel model, string returnUrl, bool isAjaxRequest = false, bool getUserIdIfExists = false)
         {
+            var existingUserWarning = false;
             if (isAjaxRequest)
             {
                 ModelState.Remove("model.LastName");
@@ -205,24 +206,36 @@ namespace Benefit.Web.Controllers
                 {
                     ModelState.AddModelError("ReferalNumber", "Користувача з таким реферальним кодом не знайдено");
                 }
-                if (db.Users.Any(entry => entry.Email == model.Email))
+
+                var user = db.Users.FirstOrDefault(entry => entry.Email == model.Email);
+                if (user != null)
                 {
                     if (isAjaxRequest)
                     {
-                        ModelState.AddModelError("Email", string.Format("Покупець з цією адресою ел.пошти вже зареєстрований! <a href='#' class='x-pseudo-link login-link'>Увійдіть з паролем</a> і ми збережемо це замовлення у Вашому особистому кабінеті",
-                            Url.Action("Login", "Account")));
+                        if (getUserIdIfExists)
+                        {
+                            return Json(new { returnUrl, string.Empty, userId = user.Id }, JsonRequestBehavior.AllowGet);
+                        }
+                        ModelState.AddModelError("Email", "Покупець з цією адресою ел.пошти вже зареєстрований! <a href='#' class='x-pseudo-link login-link'>Увійдіть з паролем</a> і ми збережемо це замовлення у Вашому особистому кабінеті");
+                        existingUserWarning = true;
                     }
                     else
                     {
                         ModelState.AddModelError("Email", "Цей Email вже зареєстрований");
                     }
                 }
-                if (db.Users.Any(entry => entry.PhoneNumber == model.PhoneNumber))
+
+                user = db.Users.FirstOrDefault(entry => entry.PhoneNumber == model.PhoneNumber);
+                if (user!=null)
                 {
                     if (isAjaxRequest)
                     {
-                        ModelState.AddModelError("Email", string.Format("Покупець з цим номером телефону вже зареєстрований! <a href='#' class='x-pseudo-link login-link'>Увійдіть з паролем</a> і ми збережемо це замовлення у Вашому особистому кабінеті",
-                            Url.Action("Login", "Account")));
+                        if (getUserIdIfExists)
+                        {
+                            return Json(new { returnUrl, string.Empty, userId = user.Id }, JsonRequestBehavior.AllowGet);
+                        }
+                        ModelState.AddModelError("Email", "Покупець з цим номером телефону вже зареєстрований! <a href='#' class='x-pseudo-link login-link'>Увійдіть з паролем</a> і ми збережемо це замовлення у Вашому особистому кабінеті");
+                        existingUserWarning = true;
                     }
                     else
                     {
@@ -310,7 +323,7 @@ namespace Benefit.Web.Controllers
             }
             if (isAjaxRequest)
             {
-                return Json(new { error = ModelState.ModelStateErrors() }, JsonRequestBehavior.AllowGet);
+                return Json(new { error = ModelState.ModelStateErrors(), existingUserWarning }, JsonRequestBehavior.AllowGet);
             }
             var seller = ViewBag.Seller as Seller;
             if (seller != null)

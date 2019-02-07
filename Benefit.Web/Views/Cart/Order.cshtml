@@ -20,6 +20,7 @@
     <script src="~/Scripts/select2.min.js"></script>
 
     <script>
+        var getUserIdIfExist = false;
         var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods));
         var loginUrl = '@Url.Action("Login", "Account")' +
             '?returnUrl=@HttpUtility.UrlEncode(Url.Action("Order", "Cart"))&isAjaxRequest=true';
@@ -116,7 +117,11 @@
                 if (!isAuthenticated) {
                     var registerForm = $("#register-form");
                     var registerFormJson = getFormData(registerForm);
-                    $.post(registerForm.attr("action"),
+                    var formSubmitUrl = registerForm.attr("action");
+                    if (getUserIdIfExist) {
+                        formSubmitUrl += "&getUserIdIfExists=true";
+                    }
+                    $.post(formSubmitUrl,
                         {
                             "__RequestVerificationToken": token,
                             "model": registerFormJson
@@ -124,6 +129,9 @@
                         function(data) {
                             if (data.error) {
                                 flashMessage(data.error, true, true);
+                                if (data.existingUserWarning) {
+                                    getUserIdIfExist = true;
+                                }
                             } else {
                                 $("#AddressId").val(data.shippingAddressId);
                                 $("#UserId").val(data.userId);
