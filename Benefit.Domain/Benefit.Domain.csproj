@@ -554,6 +554,10 @@
     <Compile Include="Migrations\201901171408337_AddAddedOnToProduct.Designer.cs">
       <DependentUpon>201901171408337_AddAddedOnToProduct.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902111437057_AddExportProducts.cs" />
+    <Compile Include="Migrations\201902111437057_AddExportProducts.Designer.cs">
+      <DependentUpon>201902111437057_AddExportProducts.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -562,6 +566,8 @@
     <Compile Include="Models\Enums\SellerStatus.cs" />
     <Compile Include="Models\Excel\ExcelProduct.cs" />
     <Compile Include="Models\ExportImport.cs" />
+    <Compile Include="Models\ExportCategory.cs" />
+    <Compile Include="Models\ExportProduct.cs" />
     <Compile Include="Models\Favorite.cs" />
     <Compile Include="Models\MappedProductParameter.cs" />
     <Compile Include="Models\Message.cs" />
@@ -966,6 +972,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201901171408337_AddAddedOnToProduct.resx">
       <DependentUpon>201901171408337_AddAddedOnToProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902111437057_AddExportProducts.resx">
+      <DependentUpon>201902111437057_AddExportProducts.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

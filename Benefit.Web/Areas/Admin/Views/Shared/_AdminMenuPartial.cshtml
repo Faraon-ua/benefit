@@ -117,6 +117,12 @@
         if (User.IsInRole(DomainConstants.SuperAdminRoleName))
         {
             <li>
+                <a href="@Url.Action("Exports", "ImportExport")">
+                    <i class="icon-download-alt"></i>
+                    <span class="menu-text">Експорт</span>
+                </a>
+            </li>
+            <li>
                 <a href="@Url.Action("Index", "AdminStuff")">
                     <i class="icon-key"></i>
                     <span class="menu-text">VIP функції</span>

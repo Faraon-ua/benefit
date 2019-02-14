@@ -16,7 +16,7 @@ namespace Benefit.Web.Controllers
 
         public ActionResult Index(string id)
         {
-            var yml = ImportExportService.ExportSeller(id);
+            var yml = ImportExportService.Export(id);
             return Content(yml, "text/xml");
         }
     }

@@ -58,6 +58,8 @@ namespace Benefit.Domain.DataAccess
         public DbSet<ExportImport> ExportImports { get; set; }
         public DbSet<NotificationChannel> NotificationChannels { get; set; }
         public DbSet<Favorite> Favorites { get; set; }
+        public DbSet<ExportProduct> ExportProducts { get; set; }
+        public DbSet<ExportCategory> ExportCategories { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

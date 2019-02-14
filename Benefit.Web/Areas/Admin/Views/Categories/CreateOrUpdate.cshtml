@@ -1,6 +1,8 @@
 ﻿@using System.Globalization
 @using Benefit.Common.Constants
 @using Benefit.Common.Extensions
+@using Benefit.Domain.Migrations
+@using Benefit.Domain.Models
 @using Benefit.Web.Models.ViewModels
 @model Benefit.Domain.Models.Category
 
@@ -56,6 +58,12 @@
                 <a href="#banner" data-toggle="tab">
                     <i class="green icon-picture bigger-110"></i>
                     Баннер
+                </a>
+            </li>
+            <li>
+                <a href="#exportMapping" data-toggle="tab">
+                    <i class="orange icon-arrow-right bigger-110"></i>
+                    Зведення назв для експорту
                 </a>
             </li>
         </ul>
@@ -239,7 +247,7 @@
                     <div class="form-group">
                         <label class="control-label col-md-1">Url</label>
                         <div class="col-md-10">
-                            @Html.TextBoxFor(model => model.BannerUrl, new  { @class="col-md-6" })
+                            @Html.TextBoxFor(model => model.BannerUrl, new { @class = "col-md-6" })
                             @Html.ValidationMessageFor(model => model.Name)
                         </div>
                     </div>
@@ -253,6 +261,37 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div id="exportMapping" class="tab-pane">
+                <table class="table">
+                    <tr>
+                        <th>
+                            Назва експорту
+                        </th>
+                        <th>
+                            Зведена назва категорії
+                        </th>
+                    </tr>
+                    @{
+                        var exports = (List<ExportImport>) ViewBag.Exports;
+                    }
+                    @for (var i=0;i<exports.Count;i++)
+                    {
+                        <tr>
+                            <td>
+                                @exports[i].Name
+                            </td>
+                            <td>
+                                @{
+                                    var exportCategory = Model.ExportCategories.FirstOrDefault(entry => entry.ExportId == exports[i].Id);
+                                }
+                                @Html.TextBox(string.Format("ExportCategories[{0}].Name", i), exportCategory == null ? string.Empty : exportCategory.Name)
+                                @Html.Hidden(string.Format("ExportCategories[{0}].CategoryId", i), Model.Id)
+                                @Html.Hidden(string.Format("ExportCategories[{0}].ExportId", i), exports[i].Id)
+                            </td>
+                        </tr>
+                    }
+                </table>
             </div>
         </div>
         <div class="control-group">

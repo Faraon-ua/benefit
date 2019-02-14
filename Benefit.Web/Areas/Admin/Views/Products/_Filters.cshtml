@@ -52,13 +52,20 @@
     </div>
 </div>
 @*<div class="row">
+        <div class="col-xs-8 col-sm-11">
+            <label>
+                @Html.CheckBoxFor(m => m.IsAvailable, new { @class = "ace" })
+                <span class="lbl"> Тільки в наявності</span>
+            </label>
+        </div>
+    </div>*@
+<br />
+<label>У експорті</label>
+<div class="row">
     <div class="col-xs-8 col-sm-11">
-        <label>
-            @Html.CheckBoxFor(m => m.IsAvailable, new { @class = "ace" })
-            <span class="lbl"> Тільки в наявності</span>
-        </label>
+        @Html.DropDownList("ExportId", Model.Exports, "Не обрано", new {@class = "width-90"})
     </div>
-</div>*@
+</div>
 <br />
 <div class="row">
     <div class="col-xs-8 col-sm-11">

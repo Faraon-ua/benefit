@@ -31,15 +31,47 @@ namespace Benefit.Services.Domain
 
         #region Export
 
-        public string ExportSeller(string exportId)
+        public string Export(string exportId)
         {
-            var exportTask = db.ExportImports.Include(entry => entry.Seller).FirstOrDefault(entry => entry.Id == exportId);
+            var exportTask = db.ExportImports
+                .Include(entry => entry.ExportProducts)
+                .FirstOrDefault(entry => entry.Id == exportId);
             if (exportTask == null || !exportTask.IsActive)
             {
                 return null;
             }
 
-            var sellerCategories = SellerService.GetAllSellerCategories(exportTask.Seller.UrlName);
+            var productIds = exportTask.ExportProducts.Select(entry => entry.ProductId).ToList();
+            var products = db.Products
+                .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
+                .Include(entry => entry.Images)
+                .Include(entry => entry.Currency)
+                .Include(entry => entry.Category.ExportCategories)
+                .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
+                .Where(entry => productIds.Contains(entry.Id)).ToList();
+            var dbcategories = products.Select(entry => entry.Category).ToList();
+            for (var i = 0; i < dbcategories.Count; i++)
+            {
+                if (dbcategories[i].MappedParentCategory != null)
+                {
+                    foreach (var product in products.Where(entry => entry.CategoryId == dbcategories[i].Id))
+                    {
+                        product.CategoryId = dbcategories[i].MappedParentCategoryId;
+                    }
+                    dbcategories[i] = dbcategories[i].MappedParentCategory;
+                }
+            }
+            dbcategories = dbcategories.Where(entry => entry != null).ToList();
+            var exportCategories = new Dictionary<string, string>();
+            foreach (var dbCat in dbcategories)
+            {
+                if (!exportCategories.ContainsKey(dbCat.Id))
+                {
+                    var catExport = dbCat.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId);
+                    var catName = catExport == null ? "Не задано мапінг" : catExport.Name;
+                    exportCategories.Add(dbCat.Id, catName);
+                }
+            }
             var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
             var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
             var yml_catalog = new XElement(ns + "yml_catalog", new XAttribute("date", DateTime.Now.ToLocalDateTimeWithFormat()));
@@ -52,22 +84,14 @@ namespace Benefit.Services.Domain
             var uah = new XElement("currency", new XAttribute("id", "UAH"), new XAttribute("rate", "1"));
             currencies.Add(uah);
             var categories = new XElement("categories");
-            foreach (var category in sellerCategories)
+            foreach (var category in exportCategories)
             {
-                var cat = new XElement("category") { Value = category.Name };
-                cat.Add(new XAttribute("id", category.Id));
+                var cat = new XElement("category") { Value = category.Value };
+                cat.Add(new XAttribute("id", category.Key));
                 categories.Add(cat);
             }
 
             var offers = new XElement("offers");
-
-            var products = db.Products
-                .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
-                .Include(entry => entry.Images)
-                .Include(entry => entry.Currency)
-                .Include(entry => entry.Category.MappedParentCategory)
-                .Where(entry =>
-                entry.SellerId == exportTask.SellerId);
             foreach (var product in products)
             {
                 var prod = new XElement("offer", new XAttribute("id", product.Id));
@@ -98,15 +122,15 @@ namespace Benefit.Services.Domain
                     categoryId = product.Category.MappedParentCategoryId;
                 }
                 prod.Add(new XElement("categoryId", categoryId));
-                if (product.Images.Any())
+                foreach (var picture in product.Images.OrderBy(entry => entry.Order))
                 {
-                    var picture = product.Images.First();
                     var pictureUrl = picture.IsAbsoluteUrl
                         ? picture.ImageUrl
                         : string.Format("https://benefit-company.com/Images/ProductGallery/{0}/{1}", product.Id,
                             picture.ImageUrl);
                     prod.Add(new XElement("picture", pictureUrl));
                 }
+
                 prod.Add(new XElement("description", product.Description));
                 prod.Add(new XElement("country_of_origin", product.OriginCountry));
                 foreach (var parameterProduct in product.ProductParameterProducts)
@@ -875,7 +899,7 @@ namespace Benefit.Services.Domain
                     {
                         Id = Guid.NewGuid().ToString(),
                         Name = cat,
-                        UrlName = string.Format("{0}_{1}",sellerId, cat.Translit()),
+                        UrlName = string.Format("{0}_{1}", sellerId, cat.Translit()),
                         ParentCategoryId = parentId,
                         IsSellerCategory = true,
                         SellerId = sellerId,
@@ -972,7 +996,7 @@ namespace Benefit.Services.Domain
             db.DeleteWhereColumnIn(existingProductParameterValues);
             db.DeleteWhereColumnIn(existingProductParameters);
 
-            
+
             #endregion
 
             var currencies = db.Currencies.AsNoTracking().ToList();

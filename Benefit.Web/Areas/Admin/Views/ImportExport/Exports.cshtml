@@ -1,0 +1,70 @@
+﻿@model System.Collections.Generic.List<Benefit.Domain.Models.ExportImport>
+
+@{
+    ViewBag.Title = "Експорти";
+}
+@section scripts
+{
+    <script>
+        $(function () {
+            $("#new-export").click(function () {
+                $(".modal").modal();
+            });
+        });
+    </script>
+}
+<h2>Експорти</h2>
+
+<p>
+    <a href="#" id="new-export" class="btn btn-info">Створити новий</a>
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Назва
+        </th>
+        <th>
+            Посилання
+        </th>
+        <th>
+            Дії
+        </th>
+    </tr>
+
+    @foreach (var export in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => export.Name)
+            </td>
+            <td>
+                @string.Format("{0}://{1}/export?id={2}", Request.Url.Scheme, Request.Url.Host, export.Id)
+            </td>
+            <td>
+                @Html.ActionLink("Видалити", "DeleteExport", new { id = export.Id }, new { onclick = "return confirm('Ви впевнені? ');" })
+            </td>
+        </tr>
+    }
+</table>
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Новий експорт</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("CreateOrUpdateExport", "ImportExport"))
+            {
+                <div class="modal-body">
+                    @Html.TextBox("Name", null, new { placeholder = "Назва" })
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Зберегти</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

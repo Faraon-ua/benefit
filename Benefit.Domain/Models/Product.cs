@@ -50,6 +50,7 @@ namespace Benefit.Domain.Models
             Reviews = new Collection<Review>();
             Promotions = new Collection<Promotion>();
             Favorites = new Collection<Favorite>();
+            ExportProducts = new Collection<ExportProduct>();
         }
 
         [Key]
@@ -120,6 +121,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Review> Reviews { get; set; }
         public virtual ICollection<Promotion> Promotions { get; set; }
         public virtual ICollection<Favorite> Favorites { get; set; }
+        public virtual ICollection<ExportProduct> ExportProducts { get; set; }
 
         [NotMapped]
         public int SearchRank { get; set; }

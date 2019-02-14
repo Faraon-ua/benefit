@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Web.Models.Enumerations
 {
@@ -13,6 +9,10 @@ namespace Benefit.Web.Models.Enumerations
         [Display(Name = "Видалити обрані")]
         DeleteSelected,
         [Display(Name = "Видалити відфільтровані")]
-        DeleteAll
+        DeleteAll,
+        [Display(Name="Додати в експорт обрані")]
+        ExportSelected,
+        [Display(Name="Додати в експорт відсортовані")]
+        ExportAll
     }
 }

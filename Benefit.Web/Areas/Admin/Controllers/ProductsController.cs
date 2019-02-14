@@ -85,6 +85,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 productsViewModel.ProductFilters.Categories = cats.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel }).ToList();
                 productsViewModel.ProductFilters.Categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 1 });
             }
+
+            productsViewModel.ProductFilters.Exports = db.ExportImports
+                .Where(entry => entry.SyncType == SyncType.YmlExport).Select(entry => new SelectListItem()
+                {
+                    Text = entry.Name,
+                    Value = entry.Id
+                }).ToList();
             productsViewModel.ProductFilters.HasParameters = new List<SelectListItem>()
             {
                 new SelectListItem() {Text = "Мають", Value = "true"},
@@ -271,9 +278,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json("success");
         }
 
-        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string categoryId, ProductFilterValues filters = null)
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string categoryId, string exportId, ProductFilterValues filters = null)
         {
             var productService = new ProductsService();
+            List<string> products = null;
+            List<string> existingExportProducts = null;
             switch (action)
             {
                 case ProductsBulkAction.SetCategory:
@@ -291,10 +300,41 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                     break;
                 case ProductsBulkAction.DeleteAll:
-                    var products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
+                    products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
                     foreach (var productId in products)
                     {
                         productService.Delete(productId);
+                    }
+                    break;
+                case ProductsBulkAction.ExportSelected:
+                    existingExportProducts = db.ExportProducts
+                        .Where(entry => productIds.Contains(entry.ProductId) && entry.ExportId == exportId)
+                        .Select(entry => entry.ProductId).ToList();
+                    productIds = productIds.Except(existingExportProducts).ToArray();
+                    foreach (var productId in productIds)
+                    {
+                        var exportProduct = new ExportProduct()
+                        {
+                            ProductId = productId,
+                            ExportId = exportId
+                        };
+                        db.ExportProducts.Add(exportProduct);
+                    }
+                    break;
+                case ProductsBulkAction.ExportAll:
+                    products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
+                    existingExportProducts = db.ExportProducts
+                        .Where(entry => products.Contains(entry.ProductId) && entry.ExportId == exportId)
+                        .Select(entry => entry.ProductId).ToList();
+                    productIds = productIds.Except(existingExportProducts).ToArray();
+                    foreach (var productId in productIds)
+                    {
+                        var exportProduct = new ExportProduct()
+                        {
+                            ProductId = productId,
+                            ExportId = exportId
+                        };
+                        db.ExportProducts.Add(exportProduct);
                     }
                     break;
             }
@@ -309,12 +349,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             IQueryable<Product> products =
                     db.Products
                         .Include(entry => entry.Images)
+                        .Include(entry => entry.ExportProducts)
                         .Include(entry => entry.ProductParameterProducts)
                         .AsQueryable();
             if (!string.IsNullOrEmpty(filters.CategoryId))
             {
                 var categoryIds = new List<string>();
-                var category = db.Categories.Include(entry => entry.MappedCategories).FirstOrDefault(entry => entry.Id == filters.CategoryId);
+                var category = db.Categories.Include(entry => entry.MappedCategories)
+                    .FirstOrDefault(entry => entry.Id == filters.CategoryId);
                 var children = category.GetAllChildrenRecursively().ToList();
                 categoryIds.Add(category.Id);
                 categoryIds.AddRange(children.Select(cat => cat.Id));
@@ -325,6 +367,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (!string.IsNullOrEmpty(filters.SellerId))
             {
                 products = products.Where(entry => entry.SellerId == filters.SellerId);
+            }
+            if (!string.IsNullOrEmpty(filters.ExportId))
+            {
+                products = products.Where(entry => entry.ExportProducts.Any(ep=>ep.ExportId == filters.ExportId));
             }
             if (Seller.CurrentAuthorizedSellerId != null)
             {

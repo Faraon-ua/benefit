@@ -1020,6 +1020,7 @@
     <Content Include="Areas\Admin\Views\Sellers\_Seo.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Gallery.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Banners.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExport\Exports.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

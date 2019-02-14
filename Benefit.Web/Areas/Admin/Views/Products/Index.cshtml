@@ -18,10 +18,16 @@
         var hSelect;
         $(function () {
             $("#products-bulk-action").change(function () {
-                if ($(this).val() > 0) {
-                    $("#move-to-categoryId").hide();
-                } else {
+                if ($(this).val() == "@((int)ProductsBulkAction.SetCategory)") {
                     $("#move-to-categoryId").show();
+                } else {
+                    $("#move-to-categoryId").hide();
+                }
+                if ($(this).val() == "@((int)ProductsBulkAction.ExportAll)" ||
+                    $(this).val() == "@((int)ProductsBulkAction.ExportSelected)") {
+                    $("#exportId").show();
+                } else {
+                    $("#exportId").hide();
                 }
             });
 
@@ -31,11 +37,13 @@
                 }).get();
                 var action = $("#products-bulk-action").val();
                 var categoryId = $("[name=move-to-categoryId]").val();
+                var exportId = $("[name=exportId]").val();
                 $.post(bulkProductsActionUrl + location.search,
                     {
                         "productIds": productIds,
                         "action": action,
-                        "categoryId": categoryId
+                        "categoryId": categoryId,
+                        "exportId": exportId
                     }, function() {
                         window.location.reload();
                     });
@@ -172,12 +180,16 @@
                         @Html.DropDownList("products-bulk-action", EnumHelper.GetSelectList(typeof(ProductsBulkAction)))
                     </div>
                     <div class="col-md-2">
-                        @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
-                        {
-                            Name = "move-to-categoryId",
-                            Value = null,
-                            Items = Model.ProductFilters.Categories
-                        })
+                        <div class="padding-left-19">
+                            @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
+                            {
+                                Name = "move-to-categoryId",
+                                Value = null,
+                                Items = Model.ProductFilters.Categories
+                            })
+
+                            @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style="display:none;" })
+                        </div>
                     </div>
                     <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
                 </div>

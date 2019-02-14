@@ -91,7 +91,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = "Admin, SuperAdmin")]
         public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
-            var category = db.Categories.Include(entry => entry.SellerCategories.Select(sc => sc.Category)).FirstOrDefault(entry => entry.Id == id) ??
+            var category = db.Categories
+                               .Include(entry => entry.ExportCategories.Select(ec=>ec.Export))
+                               .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                               .FirstOrDefault(entry => entry.Id == id) ??
                            new Category()
                            {
                                Id = Guid.NewGuid().ToString(),
@@ -105,6 +108,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }).ToList();
             categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 0 });
             ViewBag.Categories = categories;
+            ViewBag.Exports = db.ExportImports.Where(entry=>entry.SyncType == SyncType.YmlExport).ToList();
             category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
             return View(category);
         }
@@ -120,11 +124,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             if (ModelState.IsValid)
             {
+                var exportCategories = category.ExportCategories.ToList();
                 category.LastModified = DateTime.UtcNow;
                 category.LastModifiedBy = User.Identity.Name;
                 if (db.Categories.Any(entry => entry.Id == category.Id))
                 {
                     db.Entry(category).State = EntityState.Modified;
+                    var existingCategoryExports = db.ExportCategories.Where(entry => entry.CategoryId == category.Id).ToList();
+                    db.ExportCategories.RemoveRange(existingCategoryExports);
                 }
                 else
                 {
@@ -160,6 +167,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     db.Entry(category).Property(entry => entry.BannerImageUrl).IsModified = false;
                 }
+                db.SaveChanges();
+                db.ExportCategories.AddRange(exportCategories);
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Категорію було збережено";
                 return RedirectToAction("CreateOrUpdate", new { id = category.Id });

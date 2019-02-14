@@ -8,6 +8,7 @@ namespace Benefit.Web.Models.Admin
     {
         public string Search { get; set; }
         public string CategoryId { get; set; }
+        public string ExportId { get; set; }
         public string SellerId { get; set; }
         public ProductSortOption? Sorting{ get; set; }
         public bool? IsAvailable { get; set; }
@@ -19,12 +20,13 @@ namespace Benefit.Web.Models.Admin
         public bool? HasOriginCountry { get; set; }
         public bool HasValues
         {
-            get { return (Search != null || CategoryId != null || SellerId != null); }
+            get { return (Search != null || CategoryId != null || SellerId != null || ExportId != null); }
         }
     }
     public class ProductFilters
     {
         public List<HierarchySelectItem> Categories { get; set; }
+        public List<SelectListItem> Exports { get; set; }
         public IEnumerable<SelectListItem> Sellers { get; set; }
         public IEnumerable<SelectListItem> Sorting { get; set; }
         public IEnumerable<SelectListItem> HasParameters { get; set; }

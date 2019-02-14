@@ -36,6 +36,41 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(seller);
         }
 
+        public ActionResult Exports()
+        {
+            var exports = db.ExportImports
+                .Include(entry => entry.Seller)
+                .Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
+
+            return View(exports);
+        }
+
+        public ActionResult CreateOrUpdateExport(string name)
+        {
+            var export = new ExportImport()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = name,
+                SyncType = SyncType.YmlExport,
+                IsActive = true
+            };
+            db.ExportImports.Add(export);
+            db.SaveChanges();
+            return RedirectToAction("Exports");
+        }
+
+        public ActionResult DeleteExport(string id)
+        {
+            var export = db.ExportImports.Include(entry=>entry.ExportProducts).FirstOrDefault(entry=>entry.Id == id);
+            if (export != null)
+            {
+                db.ExportProducts.RemoveRange(export.ExportProducts);
+                db.ExportImports.Remove(export);
+            }
+            db.SaveChanges();
+            return RedirectToAction("Exports");
+        }
+
         public ActionResult GetImportForm(SyncType syncType)
         {
             var newId = Guid.NewGuid().ToString();

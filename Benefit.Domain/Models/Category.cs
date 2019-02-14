@@ -45,6 +45,7 @@ namespace Benefit.Domain.Models
             ChildCategories = new Collection<Category>();
             SellerCategories = new Collection<SellerCategory>();
             MappedCategories = new Collection<Category>();
+            ExportCategories = new Collection<ExportCategory>();
         }
 
         [Key]
@@ -89,6 +90,7 @@ namespace Benefit.Domain.Models
         public ICollection<Product> Products { get; set; } 
         public ICollection<ProductParameter> ProductParameters { get; set; }
         public ICollection<ProductOption> ProductOptions { get; set; }
+        public ICollection<ExportCategory> ExportCategories { get; set; }
 
         [NotMapped]
         public List<Localization> Localizations { get; set; }
