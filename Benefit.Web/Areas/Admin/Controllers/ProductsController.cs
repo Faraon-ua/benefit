@@ -254,6 +254,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json(product.IsActive);
         }
         [HttpPost]
+        public ActionResult RemoveFromExport(string id)
+        {
+            var productExport = db.ExportProducts.Where(entry => entry.ProductId == id);
+            db.ExportProducts.RemoveRange(productExport);
+            db.SaveChanges();
+            return new HttpStatusCodeResult(200);
+        }
+        [HttpPost]
         public ActionResult Delete(string id)
         {
             var productService = new ProductsService();
@@ -337,6 +345,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         db.ExportProducts.Add(exportProduct);
                     }
                     break;
+                case ProductsBulkAction.DeleteFromExport:
+                    var productExports = db.ExportProducts.Where(entry => productIds.Contains(entry.ProductId));
+                    db.ExportProducts.RemoveRange(productExports);
+                    break;
+                case ProductsBulkAction.DeleteFromExportAll:
+                    products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
+                    var productExportAlls = db.ExportProducts.Where(entry => products.Contains(entry.ProductId));
+                    db.ExportProducts.RemoveRange(productExportAlls);
+                    break;
             }
 
             db.SaveChanges();
@@ -349,7 +366,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             IQueryable<Product> products =
                     db.Products
                         .Include(entry => entry.Images)
-                        .Include(entry => entry.ExportProducts)
+                        .Include(entry => entry.ExportProducts.Select(ep=>ep.Export))
                         .Include(entry => entry.ProductParameterProducts)
                         .AsQueryable();
             if (!string.IsNullOrEmpty(filters.CategoryId))

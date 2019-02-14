@@ -13,6 +13,10 @@ namespace Benefit.Web.Models.Enumerations
         [Display(Name="Додати в експорт обрані")]
         ExportSelected,
         [Display(Name="Додати в експорт відсортовані")]
-        ExportAll
+        ExportAll,
+        [Display(Name="Видалити із експорту обрані")]
+        DeleteFromExport,
+        [Display(Name="Видалити із експорту відсортовані")]
+        DeleteFromExportAll
     }
 }

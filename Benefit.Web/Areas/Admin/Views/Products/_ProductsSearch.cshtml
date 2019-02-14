@@ -37,6 +37,9 @@ else
                         Ціна
                     </th>
                     <th>
+                        Експорти
+                    </th>
+                    <th>
                         Дії
                     </th>
                 </tr>
@@ -82,6 +85,15 @@ else
                         </td>
                         <td>
                             @product.Price
+                        </td>
+                        <td>
+                            @if (product.ExportProducts.Any())
+                            {
+                                <span>@string.Join("<br />", product.ExportProducts.Select(entry => entry.Export.Name))</span>
+                            }
+                            <a href="#" data-product-id="@product.Id" class="remove-export">
+                                <i class="icon icon-remove red"></i>
+                            </a>
                         </td>
                         <td>
                             <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">

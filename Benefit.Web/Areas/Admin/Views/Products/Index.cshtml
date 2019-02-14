@@ -15,8 +15,20 @@
     <script>
         var updateWeightProductUrl = '@Url.Action("UpdateWeightProduct")';
         var bulkProductsActionUrl = '@Url.Action("BulkProductsAction")';
+        var removeExportUrl = '@Url.Action("RemoveFromExport")';
         var hSelect;
         $(function () {
+            $(".remove-export").click(function () {
+                var removeBtn = $(this);
+                var productId = $(this).attr("data-product-id");
+                $.post(removeExportUrl,
+                    { "id": productId },
+                    function () {
+                        removeBtn.parents("td").html("");
+                        flashMessage("Товар видалено із експорту");
+                    });
+            })
+
             $("#products-bulk-action").change(function () {
                 if ($(this).val() == "@((int)ProductsBulkAction.SetCategory)") {
                     $("#move-to-categoryId").show();
@@ -188,7 +200,7 @@
                                 Items = Model.ProductFilters.Categories
                             })
 
-                            @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style="display:none;" })
+                            @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style = "display:none;" })
                         </div>
                     </div>
                     <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>

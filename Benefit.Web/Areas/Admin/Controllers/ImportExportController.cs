@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -16,7 +17,6 @@ using System.Web;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
-using System.IO.Compression;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -47,21 +47,28 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult CreateOrUpdateExport(string name)
         {
-            var export = new ExportImport()
+            if (string.IsNullOrEmpty(name))
             {
-                Id = Guid.NewGuid().ToString(),
-                Name = name,
-                SyncType = SyncType.YmlExport,
-                IsActive = true
-            };
-            db.ExportImports.Add(export);
-            db.SaveChanges();
+                TempData["ErrorMessage"] = "Назва не може бути порожньою";
+            }
+            else
+            {
+                var export = new ExportImport()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Name = name,
+                    SyncType = SyncType.YmlExport,
+                    IsActive = true
+                };
+                db.ExportImports.Add(export);
+                db.SaveChanges();
+            }
             return RedirectToAction("Exports");
         }
 
         public ActionResult DeleteExport(string id)
         {
-            var export = db.ExportImports.Include(entry=>entry.ExportProducts).FirstOrDefault(entry=>entry.Id == id);
+            var export = db.ExportImports.Include(entry => entry.ExportProducts).FirstOrDefault(entry => entry.Id == id);
             if (export != null)
             {
                 db.ExportProducts.RemoveRange(export.ExportProducts);
@@ -269,11 +276,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         var filePaths = Directory.GetFiles(imagesPath);
                         foreach (var filePath in filePaths)
+                        {
                             System.IO.File.Delete(filePath);
+                        }
+
                         ZipFile.ExtractToDirectory(imagesFile, imagesPath);
                         System.IO.File.Delete(imagesFile);
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         TempData["ErrorMessage"] = "Не вдалось розархівувати файл із зображеннями";
                     }
@@ -287,7 +297,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult YmlImportStatus(string sellerId)
         {
             var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
-            return Json(new {status = (importTask != null && importTask.IsImport)}, JsonRequestBehavior.AllowGet);
+            return Json(new { status = (importTask != null && importTask.IsImport) }, JsonRequestBehavior.AllowGet);
         }
     }
 }
