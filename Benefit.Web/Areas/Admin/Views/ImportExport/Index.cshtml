@@ -87,18 +87,19 @@
                 1C Commerce ML
             </a>
         </li>
-        <li>
+        @*<li>
             <a data-toggle="tab" href="#ymlexport">
                 YML Export
             </a>
-        </li>
+        </li>*@
     </ul>
     <div class="tab-content">
         <div id="prom" class="tab-pane in active">
             @Html.Action("GetImportForm", new { syncType = SyncType.Yml })
-        </div><div id="ymlexport" class="tab-pane">
-            @Html.Action("GetImportForm", new { syncType = SyncType.YmlExport })
         </div>
+        @*<div id="ymlexport" class="tab-pane">
+            @Html.Action("GetImportForm", new { syncType = SyncType.YmlExport })
+        </div>*@
         <div id="excel" class="tab-pane">
             <div>
                 <h3 class="red" id="warning-message">Імпорт з файлу зробить неактивними всі товари з бази, яких немає у файлі імпорту.</h3>

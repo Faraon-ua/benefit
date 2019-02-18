@@ -286,7 +286,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json("success");
         }
 
-        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string categoryId, string exportId, ProductFilterValues filters = null)
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string export_Id, ProductFilterValues filters = null)
         {
             var productService = new ProductsService();
             List<string> products = null;
@@ -297,7 +297,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Products.Where(entry => productIds.Contains(entry.Id))
                         .ForEach(entry =>
                         {
-                            entry.CategoryId = categoryId;
+                            entry.CategoryId = category_Id;
                             db.Entry(entry).State = EntityState.Modified;
                         });
                     break;
@@ -316,7 +316,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     break;
                 case ProductsBulkAction.ExportSelected:
                     existingExportProducts = db.ExportProducts
-                        .Where(entry => productIds.Contains(entry.ProductId) && entry.ExportId == exportId)
+                        .Where(entry => productIds.Contains(entry.ProductId) && entry.ExportId == export_Id)
                         .Select(entry => entry.ProductId).ToList();
                     productIds = productIds.Except(existingExportProducts).ToArray();
                     foreach (var productId in productIds)
@@ -324,7 +324,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var exportProduct = new ExportProduct()
                         {
                             ProductId = productId,
-                            ExportId = exportId
+                            ExportId = export_Id
                         };
                         db.ExportProducts.Add(exportProduct);
                     }
@@ -332,18 +332,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 case ProductsBulkAction.ExportAll:
                     products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
                     existingExportProducts = db.ExportProducts
-                        .Where(entry => products.Contains(entry.ProductId) && entry.ExportId == exportId)
+                        .Where(entry => products.Contains(entry.ProductId) && entry.ExportId == export_Id)
                         .Select(entry => entry.ProductId).ToList();
-                    productIds = productIds.Except(existingExportProducts).ToArray();
-                    foreach (var productId in productIds)
+                    productIds = products.Except(existingExportProducts).ToArray();
+                    var exportProducts = productIds.Select(entry => new ExportProduct
                     {
-                        var exportProduct = new ExportProduct()
-                        {
-                            ProductId = productId,
-                            ExportId = exportId
-                        };
-                        db.ExportProducts.Add(exportProduct);
-                    }
+                        ProductId = entry,
+                        ExportId = export_Id
+                    });
+                    db.ExportProducts.AddRange(exportProducts);
                     break;
                 case ProductsBulkAction.DeleteFromExport:
                     var productExports = db.ExportProducts.Where(entry => productIds.Contains(entry.ProductId));

@@ -33,6 +33,7 @@ namespace Benefit.Services.Domain
 
         public string Export(string exportId)
         {
+            var Request = HttpContext.Current.Request;
             var exportTask = db.ExportImports
                 .Include(entry => entry.ExportProducts)
                 .FirstOrDefault(entry => entry.Id == exportId);
@@ -115,7 +116,7 @@ namespace Benefit.Services.Domain
                     }
                     prod.Add(new XElement("oldprice", oldprice));
                 }
-                prod.Add(new XElement("url", string.Format("https://benefit-company.com/t/{0}-{1}", product.UrlName, product.SKU)));
+                prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
                 var categoryId = product.CategoryId;
                 if (product.Category.MappedParentCategory != null)
                 {
@@ -126,7 +127,7 @@ namespace Benefit.Services.Domain
                 {
                     var pictureUrl = picture.IsAbsoluteUrl
                         ? picture.ImageUrl
-                        : string.Format("https://benefit-company.com/Images/ProductGallery/{0}/{1}", product.Id,
+                        : string.Format("{0}://{1}/Images/ProductGallery/{2}/{3}", Request.Url.Scheme, Request.Url.Host, product.Id,
                             picture.ImageUrl);
                     prod.Add(new XElement("picture", pictureUrl));
                 }
