@@ -16,6 +16,7 @@ namespace Benefit.Domain.Models
         public ExportImport()
         {
             ExportProducts = new List<ExportProduct>();
+            ExportCategories = new List<ExportCategory>();
         }
         [MaxLength(128)]
         public string Id { get; set; }
@@ -40,5 +41,6 @@ namespace Benefit.Domain.Models
         public bool HasNewContent { get; set; }
 
         public ICollection<ExportProduct> ExportProducts { get; set; }
+        public ICollection<ExportCategory> ExportCategories { get; set; }
     }
 }

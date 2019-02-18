@@ -232,6 +232,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.SellerCategories)
                 .Include(entry => entry.ProductParameters)
                 .Include(entry => entry.ProductOptions)
+                .Include(entry => entry.ExportCategories)
                 .FirstOrDefault(entry => entry.Id == id);
             if (category == null) return;
             var mappedCatsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
@@ -249,6 +250,7 @@ namespace Benefit.Services.Domain
             var productParameterProducts = db.ProductParameterProducts.Where(
                     entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
 
+            db.ExportCategories.RemoveRange(category.ExportCategories);
             db.ProductParameterProducts.RemoveRange(productParameterProducts);
             db.ProductParameterValues.RemoveRange(productParameterValues);
             db.ProductParameters.RemoveRange(productParameters);

@@ -77,10 +77,13 @@ namespace Benefit.Services.Domain
             var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
             var yml_catalog = new XElement(ns + "yml_catalog", new XAttribute("date", DateTime.Now.ToLocalDateTimeWithFormat()));
             var shop = new XElement("shop");
-            var name = new XElement("name", "Интернет магазин Benefit-Company");
-            var company = new XElement("company", "Benefit-Company");
-            var url = new XElement("url", "https://benefit-company.com");
-            var email = new XElement("email", "info.benefitcompany@gmail.com");
+            var domain = Request.Url.Host;
+            domain = domain.Substring(0, domain.IndexOf("."));
+            var seller = db.Sellers.FirstOrDefault(entry => entry.Domain == domain || entry.UrlName == domain);
+            var name = new XElement("name", "Интернет магазин " + seller == null ? "Benefit-Company" : seller.Name);
+            var company = new XElement("company", seller == null ? "Benefit-Company" : seller.Name);
+            var url = new XElement("url", string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host));
+            //var email = new XElement("email", "info.benefitcompany@gmail.com");
             var currencies = new XElement("currencies");
             var uah = new XElement("currency", new XAttribute("id", "UAH"), new XAttribute("rate", "1"));
             currencies.Add(uah);
@@ -144,7 +147,7 @@ namespace Benefit.Services.Domain
             shop.Add(name);
             shop.Add(company);
             shop.Add(url);
-            shop.Add(email);
+            //shop.Add(email);
             shop.Add(currencies);
             shop.Add(categories);
             shop.Add(offers);

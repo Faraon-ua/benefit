@@ -72,6 +72,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (export != null)
             {
                 db.ExportProducts.RemoveRange(export.ExportProducts);
+                db.ExportCategories.RemoveRange(export.ExportCategories);
                 db.ExportImports.Remove(export);
             }
             db.SaveChanges();
