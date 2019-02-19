@@ -1179,6 +1179,7 @@ namespace Benefit.Services.Domain
                     Directory.CreateDirectory(destPath);
                 }
 
+                var index = 0;
                 foreach (var img in excelProduct.ImagesList.Split(','))
                 {
                     var fileName = img;
@@ -1207,7 +1208,7 @@ namespace Benefit.Services.Domain
                                 }
                             }
                         }
-                        ImagesService.AddImage(productId, fileName, imageType);
+                        ImagesService.AddImage(productId, fileName, imageType, index++);
                     }
                 }
             }

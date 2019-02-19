@@ -184,7 +184,7 @@
                                         <ul id="gal1" class="ubislider-inner">
                                             @if (Model.Product.Images.Any())
                                             {
-                                                foreach (var img in Model.Product.Images)
+                                                foreach (var img in Model.Product.Images.OrderBy(entry=>entry.Order))
                                                 {
                                                     <li class="no-before-content">
                                                         <a>

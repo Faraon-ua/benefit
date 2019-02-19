@@ -53,13 +53,14 @@ namespace Benefit.Services
             }
         }
 
-        public void AddImage(string entityId, string fileName, ImageType type)
+        public void AddImage(string entityId, string fileName, ImageType type, int order = 0)
         {
             var image = new Benefit.Domain.Models.Image()
             {
                 Id = Guid.NewGuid().ToString(),
                 ImageType = type,
-                ImageUrl = fileName
+                ImageUrl = fileName,
+                Order = order
             };
             if (type == ImageType.SellerGallery || type == ImageType.SellerGallery || type == ImageType.SellerCatalog)
             {
