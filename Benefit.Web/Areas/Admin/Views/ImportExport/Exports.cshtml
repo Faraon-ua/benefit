@@ -38,7 +38,10 @@
                 @Html.DisplayFor(modelItem => export.Name)
             </td>
             <td>
-                @string.Format("{0}://{1}/export?id={2}", Request.Url.Scheme, Request.Url.Host, export.Id)
+                @{
+                    var link = string.Format("{0}://{1}/export?id={2}", Request.Url.Scheme, Request.Url.Host, export.Id);
+                }
+                <a href="@link" target="_blank">@link</a>
             </td>
             <td>
                 @Html.ActionLink("Видалити", "DeleteExport", new { id = export.Id }, new { onclick = "return confirm('Ви впевнені? ');" })

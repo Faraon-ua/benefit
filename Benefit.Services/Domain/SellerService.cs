@@ -221,7 +221,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Schedules)
                 .Include(entry => entry.Addresses)
                 .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
-                .FirstOrDefault(entry => entry.UrlName == urlName || entry.Domain == urlName);
+                .FirstOrDefault(entry => entry.Domain == urlName || entry.UrlName == urlName);
             return seller;
         }
 
