@@ -78,9 +78,9 @@ namespace Benefit.Services.Domain
             var yml_catalog = new XElement(ns + "yml_catalog", new XAttribute("date", DateTime.Now.ToLocalDateTimeWithFormat()));
             var shop = new XElement("shop");
             var domain = Request.Url.Host;
-            domain = domain.Substring(0, domain.IndexOf("."));
+            domain = domain.Substring(0, domain.IndexOf(".") > 0 ? domain.IndexOf(".") : domain.Length);
             var seller = db.Sellers.FirstOrDefault(entry => entry.Domain == domain || entry.UrlName == domain);
-            var name = new XElement("name", "Интернет магазин " + seller == null ? "Benefit-Company" : seller.Name);
+            var name = new XElement("name", "Интернет магазин " + (seller == null ? "Benefit-Company" : seller.Name));
             var company = new XElement("company", seller == null ? "Benefit-Company" : seller.Name);
             var url = new XElement("url", string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host));
             //var email = new XElement("email", "info.benefitcompany@gmail.com");
