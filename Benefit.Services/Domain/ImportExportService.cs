@@ -12,6 +12,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Xml.Linq;
@@ -44,6 +45,7 @@ namespace Benefit.Services.Domain
 
             var productIds = exportTask.ExportProducts.Select(entry => entry.ProductId).ToList();
             var products = db.Products
+                .Include(entry => entry.Seller.ShippingMethods)
                 .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Currency)
@@ -141,6 +143,17 @@ namespace Benefit.Services.Domain
                 {
                     prod.Add(new XElement("param", new XAttribute("name", parameterProduct.ProductParameter.Name), parameterProduct.StartText));
                 }
+
+                prod.Add(new XElement("param", new XAttribute("name", "Доставка"),
+                    string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Name))));
+                var paymentSB = new StringBuilder();
+                if (product.Seller.IsCashPaymentActive)
+                    paymentSB.Append("Наличными");
+                if (product.Seller.IsAcquiringActive)
+                    paymentSB.Append("Картой Visa/MasterCard");
+                prod.Add(new XElement("param", new XAttribute("name", "Оплата"), paymentSB.ToString()));
+                prod.Add(new XElement("param", new XAttribute("name", "Гарантия"), "Обмен/возврат товара в течение 14 дней"));
+
                 offers.Add(prod);
             }
 
