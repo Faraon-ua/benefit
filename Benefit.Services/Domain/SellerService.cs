@@ -478,11 +478,13 @@ namespace Benefit.Services.Domain
             if (categoryId != null && fetchParameters)
             {
                 var productParameters = db.ProductParameters
-                    .Include(entry => entry.ProductParameterProducts)
+                    .Include(entry => entry.ProductParameterProducts.Select(pp=>pp.Product))
                     .Include(entry => entry.ChildProductParameters)
                     .Where(entry => entry.CategoryId == categoryId && entry.DisplayInFilters).ToList();
                 if (sellerId != null)
                 {
+                    productParameters = productParameters.Where(entry =>
+                        entry.ProductParameterProducts.Any(pp => pp.Product.SellerId == sellerId)).ToList();
                     var mappedCategories = db.Categories
                         .Include(entry => entry.MappedCategories.Select(mc => mc.ProductParameters.Select(pp => pp.ProductParameterProducts)))
                         .Where(

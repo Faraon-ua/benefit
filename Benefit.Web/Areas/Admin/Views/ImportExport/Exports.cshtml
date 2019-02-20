@@ -44,7 +44,7 @@
                 <a href="@link" target="_blank">@link</a>
             </td>
             <td>
-                @Html.ActionLink("Видалити", "DeleteExport", new { id = export.Id }, new { onclick = "return confirm('Ви впевнені? ');" })
+                @Html.ActionLink("Видалити", "DeleteExport", new { id = export.Id }, new { onclick = "return confirm('Ви впевнені? Також видаляться звязані назви категорій і звязки товарів з експортом. ');" })
             </td>
         </tr>
     }
