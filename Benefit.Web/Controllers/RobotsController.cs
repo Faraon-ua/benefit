@@ -2,6 +2,7 @@
 using Benefit.Services;
 using Benefit.Web.Helpers;
 using System.Web.Mvc;
+using Benefit.Web.Filters;
 
 namespace Benefit.Web.Controllers
 {
@@ -24,6 +25,7 @@ Disallow: /account";
             return Content(robotsResult, "text/plain");
         }
 
+        [FetchSeller]
         public ActionResult Sitemap()
         {
             var siteMapHelper = new SiteMapHelper();
