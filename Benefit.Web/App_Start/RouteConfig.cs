@@ -1,6 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using Benefit.Common.Constants;
+using System.Web.Mvc;
 using System.Web.Routing;
-using Benefit.Common.Constants;
 
 namespace Benefit.Web
 {
@@ -9,6 +9,7 @@ namespace Benefit.Web
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+            routes.RouteExistingFiles = true;
 
             routes.MapRoute(
               name: RouteConstants.CatalogRouteName + "GetProducts",
@@ -107,6 +108,18 @@ namespace Benefit.Web
                 url: "pages/{id}",
                 defaults: new { controller = "Pages", action = "Index", id = UrlParameter.Optional }
                 );
+
+            routes.MapRoute(
+                name: "sitemap",
+                url: "sitemap.xml",
+                defaults: new { controller = "Robots", action = "Sitemap" }
+            );
+
+            routes.MapRoute(
+                name: "robots",
+                url: "robots.txt",
+                defaults: new { controller = "Robots", action = "Index" }
+            );
 
             routes.MapRoute(
                 name: "Default",

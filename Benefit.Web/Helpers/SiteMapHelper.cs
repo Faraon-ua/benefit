@@ -18,7 +18,7 @@ namespace Benefit.Web.Helpers
         private readonly string basePath = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
         private const int MaxUrlSetNumber = 50000;
 
-        public int Generate(UrlHelper urlHelper, string host, Seller activeSeller = null)
+        public string Generate(UrlHelper urlHelper, string host, bool saveToDisc = true, Seller activeSeller = null)
         {
             var sellerId = activeSeller == null ? null : activeSeller.Id;
             var siteMapCounter = 1;
@@ -87,7 +87,7 @@ namespace Benefit.Web.Helpers
                         products = products.Where(entry => entry.SellerId == sellerId);
                     }
                     products = products.OrderBy(entry => entry.SKU)
-                        .Skip(productsPage * ProductsPerPage).Take(ProductsPerPage).ToList();
+                        .Skip(productsPage * ProductsPerPage).Take(ProductsPerPage + 1).ToList();
 
                     foreach (var product in products)
                     {
@@ -105,6 +105,10 @@ namespace Benefit.Web.Helpers
                         if (count == MaxUrlSetNumber)
                         {
                             doc.Add(urlSet);
+                            if (!saveToDisc)
+                            {
+                                return doc.ToString();
+                            }
                             using (var stream = File.Create(Path.Combine(basePath, string.Format("sitemap{0}.xml", siteMapCounter++))))
                             {
                                 using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
@@ -118,8 +122,12 @@ namespace Benefit.Web.Helpers
                         }
                     }
                     productsPage++;
-                } while (products.Count() == ProductsPerPage);
+                } while (products.Count() > ProductsPerPage);
                 doc.Add(urlSet);
+                if (!saveToDisc)
+                {
+                    return doc.ToString();
+                }
                 using (var stream = File.Create(Path.Combine(basePath, string.Format("sitemap{0}.xml", siteMapCounter))))
                 {
                     using (var writer = new StreamWriter(stream, new UTF8Encoding(false)))
@@ -149,7 +157,7 @@ namespace Benefit.Web.Helpers
                         doc.Save(writer);
                     }
                 }
-                return siteMapCounter;
+                return null;
             }
         }
     }
