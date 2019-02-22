@@ -10,6 +10,7 @@ using System.Text;
 using System.Web.Mvc;
 using System.Xml;
 using System.Xml.Linq;
+using Benefit.Services.Domain;
 
 namespace Benefit.Web.Helpers
 {
@@ -17,6 +18,7 @@ namespace Benefit.Web.Helpers
     {
         private readonly string basePath = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
         private const int MaxUrlSetNumber = 50000;
+        private SellerService SellerService = new SellerService();
 
         public string Generate(UrlHelper urlHelper, string host, bool saveToDisc = true, Seller activeSeller = null)
         {
@@ -56,7 +58,10 @@ namespace Benefit.Web.Helpers
                     }
                 }
                 //todo: select only seller categories
-                foreach (var cat in db.Categories.Where(entry => !entry.IsSellerCategory && entry.IsActive).ToList())
+                var categories = sellerId == null
+                    ? db.Categories.Where(entry => !entry.IsSellerCategory && entry.IsActive).ToList()
+                    : SellerService.GetAllSellerCategories(activeSeller.UrlName);
+                foreach (var cat in categories)
                 {
                     var url = new XElement(ns + "url");
                     var loc = new XElement(ns + "loc",

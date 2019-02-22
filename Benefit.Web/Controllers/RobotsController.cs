@@ -8,6 +8,7 @@ namespace Benefit.Web.Controllers
 {
     public class RobotsController : Controller
     {
+        [FetchSeller]
         public virtual ActionResult Index()
         {
             string robotsResult = @"User-agent: *
@@ -17,7 +18,8 @@ Disallow: /search
 Disallow: /cart
 Disallow: /account";
             var sitemapFileName = "sitemap.xml";
-            if (Request.Url.Host == SettingsService.BaseHostName || Request.Url.Host == "localhost")
+            var seller = (ViewBag.Seller as Seller);
+            if (seller == null)
             {
                 sitemapFileName = "sitemap_index.xml";
             }
