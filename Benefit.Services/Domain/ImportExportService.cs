@@ -1193,7 +1193,8 @@ namespace Benefit.Services.Domain
                 }
 
                 var index = 0;
-                foreach (var img in excelProduct.ImagesList.Split(','))
+                var imgs = excelProduct.ImagesList.Split(',').Where(entry=>!string.IsNullOrEmpty(entry));
+                foreach (var img in imgs)
                 {
                     var fileName = img;
                     using (var client = new WebClient())
