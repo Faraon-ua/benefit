@@ -1,23 +1,41 @@
 ﻿@model Benefit.Domain.Models.ProductOption
-<div id="dialog" title="Група опцій" class="hide">
-    <div class="ui-dialog-content ui-widget-content" id="dialog-confirm" style="width: auto; min-height: 27px; max-height: none; height: auto;">
-        @using (Html.BeginForm("CreateOrUpdate", "ProductOptions"))
-        {
-            @Html.AntiForgeryToken()
-            @Html.TextBoxFor(m => m.Name, new { placeholder = "Назва групи", @class = "col-sm-12" })
-            <br />
-            <br />
-            <div class="padding-10">
-                @Html.EditorFor(m => m.MultipleSelection)
-                <label for="MultipleSelection" class="control-label ">Можливість обирати декілька опцій</label>
+<div class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title pull-left bold">Група опцій</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-            <div class="padding-10">
-                @Html.TextBoxFor(m => m.Order, new  { placeholder="Порядок", @class="number-input" })
-            </div>
-            @Html.HiddenFor(m => m.CategoryId)
-            @Html.HiddenFor(m => m.SellerId)
-            @Html.HiddenFor(m => m.ProductId)
-            @Html.HiddenFor(m => m.Id)
-        }
+            @using (Html.BeginForm("CreateOrUpdate", "ProductOptions"))
+            {
+                <div class="modal-body">
+                    @Html.AntiForgeryToken()
+                    @Html.TextBoxFor(m => m.Name, new { placeholder = "Назва групи", @class = "width-50" })
+                    <br />
+                    <br />
+                    <div class="padding-10">
+                        @Html.EditorFor(m => m.MultipleSelection)
+                        <label for="MultipleSelection" class="control-label ">Можливість обирати декілька опцій</label>
+                    </div>
+                    <div class="padding-10">
+                        @Html.EditorFor(m => m.IsVariant)
+                        <label for="IsVariant" class="control-label ">Є варіантом товару</label>
+                    </div>
+                    <div class="padding-10">
+                        @Html.TextBoxFor(m => m.Order, new { placeholder = "Порядок", @class = "number-input" })
+                    </div>
+                    @Html.HiddenFor(m => m.CategoryId)
+                    @Html.HiddenFor(m => m.SellerId)
+                    @Html.HiddenFor(m => m.ProductId)
+                    @Html.HiddenFor(m => m.Id)
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Зберегти</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
+                </div>
+            }
+        </div>
     </div>
 </div>

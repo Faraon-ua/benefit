@@ -16,9 +16,12 @@ namespace Benefit.Domain.Models
         [MaxLength(64)]
         [Required]
         public string Name { get; set; }
+        [MaxLength(100)]
+        public string Image { get; set; }
+        public bool IsVariant { get; set; }
         public bool MultipleSelection { get; set; }
         public bool EditableAmount { get; set; }
-        public int Order { get; set; }
+        public int? Order { get; set; }
         public double PriceGrowth { get; set; }
         [MaxLength(128)]
         public string ParentProductOptionId { get; set; }

@@ -22,17 +22,7 @@
     <script>
         function ProductOptionGroup(id) {
             $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionGroup?categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.ProductId&id=" + id, function (response, status, xhr) {
-                $("#dialog").removeClass('hide').dialog({
-                    buttons: [
-                        {
-                            text: "Зберегти",
-                            "class": "btn btn-info",
-                            click: function () {
-                                $("form").submit();
-                            }
-                        }
-                    ]
-                });
+                $(".modal").modal();
             });
         }
 
@@ -132,7 +122,7 @@
         <a href="@Url.Action("Index", new {sellerId = Model.SellerId, categoryId = Model.Product.CategoryId})">
             Редагування опцій категорії
         </a>
-        <br/>
+        <br />
     }
 </div>
 <div class="options-select-container clearfix" style="display: none;">

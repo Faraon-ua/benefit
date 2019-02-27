@@ -27,6 +27,17 @@
     {
         category = category.MappedParentCategory;
     }
+    var productVariants = Model.Product.ProductOptions.Where(entry => entry.IsVariant).ToList();
+    var productVariantsImages = productVariants.SelectMany(entry => entry.ChildProductOptions).Where(entry => entry.Image != null);
+    var gallery = Model.Product.Images.OrderBy(entry => entry.Order).ToList();
+    foreach (var productVariant in productVariantsImages)
+    {
+        gallery.Add(new Image()
+        {
+            Id = productVariant.Id,
+            ImageUrl = productVariant.Image
+        });
+    }
 }
 @section image_src
 {
@@ -70,7 +81,16 @@
         var sellerUrlName = '@Model.Product.Seller.UrlName';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
 
-        $(function() {
+        $(function () {
+            $(".variants .variant-item").click(function () {
+                $(this).siblings().removeClass("active");
+                $(this).addClass("active");
+                var imageId = $(this).attr("data-image-id");
+                if (imageId) {
+                    $(".ubislider li[data-image-id=" + imageId + "]").click();
+                }
+            });
+
             $(".wholesalePices").click(function(e) {
                 e.preventDefault();
                 $(this).next("p").show();
@@ -86,7 +106,6 @@
                 position: 'vertical'
             });
 
-
             $("#buy-product, #buy-product-with-options").click(function() {
                 var buttonId = $(this).attr("id");
                 if (buttonId == "buy-product") {
@@ -98,6 +117,21 @@
                     }
                 }
 
+                if ($(".variants").length > 0) {
+                    var variantsSelected = true;
+                    $(".variants .row").each(function () {
+                        if ($(this).find(".active").length == 0) {
+                            $(this).next(".validation").show();
+                            variantsSelected = false;
+                        } else {
+                            $(this).next(".validation").hide();
+                        }
+                    });
+                }
+                if (!variantsSelected) {
+                    return;
+                }
+              
                 $(this).attr("disabled", "disabled");
                 $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
                 $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
@@ -184,9 +218,9 @@
                                         <ul id="gal1" class="ubislider-inner">
                                             @if (Model.Product.Images.Any())
                                             {
-                                                foreach (var img in Model.Product.Images.OrderBy(entry=>entry.Order))
+                                                foreach (var img in gallery)
                                                 {
-                                                    <li class="no-before-content">
+                                                    <li class="no-before-content" data-image-id="@img.Id">
                                                         <a>
                                                             @if (img.IsAbsoluteUrl)
                                                             {
@@ -245,10 +279,10 @@
                                     </p>
 
                                     @*<div class="x-product-info__item">
-                                        <div class="x-product-info__inline">
-                                            <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
-                                        </div>
-                                    </div>*@
+                                            <div class="x-product-info__inline">
+                                                <a href="#" class="dark_link">Цей товар на сайті постачальника</a>
+                                            </div>
+                                        </div>*@
                                     <div class="x-product-info__item">
                                         <div class="x-product-info__inline">
                                             <div class="x-product-presence" data-qaid="product_presence">
@@ -327,6 +361,39 @@
                                             }
                                         </div>
                                     </div>
+                                    @if (productVariants.Any())
+                                    {
+                                        <div class="variants">
+                                            @foreach (var group in productVariants)
+                                            {
+                                                <div>
+                                                    <div class="row">
+                                                        <div class="col-sm-2 title">@group.Name:</div>
+                                                        <div class="col-sm-10">
+                                                            @foreach (var option in group.ChildProductOptions)
+                                                            {
+                                                                if (option.Image != null)
+                                                                {
+                                                                    <div class="variant-item" data-image-id="@option.Id">
+                                                                        <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
+                                                                    </div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="variant-item">
+                                                                        @option.Name
+                                                                    </div>
+                                                                }
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <p class="margin-top-10 validation alert alert-warning width-30" style="display: none;">
+                                                        Будь ласка оберіть @group.Name
+                                                    </p>
+                                                </div>
+                                            }
+                                        </div>
+                                    }
                                     @if (availableForPurchase.Key)
                                     {
                                         <div class="x-product-info__item counter_wrapp" style="width: 30%; float: left; margin-top: 25px;">
@@ -880,7 +947,7 @@
     ViewBag.RelatedProductsHeading = "Переглянуті товари";
     @Html.Partial("_RelatedProducts", viewedProducts)
 }
-@if (Model.ProductOptions.Any())
+@if (Model.ProductOptions.Any(entry => !entry.IsVariant))
 {
     @Html.Partial("_ProductOptions", Model)
 }
