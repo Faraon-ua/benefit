@@ -27,7 +27,7 @@
     {
         category = category.MappedParentCategory;
     }
-    var productVariants = Model.Product.ProductOptions.Where(entry => entry.IsVariant).ToList();
+    var productVariants = Model.Product.ProductOptions.Where(entry => entry.IsVariant).OrderBy(entry => entry.Order).ToList();
     var productVariantsImages = productVariants.SelectMany(entry => entry.ChildProductOptions).Where(entry => entry.Image != null);
     var gallery = Model.Product.Images.OrderBy(entry => entry.Order).ToList();
     foreach (var productVariant in productVariantsImages)
@@ -89,6 +89,17 @@
                 if (imageId) {
                     $(".ubislider li[data-image-id=" + imageId + "]").click();
                 }
+                var sufix = "";
+                var priceGrowth = 0;
+                $(".variants .variant-item.active").each(function() {
+                    sufix += " " +
+                        $(this).attr("data-option-title") +
+                        " " +
+                        $(this).attr("data-option-name");
+                    priceGrowth += parseFloat($(this).attr("data-price-growth"));
+                    $(".x-title").text('@Model.Product.Name ' + sufix);
+                    $(".product-price").text((parseFloat('@Model.Product.Price') + priceGrowth).toFixed(2));
+                });
             });
 
             $(".wholesalePices").click(function(e) {
@@ -106,7 +117,9 @@
                 position: 'vertical'
             });
 
-            $("#buy-product, #buy-product-with-options").click(function() {
+            $("#buy-product, #buy-product-with-options").click(function () {
+                var productNameSufix = "";
+                var productPriceGrowth = 0;
                 var buttonId = $(this).attr("id");
                 if (buttonId == "buy-product") {
                     //if there are options to show
@@ -127,11 +140,19 @@
                             $(this).next(".validation").hide();
                         }
                     });
+                    if (!variantsSelected) {
+                        return;
+                    }
+
+                    $(".variants .variant-item.active").each(function() {
+                        productNameSufix += " " +
+                            $(this).attr("data-option-title") +
+                            " " +
+                            $(this).attr("data-option-name");
+                        productPriceGrowth += parseFloat($(this).attr("data-price-growth"));
+                    });
                 }
-                if (!variantsSelected) {
-                    return;
-                }
-              
+
                 $(this).attr("disabled", "disabled");
                 $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
                 $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
@@ -169,6 +190,8 @@
 
                 var product = {
                     ProductId: '@Model.Product.Id',
+                    NameSuffix: productNameSufix,
+                    PriceGrowth: productPriceGrowth,
                     IsWeightProduct: '@Model.Product.IsWeightProduct',
                     Amount: amount,
                     AvailableAmount: available,
@@ -370,17 +393,17 @@
                                                     <div class="row">
                                                         <div class="col-sm-2 title">@group.Name:</div>
                                                         <div class="col-sm-10">
-                                                            @foreach (var option in group.ChildProductOptions)
+                                                            @foreach (var option in group.ChildProductOptions.OrderBy(entry => entry.Order))
                                                             {
                                                                 if (option.Image != null)
                                                                 {
-                                                                    <div class="variant-item" data-image-id="@option.Id">
+                                                                    <div class="variant-item" data-image-id="@option.Id" data-option-title="@group.Name" data-option-name="@option.Name" data-price-growth="@option.PriceGrowth">
                                                                         <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
                                                                     </div>
                                                                 }
                                                                 else
                                                                 {
-                                                                    <div class="variant-item">
+                                                                    <div class="variant-item" data-option-name="@option.Name" data-option-title="@group.Name" data-price-growth="@option.PriceGrowth">
                                                                         @option.Name
                                                                     </div>
                                                                 }

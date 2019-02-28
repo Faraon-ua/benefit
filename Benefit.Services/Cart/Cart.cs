@@ -64,7 +64,7 @@ namespace Benefit.Services.Cart
                         .Include(entry => entry.Currency)
                         .Include(entry => entry.Images)
                         .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
-                orderProduct.ProductName = product.Name;
+                orderProduct.ProductName = product.Name + orderProduct.NameSuffix;
                 if (!string.IsNullOrEmpty(product.ExternalId))
                 {
                     orderProduct.ProductName += string.Format(" ({0})", product.ExternalId);
@@ -87,6 +87,8 @@ namespace Benefit.Services.Cart
                 {
                     orderProduct.ProductPrice = product.Price;
                 }
+
+                orderProduct.ProductPrice += orderProduct.PriceGrowth;
                 if (product.WholesalePrice.HasValue && product.WholesaleFrom.HasValue)
                 {
                     if (product.Currency != null)

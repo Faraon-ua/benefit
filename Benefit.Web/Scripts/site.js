@@ -449,6 +449,8 @@ $(function () {
         var products = wrap.find("tr.basket_modal_table_row.product").map(function () {
             var id = $(this).attr("data-product-id");
             var available = parseFloat($(this).attr("data-available-amount"));
+            var nameSuffix = $(this).attr("data-name-suffix");
+            var priceGrowth = parseFloat($(this).attr("data-price-growth"));
             var amount = parseFloat($(this).find(".product_modal_amount").val());
             var productOptions = $(this).nextUntil(".product").map(function () {
                 var optionId = $(this).attr("data-option-id");
@@ -460,6 +462,8 @@ $(function () {
             }).get();
             return {
                 ProductId: id,
+                NameSuffix: nameSuffix,
+                PriceGrowth: priceGrowth,
                 Amount: amount,
                 AvailableAmount: available,
                 OrderProductOptions: productOptions

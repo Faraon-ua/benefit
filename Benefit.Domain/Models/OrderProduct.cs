@@ -33,6 +33,8 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public double? WholesaleProductPrice { get; set; }
         [NotMapped]
+        public double PriceGrowth { get; set; }
+        [NotMapped]
         public double? WholesaleFrom { get; set; }
         public double Amount { get; set; }
         public int Index { get; set; }
@@ -42,6 +44,8 @@ namespace Benefit.Domain.Models
         public bool IsWeightProduct { get; set; }
         [NotMapped]
         public double BonusesAcquired { get; set; }
+        [NotMapped]
+        public string NameSuffix{ get; set; }
         [NotMapped]
         public ICollection<OrderProductOption> OrderProductOptions { get; set; }
 
