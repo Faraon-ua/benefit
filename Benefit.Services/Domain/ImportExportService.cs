@@ -65,14 +65,15 @@ namespace Benefit.Services.Domain
                 }
             }
             dbcategories = dbcategories.Where(entry => entry != null).ToList();
-            var exportCategories = new Dictionary<string, string>();
+            var exportCategories = new Dictionary<int, string>();
             foreach (var dbCat in dbcategories)
             {
-                if (!exportCategories.ContainsKey(dbCat.Id))
+                var id = Math.Abs(dbCat.Id.GetHashCode());
+                if (!exportCategories.ContainsKey(id))
                 {
                     var catExport = dbCat.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId);
                     var catName = catExport == null ? "Не задано мапінг" : catExport.Name;
-                    exportCategories.Add(dbCat.Id, catName);
+                    exportCategories.Add(id, catName);
                 }
             }
             var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
@@ -112,6 +113,8 @@ namespace Benefit.Services.Domain
                     price *= product.Currency.Rate;
                 }
                 prod.Add(new XElement("price", price));
+                prod.Add(new XElement("currencyId", "UAH"));
+                prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
                 if (product.OldPrice.HasValue)
                 {
                     var oldprice = product.OldPrice;

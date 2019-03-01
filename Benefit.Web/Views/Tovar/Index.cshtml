@@ -803,6 +803,39 @@
                                                         </a>
                                                     }
                                                 </div>
+                                                @if (productVariants.Any())
+                                                {
+                                                    <div class="variants">
+                                                        @foreach (var group in productVariants)
+                                                        {
+                                                            <div>
+                                                                <div class="row">
+                                                                    <div class="col-sm-2 title">@group.Name:</div>
+                                                                    <div class="col-sm-10">
+                                                                        @foreach (var option in group.ChildProductOptions.OrderBy(entry => entry.Order))
+                                                                        {
+                                                                            if (option.Image != null)
+                                                                            {
+                                                                                <div class="variant-item" data-image-id="@option.Id" data-option-title="@group.Name" data-option-name="@option.Name" data-price-growth="@option.PriceGrowth">
+                                                                                    <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
+                                                                                </div>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <div class="variant-item" data-option-name="@option.Name" data-option-title="@group.Name" data-price-growth="@option.PriceGrowth">
+                                                                                    @option.Name
+                                                                                </div>
+                                                                            }
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                                <p class="margin-top-10 validation alert alert-warning width-30" style="display: none;">
+                                                                    Будь ласка оберіть @group.Name
+                                                                </p>
+                                                            </div>
+                                                        }
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                         @if (Model.Product.WholesalePrice.HasValue && Model.Product.WholesaleFrom.HasValue)
