@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Benefit.Common.Constants;
-using Benefit.Domain.Models;
+﻿using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Helpers;
 using Benefit.Web.Models;
 using Microsoft.AspNet.Identity;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -92,7 +92,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult CreateOrUpdate(string id = null, string parentCategoryId = null)
         {
             var category = db.Categories
-                               .Include(entry => entry.ExportCategories.Select(ec=>ec.Export))
+                               .Include(entry => entry.ExportCategories.Select(ec => ec.Export))
                                .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
                                .FirstOrDefault(entry => entry.Id == id) ??
                            new Category()
@@ -108,7 +108,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }).ToList();
             categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 0 });
             ViewBag.Categories = categories;
-            ViewBag.Exports = db.ExportImports.Where(entry=>entry.SyncType == SyncType.YmlExport).ToList();
+            ViewBag.Exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
             category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
             return View(category);
         }
@@ -127,6 +127,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var exportCategories = category.ExportCategories.ToList();
                 category.LastModified = DateTime.UtcNow;
                 category.LastModifiedBy = User.Identity.Name;
+                var children = db.Categories
+                    .Where(entry =>
+                        entry.ParentCategoryId == category.Id || entry.MappedParentCategoryId == category.Id).ToList();
+                    children.ForEach(entry =>
+                    {
+                        entry.ShowCartOnOrder = category.ShowCartOnOrder;
+                        db.Entry(entry).State = EntityState.Modified;
+                    });
+
                 if (db.Categories.Any(entry => entry.Id == category.Id))
                 {
                     db.Entry(category).State = EntityState.Modified;
@@ -180,6 +189,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Value = entry.Id,
                 Level = entry.HierarchicalLevel
             });
+            ViewBag.Exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
             return View(category);
         }
 
@@ -237,7 +247,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult MapCategories(string sellerCatId, string siteCatId)
         {
             var sellerCat = db.Categories.FirstOrDefault(entry => entry.Id == sellerCatId);
-            if (sellerCat == null) return HttpNotFound();
+            if (sellerCat == null)
+            {
+                return HttpNotFound();
+            }
+
             sellerCat.MappedParentCategoryId = siteCatId;
             db.Entry(sellerCat).State = EntityState.Modified;
             db.SaveChanges();

@@ -125,10 +125,10 @@ namespace Benefit.Services.Domain
                     prod.Add(new XElement("oldprice", oldprice));
                 }
                 prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
-                var categoryId = product.CategoryId;
+                var categoryId = Math.Abs(product.CategoryId.GetHashCode());
                 if (product.Category.MappedParentCategory != null)
                 {
-                    categoryId = product.Category.MappedParentCategoryId;
+                    categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
                 }
                 prod.Add(new XElement("categoryId", categoryId));
                 foreach (var picture in product.Images.OrderBy(entry => entry.Order))

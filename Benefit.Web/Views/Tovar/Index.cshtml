@@ -75,14 +75,15 @@
     <script src="~/Scripts/v3/products.js"></script>
     <script>
         var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
-        var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var addToFavoritesUrl =
+            '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
         var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
         var sellerId = '@Model.Product.SellerId';
         var sellerUrlName = '@Model.Product.Seller.UrlName';
-        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
 
-        $(function () {
-            $(".variants .variant-item").click(function () {
+        $(function() {
+            $(".variants .variant-item").click(function() {
                 $(this).siblings().removeClass("active");
                 $(this).addClass("active");
                 var imageId = $(this).attr("data-image-id");
@@ -117,7 +118,7 @@
                 position: 'vertical'
             });
 
-            $("#buy-product, #buy-product-with-options").click(function () {
+            $("#buy-product, #buy-product-with-options").click(function() {
                 var productNameSufix = "";
                 var productPriceGrowth = 0;
                 var buttonId = $(this).attr("id");
@@ -129,10 +130,13 @@
                         return;
                     }
                 }
-
                 if ($(".variants").length > 0) {
+                    var variantsWrap = $(".variants").eq(0);
+                    if ($(this).hasClass("mobile")) {
+                        variantsWrap = $(".variants mobile").eq(0);
+                    }
                     var variantsSelected = true;
-                    $(".variants .row").each(function () {
+                    variantsWrap.find(".row").each(function() {
                         if ($(this).find(".active").length == 0) {
                             $(this).next(".validation").show();
                             variantsSelected = false;
@@ -174,7 +178,6 @@
 
                 var available = $("#available-amount");
                 var amount = $(".quantity").val();
-
                 if (available.length > 0) {
                     available = parseFloat(available.text());
                     var amount = parseFloat(amount);
@@ -211,6 +214,9 @@
                                 $(".product_info_wrap,.item_main_info").css("opacity", 1);
                                 $(".button_block  ").removeClass("loadings");
                                 setCartSummary(data);
+                                if ('@Model.Product.Category.ShowCartOnOrder'.toLowerCase() === 'true') {
+                                    $(".basket-link:not(.no-action)").click();
+                                }
                             },
                             1000);
                     });
@@ -731,7 +737,12 @@
                                                 <div class="price_matrix_block">
                                                     <div class="price_matrix_wrapper ">
                                                         <div class="price" style="font-size: 26px;">
-                                                            <span class="values_wrapper">@Model.Product.Price.ToString("F")<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
+                                                            <span class="values_wrapper">
+                                                                <span class="product-price">
+                                                                    @Model.Product.Price.ToString("F")
+                                                                </span>
+                                                                <span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                                                            </span>
                                                         </div>
                                                         @if (Model.Product.OldPrice.HasValue)
                                                         {
@@ -805,7 +816,7 @@
                                                 </div>
                                                 @if (productVariants.Any())
                                                 {
-                                                    <div class="variants">
+                                                    <div class="variants mobile">
                                                         @foreach (var group in productVariants)
                                                         {
                                                             <div>
@@ -829,7 +840,7 @@
                                                                         }
                                                                     </div>
                                                                 </div>
-                                                                <p class="margin-top-10 validation alert alert-warning width-30" style="display: none;">
+                                                                <p class="margin-top-10 validation alert alert-warning" style="display: none;">
                                                                     Будь ласка оберіть @group.Name
                                                                 </p>
                                                             </div>
@@ -860,7 +871,7 @@
                                                 </div>
                                                 <div class="button_block ">
                                                     <!--noindex-->
-                                                    <span id="buy-product" class="btn-lg w_icons to-cart btn btn-default transition_bg animate-load">
+                                                    <span id="buy-product mobile" class="btn-lg w_icons to-cart btn btn-default transition_bg">
                                                         <i></i><span>Купити</span>
                                                     </span>
                                                     <!--/noindex-->

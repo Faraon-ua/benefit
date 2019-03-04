@@ -562,6 +562,10 @@
     <Compile Include="Migrations\201902251320115_AddImageToProductOption.Designer.cs">
       <DependentUpon>201902251320115_AddImageToProductOption.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903040922576_AddShowCartOnOrder.cs" />
+    <Compile Include="Migrations\201903040922576_AddShowCartOnOrder.Designer.cs">
+      <DependentUpon>201903040922576_AddShowCartOnOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -982,6 +986,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902251320115_AddImageToProductOption.resx">
       <DependentUpon>201902251320115_AddImageToProductOption.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903040922576_AddShowCartOnOrder.resx">
+      <DependentUpon>201903040922576_AddShowCartOnOrder.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

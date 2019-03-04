@@ -74,6 +74,7 @@ namespace Benefit.Domain.Models
         public string BannerUrl { get; set; }
         public int Order { get; set; }
         public bool IsActive { get; set; }
+        public bool ShowCartOnOrder { get; set; }
         public DateTime LastModified { get; set; }
         public string LastModifiedBy { get; set; }
         public bool IsSellerCategory { get; set; }
