@@ -2,30 +2,31 @@
     margin-top: 20px;
 }
 
-    .variants .title {
-        line-height: 30px;
-        font-size: 1.5em;
-    }
+.variants .title {
+    line-height: 30px;
+    font-size: .8125rem;
+}
 
-    .variants .variant-item {
-        float: left;
-        outline: 1px solid #e9e9e9;
-        margin: 0 7px;
-        cursor: pointer;
-        display: block;
+.variants .variant-item {
+    float: left;
+    outline: 1px solid #e9e9e9;
+    margin: 0 7px;
+    cursor: pointer;
+    display: block;
+    width: 45px;
+    height: 45px;
+    text-align: center;
+    line-height: 45px;
+}
+
+    .variants .variant-item img {
         width: 45px;
         height: 45px;
-        text-align: center;
-        line-height: 45px;
     }
-        .variants .variant-item img {
-            width: 45px;
-            height: 45px;
-        }
 
-        .variants .variant-item:hover, .variants .variant-item.active {
-            outline: 3px solid orangered;
-        }
+    .variants .variant-item:hover, .variants .variant-item.active {
+        outline: 3px solid orangered;
+    }
 
 .no-border {
     border: none !important;
