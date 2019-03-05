@@ -183,12 +183,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return RedirectToAction("CreateOrUpdate", new { id = category.Id });
             }
 
-            ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
-            {
-                Text = entry.Name,
-                Value = entry.Id,
-                Level = entry.HierarchicalLevel
-            });
+            var categories =
+                db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList().Select(
+                    entry => new HierarchySelectItem()
+                    {
+                        Text = entry.Name,
+                        Value = entry.Id,
+                        Level = entry.HierarchicalLevel
+                    }).ToList();
+            categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 0 });
+            ViewBag.Categories = categories;
             ViewBag.Exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
             return View(category);
         }
