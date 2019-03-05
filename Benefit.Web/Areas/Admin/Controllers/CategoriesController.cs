@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Domain.Models.ModelExtensions;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -127,20 +128,26 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var exportCategories = category.ExportCategories.ToList();
                 category.LastModified = DateTime.UtcNow;
                 category.LastModifiedBy = User.Identity.Name;
-                var children = db.Categories
-                    .Where(entry =>
-                        entry.ParentCategoryId == category.Id || entry.MappedParentCategoryId == category.Id).ToList();
-                    children.ForEach(entry =>
-                    {
-                        entry.ShowCartOnOrder = category.ShowCartOnOrder;
-                        db.Entry(entry).State = EntityState.Modified;
-                    });
 
                 if (db.Categories.Any(entry => entry.Id == category.Id))
                 {
                     db.Entry(category).State = EntityState.Modified;
                     var existingCategoryExports = db.ExportCategories.Where(entry => entry.CategoryId == category.Id).ToList();
                     db.ExportCategories.RemoveRange(existingCategoryExports);
+
+                    var existingCat = db.Categories.Find(category.Id);
+                    var children = existingCat.GetAllChildrenRecursively().Distinct(new CategoryComparer());
+                    children.ForEach(entry =>
+                    {
+                        entry.ShowCartOnOrder = category.ShowCartOnOrder;
+                    });
+                    var childernIds = children.Select(entry => entry.Id).ToList();
+                    var mappedCats = db.Categories.Where(entry => childernIds.Contains(entry.MappedParentCategoryId));
+                    mappedCats.ForEach(entry =>
+                    {
+                        entry.ShowCartOnOrder = category.ShowCartOnOrder;
+                        db.Entry(entry).State = EntityState.Modified;
+                    });
                 }
                 else
                 {

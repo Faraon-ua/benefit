@@ -4,7 +4,7 @@
 
 .variants .title {
     line-height: 30px;
-    font-size: .8125rem;
+    font-weight: bold;
 }
 
 .variants .variant-item {

@@ -215,7 +215,7 @@
                                 $(".button_block  ").removeClass("loadings");
                                 setCartSummary(data);
                                 if ('@Model.Product.Category.ShowCartOnOrder'.toLowerCase() === 'true') {
-                                    $(".basket-link:not(.no-action)").click();
+                                    $(".basket-link:not(.no-action)").eq(0).click();
                                 }
                             },
                             1000);
