@@ -66,6 +66,8 @@ namespace Benefit.Domain.Models
         public SellerStatus Status { get; set; }
         public bool SafePurchase { get; set; }
         #region SEO
+        [MaxLength(50)]
+        public string GoogleSiteVerificationToken { get; set; }
         [MaxLength(80)]
         public string Title { get; set; }
         [MaxLength(250)]
