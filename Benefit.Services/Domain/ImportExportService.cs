@@ -907,7 +907,7 @@ namespace Benefit.Services.Domain
                 var indexOfSlash = entry.IndexOf("/", startIndex) > 0
                     ? entry.IndexOf("/", startIndex)
                     : entry.Length;
-                return entry.Substring(startIndex, indexOfSlash - startIndex);
+                return entry.Substring(startIndex, indexOfSlash - startIndex).Trim();
             }).Distinct().ToList();
             foreach (var cat in cats)
             {
