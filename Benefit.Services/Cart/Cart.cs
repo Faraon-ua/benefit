@@ -51,7 +51,7 @@ namespace Benefit.Services.Cart
                 };
                 Orders.Add(order);
             }
-            var existingProduct = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
+            var existingProduct = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId && entry.NameSuffix == orderProduct.NameSuffix);
             if (existingProduct != null)
             {
                 existingProduct.Amount += orderProduct.Amount;

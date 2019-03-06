@@ -55,6 +55,7 @@
         var pagesCount = parseInt('@Model.PagesCount');
         var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
         var term = "";
+        var showCartOnOrder = '@Model.Category.ShowCartOnOrder'.toLowerCase() === 'true';
     </script>
     <script src="~/Scripts/v3/products.js"></script>
     <script src="~/Scripts/v3/product-filters.js"></script>
@@ -285,6 +286,7 @@
     </div>
 </div>
 <div id="product-options-wrap"></div>
+<div id="product-variants-wrap"></div>
 @if (Model.Category != null && !string.IsNullOrEmpty(Model.Category.Tag))
 {
     @Html.Action("ShowMessagePopup", "Home", new { message = Model.Category.Tag, showButtons = true })
