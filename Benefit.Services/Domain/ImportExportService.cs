@@ -907,7 +907,7 @@ namespace Benefit.Services.Domain
                 var indexOfSlash = entry.IndexOf("/", startIndex) > 0
                     ? entry.IndexOf("/", startIndex)
                     : entry.Length;
-                return entry.Substring(startIndex, indexOfSlash - startIndex).Trim();
+                return entry.Substring(startIndex, indexOfSlash - startIndex);
             }).Distinct().ToList();
             foreach (var cat in cats)
             {
@@ -958,36 +958,38 @@ namespace Benefit.Services.Domain
                 .ToList();
             var excelProducts =
                 (from row in rows
-                 let item = new ExcelProduct()
-                 {
-                     Product = new Product
-                     {
-                         ExternalId = row["SKU"].Cast<string>(),
-                         Vendor = row["Brand"].Cast<string>(),
-                         Name = row["Product"].Cast<string>().Truncate(256),
-                         Price = row["Price"].Cast<double>(),
-                         OldPrice = row["Old price"].Cast<double>(),
-                         IsActive = true,
-                         IsWeightProduct = row["Units"].Cast<string>() != "шт",
-                         IsFeatured = row["Featured"].Cast<bool>(),
-                         Title = row["Meta title"].Cast<string>().Truncate(70),
-                         Description = row["Description"].Cast<string>(),
-                         ShortDescription = row["Meta description"].Cast<string>().Truncate(160),
-                         UrlName = row["URL"].Cast<string>() ?? row["Product"].Cast<string>().Translit(),
-                         AvailableAmount = row["Stock"].Cast<int?>()
-                     },
-                     CategoryName = row["Category"].Cast<string>(),
-                     ImagesList = row["Images"].Cast<string>(),
-                     CurrencyName = row["Currency"].Cast<string>(),
-                     Visible = row["Visible"].Cast<int>(),
-
-                 }
-                 select item).ToList()
+                    let item = new ExcelProduct()
+                    {
+                        Product = new Product
+                        {
+                            ExternalId = row["SKU"].Cast<string>(),
+                            Vendor = row["Brand"].Cast<string>(),
+                            Name = row["Product"].Cast<string>().Truncate(256),
+                            Price = row["Price"].Cast<double>(),
+                            OldPrice = row["Old price"].Cast<double>(),
+                            IsActive = true,
+                            IsWeightProduct = row["Units"].Cast<string>() != "шт",
+                            IsFeatured = row["Featured"].Cast<bool>(),
+                            Title = row["Meta title"].Cast<string>().Truncate(70),
+                            Description = row["Description"].Cast<string>(),
+                            ShortDescription = row["Meta description"].Cast<string>().Truncate(160),
+                            UrlName = row["URL"].Cast<string>() ?? row["Product"].Cast<string>().Translit(),
+                            AvailableAmount = row["Stock"].Cast<int?>()
+                        },
+                        CategoryName = row["Category"].Cast<string>().Trim().Replace("\n", string.Empty)
+                            .Replace("\t", string.Empty),
+                        ImagesList = row["Images"].Cast<string>(),
+                        CurrencyName = row["Currency"].Cast<string>(),
+                        Visible = row["Visible"].Cast<int>()
+                    }
+                    select item).ToList()
                 .Where(entry => !string.IsNullOrEmpty(entry.CategoryName)).ToList();
 
             #region Excel Categories
 
-            var allCats = excelProducts.Select(entry => entry.CategoryName).Distinct().ToList();
+            var allCats = excelProducts
+                .Select(entry => entry.CategoryName.Trim().Replace("\n", string.Empty).Replace("\t", string.Empty))
+                .Distinct().ToList();
             var allDbCats = new List<Category>();
 
             ProcessExcelCategories(allCats, allDbCats, sellerId, null);
@@ -1015,7 +1017,6 @@ namespace Benefit.Services.Domain
             db.DeleteWhereColumnIn(existingProductParameterProducts, "ProductParameterId");
             db.DeleteWhereColumnIn(existingProductParameterValues);
             db.DeleteWhereColumnIn(existingProductParameters);
-
 
             #endregion
 
@@ -1108,7 +1109,7 @@ namespace Benefit.Services.Domain
             foreach (var parameterName in parameterNames)
             {
                 var catsWithParam = rows.Where(entry => !string.IsNullOrEmpty(entry[parameterName].Value.ToString()))
-                    .Select(entry => entry["Category"].Value.ToString()).Distinct().ToList();
+                    .Select(entry => entry["Category"].Value.ToString().Trim().Replace("\n", string.Empty)).Distinct().ToList();
                 var dbCatsWithParam =
                     allDbCats.Where(entry => catsWithParam.Contains(entry.ExpandedSlashName)).ToList();
                 foreach (var cat in dbCatsWithParam)
@@ -1142,6 +1143,7 @@ namespace Benefit.Services.Domain
                     productParameterValuesToAdd.AddRange(productParameterValues);
                 }
 
+               
                 var productParameterRows =
                     rows.Where(entry => !string.IsNullOrEmpty(entry[parameterName].Value.ToString())).ToList();
                 foreach (var productParameterRow in productParameterRows)
