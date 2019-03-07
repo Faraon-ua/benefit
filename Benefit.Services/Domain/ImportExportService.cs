@@ -151,9 +151,15 @@ namespace Benefit.Services.Domain
                     string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Name))));
                 var paymentSB = new StringBuilder();
                 if (product.Seller.IsCashPaymentActive)
+                {
                     paymentSB.Append("Наличными");
+                }
+
                 if (product.Seller.IsAcquiringActive)
+                {
                     paymentSB.Append("Картой Visa/MasterCard");
+                }
+
                 prod.Add(new XElement("param", new XAttribute("name", "Оплата"), paymentSB.ToString()));
                 prod.Add(new XElement("param", new XAttribute("name", "Гарантия"), "Обмен/возврат товара в течение 14 дней"));
 
@@ -919,7 +925,7 @@ namespace Benefit.Services.Domain
                     {
                         Id = Guid.NewGuid().ToString(),
                         Name = cat,
-                        UrlName = string.Format("{0}_{1}", sellerId, cat.Translit()),
+                        UrlName = string.Format("{0}_{1}", sellerId, cat.Translit().Truncate(128 - sellerId.Length)),
                         ParentCategoryId = parentId,
                         IsSellerCategory = true,
                         SellerId = sellerId,
@@ -958,31 +964,31 @@ namespace Benefit.Services.Domain
                 .ToList();
             var excelProducts =
                 (from row in rows
-                    let item = new ExcelProduct()
-                    {
-                        Product = new Product
-                        {
-                            ExternalId = row["SKU"].Cast<string>(),
-                            Vendor = row["Brand"].Cast<string>(),
-                            Name = row["Product"].Cast<string>().Truncate(256),
-                            Price = row["Price"].Cast<double>(),
-                            OldPrice = row["Old price"].Cast<double>(),
-                            IsActive = true,
-                            IsWeightProduct = row["Units"].Cast<string>() != "шт",
-                            IsFeatured = row["Featured"].Cast<bool>(),
-                            Title = row["Meta title"].Cast<string>().Truncate(70),
-                            Description = row["Description"].Cast<string>(),
-                            ShortDescription = row["Meta description"].Cast<string>().Truncate(160),
-                            UrlName = row["URL"].Cast<string>() ?? row["Product"].Cast<string>().Translit(),
-                            AvailableAmount = row["Stock"].Cast<int?>()
-                        },
-                        CategoryName = row["Category"].Cast<string>().Trim().Replace("\n", string.Empty)
-                            .Replace("\t", string.Empty),
-                        ImagesList = row["Images"].Cast<string>(),
-                        CurrencyName = row["Currency"].Cast<string>(),
-                        Visible = row["Visible"].Cast<int>()
-                    }
-                    select item).ToList()
+                 let item = new ExcelProduct()
+                 {
+                     Product = new Product
+                     {
+                         ExternalId = row["SKU"].Cast<string>(),
+                         Vendor = row["Brand"].Cast<string>(),
+                         Name = row["Product"].Cast<string>().Truncate(256),
+                         Price = row["Price"].Cast<double>(),
+                         OldPrice = row["Old price"].Cast<double>(),
+                         IsActive = true,
+                         IsWeightProduct = row["Units"].Cast<string>() != "шт",
+                         IsFeatured = row["Featured"].Cast<bool>(),
+                         Title = row["Meta title"].Cast<string>().Truncate(70),
+                         Description = row["Description"].Cast<string>(),
+                         ShortDescription = row["Meta description"].Cast<string>().Truncate(160),
+                         UrlName = row["URL"].Cast<string>().Truncate(128) ?? row["Product"].Cast<string>().Translit().Truncate(128),
+                         AvailableAmount = row["Stock"].Cast<int?>()
+                     },
+                     CategoryName = row["Category"].Cast<string>().Trim().Replace("\n", string.Empty)
+                         .Replace("\t", string.Empty),
+                     ImagesList = row["Images"].Cast<string>(),
+                     CurrencyName = row["Currency"].Cast<string>(),
+                     Visible = row["Visible"].Cast<int>()
+                 }
+                 select item).ToList()
                 .Where(entry => !string.IsNullOrEmpty(entry.CategoryName)).ToList();
 
             #region Excel Categories
@@ -1143,7 +1149,7 @@ namespace Benefit.Services.Domain
                     productParameterValuesToAdd.AddRange(productParameterValues);
                 }
 
-               
+
                 var productParameterRows =
                     rows.Where(entry => !string.IsNullOrEmpty(entry[parameterName].Value.ToString())).ToList();
                 foreach (var productParameterRow in productParameterRows)
@@ -1198,7 +1204,7 @@ namespace Benefit.Services.Domain
                 }
 
                 var index = 0;
-                var imgs = excelProduct.ImagesList.Split(',').Where(entry=>!string.IsNullOrEmpty(entry));
+                var imgs = excelProduct.ImagesList.Split(',').Where(entry => !string.IsNullOrEmpty(entry));
                 foreach (var img in imgs)
                 {
                     var fileName = img;
