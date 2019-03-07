@@ -55,7 +55,7 @@
         var pagesCount = parseInt('@Model.PagesCount');
         var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
         var term = "";
-        var showCartOnOrder = '@Model.Category.ShowCartOnOrder'.toLowerCase() === 'true';
+        var showCartOnOrder = '@(Model.Category == null ? "false" : Model.Category.ShowCartOnOrder.ToString())'.toLowerCase() === 'true';
     </script>
     <script src="~/Scripts/v3/products.js"></script>
     <script src="~/Scripts/v3/product-filters.js"></script>

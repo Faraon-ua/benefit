@@ -75,7 +75,10 @@
 
                     <div class="logo_wrap col-md-3">
                         <a class="logo" href="/">
-                            <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" style="width: 100%;" />
+                            @if (sellerLogo != null)
+                            {
+                                <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" style="width: 100%;"/>
+                            }
                         </a>
                     </div>
 
