@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace Benefit.Web.Controllers
 {
@@ -35,6 +36,10 @@ namespace Benefit.Web.Controllers
         {
             var cats = ViewBag.Categories as List<Category>;
             var productResult = ProductsService.GetProductDetails(cats, productUrl, User.Identity.GetUserId());
+            if (productResult == null)
+            {
+                throw new HttpException(404, "Not found");
+            }
             var viewedProducts = Session[DomainConstants.ViewedProductsSessionKey] as List<Product> ??
                                  new List<Product>();
             if (!viewedProducts.Contains(productResult.Product, new ProductComparer()))
@@ -44,11 +49,6 @@ namespace Benefit.Web.Controllers
                 Session[DomainConstants.ViewedProductsSessionKey] = viewedProducts;
             }
             productResult.ViewedProducts = viewedProducts;
-            if (productResult == null)
-            {
-                throw new HttpException(404, "Not found");
-            }
-
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {
