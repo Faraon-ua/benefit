@@ -703,7 +703,7 @@
                         <meta itemprop="productID" content="@Model.Product.SKU" />
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
                         <meta itemprop="description" content="@Model.Product.ShortDescription" />
-                        <meta itemprop="image" content="@image_src_str" />
+                        <meta itemprop="image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)" />
                         @{
                             var parentCat = Model.Product.Category.MappedParentCategory ?? Model.Product.Category;
                         }

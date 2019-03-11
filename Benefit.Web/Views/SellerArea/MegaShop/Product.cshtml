@@ -12,7 +12,7 @@
     var image_src_str = string.Empty;
     if (image_src != null)
     {
-        image_src_str = image_src.IsAbsoluteUrl ? image_src.ImageUrl : string.Format("/Images/ProductGallery/{0}/{1}", @Model.Product.Id, image_src.ImageUrl);
+        image_src_str = image_src.IsAbsoluteUrl ? image_src.ImageUrl : string.Format("/Images/ProductGallery/{0}/{1}", Model.Product.Id, image_src.ImageUrl);
     }
     var seller = Model.Product.Seller;
     var paymentTypes = new List<PaymentType>();
@@ -133,13 +133,15 @@
     <link href="~/Content/seller/megashop/jquery.css" rel="stylesheet" />
     <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
 }
+<!-- микроразметка -->
 <div class="catalog_detail detail" itemscope itemtype="http://schema.org/Product">
     <meta itemprop="name" content="@Model.Product.Name" />
+    <meta itemprop="url" content="@Request.Url.AbsolutePath" />
     <meta itemprop="productID" content="@Model.Product.SKU" />
     <meta itemprop="category" content="@Model.Product.Category.Name" />
     <meta itemprop="description" content="@Model.Product.ShortDescription" />
-    <meta itemprop="image" content="@image_src_str" />
-    <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+    <meta itemprop="image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)" />
+    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
         <meta itemprop="price" content="@Model.Product.Price" />
         <meta itemprop="priceCurrency" content="UAH" />
         @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
@@ -147,24 +149,29 @@
             <link itemprop="availability" href="http://schema.org/InStock" />
         }
     </div>
-    <div class="x-product-info__inline" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
-        <meta itemprop="ratingValue" content="@Model.Product.AvarageRating" />
-        <meta itemprop="reviewCount" content="@Model.Product.Reviews.Count" />
-        <meta itemprop="bestRating" content="5" />
-        <meta itemprop="worstRating" content="0" />
-        @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
-        {
-            SmallStars = true,
-            IsActive = true,
-            Rating = Model.Product.AvarageRating
-        })
-    </div>
+    @if (Model.Product.AvarageRating.HasValue)
+    {
+        <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+            <meta itemprop="ratingValue" content="@Model.Product.AvarageRating" />
+            <meta itemprop="reviewCount" content="@Model.Product.Reviews.Count" />
+            <meta itemprop="bestRating" content="5" />
+            <meta itemprop="worstRating" content="0" />
+            @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
+            {
+                SmallStars = true,
+                IsActive = true,
+                Rating = Model.Product.AvarageRating
+            })
+        </div>
+    }
 </div>
+<!-- микроразметка -->
+
 <div class="col-md-8 col-xl-9 content">
     @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
     <div class="fn_ajax_content">
         <div class="block padding">
-            <div class="fn_product product product_info_wrap" itemscope="" itemtype="http://schema.org/Product">
+            <div class="fn_product product product_info_wrap">
                 <h1 class="h2">
                     <span itemprop="name">@Model.Product.Name</span>
                 </h1>
@@ -217,15 +224,7 @@
                         }
                     </div>
                     <div class="col-xl-6">
-                        <div class="product_details" itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
-                            <span class="hidden">
-                                <link itemprop="availability" href="https://schema.org/InStock">
-                                <link itemprop="itemCondition" href="https://schema.org/NewCondition">
-                                <span itemprop="seller" itemscope="" itemtype="http://schema.org/Organization">
-                                    <span itemprop="name">@Model.Product.Seller.Name</span>
-                                </span>
-                            </span>
-
+                        <div class="product_details">
                             <div class="row">
                                 <div class="col-sm-6">
                                     @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel() { IsActive = false, Rating = Model.Product.AvarageRating, SmallStars = true })
