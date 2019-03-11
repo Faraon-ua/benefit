@@ -700,7 +700,6 @@
                 <div class="container">
                     <div class="catalog_detail detail" itemscope itemtype="http://schema.org/Product">
                         <meta itemprop="name" content="@Model.Product.Name" />
-                        <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
                         <meta itemprop="sku" content="@Model.Product.SKU" />
                         <meta itemprop="productID" content="@Model.Product.SKU" />
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
@@ -763,11 +762,12 @@
                                         <div class="prices_block">
                                             <div class="cost prices clearfix">
                                                 <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-                                                    <meta itemprop="price" content="@Model.Product.Price" />
-                                                    <meta itemprop="priceCurrency" content="UAH" />
+                                                    <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
+                                                    <meta itemprop="price" content="@Model.Product.Price"/>
+                                                    <meta itemprop="priceCurrency" content="UAH"/>
                                                     @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
                                                     {
-                                                        <link itemprop="availability" href="http://schema.org/InStock" />
+                                                        <link itemprop="availability" href="http://schema.org/InStock"/>
                                                     }
                                                 </div>
                                                 <div class="price_matrix_block">

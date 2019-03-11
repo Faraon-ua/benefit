@@ -136,18 +136,18 @@
 <!-- микроразметка -->
 <div class="catalog_detail detail" itemscope itemtype="http://schema.org/Product">
     <meta itemprop="name" content="@Model.Product.Name" />
-    <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
     <meta itemprop="productID" content="@Model.Product.SKU" />
     <meta itemprop="sku" content="@Model.Product.SKU" />
     <meta itemprop="category" content="@Model.Product.Category.Name" />
     <meta itemprop="description" content="@Model.Product.ShortDescription" />
     <meta itemprop="image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)" />
     <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
-        <meta itemprop="price" content="@Model.Product.Price" />
-        <meta itemprop="priceCurrency" content="UAH" />
+        <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
+        <meta itemprop="price" content="@Model.Product.Price"/>
+        <meta itemprop="priceCurrency" content="UAH"/>
         @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
         {
-            <link itemprop="availability" href="http://schema.org/InStock" />
+            <link itemprop="availability" href="http://schema.org/InStock"/>
         }
     </div>
     @if (Model.Product.AvarageRating.HasValue)
@@ -245,7 +245,7 @@
 
                                     @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
                                     {
-                                        <span class="in_stock" data-language="product_in_stock">В нявності</span>
+                                        <span class="in_stock" data-language="product_in_stock">В наявності</span>
                                     }
                                     else
                                     {
