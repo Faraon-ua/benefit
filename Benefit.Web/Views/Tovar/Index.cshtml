@@ -700,6 +700,8 @@
                 <div class="container">
                     <div class="catalog_detail detail" itemscope itemtype="http://schema.org/Product">
                         <meta itemprop="name" content="@Model.Product.Name" />
+                        <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
+                        <meta itemprop="sku" content="@Model.Product.SKU" />
                         <meta itemprop="productID" content="@Model.Product.SKU" />
                         <meta itemprop="category" content="@Model.Product.Category.Name" />
                         <meta itemprop="description" content="@Model.Product.ShortDescription" />
