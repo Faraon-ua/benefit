@@ -180,11 +180,12 @@ namespace Benefit.Services.Domain
         public List<ProductOption> GetProductOptions(string productId)
         {
             var product = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).FirstOrDefault(entry => entry.Id == productId);
-            var productOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(entry => entry.ParentProductOptionId == null && entry.ProductId == productId).ToList();
+            var productOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(entry =>
+                entry.ParentProductOptionId == null && entry.ProductId == productId && !entry.IsVariant).ToList();
             var categoryProductOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(
                 entry =>
                     entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId &&
-                    entry.ParentProductOptionId == null).ToList();
+                    entry.ParentProductOptionId == null && !entry.IsVariant).ToList();
             productOptions.InsertRange(0, categoryProductOptions);
             productOptions.ForEach(entry => entry.ChildProductOptions = entry.ChildProductOptions.OrderBy(po => po.Order).ToList());
             return productOptions.OrderBy(entry => entry.Order).ToList();

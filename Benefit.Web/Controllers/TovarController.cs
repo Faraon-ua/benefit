@@ -13,7 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
+using System.Data.Entity;
 
 namespace Benefit.Web.Controllers
 {
@@ -92,6 +92,26 @@ namespace Benefit.Web.Controllers
             if (result.ProductOptions.Any())
             {
                 return PartialView("_ProductOptions", result);
+            }
+            return Content(string.Empty);
+        }
+
+        public ActionResult GetProductVariants(string productId)
+        {
+            Product product;
+            using (var db = new ApplicationDbContext())
+            {
+                product = db.Products.Include(entry=>entry.ProductOptions).FirstOrDefault(entry=>entry.Id == productId);
+            }
+            if (product == null)
+            {
+                return HttpNotFound();
+            }
+
+            product.ProductOptions = product.ProductOptions.Where(entry => entry.IsVariant).ToList();
+            if (product.ProductOptions.Any())
+            {
+                return PartialView("_ProductVariants", product);
             }
             return Content(string.Empty);
         }
