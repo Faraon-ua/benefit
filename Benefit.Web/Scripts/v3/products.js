@@ -76,12 +76,21 @@
 
     $("body").on('click',
         "#buy-product-with-variants",
-        function() {
+        function () {
+            var productNameSufix = "";
+            var productPriceGrowth = 0;
             var productId = $(this).attr("data-product-id");
             var sellerId = $(this).attr("data-seller-id");
             var variantsWrap = $(this).parentsUntil(".variants");
-            var selectedVar = variantsWrap.find(".variant-item.active");
-            if (selectedVar.length == 0) {
+            var selectedVars = variantsWrap.find(".variant-item.active");
+            selectedVars.each(function () {
+                productNameSufix += " " +
+                    $(this).attr("data-option-title") +
+                    " " +
+                    $(this).attr("data-option-name");
+                productPriceGrowth += parseFloat($(this).attr("data-price-growth"));
+            });
+            if (selectedVars.length == 0) {
                 $(this).parents(".variants").find(".validation").show();
             } else {
                 AddOrderProduct(1,
@@ -89,9 +98,7 @@
                     sellerId,
                     true,
                     false,
-                    selectedVar.attr("data-option-title") +
-                    " " +
-                    selectedVar.attr("data-option-name"), selectedVar.attr("data-price-growth"));
+                   productNameSufix, productPriceGrowth);
                 $(".modal.variants").modal('hide');
             }
         });
