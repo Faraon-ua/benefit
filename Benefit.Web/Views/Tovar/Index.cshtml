@@ -118,7 +118,7 @@
                 position: 'vertical'
             });
 
-            $("#buy-product, #buy-product-with-options").click(function() {
+            $("#buy-product, #buy-product-with-options").click(function () {
                 var productNameSufix = "";
                 var productPriceGrowth = 0;
                 var buttonId = $(this).attr("id");
@@ -133,15 +133,15 @@
                 if ($(".variants").length > 0) {
                     var variantsWrap = $(".variants").eq(0);
                     if ($(this).hasClass("mobile")) {
-                        variantsWrap = $(".variants mobile").eq(0);
+                        variantsWrap = $(".variants.mobile").eq(0);
                     }
                     var variantsSelected = true;
                     variantsWrap.find(".row").each(function() {
                         if ($(this).find(".active").length == 0) {
-                            $(this).next(".validation").show();
+                            $(this).prev(".validation").show();
                             variantsSelected = false;
                         } else {
-                            $(this).next(".validation").hide();
+                            $(this).prev(".validation").hide();
                         }
                     });
                     if (!variantsSelected) {
@@ -396,6 +396,9 @@
                                             @foreach (var group in productVariants)
                                             {
                                                 <div>
+                                                    <p class="margin-top-10 validation alert alert-warning width-50" style="display: none;">
+                                                        Будь ласка оберіть @group.Name
+                                                    </p>
                                                     <div class="row">
                                                         <div class="col-sm-2 title">@group.Name:</div>
                                                         <div class="col-sm-10">
@@ -404,7 +407,7 @@
                                                                 if (option.Image != null)
                                                                 {
                                                                     <div class="variant-item" data-image-id="@option.Id" data-option-title="@group.Name" data-option-name="@option.Name" data-price-growth="@option.PriceGrowth">
-                                                                        <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
+                                                                        <img src="~/Images/ProductGallery/@option.ProductId/@option.Image"/>
                                                                     </div>
                                                                 }
                                                                 else
@@ -416,9 +419,6 @@
                                                             }
                                                         </div>
                                                     </div>
-                                                    <p class="margin-top-10 validation alert alert-warning width-30" style="display: none;">
-                                                        Будь ласка оберіть @group.Name
-                                                    </p>
                                                 </div>
                                             }
                                         </div>
@@ -856,6 +856,9 @@
                                                         @foreach (var group in productVariants)
                                                         {
                                                             <div>
+                                                                <p class="margin-top-10 validation alert alert-warning" style="display: none;">
+                                                                    Будь ласка оберіть @group.Name
+                                                                </p>
                                                                 <div class="row">
                                                                     <div class="col-sm-2 title">@group.Name:</div>
                                                                     <div class="col-sm-10">
@@ -864,7 +867,7 @@
                                                                             if (option.Image != null)
                                                                             {
                                                                                 <div class="variant-item" data-image-id="@option.Id" data-option-title="@group.Name" data-option-name="@option.Name" data-price-growth="@option.PriceGrowth">
-                                                                                    <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
+                                                                                    <img src="~/Images/ProductGallery/@option.ProductId/@option.Image"/>
                                                                                 </div>
                                                                             }
                                                                             else
@@ -876,9 +879,6 @@
                                                                         }
                                                                     </div>
                                                                 </div>
-                                                                <p class="margin-top-10 validation alert alert-warning" style="display: none;">
-                                                                    Будь ласка оберіть @group.Name
-                                                                </p>
                                                             </div>
                                                         }
                                                     </div>
@@ -907,7 +907,7 @@
                                                 </div>
                                                 <div class="button_block ">
                                                     <!--noindex-->
-                                                    <span id="buy-product mobile" class="btn-lg w_icons to-cart btn btn-default transition_bg">
+                                                    <span id="buy-product" class="mobile btn-lg w_icons to-cart btn btn-default transition_bg">
                                                         <i></i><span>Купити</span>
                                                     </span>
                                                     <!--/noindex-->
