@@ -1009,10 +1009,11 @@ namespace Benefit.Services.Domain
             var productParameterValuesToAdd = new List<ProductParameterValue>();
             var productParameterProductsToAdd = new List<ProductParameterProduct>();
 
-            var categryIds = allDbCats.Select(pr => pr.Id).ToList();
+            var existingCategories = db.Categories.Where(entry => entry.SellerId == sellerId);
+            var existingCategoryIds = existingCategories.Select(entry=>entry.Id).ToList();
             var existingProductParameters =
                 db.ProductParameters.Where(
-                    entry => categryIds.Contains(entry.CategoryId)).ToList();
+                    entry => existingCategoryIds.Contains(entry.CategoryId)).ToList();
             var productParameterIds = existingProductParameters.Select(pr => pr.Id).ToList();
             var existingProductParameterValues =
                 db.ProductParameterValues.Where(
