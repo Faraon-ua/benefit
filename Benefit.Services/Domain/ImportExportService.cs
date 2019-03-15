@@ -1139,7 +1139,10 @@ namespace Benefit.Services.Domain
 
                     var xmlProductParameterValues =
                         rows.Where(entry => !string.IsNullOrEmpty(entry[parameterName].Value.ToString()))
-                            .Select(entry => entry[parameterName].Value.ToString()).Distinct().ToList();
+                            .Select(entry =>
+                                entry[parameterName].Value.ToString().Trim().Replace("\n", string.Empty)
+                                    .Replace("\t", string.Empty)).Where(entry => !string.IsNullOrEmpty(entry))
+                            .Distinct().ToList();
 
                     var productParameterValues =
                         xmlProductParameterValues.Select(entry => new ProductParameterValue()

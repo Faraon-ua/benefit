@@ -2,10 +2,6 @@
 @using Benefit.Domain.Models
 @model ExportImport
 
-<div id="yml-importing-process" style="display: none;">
-    <div class="loader"></div>
-    <h2 style="color: red;">Відбувається процес імпорту</h2>
-</div>
 @using (Html.BeginForm("CreateOrUpdate", "ImportExport"))
 {
     @Html.AntiForgeryToken()
