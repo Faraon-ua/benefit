@@ -997,8 +997,11 @@ namespace Benefit.Services.Domain
                 .Select(entry => entry.CategoryName.Trim().Replace("\n", string.Empty).Replace("\t", string.Empty))
                 .Distinct().ToList();
             var allDbCats = new List<Category>();
-
             ProcessExcelCategories(allCats, allDbCats, sellerId, null);
+            var alldDbNames = allDbCats.Select(entry => entry.Name).ToList();
+            var inActiveCategories = db.Categories
+                .Where(entry => entry.SellerId == sellerId && !alldDbNames.Contains(entry.Name)).ToList();
+            inActiveCategories.ForEach(entry=>entry.MappedParentCategoryId = null);
             db.SaveChanges();
 
             #endregion

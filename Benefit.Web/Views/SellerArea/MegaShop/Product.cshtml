@@ -203,7 +203,7 @@
                         @if (Model.Product.Images.Count > 1)
                         {
                             <div class="fn_images images clearfix">
-                                @foreach(var img in Model.Product.Images.OrderBy(entry => entry.Order))
+                                @foreach(var img in Model.Product.Images.OrderBy(entry => entry.Order).Skip(1))
                                 {
                                     <div class="images_item">
                                         @if (img.IsAbsoluteUrl)
