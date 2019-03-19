@@ -1,6 +1,10 @@
 ﻿var routePrefix = "/Benefit.Web";
 //var routePrefix = "";
 
+jQuery.expr[':'].hasValue = function (el, index, match) {
+    return el.value != "";
+};
+
 function getFormData($form) {
     var unindexed_array = $form.serializeArray();
     var indexed_array = {};

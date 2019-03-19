@@ -1,4 +1,8 @@
-﻿.variants .row {
+﻿.btn-secondary {
+    background-color: #cccccc !important;
+}
+
+.variants .row {
     margin-top: 20px;
 }
 

@@ -25,12 +25,9 @@ namespace Benefit.Web.Models
     public class RegisterViewModel
     {
         public int? ReferalNumber { get; set; }
-        [MaxLength(32)]
-        [Required(ErrorMessage = "Ім'я є обов'язковим для заповнення")]
-        public string FirstName { get; set; }
-        [MaxLength(32)]
-        [Required(ErrorMessage = "Прізвище є обов'язковим для заповнення")]
-        public string LastName { get; set; }
+        [MaxLength(60)]
+        [Required(ErrorMessage = "Ім'я та прізвище є обов'язковими для заповнення")]
+        public string FullName { get; set; }
         [Required(ErrorMessage = "Місто є обов'язковим для заповнення")]
         public string RegionName { get; set; }
         public int? RegionId { get; set; }

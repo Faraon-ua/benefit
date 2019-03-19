@@ -96,8 +96,23 @@
                 }
             });
 
-            $("#save-order").click(function() {
+            $("body").on("click focusout",
+                "input",
+                function() {
+                    if ($("#register-form input:hasValue").length == $("#register-form input").length &&
+                        $("#delivery input:checked").length > 0 &&
+                        $("#payment input:checked").length > 0) {
+                        $("#save-order span").removeClass("btn-secondary");
+                        $("#save-order span").addClass("btn-default");
+                    }
+                });
+
+            $("#save-order").click(function () {
                 var btn = $(this);
+                if (btn.find("span").hasClass("btn-secondary")) {
+                    flashMessage("Будь ласка заповніть всі поля", true);
+                    return;
+                }
                 btn.find(".btn").attr("disabled", "disabled");
                 showLoader();
                 var shippingMethod = $("input[name=ShippingMethodId]:checked");
@@ -312,8 +327,8 @@
                             <div class="row">
                                 <div class="col-sm-6">
                                     <label> Ім'я та прізвище *</label>
-                                    @Html.TextBox("FirstName", null)
-                                    @Html.ValidationMessage("FirstName")
+                                    @Html.TextBox("FullName", null)
+                                    @Html.ValidationMessage("FullName")
                                 </div>
                                 <div class="col-sm-6">
                                     @{
@@ -425,7 +440,7 @@
                 @Html.Partial("_PaymentSummary", Model)
             </div>
             <div class="button_block col-sm-3 col-md-3 display-block-xs" id="save-order" style="text-align: center; float: none; padding: 0;">
-                <span class="btn btn-default bold height-50px" style="font-size: 17px; line-height: 2em;">
+                <span class="btn btn-secondary bold height-50px" style="font-size: 17px; line-height: 2em;">
                     Оформити замовлення
                 </span>
             </div>

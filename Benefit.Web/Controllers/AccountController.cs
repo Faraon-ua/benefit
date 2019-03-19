@@ -182,9 +182,12 @@ namespace Benefit.Web.Controllers
             var existingUserWarning = false;
             if (isAjaxRequest)
             {
-                ModelState.Remove("model.LastName");
                 ModelState.Remove("model.Password");
                 model.Password = StringHelper.RandomString(8);
+            }
+            if (model.FullName.Trim().Split(' ').Length < 2)
+            {
+                ModelState.AddModelError("FullName", "Ім'я та прізвище є обов'язковими для заповнення");
             }
             ApplicationUser referal;
             var externalNumber = SettingsService.MinUserExternalNumber;
@@ -249,7 +252,7 @@ namespace Benefit.Web.Controllers
                 var user = new ApplicationUser()
                 {
                     UserName = model.Email,
-                    FullName = string.Format("{0} {1}", model.FirstName, model.LastName).Trim(),
+                    FullName = model.FullName.Trim(),
                     RegionId = model.RegionId.GetValueOrDefault(RegionConstants.AllUkraineRegionId),
                     Email = model.Email,
                     IsActive = true,
@@ -294,7 +297,7 @@ namespace Benefit.Web.Controllers
                             Id = Guid.NewGuid().ToString(),
                             IsDefault = true,
                             AddressLine = model.ShippingAddress,
-                            FullName = model.FirstName + " " + model.LastName,
+                            FullName = model.FullName,
                             Phone = model.PhoneNumber,
                             RegionId = model.RegionId.Value,
                             UserId = user.Id
