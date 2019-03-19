@@ -624,22 +624,26 @@ namespace Benefit.Services.Domain
                 });
             }
 
-            var vendorParams =
-                   items.Select(entry => entry.Vendor).Distinct().ToList().Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
-                   {
-                       ParameterValue = entry,
-                       ParameterValueUrl = entry.Replace("&", "")
-                   }).OrderBy(entry => entry.ParameterValue).ToList();
-            if (vendorParams.Count >= 1)
+            if (fetchSellers)
             {
-                productParametersList.Add(new ProductParameter()
+                var vendorParams =
+                    items.Select(entry => entry.Vendor).Distinct().ToList()
+                        .Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
+                        {
+                            ParameterValue = entry,
+                            ParameterValueUrl = entry.Replace("&", "")
+                        }).OrderBy(entry => entry.ParameterValue).ToList();
+                if (vendorParams.Count >= 1)
                 {
-                    Name = "Виробник",
-                    UrlName = "vendor",
-                    Type = typeof(string).ToString(),
-                    DisplayInFilters = true,
-                    ProductParameterValues = vendorParams
-                });
+                    productParametersList.Add(new ProductParameter()
+                    {
+                        Name = "Виробник",
+                        UrlName = "vendor",
+                        Type = typeof(string).ToString(),
+                        DisplayInFilters = true,
+                        ProductParameterValues = vendorParams
+                    });
+                }
             }
 
             var originCountryParams =
