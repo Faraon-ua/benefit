@@ -455,7 +455,7 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case ProductSortOption.Rating:
-                    items = items.OrderBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenByDescending(entry=>entry.AddedOn).ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.SKU);
+                    items = items.OrderBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenByDescending(entry => entry.AddedOn).ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.Order:
                     items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
@@ -478,7 +478,7 @@ namespace Benefit.Services.Domain
             if (categoryId != null && fetchParameters)
             {
                 var productParameters = db.ProductParameters
-                    .Include(entry => entry.ProductParameterProducts.Select(pp=>pp.Product))
+                    .Include(entry => entry.ProductParameterProducts.Select(pp => pp.Product))
                     .Include(entry => entry.ChildProductParameters)
                     .Where(entry => entry.CategoryId == categoryId && entry.DisplayInFilters).ToList();
                 if (sellerId != null)
@@ -624,26 +624,23 @@ namespace Benefit.Services.Domain
                 });
             }
 
-            if (fetchSellers)
-            {
-                var vendorParams =
-                    items.Select(entry => entry.Vendor).Distinct().ToList()
-                        .Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
-                        {
-                            ParameterValue = entry,
-                            ParameterValueUrl = entry.Replace("&", "")
-                        }).OrderBy(entry => entry.ParameterValue).ToList();
-                if (vendorParams.Count >= 1)
-                {
-                    productParametersList.Add(new ProductParameter()
+            var vendorParams =
+                items.Select(entry => entry.Vendor).Distinct().ToList()
+                    .Where(entry => !string.IsNullOrWhiteSpace(entry)).Select(entry => new ProductParameterValue()
                     {
-                        Name = "Виробник",
-                        UrlName = "vendor",
-                        Type = typeof(string).ToString(),
-                        DisplayInFilters = true,
-                        ProductParameterValues = vendorParams
-                    });
-                }
+                        ParameterValue = entry,
+                        ParameterValueUrl = entry.Replace("&", "")
+                    }).OrderBy(entry => entry.ParameterValue).ToList();
+            if (vendorParams.Count >= 1)
+            {
+                productParametersList.Add(new ProductParameter()
+                {
+                    Name = "Виробник",
+                    UrlName = "vendor",
+                    Type = typeof(string).ToString(),
+                    DisplayInFilters = true,
+                    ProductParameterValues = vendorParams
+                });
             }
 
             var originCountryParams =
