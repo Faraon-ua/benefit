@@ -24,6 +24,7 @@
     <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var productVariantsUrl = '@Url.Action("GetProductVariants", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
         var addToFavoritesUrl =
             '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
