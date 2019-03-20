@@ -38,20 +38,20 @@ namespace Benefit.Web.Controllers
                         .Include(entry => entry.Images)
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
-                            entry.IsActive && entry.SellerId == seller.Id && entry.IsFeatured).ToList();
+                            entry.IsActive && entry.SellerId == seller.Id && entry.IsFeatured).Take(8).ToList();
                     seller.NewProducts =
                         db.Products
                         .Include(entry => entry.Favorites)
                         .Include(entry => entry.Images)
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
-                            entry.IsActive && entry.SellerId == seller.Id && entry.IsNewProduct).ToList();
+                            entry.IsActive && entry.SellerId == seller.Id && entry.IsNewProduct).Take(8).ToList();
                     seller.PromotionProducts = db.Products
                         .Include(entry => entry.Favorites)
                         .Include(entry => entry.Images)
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
-                            entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).ToList();
+                            entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).Take(8).ToList();
                 }
 
                 if (seller.HasEcommerce)
