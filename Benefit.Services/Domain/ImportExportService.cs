@@ -1001,7 +1001,7 @@ namespace Benefit.Services.Domain
             var alldDbNames = allDbCats.Select(entry => entry.Name).ToList();
             var inActiveCategories = db.Categories
                 .Where(entry => entry.SellerId == sellerId && !alldDbNames.Contains(entry.Name)).ToList();
-            inActiveCategories.ForEach(entry=>entry.MappedParentCategoryId = null);
+            inActiveCategories.ForEach(entry=> categoriesService.Delete(entry.Id));
             db.SaveChanges();
 
             #endregion
