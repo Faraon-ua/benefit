@@ -136,13 +136,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.ExportCategories.RemoveRange(existingCategoryExports);
 
                     var existingCat = db.Categories.Find(category.Id);
-                    var children = existingCat.GetAllChildrenRecursively().Distinct(new CategoryComparer());
+                    var children = existingCat.GetAllChildrenRecursively().Distinct(new CategoryComparer()).ToList();
                     children.ForEach(entry =>
                     {
                         entry.ShowCartOnOrder = category.ShowCartOnOrder;
+                        db.Entry(entry).State = EntityState.Modified;
                     });
                     var childernIds = children.Select(entry => entry.Id).ToList();
-                    var mappedCats = db.Categories.Where(entry => childernIds.Contains(entry.MappedParentCategoryId));
+                    var mappedCats = db.Categories.Where(entry => childernIds.Contains(entry.MappedParentCategoryId) || entry.MappedParentCategoryId == existingCat.Id).ToList();
                     mappedCats.ForEach(entry =>
                     {
                         entry.ShowCartOnOrder = category.ShowCartOnOrder;

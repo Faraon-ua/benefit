@@ -187,7 +187,7 @@ function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduc
                 $("#" + productId).css("opacity", 1);
                 $(".product_buy").removeClass("loadings");
                 setCartSummary(data);
-                if (typeof showCartOnOrder !== 'undefined') {
+                if (typeof showCartOnOrder !== 'undefined' && showCartOnOrder) {
                     $(".basket-link:not(.no-action)").eq(0).click();
                 }
             }, 1000);
