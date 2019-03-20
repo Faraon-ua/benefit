@@ -24,7 +24,7 @@
                                 <div class="row no-margin">
                                     <div class="col-sm-8">
                                         <span>Постачальник:</span>
-                                        <a href="@Url.SubdomainAction(order.SellerUrlName, "Index", "Home", null)">@order.SellerName</a>
+                                        <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = order.SellerUrlName })">@order.SellerName</a>
                                     </div>
                                     <div class="col-sm-2">
                                         @order.SellerPrimaryRegionName
