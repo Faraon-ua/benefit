@@ -91,30 +91,6 @@ namespace Benefit.Services.Domain
                 return null;
             }
 
-            if (!string.IsNullOrEmpty(product.Vendor))
-            {
-                product.ProductParameterProducts.Add(new ProductParameterProduct()
-                {
-                    ProductParameter = new ProductParameter()
-                    {
-                        Name = "Виробник"
-                    },
-                    StartValue = product.Vendor
-                });
-            }
-
-            if (!string.IsNullOrEmpty(product.OriginCountry))
-            {
-                product.ProductParameterProducts.Add(new ProductParameterProduct()
-                {
-                    ProductParameter = new ProductParameter()
-                    {
-                        Name = "Країна виробник"
-                    },
-                    StartValue = product.OriginCountry
-                });
-            }
-
             if (!product.Seller.IsActive || !product.Category.IsActive)
             {
                 product.AvailabilityState = ProductAvailabilityState.NotInStock;
