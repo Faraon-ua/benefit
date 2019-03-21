@@ -1223,6 +1223,8 @@ namespace Benefit.Services.Domain
                             try
                             {
                                 client.DownloadFile(img, Path.Combine(destPath, fileName));
+                                ImagesService.ResizeToSiteRatio(Path.Combine(destPath, fileName),
+                                    ImageType.ProductGallery);
                             }
                             catch (Exception ex)
                             {
@@ -1237,6 +1239,8 @@ namespace Benefit.Services.Domain
                                 if (ftpImage.Exists)
                                 {
                                     ftpImage.CopyTo(Path.Combine(destPath, ftpImage.Name), true);
+                                    ImagesService.ResizeToSiteRatio(Path.Combine(destPath, ftpImage.Name),
+                                        ImageType.ProductGallery);
                                 }
                             }
                         }

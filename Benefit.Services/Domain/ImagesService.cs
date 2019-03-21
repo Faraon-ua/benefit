@@ -23,7 +23,7 @@ namespace Benefit.Services
                 throw new ArgumentException(
                     string.Format("Unable to determine file extension for fileName: {0}", imagePath));
 
-            switch (extension.ToLower())
+            switch (extension.Trim().ToLower())
             {
                 case @".bmp":
                     return ImageFormat.Bmp;
@@ -49,7 +49,7 @@ namespace Benefit.Services
                     return ImageFormat.Wmf;
 
                 default:
-                    throw new NotImplementedException();
+                    return null;
             }
         }
 
@@ -133,7 +133,9 @@ namespace Benefit.Services
             {
                 using (var fs = new FileStream(imagePath, FileMode.Create, FileAccess.ReadWrite))
                 {
-                    newImage.Save(memory, GetImageFormatByExtension(imagePath));
+                    var format = GetImageFormatByExtension(imagePath);
+                    if(format == null) return;
+                    newImage.Save(memory, format);
                     byte[] bytes = memory.ToArray();
                     fs.Write(bytes, 0, bytes.Length);
                 }
