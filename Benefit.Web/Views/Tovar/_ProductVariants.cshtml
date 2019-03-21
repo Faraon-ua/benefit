@@ -31,7 +31,7 @@
                     }
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer @(Model.ProductOptions.Count == 1 ? "hidden": "")">
                 <button type="button" class="btn btn-primary" style="background: #8f1b0a; color: white" id="buy-product-with-variants" data-product-id="@Model.Id" data-seller-id="@Model.SellerId">Додати до кошика</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрити</button>
             </div>

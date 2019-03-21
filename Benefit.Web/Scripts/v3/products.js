@@ -71,6 +71,9 @@
         function () {
             $(this).siblings().removeClass("active");
             $(this).addClass("active");
+            if ($(this).parents(".variants").find(".variants-group").length === 1) {
+                $("#buy-product-with-variants").click();
+            }
         });
     //variants
 
