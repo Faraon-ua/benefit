@@ -73,7 +73,7 @@ namespace Benefit.Services.Domain
             return db.Favorites.Include(entry => entry.Product).Where(entry => entry.UserId == userId).Select(entry => entry.Product).ToList();
         }
 
-        public ProductDetailsViewModel GetProductDetails(IEnumerable<Category> cachedCats, string urlName, string userId)
+        public ProductDetailsViewModel GetProductDetails(IEnumerable<CategoryVM> cachedCats, string urlName, string userId)
         {
             var delimeterPos = urlName.LastIndexOf("-") + 1;
             var sku = urlName.Substring(delimeterPos, urlName.Length - delimeterPos);

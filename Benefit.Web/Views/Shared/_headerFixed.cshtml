@@ -2,7 +2,7 @@
 @using Benefit.Domain.Models
 @using Benefit.Web.Helpers
 @{
-    var categories = ViewBag.Categories as List<Category>;
+    var categories = ViewBag.Categories as List<CategoryVM>;
     var isMainPage = RouteDataHelper.ActionName == "index" && RouteDataHelper.ControllerName == "home";
 }
 

@@ -27,7 +27,7 @@ namespace Benefit.Services.Domain
             return orders.Skip(skip).Take(take).ToList();
         }
 
-        public string AddOrder(CompleteOrderViewModel model)
+        public string AddOrder(CompleteOrder model)
         {
             var seller = db.Sellers.FirstOrDefault(entry => entry.Id == model.Order.SellerId);
             var order = model.Order;

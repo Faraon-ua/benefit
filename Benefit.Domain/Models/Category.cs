@@ -15,12 +15,51 @@ namespace Benefit.Domain.Models
     }
     public static class CategoryListExtentions
     {
-        public static Category FindByUrlIdRecursively(this IEnumerable<Category> list, string url, string id)
+        public static CategoryVM MapToVM(this Category category)
+        {
+            return AutoMapper.Mapper.Map<CategoryVM>(category);
+        }
+        public static List<CategoryVM> MapToVM(this IEnumerable<Category> categories)
+        {
+            var categoriesVM = categories.Select(entry => new CategoryVM()
+            {
+                Id = entry.Id,
+                Name = entry.Name,
+                UrlName = entry.UrlName,
+                ImageUrl = entry.ImageUrl,
+                ChildCategories = entry.ChildCategories.Select(child => new CategoryVM()
+                {
+                    Id = child.Id,
+                    Name = child.Name,
+                    UrlName = child.UrlName,
+                    ImageUrl = child.ImageUrl,
+                    ChildCategories = entry.ChildCategories.FirstOrDefault(y => y.UrlName == child.UrlName).ChildCategories.Select(kid => new CategoryVM()
+                    {
+                        Id = kid.Id,
+                        Name = kid.Name,
+                        UrlName = kid.UrlName,
+                        ImageUrl = kid.ImageUrl,
+                        ChildCategories = null,
+                        MappedCategories = kid.MappedCategories.Select(kidmc => AutoMapper.Mapper.Map<CategoryVM>(kidmc)).ToList()
+                    }).ToList()
+                }).ToList()
+            }).ToList();
+            return categoriesVM;
+        }
+        public static CategoryVM FindByUrlIdRecursively(this IEnumerable<CategoryVM> list, string url, string id)
         {
             var category = list.FirstOrDefault(entry => entry.UrlName == url || entry.Id == id || (entry.MappedCategories != null && entry.MappedCategories.Select(mc=>mc.UrlName).Contains(url)));
             if (category == null && !list.Any())
                 return null;
             return category ?? FindByUrlIdRecursively(list.SelectMany(entry => entry.ChildCategories), url, id);
+        }
+
+        public static Category FindCatByUrlIdRecursively(this IEnumerable<Category> list, string url, string id)
+        {
+            var category = list.FirstOrDefault(entry => entry.UrlName == url || entry.Id == id || (entry.MappedCategories != null && entry.MappedCategories.Select(mc => mc.UrlName).Contains(url)));
+            if (category == null && !list.Any())
+                return null;
+            return category ?? FindCatByUrlIdRecursively(list.SelectMany(entry => entry.ChildCategories), url, id);
         }
 
         public static IEnumerable<Category> SortByHierarchy(this List<Category> list, string parentId = null)
@@ -35,6 +74,24 @@ namespace Benefit.Domain.Models
             }
         }
     }
+    [Serializable]
+    public class CategoryVM
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public string Title { get; set; }
+        public string Tag { get; set; }
+        public string MetaDescription { get; set; }
+        public string Description { get; set; }
+        public string UrlName { get; set; }
+        public bool ShowCartOnOrder { get; set; }
+        public string ImageUrl { get; set; }
+        public string BannerImageUrl { get; set; }
+        public CategoryVM ParentCategory { get; set; }
+        public ICollection<CategoryVM> ChildCategories { get; set; }
+        public ICollection<CategoryVM> MappedCategories { get; set; }
+    }
+
     public class Category
     {
         public Category()

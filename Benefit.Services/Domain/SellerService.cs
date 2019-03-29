@@ -197,12 +197,11 @@ namespace Benefit.Services.Domain
             return new SellersViewModel()
             {
                 Items = sellers.Skip(ListConstants.DefaultTakePerPage * page).Take(ListConstants.DefaultTakePerPage + 1).ToList(),
-                Category = new Category()
+                Category = new CategoryVM()
                 {
                     UrlName = "postachalnuky",
                     Name = "Каталог постачальників",
-                    ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList(),
-                    ChildAsFilters = true
+                    ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
                 }
             };
         }
@@ -663,7 +662,7 @@ namespace Benefit.Services.Domain
             return productParametersList;
         }
 
-        public NavigationEntitiesViewModel<Product> GetSellerProductsCatalog(IEnumerable<Category> cachedCats, string sellerUrl, string categoryUrl, string options)
+        public NavigationEntitiesViewModel<Product> GetSellerProductsCatalog(IEnumerable<CategoryVM> cachedCats, string sellerUrl, string categoryUrl, string options)
         {
             var categoriesService = new CategoriesService();
             var result = new ProductsViewModel();
@@ -672,7 +671,7 @@ namespace Benefit.Services.Domain
             result.Seller = seller;
             var category = db.Categories
                 .Include(entry => entry.ProductParameters.Select(pr => pr.ProductParameterValues))
-                .FirstOrDefault(entry => entry.UrlName == categoryUrl);
+                .FirstOrDefault(entry => entry.UrlName == categoryUrl).MapToVM();
             result.Category = category;
             var categoryId = category == null ? null : category.Id;
             var catalog = GetSellerCatalogProducts(seller == null ? null : seller.Id, categoryId, options);

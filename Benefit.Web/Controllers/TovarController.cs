@@ -34,7 +34,7 @@ namespace Benefit.Web.Controllers
         [FetchCategories(Order = 1)]
         public ActionResult Index(string productUrl)
         {
-            var cats = ViewBag.Categories as List<Category>;
+            var cats = ViewBag.Categories as List<CategoryVM>;
             var productResult = ProductsService.GetProductDetails(cats, productUrl, User.Identity.GetUserId());
             if (productResult == null)
             {
@@ -154,7 +154,7 @@ namespace Benefit.Web.Controllers
             var products = ProductsService.GetFavorites(userId);
             var model = new ProductsViewModel
             {
-                Category = new Category() { Name = "Улюблені товари", Title = "Улюблені товари", UrlName = "favorites" },
+                Category = new CategoryVM() { Name = "Улюблені товари", Title = "Улюблені товари", UrlName = "favorites" },
                 Items = products,
                 Breadcrumbs = new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Улюблені товари" } },
                 IsFavorites = true

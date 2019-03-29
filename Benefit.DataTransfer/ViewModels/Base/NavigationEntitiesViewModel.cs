@@ -9,7 +9,7 @@ namespace Benefit.DataTransfer.ViewModels.Base
         {
             Items = new List<T>();
         }
-        public Category Category { get; set; }
+        public CategoryVM Category { get; set; }
         public Seller Seller { get; set; }
         public List<T> CurrentRegionItems { get; set; }
         public List<T> Items { get; set; }

@@ -17,12 +17,13 @@ namespace Benefit.Web.Filters
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
             List<Category> categories = null;
+            List<CategoryVM> categoriesVM = null;
             var seller = filterContext.Controller.ViewBag.Seller as Seller;
             if (seller != null)
             {
                 if (HttpRuntime.Cache["Categories" + seller.Id] != null)
                 {
-                    categories = filterContext.Controller.ViewBag.Categories = HttpRuntime.Cache["Categories" + seller.Id];
+                    categoriesVM = filterContext.Controller.ViewBag.Categories = HttpRuntime.Cache["Categories" + seller.Id];
                 }
                 else
                 {
@@ -34,7 +35,9 @@ namespace Benefit.Web.Filters
                         categories = categories.SelectMany(entry => entry.ChildCategories)
                             .Where(entry => entry.IsActive && !entry.IsSellerCategory).ToList();
                     }
-                    HttpRuntime.Cache.Insert("Categories" + seller.Id, categories, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
+
+                    categoriesVM = categories.MapToVM();
+                    HttpRuntime.Cache.Insert("Categories" + seller.Id, categoriesVM, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
 
                     //using (var db = new ApplicationDbContext())
                     //{
@@ -47,7 +50,7 @@ namespace Benefit.Web.Filters
             {
                 if (HttpRuntime.Cache["Categories"] != null)
                 {
-                    categories = filterContext.Controller.ViewBag.Categories = HttpRuntime.Cache["Categories"];
+                    categoriesVM = filterContext.Controller.ViewBag.Categories = HttpRuntime.Cache["Categories"];
                 }
                 else
                 {
@@ -69,11 +72,12 @@ namespace Benefit.Web.Filters
                             entry.ChildCategories = entry.ChildCategories.Where(cat => cat.IsActive).OrderBy(cat => cat.Order).ToList();
                         });
                         categories = categories.ToList();
-                        HttpRuntime.Cache.Insert("Categories", categories, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
+                        categoriesVM = categories.MapToVM();
+                        HttpRuntime.Cache.Insert("Categories", categoriesVM, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
                     }
                 }
             }
-            filterContext.Controller.ViewBag.Categories = categories;
+            filterContext.Controller.ViewBag.Categories = categoriesVM;
         }
     }
 }

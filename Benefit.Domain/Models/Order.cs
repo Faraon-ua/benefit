@@ -30,6 +30,34 @@ namespace Benefit.Domain.Models
         BenefitCard 
     }
 
+    [Serializable]
+    public class OrderVM
+    {
+        public OrderVM()
+        {
+            OrderProducts = new Collection<OrderProduct>();
+        }
+        public string SellerId { get; set; }
+        public string SellerUrlName { get; set; }
+        public string SellerPrimaryRegionName { get; set; }
+        public double SellerUserDiscount { get; set; }
+        public string SellerDiscountName { get; set; }
+        public double? SellerDiscount { get; set; }
+        public string SellerName { get; set; }
+        public double Sum { get; set; }
+        public ICollection<OrderProduct> OrderProducts { get; set; }
+
+        public double GetOrderSum()
+        {
+            var sum = OrderProducts.Sum(
+                entry =>
+                    entry.ProductPrice * entry.Amount +
+                    (entry.OrderProductOptions.Any()
+                        ? entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount)
+                        : entry.DbOrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount)));
+            return sum;
+        }
+    }
     public class Order
     {
         public Order()
@@ -99,10 +127,10 @@ namespace Benefit.Domain.Models
         {
             var sum = OrderProducts.Sum(
                 entry =>
-                    entry.ProductPrice*entry.Amount +
+                    entry.ProductPrice * entry.Amount +
                     (entry.OrderProductOptions.Any()
-                        ? entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth*option.Amount)
-                        : entry.DbOrderProductOptions.Sum(option => option.ProductOptionPriceGrowth*option.Amount)));
+                        ? entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount)
+                        : entry.DbOrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount)));
             return sum;
         }
     }

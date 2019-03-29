@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,6 +8,7 @@ using Benefit.Domain.DataAccess;
 
 namespace Benefit.Domain.Models
 {
+    [Serializable]
     public class OrderProduct
     {
         public OrderProduct()
@@ -16,7 +18,8 @@ namespace Benefit.Domain.Models
         [Key, Column(Order = 0)]
         [MaxLength(128)]
         public string OrderId { get; set; }
-        public virtual Order Order { get; set; }
+        [NonSerialized]
+        public Order Order;
         [Key, Column(Order = 1)]
         [MaxLength(128)]
         public string ProductId { get; set; }
@@ -46,8 +49,10 @@ namespace Benefit.Domain.Models
         public double BonusesAcquired { get; set; }
         [NotMapped]
         public string NameSuffix{ get; set; }
+
         [NotMapped]
-        public ICollection<OrderProductOption> OrderProductOptions { get; set; }
+        [NonSerialized]
+        public ICollection<OrderProductOption> OrderProductOptions;
 
         [NotMapped]
         public double ActualPrice
@@ -61,6 +66,7 @@ namespace Benefit.Domain.Models
                 return ProductPrice;
             }
         }
+
         [NotMapped]
         public ICollection<OrderProductOption> DbOrderProductOptions
         {

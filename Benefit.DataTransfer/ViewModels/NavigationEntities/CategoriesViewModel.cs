@@ -3,7 +3,7 @@ using Benefit.Domain.Models;
 
 namespace Benefit.DataTransfer.ViewModels.NavigationEntities
 {
-    public class CategoriesViewModel : NavigationEntitiesViewModel<Category>
+    public class CategoriesViewModel : NavigationEntitiesViewModel<CategoryVM>
     {
     }
 }

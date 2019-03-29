@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Benefit.Domain.Models;
+﻿using Benefit.Domain.Models;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.DataTransfer.ViewModels
@@ -13,9 +13,15 @@ namespace Benefit.DataTransfer.ViewModels
             PaymentTypes = new List<PaymentType>();
         }
         public string SellerId { get; set; }
+        public OrderVM Order { get; set; }
         public List<ShippingMethod> ShippingMethods { get; set; }
         public List<Address> Addresses { get; set; }
         public List<PaymentType> PaymentTypes { get; set; }
+    }
+
+    public class CompleteOrder
+    {
+        public string SellerId { get; set; }
         [Required(ErrorMessage = "Оберіть метод доставки")]
         public string ShippingMethodId { get; set; }
         public string AddressId { get; set; }
@@ -24,7 +30,7 @@ namespace Benefit.DataTransfer.ViewModels
         public string UserId { get; set; }
         [Required(ErrorMessage = "Оберіть вид оплати")]
         public PaymentType? PaymentType { get; set; }
-        public Order Order { get; set; }
         public string Comment { get; set; }
+        public Order Order { get; set; }
     }
 }

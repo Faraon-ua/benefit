@@ -48,7 +48,7 @@ namespace Benefit.Web.Controllers
                     Items = result.Products,
                     PagesCount = result.PagesCount,
                     ProductParameters = result.ProductParameters,
-                    Category = new Category()
+                    Category = new CategoryVM()
                     {
                         Name = "Пошук: " + term,
                         UrlName = "search",
@@ -56,10 +56,10 @@ namespace Benefit.Web.Controllers
                     },
                     Breadcrumbs = new BreadCrumbsViewModel()
                     {
-                        Categories = new Dictionary<Category, List<Category>>()
+                        Categories = new Dictionary<CategoryVM, List<CategoryVM>>()
                         {
                             {
-                                new Category()
+                                new CategoryVM()
                                 {
                                     Name = "Пошук"
                                 },

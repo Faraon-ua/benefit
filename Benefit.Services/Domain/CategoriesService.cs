@@ -49,9 +49,9 @@ namespace Benefit.Services.Domain
         {
             return db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order).ToList();
         }
-        public Dictionary<Category, List<Category>> GetBreadcrumbs(IEnumerable<Category> cachedCats, string categoryId = null, string urlName = null)
+        public Dictionary<CategoryVM, List<CategoryVM>> GetBreadcrumbs(IEnumerable<CategoryVM> cachedCats, string categoryId = null, string urlName = null)
         {
-            var result = new Dictionary<Category, List<Category>>();
+            var result = new Dictionary<CategoryVM, List<CategoryVM>>();
             var category = cachedCats.FindByUrlIdRecursively(urlName, categoryId);
             if (category != null)
             {
@@ -64,13 +64,13 @@ namespace Benefit.Services.Domain
             }
             if (category != null)
             {
-                result.Add(category, new List<Category>());
+                result.Add(category, new List<CategoryVM>());
             }
             result = result.Reverse().ToDictionary(x => x.Key, x => x.Value);
             return result;
         }
 
-        public CategoriesViewModel GetCategoriesCatalog(IEnumerable<Category> cachedCats, string categoryUrl, string sellerUrl = null)
+        public CategoriesViewModel GetCategoriesCatalog(IEnumerable<CategoryVM> cachedCats, string categoryUrl, string sellerUrl = null)
         {
             //fetch childs so if no nested categories - fetch products
             var parent = cachedCats.FindByUrlIdRecursively(categoryUrl, null);
@@ -82,7 +82,7 @@ namespace Benefit.Services.Domain
             if (parent == null)
             {
                 var mainPage = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "golovna");
-                parent = new Category()
+                parent = new CategoryVM()
                 {
                     Name = "Каталог",
                     Title = "Каталог товарів та послуг" + (mainPage == null ? string.Empty : mainPage.Title),
@@ -160,7 +160,7 @@ namespace Benefit.Services.Domain
         //    return catsModel;
         //}
 
-        public SellersViewModel GetCategorySellers(IEnumerable<Category> cachedCats, string urlName)
+        public SellersViewModel GetCategorySellers(IEnumerable<CategoryVM> cachedCats, string urlName)
         {
             //which sellers to display
             var sellerIds = new List<string>();
@@ -173,7 +173,7 @@ namespace Benefit.Services.Domain
             if (category == null) return null;
             var sellersDto = new SellersViewModel()
             {
-                Category = category
+                Category = category.MapToVM()
             };
             var allChildCategories = category.GetAllChildrenRecursively().ToList();
             //add all sellers categories except default

@@ -4,13 +4,15 @@ using Benefit.Web.Models.Admin;
 
 namespace Benefit.Web.App_Start
 {
-    public class Automapper
+    public class AutomapperConfig
     {
         public static void Init()
         {
             Mapper.Initialize(cfg =>
             {
                 cfg.CreateMap<EditUserViewModel, ApplicationUser>();
+                cfg.CreateMap<OrderVM, Order>();
+                cfg.CreateMap<Category, CategoryVM>();
             });
         }
     }

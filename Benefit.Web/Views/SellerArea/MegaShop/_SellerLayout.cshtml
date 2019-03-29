@@ -5,8 +5,7 @@
     var seller = ViewBag.Seller as Seller;
     var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
     var sellerFavicon = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerFavicon);
-    var todayShedule = seller.Schedules.FirstOrDefault(entry => entry.Day == DateTime.Now.DayOfWeek);
-    var categories = ViewBag.Categories as List<Category>;
+    var categories = ViewBag.Categories as List<CategoryVM>;
 }
 <!DOCTYPE html>
 <html prefix="og: http://ogp.me/ns#" lang="uk">

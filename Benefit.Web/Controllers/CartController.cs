@@ -250,9 +250,10 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
-        public ActionResult Order(CompleteOrderViewModel completeOrder)
+        public ActionResult Order(CompleteOrder completeOrder)
         {
-            completeOrder.Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
+            completeOrder.Order = AutoMapper.Mapper.Map<Order>(
+                Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId)); 
             var user = UserService.GetUser(User.Identity.GetUserId() ?? completeOrder.UserId);
             ModelState.Remove("Order.UserId");
             if (completeOrder.Order == null)
@@ -274,7 +275,7 @@ namespace Benefit.Web.Controllers
             {
                 ModelState.AddModelError("AddressId", "Оберіть адресу доставки");
             }
-
+            var vm = new CompleteOrderViewModel();
             if (ModelState.IsValid)
             {
                 if (completeOrder.AddressId == null)
@@ -317,32 +318,32 @@ namespace Benefit.Web.Controllers
                 }
 
                 var userId = user.Id;
-                completeOrder.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == completeOrder.Order.SellerId).ToList();
-                completeOrder.Addresses =
+                vm.ShippingMethods = db.ShippingMethods.Where(entry => entry.SellerId == completeOrder.Order.SellerId).ToList();
+                vm.Addresses =
                     db.Addresses.Include(entry => entry.Region).Where(entry => entry.UserId == userId).ToList();
                 if (seller.IsPrePaidPaymentActive)
                 {
-                    completeOrder.PaymentTypes.Add(PaymentType.PrePaid);
+                    vm.PaymentTypes.Add(PaymentType.PrePaid);
                 }
 
                 if (seller.IsPostPaidPaymentActive)
                 {
-                    completeOrder.PaymentTypes.Add(PaymentType.PostPaid);
+                    vm.PaymentTypes.Add(PaymentType.PostPaid);
                 }
 
                 if (seller.IsCashPaymentActive)
                 {
-                    completeOrder.PaymentTypes.Add(PaymentType.Cash);
+                    vm.PaymentTypes.Add(PaymentType.Cash);
                 }
 
                 if (seller.IsAcquiringActive)
                 {
-                    completeOrder.PaymentTypes.Add(PaymentType.Acquiring);
+                    vm.PaymentTypes.Add(PaymentType.Acquiring);
                 }
 
                 if (seller.IsBonusesPaymentActive)
                 {
-                    completeOrder.PaymentTypes.Add(PaymentType.Bonuses);
+                    vm.PaymentTypes.Add(PaymentType.Bonuses);
                 }
             }
 
@@ -353,10 +354,10 @@ namespace Benefit.Web.Controllers
                 if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
                     SellerEcommerceTemplate.MegaShop)
                 {
-                    return View("~/views/sellerarea/megashop/cart.cshtml", completeOrder);
+                    return View("~/views/sellerarea/megashop/cart.cshtml", vm);
                 }
             }
-            return View(completeOrder);
+            return View(vm);
         }
 
         public ActionResult GetCart()

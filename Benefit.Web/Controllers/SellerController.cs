@@ -31,7 +31,7 @@ namespace Benefit.Web.Controllers
             }
             ViewBag.Seller = seller;
             var sellerCats = SellerService.GetAllSellerCategories(seller.UrlName);
-            var categories = sellerCats.Where(entry => entry.ParentCategoryId == null).ToList();
+            var categories = sellerCats.Where(entry => entry.ParentCategoryId == null).ToList().MapToVM();
             ViewBag.SellerCategories = categories;
             if (string.IsNullOrEmpty(category))
             {
@@ -78,12 +78,7 @@ namespace Benefit.Web.Controllers
             else
             {
                 var selectedCat = categories.FindByUrlIdRecursively(category, null);
-                if (selectedCat == null)
-                {
-                    throw new HttpException(404, "Not Found");
-                }
-
-                viewModel.Category = selectedCat;
+                viewModel.Category = selectedCat ?? throw new HttpException(404, "Not Found");
                 viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
 

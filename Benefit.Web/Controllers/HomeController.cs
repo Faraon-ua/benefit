@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Data.Entity;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -17,11 +21,13 @@ using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Benefit.Web.Models;
 using Benefit.Web.Models.ViewModels;
+using NLog;
 
 namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
+        private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
@@ -135,6 +141,23 @@ namespace Benefit.Web.Controllers
 
         public ActionResult GettingBetter()
         {
+            var casheSize = 0;
+            BinaryFormatter bf = new BinaryFormatter();
+            var sb = new StringBuilder();
+            sb.Append("Cache objects:\n");
+            using (var ms = new MemoryStream())
+            {
+                foreach (var c in HttpRuntime.Cache)
+                {
+                    var obj = HttpRuntime.Cache[((DictionaryEntry)c).Key.ToString()];
+                    sb.Append(((DictionaryEntry)c).Key + " - ");
+                    bf.Serialize(ms, obj);
+                    sb.Append(ms.Length);
+                    sb.Append(" bytes");
+                    sb.Append(Environment.NewLine);
+                }
+                _logger.Info(sb);
+            }
             return View();
         }
 

@@ -1,41 +1,42 @@
-﻿using System;
+﻿using Benefit.Common.Constants;
+using Benefit.DataTransfer.ViewModels;
+using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
 using System.Web.Caching;
-using Benefit.Common.Constants;
-using Benefit.DataTransfer.ViewModels;
-using Benefit.Domain.DataAccess;
-using Benefit.Domain.Models;
-using NLog;
 
 namespace Benefit.Services.Cart
 {
     public class Cart
     {
         private static readonly TimeSpan SlidingExpiration = new TimeSpan(6, 0, 0);
-        private static Logger _logger = LogManager.GetCurrentClassLogger();
         private ApplicationDbContext db = new ApplicationDbContext();
         public string SessionKey;
-
-        public List<Order> Orders { get; set; }
+        public List<OrderVM> Orders { get; set; }
+        private static Cart _cart;
         public static Cart CurrentInstance
         {
             get
             {
                 var sessionKey = string.Format("{0}-{1}", DomainConstants.OrderPrefixKey, HttpContext.Current.Session.SessionID);
-                var cart = HttpRuntime.Cache[sessionKey] as Cart;
-                if (cart == null)
+                if (_cart == null)
                 {
-                    cart = new Cart()
+                    _cart = new Cart()
                     {
-                        SessionKey = sessionKey,
-                        Orders = new List<Order>()
+                        SessionKey = sessionKey
                     };
-                    HttpRuntime.Cache.Insert(sessionKey, cart, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
                 }
-                return cart;
+                _cart.Orders = HttpRuntime.Cache[sessionKey] as List<OrderVM>;
+                if (_cart.Orders == null)
+                {
+                    _cart.Orders = new List<OrderVM>();
+                    HttpRuntime.Cache.Insert(sessionKey, _cart.Orders, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
+                }
+                return _cart;
             }
         }
 
@@ -45,7 +46,7 @@ namespace Benefit.Services.Cart
             var order = Orders.FirstOrDefault(entry => entry.SellerId == sellerId || entry.SellerId == seller.AssociatedSellerId);
             if (order == null)
             {
-                order = new Order()
+                order = new OrderVM()
                 {
                     SellerId = sellerId
                 };
@@ -106,7 +107,9 @@ namespace Benefit.Services.Cart
                 if (sellerCategory != null)
                 {
                     if (sellerCategory.CustomDiscount.HasValue)
+                    {
                         totalBonusesDiscount = (int)sellerCategory.CustomDiscount;
+                    }
                 }
                 var userDiscount = totalBonusesDiscount <= 10
                     ? totalBonusesDiscount / 2
@@ -126,7 +129,7 @@ namespace Benefit.Services.Cart
                 order.SellerId = seller.AssociatedSellerId == null ? sellerId : seller.AssociatedSellerId;
                 order.OrderProducts.Add(orderProduct);
             }
-            HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
+            HttpRuntime.Cache.Insert(SessionKey, this.Orders, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
             return GetOrderProductsCountAndPrice();
         }
 
@@ -143,13 +146,14 @@ namespace Benefit.Services.Cart
             var order = Orders.FirstOrDefault(entry => entry.SellerId == sellerId);
             var productToRemove = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == productId);
             order.OrderProducts.Remove(productToRemove);
-            HttpRuntime.Cache.Insert(SessionKey, this, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
+            HttpRuntime.Cache.Insert(SessionKey, this.Orders, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
             return GetOrderProductsCountAndPrice();
         }
 
         public void ClearSellerOrder(string sellerId)
         {
             Orders.Remove(Orders.FirstOrDefault(entry => entry.SellerId == sellerId));
+            HttpRuntime.Cache.Insert(SessionKey, this.Orders, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
         }
 
         public double GetOrderSum()
@@ -168,7 +172,10 @@ namespace Benefit.Services.Cart
             {
                 foreach (var product in order.OrderProducts)
                 {
-                    if (product.IsWeightProduct) result.ProductsNumber++;
+                    if (product.IsWeightProduct)
+                    {
+                        result.ProductsNumber++;
+                    }
                     else
                     {
                         result.ProductsNumber += (int)product.Amount;

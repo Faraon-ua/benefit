@@ -21,8 +21,8 @@
             <div class="col-sm-12">
                 <label>Вулиця, номер будинку і квартири</label>
                 <br />
-                @Html.TextBoxFor(m => m.NewAddressLine, new { @class = "width-50" })
-                @Html.HiddenFor(m => m.UserId)
+                @Html.TextBox("NewAddressLine", new { @class = "width-50" })
+                @Html.Hidden("UserId")
             </div>
         </div>
     }
@@ -34,7 +34,7 @@
             <a href="@Url.Action("useraddress", "panel", new {area = DomainConstants.CabinetAreaName, returnUrl = Request.Url.AbsolutePath })" class="add_new_address margin-left-10">+ Додати нову адресу</a>
         </div>
     }
-    @Html.Hidden("AddressId", Model.AddressId ?? defaultAddressId)
+    @Html.Hidden("AddressId", defaultAddressId)
     @Html.Hidden("ShippingAddress", null, new { id="shippingAddress" })
 </div>
 

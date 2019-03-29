@@ -36,7 +36,7 @@ namespace Benefit.Web.Controllers
         [FetchLastNews]
         public ActionResult Index(string categoryUrl, string options)
         {
-            var cachedCats = ViewBag.Categories as List<Category>;
+            var cachedCats = ViewBag.Categories as List<CategoryVM>;
             if (categoryUrl == "postachalnuky")
             {
                 var sellers = SellerService.GetSellersCatalog(options);
