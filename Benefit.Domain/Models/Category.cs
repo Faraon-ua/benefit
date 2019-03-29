@@ -21,29 +21,7 @@ namespace Benefit.Domain.Models
         }
         public static List<CategoryVM> MapToVM(this IEnumerable<Category> categories)
         {
-            var categoriesVM = categories.Select(entry => new CategoryVM()
-            {
-                Id = entry.Id,
-                Name = entry.Name,
-                UrlName = entry.UrlName,
-                ImageUrl = entry.ImageUrl,
-                ChildCategories = entry.ChildCategories.Select(child => new CategoryVM()
-                {
-                    Id = child.Id,
-                    Name = child.Name,
-                    UrlName = child.UrlName,
-                    ImageUrl = child.ImageUrl,
-                    ChildCategories = entry.ChildCategories.FirstOrDefault(y => y.UrlName == child.UrlName).ChildCategories.Select(kid => new CategoryVM()
-                    {
-                        Id = kid.Id,
-                        Name = kid.Name,
-                        UrlName = kid.UrlName,
-                        ImageUrl = kid.ImageUrl,
-                        ChildCategories = null,
-                        MappedCategories = kid.MappedCategories.Select(kidmc => AutoMapper.Mapper.Map<CategoryVM>(kidmc)).ToList()
-                    }).ToList()
-                }).ToList()
-            }).ToList();
+            var categoriesVM = categories.Select(entry => AutoMapper.Mapper.Map<CategoryVM>(entry)).ToList();
             return categoriesVM;
         }
         public static CategoryVM FindByUrlIdRecursively(this IEnumerable<CategoryVM> list, string url, string id)
@@ -87,6 +65,9 @@ namespace Benefit.Domain.Models
         public bool ShowCartOnOrder { get; set; }
         public string ImageUrl { get; set; }
         public string BannerImageUrl { get; set; }
+        public string BannerUrl { get; set; }
+        public bool ChildAsFilters { get; set; }
+        public int Order { get; set; }
         public CategoryVM ParentCategory { get; set; }
         public ICollection<CategoryVM> ChildCategories { get; set; }
         public ICollection<CategoryVM> MappedCategories { get; set; }

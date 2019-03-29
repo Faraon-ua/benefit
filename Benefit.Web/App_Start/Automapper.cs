@@ -12,7 +12,9 @@ namespace Benefit.Web.App_Start
             {
                 cfg.CreateMap<EditUserViewModel, ApplicationUser>();
                 cfg.CreateMap<OrderVM, Order>();
-                cfg.CreateMap<Category, CategoryVM>();
+                cfg.CreateMap<Category, CategoryVM>()
+                    .ForMember(dest => dest.ChildCategories, opt => opt.MapFrom(src => src.ChildCategories))
+                    .ForMember(dest => dest.MappedCategories, opt => opt.MapFrom(src => src.MappedCategories));
             });
         }
     }

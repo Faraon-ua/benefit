@@ -127,24 +127,24 @@ namespace Benefit.Web.Controllers
 
         //
         // GET: /Account/Register
-        [AllowAnonymous]
-        public ActionResult Register(string id = null)
-        {
-            int? ReferalNumber = (id != null) ? int.Parse(id) : (int?)null;
-            if (ReferalNumber == null)
-            {
-                ReferalNumber = CookiesService.Instance.GetCookieValue<int>(RouteConstants.ReferalCookieName);
-                if (ReferalNumber == 0)
-                {
-                    ReferalNumber = null;
-                }
-            }
-            else
-            {
-                CookiesService.Instance.AddCookie(RouteConstants.ReferalCookieName, ReferalNumber.ToString());
-            }
-            return View(new RegisterViewModel { ReferalNumber = ReferalNumber });
-        }
+        //[AllowAnonymous]
+        //public ActionResult Register(string id = null)
+        //{
+        //    int? ReferalNumber = (id != null) ? int.Parse(id) : (int?)null;
+        //    if (ReferalNumber == null)
+        //    {
+        //        ReferalNumber = CookiesService.Instance.GetCookieValue<int>(RouteConstants.ReferalCookieName);
+        //        if (ReferalNumber == 0)
+        //        {
+        //            ReferalNumber = null;
+        //        }
+        //    }
+        //    else
+        //    {
+        //        CookiesService.Instance.AddCookie(RouteConstants.ReferalCookieName, ReferalNumber.ToString());
+        //    }
+        //    return View(new RegisterViewModel { ReferalNumber = ReferalNumber });
+        //}
 
         [AllowAnonymous]
         [FetchSeller(Order = 0)]
