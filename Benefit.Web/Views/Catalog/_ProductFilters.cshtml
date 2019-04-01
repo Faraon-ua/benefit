@@ -3,7 +3,7 @@
 @model ICollection<ProductParameter>
 @{
     var seller = ViewBag.Seller as Seller;
-    var categories = ViewBag.SellerCategories as List<Category>;
+    var categories = ViewBag.SellerCategories as List<CategoryVM>;
 }
 <div class="bx_filter bx_filter_vertical">
     <div class="bx_filter_section" id="productFilters">

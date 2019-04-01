@@ -78,7 +78,12 @@ namespace Benefit.Web.Controllers
             else
             {
                 var selectedCat = categories.FindByUrlIdRecursively(category, null);
-                viewModel.Category = selectedCat ?? throw new HttpException(404, "Not Found");
+                if (selectedCat == null)
+                {
+                    throw new HttpException(404, "Not Found");
+                }
+
+                viewModel.Category = selectedCat;
                 viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
 
