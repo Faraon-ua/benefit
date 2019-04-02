@@ -271,10 +271,10 @@ namespace Benefit.Services.Domain
 
         public List<Category> GetAllSellerCategories(string sellerUrl)
         {
-            var cacheCats =
-                HttpContext.Current.Cache[string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, sellerUrl)];
-            if (cacheCats == null)
-            {
+            //var cacheCats =
+            //    HttpContext.Current.Cache[string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, sellerUrl)];
+            //if (cacheCats == null)
+            //{
                 var seller =
                     db.Sellers
                     .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
@@ -303,13 +303,13 @@ namespace Benefit.Services.Domain
                         parent = parent.ParentCategory;
                     }
                 }
-                cacheCats = all.Distinct(new CategoryComparer()).ToList();
-                HttpContext.Current.Cache.Add(string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, seller.Id),
-                    cacheCats, null, Cache.NoAbsoluteExpiration,
-                    new TimeSpan(0, 0, CacheConstants.OutputCacheLength, 0),
-                    CacheItemPriority.Default, null);
-            }
-            return cacheCats as List<Category>;
+                return all.Distinct(new CategoryComparer()).ToList();
+            //    HttpContext.Current.Cache.Add(string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, seller.Id),
+            //        cacheCats, null, Cache.NoAbsoluteExpiration,
+            //        new TimeSpan(0, 0, CacheConstants.OutputCacheLength, 0),
+            //        CacheItemPriority.Default, null);
+            ////}
+            //return cacheCats as List<Category>;
         }
 
         public ProductsWithParametersList GetSellerCatalogProducts(string sellerId, string categoryId, string options, int take = ListConstants.DefaultTakePerPage, bool fetchParameters = true)

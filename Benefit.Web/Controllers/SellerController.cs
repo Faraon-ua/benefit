@@ -62,7 +62,10 @@ namespace Benefit.Web.Controllers
                         db.Products
                             .Include(entry => entry.Currency)
                             .Include(entry => entry.Images)
-                            .Where(entry => entry.SellerId == seller.Id)
+                            .Include(entry => entry.Category.MappedParentCategory)
+                            .Where(entry => entry.SellerId == seller.Id && entry.IsActive && entry.Category.IsActive &&
+                                            (!entry.Category.IsSellerCategory || entry.Category.IsSellerCategory &&
+                                             entry.Category.MappedParentCategory != null))
                             .OrderBy(entry => entry.AvailabilityState)
                             .ThenByDescending(entry => entry.Images.Any())
                             .Take(ListConstants.DefaultTakePerPage + 1).ToList());
@@ -72,6 +75,10 @@ namespace Benefit.Web.Controllers
                     if (entry.Currency != null)
                     {
                         entry.Price = entry.Price * entry.Currency.Rate;
+                        if (!entry.Seller.IsActive || !entry.Category.IsActive)
+                        {
+                            entry.AvailabilityState = ProductAvailabilityState.NotInStock;
+                        }
                     }
                 });
             }

@@ -13,7 +13,7 @@
     var image_src_str = string.Empty;
     if (image_src != null)
     {
-        image_src_str = image_src.IsAbsoluteUrl ? image_src.ImageUrl : string.Format("/Images/ProductGallery/{0}/{1}", @Model.Product.Id, image_src.ImageUrl);
+        image_src_str = image_src.IsAbsoluteUrl ? image_src.ImageUrl : string.Format("/Images/ProductGallery/{0}/{1}", Model.Product.Id, image_src.ImageUrl);
     }
     var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
     //var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);

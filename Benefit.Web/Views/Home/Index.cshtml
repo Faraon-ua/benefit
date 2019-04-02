@@ -1,4 +1,5 @@
-﻿@using Benefit.Domain.Models
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
 @using Benefit.Web.Helpers
 @model Benefit.DataTransfer.ViewModels.MainPageViewModel
 
@@ -299,7 +300,7 @@
                         <ul class="brands_slider slides">
                             @foreach (var seller in Model.Brands)
                             {
-                                var sellerUrl = Url.SubdomainAction(seller.UrlName, "Index", "Home", null);
+                                var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = seller.UrlName });
                                 var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
                                 if (sellerLogo != null)
                                 {

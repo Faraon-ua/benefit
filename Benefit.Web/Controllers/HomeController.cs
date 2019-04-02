@@ -151,9 +151,16 @@ namespace Benefit.Web.Controllers
                 {
                     var obj = HttpRuntime.Cache[((DictionaryEntry)c).Key.ToString()];
                     sb.Append(((DictionaryEntry)c).Key + " - ");
-                    bf.Serialize(ms, obj);
-                    sb.Append(ms.Length);
-                    sb.Append(" bytes");
+                    try
+                    {
+                        bf.Serialize(ms, obj);
+                        sb.Append(ms.Length);
+                        sb.Append(" bytes");
+                    }
+                    catch (Exception e)
+                    {
+                        sb.Append(e.ToString());
+                    }
                     sb.Append(Environment.NewLine);
                 }
                 _logger.Info(sb);
