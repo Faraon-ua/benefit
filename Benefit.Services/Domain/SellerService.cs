@@ -215,6 +215,7 @@ namespace Benefit.Services.Domain
         {
             var seller = db.Sellers
                 .Include(entry => entry.InfoPages)
+                .Include(entry => entry.Banners)
                 .Include(entry => entry.Images)
                 .Include(entry => entry.SellerCategories)
                 .Include(entry => entry.Schedules)

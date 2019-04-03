@@ -19,6 +19,12 @@
                 <span class="menu-text"> Замовлення </span>
             </a>
         </li>
+        <li>
+            <a href="@Url.Action("Index", "Banners")">
+                <i class="icon-desktop"></i>
+                <span class="menu-text">Банери</span>
+            </a>
+        </li>
     }
     @if (User.IsInRole(DomainConstants.AdminRoleName))
     {
@@ -28,9 +34,6 @@
                 <span class="menu-text"> Партнери </span>
             </a>
         </li>
-    }
-    @if (User.IsInRole(DomainConstants.AdminRoleName))
-    {
         <li>
             <a href="@Url.Action("Index", "Sellers")">
                 <i class="icon-truck"></i>
@@ -94,12 +97,6 @@
             <a href="@Url.Action("SellerTurnover", "Statistics")">
                 <i class="icon-book"></i>
                 <span class="menu-text">Звітність</span>
-            </a>
-        </li>
-        <li>
-            <a href="@Url.Action("Index", "Banners")">
-                <i class="icon-desktop"></i>
-                <span class="menu-text">Банери</span>
             </a>
         </li>
         <li>

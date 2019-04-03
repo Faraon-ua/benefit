@@ -574,6 +574,10 @@
     <Compile Include="Migrations\201903051107028_AddGoogleSiteVerificationToken.Designer.cs">
       <DependentUpon>201903051107028_AddGoogleSiteVerificationToken.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904030802191_AddBannerSellerId.cs" />
+    <Compile Include="Migrations\201904030802191_AddBannerSellerId.Designer.cs">
+      <DependentUpon>201904030802191_AddBannerSellerId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1000,6 +1004,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903051107028_AddGoogleSiteVerificationToken.resx">
       <DependentUpon>201903051107028_AddGoogleSiteVerificationToken.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904030802191_AddBannerSellerId.resx">
+      <DependentUpon>201904030802191_AddBannerSellerId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

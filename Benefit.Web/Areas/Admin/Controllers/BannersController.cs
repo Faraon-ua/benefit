@@ -16,7 +16,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         // GET: /Admin/Banners/
         public ActionResult Index()
         {
-            return View(db.Banners.OrderBy(entry => entry.Order).ToList());
+            return View(db.Banners.Where(entry=>entry.SellerId == Seller.CurrentAuthorizedSellerId).OrderBy(entry => entry.Order).ToList());
         }
 
         [HttpPost]
@@ -35,7 +35,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult CreateOrUpdate(string id = null, int? order = null)
         {
-            var banner = db.Banners.Find(id) ?? new Banner() { Id = Guid.NewGuid().ToString(), Order = order ?? default(int) };
+            var banner = db.Banners.Find(id) ?? new Banner() { Id = Guid.NewGuid().ToString(), Order = order ?? default(int), SellerId = Seller.CurrentAuthorizedSellerId};
             return View(banner);
         }
 

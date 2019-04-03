@@ -116,7 +116,7 @@ namespace Benefit.Web.Controllers
                 mainPageViewModel.News.ForEach(entry =>
                     entry.Name = entry.Name.Length > 75 ? entry.Name.Substring(0, 75) + "..." : entry.Name);
                 mainPageViewModel.PrimaryBanners =
-                    db.Banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage)
+                    db.Banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage && entry.SellerId == null)
                         .OrderBy(entry => entry.Order)
                         .ToList();
                 mainPageViewModel.MobileBanners =

@@ -1,9 +1,5 @@
-﻿@using Benefit.Common.Constants
-@using Benefit.Common.Extensions
-@using Benefit.DataTransfer.ViewModels
+﻿@using Benefit.Common.Extensions
 @using Benefit.Domain.Models
-@using Benefit.Services.Domain
-@using Microsoft.AspNet.Identity
 @model Seller
 @{
     Layout = "_SellerLayout.cshtml";
@@ -68,11 +64,11 @@
 
 <div class="col-md-8 col-xl-9 content">
     <div class="fn_banner_group1 banners tablet-hidden">
-        @foreach (var image in Model.Images.Where(entry => entry.ImageType == ImageType.SellerSlider).OrderBy(entry => entry.Order))
+        @foreach (var image in Model.Banners.OrderBy(entry => entry.Order))
         {
-            <div>
-                <img src="~/Images/SellerSlider/@Model.Id/@image.ImageUrl" alt="@Model.AltText" />
-            </div>
+            <a href="@image.NavigationUrl" target="_blank">
+                <img src="~/Images/PrimaryMainPage/@image.ImageUrl" alt="@Model.AltText" />
+            </a>
         }
     </div>
     <div class="fn_ajax_content">

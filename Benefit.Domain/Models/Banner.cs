@@ -34,5 +34,8 @@ namespace Benefit.Domain.Models
         public string Title { get; set; }
         [MaxLength(100)]
         public string Description { get; set; }
+        [MaxLength(128)]
+        public string SellerId { get; set; }
+        public Seller Seller { get; set; }
     }
 }

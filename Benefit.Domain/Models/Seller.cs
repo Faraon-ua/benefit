@@ -143,6 +143,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Currency> Currencies { get; set; }
         public virtual ICollection<Address> Addresses { get; set; }
         public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<Banner> Banners { get; set; }
         public virtual ICollection<Schedule> Schedules { get; set; }
         public virtual ICollection<ShippingMethod> ShippingMethods { get; set; }
         public virtual ICollection<SellerBusinessLevelIndex> BusinessLevelIndexes { get; set; }
