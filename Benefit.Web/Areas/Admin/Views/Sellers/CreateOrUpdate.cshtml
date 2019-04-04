@@ -84,7 +84,7 @@
             $("#addNewCategory").attr("href", href);
             $(".chosen-select").chosen({
                 search_contains: true,
-                width: "550px"
+                width: "350px"
             });
             $('#addNewCategory').removeAttr('disabled');
         }
@@ -135,11 +135,6 @@
                         console.debug(data);
                     }
                 });
-            });
-
-            $(".chosen-select").chosen({
-                search_contains: true,
-                width: "450px"
             });
 
             $("body").on("click", ".remove-personnel", function (e) {
@@ -208,11 +203,11 @@
                 });
             });
 
-            $("body").on("change", "#categories input[type=checkbox]", function () {
+            $("body").on("change", "#categories .main-cat", function () {
                 if (this.checked) {
-                    $("#categories input[type=checkbox]").not(this).prop("disabled", true);
+                    $("#categories .main-cat").not(this).prop("disabled", true);
                 } else {
-                    $("#categories input[type=checkbox]").not(this).prop("disabled", false);
+                    $("#categories .main-cat").not(this).prop("disabled", false);
                 }
             });
 

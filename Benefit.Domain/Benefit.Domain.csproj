@@ -578,6 +578,10 @@
     <Compile Include="Migrations\201904030802191_AddBannerSellerId.Designer.cs">
       <DependentUpon>201904030802191_AddBannerSellerId.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904041219480_AddRootDisplayToSellerCategory.cs" />
+    <Compile Include="Migrations\201904041219480_AddRootDisplayToSellerCategory.Designer.cs">
+      <DependentUpon>201904041219480_AddRootDisplayToSellerCategory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -597,7 +601,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Models\Category.cs" />
-    <Compile Include="Models\CategoryMetaInfo.cs" />
     <Compile Include="Models\Currency.cs" />
     <Compile Include="Models\Enums\Distribution.cs" />
     <Compile Include="Models\Enums\Level.cs" />
@@ -1007,6 +1010,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904030802191_AddBannerSellerId.resx">
       <DependentUpon>201904030802191_AddBannerSellerId.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904041219480_AddRootDisplayToSellerCategory.resx">
+      <DependentUpon>201904041219480_AddRootDisplayToSellerCategory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

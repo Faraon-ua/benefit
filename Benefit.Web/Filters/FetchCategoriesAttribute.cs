@@ -36,7 +36,7 @@ namespace Benefit.Web.Filters
                             .Where(entry => entry.IsActive && !entry.IsSellerCategory).ToList();
                     }
 
-                    categoriesVM = categories.MapToVM();
+                    categoriesVM = categories.MapToVM().OrderByDescending(entry => entry.ChildCategories.Any()).ToList();
                     HttpRuntime.Cache.Insert("Categories" + seller.Id, categoriesVM, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
 
                     //using (var db = new ApplicationDbContext())

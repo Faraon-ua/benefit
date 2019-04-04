@@ -12,8 +12,6 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
-using System.Web;
-using System.Web.Caching;
 
 namespace Benefit.Services.Domain
 {
@@ -276,35 +274,42 @@ namespace Benefit.Services.Domain
             //    HttpContext.Current.Cache[string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, sellerUrl)];
             //if (cacheCats == null)
             //{
-                var seller =
-                    db.Sellers
-                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
-                    .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory))
-                        .FirstOrDefault(entry => entry.UrlName == sellerUrl);
-                var all = new List<Category>();
-                var sellerCats = seller.SellerCategories.Select(entry => entry.Category);
-                var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null && entry.IsActive).Select(entry => entry.MappedParentCategory).ToList();
-                all.AddRange(sellerCats);
-                all.AddRange(sellerMappedCats);
-                foreach (var sellerCat in sellerCats)
+            var seller =
+                db.Sellers
+                .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory))
+                    .FirstOrDefault(entry => entry.UrlName == sellerUrl);
+            var all = new List<Category>();
+            var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).ToList();
+            var sellerRootCats = seller.SellerCategories.Where(entry => entry.RootDisplay).Select(entry => entry.Category).ToList();
+            var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null && entry.IsActive).Select(entry => entry.MappedParentCategory).ToList();
+            all.AddRange(sellerCats);
+            all.AddRange(sellerMappedCats);
+            foreach (var sellerRootCat in sellerRootCats)
+            {
+                sellerRootCat.ParentCategory = null;
+                sellerRootCat.ParentCategoryId = null;
+            }
+            all.AddRange(sellerRootCats);
+            foreach (var sellerCat in sellerCats)
+            {
+                var parent = sellerCat.ParentCategory;
+                while (parent != null)
                 {
-                    var parent = sellerCat.ParentCategory;
-                    while (parent != null)
-                    {
-                        all.Add(parent);
-                        parent = parent.ParentCategory;
-                    }
+                    all.Add(parent);
+                    parent = parent.ParentCategory;
                 }
-                foreach (var sellerCat in sellerMappedCats)
+            }
+            foreach (var sellerCat in sellerMappedCats)
+            {
+                var parent = sellerCat.ParentCategory;
+                while (parent != null)
                 {
-                    var parent = sellerCat.ParentCategory;
-                    while (parent != null)
-                    {
-                        all.Add(parent);
-                        parent = parent.ParentCategory;
-                    }
+                    all.Add(parent);
+                    parent = parent.ParentCategory;
                 }
-                return all.Distinct(new CategoryComparer()).ToList();
+            }
+            return all.Distinct(new CategoryComparer()).ToList();
             //    HttpContext.Current.Cache.Add(string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, seller.Id),
             //        cacheCats, null, Cache.NoAbsoluteExpiration,
             //        new TimeSpan(0, 0, CacheConstants.OutputCacheLength, 0),
@@ -382,7 +387,7 @@ namespace Benefit.Services.Domain
                             switch (sort)
                             {
                                 case ProductSortOption.Rating:
-                                    items = items.OrderBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenByDescending(entry => entry.AddedOn).ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.SKU);
+                                    items = items.OrderByDescending(entry => entry.Category.IsActive).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenByDescending(entry => entry.AddedOn).ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.SKU);
                                     break;
                                 case ProductSortOption.Order:
                                     items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
