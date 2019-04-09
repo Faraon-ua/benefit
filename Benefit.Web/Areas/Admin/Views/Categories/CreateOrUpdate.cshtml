@@ -15,12 +15,21 @@
 }
 @section scripts{
     <script src="~/Scripts/hierarchy-select.min.js"></script>
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+
     <script type="text/javascript">
-        $(function () {
+        $(function() {
             $('.hierarchy-select').hierarchySelect({
                 width: 170
             });
-        })
+
+            CKEDITOR.replace('Description',
+                {
+                    //                filebrowserImageBrowseUrl: '/home/uploadPartial',
+                    //                filebrowserImageUploadUrl: '/home/uploadnow'
+                    filebrowserImageUploadUrl: '/home/UploadImage'
+                });
+        });
     </script>
 }
 @using (Html.BeginForm("CreateOrUpdate", "Categories", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -181,13 +190,13 @@
                         </div>
                     </div>
                     @*<div class="form-group">
-                        <div class="col-md-1">
-                            <label class="text-left control-label">Дочірні категорії як фільтри</label>
-                        </div>
-                        <div class="col-md-10">
-                            @Html.CheckBoxFor(model => model.ChildAsFilters)
-                        </div>
-                    </div>*@
+                            <div class="col-md-1">
+                                <label class="text-left control-label">Дочірні категорії як фільтри</label>
+                            </div>
+                            <div class="col-md-10">
+                                @Html.CheckBoxFor(model => model.ChildAsFilters)
+                            </div>
+                        </div>*@
                     @if (@Model.Name != null)
                     {
                         <div class="form-group">
@@ -281,9 +290,9 @@
                         </th>
                     </tr>
                     @{
-                        var exports = (List<ExportImport>) ViewBag.Exports;
+                        var exports = (List<ExportImport>)ViewBag.Exports;
                     }
-                    @for (var i=0;i<exports.Count;i++)
+                    @for (var i = 0; i < exports.Count; i++)
                     {
                         <tr>
                             <td>

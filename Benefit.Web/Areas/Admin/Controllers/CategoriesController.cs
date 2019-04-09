@@ -117,6 +117,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin, SuperAdmin")]
+        [ValidateInput(false)]
         public ActionResult CreateOrUpdate(Category category, HttpPostedFileBase categoryImage, HttpPostedFileBase categoryBannerImage)
         {
             if (db.Categories.Any(entry => entry.UrlName == category.UrlName && entry.Id != category.Id))

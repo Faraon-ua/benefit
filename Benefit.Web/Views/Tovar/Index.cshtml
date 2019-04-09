@@ -423,8 +423,6 @@
                                             }
                                         </div>
                                     }
-                                    @if (availableForPurchase.Key)
-                                    {
                                         <div class="x-product-info__item counter_wrapp" style="width: 30%; float: left; margin-top: 25px;">
                                             <div class="counter big_basket">
                                                 <div class="minus">-</div>
@@ -441,19 +439,6 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    }
-                                    else
-                                    {
-                                        <div class="x-product-conversion" style="width: 30%; float: left; margin-top: 30px;">
-                                            <div class="x-product-conversion__col">
-                                                <div class="x-product-conversion__item">
-                                                    <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#related-products" style="background: #8f1b0a; color: white">
-                                                        <span class="x-button__text js-buy-button__text">Переглянути схожі товари</span>
-                                                    </a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    }
                                 </div>
                             </div>
                         </div>
@@ -896,8 +881,6 @@
                                                 </p>
                                             </div>
                                         }
-                                        @if (availableForPurchase.Key)
-                                        {
                                             <div class="counter_wrapp">
 
                                                 <div class="counter big_basket">
@@ -915,13 +898,6 @@
                                             </div>
 
                                             <br class="clear" />
-                                        }
-                                        else
-                                        {
-                                            <a href="#related-products" class="btn-lg btn btn-default">
-                                                <i></i><span>Переглянути схожі товари</span>
-                                            </a>
-                                        }
                                         <div style="padding-top: 20px; text-align: left;">
                                             <a href="#" class="dark_link">@Model.Product.Seller.Name</a>
                                             <br>@Model.Product.Seller.PrimaryRegionName<br>
