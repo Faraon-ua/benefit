@@ -148,7 +148,7 @@
             </div>
 
             <div class="counter_wrapp ">
-                @if (availableForPurchase.Key)
+                @if (availableForPurchase.Key !=ComputedProductAvailabilityState.NotAvailable)
                 {
                     <div class="counter">
                         <div class="minus">-</div>
@@ -165,9 +165,10 @@
                 }
                 <div style="width: 15px; height: 15px; float: right" class="hidden-xs"></div>
 
-                @if (availableForPurchase.Key)
+                @if (availableForPurchase.Key != ComputedProductAvailabilityState.NotAvailable)
                 {
-                    <div class="button_block product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">
+                    <div class="button_block product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct" 
+                         @(availableForPurchase.Key == ComputedProductAvailabilityState.AvailableInOtherRegion ? "data-purchase-region='"+availableForPurchase.Value+"'" : string.Empty)>
                         <span class="small to-cart btn btn-default" style="height: 36px; padding: 7px 10px 10px 10px;">
                             <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
                             <i></i>

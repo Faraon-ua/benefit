@@ -119,6 +119,10 @@
             });
 
             $("#buy-product, #buy-product-with-options").click(function () {
+                if ('@(availableForPurchase.Key == ComputedProductAvailabilityState.AvailableInOtherRegion)'.toLowerCase() === 'true') {
+                    $('.purchase-region').modal();
+                    return;
+                }
                 var productNameSufix = "";
                 var productPriceGrowth = 0;
                 var buttonId = $(this).attr("id");
@@ -407,7 +411,7 @@
                                                                 if (option.Image != null)
                                                                 {
                                                                     <div class="variant-item" data-image-id="@option.Id" data-option-title="@group.Name" data-option-name="@option.Name" data-price-growth="@option.PriceGrowth">
-                                                                        <img src="~/Images/ProductGallery/@option.ProductId/@option.Image"/>
+                                                                        <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
                                                                     </div>
                                                                 }
                                                                 else
@@ -423,6 +427,20 @@
                                             }
                                         </div>
                                     }
+                                    @if (availableForPurchase.Key == ComputedProductAvailabilityState.NotAvailable)
+                                    {
+                                        <div class="x-product-conversion" style="width: 30%; float: left; margin-top: 30px;">
+                                            <div class="x-product-conversion__col">
+                                                <div class="x-product-conversion__item">
+                                                    <a class="js-product-buy-button x-button x-button_width_full x-button_size_xl " href="#related-products" style="background: #8f1b0a; color: white">
+                                                        <span class="x-button__text js-buy-button__text">Переглянути схожі товари</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
                                         <div class="x-product-info__item counter_wrapp" style="width: 30%; float: left; margin-top: 25px;">
                                             <div class="counter big_basket">
                                                 <div class="minus">-</div>
@@ -439,6 +457,7 @@
                                                 </div>
                                             </div>
                                         </div>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -748,11 +767,11 @@
                                             <div class="cost prices clearfix">
                                                 <div class="" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                                                     <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
-                                                    <meta itemprop="price" content="@Model.Product.Price"/>
-                                                    <meta itemprop="priceCurrency" content="UAH"/>
+                                                    <meta itemprop="price" content="@Model.Product.Price" />
+                                                    <meta itemprop="priceCurrency" content="UAH" />
                                                     @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
                                                     {
-                                                        <link itemprop="availability" href="http://schema.org/InStock"/>
+                                                        <link itemprop="availability" href="http://schema.org/InStock" />
                                                     }
                                                 </div>
                                                 <div class="price_matrix_block">
@@ -852,7 +871,7 @@
                                                                             if (option.Image != null)
                                                                             {
                                                                                 <div class="variant-item" data-image-id="@option.Id" data-option-title="@group.Name" data-option-name="@option.Name" data-price-growth="@option.PriceGrowth">
-                                                                                    <img src="~/Images/ProductGallery/@option.ProductId/@option.Image"/>
+                                                                                    <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
                                                                                 </div>
                                                                             }
                                                                             else
@@ -881,8 +900,15 @@
                                                 </p>
                                             </div>
                                         }
+                                        @if (availableForPurchase.Key == ComputedProductAvailabilityState.NotAvailable)
+                                        {
+                                            <a href="#related-products" class="btn-lg btn btn-default">
+                                                <i></i><span>Переглянути схожі товари</span>
+                                            </a>
+                                        }
+                                        else
+                                        {
                                             <div class="counter_wrapp">
-
                                                 <div class="counter big_basket">
                                                     <div class="minus">-</div>
                                                     <input type="text" class="text quantity" name="quantity" value="1" data-weight-product="@Model.Product.IsWeightProduct" />
@@ -896,8 +922,8 @@
                                                     <!--/noindex-->
                                                 </div>
                                             </div>
-
                                             <br class="clear" />
+                                        }
                                         <div style="padding-top: 20px; text-align: left;">
                                             <a href="#" class="dark_link">@Model.Product.Seller.Name</a>
                                             <br>@Model.Product.Seller.PrimaryRegionName<br>
@@ -1037,6 +1063,10 @@
     </div>
 </div>
 <div class="modal-container"></div>
+@if (availableForPurchase.Value != null)
+{
+    @Html.Partial("_PurchaseRegion", availableForPurchase.Value)
+}
 <div id="related-products"></div>
 @if (Model.RelatedProducts.Any())
 {

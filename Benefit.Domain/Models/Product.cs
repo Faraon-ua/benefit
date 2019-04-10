@@ -40,6 +40,14 @@ namespace Benefit.Domain.Models
         [Description("#fe6600")]
         Ending
     }
+
+    public enum ComputedProductAvailabilityState
+    {
+        Available,
+        AvailableInOtherRegion,
+        NotAvailable
+    }
+
     public class Product
     {
         public Product()
@@ -138,27 +146,27 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public ICollection<Localization> Localizations { get; set; }
 
-        private KeyValuePair<bool, string>? _availableForPurchase = null;
-        public KeyValuePair<bool, string> AvailableForPurchase(int regionId)
+        private KeyValuePair<ComputedProductAvailabilityState, string>? _availableForPurchase = null;
+        public KeyValuePair<ComputedProductAvailabilityState, string> AvailableForPurchase(int regionId)
         {
             if (_availableForPurchase.HasValue)
             {
                 return _availableForPurchase.Value;
             }
+            if (AvailabilityState == ProductAvailabilityState.NotInStock ||
+                (AvailabilityState == ProductAvailabilityState.Available && AvailableAmount == 0))
+                return new KeyValuePair<ComputedProductAvailabilityState, string>(ComputedProductAvailabilityState.NotAvailable, null);
             string shippingRegions = null;
             var isAvailable =
                 Seller.ShippingMethods.Any(
                     entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
+
             if (!isAvailable)
             {
                 shippingRegions = string.Join(",", Seller.ShippingMethods.Select(entry => entry.Region.Name_ua).Distinct());
+                return new KeyValuePair<ComputedProductAvailabilityState, string>(ComputedProductAvailabilityState.AvailableInOtherRegion, shippingRegions);
             }
-            _availableForPurchase = new KeyValuePair<bool, string>(isAvailable, shippingRegions);
-
-            if (AvailabilityState == ProductAvailabilityState.NotInStock ||
-                (AvailabilityState == ProductAvailabilityState.Available && AvailableAmount == 0))
-                _availableForPurchase = new KeyValuePair<bool, string>(false, shippingRegions);
-            return _availableForPurchase.Value;
+            return new KeyValuePair<ComputedProductAvailabilityState, string>(ComputedProductAvailabilityState.Available, null);
         }
     }
 }

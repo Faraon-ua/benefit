@@ -115,6 +115,11 @@
         ".product_buy",
         function (e) {
             e.preventDefault();
+            if($(this).attr("data-purchase-region")) {
+                $(".purchase-region-container").text($(this).attr("data-purchase-region"));
+                $(".purchase-region").modal();
+                return;
+            }
             if ($(this).attr("disabled")) {
                 return;
             }

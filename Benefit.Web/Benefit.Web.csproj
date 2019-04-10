@@ -1554,6 +1554,7 @@
     <Content Include="Views\SellerArea\MegaShop\Delivery.cshtml" />
     <Content Include="Views\Cart\_ShippingMethods.cshtml" />
     <Content Include="Views\Tovar\_ProductVariants.cshtml" />
+    <Content Include="Views\Tovar\_PurchaseRegion.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
