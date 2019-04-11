@@ -1,5 +1,5 @@
 ﻿function SetRegionsAutocomplete() {
-    var regionSearchUrl = '/Home/SearchRegion';
+    var regionSearchUrl = '/ProductRegions/SearchRegion';
     var regionSearch = $(".regionSearch");
     if (regionSearch.hasClass("includeRegions")) {
         regionSearchUrl = regionSearchUrl + "?minLevel=1";

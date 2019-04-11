@@ -115,6 +115,7 @@
         ".product_buy",
         function (e) {
             e.preventDefault();
+            var productId = selectedProductId = $(this).attr("data-product-id");
             if($(this).attr("data-purchase-region")) {
                 $(".purchase-region-container").text($(this).attr("data-purchase-region"));
                 $(".purchase-region").modal();
@@ -123,7 +124,6 @@
             if ($(this).attr("disabled")) {
                 return;
             }
-            var productId = $(this).attr("data-product-id");
             var isWeightProduct = $(this).attr("data-is-weight-product").toLowerCase() === 'true';
             var sellerId = $(this).attr("data-seller-id");
             var amount = $(this).parent().find(".counter").find(".quantity").val();
@@ -197,6 +197,9 @@ function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduc
                 setCartSummary(data);
                 if (typeof showCartOnOrder !== 'undefined' && showCartOnOrder) {
                     $(".basket-link:not(.no-action)").eq(0).click();
+                }
+                if (reloadOnProductAdd) {
+                    location.reload();
                 }
             }, 1000);
         });

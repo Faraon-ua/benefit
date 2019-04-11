@@ -411,7 +411,8 @@ $(function () {
         $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
     }
 
-    $("#predefinedRegions a").click(function () {
+    $("#predefinedRegions a").click(function (e) {
+        e.preventDefault();
         var regionName = $(this).text();
         var regionId = $(this).attr("data-region-id");
         $(".select_place_container .inside").text(regionName);
@@ -419,7 +420,23 @@ $(function () {
         $(".region_modal").modal("hide");
         setCookie("regionName", regionName, { expires: 31536000, path: "/" });//year
         setCookie("regionId", regionId, { expires: 31536000, path: "/" });//year
-        location.reload();
+        var selectRegionsWrap = $("#selectRegionWrap");
+        selectRegionsWrap.load(selectRegionsWrap.attr("data-url"));
+        $(".region_modal").modal("hide");
+        if (selectedProductId !== null) {
+            $(".product_buy").each(function() {
+                if ($(this).attr("data-purchase-region") && $(this).attr("data-purchase-region").indexOf(regionName)>-1) {
+                    $(this).attr("data-purchase-region", "");
+                }
+            })
+            $(".product_buy[data-product-id=" + selectedProductId + "]").click();
+            if (typeof otherRegion !== 'undefined') {
+                otherRegion = '';
+                $("#buy-product").click();
+            }
+            selectedProductId = null;
+            reloadOnProductAdd = true;
+        }
     });
 
     $("body").on("click", ".region-popover-content button",
@@ -503,7 +520,7 @@ $(function () {
         $(".region-search-txt, .region-modal-search-txt").devbridgeAutocomplete({
             width: '500',
             minChars: 3,
-            serviceUrl: routePrefix + '/Home/SearchRegion',
+            serviceUrl: routePrefix + '/ProductRegions/SearchRegion',
             onSelect: function (suggestion) {
                 var result = suggestion.value.substring(0, suggestion.value.indexOf(" ("));
                 $(".select_place_container .inside").text(result);

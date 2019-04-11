@@ -74,6 +74,9 @@
     <script src="~/Scripts/v3/ubislider.min.js"></script>
     <script src="~/Scripts/v3/products.js"></script>
     <script>
+        var otherRegion = '@availableForPurchase.Value';
+        var selectedProductId = null;
+        var reloadOnProductAdd = false;
         var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
         var addToFavoritesUrl =
             '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
@@ -119,7 +122,8 @@
             });
 
             $("#buy-product, #buy-product-with-options").click(function () {
-                if ('@(availableForPurchase.Key == ComputedProductAvailabilityState.AvailableInOtherRegion)'.toLowerCase() === 'true') {
+                if (otherRegion !== '') {
+                    selectedProductId = '@Model.Product.Id';
                     $('.purchase-region').modal();
                     return;
                 }

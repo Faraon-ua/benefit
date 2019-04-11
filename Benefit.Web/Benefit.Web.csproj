@@ -287,6 +287,7 @@
     <Compile Include="Controllers\NewsController.cs" />
     <Compile Include="Controllers\PagesController.cs" />
     <Compile Include="Controllers\PostachalnykController.cs" />
+    <Compile Include="Controllers\ProductRegionsController.cs" />
     <Compile Include="Controllers\RobotsController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
@@ -1577,8 +1578,6 @@
     <Folder Include="Views\Export\" />
     <Folder Include="Views\Localizations\" />
     <Folder Include="Views\Notifications\" />
-    <Folder Include="Views\Robots\" />
-    <Folder Include="Views\Schedule\" />
     <Folder Include="Views\Shipping\" />
     <Folder Include="Views\Telegram\" />
   </ItemGroup>
