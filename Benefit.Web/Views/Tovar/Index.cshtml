@@ -121,6 +121,10 @@
                 position: 'vertical'
             });
 
+            $(".add-product-options").click(function() {
+                $("#product_modal").modal("show");
+            });
+
             $("#buy-product, #buy-product-with-options").click(function () {
                 if (otherRegion !== '') {
                     selectedProductId = '@Model.Product.Id';
@@ -130,14 +134,6 @@
                 var productNameSufix = "";
                 var productPriceGrowth = 0;
                 var buttonId = $(this).attr("id");
-                if (buttonId == "buy-product") {
-                    //if there are options to show
-                    if ($("#product_modal").length > 0) {
-                        //show options
-                        $("#product_modal").modal("show");
-                        return;
-                    }
-                }
                 if ($(".variants").length > 0) {
                     var variantsWrap = $(".variants").eq(0);
                     if ($(this).hasClass("mobile")) {
@@ -460,7 +456,13 @@
                                                     </a>
                                                 </div>
                                             </div>
+                                            <br class="clear"/>
+                                            @if (Model.ProductOptions.Any(entry => !entry.IsVariant))
+                                            {
+                                                <a href="#" class="add-product-options">Додаткові опції</a>
+                                            } 
                                         </div>
+                                       
                                     }
                                 </div>
                             </div>
@@ -927,6 +929,12 @@
                                                 </div>
                                             </div>
                                             <br class="clear" />
+                                             if (Model.ProductOptions.Any(entry => !entry.IsVariant))
+                                             {
+                                                 <div class="clear">
+                                                     <a href="#" class="add-product-options">Додаткові опції</a>
+                                                 </div>
+                                             } 
                                         }
                                         <div style="padding-top: 20px; text-align: left;">
                                             <a href="#" class="dark_link">@Model.Product.Seller.Name</a>

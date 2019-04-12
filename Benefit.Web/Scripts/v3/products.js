@@ -79,14 +79,14 @@
 
     $("body").on('click',
         "#buy-product-with-variants",
-        function() {
+        function () {
             var productNameSufix = "";
             var productPriceGrowth = 0;
             var productId = $(this).attr("data-product-id");
             var sellerId = $(this).attr("data-seller-id");
             var isValid = true;
             var variantsWrap = $(this).parentsUntil(".variants");
-            variantsWrap.find(".variants-group").each(function() {
+            variantsWrap.find(".variants-group").each(function () {
                 var selectedVariant = $(this).find(".variant-item.active");
                 if (selectedVariant.length === 0) {
                     $(this).find(".validation").show();
@@ -116,7 +116,7 @@
         function (e) {
             e.preventDefault();
             var productId = selectedProductId = $(this).attr("data-product-id");
-            if($(this).attr("data-purchase-region")) {
+            if ($(this).attr("data-purchase-region")) {
                 $(".purchase-region-container").text($(this).attr("data-purchase-region"));
                 $(".purchase-region").modal();
                 return;
@@ -130,24 +130,16 @@
             if (!amount) {
                 amount = 1;
             }
-            $.get(productOptionsUrl + "?productId=" + productId,
+
+            $.get(productVariantsUrl + "?productId=" + productId,
                 function (data) {
                     if (data) {
-                        $("#product-options-wrap").html(data);
-                        $("#product_modal").modal('show');
+                        $("#product-variants-wrap").html(data);
+                        $(".variants.modal").modal('show');
                     } else {
-                        $.get(productVariantsUrl + "?productId=" + productId,
-                            function (data) {
-                                if (data) {
-                                    $("#product-variants-wrap").html(data);
-                                    $(".variants.modal").modal('show');
-                                } else {
-                                    AddOrderProduct(amount, productId, sellerId, false, isWeightProduct);
-                                }
-                            });
+                        AddOrderProduct(amount, productId, sellerId, false, isWeightProduct);
                     }
                 });
-
         });
 });
 

@@ -51,8 +51,7 @@ namespace Benefit.Domain.Models
         public string NameSuffix{ get; set; }
 
         [NotMapped]
-        [NonSerialized]
-        public ICollection<OrderProductOption> OrderProductOptions;
+        public ICollection<OrderProductOption> OrderProductOptions { get; set; }
 
         [NotMapped]
         public double ActualPrice
