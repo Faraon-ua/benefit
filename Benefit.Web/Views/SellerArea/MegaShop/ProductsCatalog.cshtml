@@ -27,6 +27,8 @@
     <script src="~/Scripts/bootstrap-slider.min.js"></script>
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var productVariantsUrl = '@Url.Action("GetProductVariants", "Tovar")';
+        var reloadOnProductAdd = false;
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
         var getProductsUrl =
             '@(RouteDataHelper.ControllerName == "search" ? Url.Action("GetProducts", "Search") : Url.Action("GetProducts", "Catalog"))';

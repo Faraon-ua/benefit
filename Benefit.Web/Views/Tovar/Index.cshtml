@@ -441,6 +441,11 @@
                                     }
                                     else
                                     {
+                                        if (Model.ProductOptions.Any(entry => !entry.IsVariant))
+                                        {
+                                            <a href="#" class="add-product-options" style="font-size: 1.5em">+ Додати інгредієнти</a>
+                                            <br class="clear" />
+                                        }
                                         <div class="x-product-info__item counter_wrapp" style="width: 30%; float: left; margin-top: 25px;">
                                             <div class="counter big_basket">
                                                 <div class="minus">-</div>
@@ -456,13 +461,7 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                            <br class="clear"/>
-                                            @if (Model.ProductOptions.Any(entry => !entry.IsVariant))
-                                            {
-                                                <a href="#" class="add-product-options">Додаткові опції</a>
-                                            } 
                                         </div>
-                                       
                                     }
                                 </div>
                             </div>
@@ -914,6 +913,10 @@
                                         }
                                         else
                                         {
+                                            if (Model.ProductOptions.Any(entry => !entry.IsVariant))
+                                            {
+                                                <a href="#" class="add-product-options">+ Додати інгредієнти</a>
+                                            }
                                             <div class="counter_wrapp">
                                                 <div class="counter big_basket">
                                                     <div class="minus">-</div>
@@ -929,12 +932,6 @@
                                                 </div>
                                             </div>
                                             <br class="clear" />
-                                             if (Model.ProductOptions.Any(entry => !entry.IsVariant))
-                                             {
-                                                 <div class="clear">
-                                                     <a href="#" class="add-product-options">Додаткові опції</a>
-                                                 </div>
-                                             } 
                                         }
                                         <div style="padding-top: 20px; text-align: left;">
                                             <a href="#" class="dark_link">@Model.Product.Seller.Name</a>

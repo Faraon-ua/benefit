@@ -252,8 +252,8 @@ namespace Benefit.Web.Controllers
         [FetchCategories(Order = 1)]
         public ActionResult Order(CompleteOrder completeOrder)
         {
-            completeOrder.Order = AutoMapper.Mapper.Map<Order>(
-                Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId)); 
+            var order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
+            completeOrder.Order = AutoMapper.Mapper.Map<Order>(order); 
             var user = UserService.GetUser(User.Identity.GetUserId() ?? completeOrder.UserId);
             ModelState.Remove("Order.UserId");
             if (completeOrder.Order == null)
@@ -346,6 +346,7 @@ namespace Benefit.Web.Controllers
                     vm.PaymentTypes.Add(PaymentType.Bonuses);
                 }
             }
+            vm.Order = order;
 
             TempData["ErrorMessage"] = ModelState.ModelStateErrors();
             var domainSeller = ViewBag.Seller as Seller;

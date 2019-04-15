@@ -54,6 +54,7 @@
                             if (data.error) {
                                 flashMessage(data.error, true, true);
                             } else {
+                                $("#UserId").val(data.userId);
                                 $("#AddressId").val(data.shippingAddressId);
                                 $("#order-form-wrap form").submit();
                             }
@@ -122,12 +123,19 @@
                                     <form action="@Url.Action("Register", "Account")?isAjaxRequest=true&returnUrl=@Url.Action("Order", "Cart")" method="POST" id="register-form">
                                         <div class="row">
                                             <div class="form_group col-sm-6">
-                                                @Html.TextBox("FirstName", null, new { @class = "form_input", placeholder = "Ім'я *" })
-                                                @Html.ValidationMessage("FirstName")
+                                                @Html.TextBox("FullName", null, new { @class = "form_input", placeholder = "Ім'я та прізвище*" })
+                                                @Html.ValidationMessage("FullName")
                                             </div>
                                             <div class="form_group col-sm-6">
-                                                @Html.TextBox("LastName", null, new { @class = "form_input", placeholder = "Прізвище *" })
-                                                @Html.ValidationMessage("LastName")
+                                                @{
+                                                    var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
+                                                    var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
+                                                    var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
+                                                    var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
+                                                }
+                                                @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "form_input regionSearch", placeholder = "Місто *" })
+                                                @Html.Hidden("RegionId", regionIdCookieVal)
+                                                @Html.ValidationMessage("RegionId")
                                             </div>
                                         </div>
                                         <div class="row">
@@ -142,15 +150,8 @@
                                         </div>
                                         <div class="row">
                                             <div class="form_group col-sm-6">
-                                                @{
-                                                    var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
-                                                    var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
-                                                    var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
-                                                    var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
-                                                }
-                                                @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "form_input regionSearch", placeholder = "Місто *" })
-                                                @Html.Hidden("RegionId", regionIdCookieVal)
-                                                @Html.ValidationMessage("RegionId")
+                                                @Html.TextBox("Password", null, new { @class = "form_input", placeholder = "Пароль *", type = "password" })
+                                                @Html.ValidationMessage("Password")
                                             </div>
                                             <div class="form_group col-sm-6">
                                                 @Html.TextBox("ShippingAddress", null, new { @class = "form_input", placeholder = "Адреса доставки" })
@@ -159,18 +160,12 @@
                                         </div>
                                         <div class="row">
                                             <div class="form_group col-sm-6">
-                                                @Html.TextBox("Password", null, new { @class = "form_input", placeholder = "Пароль *", type = "password" })
-                                                @Html.ValidationMessage("Password")
+                                                @Html.TextBox("CardNumber", null, new { @class = "form_input", placeholder = "Номер картки (за наявності)" })
+                                                @Html.ValidationMessage("CardNumber")
                                             </div>
                                             <div class="form_group col-sm-6">
                                                 @Html.TextBox("ReferalNumber", null, new { @class = "form_input", placeholder = "Реєстраційний код (за наявності)" })
                                                 @Html.ValidationMessage("ReferalNumber")
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="form_group col-sm-6">
-                                                @Html.TextBox("CardNumber", null, new { @class = "form_input", placeholder = "Номер картки (за наявності)" })
-                                                @Html.ValidationMessage("CardNumber")
                                             </div>
                                         </div>
                                     </form>
@@ -194,6 +189,9 @@
             <div id="order-form-wrap">
                 <form action="@Url.Action("order", "cart", new {id = Model.SellerId})" method="post">
                     <input type="hidden" name="SellerId" value="@Model.SellerId" />
+                    @Html.Hidden("UserId")
+                    @Html.Hidden("AddressId")
+
                     <div class="block">
                         <h1 class="h1 no_border"><span data-language="cart_header">Кошик</span></h1>
                         <div id="fn_purchases">
