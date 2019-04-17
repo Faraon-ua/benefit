@@ -2,7 +2,9 @@
     <div class="region_wrapper">
         <div class="city_title">Ваше місто</div>
         <div class="js_city_chooser colored select_place_container">
-            <span class="inside"></span>
+            <span class="inside">
+                @(HttpUtility.UrlDecode(Request.Cookies["regionName"] == null ? string.Empty :Request.Cookies["regionName"].Value))
+            </span>
             <span class="arrow"><i></i></span>
         </div>
     </div>

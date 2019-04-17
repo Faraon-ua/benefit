@@ -1,9 +1,23 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace Benefit.Domain.Models
 {
+    public class RegionComparer:IEqualityComparer<Region>
+    {
+        public bool Equals(Region x, Region y)
+        {
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(Region obj)
+        {
+            return obj.Id.GetHashCode();
+        }
+    }
+
     public class Region
     {
         [Key]

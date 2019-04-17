@@ -57,13 +57,13 @@
             quantity.val(productCurrentValue);
         });
 
-    $("body").on('click',
-        "#buy-product-with-options",
-        function () {
-            var productId = $(this).attr("data-product-id");
-            var sellerId = $(this).attr("data-seller-id");
-            AddOrderProduct(1, productId, sellerId, true, false);
-        });
+    //$("body").on('click',
+    //    "#buy-product-with-options",
+    //    function () {
+    //        var productId = $(this).attr("data-product-id");
+    //        var sellerId = $(this).attr("data-seller-id");
+    //        AddOrderProduct(1, productId, sellerId, true, false);
+    //    });
 
     //variants
     $("body").on("click",
@@ -117,7 +117,11 @@
             e.preventDefault();
             var productId = selectedProductId = $(this).attr("data-product-id");
             if ($(this).attr("data-purchase-region")) {
-                $(".purchase-region-container").text($(this).attr("data-purchase-region"));
+                var regionName = $(this).attr("data-purchase-region").replace(/['"]+/g, '');
+                var regionId = $(this).attr("data-purchase-region-id").replace(/['"]+/g, '');
+                $(".auto-select-region").attr("data-region-id", regionId);
+                $(".purchase-region-container").text(regionName);
+                $(".auto-select-region").attr("data-region-name", regionName);
                 $(".purchase-region").modal();
                 return;
             }

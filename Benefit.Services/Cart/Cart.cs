@@ -52,7 +52,12 @@ namespace Benefit.Services.Cart
                 };
                 Orders.Add(order);
             }
-            var existingProduct = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId && entry.NameSuffix == orderProduct.NameSuffix);
+
+            var productOptionIds = orderProduct.OrderProductOptions.Select(entry => entry.ProductOptionId).ToList();
+            var existingProduct = order.OrderProducts.FirstOrDefault(entry =>
+                entry.ProductId == orderProduct.ProductId && 
+                entry.NameSuffix == orderProduct.NameSuffix &&
+                entry.OrderProductOptions.All(po=>productOptionIds.Contains(po.ProductOptionId)));
             if (existingProduct != null)
             {
                 existingProduct.Amount += orderProduct.Amount;

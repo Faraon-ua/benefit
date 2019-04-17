@@ -48,6 +48,16 @@ namespace Benefit.Domain.Models
         NotAvailable
     }
 
+    public class ProductAvailability
+    {
+        public ProductAvailability()
+        {
+            Regions = new Dictionary<string, string>();
+        }
+        public ComputedProductAvailabilityState State { get; set; }
+        public Dictionary<string, string> Regions { get; set; }
+    }
+
     public class Product
     {
         public Product()
@@ -146,27 +156,37 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public ICollection<Localization> Localizations { get; set; }
 
-        private KeyValuePair<ComputedProductAvailabilityState, string>? _availableForPurchase = null;
-        public KeyValuePair<ComputedProductAvailabilityState, string> AvailableForPurchase(int regionId)
+        private ProductAvailability _availableForPurchase = null;
+        public ProductAvailability AvailableForPurchase(int regionId)
         {
-            if (_availableForPurchase.HasValue)
+            if (_availableForPurchase!=null)
             {
-                return _availableForPurchase.Value;
+                return _availableForPurchase;
             }
+            var result = new ProductAvailability();
             if (AvailabilityState == ProductAvailabilityState.NotInStock ||
                 (AvailabilityState == ProductAvailabilityState.Available && AvailableAmount == 0))
-                return new KeyValuePair<ComputedProductAvailabilityState, string>(ComputedProductAvailabilityState.NotAvailable, null);
-            string shippingRegions = null;
-            var isAvailable =
-                Seller.ShippingMethods.Any(
-                    entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
-
-            if (!isAvailable)
             {
-                shippingRegions = string.Join(",", Seller.ShippingMethods.Select(entry => entry.Region.Name_ua).Distinct());
-                return new KeyValuePair<ComputedProductAvailabilityState, string>(ComputedProductAvailabilityState.AvailableInOtherRegion, shippingRegions);
+                result.State = ComputedProductAvailabilityState.NotAvailable;
             }
-            return new KeyValuePair<ComputedProductAvailabilityState, string>(ComputedProductAvailabilityState.Available, null);
+            else
+            {
+                var isAvailable =
+                    Seller.ShippingMethods.Any(
+                        entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
+                if (!isAvailable)
+                {
+                    result.Regions =
+                        Seller.ShippingMethods.Select(entry=>entry.Region).Distinct(new RegionComparer()).ToDictionary(entry => entry.Id.ToString(),
+                            entry => entry.Name_ua);
+                    result.State = ComputedProductAvailabilityState.AvailableInOtherRegion;
+                }
+                else
+                {
+                    result.State = ComputedProductAvailabilityState.Available;
+                }
+            }
+            return result;
         }
     }
 }

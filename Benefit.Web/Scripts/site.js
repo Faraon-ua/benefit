@@ -411,9 +411,16 @@ $(function () {
         $('.nav-tabs a[href="#' + url.split('#')[1] + '"]').tab('show');
     }
 
-    $("#predefinedRegions a").click(function (e) {
+    $("body").on("click", ".predefinedRegions a", function (e) {
         e.preventDefault();
-        var regionName = $(this).text();
+        var regionName;
+        if ($(this).attr("data-region-name")) {
+            regionName = $(this).attr("data-region-name");
+        }
+        else
+        {
+            regionName = $(this).text();
+        }
         var regionId = $(this).attr("data-region-id");
         $(".select_place_container .inside").text(regionName);
         $(".region-search-txt").val(regionName);
@@ -427,6 +434,7 @@ $(function () {
             $(".product_buy").each(function() {
                 if ($(this).attr("data-purchase-region") && $(this).attr("data-purchase-region").indexOf(regionName)>-1) {
                     $(this).attr("data-purchase-region", "");
+                    $(this).attr("data-purchase-region-id", "");
                 }
             })
             $(".product_buy[data-product-id=" + selectedProductId + "]").click();
@@ -437,6 +445,10 @@ $(function () {
             selectedProductId = null;
             reloadOnProductAdd = true;
         }
+    });
+
+    $("body").on("click", ".select_place_container", function() {
+        $(".region_modal").modal();
     });
 
     $("body").on("click", ".region-popover-content button",
@@ -510,10 +522,6 @@ $(function () {
                 setCartSummary(data);
                 window.location.href = data.redirectUrl;
             });
-    });
-
-    $(".select_place_container").click(function () {
-        $(".region_modal").modal();
     });
 
     if ($.fn.devbridgeAutocomplete) {

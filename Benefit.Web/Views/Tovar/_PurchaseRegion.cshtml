@@ -1,5 +1,8 @@
-﻿@model string
-
+﻿@model Dictionary<string,string>
+@{
+    var regionNames = string.Join(",", Model.Values);
+    var regionId = Model.Keys.Count == 0 ? "0" : Model.FirstOrDefault().Key;
+}
 <div class="modal purchase-region" tabindex="-1" role="dialog" style="text-align: center; z-index: 9999;">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -10,12 +13,11 @@
             </div>
             <div class="modal-body">
                 <div style="font-size: 2em; text-align: center; line-height: 1.5em;">
-                    Товар можна купити тільки в м. <span class="purchase-region-container">@Model</span>
+                    Замовлення приймаються тільки по м. <span class="purchase-region-container">@regionNames</span>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default select_place_container" data-dismiss="modal">Вибрати місто</button>
-                <button type="button" class="goto_back btn btn-small-xs bold" style="background-color: #ffffff; border: solid 1px #b41818; color: #b41818;" data-dismiss="modal">Закрити</button>
+            <div class="modal-footer predefinedRegions" style="text-align: center">
+                <a class="btn btn-default auto-select-region width-30" data-dismiss="modal" data-region-id="@regionId" data-region-name="@regionNames">Ok</a>
             </div>
         </div>
     </div>

@@ -74,7 +74,7 @@
     <script src="~/Scripts/v3/ubislider.min.js"></script>
     <script src="~/Scripts/v3/products.js"></script>
     <script>
-        var otherRegion = '@availableForPurchase.Value';
+        var otherRegion = '@string.Join(",",availableForPurchase.Regions.Values)';
         var selectedProductId = null;
         var reloadOnProductAdd = false;
         var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
@@ -143,6 +143,7 @@
                     variantsWrap.find(".row").each(function() {
                         if ($(this).find(".active").length == 0) {
                             $(this).prev(".validation").show();
+                            $("#product_modal").modal("hide");
                             variantsSelected = false;
                         } else {
                             $(this).prev(".validation").hide();
@@ -427,7 +428,7 @@
                                             }
                                         </div>
                                     }
-                                    @if (availableForPurchase.Key == ComputedProductAvailabilityState.NotAvailable)
+                                    @if (availableForPurchase.State == ComputedProductAvailabilityState.NotAvailable)
                                     {
                                         <div class="x-product-conversion" style="width: 30%; float: left; margin-top: 30px;">
                                             <div class="x-product-conversion__col">
@@ -443,7 +444,7 @@
                                     {
                                         if (Model.ProductOptions.Any(entry => !entry.IsVariant))
                                         {
-                                            <a href="#" class="add-product-options" style="font-size: 1.5em">+ Додати інгредієнти</a>
+                                            <a href="#" class="add-product-options">+ Додати інгредієнти</a>
                                             <br class="clear" />
                                         }
                                         <div class="x-product-info__item counter_wrapp" style="width: 30%; float: left; margin-top: 25px;">
@@ -905,7 +906,7 @@
                                                 </p>
                                             </div>
                                         }
-                                        @if (availableForPurchase.Key == ComputedProductAvailabilityState.NotAvailable)
+                                        @if (availableForPurchase.State == ComputedProductAvailabilityState.NotAvailable)
                                         {
                                             <a href="#related-products" class="btn-lg btn btn-default">
                                                 <i></i><span>Переглянути схожі товари</span>
@@ -1072,9 +1073,9 @@
     </div>
 </div>
 <div class="modal-container"></div>
-@if (availableForPurchase.Value != null)
+@if (availableForPurchase.Regions != null)
 {
-    @Html.Partial("_PurchaseRegion", availableForPurchase.Value)
+    @Html.Partial("_PurchaseRegion", availableForPurchase.Regions)
 }
 <div id="related-products"></div>
 @if (Model.RelatedProducts.Any())
