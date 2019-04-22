@@ -15,12 +15,11 @@ namespace Benefit.Domain.Models
         {
             OrderProductOptions = new Collection<OrderProductOption>();
         }
-        [Key, Column(Order = 0)]
+        public string Id { get; set; }
         [MaxLength(128)]
         public string OrderId { get; set; }
         [NonSerialized]
         public Order Order;
-        [Key, Column(Order = 1)]
         [MaxLength(128)]
         public string ProductId { get; set; }
         public string ProductName { get; set; }
@@ -50,7 +49,6 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public string NameSuffix{ get; set; }
 
-        [NotMapped]
         public ICollection<OrderProductOption> OrderProductOptions { get; set; }
 
         [NotMapped]
@@ -73,7 +71,7 @@ namespace Benefit.Domain.Models
             {
                 using (var db = new ApplicationDbContext())
                 {
-                    return db.OrderProductOptions.Where(entr => entr.ProductId == ProductId && entr.OrderId == OrderId).ToList();
+                    return db.OrderProductOptions.Where(entr => entr.OrderProductId == Id).ToList();
                 }
             }
         }

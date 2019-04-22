@@ -57,6 +57,7 @@ namespace Benefit.Services.Cart
             var existingProduct = order.OrderProducts.FirstOrDefault(entry =>
                 entry.ProductId == orderProduct.ProductId && 
                 entry.NameSuffix == orderProduct.NameSuffix &&
+                entry.OrderProductOptions.Count == productOptionIds.Count &&
                 entry.OrderProductOptions.All(po=>productOptionIds.Contains(po.ProductOptionId)));
             if (existingProduct != null)
             {

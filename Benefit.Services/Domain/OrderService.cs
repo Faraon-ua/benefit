@@ -34,11 +34,6 @@ namespace Benefit.Services.Domain
             order.Id = Guid.NewGuid().ToString();
             var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
             order.OrderNumber = orderNumber + 1;
-            //handle wholesale prices
-            foreach (var orderProduct in order.OrderProducts)
-            {
-                orderProduct.ProductPrice = orderProduct.ActualPrice;
-            }
 
             order.Sum = order.GetOrderSum();
             order.Description =
@@ -70,15 +65,17 @@ namespace Benefit.Services.Domain
             //add order to DB
             db.Orders.Add(order);
             var i = 0;
+            //handle wholesale prices
             foreach (var product in order.OrderProducts)
             {
+                product.Id = Guid.NewGuid().ToString();
+                product.ProductPrice = product.ActualPrice;
                 product.OrderId = order.Id;
                 product.Index = i++;
                 db.OrderProducts.Add(product);
                 foreach (var orderProductOption in product.OrderProductOptions)
                 {
-                    orderProductOption.OrderId = order.Id;
-                    orderProductOption.ProductId = product.ProductId;
+                    orderProductOption.OrderProductId = product.Id;
                     db.OrderProductOptions.Add(orderProductOption);
                 }
             }
@@ -107,7 +104,8 @@ namespace Benefit.Services.Domain
 
         public void DeleteOrder(string orderId)
         {
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.User).Include(entry => entry.Transactions).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.User)
+                .Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == orderId);
             var now = DateTime.UtcNow;
             var seller = db.Sellers.FirstOrDefault(entry => entry.Id == order.SellerId);
             if (seller != null)
@@ -142,7 +140,7 @@ namespace Benefit.Services.Domain
             }
 
             db.Transactions.RemoveRange(order.Transactions);
-            db.OrderProductOptions.RemoveRange(order.OrderProductOptions);
+            db.OrderProductOptions.RemoveRange(order.OrderProducts.SelectMany(op=>op.OrderProductOptions));
             db.OrderProducts.RemoveRange(order.OrderProducts);
             db.Entry(order.User).State = EntityState.Modified;
             db.Orders.Remove(order);

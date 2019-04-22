@@ -258,7 +258,7 @@
                             {
                                 <td></td>
                                 <td>
-                                    <a class="btn btn-danger" href="@Url.Action("DeleteOrderProductOption", new { orderId = Model.Id, productId = product.ProductId, productOptionId = productOption.ProductOptionId })" onclick=" return confirm('Ви впевненні?') ">
+                                    <a class="btn btn-danger" href="@Url.Action("DeleteOrderProductOption", new { orderId = Model.Id, orderProductId = product.Id, productOptionId = productOption.ProductOptionId })" onclick=" return confirm('Ви впевненні?') ">
                                         <i class="icon-trash"></i>
                                     </a>
                                 </td>

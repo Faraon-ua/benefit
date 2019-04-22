@@ -66,7 +66,6 @@ namespace Benefit.Domain.Models
             Status = OrderStatus.Created;
             Transactions = new Collection<Transaction>();
             OrderProducts = new Collection<OrderProduct>();
-            OrderProductOptions = new Collection<OrderProductOption>();
         }
         public string Id { get; set; }
         public int OrderNumber { get; set; }
@@ -107,7 +106,6 @@ namespace Benefit.Domain.Models
         public string LastModifiedBy { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; } 
-        public virtual ICollection<OrderProductOption> OrderProductOptions { get; set; }
         public virtual ICollection<OrderStatusStamp> OrderStatusStamps { get; set; }
 
         [NotMapped]

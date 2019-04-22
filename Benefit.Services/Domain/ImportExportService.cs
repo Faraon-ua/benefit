@@ -122,7 +122,7 @@ namespace Benefit.Services.Domain
                     {
                         oldprice *= product.Currency.Rate;
                     }
-                    prod.Add(new XElement("oldprice", oldprice));
+                    prod.Add(new XElement("price_old", oldprice));
                 }
                 prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
                 var categoryId = Math.Abs(product.CategoryId.GetHashCode());

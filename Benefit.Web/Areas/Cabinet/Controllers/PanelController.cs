@@ -58,8 +58,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var order =
-                    db.Orders.Include(entry => entry.OrderProducts)
-                        .Include(entry => entry.OrderProductOptions)
+                    db.Orders.Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions))
                         .FirstOrDefault(entry => entry.Id == orderId);
                 return PartialView("_OrderDetailsPartial", order);
             }

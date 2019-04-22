@@ -582,6 +582,10 @@
     <Compile Include="Migrations\201904041219480_AddRootDisplayToSellerCategory.Designer.cs">
       <DependentUpon>201904041219480_AddRootDisplayToSellerCategory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904220741016_ChangeOrderProductKey.cs" />
+    <Compile Include="Migrations\201904220741016_ChangeOrderProductKey.Designer.cs">
+      <DependentUpon>201904220741016_ChangeOrderProductKey.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1013,6 +1017,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904041219480_AddRootDisplayToSellerCategory.resx">
       <DependentUpon>201904041219480_AddRootDisplayToSellerCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904220741016_ChangeOrderProductKey.resx">
+      <DependentUpon>201904220741016_ChangeOrderProductKey.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

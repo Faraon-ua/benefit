@@ -159,7 +159,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -276,7 +276,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult BulkUpdateOrderProducts(string orderId, List<OrderProduct> orderProducts, List<OrderProductOption> orderProductOptions)
         {
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts).FirstOrDefault(entry => entry.Id == orderId);
             if (orderProducts != null)
             {
                 foreach (var orderProduct in orderProducts)
@@ -290,13 +290,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             if (orderProductOptions != null)
             {
+                var productOptions = order.OrderProducts.SelectMany(entry => entry.OrderProductOptions).ToList();
                 foreach (var orderProductOption in orderProductOptions)
                 {
                     var productOption =
-                        order.OrderProductOptions.FirstOrDefault(
+                        productOptions.FirstOrDefault(
                             entry =>
                                 entry.ProductOptionId == orderProductOption.ProductOptionId &&
-                                entry.ProductId == orderProductOption.ProductId);
+                                entry.OrderProductId == orderProductOption.OrderProductId);
                     productOption.ProductOptionName = orderProductOption.ProductOptionName;
                     productOption.Amount = orderProductOption.Amount;
                     productOption.ProductOptionPriceGrowth = orderProductOption.ProductOptionPriceGrowth;
@@ -319,19 +320,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.OrderProducts.FirstOrDefault(entry => entry.OrderId == orderId && entry.ProductId == productId);
             db.OrderProductOptions.RemoveRange(product.DbOrderProductOptions);
             db.OrderProducts.Remove(product);
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
             UpdateOrderDetails(order);
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderId });
         }
 
-        public ActionResult DeleteOrderProductOption(string orderId, string productId, string productOptionId)
+        public ActionResult DeleteOrderProductOption(string orderId, string orderProductId, string productOptionId)
         {
             var productOption =
-                db.OrderProductOptions.FirstOrDefault(entry => entry.OrderId == orderId && entry.ProductId == productId && entry.ProductOptionId == productOptionId);
+                db.OrderProductOptions.FirstOrDefault(entry => entry.OrderProductId == orderProductId && entry.ProductOptionId == productOptionId);
             db.OrderProductOptions.Remove(productOption);
             db.SaveChanges();
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
             UpdateOrderDetails(order);
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderId });
@@ -350,7 +351,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             orderProduct.ProductId = Guid.NewGuid().ToString();
             db.OrderProducts.Add(orderProduct);
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);
             UpdateOrderDetails(order);
             orderProduct.Index = order.OrderProducts.Max(entry => entry.Index) + 1;
             db.Entry(order).State = EntityState.Modified;
@@ -365,7 +366,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry=>entry.Transactions).Include(entry => entry.OrderProducts).Include(entry => entry.OrderProductOptions).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry=>entry.Transactions).Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
