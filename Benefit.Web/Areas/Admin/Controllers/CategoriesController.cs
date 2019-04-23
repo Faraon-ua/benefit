@@ -140,6 +140,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     var children = existingCat.GetAllChildrenRecursively().Distinct(new CategoryComparer()).ToList();
                     children.ForEach(entry =>
                     {
+                        var local = db.Set<Category>()
+                            .Local
+                            .FirstOrDefault(f => f.Id == entry.Id);
+                        if (local != null)
+                        {
+                            db.Entry(local).State = EntityState.Detached;
+                        }
                         entry.ShowCartOnOrder = category.ShowCartOnOrder;
                         db.Entry(entry).State = EntityState.Modified;
                     });

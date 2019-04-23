@@ -1,8 +1,9 @@
 ﻿using System.Web;
+using System.Web.Routing;
 
 namespace Benefit.Web.Helpers
 {
-    public class RouteDataHelper
+    public static class RouteDataHelper
     {
         public static string ControllerName
         {
@@ -29,6 +30,11 @@ namespace Benefit.Web.Helpers
                         ? string.Empty
                         : HttpContext.Current.Request.RequestContext.RouteData.Values["category"].ToString().ToLower();
             }
+        }
+
+        public static string RoteValue(this RequestContext context, string routeSegmentName)
+        {
+            return context.RouteData.Values[routeSegmentName] == null ? null : context.RouteData.Values[routeSegmentName].ToString();
         }
     }
 }

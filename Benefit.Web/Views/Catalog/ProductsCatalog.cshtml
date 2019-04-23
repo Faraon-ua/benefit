@@ -1,6 +1,7 @@
 ﻿@using System.Text
 @using Benefit.Common.Constants
 @using Benefit.Domain.Models
+@using Benefit.Web.Helpers
 @model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
 
 @{
@@ -34,6 +35,10 @@
         <meta property="og:image" content="@string.Format("{0}://{1}/Images/CategoryLogo/{2}", Request.Url.Scheme, Request.Url.Host, Model.Category.ImageUrl)" />
     }
     <meta property="og:site_name" content="Benefit Company" />
+    @if (!string.IsNullOrEmpty(Request.RequestContext.RoteValue("options")))
+    {
+        <meta name="robots" content="noindex,follow" />
+    }
 }
 @section styles
 {
@@ -174,7 +179,7 @@
                                             </div>
                                         }
                                     }
-                                    @if (Model.Category != null)
+                                    @if (Model.Category != null && string.IsNullOrEmpty(Request.RequestContext.RoteValue("options")))
                                     {
                                         <div class="group_description_block bottom">
                                             <div>
@@ -289,7 +294,7 @@
     </div>
 </div>
 <div id="product-purchase-wrap">
-    @Html.Partial("~/Views/Tovar/_PurchaseRegion.cshtml", new Dictionary<string, string>(){{"0",string.Empty}})
+    @Html.Partial("~/Views/Tovar/_PurchaseRegion.cshtml", new Dictionary<string, string>() { { "0", string.Empty } })
 </div>
 <div id="product-options-wrap"></div>
 <div id="product-variants-wrap"></div>

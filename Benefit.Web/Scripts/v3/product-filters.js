@@ -134,6 +134,7 @@ $(function () {
                 }
                 $(".products-wrapper").css("opacity", "1");
                 $(".loader").hide();
+                $(".group_description_block").remove();
             });
     });
 

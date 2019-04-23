@@ -123,6 +123,9 @@
 
             $(".add-product-options").click(function() {
                 $("#product_modal").modal("show");
+                if ($(this).hasClass("mobile")) {
+                    $("#buy-product-with-options").addClass("mobile");
+                }
             });
 
             $("#buy-product, #buy-product-with-options").click(function () {
@@ -916,7 +919,7 @@
                                         {
                                             if (Model.ProductOptions.Any(entry => !entry.IsVariant))
                                             {
-                                                <a href="#" class="add-product-options">+ Додати інгредієнти</a>
+                                                <a href="#" class="add-product-options mobile">+ Додати інгредієнти</a>
                                             }
                                             <div class="counter_wrapp">
                                                 <div class="counter big_basket">
