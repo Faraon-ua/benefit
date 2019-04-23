@@ -33693,7 +33693,11 @@ body .table-type-block.item-views .row > div .item {
 
 .group_description_block {
     font-size: 14px;
-    color: #333
+    color: #333;
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    width: 100%;
 }
 
     .group_description_block.top {

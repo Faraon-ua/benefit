@@ -110,6 +110,14 @@
                                 </a>
                             </div>
 
+                            @if (Model.Category != null && string.IsNullOrEmpty(Request.RequestContext.RoteValue("options")))
+                            {
+                                <div class="group_description_block bottom">
+                                    <div>
+                                        @Html.Raw(Model.Category.Description)
+                                    </div>
+                                </div>
+                            }
                             <div class="sort_header view_block">
                                 @if (Model.Category != null && !isFavorites)
                                 {
@@ -130,10 +138,10 @@
                                     </div>
                                 }
                                 @*<div class="sort_display">
-                                        <a rel="nofollow" href="catalog_block.html" class="sort_btn block current"><i title="плиткой"></i></a>
-                                        <a rel="nofollow" href="catalog_list.html" class="sort_btn list "><i title="списком"></i></a>
-                                        <a rel="nofollow" href="catalog_table.html" class="sort_btn table "><i title="таблицей"></i></a>
-                                    </div>*@
+                <a rel="nofollow" href="catalog_block.html" class="sort_btn block current"><i title="плиткой"></i></a>
+                <a rel="nofollow" href="catalog_list.html" class="sort_btn list "><i title="списком"></i></a>
+                <a rel="nofollow" href="catalog_table.html" class="sort_btn table "><i title="таблицей"></i></a>
+            </div>*@
                                 <div class="clearfix"></div>
                                 <!--/noindex-->
                             </div>
@@ -179,14 +187,7 @@
                                             </div>
                                         }
                                     }
-                                    @if (Model.Category != null && string.IsNullOrEmpty(Request.RequestContext.RoteValue("options")))
-                                    {
-                                        <div class="group_description_block bottom">
-                                            <div>
-                                                @Html.Raw(Model.Category.Description)
-                                            </div>
-                                        </div>
-                                    }
+
                                 </div>
                             </div>
                         </div>
