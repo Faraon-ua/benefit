@@ -644,7 +644,7 @@ namespace Benefit.Services.Domain
                     CurrencyId = currencies.First(entry => entry.Name == currencyId).Id,
                     AvailabilityState = xmlProduct.Attribute("available").Value == "true"
                         ? ProductAvailabilityState.Available
-                        : ProductAvailabilityState.OnDemand,
+                        : ProductAvailabilityState.NotInStock,
                     IsActive = true,
                     IsImported = true,
                     DoesCountForShipping = true,

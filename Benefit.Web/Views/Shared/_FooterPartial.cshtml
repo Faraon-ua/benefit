@@ -21,21 +21,21 @@
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("pro-kompaniyu-benefit-company") ? "" : Url.RouteUrl("pagesRoute", new { id = "pro-kompaniyu-benefit-company" })))">Про компанію Benefit Company</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("pro-kompaniyu-benefit-company") ? "#" : Url.RouteUrl("pagesRoute", new { id = "pro-kompaniyu-benefit-company" })))">Про компанію Benefit Company</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("news") ? "" :Url.Action("index","news"))">Новини компанії</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("news") ? "#" :Url.Action("index","news"))">Новини компанії</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("ugoda-korustuvacha") ? "" :Url.RouteUrl("pagesRoute", new { id = "ugoda-korustuvacha" }))">Угода користувача</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("ugoda-korustuvacha") ? "#" :Url.RouteUrl("pagesRoute", new { id = "ugoda-korustuvacha" }))">Угода користувача</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -66,28 +66,28 @@
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("catalog") ? "" :Url.Action("index","catalog", new { categoryUrl = string.Empty }))">Каталог товарів та послуг</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("catalog") ? "#" :Url.Action("index","catalog", new { categoryUrl = string.Empty }))">Каталог товарів та послуг</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("postachalnuky") ? "" :Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" }))">Каталог постачальників</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("postachalnuky") ? "#" :Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky" }))">Каталог постачальників</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("pravila-benefit-card") ? "" :Url.RouteUrl("pagesRoute", new { id = "pravila-benefit-card" }))">Правила Benefit Card</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("pravila-benefit-card") ? "#" :Url.RouteUrl("pagesRoute", new { id = "pravila-benefit-card" }))">Правила Benefit Card</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("faq") ? "" :Url.RouteUrl("pagesRoute", new {id = "faq"}))">Питання та відповіді</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("faq") ? "#" :Url.RouteUrl("pagesRoute", new {id = "faq"}))">Питання та відповіді</a>
                                                     </div>
                                                 </div>
                                             </div>
@@ -111,28 +111,28 @@
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("stati-postachalnikom") ? "" :Url.RouteUrl("pagesRoute", new { id = "stati-postachalnikom" }))">Співпраця з компанією</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("stati-postachalnikom") ? "#" :Url.RouteUrl("pagesRoute", new { id = "stati-postachalnikom" }))">Співпраця з компанією</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("tarifi-ta-mozhlivosti") ? "" :Url.RouteUrl("pagesRoute", new { id = "tarifi-ta-mozhlivosti" }))">Тарифи та можливості</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("tarifi-ta-mozhlivosti") ? "#" :Url.RouteUrl("pagesRoute", new { id = "tarifi-ta-mozhlivosti" }))">Тарифи та можливості</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("partnerska-programa") ? "" :Url.RouteUrl("pagesRoute", new { id = "partnerska-programa" }))">Партнерська програма</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("partnerska-programa") ? "#" :Url.RouteUrl("pagesRoute", new { id = "partnerska-programa" }))">Партнерська програма</a>
                                                     </div>
                                                 </div>
                                             </div>
                                             <div class="item-link">
                                                 <div class="item">
                                                     <div class="title">
-                                                        <a href="@(Request.Url.LocalPath.Contains("sistema-benefit-card") ? "" :Url.RouteUrl("pagesRoute", new { id = "sistema-benefit-card" }))">Система Benefit Card</a>
+                                                        <a href="@(Request.Url.LocalPath.Contains("sistema-benefit-card") ? "#" :Url.RouteUrl("pagesRoute", new { id = "sistema-benefit-card" }))">Система Benefit Card</a>
                                                     </div>
                                                 </div>
                                             </div>

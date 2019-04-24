@@ -4,6 +4,7 @@
 
 @{
     var categories = ViewBag.Categories as List<CategoryVM>;
+    var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
 }
 <div id="mobileheader" class="visible-xs visible-sm" style="width: 100%">
     <div class="mobileheader-v1" style="height:63px;position:fixed;z-index:5;background:#f9f9f9">
@@ -13,9 +14,6 @@
         </div>
         <div class="logo-block pull-left">
             <div class="logo">
-                @{
-                    var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
-                }
                 <a href="@href">
                     <img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company" height="35">
                 </a>
@@ -85,8 +83,9 @@
                                 <li class="menu_title">Каталог товаров</li>
                                 @foreach (var cat in categories)
                                 {
+                                    href = Request.Url.LocalPath.Contains(cat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName, options = string.Empty});
                                     <li>
-                                        <a class="dark-color @(cat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })" title="@cat.Name">
+                                        <a class="dark-color @(cat.ChildCategories.Any()? "parent" : string.Empty)" href="@href" title="@cat.Name">
                                             <span>@cat.Name</span>
                                             @if (cat.ChildCategories.Any())
                                             {
@@ -104,8 +103,9 @@
                                                 <li class="menu_title">@cat.Name</li>
                                                 @foreach (var subCat in cat.ChildCategories)
                                                 {
+                                                    href = Request.Url.LocalPath.Contains(subCat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty });
                                                     <li>
-                                                        <a class="dark-color @(subCat.ChildCategories.Any()? "parent" : string.Empty)" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty })" title="@subCat.Name">
+                                                        <a class="dark-color @(subCat.ChildCategories.Any()? "parent" : string.Empty)" href="@href" title="@subCat.Name">
                                                             <span>@subCat.Name</span>
                                                             @if (subCat.ChildCategories.Any())
                                                             {
@@ -119,8 +119,9 @@
                                                                 <li class="menu_title">@subCat.Name</li>
                                                                 @foreach (var childCat in subCat.ChildCategories)
                                                                 {
+                                                                    href = Request.Url.LocalPath.Contains(childCat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = childCat.UrlName, options = string.Empty});
                                                                     <li>
-                                                                        <a class="dark-color" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, options = string.Empty })" title="@childCat.Name">
+                                                                        <a class="dark-color" href="@childCat" title="@childCat.Name">
                                                                             <span>@childCat.Name</span>
                                                                         </a>
                                                                     </li>

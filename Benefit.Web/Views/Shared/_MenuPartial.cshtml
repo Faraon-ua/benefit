@@ -22,10 +22,10 @@
         </a>
         <span class="tail"></span>
         <ul class="dropdown-menu">
-            <li><a href="@(Request.Url.LocalPath.Contains("stati-postachalnikom") ? "" : Url.RouteUrl("pagesRoute", new { id = "stati-postachalnikom" }))" title="Співпраця з компанією"><span class="name">Співпраця з компанією</span></a></li>
-            <li><a href="@(Request.Url.LocalPath.Contains("tarifi-ta-mozhlivosti") ? "" : Url.RouteUrl("pagesRoute", new { id = "tarifi-ta-mozhlivosti" }))" title="Тарифи та можливості"><span class="name">Тарифи та можливості</span></a></li>
+            <li><a href="@(Request.Url.LocalPath.Contains("stati-postachalnikom") ? "#" : Url.RouteUrl("pagesRoute", new { id = "stati-postachalnikom" }))" title="Співпраця з компанією"><span class="name">Співпраця з компанією</span></a></li>
+            <li><a href="@(Request.Url.LocalPath.Contains("tarifi-ta-mozhlivosti") ? "#" : Url.RouteUrl("pagesRoute", new { id = "tarifi-ta-mozhlivosti" }))" title="Тарифи та можливості"><span class="name">Тарифи та можливості</span></a></li>
             <li>@*<a href="#" title="Реєстрація постачальника"><span class="name">Реєстрація постачальника</span></a>*@</li>
-            <li><a href="@(Request.Url.LocalPath.Contains("sistema-benefit-card") ? "" : Url.RouteUrl("pagesRoute", new { id = "sistema-benefit-card" }))" title="Система Benefit Card"><span class="name">Система Benefit Card</span></a></li>
+            <li><a href="@(Request.Url.LocalPath.Contains("sistema-benefit-card") ? "#" : Url.RouteUrl("pagesRoute", new { id = "sistema-benefit-card" }))" title="Система Benefit Card"><span class="name">Система Benefit Card</span></a></li>
         </ul>
     </div>
 </td>
@@ -36,16 +36,16 @@
         </a>
         <span class="tail"></span>
         <ul class="dropdown-menu">
-            <li><a href="@(Request.Url.LocalPath.Contains("sistema-benefit-card") ? "" : Url.RouteUrl("pagesRoute", new { id = "pro-kompaniyu-benefit-company" }))" title="Про компанію Benefit Company"><span class="name">Про компанію Benefit Company</span></a></li>
-            <li><a href="@(Request.Url.LocalPath.Contains("news") ? "" :Url.Action("index","news"))" title="Новини компанії"><span class="name">Новини компанії</span></a></li>
+            <li><a href="@(Request.Url.LocalPath.Contains("sistema-benefit-card") ? "#" : Url.RouteUrl("pagesRoute", new { id = "pro-kompaniyu-benefit-company" }))" title="Про компанію Benefit Company"><span class="name">Про компанію Benefit Company</span></a></li>
+            <li><a href="@(Request.Url.LocalPath.Contains("news") ? "#" :Url.Action("index","news"))" title="Новини компанії"><span class="name">Новини компанії</span></a></li>
             @*<li><a href="#" title="Відгуки про компанію"><span class="name">Відгуки про компанію</span></a></li>*@
-            <li><a href="@(Request.Url.LocalPath.Contains("ugoda-korustuvacha") ? "" :Url.RouteUrl("pagesRoute", new { id = "ugoda-korustuvacha" }))" title="Угода користувача"><span class="name">Угода користувача</span></a></li>
+            <li><a href="@(Request.Url.LocalPath.Contains("ugoda-korustuvacha") ? "#" :Url.RouteUrl("pagesRoute", new { id = "ugoda-korustuvacha" }))" title="Угода користувача"><span class="name">Угода користувача</span></a></li>
         </ul>
     </div>
 </td>
 <td class="menu-item" style="visibility: visible;">
     <div class="wrap">
-        <a class="" href="@(Request.Url.LocalPath.Contains("contacts") ? "" :Url.RouteUrl("pagesRoute", new { id = "contacts" }))">
+        <a class="" href="@(Request.Url.LocalPath.Contains("contacts") ? "#" :Url.RouteUrl("pagesRoute", new { id = "contacts" }))">
             <div class="no-hover-underline">Контакти<div class="line-wrapper"><span class="line"></span></div></div>
         </a>
     </div>

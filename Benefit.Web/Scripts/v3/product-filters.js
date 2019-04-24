@@ -134,7 +134,13 @@ $(function () {
                 }
                 $(".products-wrapper").css("opacity", "1");
                 $(".loader").hide();
-                $(".group_description_block").remove();
+                if (page >= 1) {
+                    $(".group_description_block").css("display", "none");
+                    $(".seo-fix").css("display", "none");
+                } else {
+                    $(".group_description_block").css("display", "block");
+                    $(".seo-fix").css("display", "block");
+                }
             });
     });
 

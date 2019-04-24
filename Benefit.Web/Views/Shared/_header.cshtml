@@ -5,6 +5,7 @@
 @{
     var categories = ViewBag.Categories as List<CategoryVM>;
     var isMainPage = RouteDataHelper.ActionName == "index" && RouteDataHelper.ControllerName == "home";
+    var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
 }
 
 <header id="header" class="header-v4 header-wrapper">
@@ -14,9 +15,7 @@
                 <div class="row">
                     <div class="logo-block pull-left col-md-2 col-sm-3">
                         <div class="logo ">
-                            @{
-                                var href = (RouteDataHelper.ControllerName == "home" && RouteDataHelper.ActionName == "index") ? "#" : Url.Action("index", "Home", new { area = string.Empty }, Request.Url.Scheme);
-                            }
+                           
                             <a href="@href">
                                 <img src="~/Content/img/logo.png" alt="Benefit Company" title="Benefit Company">
                             </a>
@@ -111,8 +110,9 @@
                                                                 <ul class="section-menu">
                                                                     @foreach (var cat in categories)
                                                                     {
+                                                                        href = Request.Url.LocalPath.Contains(cat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName, options = string.Empty});
                                                                         <li class="li-depth-1">
-                                                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })" class="a-depth-1">
+                                                                            <a href="@href" class="a-depth-1">
                                                                                 <div class="section-icon">
                                                                                     <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" height="20">
                                                                                 </div>
@@ -125,8 +125,9 @@
                                                                                     <ul>
                                                                                         @foreach (var subCat in cat.ChildCategories)
                                                                                         {
+                                                                                            href = Request.Url.LocalPath.Contains(subCat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = subCat.UrlName, options = string.Empty});
                                                                                             <li class="li-depth-2">
-                                                                                                <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty })" class="a-depth-2">
+                                                                                                <a href="@href" class="a-depth-2">
                                                                                                     <span>@subCat.Name</span>
                                                                                                     @if (subCat.ChildCategories.Any())
                                                                                                     {
@@ -143,7 +144,8 @@
                                                                                                     <div class="catalog-category">
                                                                                                         @foreach (var childCat in subCat.ChildCategories)
                                                                                                         {
-                                                                                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = childCat.UrlName, options = string.Empty})" class="pull-left child-category">
+                                                                                                            href = Request.Url.LocalPath.Contains(childCat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = childCat.UrlName, options = string.Empty});
+                                                                                                            <a href="@href" class="pull-left child-category">
                                                                                                                 <div>
                                                                                                                     <img src="~/Images/CategoryLogo/@childCat.ImageUrl" />
                                                                                                                 </div>
