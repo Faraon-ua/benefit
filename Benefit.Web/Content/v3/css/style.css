@@ -21690,10 +21690,6 @@ body .flexslider li, body .flex-direction-nav li {
     height: auto !important
 }
 
-.sections_wrapper {
-    margin: 0 0 30px
-}
-
 .front.wide_page .sections_wrapper {
     margin-bottom: 0;
     padding-bottom: 30px
@@ -33695,17 +33691,13 @@ body .table-type-block.item-views .row > div .item {
     font-size: 14px;
     color: #333;
     position: absolute;
-    bottom: -25px;
+    bottom: 0px;
     left: 0;
     width: 100%;
 }
 
     .group_description_block.top {
         padding: 0 0 25px
-    }
-
-    .group_description_block.bottom {
-        padding: 20px 0
     }
 
 ul.slider_navigation.top_big .flex-direction-nav {

@@ -64,6 +64,10 @@
         var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
         var term = "";
         var showCartOnOrder = '@(Model.Category == null ? "false" : Model.Category.ShowCartOnOrder.ToString())'.toLowerCase() === 'true';
+
+        $(function() {
+            $(".seo-fix").css("height", $(".group_description_block").outerHeight());
+        });
     </script>
     <script src="~/Scripts/v3/products.js"></script>
     <script src="~/Scripts/v3/product-filters.js"></script>
@@ -190,6 +194,7 @@
 
                                 </div>
                             </div>
+                            <div id="layout_fix" class="seo-fix">&nbsp;</div>
                         </div>
                     </div>
                 </div>
