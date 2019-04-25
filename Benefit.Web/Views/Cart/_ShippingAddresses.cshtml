@@ -2,8 +2,7 @@
 @using Benefit.Common.Constants
 <div class="delivery_address">
     @{
-        var defaultAddress = Model.Addresses.FirstOrDefault(entry => entry.IsDefault);
-        defaultAddress = defaultAddress ?? Model.Addresses.FirstOrDefault();
+        var defaultAddress = Model.Addresses.FirstOrDefault(entry => entry.IsDefault) ?? Model.Addresses.FirstOrDefault();
         var defaultAddressId = defaultAddress == null ? "" : defaultAddress.Id;
     }
     @foreach (var address in Model.Addresses)

@@ -349,6 +349,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult AddOrderProduct(OrderProduct orderProduct)
         {
+            orderProduct.Id = Guid.NewGuid().ToString();
             orderProduct.ProductId = Guid.NewGuid().ToString();
             db.OrderProducts.Add(orderProduct);
             var order = db.Orders.Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);

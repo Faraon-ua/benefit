@@ -114,6 +114,7 @@ namespace Benefit.Domain.Models
         public bool IsAcquiringActive { get; set; }
         public bool IsFeatured { get; set; }
         public bool AreProductsFeatured { get; set; }
+        public bool GenerateFeaturedProducts { get; set; }
         public bool HasEcommerce { get; set; }
         public SellerEcommerceTemplate? EcommerceTemplate { get; set; }
         public int TotalDiscount { get; set; }

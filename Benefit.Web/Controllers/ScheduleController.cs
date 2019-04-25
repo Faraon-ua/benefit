@@ -45,7 +45,7 @@ namespace Benefit.Web.Controllers
                     product.IsNewProduct = false;
                 }
 
-                foreach (var seller in db.Sellers.Where(entry => entry.AreProductsFeatured))
+                foreach (var seller in db.Sellers.Where(entry => entry.GenerateFeaturedProducts))
                 {
                     var featuredProducts =
                         db.Products

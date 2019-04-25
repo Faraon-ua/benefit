@@ -17,7 +17,7 @@
 @section scripts
 {
     <script>
-        $(function() {
+        $(function () {
             $(".seo-fix").css("height", $(".group_description_block").outerHeight());
         });
     </script>
@@ -31,9 +31,11 @@
             <div class="middle ">
                 <div class="container">
                     <div class="catalog_section_list row items">
-                        <p class="group_description_block">
-                            @Html.Raw(Model.Category.Description)
-                        </p>
+                        <div class="group_description_block">
+                            <div>
+                                @Html.Raw(Model.Category.Description)
+                            </div>
+                        </div>
                         <div class="section_block">
                             <div class="sections_wrapper">
                                 <div class="list items">
@@ -68,7 +70,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <br style="clear: both;"/>
+                            <br style="clear: both;" />
                         </div>
                         <div id="layout_fix" class="seo-fix margin-top-50">&nbsp;</div>
                     </div>

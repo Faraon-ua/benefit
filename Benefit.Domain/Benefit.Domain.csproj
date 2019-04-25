@@ -586,6 +586,10 @@
     <Compile Include="Migrations\201904220741016_ChangeOrderProductKey.Designer.cs">
       <DependentUpon>201904220741016_ChangeOrderProductKey.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201904250829040_AddGenerateFeaturedToSeller.cs" />
+    <Compile Include="Migrations\201904250829040_AddGenerateFeaturedToSeller.Designer.cs">
+      <DependentUpon>201904250829040_AddGenerateFeaturedToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1020,6 +1024,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904220741016_ChangeOrderProductKey.resx">
       <DependentUpon>201904220741016_ChangeOrderProductKey.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201904250829040_AddGenerateFeaturedToSeller.resx">
+      <DependentUpon>201904250829040_AddGenerateFeaturedToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

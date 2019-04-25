@@ -144,6 +144,14 @@
     </div>
 
     <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Автоматично генерувати хіти та новинки</label>
+
+        <div class="col-xs-10 col-sm-5">
+            @Html.CheckBoxFor(m => m.Seller.GenerateFeaturedProducts)
+        </div>
+    </div>
+
+    <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Benefit Card</label>
 
         <div class="col-xs-10 col-sm-5">

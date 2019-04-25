@@ -7,6 +7,8 @@
     Layout = "_SellerLayout.cshtml";
     var seller = ViewBag.Seller as Seller;
     ViewBag.Title = "Кошик";
+    var defaultAddress = Model.Addresses.FirstOrDefault(entry => entry.IsDefault) ?? Model.Addresses.FirstOrDefault();
+    var defaultAddressId = defaultAddress == null ? "" : defaultAddress.Id;
 }
 @section meta
 {
@@ -190,7 +192,7 @@
                 <form action="@Url.Action("order", "cart", new {id = Model.SellerId})" method="post">
                     <input type="hidden" name="SellerId" value="@Model.SellerId" />
                     @Html.Hidden("UserId")
-                    @Html.Hidden("AddressId")
+                    @Html.Hidden("AddressId", defaultAddressId)
 
                     <div class="block">
                         <h1 class="h1 no_border"><span data-language="cart_header">Кошик</span></h1>

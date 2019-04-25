@@ -121,7 +121,7 @@
                                                                 {
                                                                     href = Request.Url.LocalPath.Contains(childCat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = childCat.UrlName, options = string.Empty});
                                                                     <li>
-                                                                        <a class="dark-color" href="@childCat" title="@childCat.Name">
+                                                                        <a class="dark-color" href="@href" title="@childCat.Name">
                                                                             <span>@childCat.Name</span>
                                                                         </a>
                                                                     </li>
