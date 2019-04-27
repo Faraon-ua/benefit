@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Data.Entity;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -9,8 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Benefit.Common.Constants;
-using Benefit.DataTransfer.JSON;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -79,7 +76,9 @@ namespace Benefit.Web.Controllers
                         .Where(entry =>
                             entry.IsFeatured &&
                             (entry.AvailabilityState == ProductAvailabilityState.Available ||
-                             entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) && entry.Images.Any())
+                             entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
+                            entry.Images.Any() && 
+                            entry.Seller.AreProductsFeatured)
                         .ToList()
                     group element by element.SellerId
                     into groups
@@ -92,7 +91,8 @@ namespace Benefit.Web.Controllers
                         .Where(entry => entry.IsNewProduct &&
                                         (entry.AvailabilityState == ProductAvailabilityState.Available ||
                                          entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
-                                        entry.Images.Any()).ToList()
+                                        entry.Images.Any() &&
+                                        entry.Seller.AreProductsFeatured).ToList()
                     group element by element.SellerId
                     into groups
                     select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
