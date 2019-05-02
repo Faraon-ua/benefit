@@ -271,7 +271,7 @@ namespace Benefit.Web.Controllers
                 }
             }
 
-            if (completeOrder.AddressId == null && string.IsNullOrEmpty(completeOrder.NewAddressLine) && string.IsNullOrEmpty(completeOrder.ShippingAddress))
+            if (ViewBag.Seller == null && completeOrder.AddressId == null && string.IsNullOrEmpty(completeOrder.NewAddressLine) && string.IsNullOrEmpty(completeOrder.ShippingAddress))
             {
                 ModelState.AddModelError("AddressId", "Оберіть адресу доставки");
             }
@@ -347,6 +347,7 @@ namespace Benefit.Web.Controllers
                 }
             }
             vm.Order = order;
+            vm.SellerId = completeOrder.SellerId;
 
             TempData["ErrorMessage"] = ModelState.ModelStateErrors();
             var domainSeller = ViewBag.Seller as Seller;

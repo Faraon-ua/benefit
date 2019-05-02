@@ -52,7 +52,7 @@
                             "__RequestVerificationToken": token,
                             "model": registerFormJson
                         },
-                        function(data) {
+                        function (data) {
                             if (data.error) {
                                 flashMessage(data.error, true, true);
                             } else {
