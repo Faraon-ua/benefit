@@ -20,8 +20,13 @@ namespace Benefit.Web.Controllers
 
         public ActionResult ProcessImportTasks()
         {
-            var importService = new ImportExportService();
-            Task.Run(() => importService.ProcessYmlImportTasks());
+            Task.Run(() =>
+            {
+                using (var importService = new ImportExportService())
+                {
+                    importService.ProcessYmlImportTasks();
+                }
+            });
             return Content("Ok");
         }
 
