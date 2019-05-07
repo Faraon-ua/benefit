@@ -15,6 +15,19 @@ namespace Benefit.Web.Controllers
     public class HelperController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
+
+        public ActionResult ResizeAllImages(ImageType imageType)
+        {
+            var imagesService = new ImagesService();
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var pathString = Path.Combine(originalDirectory, "Images", imageType.ToString());
+            var dir = new DirectoryInfo(pathString);
+            foreach (var img in dir.GetFiles())
+            {
+                imagesService.ResizeToSiteRatio(Path.Combine(pathString, img.Name), imageType);
+            }
+            return Content("Ok");
+        }
         public ActionResult Chat()
         {
             return PartialView();
