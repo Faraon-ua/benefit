@@ -135,6 +135,10 @@ function processRating(ratingStars, e, isClick) {
 }
 
 $(function () {
+    $("img[data-src]").each(function () {
+        $(this).attr("src", $(this).attr("data-src"));
+    });
+
     $('body').on('click', '.add-to-favorites', function (e) {
         e.preventDefault();
         var btn = $(this);
