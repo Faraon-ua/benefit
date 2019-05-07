@@ -4,7 +4,7 @@
         @foreach (var banner in Model.MobileBanners)
         {
             <a href="@banner.NavigationUrl">
-                <img class="item" data-src="/Images/@banner.BannerType/@banner.ImageUrl">
+                <img class="item" data-src="/Images/@banner.BannerType/@banner.ImageUrl" src="~/Content/v3/images/loaders/img-loader.gif" />
             </a>
         }
     </div>
@@ -16,7 +16,7 @@
                 @foreach (var banner in Model.PrimaryBanners)
                 {
                     <a href="@banner.NavigationUrl">
-                        <img class="item" data-src="/Images/@banner.BannerType/@banner.ImageUrl">
+                        <img class="item" data-src="/Images/@banner.BannerType/@banner.ImageUrl" src="~/Content/v3/images/loaders/img-loader.gif" />
                     </a>
                 }
             </div>
@@ -27,7 +27,7 @@
                     @foreach (var banner in Model.TopSideBanners)
                     {
                         <a href="@banner.NavigationUrl">
-                            <img class="item" data-src="/Images/@banner.BannerType/@banner.ImageUrl">
+                            <img class="item" data-src="/Images/@banner.BannerType/@banner.ImageUrl"  src="~/Content/v3/images/loaders/img-loader.gif" />
                         </a>
                     }
                 </div>
@@ -37,7 +37,7 @@
                     @foreach (var banner in Model.BottomSideBanners)
                     {
                         <a href="@banner.NavigationUrl">
-                            <img class="item" data-src="/Images/@banner.BannerType/@banner.ImageUrl">
+                            <img class="item" data-src="/Images/@banner.BannerType/@banner.ImageUrl" src="~/Content/v3/images/loaders/img-loader.gif" />
                         </a>
                     }
                 </div>

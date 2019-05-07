@@ -58,7 +58,7 @@
                                                 <div class="item category-item" style="height: 230px;">
                                                     <div class="img shine">
                                                         <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName})" class="thumb">
-                                                            <img data-src="/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Title" title="@cat.Title">
+                                                            <img data-src="/Images/CategoryLogo/@cat.ImageUrl" src="~/Content/v3/images/loaders/img-loader.gif" alt="@cat.Title" title="@cat.Title">
                                                         </a>
                                                         <div class="name">
                                                             <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = cat.UrlName})" class="dark_link">@cat.Name</a>
@@ -83,7 +83,7 @@
                 @if (Model.Category.BannerImageUrl != null)
                 {
                     <a href="@Model.Category.BannerUrl">
-                        <img data-src="/Images/CategoryBanner/@Model.Category.BannerImageUrl" style="width: 100%;" />
+                        <img data-src="/Images/CategoryBanner/@Model.Category.BannerImageUrl"  src="~/Content/v3/images/loaders/img-loader.gif" style="width: 100%;" />
                     </a>
                 }
                 @Html.Partial("~/Views/News/_LastNewsPartial.cshtml", ViewBag.LastNews as IEnumerable<InfoPage>)
