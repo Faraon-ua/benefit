@@ -777,6 +777,8 @@
     <Content Include="Content\v3\css\product.css" />
     <Content Include="Content\v3\css\style.css" />
     <Content Include="Content\v3\images\lk-icon.png" />
+    <Content Include="Content\v3\images\loaders\img-loader.gif" />
+    <Content Include="Content\v3\images\loaders\preloader.gif" />
     <Content Include="Content\v3\images\Lock_big_mask.svg" />
     <Content Include="Content\v3\images\Lock_big_white.svg" />
     <Content Include="EmailTemplates\SendImportResults.html" />
@@ -1378,6 +1380,7 @@
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\console.js" />
     <Content Include="Scripts\hierarchy-select.min.js" />
+    <Content Include="Scripts\image-defer.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />

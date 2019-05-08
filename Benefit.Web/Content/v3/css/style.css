@@ -21124,7 +21124,7 @@ body .flexslider li, body .flex-direction-nav li {
 }
 
 .top_slider_wrapp .flexslider {
-    background-image: url(../images/loaders/pl3.gif);
+    background-image: url(../images/loaders/img-loader.gif);
     background-repeat: no-repeat;
     background-position: center center
 }
@@ -21874,7 +21874,7 @@ body .container .bottom_slider.tab_slider_wrapp {
 
         .best_block.tab_slider_wrapp ul.tabs_content li.tab > .tabs_slider {
             min-height: 300px;
-            background: #fff url(../images/loaders/pl3.gif) no-repeat center center
+            background: #fff url(../images/loaders/img-loader.gif) no-repeat center center
         }
 
         .best_block.tab_slider_wrapp ul.tabs_content li.tab.opacity1 > .tabs_slider {
@@ -23149,11 +23149,11 @@ body .wrapper .catalog_item .item_info .buttons_block {
         }
 
 .loading_block {
-    background: #fff url(../images/loaders/pl3.gif) center center no-repeat
+    background: #fff url(../images/loaders/img-loader.gif) center center no-repeat
 }
 
 .loading_state.flexslider:not(.flexslider-init) {
-    background: url(../images/loaders/pl3.gif) center center no-repeat
+    background: url(../images/loaders/img-loader.gif) center center no-repeat
 }
 
 .news_akc_block .top_block {

@@ -44,7 +44,7 @@
                                                                 <li class="li-depth-1">
                                                                     <a href="@href" class="a-depth-1">
                                                                         <div class="section-icon">
-                                                                            <img data-src="/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" height="30">
+                                                                            <img data-defer-src="/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" height="30">
                                                                         </div>
                                                                         <span>@cat.Name</span>
                                                                     </a>
@@ -77,7 +77,7 @@
                                                                                                     href = Request.Url.LocalPath.Contains(childCat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = childCat.UrlName, options = string.Empty});
                                                                                                     <a href="@href" class="pull-left child-category">
                                                                                                         <div>
-                                                                                                            <img data-src="/Images/CategoryLogo/@childCat.ImageUrl" />
+                                                                                                            <img data-defer-src="/Images/CategoryLogo/@childCat.ImageUrl" />
                                                                                                         </div>
                                                                                                         <div class="caption">
                                                                                                             @childCat.Name

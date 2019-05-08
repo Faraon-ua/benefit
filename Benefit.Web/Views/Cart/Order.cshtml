@@ -14,20 +14,20 @@
 }
 @section scripts
 {
-    <script src="~/Scripts/common.js"></script>
-    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
-    <script src="~/Scripts/address.js"></script>
-    <script src="~/Scripts/select2.min.js"></script>
+    <script src="~/Scripts/common.js" defer></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js" defer></script>
+    <script src="~/Scripts/address.js" defer></script>
+    <script src="~/Scripts/select2.min.js" defer></script>
 
     <script>
         var getUserIdIfExist = false;
         var shippingMethodsJson = @Html.Raw(JsonConvert.SerializeObject(Model.ShippingMethods));
         var loginUrl = '@Url.Action("Login", "Account")' +
             '?returnUrl=@HttpUtility.UrlEncode(Url.Action("Order", "Cart"))&isAjaxRequest=true';
-        var token = $('[name=__RequestVerificationToken]').val();
         var isAuthenticated = ('@User.Identity.IsAuthenticated' === 'True');
 
-        $(function() {
+        window.addEventListener('DOMContentLoaded', function () {
+            var token = $('[name=__RequestVerificationToken]').val();
             CalculateSummary();
             SetRegionsAutocomplete();
 

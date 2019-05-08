@@ -16,7 +16,8 @@
 @section scripts{
     <script>
         var fetchNewsUrl = '@Url.Action("FetchNews")';
-        $(function () {
+        
+        window.addEventListener('DOMContentLoaded', function() {
             $(".ajax_load_btn").click(function () {
                 var moreBtn = $(this);
                 var currentPage = parseInt(moreBtn.attr("data-page"));

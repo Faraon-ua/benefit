@@ -13,9 +13,9 @@
 }
 @section scripts
 {
-    <script src="~/Scripts/common.js"></script>
-    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
-    <script src="~/Scripts/address.js"></script>
+    <script src="~/Scripts/common.js" defer></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js" defer></script>
+    <script src="~/Scripts/address.js" defer></script>
     <script>
         var referalUserUrl = '@Url.Action("GetReferalName")';
         var registeredCardUrl = '@Url.Action("CheckRegisteredCard")';
@@ -31,7 +31,7 @@
             });
         }
 
-        $(function () {
+        window.addEventListener('DOMContentLoaded', function() {
             $('[data-toggle="tooltip"]').tooltip();
             SetRegionsAutocomplete();
 

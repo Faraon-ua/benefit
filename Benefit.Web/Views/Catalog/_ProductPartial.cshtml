@@ -43,11 +43,11 @@
                         {
                             if (image.IsAbsoluteUrl)
                             {
-                                <img data-src="@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" src="~/Content/v3/images/loaders/img-loader.gif" />
+                                <img data-defer-src="@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" src="~/Content/v3/images/loaders/img-loader.gif" />
                             }
                             else
                             {
-                                <img data-src="/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" src="~/Content/v3/images/loaders/img-loader.gif" />
+                                <img data-defer-src="/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" src="~/Content/v3/images/loaders/img-loader.gif" />
                             }
                         }
                     </div>

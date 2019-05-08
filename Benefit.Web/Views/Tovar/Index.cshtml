@@ -70,9 +70,9 @@
 }
 @section scripts
 {
-    <script src="~/Scripts/common.js"></script>
-    <script src="~/Scripts/v3/ubislider.min.js"></script>
-    <script src="~/Scripts/v3/products.js"></script>
+    <script src="~/Scripts/common.js" defer></script>
+    <script src="~/Scripts/v3/ubislider.min.js" defer></script>
+    <script src="~/Scripts/v3/products.js" defer></script>
     <script>
         var otherRegion = '@string.Join(",",availableForPurchase.Regions.Values)';
         var selectedProductId = null;
@@ -85,7 +85,7 @@
         var sellerUrlName = '@Model.Product.Seller.UrlName';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
 
-        $(function() {
+        window.addEventListener('DOMContentLoaded', function() {
             $(".variants .variant-item").click(function() {
                 $(this).siblings().removeClass("active");
                 $(this).addClass("active");

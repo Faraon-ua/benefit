@@ -18,7 +18,7 @@
     <script>
         var getSellersUrl = '@Url.Action("GetSellers", "Catalog")';
         var options = "";
-        $(function () {
+        window.addEventListener('DOMContentLoaded', function() {
             $('body').on("click",
                 ".remove-filter",
                 function () {

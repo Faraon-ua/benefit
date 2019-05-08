@@ -65,13 +65,13 @@
         var term = "";
         var showCartOnOrder = '@(Model.Category == null ? "false" : Model.Category.ShowCartOnOrder.ToString())'.toLowerCase() === 'true';
 
-        $(function() {
+        window.addEventListener('DOMContentLoaded', function() {
             $(".seo-fix").css("height", $(".group_description_block").outerHeight());
         });
     </script>
-    <script src="~/Scripts/v3/products.js"></script>
-    <script src="~/Scripts/v3/product-filters.js"></script>
-    <script src="~/Scripts/bootstrap-slider.min.js"></script>
+    <script src="~/Scripts/v3/products.js" defer></script>
+    <script src="~/Scripts/v3/product-filters.js" defer></script>
+    <script src="~/Scripts/bootstrap-slider.min.js" defer></script>
 }
 
 <div class="wraps hover_shine" id="content">
