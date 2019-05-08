@@ -9,7 +9,7 @@
                     <li class="li-depth-1">
                         <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })" class="a-depth-1">
                             <div class="section-icon">
-                                <img data-defer-src="/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" height="30">
+                                <img data-src="/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Name" height="30">
                             </div>
                             <span>@cat.Name</span>
                         </a>
@@ -44,7 +44,7 @@
                                                     @foreach (var childCat in subCat.ChildCategories)
                                                     {
                                                         <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, options = string.Empty })" class="pull-left child-category">
-                                                            <img data-defer-src="/Images/CategoryLogo/@childCat.ImageUrl" style="width: 85px; height: 85px;" />
+                                                            <img data-src="/Images/CategoryLogo/@childCat.ImageUrl" style="width: 85px; height: 85px;" />
                                                             <div style="height: 50px; overflow: hidden;">
                                                                 @childCat.Name
                                                             </div>
