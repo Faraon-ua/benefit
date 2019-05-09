@@ -41,6 +41,12 @@
                 } else {
                     $("#exportId").hide();
                 }
+                if ($(this).val() == "@((int)ProductsBulkAction.ApplyCurrency)" ||
+                    $(this).val() == "@((int)ProductsBulkAction.ApplyCurrencyAll)") {
+                    $("#currencyId").show();
+                } else {
+                    $("#currencyId").hide();
+                }
             });
 
             $("#products-bulk-action-btn").click(function() {
@@ -50,12 +56,14 @@
                 var action = $("#products-bulk-action").val();
                 var categoryId = $("[name=move-to-categoryId]").val();
                 var exportId = $("[name=exportId]").val();
+                var currencyId = $("[name=currencyId]").val();
                 $.post(bulkProductsActionUrl + location.search,
                     {
                         "productIds": productIds,
                         "action": action,
                         "category_Id": categoryId,
-                        "export_Id": exportId
+                        "export_Id": exportId,
+                        "currency_Id": currencyId
                     }, function() {
                         window.location.reload();
                     });
@@ -201,6 +209,8 @@
                             })
 
                             @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style = "display:none;" })
+                            
+                            @Html.DropDownList("currencyId", Model.ProductFilters.Currencies, null, new { id = "currencyId", style = "display:none;" })
                         </div>
                     </div>
                     <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>

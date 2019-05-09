@@ -92,6 +92,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     Text = entry.Name,
                     Value = entry.Id
                 }).ToList();
+            productsViewModel.ProductFilters.Currencies = db.Currencies
+                .Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId || entry.SellerId == null).ToList().Select(entry => new SelectListItem()
+                {
+                    Text = string.Format("{0} ({1})", entry.Name, entry.Provider),
+                    Value = entry.Id
+                }).ToList();
             productsViewModel.ProductFilters.HasParameters = new List<SelectListItem>()
             {
                 new SelectListItem() {Text = "Мають", Value = "true"},
@@ -286,7 +292,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json("success");
         }
 
-        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string export_Id, ProductFilterValues filters = null)
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string export_Id, string currency_Id, ProductFilterValues filters = null)
         {
             var productService = new ProductsService();
             List<string> products = null;
@@ -350,6 +356,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
                     var productExportAlls = db.ExportProducts.Where(entry => products.Contains(entry.ProductId));
                     db.ExportProducts.RemoveRange(productExportAlls);
+                    break;
+                case ProductsBulkAction.ApplyCurrency:
+                    db.Products.Where(entry => productIds.Contains(entry.Id))
+                       .ForEach(entry =>
+                       {
+                           entry.CurrencyId = currency_Id;
+                           db.Entry(entry).State = EntityState.Modified;
+                       });
+                    break;
+                case ProductsBulkAction.ApplyCurrencyAll:
+                    var curProducts = GetFilteredProducts(filters).ToList();
+                    curProducts.ForEach(entry =>
+                    {
+                        entry.CurrencyId = currency_Id;
+                        db.Entry(entry).State = EntityState.Modified;
+                    });
                     break;
             }
 

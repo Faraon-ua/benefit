@@ -27,6 +27,7 @@ namespace Benefit.Web.Models.Admin
     {
         public List<HierarchySelectItem> Categories { get; set; }
         public List<SelectListItem> Exports { get; set; }
+        public List<SelectListItem> Currencies { get; set; }
         public IEnumerable<SelectListItem> Sellers { get; set; }
         public IEnumerable<SelectListItem> Sorting { get; set; }
         public IEnumerable<SelectListItem> HasParameters { get; set; }

@@ -17,6 +17,10 @@ namespace Benefit.Web.Models.Enumerations
         [Display(Name="Видалити із експорту обрані")]
         DeleteFromExport,
         [Display(Name="Видалити із експорту відсортовані")]
-        DeleteFromExportAll
+        DeleteFromExportAll,
+        [Display(Name="Застосувати курс/індекс для обраних")]
+        ApplyCurrency,
+        [Display(Name = "Застосувати курс/індекс для відсортованих")]
+        ApplyCurrencyAll
     }
 }

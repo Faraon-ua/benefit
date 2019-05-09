@@ -522,7 +522,9 @@ namespace Benefit.Services.Domain
                 var imagesToAddList = new List<Image>();
 
                 var existingImages = db.Images.AsNoTracking().Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
-                var currencies = db.Currencies.Where(entry => entry.SellerId == null || entry.SellerId == sellerId)
+                var currencies = db.Currencies
+                    .Where(entry => entry.SellerId == null || entry.SellerId == sellerId)
+                    .OrderBy(entry => entry.Provider)
                     .ToList();
 
                 //parameters
