@@ -24,12 +24,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category))
                     .Include(entry => entry.MappedCategories)
                     .FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
-            var cats =
-                seller.SellerCategories.SelectMany(entry => seller.MappedCategories)
-                    .Union(seller.SellerCategories.Select(entry => entry.Category))
-                    .ToList();
-            ViewBag.Categories =
-                cats.Select(entry => new SelectListItem() { Text = entry.Name, Value = entry.Id }).ToList();
 
             return View(currency);
         }
@@ -59,17 +53,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return RedirectToAction("Index");
             }
             return View(currency);
-        }
-
-        public ActionResult ApplyToCats(string id, string[] catIds)
-        {
-            var products = db.Products.Where(entry => catIds.Contains(entry.CategoryId)).ToList();
-            foreach (var product in products)
-            {
-                product.CurrencyId = id;
-            }
-            db.SaveChanges();
-            return new HttpStatusCodeResult(200);
         }
 
         public ActionResult Delete(string id)

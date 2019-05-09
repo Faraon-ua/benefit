@@ -13,18 +13,8 @@
     <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
     <script src="~/Scripts/bootstrap-select.js"></script>
     <script>
-        var applyToCatsUrl = '@Url.Action("ApplyToCats", new {id=Model.Id})';
-
         $(function () {
             $('.mask-number').mask("#0.00", { reverse: true });
-
-            $("#applyToCats").click(function () {
-                var ids = $("#catsToApply").val();
-                var postData = { "catIds": ids }
-                $.post(applyToCatsUrl, postData, function (data) {
-                    flashMessage("Курс/індекс успішно застосований");
-                });
-            });
         })
     </script>
 }
@@ -33,60 +23,45 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal">
-        <div class="col-md-6">
-            @Html.ValidationSummary(true)
+        @Html.ValidationSummary(true)
 
-            @Html.HiddenFor(model => model.Id)
-            @Html.HiddenFor(model => model.SellerId)
+        @Html.HiddenFor(model => model.Id)
+        @Html.HiddenFor(model => model.SellerId)
 
-            <div class="form-group">
-                <label class="control-label col-md-2">Назва</label>
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Name)
-                    @Html.ValidationMessageFor(model => model.Name)
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label class="control-label col-md-2">Індекс</label>
-
-                <div class="col-md-10">
-                    @if (Model.Provider == CurrencyProvider.Custom)
-                    {
-                        @Html.TextBox("Rate", Model.Rate.ToString("0.00"), new { @class = "mask-number" })
-                    }
-                    else
-                    {
-                        @Html.TextBox("Rate", Model.Rate.ToString("0.00"), new { @class = "mask-number", @readonly = "readonly", disabled = "disabled" })
-                    }
-                    @Html.ValidationMessageFor(model => model.Rate)
-                </div>
-            </div>
-            @if (Model.Provider == CurrencyProvider.Custom)
-            {
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Зберегти" class="btn btn-default" />
-                    </div>
-                </div>
-            }
-
-            <div>
-                @Html.ActionLink("Назад до списку", "Index")
+        <div class="form-group">
+            <label class="control-label col-md-2">Назва</label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name)
+                @Html.ValidationMessageFor(model => model.Name)
             </div>
         </div>
-        <div class="col-md-6">
-            @if (Model.Id != null)
-            {
-                <p>Застосувати цей курс/індекс до всіх цін товарів категорій:</p>
-                <select class="selectpicker" multiple id="catsToApply" data-style="btn-info" data-actions-box="true" data-selectalltext="Всі" data-deselectalltext="Нич">
-                    @foreach (var category in ViewBag.Categories as IEnumerable<SelectListItem>)
-                    {
-                        <option value="@category.Value">@category.Text</option>
-                    }
-                </select>
-                <button type="button" class="btn btn-success" id="applyToCats">Застосувати</button>
-            }
+
+        <div class="form-group">
+            <label class="control-label col-md-2">Індекс</label>
+
+            <div class="col-md-10">
+                @if (Model.Provider == CurrencyProvider.Custom)
+                {
+                    @Html.TextBox("Rate", Model.Rate.ToString("0.00"), new { @class = "mask-number" })
+                }
+                else
+                {
+                    @Html.TextBox("Rate", Model.Rate.ToString("0.00"), new { @class = "mask-number", @readonly = "readonly", disabled = "disabled" })
+                }
+                @Html.ValidationMessageFor(model => model.Rate)
+            </div>
+        </div>
+        @if (Model.Provider == CurrencyProvider.Custom)
+        {
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Зберегти" class="btn btn-default" />
+                </div>
+            </div>
+        }
+
+        <div>
+            @Html.ActionLink("Назад до списку", "Index")
         </div>
     </div>
 }
