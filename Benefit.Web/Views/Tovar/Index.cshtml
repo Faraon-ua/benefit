@@ -248,8 +248,8 @@
                         <div class="x-product-page__main-info product_info_wrap">
                             <div class="x-product-info">
                                 <div class="x-product-info__images">
-                                    <div class="ubislider-image-container left" data-ubislider="slider2"></div>
-                                    <div id="slider2" class="ubislider left">
+                                    <div class="ubislider-image-container @(Model.Product.Images.Count > 1? "left" : "right")" data-ubislider="slider2"></div>
+                                    <div id="slider2" class="ubislider left" style="@(Model.Product.Images.Count > 1? "" : "display:none;")">
                                         <a class="arrow prev"></a>
                                         <a class="arrow next"></a>
                                         <ul id="gal1" class="ubislider-inner">
