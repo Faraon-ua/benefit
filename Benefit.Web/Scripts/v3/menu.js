@@ -51,7 +51,11 @@ $(document).ready(function(){
             var liWidth = $(this).outerWidth(),
                 childMenu = $(this).find('.child-menu-3');
             $(this).addClass('active');
-            childMenu.removeClass('hidden'); childMenu.css({'left':liWidth + 1});
+            childMenu.removeClass('hidden'); childMenu.css({ 'left': liWidth + 1 });
+            childMenu.find("img").each(function () {
+                var dataSrc = $(this).attr("data-menu-src");
+                $(this).attr("src", dataSrc)
+            })
             $(this).on('mouseleave', function(){ $(this).removeClass('active'); childMenu.addClass('hidden'); });
         });
 

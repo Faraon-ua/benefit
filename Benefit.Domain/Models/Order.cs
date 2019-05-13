@@ -125,7 +125,7 @@ namespace Benefit.Domain.Models
         {
             var sum = OrderProducts.Sum(
                 entry =>
-                    entry.ProductPrice * entry.Amount +
+                    entry.ActualPrice * entry.Amount +
                     (entry.OrderProductOptions.Any()
                         ? entry.OrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount)
                         : entry.DbOrderProductOptions.Sum(option => option.ProductOptionPriceGrowth * option.Amount)));

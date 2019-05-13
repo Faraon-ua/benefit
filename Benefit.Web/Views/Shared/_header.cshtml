@@ -147,7 +147,7 @@
                                                                                                             href = Request.Url.LocalPath.Contains(childCat.UrlName) ? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = childCat.UrlName, options = string.Empty});
                                                                                                             <a href="@href" class="pull-left child-category">
                                                                                                                 <div>
-                                                                                                                    <img data-defer-src="/Images/CategoryLogo/@childCat.ImageUrl" src="~/Content/v3/images/loaders/img-loader.gif" />
+                                                                                                                    <img data-menu-src="/Images/CategoryLogo/@childCat.ImageUrl" src="~/Content/v3/images/loaders/img-loader.gif" />
                                                                                                                 </div>
                                                                                                                 <div class="caption">
                                                                                                                     @childCat.Name
