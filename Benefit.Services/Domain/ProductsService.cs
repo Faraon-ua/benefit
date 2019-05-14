@@ -101,13 +101,18 @@ namespace Benefit.Services.Domain
             }
 
             var categoriesService = new CategoriesService();
+            var categoryId = product.Category.UrlName;
+            if (product.Category.MappedParentCategoryId != null)
+            {
+                categoryId = product.Category.MappedParentCategoryId;
+            }
             var result = new ProductDetailsViewModel()
             {
                 Product = product,
                 ProductOptions = GetProductOptions(product.Id),
                 Breadcrumbs = new BreadCrumbsViewModel()
                 {
-                    Categories = categoriesService.GetBreadcrumbs(cachedCats, urlName: product.Category.UrlName),
+                    Categories = categoriesService.GetBreadcrumbs(cachedCats, categoryId: categoryId),
                     Product = product,
                 },
                 CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == userId && entry.OrderProducts.Any(pr => pr.ProductId == product.Id))
