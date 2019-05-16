@@ -27,7 +27,7 @@ namespace Benefit.Web.Controllers
         private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
-        //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength)]
+        //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByCustom = "IsMobile")]
         public async Task<ActionResult> Index()
         {
             //handle seller subdomain

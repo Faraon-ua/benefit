@@ -26,6 +26,14 @@ namespace Benefit.Web
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             AutomapperConfig.Init();
         }
+        public override string GetVaryByCustomString(HttpContext context, string custom)
+        {
+            if (custom.ToLowerInvariant() == "ismobile" && context.Request.Browser.IsMobileDevice)
+            {
+                return "mobile";
+            }
+            return base.GetVaryByCustomString(context, custom);
+        }
 
         protected void Application_BeginRequest(object sender, EventArgs e)
         {
