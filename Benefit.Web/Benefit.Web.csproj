@@ -1562,6 +1562,7 @@
     <Content Include="Views\Home\Index.mobile.cshtml" />
     <Content Include="Views\Shared\_Layout.mobile.cshtml" />
     <Content Include="Views\Shared\_head.mobile.cshtml" />
+    <Content Include="Views\Home\_ImageSlider.mobile.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
