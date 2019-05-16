@@ -30,7 +30,7 @@ namespace Benefit.Web.Helpers
                 var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
                 var urlSet = new XElement(ns + "urlset");
                 var count = 0;
-                foreach (var page in db.InfoPages.Where(entry => entry.SellerId == sellerId))
+                foreach (var page in db.InfoPages.Where(entry => entry.SellerId == sellerId && entry.Name != "Головна"))
                 {
                     var url = new XElement(ns + "url");
                     var loc = new XElement(ns + "loc", string.Concat(host, urlHelper.RouteUrl("pagesRoute", new { id = page.UrlName })));
