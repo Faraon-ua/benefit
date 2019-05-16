@@ -101,7 +101,7 @@ namespace Benefit.Services.Domain
             }
 
             var categoriesService = new CategoriesService();
-            var categoryId = product.Category.UrlName;
+            var categoryId = product.CategoryId;
             if (product.Category.MappedParentCategoryId != null)
             {
                 categoryId = product.Category.MappedParentCategoryId;

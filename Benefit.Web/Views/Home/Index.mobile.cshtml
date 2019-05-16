@@ -1,0 +1,221 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
+@model Benefit.DataTransfer.ViewModels.MainPageViewModel
+
+@{
+    ViewBag.Title = Model.Description.Title;
+    var categories = ViewBag.Categories as List<CategoryVM>;
+}
+@section meta
+{
+    <meta name="description" content="Benefit Company – це глобальний інтернет ресурс, який надає можливість замовляти ряд різних товарів та послуг онлайн, та заробляти на рекомендаціях. Ви можете замовити будь-що, починаючи від продуктів харчування, їжі з улюбленого ресторану і закінчуючи меблями для дому. І все це, на одному ресурсі. Ми працюємо над тим, щоб забезпечити Ваші потреби! Замовляйте все потрібне на одному ресурсі з доставкою додому у будь-який куточок України, рекомендуйте нас та заробляйте з нами. Benefit Company – Ваше стабільне майбутнє!">
+    <meta property="og:description" content="Benefit Company – це глобальний інтернет ресурс, який надає можливість замовляти ряд різних товарів та послуг онлайн, та заробляти на рекомендаціях. Ви можете замовити будь-що, починаючи від продуктів харчування, їжі з улюбленого ресторану і закінчуючи меблями для дому. І все це, на одному ресурсі. Ми працюємо над тим, щоб забезпечити Ваші потреби! Замовляйте все потрібне на одному ресурсі з доставкою додому у будь-який куточок України, рекомендуйте нас та заробляйте з нами. Benefit Company – Ваше стабільне майбутнє!" />
+    <meta property="og:title" content="@Model.Description.Title" />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content="https://benefit-company.com" />
+    <meta property="og:image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, "Content/img/logo_small.png")" />
+    <meta property="og:site_name" content="Benefit Company" />
+}
+@section scripts
+{
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var productVariantsUrl = '@Url.Action("GetProductVariants", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+    </script>
+    <script src="~/Scripts/v3/products.js" defer></script>
+    <script src="~/Scripts/owl.carousel.min.js" defer></script>
+    <script defer>
+         window.addEventListener('DOMContentLoaded', function() {
+            $(".toggle-descr").click(function (e) {
+                e.preventDefault();
+                $(this).parent().find(".contents").css("max-height", "");
+                $(this).parent().find(".gradient").remove();
+                $(this).remove();
+            });
+
+            $('.slider').owlCarousel({
+                loop: true,
+                margin: 0,
+                dots: true,
+                responsiveClass: true,
+                nav: true,
+                navText: [
+                    '<a class="banner-nav" href="#"><i class="fa fa-angle-left"></i></a>',
+                    '<a class="banner-nav" href="#"><i class="fa fa-angle-right"></i></a>'
+                ],
+                items: 1,
+                autoplay: true,
+                autoplayTimeout: 7000,
+                startPosition: '0',
+                fluidSpeed: true,
+                smartSpeed: 1000
+            });
+        })
+    </script>
+}
+@section styles
+{
+    <link href="~/Content/v3/css/menu.css" rel="stylesheet" />
+    <style>
+        .product_carousel .owl-stage {
+            padding: 18px 0;
+        }
+
+        .owl-prev {
+            float: left;
+            position: absolute;
+            top: 50%;
+            margin-top: -15.5px;
+            left: 0;
+            font-size: 22px;
+        }
+
+        .owl-next {
+            float: right;
+            position: absolute;
+            top: 50%;
+            margin-top: -15.5px;
+            right: 0;
+            font-size: 22px;
+        }
+
+        .slider {
+            width: 98% !important;
+        }
+
+            .slider .owl-prev {
+                left: 5px;
+                font-size: 42px;
+                margin-top: -30px;
+                color: #9d9a95;
+            }
+
+            .slider .owl-next {
+                right: 5px;
+                font-size: 42px;
+                margin-top: -30px;
+                color: #9d9a95;
+            }
+
+                .slider .owl-prev:hover, .slider .owl-next:hover {
+                    color: #fff;
+                }
+
+            .slider .owl-dots .owl-dot span {
+                width: 18px;
+                height: 18px;
+                background: #fff;
+                border: 1px solid #cdcbca;
+                box-sizing: border-box;
+            }
+
+            .slider .owl-dots .owl-dot.active span, .slider .owl-dots .owl-dot:hover span {
+                background: #990000;
+                border-color: #990000;
+            }
+
+            .slider .owl-dots {
+                position: absolute;
+                bottom: 0;
+                width: 100%;
+                text-align: center;
+            }
+    </style>
+    <link href="~/Content/css/owl.carousel.css" rel="stylesheet" />
+}
+
+<div class="wraps hover_shine" id="content">
+    <div class="wrapper_inner front">
+        <div class="right_block wide_">
+            <div class="middle">
+                @Html.Partial("_ImageSlider", Model)
+
+                <div class="sections_wrapper">
+                    <div class="top_block">
+                        <h3 class="title_block">Рекомендовані товари</h3>
+                    </div>
+                    <div class="list items">
+                        <div class="row margin0">
+                            @foreach (var product in Model.FeaturedProducts)
+                            {
+                                @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sections_wrapper">
+                    <div class="top_block">
+                        <h3 class="title_block">Новинки</h3>
+                    </div>
+                    <div class="list items">
+                        <div class="row margin0">
+                            @foreach (var product in Model.NewProducts)
+                            {
+                                @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="news_akc_block clearfix">
+                    <div class="top_block">
+                        <h3 class="title_block">Новини та акції</h3>
+                        <a href="@Url.Action("index", "news")">Всі новини</a>
+                    </div>
+                    <div class="news_wrapp">
+                        <div class="flexslider loading_state shadow border custom_flex top_right" data-lg_count="5" data-plugin-options='{"animation": "slide", "directionNav": true, "itemMargin":30, "controlNav" :false, "animationLoop": true, "slideshow": false, "counts": [4,3,3,2,1]}'>
+                            <ul class="items slides">
+                                @foreach (var news in Model.News)
+                                {
+                                    @Html.Partial("_NewsPartial", news)
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                @if (Model.Description != null)
+                {
+                    <div class="company_bottom_block">
+                        <div class="row wrap_md">
+                            <div class="col-md-3 col-sm-3 hidden-xs img">
+                                <img data-defer-src="/Images/NewsLogo/@Model.Description.ImageUrl" src="~/Content/v3/images/loaders/img-loader.gif">
+                            </div>
+                            <div class="col-md-9 col-sm-9 big" style="position: relative;">
+                                <div class="contents" style="padding-right: 20px; max-height: 150px;overflow: hidden; text-align: justify;">
+                                    @Html.Raw(Model.Description.Content)
+                                </div>
+                                <div class="gradient">
+                                </div>
+                                <a href="#" class="btn btn-default toggle-descr">Детальніше</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+
+                <div class="brand_main_wrapper">
+                    <div class="brands_slider_wrapp flexslider loading_state clearfix" data-plugin-options='{"animation": "slide", "directionNav": true, "itemMargin":30, "controlNav" :false, "animationLoop": true, "slideshow": true, "slideshowSpeed": 5000, "animationSpeed": 600, "counts": [5,4,3,2,1]}'>
+                        <ul class="brands_slider slides">
+                            @foreach (var seller in Model.Brands)
+                            {
+                                var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = seller.UrlName });
+                                var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+                                if (sellerLogo != null)
+                                {
+                                    <li class="visible" id="bx_1373509569_2440">
+                                        <a href="@sellerUrl">
+                                            <img class="noborder" src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" title="@seller.Name" />
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

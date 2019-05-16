@@ -1559,6 +1559,9 @@
     <Content Include="Views\Cart\_ShippingMethods.cshtml" />
     <Content Include="Views\Tovar\_ProductVariants.cshtml" />
     <Content Include="Views\Tovar\_PurchaseRegion.cshtml" />
+    <Content Include="Views\Home\Index.mobile.cshtml" />
+    <Content Include="Views\Shared\_Layout.mobile.cshtml" />
+    <Content Include="Views\Shared\_head.mobile.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

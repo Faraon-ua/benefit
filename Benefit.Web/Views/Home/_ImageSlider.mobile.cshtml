@@ -1,0 +1,11 @@
+﻿@model Benefit.DataTransfer.ViewModels.MainPageViewModel
+<div class="top_slider_wrapp maxwidth-banner visible-xs">
+    <div class="slider">
+        @foreach (var banner in Model.MobileBanners)
+        {
+            <a href="@banner.NavigationUrl">
+                <img class="item" data-defer-src="/Images/@banner.BannerType/@banner.ImageUrl" src="~/Content/v3/images/loaders/img-loader.gif" />
+            </a>
+        }
+    </div>
+</div>
