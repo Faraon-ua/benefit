@@ -590,6 +590,10 @@
     <Compile Include="Migrations\201904250829040_AddGenerateFeaturedToSeller.Designer.cs">
       <DependentUpon>201904250829040_AddGenerateFeaturedToSeller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905161417127_ExtendCategoryTitle.cs" />
+    <Compile Include="Migrations\201905161417127_ExtendCategoryTitle.Designer.cs">
+      <DependentUpon>201905161417127_ExtendCategoryTitle.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1027,6 +1031,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201904250829040_AddGenerateFeaturedToSeller.resx">
       <DependentUpon>201904250829040_AddGenerateFeaturedToSeller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905161417127_ExtendCategoryTitle.resx">
+      <DependentUpon>201905161417127_ExtendCategoryTitle.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
