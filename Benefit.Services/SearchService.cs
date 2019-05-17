@@ -123,6 +123,7 @@ namespace Benefit.Services
             var searchedIds = rankedSearchResults.Select(entry => entry.Key).ToList();
             var productResults = db.Products
                 .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
+                .Include(entry => entry.Currency)
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Category)
@@ -137,7 +138,14 @@ namespace Benefit.Services
             }
 
             var productResult = productResults.ToList();
-            productResult.ForEach(entry => entry.SearchRank = rankedSearchResults[entry.Id]);
+            productResult.ForEach(entry =>
+            {
+                entry.SearchRank = rankedSearchResults[entry.Id];
+                if (entry.Currency != null)
+                {
+                    entry.Price *= entry.Currency.Rate;
+                }
+            });
             productResult = productResult.OrderByDescending(entry => entry.SearchRank)
             .ThenBy(entry => entry.AvailabilityState)
             .ThenByDescending(entry => entry.Images.Any())
@@ -204,7 +212,7 @@ namespace Benefit.Services
                     ProductsCount = item.Count
                 }).ToList()
             }).OrderBy(entry => entry.ParameterValue).ToList();
-            categoryFilters.ForEach(entry=>entry.Enabled = true);
+            categoryFilters.ForEach(entry => entry.Enabled = true);
             if (categoryFilters.Any())
             {
                 result.ProductParameters.Add(new ProductParameter()
