@@ -68,6 +68,14 @@ namespace Benefit.Web.Controllers
                 return View("CategoriesCatalog", catsModel);
             }
 
+            if(options!= null && options.Contains("page=1"))
+            {
+                Response.StatusCode = 301;
+                var location =
+                    Request.Url.AbsoluteUri.Replace("page=1;", string.Empty).Replace("page=1", string.Empty);
+                Response.AddHeader("Location", location);
+                Response.End();
+            }
             var catalog = SellerService.GetSellerProductsCatalog(cachedCats, ViewBag.SellerUrl, categoryUrl, options);
             if (ViewBag.Seller != null)
             {

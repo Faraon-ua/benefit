@@ -141,6 +141,14 @@ $(function () {
                     $(".group_description_block").css("display", "block");
                     $(".seo-fix").css("display", "block");
                 }
+                $("img[data-defer-src]").each(function () {
+                    $(this).attr("src", $(this).attr("data-defer-src"));
+                });
+                if (page != 0) {
+                    var title = $("title").text();
+                    var title = title.substr(0, (title.indexOf("сторінка") == -1 ? title.length : title.indexOf("сторінка")));
+                    $("title").text(title + " сторінка " + (page + 1));
+                }
             });
     });
 

@@ -836,6 +836,7 @@ namespace Benefit.Services.Domain
             //show that import task is processing
             importTask.IsImport = true;
             db.SaveChanges();
+            _logger.Info(string.Format("Yml Import started at {0} {1}", importTask.Seller.Id, importTask.Seller.UrlName));
 
             XDocument xml = null;
             try
