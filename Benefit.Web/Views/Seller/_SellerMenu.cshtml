@@ -7,58 +7,69 @@
     var selectedCategory = ViewBag.SelectedCategory as Category;
 }
 <ul class="no-list-style seller-menu">
-    @foreach (var category in Model)
+    @foreach (var category in Model.OrderByDescending(entry => entry.ChildCategories.Any()))
     {
-        <li>
+    <li>
+        @if (category.ChildCategories.Any())
+        {
             <h4 class="no-margin parent-cat" style="text-align: left; font-size: 1.2em;">
                 <a href="#">
                     @category.Name
                 </a>
             </h4>
-            @if (category.ChildCategories.Any())
+            //var ulDisplay = (selectedCategory != null && selectedCategory.ParentCategory.ParentCategoryId == category.Id) ? "" : "none";
+            <ul class="no-list-style" @*style='display:@ulDisplay'*@>
+                @foreach (var childCat in category.ChildCategories)
+                {
+                    <li>
+                        @if (childCat.ChildCategories.Any())
+                        {
+                            <h5 class="no-margin-top no-margin-bottom margin-left-30 parent-cat" style="font-size: 1.1em;">
+                                <a href="#">
+                                    @childCat.Name
+                                </a>
+                            </h5>
+                            var subUlDisplay = (selectedCategory != null && selectedCategory.ParentCategoryId == childCat.Id) ? "" : "none";
+                            <ul class="margin-left-60" style='display: @subUlDisplay'>
+                                @foreach (var subCat in childCat.ChildCategories)
+                                {
+                                    <li>
+                                        @if (RouteDataHelper.CategoryRoute == subCat.UrlName)
+                                        {
+                                            <a href="#" class="active underlined">@subCat.Name</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id = seller.UrlName, category = subCat.UrlName})">@subCat.Name</a>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <h5 class="no-margin-top no-margin-bottom margin-left-30" style="font-size: 1.1em;">
+                                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id = seller.UrlName, category = childCat.UrlName})">
+                                    @childCat.Name
+                                </a>
+                            </h5>
+                        }
+                    </li>
+                }
+            </ul>
+        }
+        else
+        {
+            if (RouteDataHelper.CategoryRoute == category.UrlName)
             {
-                //var ulDisplay = (selectedCategory != null && selectedCategory.ParentCategory.ParentCategoryId == category.Id) ? "" : "none";
-                <ul class="no-list-style" @*style='display:@ulDisplay'*@>
-                    @foreach (var childCat in category.ChildCategories)
-                    {
-                        <li>
-                            @if (childCat.ChildCategories.Any())
-                            {
-                                <h5 class="no-margin-top no-margin-bottom margin-left-30 parent-cat" style="font-size: 1.1em;">
-                                    <a href="#">
-                                        @childCat.Name
-                                    </a>
-                                </h5>
-                                var subUlDisplay = (selectedCategory != null && selectedCategory.ParentCategoryId == childCat.Id) ? "" : "none";
-                                <ul class="margin-left-60" style='display: @subUlDisplay'>
-                                    @foreach (var subCat in childCat.ChildCategories)
-                                    {
-                                        <li>
-                                            @if (RouteDataHelper.CategoryRoute == subCat.UrlName)
-                                            {
-                                                <a href="#" class="active underlined">@subCat.Name</a>
-                                            }
-                                            else
-                                            {
-                                                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id = seller.UrlName, category = subCat.UrlName})">@subCat.Name</a>
-                                            }
-                                        </li>
-                                    }
-                                </ul>
-                            }
-                            else
-                            {
-                                <h5 class="no-margin-top no-margin-bottom margin-left-30" style="font-size: 1.1em;">
-                                    <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id = seller.UrlName, category = childCat.UrlName})">
-                                        @childCat.Name
-                                    </a>
-                                </h5>
-                            }
-                        </li>
-                    }
-                </ul>
+                <a href="#" class="active underlined">@category.Name</a>
             }
-            <hr />
-        </li>
+            else
+            {
+                <a href="@Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id = seller.UrlName, category = category.UrlName})">@category.Name</a>
+            }
+        }
+        <hr />
+    </li>
     }
 </ul>
