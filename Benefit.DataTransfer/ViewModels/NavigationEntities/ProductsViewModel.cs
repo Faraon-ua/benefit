@@ -12,6 +12,7 @@ namespace Benefit.DataTransfer.ViewModels.NavigationEntities
         }
         public ICollection<ProductParameter> ProductParameters { get; set; }
         public Dictionary<string, double> CategoryToSellerDiscountPercent { get; set; }
+        public int Page { get; set; }
         public int PagesCount { get; set; }
         public bool IsFavorites { get; set; }
     }

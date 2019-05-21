@@ -75,9 +75,11 @@ namespace Benefit.Web.Controllers
                         .Include(entry => entry.Category)
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
+                            entry.Seller.IsActive &&
+                            entry.Category.IsActive &&
                             entry.IsFeatured &&
                             (entry.AvailabilityState == ProductAvailabilityState.Available ||
-                             entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
+                            entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
                             entry.Images.Any() && 
                             entry.Seller.AreProductsFeatured)
                         .ToList()
@@ -90,8 +92,10 @@ namespace Benefit.Web.Controllers
                         .Include(entry => entry.Category)
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry => entry.IsNewProduct &&
+                                        entry.Seller.IsActive &&
+                                        entry.Category.IsActive &&
                                         (entry.AvailabilityState == ProductAvailabilityState.Available ||
-                                         entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
+                                        entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
                                         entry.Images.Any() &&
                                         entry.Seller.AreProductsFeatured).ToList()
                     group element by element.SellerId

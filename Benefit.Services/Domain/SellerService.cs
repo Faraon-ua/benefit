@@ -357,6 +357,7 @@ namespace Benefit.Services.Domain
             var generalParams = FetchGeneralProductParameters(items, sellerId == null);
             //todo: instead all products show recomendations
             var sort = ProductSortOption.Rating;
+            result.Page = 1;
             if (options != null)
             {
                 var optionSegments = options.Split(';').OrderBy(entry => entry.Contains("page=")).ToList();
@@ -383,7 +384,7 @@ namespace Benefit.Services.Domain
                             sort = (ProductSortOption)Enum.Parse(typeof(ProductSortOption), optionValues.First());
                             break;
                         case "page":
-                            var page = int.Parse(optionValues[0]);
+                            result.Page = int.Parse(optionValues[0]);
                             switch (sort)
                             {
                                 case ProductSortOption.Rating:
@@ -406,7 +407,7 @@ namespace Benefit.Services.Domain
                                     break;
                             }
                             result.ProductsNumber = items.Count();
-                            items = items.Skip(ListConstants.DefaultTakePerPage * (page - 1));
+                            items = items.Skip(ListConstants.DefaultTakePerPage * (result.Page - 1));
                             break;
                         case "seller":
                             var sellerIds =
@@ -682,6 +683,7 @@ namespace Benefit.Services.Domain
             var categoryId = category == null ? null : category.Id;
             var catalog = GetSellerCatalogProducts(seller == null ? null : seller.Id, categoryId, options);
             result.Items = catalog.Products.ToList();
+            result.Page = catalog.Page;
             result.PagesCount = (catalog.ProductsNumber - 1) / ListConstants.DefaultTakePerPage + 1;
             result.ProductParameters = catalog.ProductParameters;
             if (category != null)

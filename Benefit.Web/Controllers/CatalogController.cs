@@ -68,7 +68,7 @@ namespace Benefit.Web.Controllers
                 return View("CategoriesCatalog", catsModel);
             }
 
-            if(options!= null && options.Contains("page=1"))
+            if(options!= null && options.Contains("page=1;"))
             {
                 Response.StatusCode = 301;
                 var location =

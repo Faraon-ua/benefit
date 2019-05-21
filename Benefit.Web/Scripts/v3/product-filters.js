@@ -34,6 +34,8 @@ $(function () {
 
     $(".ajax_load_btn, .paging").click(function (e) {
         e.preventDefault();
+        if ($(this).parent().hasClass("active"))
+            return;
         parts = location.href.split('/');
         lastSegment = (parts.pop() || parts.pop()).replace("#", "");
         lastSegment = lastSegment.replace(location.search, ""); //handle query params
