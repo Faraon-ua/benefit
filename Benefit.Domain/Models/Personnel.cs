@@ -10,7 +10,7 @@ namespace Benefit.Domain.Models
         [Required(ErrorMessage = "І'мя обовязково для заповнення")]
         [MaxLength(32)]
         public string Name { get; set; }
-        [MaxLength(16)]
+        [MaxLength(24)]
         public string Phone { get; set; }
         [MaxLength(10)]
         public string CardNumber { get; set; }

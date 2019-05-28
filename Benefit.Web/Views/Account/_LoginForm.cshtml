@@ -46,51 +46,46 @@
                 @Html.AntiForgeryToken()
                 <div class="row">
                     <div class="col-sm-6">
-                        <label> Ім'я *</label>
-                        @Html.TextBox("FirstName", null)
-                        @Html.ValidationMessage("FirstName")
+                        <label> Ім'я та прізвище*</label>
+                        @Html.TextBox("FullName", null)
+                        @Html.ValidationMessage("FullName")
                     </div>
                     <div class="col-sm-6">
-                        <label> Прізвище *</label>
-                        @Html.TextBox("LastName", null)
-                        @Html.ValidationMessage("LastName")
+                        <label> Номер телефону *</label>
+                        @Html.TextBox("PhoneNumber", null, new { type = "tel", @class = "phone-input" })
+                        @Html.ValidationMessage("PhoneNumber")
                     </div>
                 </div>
                 <br>
                 <div class="row">
-                    <div class="col-sm-6">
-                        <label> Номер телефону *</label>
-                        @Html.TextBox("PhoneNumber", null, new { type = "tel", @class="phone-input" })
-                        @Html.ValidationMessage("PhoneNumber")
-                    </div>
                     <div class="col-sm-6">
                         <label> E-mail *</label>
                         @Html.TextBox("Email", null, new { type = "email" })
                         @Html.ValidationMessage("Email")
                     </div>
-                </div>
-                <br>
-                <div class="row">
                     <div class="col-sm-6">
                         <label> Місто *</label>
                         @Html.TextBox("RegionName", null, new { @class = "regionSearch" })
                         @Html.Hidden("RegionId")
                         @Html.ValidationMessage("RegionId")
                     </div>
+                </div>
+                <br>
+                <div class="row">
                     <div class="col-sm-6">
                         <label> Номер картки (за наявності)</label>
                         @Html.TextBox("CardNumber", null)
                         @Html.ValidationMessage("CardNumber")
                     </div>
-                </div>
-                <br>
-                <div class="row">
                     <div class="col-sm-6">
                         <label> Реферальний код (за наявності)</label>
                         @Html.TextBox("ReferalNumber", null)
                         <p style="text-align: center; font-size: 1.2em;" id="referal-name">
                         </p>
                     </div>
+                </div>
+                <br>
+                <div class="row">
                     <div class="col-sm-6">
                         <label> Пароль *</label>
                         @Html.TextBox("Password", null, new { type = "password" })

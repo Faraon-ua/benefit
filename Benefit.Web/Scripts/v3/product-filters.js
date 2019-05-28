@@ -192,7 +192,7 @@ $(function () {
     var currentPage = 0;
     if (lastSegment !== categoryUrlName) {
         var result = lastSegment.match(/page=(\d+)/i);
-        if (result[1]) {
+        if (result && result[1]) {
             currentPage = parseInt(result[1]) - 1;
             $(".paging").parent().removeClass("active");
             $("a[data-page=" + currentPage + "]").parent().addClass("active");
