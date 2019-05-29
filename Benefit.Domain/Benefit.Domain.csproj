@@ -598,6 +598,10 @@
     <Compile Include="Migrations\201905280847134_ExtebdPhoneForPersonel.Designer.cs">
       <DependentUpon>201905280847134_ExtebdPhoneForPersonel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201905281358556_AddCategoryNameToSeller.cs" />
+    <Compile Include="Migrations\201905281358556_AddCategoryNameToSeller.Designer.cs">
+      <DependentUpon>201905281358556_AddCategoryNameToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1041,6 +1045,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201905280847134_ExtebdPhoneForPersonel.resx">
       <DependentUpon>201905280847134_ExtebdPhoneForPersonel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201905281358556_AddCategoryNameToSeller.resx">
+      <DependentUpon>201905281358556_AddCategoryNameToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

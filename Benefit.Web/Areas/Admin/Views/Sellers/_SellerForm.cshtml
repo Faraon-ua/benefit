@@ -1,216 +1,224 @@
 ﻿@using Benefit.Common.Extensions
 @model Benefit.Web.Models.Admin.SellerViewModel
 
-<div class="form-horizontal">
-    @Html.HiddenFor(m => m.Seller.Id)
+    <div class="form-horizontal">
+        @Html.HiddenFor(m => m.Seller.Id)
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Назва</label>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Назва</label>
 
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.Seller.Name, new { @class = "col-xs-10 col-sm-5 name" })
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.Name, new { @class = "col-xs-10 col-sm-5 name" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Url назва</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.UrlName, new { @class = "col-xs-10 col-sm-5 urlName" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Доменне ім'я</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.Domain, new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Redirect Url</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.RedirectUrl, new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+        <div class="form-group hidden">
+            <label class="col-sm-3 control-label no-padding-right">Текст кнопки каталога</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.CatalogButtonName, new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Звязаний постачальник</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.AssociatedSellerId, new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">ID власника</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.OwnerExternalId, new { @class = "col-xs-10 col-sm-5" })
+                @if (Model.Seller.Owner != null)
+                {
+                    @Html.HiddenFor(m => m.Seller.OwnerId)
+                    @Html.ActionLink("Перейти до власника", "Edit", "Users", new { id = Model.Seller.Owner.Id }, new { target = "_blank" })
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">ID реферала веб сайта</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.WebSiteReferaExternalId, new { @class = "col-xs-10 col-sm-5" })
+                @Html.HiddenFor(m => m.Seller.WebSiteReferalId)
+
+                @if (Model.Seller.WebSiteReferal != null)
+                {
+                    @Html.ActionLink("Перейти до реферала веб сайту", "Edit", "Users", new { id = Model.Seller.WebSiteReferal.Id }, new { target = "_blank" })
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">ID реферала Benefit Card</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.BenefitCardReferaExternalId, new { @class = "col-xs-10 col-sm-5" })
+                @Html.HiddenFor(m => m.Seller.BenefitCardReferalId)
+
+                @if (Model.Seller.BenefitCardReferal != null)
+                {
+                    @Html.ActionLink("Перейти до реферала Benefit Card", "Edit", "Users", new { id = Model.Seller.BenefitCardReferal.Id }, new { target = "_blank" })
+                }
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Назва категорії (для фільтру)</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.CategoryName, new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Статус</label>
+
+            <div class="col-sm-9">
+                @Html.EnumDropDownListFor(m => m.Seller.Status, "Не має", new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Місто розташування</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.PrimaryRegionName, new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">ID міста розташування</label>
+
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.Seller.PrimaryRegionId, new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Активний</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.IsActive)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Безпечна покупка</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.SafePurchase)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Висвітлювати на головній сторінці</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.IsFeatured)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Товари на головній сторінці</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.AreProductsFeatured)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Автоматично генерувати хіти та новинки</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.GenerateFeaturedProducts)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Benefit Card</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.IsBenefitCardActive)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Інтернет магазин</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.CheckBoxFor(m => m.Seller.HasEcommerce)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Шаблон Ecommerce</label>
+
+            <div class="col-sm-9">
+                @Html.EnumDropDownListFor(m => m.Seller.EcommerceTemplate, "Не має", new { @class = "col-xs-10 col-sm-5" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Загальна знижка</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.TextBoxFor(model => model.Seller.TotalDiscount, new { @class = "width-5" }) %
+                @Html.ValidationMessageFor(model => model.Seller.TotalDiscount)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Особиста вигода</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.TextBoxFor(model => model.Seller.UserDiscount, new { @class = "width-5" }) %
+                @Html.ValidationMessageFor(model => model.Seller.UserDiscount)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Середній рейтинг</label>
+
+            <div class="col-xs-10 col-sm-5">
+                @Html.TextBoxFor(model => model.Seller.AvarageRating, new { @class = "width-10" }) зірок
+                @Html.ValidationMessageFor(model => model.Seller.AvarageRating)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Коли останній раз редагувалось</label>
+            <div class="col-xs-10 col-sm-5">
+                @Html.TextBox("Seller.LastModified", @Model.Seller.LastModified.ToLocalDateTimeWithFormat(), new { disabled = "true" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Ким останній раз редагувалось</label>
+            <div class="col-xs-10 col-sm-5">
+                @Html.TextBoxFor(m => m.Seller.LastModifiedBy, new { disabled = "true" })
+            </div>
         </div>
     </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Url назва</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.Seller.UrlName, new { @class = "col-xs-10 col-sm-5 urlName" })
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Доменне ім'я</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.Seller.Domain, new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Redirect Url</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.Seller.RedirectUrl, new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-    <div class="form-group hidden">
-        <label class="col-sm-3 control-label no-padding-right">Текст кнопки каталога</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.Seller.CatalogButtonName, new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Звязаний постачальник</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.Seller.AssociatedSellerId, new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">ID власника</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.OwnerExternalId, new { @class = "col-xs-10 col-sm-5" })
-            @if (Model.Seller.Owner != null)
-            {
-                @Html.HiddenFor(m => m.Seller.OwnerId)
-                @Html.ActionLink("Перейти до власника", "Edit", "Users", new { id = Model.Seller.Owner.Id }, new { target = "_blank" })
-            }
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">ID реферала веб сайта</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.WebSiteReferaExternalId, new { @class = "col-xs-10 col-sm-5" })
-            @Html.HiddenFor(m => m.Seller.WebSiteReferalId)
-
-            @if (Model.Seller.WebSiteReferal != null)
-            {
-                @Html.ActionLink("Перейти до реферала веб сайту", "Edit", "Users", new { id = Model.Seller.WebSiteReferal.Id }, new { target = "_blank" })
-            }
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">ID реферала Benefit Card</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.BenefitCardReferaExternalId, new { @class = "col-xs-10 col-sm-5" })
-            @Html.HiddenFor(m => m.Seller.BenefitCardReferalId)
-
-            @if (Model.Seller.BenefitCardReferal != null)
-            {
-                @Html.ActionLink("Перейти до реферала Benefit Card", "Edit", "Users", new { id = Model.Seller.BenefitCardReferal.Id }, new { target = "_blank" })
-            }
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Статус</label>
-
-        <div class="col-sm-9">
-            @Html.EnumDropDownListFor(m => m.Seller.Status, "Не має", new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Місто розташування</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.Seller.PrimaryRegionName, new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">ID міста розташування</label>
-
-        <div class="col-sm-9">
-            @Html.TextBoxFor(m => m.Seller.PrimaryRegionId, new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Активний</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.IsActive)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Безпечна покупка</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.SafePurchase)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Висвітлювати на головній сторінці</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.IsFeatured)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Товари на головній сторінці</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.AreProductsFeatured)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Автоматично генерувати хіти та новинки</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.GenerateFeaturedProducts)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Benefit Card</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.IsBenefitCardActive)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Інтернет магазин</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.CheckBoxFor(m => m.Seller.HasEcommerce)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Шаблон Ecommerce</label>
-
-        <div class="col-sm-9">
-            @Html.EnumDropDownListFor(m => m.Seller.EcommerceTemplate, "Не має", new { @class = "col-xs-10 col-sm-5" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Загальна знижка</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.TextBoxFor(model => model.Seller.TotalDiscount, new { @class = "width-5" }) %
-            @Html.ValidationMessageFor(model => model.Seller.TotalDiscount)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Особиста вигода</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.TextBoxFor(model => model.Seller.UserDiscount, new { @class = "width-5" }) %
-            @Html.ValidationMessageFor(model => model.Seller.UserDiscount)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Середній рейтинг</label>
-
-        <div class="col-xs-10 col-sm-5">
-            @Html.TextBoxFor(model => model.Seller.AvarageRating, new { @class = "width-10" }) зірок
-            @Html.ValidationMessageFor(model => model.Seller.AvarageRating)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Коли останній раз редагувалось</label>
-        <div class="col-xs-10 col-sm-5">
-            @Html.TextBox("Seller.LastModified", @Model.Seller.LastModified.ToLocalDateTimeWithFormat(), new { disabled = "true" })
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Ким останній раз редагувалось</label>
-        <div class="col-xs-10 col-sm-5">
-            @Html.TextBoxFor(m => m.Seller.LastModifiedBy, new { disabled = "true" })
-        </div>
-    </div>
-</div>

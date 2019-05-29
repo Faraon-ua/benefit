@@ -85,25 +85,19 @@
                                 @Html.AntiForgeryToken()
                                 <div class="row">
                                     <div class="form_group col-sm-6">
-                                        @Html.TextBox("FirstName", null, new { @class = "form_input", placeholder = "Ім'я *" })
-                                        @Html.ValidationMessage("FirstName")
+                                        @Html.TextBox("FullName", null, new { @class = "form_input", placeholder = "Ім'я та прізвище*" })
+                                        @Html.ValidationMessage("FullName")
                                     </div>
-                                    <div class="form_group col-sm-6">
-                                        @Html.TextBox("LastName", null, new { @class = "form_input", placeholder = "Прізвище *" })
-                                        @Html.ValidationMessage("LastName")
-                                    </div>
-                                </div>
-                                <div class="row">
                                     <div class="form_group col-sm-6">
                                         @Html.TextBox("PhoneNumber", null, new { @class = "form_input", placeholder = "Номер телефону *", type = "tel" })
                                         @Html.ValidationMessage("PhoneNumber")
                                     </div>
+                                </div>
+                                <div class="row">
                                     <div class="form_group col-sm-6">
                                         @Html.TextBox("Email", null, new { @class = "form_input", placeholder = "Email *", type = "email" })
                                         @Html.ValidationMessage("Email")
                                     </div>
-                                </div>
-                                <div class="row">
                                     <div class="form_group col-sm-6">
                                         @{
                                             var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
@@ -115,6 +109,12 @@
                                         @Html.Hidden("RegionId", regionIdCookieVal)
                                         @Html.ValidationMessage("RegionId")
                                     </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("Password", null, new { @class = "form_input", placeholder = "Пароль *", type = "password" })
+                                        @Html.ValidationMessage("Password")
+                                    </div>
                                     <div class="form_group col-sm-6">
                                         @Html.TextBox("CardNumber", null, new { @class = "form_input", placeholder = "Номер картки (за наявності)" })
                                         @Html.ValidationMessage("CardNumber")
@@ -124,10 +124,6 @@
                                     <div class="form_group col-sm-6">
                                         @Html.TextBox("ReferalNumber", null, new { @class = "form_input", placeholder = "Реєстраційний код (за наявності)" })
                                         @Html.ValidationMessage("ReferalNumber")
-                                    </div>
-                                    <div class="form_group col-sm-6">
-                                        @Html.TextBox("Password", null, new { @class = "form_input", placeholder = "Пароль *", type = "password" })
-                                        @Html.ValidationMessage("Password")
                                     </div>
                                 </div>
                                 <button class="button btn-ajax-login" name="register" data-language="login_sign_in" type="submit">Реєстрація</button>

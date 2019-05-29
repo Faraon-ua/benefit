@@ -163,13 +163,14 @@ namespace Benefit.Services.Domain
                             }
                             break;
                         case "category":
-                            var categories = db.Categories.Where(entry => optionValues.Contains(entry.UrlName));
-                            var catIds = categories.Select(entry => entry.Id).Distinct().ToList();
-                            sellers = sellers.Where(entry =>
-                                entry.SellerCategories.Select(sc => sc.Category.Id).Intersect(catIds).Any()
-                                ||
-                                entry.SellerCategories.Select(sc => sc.Category.ParentCategory.Id).Intersect(catIds)
-                                    .Any());
+                            //var categories = db.Categories.Where(entry => optionValues.Contains(entry.UrlName));
+                            //var catIds = categories.Select(entry => entry.Id).Distinct().ToList();
+                            //sellers = sellers.Where(entry =>
+                            //    entry.SellerCategories.Select(sc => sc.Category.Id).Intersect(catIds).Any()
+                            //    ||
+                            //    entry.SellerCategories.Select(sc => sc.Category.ParentCategory.Id).Intersect(catIds)
+                            //        .Any());
+                            sellers = sellers.Where(entry => optionValues.Contains(entry.CategoryName));
                             break;
                     }
                 }
@@ -192,16 +193,19 @@ namespace Benefit.Services.Domain
                     sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
                     break;
             }
-            return new SellersViewModel()
+            var result = new SellersViewModel()
             {
                 Items = sellers.Skip(ListConstants.DefaultTakePerPage * page).Take(ListConstants.DefaultTakePerPage + 1).ToList(),
                 Category = new CategoryVM()
                 {
                     UrlName = "postachalnuky",
                     Name = "Каталог постачальників",
-                    ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
+                    ChildAsFilters = true,
+                    //ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
+                    ChildCategories = db.Sellers.Where(entry=>entry.CategoryName != null).Select(entry => new CategoryVM() { Name = entry.CategoryName }).ToList(),
                 }
             };
+            return result;
         }
 
         public Seller GetSellerWithShippingMethods(string urlName)

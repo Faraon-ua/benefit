@@ -48,6 +48,9 @@ namespace Benefit.Domain.Models
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public string Widget { get; set; }
+        //to filter in sellers catalog
+        [MaxLength(50)]
+        public string CategoryName { get; set; }
         [MaxLength(160)]
         //internal site search
         public string SearchTags { get; set; }
