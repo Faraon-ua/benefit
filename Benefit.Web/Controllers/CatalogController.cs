@@ -107,11 +107,11 @@ namespace Benefit.Web.Controllers
             return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult GetSellers(string options, int page)
+        public ActionResult GetSellers(string options)
         {
-            var sellers = SellerService.GetSellersCatalog(options, page).Items;
+            var sellers = SellerService.GetSellersCatalog(options).Items;
             var sellersHtml = string.Join("", sellers.Select(entry => ControllerContext.RenderPartialToString("_SellerPartial", entry)));
-            return Json(new { number = sellers.Count, sellers = sellersHtml }, JsonRequestBehavior.AllowGet);
+            return Json(new { number = sellers.Count, products = sellersHtml }, JsonRequestBehavior.AllowGet);
         }
     }
 }

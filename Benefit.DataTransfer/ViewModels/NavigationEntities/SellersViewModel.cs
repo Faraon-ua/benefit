@@ -10,5 +10,7 @@ namespace Benefit.DataTransfer.ViewModels.NavigationEntities
         {
             Items = new List<Seller>();
         }
+        public int Page { get; set; }
+        public int PagesCount { get; set; }
     }
 }

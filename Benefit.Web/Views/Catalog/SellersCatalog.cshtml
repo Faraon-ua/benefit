@@ -16,8 +16,15 @@
 }
 @section scripts{
     <script>
-        var getSellersUrl = '@Url.Action("GetSellers", "Catalog")';
+        var getProductsUrl = '@Url.Action("GetSellers", "Catalog")', getSellersUrl = '@Url.Action("GetSellers", "Catalog")';
         var options = "";
+        var categoryUrlName = '@(Model.Category == null ? "" : Model.Category.UrlName.ToLower())';
+        var categoryId = "";
+        var sellerId = "";
+        var term = "";
+        var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
+        var pagesCount = parseInt('@Model.PagesCount');
+
         window.addEventListener('DOMContentLoaded', function() {
             $('body').on("click",
                 ".remove-filter",
@@ -31,7 +38,7 @@
                     checkbox.click();
                 });
 
-            $(".ajax_load_btn").click(function (e) {
+            @*$(".ajax_load_btn").click(function (e) {
                 e.preventDefault();
                 var moreBtn = $(this);
                 var currentPage = parseInt(moreBtn.attr("data-page"));
@@ -44,7 +51,7 @@
                     moreBtn.attr("data-page", currentPage + 1);
                     $(".loader").hide();
                 });
-            });
+            });*@
 
             $(".bx_filter_parameters_box_title").click(function() {
                 $(this).parent().toggleClass("active");
@@ -154,6 +161,7 @@
             }
         });
     </script>
+    <script src="~/Scripts/v3/product-filters.js" defer></script>
 }
 <div class="wraps hover_shine" id="content">
     <!--title_content-->
@@ -205,7 +213,7 @@
                             </div>
 
                             <div class="ajax_load list">
-                                <div class="display_list show_un_props">
+                                <div class="display_list show_un_props products-wrapper">
                                     @foreach (var seller in Model.Items.Take(ListConstants.DefaultTakePerPage))
                                     {
                                         @Html.Partial("_SellerPartial", seller)
@@ -218,14 +226,28 @@
                                             <span class="more_text_ajax">Показати ще</span>
                                         </div>
                                     }
-                                    @*<div class="module-pagination">
-                                            <div class="nums">
-                                                @for (int i = 0; i < Model.; i++)
+                                    @if (Model.PagesCount > 1)
+                                    {
+                                        <div class="pagination-wrap">
+                                            <ul class="pagination no-list-style">
+                                                <li class="page_item" data-page="0" style="display: none;">
+                                                    <a class="page_link paging prev" href="#" data-page="0"><<</a>
+                                                </li>
+                                                <li class="page_item active" data-page="0">
+                                                    <a class="page_link paging dark_link" href="#" data-page="0">1</a>
+                                                </li>
+                                                @for (int i = 2; i <= Model.PagesCount; i++)
                                                 {
-                                                    <a href="#" class="dark_link" id="page-">@(i + 1)</a>
+                                                    <li class="page_item">
+                                                        <a class="page_link paging dark_link" href="#" data-page="@(i - 1)">@i</a>
+                                                    </li>
                                                 }
-                                            </div>
-                                        </div>*@
+                                                <li class="page_item" data-page="1">
+                                                    <a class="page_link paging next dark_link" href="#" data-page="1">>></a>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    }
                                 </div>
                                 <div class="group_description_block bottom">
                                     <div>Опис каталогу постачальників</div>

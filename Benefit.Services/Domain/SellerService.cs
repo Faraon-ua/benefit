@@ -107,8 +107,9 @@ namespace Benefit.Services.Domain
             };
         }
 
-        public SellersViewModel GetSellersCatalog(string options, int page = 0)
+        public SellersViewModel GetSellersCatalog(string options)
         {
+            var result = new SellersViewModel() { Page = 1 };
             var sellers = db.Sellers
                 .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
                 .Include(entry => entry.Addresses.Select(addr => addr.Region))
@@ -118,7 +119,7 @@ namespace Benefit.Services.Domain
 
             if (options != null)
             {
-                var optionSegments = options.Split(';');
+                var optionSegments = options.Split(';').OrderBy(entry => entry.Contains("page=")).ToList();
                 foreach (var optionSegment in optionSegments)
                 {
                     if (optionSegment == string.Empty)
@@ -133,6 +134,27 @@ namespace Benefit.Services.Domain
                     {
                         case "sort":
                             sort = (SellerSortOption)Enum.Parse(typeof(SellerSortOption), optionValues.First());
+                            break;
+                        case "page":
+                            switch (sort)
+                            {
+                                case SellerSortOption.Rating:
+                                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry => entry.Status).ThenByDescending(entry => entry.Reviews.Count);
+                                    break;
+                                case SellerSortOption.NameAsc:
+                                    sellers = sellers.OrderBy(entry => entry.Name);
+                                    break;
+                                case SellerSortOption.NameDesc:
+                                    sellers = sellers.OrderByDescending(entry => entry.Name);
+                                    break;
+                                case SellerSortOption.BonusAsc:
+                                    sellers = sellers.OrderBy(entry => entry.UserDiscount);
+                                    break;
+                                case SellerSortOption.BonusDesc:
+                                    sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
+                                    break;
+                            }
+                            result.Page = int.Parse(optionValues[0]);
                             break;
                         case "filter":
                             if (optionValues.Contains("mycity"))
@@ -193,17 +215,15 @@ namespace Benefit.Services.Domain
                     sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
                     break;
             }
-            var result = new SellersViewModel()
+            result.PagesCount = (sellers.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
+            result.Items = sellers.Skip(ListConstants.DefaultTakePerPage * (result.Page - 1)).Take(ListConstants.DefaultTakePerPage + 1).ToList();
+            result.Category = new CategoryVM()
             {
-                Items = sellers.Skip(ListConstants.DefaultTakePerPage * page).Take(ListConstants.DefaultTakePerPage + 1).ToList(),
-                Category = new CategoryVM()
-                {
-                    UrlName = "postachalnuky",
-                    Name = "Каталог постачальників",
-                    ChildAsFilters = true,
-                    //ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
-                    ChildCategories = db.Sellers.Where(entry=>entry.CategoryName != null).Select(entry => new CategoryVM() { Name = entry.CategoryName }).ToList(),
-                }
+                UrlName = "postachalnuky",
+                Name = "Каталог постачальників",
+                ChildAsFilters = true,
+                //ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
+                ChildCategories = db.Sellers.Where(entry => entry.CategoryName != null).Select(entry => new CategoryVM() { Name = entry.CategoryName }).ToList(),
             };
             return result;
         }

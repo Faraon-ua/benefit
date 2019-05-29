@@ -98,7 +98,6 @@ $(function () {
                         $(".ajax_load_btn").show();
                         $(".paging.next").parent().show();
                     }
-
                     $(".products-wrapper").html(data.products);
                     $(".paging").parent().removeClass("active");
                     $(".paging[data-page=" + page + "]:not(.prev):not(.next)").parent().addClass("active");
