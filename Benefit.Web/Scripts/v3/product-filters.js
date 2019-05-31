@@ -86,7 +86,12 @@ $(function () {
                         $(".paging.next").parent().show();
                         $(".ajax_load_btn").show();
                     }
-                    $(".product-item:last").after(data.products);
+                    if (moreBtn.hasClass("sellers")) {
+                        $(".seller-item:last").after(data.products);
+                    }
+                    else {
+                        $(".product-item:last").after(data.products);
+                    }
                     moreBtn.attr("data-page", page + 1);
                     $(".paging[data-page=" + page + "]:not(.prev):not(.next)").parent()
                         .addClass("active");

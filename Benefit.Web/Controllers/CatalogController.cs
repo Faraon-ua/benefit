@@ -110,7 +110,7 @@ namespace Benefit.Web.Controllers
         public ActionResult GetSellers(string options)
         {
             var sellers = SellerService.GetSellersCatalog(options).Items;
-            var sellersHtml = string.Join("", sellers.Select(entry => ControllerContext.RenderPartialToString("_SellerPartial", entry)));
+            var sellersHtml = string.Join("", sellers.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString("_SellerPartial", entry)));
             return Json(new { number = sellers.Count, products = sellersHtml }, JsonRequestBehavior.AllowGet);
         }
     }

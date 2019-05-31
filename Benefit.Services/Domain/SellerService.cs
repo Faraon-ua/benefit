@@ -192,7 +192,8 @@ namespace Benefit.Services.Domain
                             //    ||
                             //    entry.SellerCategories.Select(sc => sc.Category.ParentCategory.Id).Intersect(catIds)
                             //        .Any());
-                            sellers = sellers.Where(entry => optionValues.Contains(entry.CategoryName));
+                            var catNames = optionValues.ToList().Select(entry => entry.Replace("_", " ")).ToList();
+                            sellers = sellers.Where(entry => catNames.Contains(entry.CategoryName));
                             break;
                     }
                 }
