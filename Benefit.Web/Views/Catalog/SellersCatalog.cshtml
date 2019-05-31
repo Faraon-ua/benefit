@@ -54,16 +54,6 @@
                 });
             });*@
 
-            $(".bx_filter_parameters_box_title").click(function() {
-                $(this).parent().toggleClass("active");
-                $(this).next().slideToggle();
-            });
-
-            $(".filter_opener").click(function(){
-                $(this).toggleClass("opened");
-                $(".bx_filter_vertical, .bx_filter").slideToggle(333);
-            });
-
         });
     </script>
     <script src="~/Scripts/v3/product-filters.js" defer></script>
@@ -173,6 +163,7 @@
                         <div class="bx_filter_parameters_box_title">
                             Фільтри
                             <div class="selected-filters">
+                                <span id="reset-filters" class="badge padding_5 margin-right-10 margin-top-5" style="background: #b41818; display: none;">Скинути всі<i class="fa fa-times-circle pointer remove-filter" style="font-size: 1.5em"></i></span>
                             </div>
                             <div class="sort_header view_block hidden-lg" style="float: right">
                                 <!--noindex-->
