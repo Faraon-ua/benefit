@@ -198,18 +198,33 @@
                                 </div>
                             </div>
                             <div class="bx_filter_parameters_box_container">
-                                @foreach (var subcat in Model.Category.ChildCategories.OrderBy(entry => entry.Order))
-                                {
-                                    <div class="bx_filter_block limited_block">
-                                        <div class="bx_filter_parameters_box_container">
-                                            <input type="checkbox" id="@subcat.Name.Replace(" ", "_")" name="@subcat.Name.Replace(" ", "_")" text="@subcat.Name" class="hidden">
-                                            <label class="bx_filter_param_label  last" for="@subcat.Name.Replace(" ", "_")">
-                                                <span class="bx_filter_input_checkbox">
-                                                    <span class="bx_filter_param_text">@subcat.Name</span>
-                                                </span>
-                                            </label>
+                                <div style="max-height: 215px; overflow: hidden;">
+                                    @foreach (var subcat in Model.Category.ChildCategories.OrderBy(entry => entry.Order))
+                                    {
+                                        <div class="bx_filter_block limited_block">
+                                            <div class="bx_filter_parameters_box_container">
+                                                <input type="checkbox" id="@subcat.Name.Replace(" ", "_")" name="@subcat.Name.Replace(" ", "_")" text="@subcat.Name" class="hidden">
+                                                <label class="bx_filter_param_label  last" for="@subcat.Name.Replace(" ", "_")">
+                                                    <span class="bx_filter_input_checkbox">
+                                                        <span class="bx_filter_param_text">@subcat.Name</span>
+                                                    </span>
+                                                </label>
+                                            </div>
+                                            <div class="clb"></div>
                                         </div>
-                                        <div class="clb"></div>
+                                    }
+                                </div>
+                                @if (Model.Category.ChildCategories.Count > 7)
+                                {
+                                    <div>
+                                        <a href="#" class="show-more-options" style="font-size: 0.9em;">
+                                            <i class="fa fa-angle-down"></i>
+                                            Ще
+                                        </a>
+                                        <a href="#" class="show-less-options" style="font-size: 0.9em; display: none;">
+                                            <i class="fa fa-angle-up"></i>
+                                            Згорнути
+                                        </a>
                                     </div>
                                 }
                             </div>
@@ -302,4 +317,3 @@
         </div>
     </div>
 </div>
-
