@@ -442,6 +442,10 @@ namespace Benefit.Services.Domain
                     db.Categories.FirstOrDefault(entry => entry.Id == catId && entry.SellerId == sellerId);
                 if (dbCategory == null)
                 {
+                    if (!hasNewContent)
+                    {
+                        hasNewContent = true;
+                    }
                     dbCategory = new Category()
                     {
                         Id = Guid.NewGuid().ToString(),
@@ -461,11 +465,6 @@ namespace Benefit.Services.Domain
                 }
                 else
                 {
-                    if (!hasNewContent)
-                    {
-                        hasNewContent = true;
-                    }
-
                     dbCategory.IsActive = true;
                     dbCategory.ExternalIds = catId;
                     dbCategory.ParentCategoryId = parent == null ? null : parent.Id;
