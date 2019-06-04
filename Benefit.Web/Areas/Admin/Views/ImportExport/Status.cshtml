@@ -1,0 +1,66 @@
+﻿@using Benefit.Domain.Models
+@using Benefit.Common.Extensions
+@model IEnumerable<ExportImport>
+@{
+    ViewBag.Title = "Статус імпорту постачальників";
+}
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>
+                    Назва
+                </th>
+                <th>
+                    Статус
+                </th>
+                <th>
+                    Тип
+                </th>
+                <th>
+                    Останній час імпорту
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var task in Model)
+            {
+                var className = "rgba(0, 255, 0, 0.5)";
+                switch (task.Status)
+                {
+                    case 1:
+                        className = "rgba(255, 255, 0, 0.5)";
+                        break;
+                    case 2:
+                        className = "rgba(255, 0, 0, 0.5)";
+                        break;
+                }
+                <tr style="background-color: @className; ">
+                    <td>
+                        @task.Seller.Name
+                    </td>
+                    <td>
+                        @if (task.IsActive)
+                        {
+                            <div class="icon-check-sign green"></div>
+                        }
+                        else
+                        {
+                            <div class="icon-ban-circle red"></div>
+                        }
+                    </td>
+                    <td>
+                        @task.SyncType.ToString()
+                    </td>
+                    <td>
+                        @if (task.LastSync.HasValue)
+                        {
+                            <span>@task.LastSync.Value.ToLocalDateTimeWithFormat()</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
@@ -42,5 +43,9 @@ namespace Benefit.Domain.Models
 
         public ICollection<ExportProduct> ExportProducts { get; set; }
         public ICollection<ExportCategory> ExportCategories { get; set; }
+
+        //for color mapping in statistic
+        [NotMapped]
+        public int Status { get; set; }
     }
 }

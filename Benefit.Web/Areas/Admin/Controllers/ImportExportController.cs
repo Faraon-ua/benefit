@@ -36,6 +36,24 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(seller);
         }
 
+        public ActionResult Status()
+        {
+            var importTasks = db.ExportImports.Include(entry=>entry.Seller).Where(entry=>entry.SellerId != null).ToList();
+            foreach(var task in importTasks)
+            {
+                if(DateTime.Now - task.LastSync > TimeSpan.FromDays(7))
+                {
+                    task.Status = 2;
+                }
+                if (DateTime.Now - task.LastSync > TimeSpan.FromDays(1) && DateTime.Now - task.LastSync < TimeSpan.FromDays(7))
+                {
+                    task.Status = 1;
+                }
+            }
+            importTasks = importTasks.OrderByDescending(entry => entry.Status).ThenBy(entry=>entry.LastSync).ToList();
+            return View(importTasks);
+        }
+
         public ActionResult Exports()
         {
             var exports = db.ExportImports

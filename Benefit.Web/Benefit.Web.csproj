@@ -719,7 +719,6 @@
     <Content Include="Content\img\tablet\icon_menu_right.png" />
     <Content Include="Content\img\tablet\icon_search.png" />
     <Content Include="Content\img\tablet\logo.png" />
-    <Content Include="Content\img\top_slide_1.jpg" />
     <Content Include="Content\img\wrong.png" />
     <Content Include="Content\css\main.css" />
     <Content Include="Content\css\media.css" />
@@ -1024,6 +1023,7 @@
     <Content Include="Areas\Admin\Views\Sellers\_Seo.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Gallery.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Exports.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExport\Status.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

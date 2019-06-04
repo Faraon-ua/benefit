@@ -157,6 +157,12 @@
     @if (User.IsInRole(DomainConstants.AdminRoleName))
     {
         <li>
+            <a href="@Url.Action("Status", "ImportExport")">
+                <i class="icon-bar-chart"></i>
+                <span class="menu-text">Статус імпорту постачальників</span>
+            </a>
+        </li>
+    <li>
             <a href="@Url.Action("OnlineStatus", "Terminal")">
                 <i class="icon-terminal"></i>
                 <span class="menu-text">Статус терміналів</span>
