@@ -187,11 +187,11 @@
         <div class="form-group">
             <label class="col-sm-3 control-label no-padding-right">Коментарій модерування</label>
             <div class="col-md-9">
-                @Html.TextBox("ModerationStatus", @Model.ModerationStatus.ToString(), new { disabled = "true" })
+                @Html.TextBox("ModerationStatus", @Model.Comment, new { disabled = "true" })
             </div>
         </div>
 
-        @if (Model.LastModifiedBy != null)
+        @if (Model.LastModified != null)
         {
             <div class="form-group">
                 <label class="col-sm-3 control-label no-padding-right">Коли створено</label>
@@ -200,7 +200,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-sm-3 control-label no-padding-right">Коментарій модерування</label>
+                <label class="col-sm-3 control-label no-padding-right">Коли останній раз редагувалось</label>
                 <div class="col-md-9">
                     @Html.TextBox("LastModified", @Model.LastModified.ToLocalDateTimeWithFormat(), new { disabled = "true" })
                 </div>
