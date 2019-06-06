@@ -1,5 +1,6 @@
 ﻿@using Benefit.Web.Models.Enumerations
 @using Benefit.Web.Models.ViewModels
+@using Benefit.Domain.Models
 @model Benefit.Web.Models.Admin.ProductsViewModel
 @{
     ViewBag.Title = "Товари";
@@ -14,10 +15,41 @@
 
     <script>
         var updateWeightProductUrl = '@Url.Action("UpdateWeightProduct")';
+        var moderateProductUrl = '@Url.Action("Moderate")';
         var bulkProductsActionUrl = '@Url.Action("BulkProductsAction")';
         var removeExportUrl = '@Url.Action("RemoveFromExport")';
         var hSelect;
         $(function () {
+            $("body").on("click", ".moderate", function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                var id = $(this).attr("data-product-id");
+                var accept = $(this).attr("data-moderation") === "true";
+                if (!accept) {
+                    var comment = prompt("Вкажіть причину відхилення");
+                }
+                var model = {
+                    "id": id,
+                    "accept": accept,
+                    "comment": comment
+                };
+                $.ajax({
+                    type: "POST",
+                    url: moderateProductUrl,
+                    data: JSON.stringify(model),
+                    contentType: "application/json; charset=UTF-8",
+                    success: function (response, status, xhr) {
+                        if (xhr.status == 200) {
+                            var icon = btn.children("i");
+                            icon.addClass("opacity07");
+                            icon.removeClass("font-bigger");
+                            icon.removeClass("moderate");
+                            btn.parent().html(icon);
+                        }
+                    }
+                });
+            });
+
             $(".remove-export").click(function () {
                 var removeBtn = $(this);
                 var productId = $(this).attr("data-product-id");
@@ -47,6 +79,12 @@
                 } else {
                     $("#currencyId").hide();
                 }
+                 if ($(this).val() == "@((int)ProductsBulkAction.Moderate)" ||
+                    $(this).val() == "@((int)ProductsBulkAction.ModerateAll)") {
+                    $("#moderateStatus").show();
+                } else {
+                    $("#moderateStatus").hide();
+                }
             });
 
             $("#products-bulk-action-btn").click(function() {
@@ -57,13 +95,15 @@
                 var categoryId = $("[name=move-to-categoryId]").val();
                 var exportId = $("[name=exportId]").val();
                 var currencyId = $("[name=currencyId]").val();
+                var moderateStatus = $("[name=moderateStatus]").val();
                 $.post(bulkProductsActionUrl + location.search,
                     {
                         "productIds": productIds,
                         "action": action,
                         "category_Id": categoryId,
                         "export_Id": exportId,
-                        "currency_Id": currencyId
+                        "currency_Id": currencyId,
+                        "moderate_status": moderateStatus
                     }, function() {
                         window.location.reload();
                     });
@@ -211,6 +251,8 @@
                             @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style = "display:none;" })
                             
                             @Html.DropDownList("currencyId", Model.ProductFilters.Currencies, null, new { id = "currencyId", style = "display:none;" })
+
+                            @Html.DropDownList("moderateStatus", EnumHelper.GetSelectList(typeof(ModerationStatus)), new { id="moderateStatus", style="display: none;" })
                         </div>
                     </div>
                     <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>

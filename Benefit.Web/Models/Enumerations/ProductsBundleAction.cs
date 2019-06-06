@@ -21,6 +21,10 @@ namespace Benefit.Web.Models.Enumerations
         [Display(Name="Застосувати курс/індекс для обраних")]
         ApplyCurrency,
         [Display(Name = "Застосувати курс/індекс для відсортованих")]
-        ApplyCurrencyAll
+        ApplyCurrencyAll,
+        [Display(Name="Модерувати обрані")]
+        Moderate,
+        [Display(Name = "Модерувати відсортовані")]
+        ModerateAll
     }
 }

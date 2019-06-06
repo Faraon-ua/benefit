@@ -199,7 +199,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     product.SellerId = Seller.CurrentAuthorizedSellerId;
                 }
                 product.LastModified = DateTime.UtcNow;
-                product.LastModifiedBy = User.Identity.Name;
                 product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
                 db.ProductParameterProducts.RemoveRange(
                    db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
@@ -283,6 +282,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
             base.Dispose(disposing);
         }
 
+        public ActionResult Moderate(string id, bool accept, string comment)
+        {
+            var product = db.Products.Find(id);
+            if (product == null) return HttpNotFound();
+            product.ModerationStatus = accept ? ModerationStatus.Moderated : ModerationStatus.UnappropriateContent;
+            product.Comment = comment;
+            db.SaveChanges();
+            return new HttpStatusCodeResult(200);
+        }
         public ActionResult UpdateWeightProduct(string id, bool isWeight)
         {
             var product = db.Products.Find(id);
@@ -292,7 +300,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json("success");
         }
 
-        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string export_Id, string currency_Id, ProductFilterValues filters = null)
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string export_Id, string currency_Id, ModerationStatus moderate_status, ProductFilterValues filters = null)
         {
             var productService = new ProductsService();
             List<string> products = null;
@@ -373,8 +381,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         db.Entry(entry).State = EntityState.Modified;
                     });
                     break;
+                case ProductsBulkAction.Moderate:
+                    db.Products.Where(entry => productIds.Contains(entry.Id))
+                       .ForEach(entry =>
+                       {
+                           entry.ModerationStatus = moderate_status;
+                           db.Entry(entry).State = EntityState.Modified;
+                       });
+                    break;
+                case ProductsBulkAction.ModerateAll:
+                    var curModerateProducts = GetFilteredProducts(filters).ToList();
+                    curModerateProducts.ForEach(entry =>
+                    {
+                        entry.ModerationStatus = moderate_status;
+                        db.Entry(entry).State = EntityState.Modified;
+                    });
+                    break;
             }
-
             db.SaveChanges();
             TempData["SuccessMessage"] = "Товари успішно оброблено";
             return new HttpStatusCodeResult(200);

@@ -255,7 +255,6 @@ namespace Benefit.Services.Domain
                     DoesCountForShipping = true,
                     AddedOn = DateTime.UtcNow,
                     LastModified = DateTime.UtcNow,
-                    LastModifiedBy = "1CImport",
                     AltText = name.Truncate(100),
                     ShortDescription = name
                 };
@@ -292,7 +291,6 @@ namespace Benefit.Services.Domain
                 product.CategoryId = xmlProduct.Element("Группы").Element("Ид").Value;
                 product.AvailabilityState = ProductAvailabilityState.AlwaysAvailable;
                 product.LastModified = DateTime.UtcNow;
-                product.LastModifiedBy = "1CUaImport";
 
                 var order = 0;
                 lock (lockObj)
@@ -657,9 +655,9 @@ namespace Benefit.Services.Domain
                         IsImported = true,
                         DoesCountForShipping = true,
                         LastModified = DateTime.UtcNow,
-                        LastModifiedBy = "PromUaImport",
                         AltText = name.Truncate(100),
-                        ShortDescription = name
+                        ShortDescription = name,
+                        ModerationStatus = ModerationStatus.IsModerating
                     };
                     var productParams = new List<ProductParameterProduct>();
                     foreach (var param in xmlProduct.Elements("param"))
@@ -724,11 +722,11 @@ namespace Benefit.Services.Domain
                         }
                     }
 
-                    product.Name = name;
+                    //product.Name = name;
                     product.ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null);
-                    product.UrlName = name.Translit().Truncate(128);
+                    //product.UrlName = name.Translit().Truncate(128);
                     product.CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id;
-                    product.Description = string.IsNullOrEmpty(descr) ? name : descr;
+                    //product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                     product.Price = double.Parse(xmlProduct.Element("price").Value);
                     product.OldPrice = oldPrice;
                     product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
@@ -737,9 +735,8 @@ namespace Benefit.Services.Domain
                         ? ProductAvailabilityState.Available
                         : ProductAvailabilityState.OnDemand;
                     product.LastModified = DateTime.UtcNow;
-                    product.LastModifiedBy = "PromUaImport";
-                    product.AltText = name.Truncate(100);
-                    product.ShortDescription = name;
+                    //product.AltText = name.Truncate(100);
+                    //product.ShortDescription = name;
 
                     var productParams = new List<ProductParameterProduct>();
                     foreach (var param in xmlProduct.Elements("param"))
@@ -1084,7 +1081,6 @@ namespace Benefit.Services.Domain
                     entry.Id = Guid.NewGuid().ToString();
                     entry.SKU = sku++;
                     entry.LastModified = DateTime.UtcNow;
-                    entry.LastModifiedBy = "ExcelImport";
                     entry.SellerId = sellerId;
                     productIdsToAdd.Add(entry.ExternalId, entry.Id);
                     productsToAdd.Add(entry);
@@ -1118,7 +1114,6 @@ namespace Benefit.Services.Domain
                     dbProduct.ShortDescription = xlsProductToUpdate.ShortDescription;
                     dbProduct.Description = xlsProductToUpdate.Description;
                     dbProduct.LastModified = DateTime.UtcNow;
-                    dbProduct.LastModifiedBy = "ExcelImport";
                     dbProduct.SellerId = sellerId;
                 });
             }

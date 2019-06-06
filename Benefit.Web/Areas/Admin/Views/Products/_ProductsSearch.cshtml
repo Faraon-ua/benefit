@@ -31,7 +31,7 @@ else
                         Наявність
                     </th>
                     <th>
-                        Ваговий
+                        Модерація
                     </th>
                     <th>
                         Ціна
@@ -81,7 +81,25 @@ else
                             }
                         </td>
                         <td>
-                            <input type="checkbox" class="weight-product" @(product.IsWeightProduct ? "checked" : "") data-product-id="@product.Id" />
+                            <div>
+                                @if (product.ModerationStatus == ModerationStatus.IsModerating)
+                                {
+                                    <a href="#" title="Підтвердити" class="moderate font-bigger" data-moderation="true" data-product-id="@product.Id">
+                                        <i class="icon-check-sign green"></i>
+                                    </a>
+                                    <a href="#" title="Відхилити" class="moderate font-bigger margin-left-10" data-moderation="false" data-product-id="@product.Id">
+                                        <i class="icon-ban-circle red"></i>
+                                    </a>
+                                }
+                                @if (product.ModerationStatus == ModerationStatus.Moderated)
+                                {
+                                    <i class="icon-check-sign green opacity07"></i>
+                                }
+                                @if (product.ModerationStatus == ModerationStatus.UnappropriateContent)
+                                {
+                                    <i class="icon-ban-circle red opacity07"></i>
+                                }
+                            </div>
                         </td>
                         <td>
                             @product.Price

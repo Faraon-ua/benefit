@@ -41,6 +41,13 @@ namespace Benefit.Domain.Models
         Ending
     }
 
+    public enum ModerationStatus
+    {
+        Moderated,
+        IsModerating,
+        UnappropriateContent
+    }
+
     public enum ComputedProductAvailabilityState
     {
         Available,
@@ -112,8 +119,11 @@ namespace Benefit.Domain.Models
         public bool IsImported { get; set; }
         public bool DoesCountForShipping { get; set; }
         public DateTime LastModified { get; set; }
-        [MaxLength(64)]
-        public string LastModifiedBy { get; set; }
+        #region Moderation
+        [MaxLength(250)]
+        public string Comment { get; set; }
+        public ModerationStatus ModerationStatus { get; set; }
+        #endregion 
         [MaxLength(160)]
         [Index]
         //internal site search

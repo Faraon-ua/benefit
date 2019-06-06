@@ -86,7 +86,7 @@ namespace Benefit.Web.Helpers
                 do
                 {
                     products = db.Products.Include(entry => entry.Seller)
-                        .Where(entry => entry.Seller.IsActive && entry.IsActive);
+                        .Where(entry => entry.Seller.IsActive && entry.IsActive && entry.ModerationStatus == ModerationStatus.Moderated);
                     if (sellerId != null)
                     {
                         products = products.Where(entry => entry.SellerId == sellerId);
