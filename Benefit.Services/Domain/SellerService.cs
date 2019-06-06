@@ -356,7 +356,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Seller.Addresses)
                 .Include(entry => entry.Reviews)
                 .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
-                .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Seller.HasEcommerce);
+                .Where(entry => entry.IsActive && entry.ModerationStatus == ModerationStatus.Moderated && entry.Seller.IsActive && entry.Seller.HasEcommerce);
             if (!string.IsNullOrEmpty(categoryId))
             {
                 var category = db.Categories.Include(entry => entry.MappedCategories).FirstOrDefault(entry => entry.Id == categoryId);
