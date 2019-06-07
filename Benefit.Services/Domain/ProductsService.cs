@@ -91,7 +91,7 @@ namespace Benefit.Services.Domain
                 return null;
             }
 
-            if (!product.Seller.IsActive || !product.Category.IsActive)
+            if (!product.Seller.IsActive || !product.Category.IsActive || product.ModerationStatus != ModerationStatus.Moderated)
             {
                 product.AvailabilityState = ProductAvailabilityState.NotInStock;
             }
