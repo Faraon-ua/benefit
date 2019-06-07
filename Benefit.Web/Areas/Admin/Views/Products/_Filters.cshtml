@@ -31,6 +31,13 @@
     </div>
 </div>
 <br />
+<label>Модерація</label>
+<div class="row">
+    <div class="col-xs-8 col-sm-11">
+        @Html.DropDownList("ModerationStatus", Model.ModerationStatuses, "Не обрано", new { @class = "width-90" })
+    </div>
+</div>
+<br />
 <label>Виробник</label>
 <div class="row">
     <div class="col-xs-8 col-sm-11">
@@ -63,7 +70,7 @@
 <label>У експорті</label>
 <div class="row">
     <div class="col-xs-8 col-sm-11">
-        @Html.DropDownList("ExportId", Model.Exports, "Не обрано", new {@class = "width-90"})
+        @Html.DropDownList("ExportId", Model.Exports, "Не обрано", new { @class = "width-90" })
     </div>
 </div>
 <br />

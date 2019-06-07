@@ -43,8 +43,11 @@ namespace Benefit.Domain.Models
 
     public enum ModerationStatus
     {
+        [Display(Name = "Промодерований")]
         Moderated,
+        [Display(Name = "На модерації")]
         IsModerating,
+        [Display(Name = "Невалідний контент")]
         UnappropriateContent
     }
 

@@ -17,6 +17,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using WebGrease.Css.Extensions;
+using System.Web.Mvc.Html;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -118,6 +119,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 new SelectListItem() {Text = "В наявності", Value = "true"},
                 new SelectListItem() {Text = "Немає в наявності", Value = "false"}
             };
+            productsViewModel.ProductFilters.ModerationStatuses = EnumHelper.GetSelectList(typeof(ModerationStatus));
             return PartialView(productsViewModel);
         }
 
@@ -408,7 +410,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             IQueryable<Product> products =
                     db.Products
                         .Include(entry => entry.Images)
-                        .Include(entry => entry.ExportProducts.Select(ep=>ep.Export))
+                        .Include(entry => entry.ExportProducts.Select(ep => ep.Export))
                         .Include(entry => entry.ProductParameterProducts)
                         .AsQueryable();
             if (!string.IsNullOrEmpty(filters.CategoryId))
@@ -423,13 +425,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 categoryIds.AddRange(category.MappedCategories.Select(entry => entry.Id));
                 products = products.Where(entry => categoryIds.Contains(entry.CategoryId));
             }
+            if (filters.ModerationStatus.HasValue)
+            {
+                products = products.Where(entry => entry.ModerationStatus == filters.ModerationStatus.Value);
+            }
             if (!string.IsNullOrEmpty(filters.SellerId))
             {
                 products = products.Where(entry => entry.SellerId == filters.SellerId);
             }
             if (!string.IsNullOrEmpty(filters.ExportId))
             {
-                products = products.Where(entry => entry.ExportProducts.Any(ep=>ep.ExportId == filters.ExportId));
+                products = products.Where(entry => entry.ExportProducts.Any(ep => ep.ExportId == filters.ExportId));
             }
             if (Seller.CurrentAuthorizedSellerId != null)
             {

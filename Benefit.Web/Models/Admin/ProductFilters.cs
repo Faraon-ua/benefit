@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Mvc;
 using Benefit.Domain.Models.Enums;
+using Benefit.Domain.Models;
 
 namespace Benefit.Web.Models.Admin
 {
@@ -18,6 +19,7 @@ namespace Benefit.Web.Models.Admin
         public bool? HasParameters { get; set; }
         public bool? HasVendor { get; set; }
         public bool? HasOriginCountry { get; set; }
+        public ModerationStatus? ModerationStatus { get; set; }
         public bool HasValues
         {
             get { return (Search != null || CategoryId != null || SellerId != null || ExportId != null); }
@@ -34,6 +36,7 @@ namespace Benefit.Web.Models.Admin
         public IEnumerable<SelectListItem> HasVendor { get; set; }
         public IEnumerable<SelectListItem> HasOriginCountry { get; set; }
         public IEnumerable<SelectListItem> IsAvailable { get; set; }
+        public IEnumerable<SelectListItem> ModerationStatuses { get; set; }
         public bool IsActive{ get; set; }
         public bool HasImage { get; set; }
         public string Search { get; set; }

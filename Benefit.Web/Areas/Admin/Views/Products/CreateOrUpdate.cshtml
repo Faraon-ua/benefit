@@ -212,6 +212,12 @@
                     <i class="blue icon-info bigger-110"></i>
                     Основна інфо
                 </a>
+            </li> 
+            <li>
+                <a href="#moderation" data-toggle="tab">
+                    <i class="icon-check-sign green bigger-110"></i>
+                    Модерація
+                </a>
             </li>
             <li>
                 <a href="#images" data-toggle="tab">
@@ -252,6 +258,9 @@
             <div class="tab-pane in active" id="home">
                 @Html.Partial("_ProductForm")
             </div>
+            <div class="tab-pane" id="moderation">
+                @Html.Partial("_Moderation")
+            </div>  
             <div class="tab-pane" id="options">
                 @Html.Partial("_ProductOptions")
             </div>
