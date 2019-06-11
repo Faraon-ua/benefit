@@ -140,9 +140,12 @@
     <button class="btn-connect-option btn btn-sm btn-success pull-left">Прив’язати</button>
 </div>
 <div class="row">
-    <div class="col-md-3">
-        @Html.DropDownList("SellerId", Model.Sellers as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select" })
-    </div>
+    @if (string.IsNullOrEmpty(Request.QueryString["productId"]))
+    {
+        <div class="col-md-3">
+            @Html.DropDownList("SellerId", Model.Sellers as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select" })
+        </div>
+    }
     <div class="col-md-3">
         <a class="btn btn-purple btn-sm" onclick="ProductOptionGroup('')" href="#">Додати групу опцій</a>
         <a class="btn btn-success btn-sm" href="#" id="save-ordering">Зберегти сортування</a>

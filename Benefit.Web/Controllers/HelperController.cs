@@ -8,6 +8,7 @@ using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
+using Benefit.Services.Domain;
 using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Controllers
@@ -25,6 +26,17 @@ namespace Benefit.Web.Controllers
             foreach (var img in dir.GetFiles())
             {
                 imagesService.ResizeToSiteRatio(Path.Combine(pathString, img.Name), imageType);
+            }
+            return Content("Ok");
+        }
+
+        public ActionResult DeleteAllSellerProducts(string sellerId)
+        {
+            var productservice = new ProductsService();
+            var products = db.Products.Where(entry => entry.SellerId == sellerId).Select(entry=>entry.Id).ToList();
+            foreach(var product in products)
+            {
+                productservice.Delete(product);
             }
             return Content("Ok");
         }

@@ -8,6 +8,28 @@
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 @section styles{
+    <style>
+        #container {
+            width: 100%;
+            height: 500px;
+            margin: auto;
+        }
+
+        #outerdiv {
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #innerdiv {
+            position: absolute;
+            top: -90px;
+            left: -200px;
+            width: 1280px;
+            height: 1200px;
+        }
+    </style>
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/dropzone.css" rel="stylesheet" />
     <link href="~/Content/css/hierarchy-select.min.css" rel="stylesheet" />
@@ -212,7 +234,7 @@
                     <i class="blue icon-info bigger-110"></i>
                     Основна інфо
                 </a>
-            </li> 
+            </li>
             <li>
                 <a href="#moderation" data-toggle="tab">
                     <i class="icon-check-sign green bigger-110"></i>
@@ -260,7 +282,7 @@
             </div>
             <div class="tab-pane" id="moderation">
                 @Html.Partial("_Moderation")
-            </div>  
+            </div>
             <div class="tab-pane" id="options">
                 @Html.Partial("_ProductOptions")
             </div>

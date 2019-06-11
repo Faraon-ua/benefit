@@ -5,5 +5,12 @@
 }
 else
 {
-    @Html.ActionLink("Редагувати опції", "Index", "ProductOptions", new { productId = Model.Id }, new { target = "blank" })
+    <div id="container">
+        <div id="outerdiv">
+            <iframe id="innerdiv" src="@Url.Action("Index", "ProductOptions", new { productId = Model.Id })" style="width:100%;" height="500" frameborder="0"></iframe>
+            @*<iframe  width="500" height="560" src="http://benefit-company.com" scrolling="no" frameborder="0"></iframe>*@
+        </div>
+    </div>
+    @*@Html.ActionLink("Редагувати опції", "Index", "ProductOptions", new { productId = Model.Id }, new { target = "blank" })*@
+    @*<iframe src="@Url.Action("Index", "ProductOptions", new { productId = Model.Id })" style="width:100%;" height="500" frameborder="0"></iframe>*@
 }

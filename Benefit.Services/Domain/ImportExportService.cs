@@ -511,6 +511,7 @@ namespace Benefit.Services.Domain
                 var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
                 var dbProductIds = dbProducts.Select(entry => entry.Id).ToList();
                 var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
+                var xmlProductsToAdd = xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Attribute("id").Value));
                 var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
                 var xmlCategoryIds = xmlProducts.Select(pr => pr.Element("categoryId").Value).Distinct().ToList();
                 var categories = db.Categories
@@ -518,35 +519,39 @@ namespace Benefit.Services.Domain
                 var productsToAddList = new List<Product>();
                 var imagesToAddList = new List<Image>();
 
-                var existingImages = db.Images.AsNoTracking().Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
+                //var existingImages = db.Images.AsNoTracking().Where(entry => dbProductIds.Contains(entry.ProductId)).ToList();
                 var currencies = db.Currencies
                     .Where(entry => entry.SellerId == null || entry.SellerId == sellerId)
                     .OrderBy(entry => entry.Provider)
                     .ToList();
 
                 //parameters
-                var productsGroupByCategoryId = xmlProducts.GroupBy(entry => entry.Element("categoryId").Value)
+                var productsGroupByCategoryId = xmlProductsToAdd.GroupBy(entry => entry.Element("categoryId").Value)
                     .Where(entry => categoryIds.Contains(entry.Key)).ToList();
 
                 var categryIds = categories.Select(pr => pr.Id).ToList();
-                var dbProductParameters =
-                    db.ProductParameters.AsNoTracking().Where(
-                        entry => categryIds.Contains(entry.CategoryId)).ToList();
-                var productParameterIds = dbProductParameters.Select(pr => pr.Id).ToList();
-                var dbProductParameterValues =
-                    db.ProductParameterValues.AsNoTracking().Where(
-                        entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
-                var dbProductParameterProducts = db.ProductParameterProducts.AsNoTracking().Where(
-                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+                //var dbProductParameters =
+                //    db.ProductParameters.AsNoTracking().Where(
+                //        entry => categryIds.Contains(entry.CategoryId)).ToList();
+                //var productParameterIds = dbProductParameters.Select(pr => pr.Id).ToList();
+                //var dbProductParameterValues =
+                //    db.ProductParameterValues.AsNoTracking().Where(
+                //        entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+                //var dbProductParameterProducts = db.ProductParameterProducts.AsNoTracking().Where(
+                //    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
 
-                db.DeleteWhereColumnIn(existingImages);
-                existingImages.Clear();
-                db.DeleteWhereColumnIn(dbProductParameterProducts, "ProductParameterId");
-                dbProductParameterProducts.Clear();
-                db.DeleteWhereColumnIn(dbProductParameterValues);
-                dbProductParameterValues.Clear();
-                db.DeleteWhereColumnIn(dbProductParameters);
-                dbProductParameters.Clear();
+                //db.DeleteWhereColumnIn(existingImages);
+                //existingImages.Clear();
+                //db.DeleteWhereColumnIn(dbProductParameterProducts, "ProductParameterId");
+                //dbProductParameterProducts.Clear();
+                //db.DeleteWhereColumnIn(dbProductParameterValues);
+                //dbProductParameterValues.Clear();
+                //db.DeleteWhereColumnIn(dbProductParameters);
+                //dbProductParameters.Clear();
+
+                var dbProductParameterProducts = new List<ProductParameterProduct>();
+                var dbProductParameterValues = new List<ProductParameterValue>();
+                var dbProductParameters = new List<ProductParameter>();
 
                 foreach (var categoryGroupParams in productsGroupByCategoryId)
                 {
@@ -707,9 +712,9 @@ namespace Benefit.Services.Domain
                         return;
                     }
 
-                    var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
-                    var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
-                    var currencyId = xmlProduct.Element("currencyId").Value;
+                    //var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
+                    //var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
+                    //var currencyId = xmlProduct.Element("currencyId").Value;
                     double? oldPrice = null;
                     var oldPriceStr = xmlProduct.Element("oldprice").GetValueOrDefault(null) ??
                                       xmlProduct.Element("price_old").GetValueOrDefault(null);
@@ -725,11 +730,11 @@ namespace Benefit.Services.Domain
                     //product.Name = name;
                     product.ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null);
                     //product.UrlName = name.Translit().Truncate(128);
-                    product.CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id;
+                    //product.CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id;
                     //product.Description = string.IsNullOrEmpty(descr) ? name : descr;
                     product.Price = double.Parse(xmlProduct.Element("price").Value);
                     product.OldPrice = oldPrice;
-                    product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
+                    //product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
 
                     product.AvailabilityState = xmlProduct.Attribute("available").Value == "true"
                         ? ProductAvailabilityState.Available
@@ -739,7 +744,7 @@ namespace Benefit.Services.Domain
                     //product.ShortDescription = name;
 
                     var productParams = new List<ProductParameterProduct>();
-                    foreach (var param in xmlProduct.Elements("param"))
+                    foreach (var param in xmlProductsToAdd.Elements("param"))
                     {
                         var paramName = param.Attribute("name").Value.ToLower().Trim(':');
                         var parameter =
@@ -761,7 +766,7 @@ namespace Benefit.Services.Domain
                     var order = 0;
                     lock (lockObj)
                     {
-                        imagesToAddList.AddRange(xmlProduct.Elements("picture").Select(xmlImage => new Image()
+                        imagesToAddList.AddRange(xmlProductsToAdd.Elements("picture").Select(xmlImage => new Image()
                         {
                             Id = Guid.NewGuid().ToString(),
                             ImageType = ImageType.ProductGallery,
@@ -1034,7 +1039,7 @@ namespace Benefit.Services.Domain
             db.DeleteWhereColumnIn(existingProductParameterProducts, "ProductParameterId");
             db.DeleteWhereColumnIn(existingProductParameterValues);
             db.DeleteWhereColumnIn(existingProductParameters);
-
+            return null;
             #endregion
 
             var currencies = db.Currencies.AsNoTracking().ToList();
@@ -1092,14 +1097,14 @@ namespace Benefit.Services.Domain
             if (productExternalIdsToUpdate.Any())
             {
                 result.ProductsUpdated = productExternalIdsToUpdate.Count;
-                var xmlProductsToUpdate = xlsProducts.Where(entry => productExternalIdsToUpdate.Contains(entry.ExternalId)).ToList();
+                var xlsProductsToUpdate = xlsProducts.Where(entry => productExternalIdsToUpdate.Contains(entry.ExternalId)).ToList();
                 var dbProductsToUpdate = db.Products.Where(entry => productExternalIdsToUpdate.Contains(entry.ExternalId) && entry.SellerId == sellerId);
                 productIdsToUpdate = dbProductsToUpdate.ToDictionary(entry => entry.ExternalId, entry => entry.Id);
                 Parallel.ForEach(dbProductsToUpdate, (dbProduct) =>
                 {
-                    var xlsProductToUpdate = xmlProductsToUpdate.First(entry => entry.ExternalId == dbProduct.ExternalId);
-
+                    var xlsProductToUpdate = xlsProductsToUpdate.First(entry => entry.ExternalId == dbProduct.ExternalId);
                     xlsProductToUpdate.Id = dbProduct.Id;
+
                     dbProduct.CategoryId = xlsProductToUpdate.CategoryId;
                     dbProduct.Vendor = xlsProductToUpdate.Vendor;
                     dbProduct.Name = xlsProductToUpdate.Name;
