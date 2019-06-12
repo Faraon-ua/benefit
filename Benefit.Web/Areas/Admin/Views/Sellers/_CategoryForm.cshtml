@@ -15,6 +15,9 @@
     </div>
     <div class="col-sm-1">
         @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomDiscount", Model.Key), Model.Value.CustomDiscount, new { @class = "number-input width-80", placeholder = "Загальний відсоток знижки" }) %
+    </div>  
+    <div class="col-sm-1">
+        @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomMargin", Model.Key), Model.Value.CustomMargin, new { @class = "number-input width-80", placeholder = "Націнка" }) %
     </div>
     <div class="col-sm-2">
         <label for="@string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key)">Батьківська категорія</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key), Model.Value.RootDisplay)

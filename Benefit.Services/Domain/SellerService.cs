@@ -351,6 +351,8 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Favorites)
                 .Include(entry => entry.Currency)
                 .Include(entry => entry.Category.ParentCategory.ParentCategory)
+                .Include(entry => entry.Category.SellerCategories)
+                .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                 .Include(entry => entry.Seller.Addresses)
@@ -574,6 +576,20 @@ namespace Benefit.Services.Domain
             result.Products = items.Take(take + 1).ToList();
             result.Products.ForEach(entry =>
             {
+                var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;
+
+                var sellerCategory = produCat.SellerCategories.FirstOrDefault(sc => sc.CategoryId == produCat.Id && sc.SellerId == entry.SellerId);
+                if (sellerCategory != null)
+                {
+                    if (sellerCategory.CustomMargin.HasValue)
+                    {
+                        if (entry.OldPrice.HasValue)
+                        {
+                            entry.OldPrice += entry.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                        }
+                        entry.Price += entry.Price * sellerCategory.CustomMargin.Value / 100;
+                    }
+                }
                 if (entry.Currency != null)
                 {
                     if (entry.OldPrice.HasValue)

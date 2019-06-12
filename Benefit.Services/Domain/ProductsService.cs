@@ -126,13 +126,24 @@ namespace Benefit.Services.Domain
                                  db.SellerCategories.FirstOrDefault(entry =>
                                      entry.CategoryId == product.Category.MappedParentCategoryId &&
                                      entry.SellerId == product.SellerId);
-            if (sellerCategory != null && sellerCategory.CustomDiscount.HasValue)
+            if (sellerCategory != null)
             {
-                result.DiscountPercent = sellerCategory.CustomDiscount.Value;
-            }
-            else
-            {
-                result.DiscountPercent = product.Seller.UserDiscount;
+                if (sellerCategory.CustomMargin.HasValue)
+                {
+                    if(product.OldPrice.HasValue)
+                    {
+                        product.OldPrice += product.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                    }
+                    product.Price += product.Price * sellerCategory.CustomMargin.Value / 100; 
+                }
+                if (sellerCategory.CustomDiscount.HasValue)
+                {
+                    result.DiscountPercent = sellerCategory.CustomDiscount.Value;
+                }
+                else
+                {
+                    result.DiscountPercent = product.Seller.UserDiscount;
+                }
             }
 
             var category = product.Category.IsSellerCategory ? product.Category.MappedParentCategory : product.Category;

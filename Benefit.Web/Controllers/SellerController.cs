@@ -45,7 +45,8 @@ namespace Benefit.Web.Controllers
                     .Select(entry => entry.Key)
                     .Take(ListConstants.DefaultTakePerPage * 2).ToList();
                 viewModel.Items.AddRange(db.Products
-                    .Include(entry => entry.Category)
+                    .Include(entry => entry.Category.SellerCategories)
+                    .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
                     .Include(entry => entry.Currency)
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
@@ -62,7 +63,8 @@ namespace Benefit.Web.Controllers
                         db.Products
                             .Include(entry => entry.Currency)
                             .Include(entry => entry.Images)
-                            .Include(entry => entry.Category.MappedParentCategory)
+                            .Include(entry => entry.Category.SellerCategories)
+                            .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
                             .Where(entry => entry.SellerId == seller.Id && entry.IsActive && entry.Category.IsActive &&
                                             (!entry.Category.IsSellerCategory || entry.Category.IsSellerCategory &&
                                              entry.Category.MappedParentCategory != null))
@@ -72,13 +74,27 @@ namespace Benefit.Web.Controllers
                 }
                 viewModel.Items.ForEach(entry =>
                 {
+                    var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;
+
+                    var sellerCategory = produCat.SellerCategories.FirstOrDefault(sc => sc.CategoryId == produCat.Id && sc.SellerId == entry.SellerId);
+                    if (sellerCategory != null)
+                    {
+                        if (sellerCategory.CustomMargin.HasValue)
+                        {
+                            if (entry.OldPrice.HasValue)
+                            {
+                                entry.OldPrice += entry.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                            }
+                            entry.Price += entry.Price * sellerCategory.CustomMargin.Value / 100;
+                        }
+                    }
                     if (entry.Currency != null)
                     {
-                        entry.Price = entry.Price * entry.Currency.Rate;
-                        if (!entry.Seller.IsActive || !entry.Category.IsActive)
+                        if (entry.OldPrice.HasValue)
                         {
-                            entry.AvailabilityState = ProductAvailabilityState.NotInStock;
+                            entry.OldPrice = (double)(entry.OldPrice * entry.Currency.Rate);
                         }
+                        entry.Price = (double)(entry.Price * entry.Currency.Rate);
                     }
                 });
             }
