@@ -576,8 +576,11 @@ namespace Benefit.Services.Domain
             {
                 if (entry.Currency != null)
                 {
+                    if (entry.OldPrice.HasValue)
+                    {
+                        entry.OldPrice = (double)(entry.OldPrice * entry.Currency.Rate);
+                    }
                     entry.Price = (double)(entry.Price * entry.Currency.Rate);
-                    entry.OldPrice = (double)(entry.OldPrice * entry.Currency.Rate);
                 }
                 if (!entry.Seller.IsActive || !entry.Category.IsActive)
                 {
