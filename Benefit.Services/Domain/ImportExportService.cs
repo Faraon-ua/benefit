@@ -511,7 +511,7 @@ namespace Benefit.Services.Domain
                 var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
                 var dbProductIds = dbProducts.Select(entry => entry.Id).ToList();
                 var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
-                var xmlProductsToAdd = xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Attribute("id").Value));
+                var xmlProductsToAdd = xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Attribute("id").Value)).ToList();
                 var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
                 var xmlCategoryIds = xmlProducts.Select(pr => pr.Element("categoryId").Value).Distinct().ToList();
                 var categories = db.Categories
@@ -743,41 +743,41 @@ namespace Benefit.Services.Domain
                     //product.AltText = name.Truncate(100);
                     //product.ShortDescription = name;
 
-                    var productParams = new List<ProductParameterProduct>();
-                    foreach (var param in xmlProductsToAdd.Elements("param"))
-                    {
-                        var paramName = param.Attribute("name").Value.ToLower().Trim(':');
-                        var parameter =
-                            dbProductParameters.FirstOrDefault(
-                                entry => entry.Name == paramName && entry.CategoryId == product.CategoryId);
+                    //var productParams = new List<ProductParameterProduct>();
+                    //foreach (var param in xmlProductsToAdd.Elements("param"))
+                    //{
+                    //    var paramName = param.Attribute("name").Value.ToLower().Trim(':');
+                    //    var parameter =
+                    //        dbProductParameters.FirstOrDefault(
+                    //            entry => entry.Name == paramName && entry.CategoryId == product.CategoryId);
 
-                        var productParameterValue = new ProductParameterProduct()
-                        {
-                            ProductId = product.Id,
-                            ProductParameterId = parameter.Id,
-                            StartValue = param.Value.Translit().Truncate(64),
-                            StartText = param.Value.Truncate(64)
-                        };
-                        productParams.Add(productParameterValue);
-                    }
+                    //    var productParameterValue = new ProductParameterProduct()
+                    //    {
+                    //        ProductId = product.Id,
+                    //        ProductParameterId = parameter.Id,
+                    //        StartValue = param.Value.Translit().Truncate(64),
+                    //        StartText = param.Value.Truncate(64)
+                    //    };
+                    //    productParams.Add(productParameterValue);
+                    //}
 
-                    productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
+                    //productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
 
-                    var order = 0;
-                    lock (lockObj)
-                    {
-                        imagesToAddList.AddRange(xmlProductsToAdd.Elements("picture").Select(xmlImage => new Image()
-                        {
-                            Id = Guid.NewGuid().ToString(),
-                            ImageType = ImageType.ProductGallery,
-                            ImageUrl = xmlImage.Value,
-                            IsAbsoluteUrl = true,
-                            Order = order++,
-                            ProductId = product.Id,
-                            IsImported = true
-                        }));
-                        dbProductParameterProducts.AddRange(productParams);
-                    }
+                    //var order = 0;
+                    //lock (lockObj)
+                    //{
+                    //    imagesToAddList.AddRange(xmlProductsToAdd.Elements("picture").Select(xmlImage => new Image()
+                    //    {
+                    //        Id = Guid.NewGuid().ToString(),
+                    //        ImageType = ImageType.ProductGallery,
+                    //        ImageUrl = xmlImage.Value,
+                    //        IsAbsoluteUrl = true,
+                    //        Order = order++,
+                    //        ProductId = product.Id,
+                    //        IsImported = true
+                    //    }));
+                    //    dbProductParameterProducts.AddRange(productParams);
+                    //}
                 });
 
                 foreach (var product in productsToAddList)
