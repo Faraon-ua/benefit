@@ -97,6 +97,7 @@ namespace Benefit.Services.Domain
             }
             if (product.Currency != null)
             {
+                product.OldPrice = product.OldPrice * product.Currency.Rate;
                 product.Price = product.Price * product.Currency.Rate;
             }
 
