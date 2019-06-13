@@ -34,7 +34,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var seller = db.Sellers.Include(entry => entry.ShippingMethods).FirstOrDefault(entry => entry.Id == order.SellerId);
             var shipping = seller.ShippingMethods.FirstOrDefault(entry => entry.Name == order.ShippingName);
             order.Sum = order.GetOrderSum();
-            order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree.HasValue ?  shipping.CostBeforeFree.Value : 0) : 0);
+            order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree.HasValue ? shipping.CostBeforeFree.Value : 0) : 0);
             order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
             order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
         }
@@ -139,14 +139,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Pages = ordersTotal / takePerPage + 1,
                 ActivePage = page
             };
-            ordersFilters.Sorting = (from OrderSortOption sortOption in Enum.GetValues(typeof (OrderSortOption))
-                select
-                    new SelectListItem()
-                    {
-                        Text = Enumerations.GetEnumDescription(sortOption),
-                        Value = sortOption.ToString(),
-                        Selected = sortOption == ordersFilters.Sort
-                    }).ToList();
+            ordersFilters.Sorting = (from OrderSortOption sortOption in Enum.GetValues(typeof(OrderSortOption))
+                                     select
+                                         new SelectListItem()
+                                         {
+                                             Text = Enumerations.GetEnumDescription(sortOption),
+                                             Value = sortOption.ToString(),
+                                             Selected = sortOption == ordersFilters.Sort
+                                         }).ToList();
             ordersFilters.Sellers =
                 db.Sellers.OrderBy(entry => entry.Name)
                     .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
@@ -159,7 +159,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
@@ -320,7 +320,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.OrderProducts.FirstOrDefault(entry => entry.OrderId == orderId && entry.ProductId == productId);
             db.OrderProductOptions.RemoveRange(product.DbOrderProductOptions);
             db.OrderProducts.Remove(product);
-            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
             UpdateOrderDetails(order);
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderId });
@@ -332,7 +332,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.OrderProductOptions.FirstOrDefault(entry => entry.OrderProductId == orderProductId && entry.ProductOptionId == productOptionId);
             db.OrderProductOptions.Remove(productOption);
             db.SaveChanges();
-            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
             UpdateOrderDetails(order);
             db.SaveChanges();
             return RedirectToAction("Details", new { id = orderId });
@@ -352,7 +352,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             orderProduct.Id = Guid.NewGuid().ToString();
             orderProduct.ProductId = Guid.NewGuid().ToString();
             db.OrderProducts.Add(orderProduct);
-            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);
+            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);
             UpdateOrderDetails(order);
             orderProduct.Index = order.OrderProducts.Max(entry => entry.Index) + 1;
             db.Entry(order).State = EntityState.Modified;
@@ -367,12 +367,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var order = db.Orders.Include(entry=>entry.Transactions).Include(entry => entry.OrderProducts.Select(op=>op.OrderProductOptions)).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
+            var order = db.Orders.Include(entry => entry.Transactions).Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
             if (order == null)
             {
                 return HttpNotFound();
             }
             order.OrderProducts = order.OrderProducts.OrderBy(entry => entry.Index).ToList();
+            var productIds = order.OrderProducts.Select(entry => entry.ProductId).ToList();
+            var products = db.Products.Where(entry => productIds.Contains(entry.Id)).ToList();
+            foreach (var orderProduct in order.OrderProducts)
+            {
+                var product = products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                if (product != null)
+                {
+                    orderProduct.ProductSku = product.SKU;
+                    orderProduct.ProductUrlName = product.UrlName;
+                }
+            }
             var orderSeller = db.Sellers.Find(order.SellerId);
             order.SellerPhone = orderSeller == null ? null : orderSeller.OnlineOrdersPhone;
             return View(order);
@@ -391,18 +402,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
             OrderService.DeleteOrder(id);
             return Json(new { status = true });
         }
-        
+
         [Authorize(Roles = DomainConstants.AdminRoleName)]
         public ActionResult DeleteOrderTransaction(string orderId, string transactionId)
         {
-            var tr = db.Transactions.Include(entry=>entry.Payee).FirstOrDefault(entry=>entry.Id == transactionId);
+            var tr = db.Transactions.Include(entry => entry.Payee).FirstOrDefault(entry => entry.Id == transactionId);
             if (tr.Type == TransactionType.PersonalSiteBonus)
             {
                 tr.Payee.CurrentBonusAccount = tr.Payee.CurrentBonusAccount - tr.Bonuses;
             }
             if (tr.Type == TransactionType.OrderRefund)
             {
-                tr.Payee.BonusAccount = tr.Payee.BonusAccount - tr.Bonuses;                
+                tr.Payee.BonusAccount = tr.Payee.BonusAccount - tr.Bonuses;
             }
             db.Entry(tr.Payee).State = EntityState.Modified;
             db.Transactions.Remove(tr);

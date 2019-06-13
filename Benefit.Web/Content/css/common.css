@@ -363,7 +363,7 @@
 }
 
 .padding-horizontal-10 {
-    padding: 0 10px;
+    padding: 0 10px !important;
 }
 
 .padding-vertical-5px {

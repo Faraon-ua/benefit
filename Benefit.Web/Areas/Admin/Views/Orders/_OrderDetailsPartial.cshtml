@@ -48,7 +48,7 @@
         </tr>
         <tr>
             @{
-        var doplata = (Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses));
+                var doplata = (Model.Sum - Math.Abs(Model.BonusPaymentTransaction.Bonuses));
             }
             <td style="width: 30%;">
                 @if (doplata < 0)
@@ -76,7 +76,7 @@
     <tr>
         <td style="width: 30%;">Загальна сума замовлення</td>
         <td style="width: 70%;">@Model.Sum.ToString("F")</td>
-    </tr> 
+    </tr>
     @if (Model.SellerDiscount != null)
     {
         <tr>
@@ -180,14 +180,22 @@
                     var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
                     var productSum = product.ProductPrice * product.Amount;
                     <tr data-product-id="@product.ProductId" class="order-product">
-                        <td>
+                        <td class="padding-horizontal-10">
                             @if (Model.Status == OrderStatus.Processed)
                             {
-                                <input type="text" class="number-input product-name col-sm-12" value="@product.ProductName" />
+                                <input type="text" class="number-input product-name col-sm-10" value="@product.ProductName" />
+                                if (!string.IsNullOrEmpty(product.ProductUrlName))
+                                {
+                                    <a class="btn btn-xs btn-info margin-left-10" href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) })" target="_blank">
+                                        <i class="icon-eye-open bigger-120"></i>
+                                    </a>
+                                }
                             }
                             else
                             {
-                                @product.ProductName
+                                <a href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) })" target="_blank">
+                                    @product.ProductName
+                                </a>
                             }
                         </td>
                         <td>
