@@ -194,7 +194,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError("ShortDescription", "Короткий опис обовязковий для заповнення");
             }
-            product.ProductParameterProducts = product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
+            product.ProductParameterProducts = product.ProductParameterProducts.Where(entry => entry.StartText != null).ToList();
+            product.ProductParameterProducts.ForEach(entry => entry.StartValue = entry.StartText.Translit());
             if (ModelState.IsValid)
             {
                 if (Seller.CurrentAuthorizedSellerId != null)
@@ -213,6 +214,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         Name = ppp.ProductParameter.Name,
                         UrlName = ppp.ProductParameter.UrlName,
+                        Order = ppp.ProductParameter.Order,
                         Id = Guid.NewGuid().ToString(),
                         CategoryId = product.CategoryId
                     };

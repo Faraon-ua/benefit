@@ -130,7 +130,12 @@
             });
             $("#add-feature").click(function () {
                 var btn = $(this);
-                $.get(getNewFeatureUrl, function (data) {
+                var orders = 
+                    $(".feature-row[data-order]").map(function () {
+                    return parseInt($(this).attr("data-order"));
+                    }).get();
+                var maxOrder = Math.max(...orders);
+                $.get(getNewFeatureUrl+"?order="+maxOrder, function (data) {
                     btn.before(data);
                 });
             });

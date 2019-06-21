@@ -3,7 +3,7 @@
     <div class="col-sm-3">
     </div>
     <div class="feature-value col-sm-4 no-padding-horizontal">
-        <input class="feature_input" type="text" value="@(Model == null ? string.Empty : Model.StartValue)" name="ProductParameterProducts[{n}].StartValue" data-parameter-id="@Model.ProductParameterId">
+        <input class="feature_input" type="text" value="@(Model == null ? string.Empty : Model.StartText)" name="ProductParameterProducts[{n}].StartText" data-parameter-id="@Model.ProductParameterId">
         @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", Model.ProductParameterId)
         <button type="button" class="btn btn_mini btn-warning feature_multi_values fn-remove-product-option">
             <i class="icon-minus"></i>

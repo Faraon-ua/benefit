@@ -18,10 +18,11 @@
     }
     else
     {
+        var order = 0;
         foreach (var parameter in parameters)
         {
             var values = Model.ProductParameterProducts.Where(entry => entry.ProductParameterId == parameter.Id).ToList();
-            <div class="row margin-bottom-15 feature-row" data-parameter-id="@parameter.Id">
+            <div class="row margin-bottom-15 feature-row" data-parameter-id="@parameter.Id" data-order="@(order++)">
                 @{
                     var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
                 }
@@ -32,7 +33,7 @@
                     @{
                         var paramValue = values.FirstOrDefault(entry => entry.ProductParameterId == parameter.Id);
                     }
-                    <input class="feature_input" type="text" value="@(paramValue == null ? string.Empty : paramValue.StartValue)" name="ProductParameterProducts[{n}].StartValue" data-parameter-id="@parameter.Id">
+                    <input class="feature_input" type="text" value="@(paramValue == null ? string.Empty : paramValue.StartText)" name="ProductParameterProducts[{n}].StartText" data-parameter-id="@parameter.Id">
                     @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", parameter.Id)
                     <button type="button" class="btn btn_mini btn-info feature_multi_values fn-add-product-option-value" data-parameter-id="@parameter.Id">
                         <i class="icon-plus"></i>

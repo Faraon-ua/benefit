@@ -115,8 +115,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json(values,JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult NewFeature()
+        public ActionResult NewFeature(int order)
         {
+            ViewBag.Order = ++order;
             return PartialView("_NewProductFeature");
         }
 

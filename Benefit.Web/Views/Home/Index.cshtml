@@ -15,6 +15,34 @@
     <meta property="og:url" content="https://benefit-company.com" />
     <meta property="og:image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, "Content/img/logo_small.png")" />
     <meta property="og:site_name" content="Benefit Company" />
+    <script type="application/ld+json">
+        {
+        "@@context":"http://schema.org",
+        "@@type":"Organization",
+        "brand":"Benefit Company",
+        "logo":"https://benefit-company.com/Content/img/logo.png",
+        "name":"benefit-company.com",
+        "alternateName":"Benefit",
+        "url":"https://benefit-company.com/",
+        "sameAs":[
+        "https://www.facebook.com/groups/benefitcompany/",
+        "https://twitter.com/benefitcompany",
+        "https://www.instagram.com/benefitcompany/"
+        ]
+        }
+    </script>
+    <script type="application/ld+json">
+        {
+        "@@context": "http://schema.org",
+        "@@type": "WebSite",
+        "url": "https://benefit-company.com/",
+        "potentialAction": {
+        "@@type": "SearchAction",
+        "target": "https://benefit-company.com/search?term={search_term_string}",
+        "query-input": "required name=search_term_string"
+        }
+        }
+    </script>
 }
 @section scripts
 {
@@ -26,7 +54,7 @@
     <script src="~/Scripts/v3/products.js" defer></script>
     <script src="~/Scripts/owl.carousel.min.js" defer></script>
     <script defer>
-         window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             $(".toggle-descr").click(function (e) {
                 e.preventDefault();
                 $(this).parent().find(".contents").css("max-height", "");

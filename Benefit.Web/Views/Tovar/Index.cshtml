@@ -626,7 +626,7 @@
                                 @foreach (var groupResult in Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).GroupBy(entry=>entry.ProductParameterId))
                                 {
                                     var productParameter = groupResult.Select(entry => entry.ProductParameter).FirstOrDefault();
-                                    var productParameterValues = string.Join(", ", groupResult.Select(entry => entry.StartValue));
+                                    var productParameterValues = string.Join(", ", groupResult.Select(entry => entry.StartText));
                                     <div class="stores_block wo_image">
                                         <div class="stores_text_wrapp ">
                                             <div class="main_info">
