@@ -7,7 +7,8 @@ using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services.Domain;
 using Benefit.Web.Areas.Admin.Controllers.Base;
-using Microsoft.AspNet.Identity;
+using Benefit.Web.Helpers;
+using Benefit.DataTransfer.JSON;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -84,7 +85,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult GetProductParameterDefinedValues(string parameterId, int? amount = null, string selectedValue = null, string selectedText = null)
         {
-            var parameter = db.ProductParameters.Find(parameterId);
+            var parameter = db.ProductParameters.Include(entry=>entry.ProductParameterValues).FirstOrDefault(entry=>entry.Id == parameterId);
             var values =
                 parameter.ProductParameterValues.OrderBy(entry=>entry.Order).Select(
                     entry =>
@@ -98,10 +99,25 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 Amount = amount,
                 ProductParameterId = parameterId,
-                StartText = selectedText ?? values.First().Text
+                //StartText = selectedText ?? values.First().Text
             };
-            ViewBag.StartValue = values;
-            return PartialView("_ProductOption", model);
+            var partial = ControllerContext.RenderPartialToString("_ProductOption", model);
+            return Json(new { html = partial, values }, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult FeatureValues(string featureId)
+        {
+            var values = db.ProductParameterValues
+                .Where(entry => entry.ProductParameterId == featureId)
+                .Select(entry => entry.ParameterValue)
+                .Distinct()
+                .Select(entry => new { value = entry, data = entry }).ToList();
+            return Json(values,JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult NewFeature()
+        {
+            return PartialView("_NewProductFeature");
         }
 
         public ActionResult ProductParameterCategory(string id = null, string categoryId = null)

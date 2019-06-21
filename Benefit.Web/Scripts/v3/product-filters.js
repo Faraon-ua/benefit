@@ -47,7 +47,12 @@ $(function () {
             options = "page=" + (page + 1) + ";";
             pageUrl = lastSegment + "/" + options;
         } else {
-            options = pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
+            if (lastSegment.indexOf("page=") > 0) {
+                options = pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
+            }
+            else {
+                pageUrl = lastSegment + "page=" + (page + 1) + ";";
+            }
         }
         if (categoryUrlName === "search") {
             pageUrl += location.search;

@@ -1,0 +1,95 @@
+﻿.feature_name {
+    float: left;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #ffffff;
+    background-color: rgba(118, 118, 118, 0.7);
+    padding: 5px 10px;
+    height: 34px;
+    font-size: 14px;
+    font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.feature_input {
+    display: block;
+    width: calc(100% - 70px);
+    padding: 5px 10px;
+    font-size: 14px;
+    color: #607d8b;
+    border: none;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    background: #f7f7f7;
+    height: 34px;
+    font-weight: 400;
+    border: 1px solid transparent;
+    float: left;
+}
+
+    .feature_input:focus {
+        border-color: rgba(118, 118, 118, 0.7);
+        background: #fff;
+        border-radius: 0px 5px 5px 0px;
+    }
+
+.feature_value::-ms-expand {
+    background-color: transparent;
+    border: 0;
+}
+
+.feature_value:focus {
+    color: #607d8b;
+    background-color: #fff;
+    border-color: #66afe9;
+    outline: none;
+}
+
+.feature_value::placeholder {
+    color: #999;
+    opacity: 1;
+}
+
+.feature_value:disabled, .variant_input[readonly] {
+    background-color: #cfd8dc;
+    opacity: 1;
+}
+
+.feature_value:disabled {
+    cursor: not-allowed;
+}
+
+.new_feature {
+    display: block;
+    float: left;
+    width: 45%;
+    padding: 4px;
+    font-size: 0.875rem;
+    line-height: 1.25;
+    color: #607d8b;
+    background-color: #fff;
+    background-image: none;
+    background-clip: padding-box;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 0;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+    .new_feature:focus {
+        color: #607d8b;
+        background-color: #fff;
+        border-color: #66afe9;
+        outline: none;
+    }
+
+.feature_multi_values {
+    width: 35px;
+    padding: 5px;
+    float: left;
+    height: 34px;
+    text-align: center;
+    border-radius: 0px;
+}

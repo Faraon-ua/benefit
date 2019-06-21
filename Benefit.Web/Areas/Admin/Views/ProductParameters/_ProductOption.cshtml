@@ -1,14 +1,12 @@
 ﻿@model  Benefit.Domain.Models.ProductParameterProduct
-<div class="row">
-    <div class="col-md-11">
-        @Html.DropDownList("ProductParameterProducts[{n}].StartValue", (IEnumerable<SelectListItem>)ViewBag.StartValue, null, new { @class = "product-option-value col-sm-6" })
-        @Html.Hidden("ProductParameterProducts[{n}].StartText", Model.StartText)
-        @Html.TextBox("ProductParameterProducts[{n}].Amount", Model.Amount, new { @class = "product-option-amount number-input col-sm-6", placeholder = "Кількість (за необхідністю)" })
-        @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", Model.ProductParameterId)
+<div class="row margin-bottom-15 feature-row" data-parameter-id="@Model.ProductParameterId">
+    <div class="col-sm-3">
     </div>
-    <div class="col-md-1">
-        <a href="#" onclick="$(this).parents('.row').eq(0).remove();">
-            <i class="icon-only icon-remove red"></i>
-        </a>
+    <div class="feature-value col-sm-4 no-padding-horizontal">
+        <input class="feature_input" type="text" value="@(Model == null ? string.Empty : Model.StartValue)" name="ProductParameterProducts[{n}].StartValue" data-parameter-id="@Model.ProductParameterId">
+        @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", Model.ProductParameterId)
+        <button type="button" class="btn btn_mini btn-warning feature_multi_values fn-remove-product-option">
+            <i class="icon-minus"></i>
+        </button>
     </div>
 </div>

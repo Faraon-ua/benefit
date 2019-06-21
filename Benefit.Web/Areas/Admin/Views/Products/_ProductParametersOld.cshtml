@@ -1,0 +1,53 @@
+﻿@using Benefit.Domain.Models
+@model Product
+@{
+    var parameters = new List<ProductParameter>();
+    if (Model.Category != null)
+    {
+        parameters = Model.Category.ProductParameters.OrderBy(entry => entry.Order).ToList();
+        if (!parameters.Any() && Model.Category.MappedParentCategory != null)
+        {
+            parameters = Model.Category.MappedParentCategory.ProductParameters.OrderBy(entry => entry.Order).ToList();
+        }
+    }
+}
+@if (Model.Category == null)
+{
+    <div>Редагування характеристик доступно після збереження продукта</div>
+}
+else
+{
+    foreach (var parameter in parameters)
+    {
+        <div class="row">
+            @{
+        var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
+            }
+            <div class="col-sm-3">
+                @parameter.Name (@type)
+                @if (parameter.Type == typeof(string).ToString())
+                {
+                    <a href="#" class="add-product-option-value" data-parameter-id="@parameter.Id" data-parameter-type="@parameter.Type">+ Додати значення</a>
+                }
+            </div>
+            <div class="col-sm-6">
+                @if (parameter.Type == typeof (int).ToString() || parameter.Type == typeof (double).ToString())
+                {
+                    var paramValue = Model.ProductParameterProducts.FirstOrDefault(entry => entry.ProductParameterId == parameter.Id);
+                    <input type="number" step="0.01" name="ProductParameterProducts[{n}].StartValue" value="@(paramValue == null ? string.Empty : paramValue.StartValue)" class="product-option-value"/>
+                    @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", parameter.Id)
+                    <span>@parameter.MeasureUnit</span>
+                }
+                else
+                {
+                    foreach (var parValue in Model.ProductParameterProducts.Where(entry => entry.ProductParameterId == parameter.Id))
+                    {
+                        @Html.Action("GetProductParameterDefinedValues", "ProductParameters", new {parameterId = parameter.Id, amount = parValue.Amount, selectedValue = parValue.StartValue, selectedText = parValue.StartText})
+                    }
+                }
+            </div>
+        </div>
+        <br />
+        <hr />
+    }
+}

@@ -116,6 +116,10 @@ namespace Benefit.Services.Cart
                     {
                         totalBonusesDiscount = (int)sellerCategory.CustomDiscount;
                     }
+                    if (sellerCategory.CustomMargin.HasValue)
+                    {
+                        orderProduct.ProductPrice += orderProduct.ProductPrice * sellerCategory.CustomMargin.Value / 100;
+                    }
                 }
                 var userDiscount = totalBonusesDiscount <= 10
                     ? totalBonusesDiscount / 2

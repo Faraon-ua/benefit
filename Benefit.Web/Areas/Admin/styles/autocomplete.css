@@ -1,0 +1,75 @@
+﻿.autocomplete-suggestions {
+    background-color: #fff;
+    overflow: hidden;
+    overflow-y: auto;
+    display: block;
+    margin-top: 10px;
+    box-shadow: 5px 5px rgba(102, 102, 102, .1);
+    text-shadow: none;
+    margin: 10px 0 0;
+    border: 1px solid #eee;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    max-width: 100%;
+}
+
+.autocomplete-suggestion {
+    display: block;
+    width: 100%;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+    .autocomplete-suggestion:nth-child(even) {
+        background-color: #fbfbfb;
+    }
+
+.autocomplete-suggestions .autocomplete-selected {
+    background: #f0f0f0;
+}
+
+.autocomplete_arrow {
+    position: relative;
+    cursor: pointer;
+}
+
+    .autocomplete_arrow > input {
+        cursor: pointer;
+    }
+
+        .autocomplete_arrow > input:focus {
+            cursor: text;
+        }
+
+    .autocomplete_arrow::after {
+        content: "\f107";
+        border: 0;
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: 400;
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+.autocomplete-suggestions strong {
+    font-weight: normal;
+    color: #10cfbd;
+}
+
+.autocomplete-suggestion div {
+    width: 45px !important;
+    text-align: center;
+    margin-right: 5px;
+}
+
+.autocomplete-suggestion div,
+.autocomplete-suggestions span,
+.autocomplete-suggestions a {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.autocomplete-suggestions span {
+    white-space: nowrap;
+    width: calc(100% - 55px);
+}

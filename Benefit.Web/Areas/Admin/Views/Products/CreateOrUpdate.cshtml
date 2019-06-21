@@ -33,6 +33,8 @@
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/dropzone.css" rel="stylesheet" />
     <link href="~/Content/css/hierarchy-select.min.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/styles/autocomplete.css" rel="stylesheet" />
 }
 @section scripts{
     <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
@@ -42,6 +44,7 @@
     <script src="~/Scripts/hierarchy-select.min.js"></script>
     <script src="~/Areas/Admin/assets/js/dropzone.min.js"></script>
     <script src="~/Areas/Admin/assets/js/bootstrap-tag.min.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
 
     <script>
         $(function () {
@@ -56,6 +59,21 @@
             } else {
                 tag_input.after('<textarea id="' + tag_input.attr('id') + '" name="' + tag_input.attr('name') + '" rows="3">' + tag_input.val() + '</textarea>').remove();
             }
+
+            var getNewFeatureUrl = '@Url.Action("NewFeature", "ProductParameters")';
+            var getFeatureValuesUrl = '@Url.Action("FeatureValues", "ProductParameters")';
+            var removeFeatureUrl = '@Url.Action("Delete", "ProductParameters")';
+            $(".feature_input").each(function () {
+                var featureValue = $(this);
+                var featureId = featureValue.attr("data-parameter-id");
+                $.get(getFeatureValuesUrl + "?featureId=" + featureId, function (data) {
+                    featureValue.devbridgeAutocomplete({
+                        minChars: 0,
+                        lookup: data
+                    });
+                });
+            });
+
 
             var removeReviewUrl = '@Url.Action("RemoveReview","Reviews")';
 
@@ -82,9 +100,8 @@
             });
 
             $('form').submit(function () {
-                $(".product-option-value").each(function (index) {
-                    $(this).attr("name", $(this).attr("name").replace("{n}", index));
-                    $(this).nextAll().each(function () {
+                $(".feature-row").each(function (index) {
+                    $(this).find("input").each(function () {
                         if ($(this).attr("name") != undefined) {
                             $(this).attr("name", $(this).attr("name").replace("{n}", index));
                         }
@@ -92,17 +109,35 @@
                 });
             });
 
-            $(".add-product-option-value").click(function () {
+            $(".fn-add-product-option-value").click(function () {
                 var parameterId = $(this).attr("data-parameter-id");
                 var parameterType = $(this).attr("data-parameter-type");
-                var valuesContainer = $(this).parent().next();
-                if (parameterType == "System.String") {
+                var valuesContainer = $(this).parent().parent();
                     $.get(routePrefix + "/Admin/ProductParameters/GetProductParameterDefinedValues?parameterId=" + parameterId,
                         function (data) {
-                            valuesContainer.append(data);
+                            valuesContainer.after(data.html);
                         });
+            });
+            $(".fn-remove-parameter").click(function () {
+                var btn = $(this);
+                if (confirm("Ця дія видалить характеристику зі всіх товарів категорії, ви впевнені?")) {
+                    var parameterId = btn.attr("data-parameter-id");
+                    var categoryId = btn.attr("data-category-id");
+                    $.post(removeFeatureUrl, { "id": parameterId, "categoryId": categoryId }, function (data) {
+                        $(".feature-row[data-parameter-id=" + parameterId + "]").remove();
+                    });
                 }
             });
+            $("#add-feature").click(function () {
+                var btn = $(this);
+                $.get(getNewFeatureUrl, function (data) {
+                    btn.before(data);
+                });
+            });
+            $("body").on("click", ".fn-remove-product-option", function () {
+                $(this).parent().parent().remove();
+            });
+
             $("#imagesOrder").sortable();
             $("#imagesOrder").disableSelection();
 

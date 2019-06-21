@@ -18,6 +18,7 @@ using System.Linq;
 using System.Web.Mvc;
 using WebGrease.Css.Extensions;
 using System.Web.Mvc.Html;
+using Benefit.Common.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -204,6 +205,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
                 db.ProductParameterProducts.RemoveRange(
                    db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
+                var newPPP = product.ProductParameterProducts.Where(entry => entry.ProductParameter != null).ToList();
+                for (var i = 0; i < newPPP.Count; i++)
+                {
+                    var ppp = newPPP[i];
+                    var pp = new ProductParameter()
+                    {
+                        Name = ppp.ProductParameter.Name,
+                        UrlName = ppp.ProductParameter.UrlName,
+                        Id = Guid.NewGuid().ToString(),
+                        CategoryId = product.CategoryId
+                    };
+                    db.ProductParameters.Add(pp);
+                    ppp.ProductParameterId = pp.Id;
+                    ppp.ProductParameter = null;
+                }
+                db.SaveChanges();
                 product.ProductParameterProducts = product.ProductParameterProducts.Distinct(new ProductParameterProductComparer()).ToList();
                 db.ProductParameterProducts.AddRange(product.ProductParameterProducts);
                 if (db.Products.Any(entry => entry.Id == product.Id))

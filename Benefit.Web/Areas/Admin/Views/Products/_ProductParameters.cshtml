@@ -11,43 +11,45 @@
         }
     }
 }
-@if (Model.Category == null)
-{
-    <div>Редагування характеристик доступно після збереження продукта</div>
-}
-else
-{
-    foreach (var parameter in parameters)
+<div class="container">
+    @if (Model.Category == null)
     {
-        <div class="row">
-            @{
-        var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
-            }
-            <div class="col-sm-3">
-                @parameter.Name (@type)
-                @if (parameter.Type == typeof(string).ToString())
-                {
-                    <a href="#" class="add-product-option-value" data-parameter-id="@parameter.Id" data-parameter-type="@parameter.Type">+ Додати значення</a>
-                }
-            </div>
-            <div class="col-sm-6">
-                @if (parameter.Type == typeof (int).ToString() || parameter.Type == typeof (double).ToString())
-                {
-                    var paramValue = Model.ProductParameterProducts.FirstOrDefault(entry => entry.ProductParameterId == parameter.Id);
-                    <input type="number" step="0.01" name="ProductParameterProducts[{n}].StartValue" value="@(paramValue == null ? string.Empty : paramValue.StartValue)" class="product-option-value"/>
-                    @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", parameter.Id)
-                    <span>@parameter.MeasureUnit</span>
-                }
-                else
-                {
-                    foreach (var parValue in Model.ProductParameterProducts.Where(entry => entry.ProductParameterId == parameter.Id))
-                    {
-                        @Html.Action("GetProductParameterDefinedValues", "ProductParameters", new {parameterId = parameter.Id, amount = parValue.Amount, selectedValue = parValue.StartValue, selectedText = parValue.StartText})
-                    }
-                }
-            </div>
-        </div>
-        <br />
-        <hr />
+        <div>Редагування характеристик доступно після збереження продукта</div>
     }
-}
+    else
+    {
+        foreach (var parameter in parameters)
+        {
+            var values = Model.ProductParameterProducts.Where(entry => entry.ProductParameterId == parameter.Id).ToList();
+            <div class="row margin-bottom-15 feature-row" data-parameter-id="@parameter.Id">
+                @{
+                    var type = parameter.Type == typeof(string).ToString() ? "значення" : "число";
+                }
+                <div class="col-sm-3 feature_name">
+                    @parameter.Name
+                </div>
+                <div class="feature-value col-sm-4 no-padding-horizontal">
+                    @{
+                        var paramValue = values.FirstOrDefault(entry => entry.ProductParameterId == parameter.Id);
+                    }
+                    <input class="feature_input" type="text" value="@(paramValue == null ? string.Empty : paramValue.StartValue)" name="ProductParameterProducts[{n}].StartValue" data-parameter-id="@parameter.Id">
+                    @Html.Hidden("ProductParameterProducts[{n}].ProductParameterId", parameter.Id)
+                    <button type="button" class="btn btn_mini btn-info feature_multi_values fn-add-product-option-value" data-parameter-id="@parameter.Id">
+                        <i class="icon-plus"></i>
+                    </button>
+                    <button type="button" class="btn btn_mini btn-danger feature_multi_values fn-remove-parameter" data-parameter-id="@parameter.Id" data-category-id="@parameter.CategoryId">
+                        <i class="icon-trash"></i>
+                    </button>
+                </div>
+            </div>
+            if (values.Count > 1)
+            {
+                foreach (var paramVal in values.Skip(1))
+                {
+                    @Html.Partial("~/Areas/Admin/Views/ProductParameters/_ProductOption.cshtml", paramVal)
+                }
+            }
+        }
+    }
+    <button type="button" id="add-feature" class="btn btn-info">+ Додати характеристику</button>
+</div>

@@ -652,6 +652,8 @@
     <Content Include="Areas\Admin\assets\js\uncompressed\x-editable\bootstrap-editable.js" />
     <Content Include="Areas\Admin\assets\js\x-editable\ace-editable.min.js" />
     <Content Include="Areas\Admin\assets\js\x-editable\bootstrap-editable.min.js" />
+    <Content Include="Areas\Admin\styles\admin.css" />
+    <Content Include="Areas\Admin\styles\autocomplete.css" />
     <Content Include="Areas\Admin\styles\categories.css" />
     <Content Include="Content\css\address.css" />
     <Content Include="Content\css\autocomplete.css" />
@@ -904,7 +906,7 @@
     <Content Include="Areas\Admin\Views\ProductParameters\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterGroup.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\CreateOrUpdateValue.cshtml" />
-    <Content Include="Areas\Admin\Views\Products\_ProductParameters.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductParametersOld.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductOption.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_ProductParameterValue.cshtml" />
     <Content Include="Areas\Admin\Views\ProductOptions\_ProductOptionGroup.cshtml" />
@@ -1025,6 +1027,8 @@
     <Content Include="Areas\Admin\Views\ImportExport\Exports.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\Status.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_Moderation.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductParameters.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductParameters\_NewProductFeature.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

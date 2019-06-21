@@ -1,0 +1,13 @@
+﻿@model  Benefit.Domain.Models.ProductParameterProduct
+<div class="row margin-bottom-15 feature-row">
+    <div class="col-sm-3">
+        <input class="feature_input width-100 feature-name-input name-focus-out" type="text" name="ProductParameterProducts[{n}].ProductParameter.Name">
+        <input type="hidden" name="ProductParameterProducts[{n}].ProductParameter.UrlName" class="urlName">
+    </div>
+    <div class="feature-value col-sm-4 no-padding-horizontal">
+        <input class="feature_input" type="text" name="ProductParameterProducts[{n}].StartValue">
+        <button type="button" class="btn btn_mini btn-danger feature_multi_values fn-remove-product-option">
+            <i class="icon-minus"></i>
+        </button>
+    </div>
+</div>

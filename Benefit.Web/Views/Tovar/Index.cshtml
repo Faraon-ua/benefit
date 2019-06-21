@@ -623,19 +623,21 @@
                                         </div>
                                     </div>
                                 }
-                                @foreach (var productParameter in Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null))
+                                @foreach (var groupResult in Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).GroupBy(entry=>entry.ProductParameterId))
                                 {
+                                    var productParameter = groupResult.Select(entry => entry.ProductParameter).FirstOrDefault();
+                                    var productParameterValues = string.Join(", ", groupResult.Select(entry => entry.StartValue));
                                     <div class="stores_block wo_image">
                                         <div class="stores_text_wrapp ">
                                             <div class="main_info">
                                                 <span>
-                                                    <a class="title_stores">@productParameter.ProductParameter.Name</a>
+                                                    <a class="title_stores">@productParameter.Name</a>
                                                 </span>
                                             </div>
                                         </div>
                                         <div class="item-stock">
                                             <span class="value">
-                                                @if (productParameter.Amount.HasValue)
+                                                @*@if (productParameter.Amount.HasValue)
                                                 {
                                                     <span>@(productParameter.Amount.Value)x</span>
                                                 }
@@ -647,7 +649,10 @@
                                                 @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
                                                 {
                                                     <span>@productParameter.ProductParameter.MeasureUnit</span>
-                                                }
+                                                }*@
+                                                <span>
+                                                    @productParameterValues
+                                                </span>
                                             </span>
                                         </div>
                                     </div>
