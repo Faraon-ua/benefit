@@ -11,6 +11,7 @@ using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Web.App_Start;
+using Benefit.Web.Controllers;
 
 namespace Benefit.Web
 {
@@ -63,6 +64,21 @@ namespace Benefit.Web
                 Response.StatusCode = 301;
                 Response.AddHeader("Location", builder.ToString());
                 Response.End();
+            }
+        }
+
+        protected void Application_EndRequest()
+        {
+            if (Context.Response.StatusCode == 404)
+            {
+                Response.Clear();
+
+                var rd = new RouteData();
+                rd.Values["controller"] = "Error";
+                rd.Values["action"] = "NotFound";
+
+                IController c = new ErrorController();
+                c.Execute(new RequestContext(new HttpContextWrapper(Context), rd));
             }
         }
 
