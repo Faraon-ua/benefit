@@ -550,27 +550,19 @@
                                     <div class="tab-pane additional_block @(activeTabSet ? "" : "active")" id="ask">
                                         <div class="title-tab-heading visible-xs">Характеристики</div>
                                         <div class="detail_text">
-                                            @foreach (var productParameter in parameters)
+                                            @foreach (var groupResult in Model.Product.ProductParameterProducts.Where(entry => !string.IsNullOrEmpty(entry.StartText)).GroupBy(entry => entry.ProductParameterId))
                                             {
+                                                var productParameter = groupResult.Select(entry => entry.ProductParameter).FirstOrDefault();
+                                                var productParameterValues = string.Join(", ", groupResult.Select(entry => entry.StartText));
                                                 <div class="stores_block wo_image margin-top-10">
                                                     <span class="width-30" style="display: inline-block">
-                                                        <a class="title_stores">@productParameter.ProductParameter.Name</a>
+                                                        <a class="title_stores">@productParameter.Name</a>
                                                     </span>
                                                     <span>.................</span>
                                                     <span class="value">
-                                                        @if (productParameter.Amount.HasValue)
-                                                        {
-                                                            <span>@(productParameter.Amount.Value)x</span>
-                                                        }
-                                                        @(productParameter.StartText ?? productParameter.StartValue)
-                                                        @if (!string.IsNullOrEmpty(productParameter.EndValue))
-                                                        {
-                                                            <span>- @productParameter.EndValue</span>
-                                                        }
-                                                        @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
-                                                        {
-                                                            <span>@productParameter.ProductParameter.MeasureUnit</span>
-                                                        }
+                                                        <span>
+                                                            @productParameterValues
+                                                        </span>
                                                     </span>
                                                 </div>
                                             }
