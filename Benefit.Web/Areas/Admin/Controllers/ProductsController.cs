@@ -276,6 +276,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Level = entry.HierarchicalLevel
             });
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name");
+            product.Category = db.Categories
+                .Include(entry => entry.ProductParameters)
+                .Include(entry => entry.MappedParentCategory.ProductParameters)
+                .FirstOrDefault(entry => entry.Id == product.CategoryId);
             var resultCurrencies =
                 db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank)
                     .OrderBy(entry => entry.Id).ToList();
