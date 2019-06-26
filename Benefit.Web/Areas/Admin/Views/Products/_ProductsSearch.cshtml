@@ -47,7 +47,7 @@ else
             <tbody>
                 @foreach (var product in Model)
                 {
-                    <tr id="tr-@product.Id">
+                    <tr id="tr-@product.Id" data-product-id="@product.Id" data-index="@product.Order">
                         <td>
                             <input type="checkbox" class="product-select" data-product-id="@product.Id" />
                         </td>

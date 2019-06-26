@@ -610,6 +610,10 @@
     <Compile Include="Migrations\201906122224446_AddCustomMarginSellerCategory.Designer.cs">
       <DependentUpon>201906122224446_AddCustomMarginSellerCategory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201906251332532_AddLastModifiedByToProduct.cs" />
+    <Compile Include="Migrations\201906251332532_AddLastModifiedByToProduct.Designer.cs">
+      <DependentUpon>201906251332532_AddLastModifiedByToProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1062,6 +1066,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906122224446_AddCustomMarginSellerCategory.resx">
       <DependentUpon>201906122224446_AddCustomMarginSellerCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201906251332532_AddLastModifiedByToProduct.resx">
+      <DependentUpon>201906251332532_AddLastModifiedByToProduct.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

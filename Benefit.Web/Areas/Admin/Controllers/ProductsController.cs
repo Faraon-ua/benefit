@@ -38,6 +38,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json(null);
         }
 
+        public ActionResult SaveSorting(string[] sortedProducts)
+        {
+            var products = db.Products.Where(entry => sortedProducts.Contains(entry.Id)).ToList();
+            for (var i = 1; i <= sortedProducts.Length; i++)
+            {
+                products.FirstOrDefault(entry=>entry.Id == sortedProducts[i - 1]).Order = i;
+                db.Entry(products[i - 1]).State = EntityState.Modified;
+            }
+            db.SaveChanges();
+            return new HttpStatusCodeResult(200);
+        }
+
         [HttpGet]
         public ActionResult Index(ProductFilterValues filters)
         {
@@ -47,8 +59,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var products = GetFilteredProducts(filters);
                 resultsCount = products.Count();
-                var skip = filters.Page > 0 ? ListConstants.DefaultTakePerPage * (filters.Page - 1) : 0;
-                resultProducts = products.Skip(skip).Take(ListConstants.DefaultTakePerPage).ToList();
+                var skip = filters.Page > 0 ? filters.Take * (filters.Page - 1) : 0;
+                resultProducts = products.Skip(skip).Take(filters.Take).ToList();
             }
 
             var productsViewModel = new ProductsViewModel()
@@ -60,7 +72,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     Sorting = (from ProductSortOption sortOption in Enum.GetValues(typeof(ProductSortOption))
                                select new SelectListItem() { Text = Enumerations.GetEnumDescription(sortOption), Value = sortOption.ToString(), Selected = sortOption == filters.Sorting }).ToList(),
                     Search = filters.Search,
-                    PagesCount = (resultsCount / ListConstants.DefaultTakePerPage) % ListConstants.DefaultTakePerPage == 0 ? (resultsCount / ListConstants.DefaultTakePerPage) : (resultsCount / ListConstants.DefaultTakePerPage) + 1
+                    PagesCount = (resultsCount / filters.Take) % filters.Take == 0 ? (resultsCount / filters.Take) : (resultsCount / filters.Take) + 1,
+                    Take = filters.Take
                 }
             };
             if (Seller.CurrentAuthorizedSellerId != null)
@@ -203,6 +216,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     product.SellerId = Seller.CurrentAuthorizedSellerId;
                 }
                 product.LastModified = DateTime.UtcNow;
+                product.LastModifiedBy = User.Identity.Name;
                 product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
                 db.ProductParameterProducts.RemoveRange(
                    db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
@@ -549,7 +563,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             else
             {
-                products = products.OrderBy(entry => entry.Name);
+                products = products
+                    .OrderBy(entry => entry.Order == 0)
+                    .ThenBy(entry => entry.Order)
+                    .ThenBy(entry => entry.AvailabilityState)
+                        .ThenByDescending(entry => entry.Images.Any())
+                        //.ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId)
+                        .ThenByDescending(entry => entry.AddedOn)
+                        .ThenByDescending(entry => entry.AvarageRating)
+                        .ThenBy(entry => entry.SKU);
             }
             return products;
         }

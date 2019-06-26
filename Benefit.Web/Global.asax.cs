@@ -69,7 +69,7 @@ namespace Benefit.Web
 
         protected void Application_EndRequest()
         {
-            if (Context.Response.StatusCode == 404)
+            if (Context.Response.StatusCode == 404 || Context.Response.StatusCode == 503)
             {
                 Response.Clear();
 

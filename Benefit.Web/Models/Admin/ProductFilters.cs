@@ -20,6 +20,7 @@ namespace Benefit.Web.Models.Admin
         public bool? HasVendor { get; set; }
         public bool? HasOriginCountry { get; set; }
         public ModerationStatus? ModerationStatus { get; set; }
+        public int Take { get; set; }
         public bool HasValues
         {
             get { return (Search != null || CategoryId != null || SellerId != null || ExportId != null); }
@@ -40,6 +41,7 @@ namespace Benefit.Web.Models.Admin
         public bool IsActive{ get; set; }
         public bool HasImage { get; set; }
         public string Search { get; set; }
+        public int Take { get; set; }
         public int PagesCount { get; set; }
     }
 }

@@ -122,6 +122,8 @@ namespace Benefit.Domain.Models
         public bool IsImported { get; set; }
         public bool DoesCountForShipping { get; set; }
         public DateTime LastModified { get; set; }
+        [MaxLength(64)]
+        public string LastModifiedBy { get; set; }
         #region Moderation
         [MaxLength(250)]
         public string Comment { get; set; }

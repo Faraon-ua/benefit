@@ -224,7 +224,7 @@ namespace Benefit.Services.Domain
                 Name = "Каталог постачальників",
                 ChildAsFilters = true,
                 //ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
-                ChildCategories = db.Sellers.Where(entry => entry.CategoryName != null).Select(entry=>entry.CategoryName).Distinct().Select(entry => new CategoryVM() { Name = entry }).ToList(),
+                ChildCategories = db.Sellers.Where(entry => entry.CategoryName != null).Select(entry => entry.CategoryName).Distinct().Select(entry => new CategoryVM() { Name = entry }).ToList(),
             };
             return result;
         }
@@ -358,7 +358,7 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Seller.Addresses)
                 .Include(entry => entry.Reviews)
                 .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
-                .Where(entry => entry.IsActive && entry.ModerationStatus == ModerationStatus.Moderated && entry.Seller.IsActive && entry.Seller.HasEcommerce);
+                .Where(entry => entry.IsActive && entry.ModerationStatus == ModerationStatus.Moderated && entry.Seller.IsActive && entry.Category.IsActive && entry.Seller.HasEcommerce);
             if (!string.IsNullOrEmpty(categoryId))
             {
                 var category = db.Categories.Include(entry => entry.MappedCategories).FirstOrDefault(entry => entry.Id == categoryId);
@@ -415,7 +415,15 @@ namespace Benefit.Services.Domain
                             switch (sort)
                             {
                                 case ProductSortOption.Rating:
-                                    items = items.OrderByDescending(entry => entry.Category.IsActive).ThenBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenByDescending(entry => entry.AddedOn).ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.SKU);
+                                    items = items
+                                        .OrderBy(entry => entry.Order == 0)
+                                        .ThenBy(entry => entry.Order)
+                                        .ThenBy(entry => entry.AvailabilityState)
+                                        .ThenByDescending(entry => entry.Images.Any())
+                                        //.ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId)
+                                        .ThenByDescending(entry => entry.AddedOn)
+                                        .ThenByDescending(entry => entry.AvarageRating)
+                                        .ThenBy(entry => entry.SKU);
                                     break;
                                 case ProductSortOption.Order:
                                     items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);
@@ -488,7 +496,15 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case ProductSortOption.Rating:
-                    items = items.OrderBy(entry => entry.AvailabilityState).ThenByDescending(entry => entry.Images.Any()).ThenByDescending(entry => entry.AddedOn).ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId).ThenByDescending(entry => entry.AvarageRating).ThenBy(entry => entry.SKU);
+                    items = items
+                        .OrderBy(entry => entry.Order == 0)
+                        .ThenBy(entry => entry.Order)
+                        .ThenBy(entry => entry.AvailabilityState)
+                        .ThenByDescending(entry => entry.Images.Any())
+                        //.ThenByDescending(entry => entry.Seller.PrimaryRegionId == regionId)
+                        .ThenByDescending(entry => entry.AddedOn)
+                        .ThenByDescending(entry => entry.AvarageRating)
+                        .ThenBy(entry => entry.SKU);
                     break;
                 case ProductSortOption.Order:
                     items = items.OrderByDescending(entry => entry.Images.Any()).ThenBy(entry => entry.SKU);

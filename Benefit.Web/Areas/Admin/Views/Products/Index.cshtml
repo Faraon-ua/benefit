@@ -10,6 +10,8 @@
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/Scripts/hierarchy-select.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+
 
     @*    <script src="~/Scripts/sorting-filtering.js"></script>*@
 
@@ -17,9 +19,34 @@
         var updateWeightProductUrl = '@Url.Action("UpdateWeightProduct")';
         var moderateProductUrl = '@Url.Action("Moderate")';
         var bulkProductsActionUrl = '@Url.Action("BulkProductsAction")';
+        var saveSortingUrl = '@Url.Action("SaveSorting")';
         var removeExportUrl = '@Url.Action("RemoveFromExport")';
         var hSelect;
         $(function () {
+            $("#products-table tbody").sortable({
+                scroll: true,
+                scrollSensitivity: 100,
+                scrollSpeed: 100,
+                update: function (event, ui) {
+                    $("#save-sorting").show();
+                }
+            });
+
+            $("#save-sorting").click(function () {
+                var btn = $(this);
+                var sortedProducts = $("#products-table tbody tr").map(function () {
+                    var productId = $(this).attr("data-product-id");
+                    return productId;
+                }).get();
+                $.post(saveSortingUrl, {
+                    sortedProducts: sortedProducts
+                }, function() {
+                    btn.hide();
+                    $("html, body").animate({ scrollTop: 0 }, "fast");
+                    flashMessage("Сортування товарів збережено");
+                });
+            });
+
             $("body").on("click", ".moderate", function (e) {
                 e.preventDefault();
                 var btn = $(this);
@@ -218,15 +245,32 @@
         </div>
         <br />
         <div id="searchResults">
-            <div class="text-right">
-                Сортувати за
-                <select name="Sorting" id="Sorting" data-val-required="The Sorting field is required." data-val="true">
-                    <option value="">Не обрано</option>
-                    @foreach (var option in Model.ProductFilters.Sorting)
-                    {
-                        <option value="@option.Value" @(option.Selected ? "selected='true'" : "")>@Html.Raw(option.Text)</option>
-                    }
-                </select>
+            <div class="row alert alert-block alert-info" style="position:sticky; top:-1px;">
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-success" id="save-sorting" style="display:none;">Зберегти сортування</button>
+                </div>
+                <div class="col-sm-2">
+                    <div class="text-right">
+                        Показати
+                        <select name="Take" id="Take" data-val-required="The Take field is required." data-val="true">
+                            <option value="16" @(Model.ProductFilters.Take == 16 ? "selected='true'" : "")>16</option>
+                            <option value="32" @(Model.ProductFilters.Take == 32 ? "selected='true'" : "")>32</option>
+                            <option value="64" @(Model.ProductFilters.Take == 64 ? "selected='true'" : "")>64</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="text-right">
+                        Сортувати за
+                        <select name="Sorting" id="Sorting" data-val-required="The Sorting field is required." data-val="true">
+                            <option value="">Не обрано</option>
+                            @foreach (var option in Model.ProductFilters.Sorting)
+                            {
+                                <option value="@option.Value" @(option.Selected ? "selected='true'" : "")>@Html.Raw(option.Text)</option>
+                            }
+                        </select>
+                    </div>
+                </div>
             </div>
 
             @Html.Partial("_ProductsSearch", Model.Products)
@@ -249,10 +293,10 @@
                             })
 
                             @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style = "display:none;" })
-                            
+
                             @Html.DropDownList("currencyId", Model.ProductFilters.Currencies, null, new { id = "currencyId", style = "display:none;" })
 
-                            @Html.DropDownList("moderateStatus", EnumHelper.GetSelectList(typeof(ModerationStatus)), new { id="moderateStatus", style="display: none;" })
+                            @Html.DropDownList("moderateStatus", EnumHelper.GetSelectList(typeof(ModerationStatus)), new { id = "moderateStatus", style = "display: none;" })
                         </div>
                     </div>
                     <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
