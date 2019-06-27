@@ -2,11 +2,16 @@
 using System.Web.Mvc;
 using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models;
+using Benefit.Common.Constants;
 
 namespace Benefit.Web.Models.Admin
 {
     public class ProductFilterValues
     {
+        public ProductFilterValues()
+        {
+            Take = ListConstants.DefaultTakePerPage;
+        }
         public string Search { get; set; }
         public string CategoryId { get; set; }
         public string ExportId { get; set; }
