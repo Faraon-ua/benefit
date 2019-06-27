@@ -78,5 +78,28 @@
         });
     </script>
 }
-@Html.Partial("_MappingCategoriesList", Model)
+<div class="tabbable">
+    <ul class="nav nav-tabs" id="myTab">
+        <li class="active">
+            <a data-toggle="tab" href="#active">
+                <i class="green icon-list bigger-110"></i>
+                Активні
+            </a>
+        </li>
+        <li>
+            <a data-toggle="tab" href="#nonActive">
+                <i class="red icon-list bigger-110"></i>
+                Неактивні
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div id="active" class="tab-pane in active">
+            @Html.Partial("_MappingCategoriesList", Model.Where(entry=>entry.IsActive))
+        </div> 
+        <div id="nonActive" class="tab-pane">
+            @Html.Partial("_MappingCategoriesList", Model.Where(entry=>!entry.IsActive))
+        </div>
+    </div>
+</div>
 @Html.Partial("_MapCategoryPartial")
