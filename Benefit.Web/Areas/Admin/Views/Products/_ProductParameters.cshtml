@@ -5,6 +5,7 @@
     if (Model.Category != null)
     {
         parameters = Model.Category.ProductParameters.OrderBy(entry => entry.Order).ToList();
+        var parameterIds = new List<string>();
         if (!parameters.Any() && Model.Category.MappedParentCategory != null)
         {
             parameters = Model.Category.MappedParentCategory.ProductParameters.OrderBy(entry => entry.Order).ToList();

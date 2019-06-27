@@ -209,6 +209,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             product.ProductParameterProducts = product.ProductParameterProducts.Where(entry => entry.StartText != null).ToList();
             product.ProductParameterProducts.ForEach(entry => entry.StartValue = entry.StartText.Translit());
+            product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
+            db.ProductParameterProducts.RemoveRange(
+               db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
+            var newPPP = product.ProductParameterProducts.Where(entry => entry.ProductParameter != null).ToList();
+            for (var i = 0; i < newPPP.Count; i++)
+            {
+                var ppp = newPPP[i];
+                var pp = new ProductParameter()
+                {
+                    Name = ppp.ProductParameter.Name,
+                    UrlName = ppp.ProductParameter.UrlName,
+                    Order = ppp.ProductParameter.Order,
+                    Id = Guid.NewGuid().ToString(),
+                    CategoryId = product.CategoryId
+                };
+                db.ProductParameters.Add(pp);
+                ppp.ProductParameterId = pp.Id;
+                ppp.ProductParameter = null;
+            }
+            db.SaveChanges();
+            product.ProductParameterProducts = product.ProductParameterProducts.Distinct(new ProductParameterProductComparer()).ToList();
+            db.ProductParameterProducts.AddRange(product.ProductParameterProducts);
+
             if (ModelState.IsValid)
             {
                 if (Seller.CurrentAuthorizedSellerId != null)
@@ -217,28 +240,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 product.LastModified = DateTime.UtcNow;
                 product.LastModifiedBy = User.Identity.Name;
-                product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
-                db.ProductParameterProducts.RemoveRange(
-                   db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
-                var newPPP = product.ProductParameterProducts.Where(entry => entry.ProductParameter != null).ToList();
-                for (var i = 0; i < newPPP.Count; i++)
-                {
-                    var ppp = newPPP[i];
-                    var pp = new ProductParameter()
-                    {
-                        Name = ppp.ProductParameter.Name,
-                        UrlName = ppp.ProductParameter.UrlName,
-                        Order = ppp.ProductParameter.Order,
-                        Id = Guid.NewGuid().ToString(),
-                        CategoryId = product.CategoryId
-                    };
-                    db.ProductParameters.Add(pp);
-                    ppp.ProductParameterId = pp.Id;
-                    ppp.ProductParameter = null;
-                }
-                db.SaveChanges();
-                product.ProductParameterProducts = product.ProductParameterProducts.Distinct(new ProductParameterProductComparer()).ToList();
-                db.ProductParameterProducts.AddRange(product.ProductParameterProducts);
                 if (db.Products.Any(entry => entry.Id == product.Id))
                 {
                     db.Entry(product).State = EntityState.Modified;
