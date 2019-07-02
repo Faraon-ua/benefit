@@ -23,12 +23,30 @@
         var removeExportUrl = '@Url.Action("RemoveFromExport")';
         var hSelect;
         $(function () {
+            $("#products-table tbody .product-select").change(function () {
+                if (this.checked) {
+                    $(this).parent().parent().addClass("selected");
+                }
+                else {
+                    $(this).parent().parent().removeClass("selected");
+                }
+            });
             $("#products-table tbody").sortable({
-                scroll: true,
-                scrollSensitivity: 100,
-                scrollSpeed: 100,
+                //scroll: true,
+                //scrollSensitivity: 100,
+                //scrollSpeed: 100,
                 update: function (event, ui) {
                     $("#save-sorting").show();
+                },
+                helper: function (e, item) {
+                    var elements = item.parent().children('.selected').clone();
+                    item.data('multidrag', elements).siblings('.selected').remove();
+                    var helper = $('<tr/>');
+                    return helper.append(elements);
+                },
+                stop: function (e, ui) {
+                    var elements = ui.item.data('multidrag');
+                    ui.item.after(elements).remove();
                 }
             });
 

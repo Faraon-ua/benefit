@@ -176,6 +176,14 @@ namespace Benefit.Services
             DeleteFile(image.ImageUrl, parentId, type);
         }
 
+        public void DeleteAbsoluteUrlImage(string url)
+        {
+            var image = db.Images.FirstOrDefault(entry=>entry.ImageUrl == url);
+            if (image == null) return;
+            db.Images.Remove(image);
+            db.SaveChanges();
+        }
+
         public void DeleteFile(string fileName, string parentId, ImageType type)
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);

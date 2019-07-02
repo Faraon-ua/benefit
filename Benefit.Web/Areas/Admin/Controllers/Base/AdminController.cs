@@ -17,7 +17,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
         {
             using (var db = new ApplicationDbContext())
             {
-                var images = db.Images.Where(entry=>sortedImages.Contains(entry.Id)).ToList();
+                var images = db.Images.Where(entry => sortedImages.Contains(entry.Id)).ToList();
                 for (var i = 0; i < sortedImages.Count; i++)
                 {
                     var img = images.FirstOrDefault(entry => entry.Id == sortedImages[i]);
@@ -31,9 +31,16 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
         public ActionResult DeleteUploadedFile(string fileName, string parentId, ImageType type)
         {
             var imagesService = new ImagesService();
-            var dotIndex = fileName.IndexOf('.');
-            var id = fileName.Substring(0, dotIndex);
-            imagesService.Delete(id, parentId, type);
+            if (Uri.IsWellFormedUriString(fileName, UriKind.Absolute))
+            {
+                imagesService.DeleteAbsoluteUrlImage(fileName);   
+            }
+            else
+            {
+                var dotIndex = fileName.LastIndexOf('.');
+                var id = fileName.Substring(0, dotIndex);
+                imagesService.Delete(id, parentId, type);
+            }
             return Json(true);
         }
 
@@ -114,7 +121,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             using (var db = new ApplicationDbContext())
             {
                 ViewBag.Categories =
-                    db.Categories.Where(entry=>!entry.IsSellerCategory).ToList().Select(
+                    db.Categories.Where(entry => !entry.IsSellerCategory).ToList().Select(
                         entry =>
                             new HierarchySelectItem()
                             {
