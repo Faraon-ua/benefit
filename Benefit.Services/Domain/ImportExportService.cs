@@ -47,11 +47,14 @@ namespace Benefit.Services.Domain
             var products = db.Products
                 .Include(entry => entry.Seller.ShippingMethods)
                 .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
+                .Include(entry => entry.ProductOptions.Select(op => op.ChildProductOptions))
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Currency)
                 .Include(entry => entry.Category.ExportCategories)
                 .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
                 .Where(entry => productIds.Contains(entry.Id)).ToList();
+
+            #region Categories
             var dbcategories = products.Select(entry => entry.Category).ToList();
             for (var i = 0; i < dbcategories.Count; i++)
             {
@@ -97,14 +100,25 @@ namespace Benefit.Services.Domain
                 cat.Add(new XAttribute("id", category.Key));
                 categories.Add(cat);
             }
+            #endregion
 
             var offers = new XElement("offers");
             foreach (var product in products)
             {
+                //var variantGroups = product.ProductOptions.Where(entry => entry.IsVariant).ToList();
+                //if (!variantGroups.Any())
+                //{
+                //    variantGroups.Add(new ProductOption
+                //    {
+                //        Name = string.Empty
+                //    });
+                //}
+                //var variants = variantGroups.SelectMany(entry => entry.ChildProductOptions).ToList();
+
                 var prod = new XElement("offer", new XAttribute("id", product.Id));
                 var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
                 prod.Add(new XAttribute("available", available));
-                prod.Add(new XElement("name", product.Name));
+                //prod.Add(new XElement("name", string.Format("{0} {1}",product.Name, variant.Name)));
                 prod.Add(new XElement("vendor", product.Vendor));
                 prod.Add(new XElement("vendorCode", product.SKU));
                 var price = product.Price;
@@ -483,7 +497,7 @@ namespace Benefit.Services.Domain
 
         private void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories, SyncType importType)
         {
-            var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.ExternalIds).ToList();
+            var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.ExternalIds).Distinct().ToList();
             List<string> xmlCategoryIds = null;
             if (importType == SyncType.OneCCommerceMl)
             {
@@ -496,9 +510,12 @@ namespace Benefit.Services.Domain
             var catIdsToRemove = currentSellercategoyIds.Except(xmlCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {
-                var dbCategory = db.Categories.FirstOrDefault(entry => entry.ExternalIds == catId);
-                dbCategory.IsActive = false;
-                db.Entry(dbCategory).State = EntityState.Modified;
+                var dbCategories = db.Categories.Where(entry => entry.SellerId == seller.Id && entry.ExternalIds == catId).ToList();
+                dbCategories.ForEach(entry =>
+                {
+                    entry.IsActive = false;
+                    db.Entry(entry).State = EntityState.Modified;
+                });
             }
         }
 
@@ -573,7 +590,7 @@ namespace Benefit.Services.Domain
                     foreach (var parameter in xmlParameters)
                     {
                         var cat = categories.FirstOrDefault(entry => entry.ExternalIds == categoryGroupParams.Key);
-                        if(cat == null)
+                        if (cat == null)
                         {
                             continue;
                         }
@@ -1013,7 +1030,7 @@ namespace Benefit.Services.Domain
             var alldDbNames = allDbCats.Select(entry => entry.Name).ToList();
             var inActiveCategories = db.Categories
                 .Where(entry => entry.SellerId == sellerId && !alldDbNames.Contains(entry.Name)).ToList();
-            inActiveCategories.ForEach(entry=> categoriesService.Delete(entry.Id));
+            inActiveCategories.ForEach(entry => categoriesService.Delete(entry.Id));
             db.SaveChanges();
 
             #endregion
@@ -1025,7 +1042,7 @@ namespace Benefit.Services.Domain
             var productParameterProductsToAdd = new List<ProductParameterProduct>();
 
             var existingCategories = db.Categories.Where(entry => entry.SellerId == sellerId);
-            var existingCategoryIds = existingCategories.Select(entry=>entry.Id).ToList();
+            var existingCategoryIds = existingCategories.Select(entry => entry.Id).ToList();
             var existingProductParameters =
                 db.ProductParameters.Where(
                     entry => existingCategoryIds.Contains(entry.CategoryId)).ToList();

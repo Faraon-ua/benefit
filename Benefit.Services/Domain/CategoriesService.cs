@@ -262,15 +262,16 @@ namespace Benefit.Services.Domain
                 if (image.Exists)
                     image.Delete();
             }
-            var products = db.Products.AsNoTracking().Where(entry => entry.CategoryId == id).ToList();
-            foreach (var product in products)
+            db.SaveChanges();
+            var products = db.Products.AsNoTracking().Where(entry => entry.CategoryId == id).Select(entry=>entry.Id).ToList();
+            foreach (var productId in products)
             {
-                ProductsService.Delete(product.Id);
+                ProductsService.Delete(productId, db);
             }
-            var childCats = db.Categories.AsNoTracking().Where(entry => entry.ParentCategoryId == id).ToList();
-            foreach (var childCategory in childCats)
+            var childCatIds = db.Categories.AsNoTracking().Where(entry => entry.ParentCategoryId == id).Select(entry=>entry.Id).ToList();
+            foreach (var childCategoryId in childCatIds)
             {
-                Delete(childCategory.Id);
+                Delete(childCategoryId);
             }
             db.Categories.Remove(category);
             db.SaveChanges();

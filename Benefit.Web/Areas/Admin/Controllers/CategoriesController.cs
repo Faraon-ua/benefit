@@ -230,6 +230,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
+        public ActionResult RemoveInactive(string sellerId)
+        {
+            var categories = db.Categories.Where(entry => entry.SellerId == sellerId && !entry.IsActive).Select(entry=>entry.Id).ToList();
+            var categoriesService = new CategoriesService();
+            for(var i=0;i<categories.Count;i++)
+            {
+                categoriesService.Delete(categories[i]);
+            }
+            return new HttpStatusCodeResult(200);
+        }
+
         public ActionResult Mapping(string selectedSellerId = null)
         {
             var sellerId = selectedSellerId ?? Seller.CurrentAuthorizedSellerId;

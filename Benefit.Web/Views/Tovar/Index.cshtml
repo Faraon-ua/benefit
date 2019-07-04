@@ -85,7 +85,7 @@
         var sellerUrlName = '@Model.Product.Seller.UrlName';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
 
-        window.addEventListener('DOMContentLoaded', function() {
+        window.addEventListener('DOMContentLoaded', function () {
             $(".variants .variant-item").click(function() {
                 $(this).siblings().removeClass("active");
                 $(this).addClass("active");
@@ -105,6 +105,10 @@
                     $(".product-price").text((parseFloat('@Model.Product.Price') + priceGrowth).toFixed(2));
                 });
             });
+
+            if ($(".variant-item").length > 0) {
+                $(".variant-item").eq(0).click();
+            }
 
             $(".wholesalePices").click(function(e) {
                 e.preventDefault();
