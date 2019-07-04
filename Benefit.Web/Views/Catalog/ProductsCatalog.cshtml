@@ -1,23 +1,34 @@
 ﻿@using System.Text
 @using Benefit.Common.Constants
-@using Benefit.Domain.Models
 @using Benefit.Web.Helpers
 @model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
 
 @{
-    var title = new StringBuilder();
-    var h1 = new StringBuilder();
-    if (Model.Category != null)
-    {
-        title.Append(Model.Category.Title ?? Model.Category.Name);
-        h1.Append(Model.Category.Name);
-    }
+    string title;
+    string description;
+    string h1;
     if (Model.Seller != null)
     {
-        title.Append(" " + Model.Seller.Name + ": широкий вибір товарів на сайті benefit-company.com");
-        h1.Append(" " + Model.Seller.Name);
+        if (Model.Category == null)
+        {
+            title = Model.Seller.Name + ": широкий вибір товарів на сайті benefit-company.com";
+            description = "Каталог товарів компанії " + Model.Seller.Name + " на Benefit-Company по кращим цінам. ✅Гарантія якості ✅Доставка по Україні.";
+            h1 = Model.Seller.Name;
+        }
+        else
+        {
+            title = Model.Category.Name + " " + Model.Seller.Name;
+            description = Model.Category.Name + " " + Model.Category.Name;
+            h1 = Model.Category.Name;
+        }
     }
-    ViewBag.Title = title.ToString();
+    else
+    {
+        title = Model.Category.Title;
+        description = Model.Category.MetaDescription;
+        h1 = Model.Category.Name;
+    }
+    ViewBag.Title = title;
     ViewBag.SelectedCategory = Model.Category;
     ViewBag.CategoryToSellerDiscountPercent = Model.CategoryToSellerDiscountPercent;
     var isFavorites = (Model.Category != null && Model.Category.UrlName == "favorites");
@@ -48,18 +59,10 @@
             }
         }
     }
-    @if (Model.Seller != null)
-    {
-        <meta name="description" content="@(Model.Category == null ?
-            "Каталог товарів компанії " + Model.Seller.Name + " на Benefit-Company по кращим цінам. ✅Гарантія якості ✅Доставка по Україні." :
-            Model.Category.Name)">
-    }
-    else
-    {
-        <meta name="description" content="@(Model.Category == null ? Model.Seller.ShortDescription : Model.Category.MetaDescription)">
-    }
-    <meta property="og:description" content="@(Model.Category == null ? string.Empty : Model.Category.MetaDescription)" />
-    <meta property="og:title" content="@(Model.Category == null ? Model.Seller.Name : Model.Category.Name)" />
+
+    <meta name="description" content="@description">
+    <meta property="og:description" content="@description" />
+    <meta property="og:title" content="@title" />
     <meta property="og:type" content="article" />
     @if (Model.Category != null)
     {
@@ -124,7 +127,7 @@
                     </div>
                 }
                 <h1 id="pagetitle" style="text-align: left;">
-                    @h1
+                    @Model.
                 </h1>
             </div>
         </section>
