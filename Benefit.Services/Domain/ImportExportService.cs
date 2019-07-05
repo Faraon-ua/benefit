@@ -32,6 +32,84 @@ namespace Benefit.Services.Domain
 
         #region Export
 
+        public void FetchOffers(List<XElement> offers, Product product, List<ProductOption> variants, ProductOption currentVariant, string suffix, double priceChange, HttpRequest Request)
+        {
+            foreach(var variant in currentVariant.ChildProductOptions)
+            {
+                var newSuffix = suffix + string.Format("{0} {1} ", currentVariant.Name, variant.Name);
+                priceChange += variant.PriceGrowth;
+
+                var prod = new XElement("offer", new XAttribute("id", product.Id));
+                var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
+                prod.Add(new XAttribute("available", available));
+                prod.Add(new XElement("name", string.Format("{0} {1}", product.Name, newSuffix)));
+                prod.Add(new XElement("vendor", product.Vendor));
+                prod.Add(new XElement("vendorCode", product.SKU));
+                var price = product.Price;
+                if (product.Currency != null)
+                {
+                    price *= product.Currency.Rate;
+                }
+                prod.Add(new XElement("price", price + priceChange));
+                prod.Add(new XElement("currencyId", "UAH"));
+                prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
+                if (product.OldPrice.HasValue)
+                {
+                    var oldprice = product.OldPrice;
+                    if (product.Currency != null)
+                    {
+                        oldprice *= product.Currency.Rate;
+                    }
+                    prod.Add(new XElement("price_old", oldprice));
+                }
+                prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
+                var categoryId = Math.Abs(product.CategoryId.GetHashCode());
+                if (product.Category.MappedParentCategory != null)
+                {
+                    categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
+                }
+                prod.Add(new XElement("categoryId", categoryId));
+                foreach (var picture in product.Images.OrderBy(entry => entry.Order))
+                {
+                    var pictureUrl = picture.IsAbsoluteUrl
+                        ? picture.ImageUrl
+                        : string.Format("{0}://{1}/Images/ProductGallery/{2}/{3}", Request.Url.Scheme, Request.Url.Host, product.Id,
+                            picture.ImageUrl);
+                    prod.Add(new XElement("picture", pictureUrl));
+                }
+
+                prod.Add(new XElement("description", product.Description));
+                prod.Add(new XElement("country_of_origin", product.OriginCountry));
+                foreach (var parameterProduct in product.ProductParameterProducts)
+                {
+                    prod.Add(new XElement("param", new XAttribute("name", parameterProduct.ProductParameter.Name), parameterProduct.StartText));
+                }
+
+                prod.Add(new XElement("param", new XAttribute("name", "Доставка"),
+                    string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Name))));
+                var paymentSB = new StringBuilder();
+                if (product.Seller.IsCashPaymentActive)
+                {
+                    paymentSB.Append("Наличными");
+                }
+
+                if (product.Seller.IsAcquiringActive)
+                {
+                    paymentSB.Append("Картой Visa/MasterCard");
+                }
+
+                prod.Add(new XElement("param", new XAttribute("name", "Оплата"), paymentSB.ToString()));
+                prod.Add(new XElement("param", new XAttribute("name", "Гарантия"), "Обмен/возврат товара в течение 14 дней"));
+
+                offers.Add(prod);
+
+                var currentVariantPosition = variants.IndexOf(currentVariant);
+                if (variants.Count() > currentVariantPosition + 1)
+                {
+                    FetchOffers(offers, product, variants, variants.ElementAt(currentVariantPosition + 1), newSuffix, priceChange, Request);
+                }
+            }
+        }
         public string Export(string exportId)
         {
             var Request = HttpContext.Current.Request;
@@ -103,81 +181,84 @@ namespace Benefit.Services.Domain
             #endregion
 
             var offers = new XElement("offers");
+            List<XElement> offersList = new List<XElement>();
             foreach (var product in products)
             {
-                //var variantGroups = product.ProductOptions.Where(entry => entry.IsVariant).ToList();
-                //if (!variantGroups.Any())
-                //{
-                //    variantGroups.Add(new ProductOption
-                //    {
-                //        Name = string.Empty
-                //    });
-                //}
-                //var variants = variantGroups.SelectMany(entry => entry.ChildProductOptions).ToList();
-
-                var prod = new XElement("offer", new XAttribute("id", product.Id));
-                var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
-                prod.Add(new XAttribute("available", available));
-                //prod.Add(new XElement("name", string.Format("{0} {1}",product.Name, variant.Name)));
-                prod.Add(new XElement("vendor", product.Vendor));
-                prod.Add(new XElement("vendorCode", product.SKU));
-                var price = product.Price;
-                if (product.Currency != null)
+                var variantGroups = product.ProductOptions.Where(entry => entry.IsVariant).ToList();
+                if (variantGroups.Any())
                 {
-                    price *= product.Currency.Rate;
+                    FetchOffers(offersList, product, variantGroups, variantGroups[0], string.Empty, 0, Request);
                 }
-                prod.Add(new XElement("price", price));
-                prod.Add(new XElement("currencyId", "UAH"));
-                prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
-                if (product.OldPrice.HasValue)
+                else
                 {
-                    var oldprice = product.OldPrice;
+                    var prod = new XElement("offer", new XAttribute("id", product.Id));
+                    var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
+                    prod.Add(new XAttribute("available", available));
+                    prod.Add(new XElement("name", product.Name));
+                    prod.Add(new XElement("vendor", product.Vendor));
+                    prod.Add(new XElement("vendorCode", product.SKU));
+                    var price = product.Price;
                     if (product.Currency != null)
                     {
-                        oldprice *= product.Currency.Rate;
+                        price *= product.Currency.Rate;
                     }
-                    prod.Add(new XElement("price_old", oldprice));
-                }
-                prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
-                var categoryId = Math.Abs(product.CategoryId.GetHashCode());
-                if (product.Category.MappedParentCategory != null)
-                {
-                    categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
-                }
-                prod.Add(new XElement("categoryId", categoryId));
-                foreach (var picture in product.Images.OrderBy(entry => entry.Order))
-                {
-                    var pictureUrl = picture.IsAbsoluteUrl
-                        ? picture.ImageUrl
-                        : string.Format("{0}://{1}/Images/ProductGallery/{2}/{3}", Request.Url.Scheme, Request.Url.Host, product.Id,
-                            picture.ImageUrl);
-                    prod.Add(new XElement("picture", pictureUrl));
-                }
+                    prod.Add(new XElement("price", price));
+                    prod.Add(new XElement("currencyId", "UAH"));
+                    prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
+                    if (product.OldPrice.HasValue)
+                    {
+                        var oldprice = product.OldPrice;
+                        if (product.Currency != null)
+                        {
+                            oldprice *= product.Currency.Rate;
+                        }
+                        prod.Add(new XElement("price_old", oldprice));
+                    }
+                    prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
+                    var categoryId = Math.Abs(product.CategoryId.GetHashCode());
+                    if (product.Category.MappedParentCategory != null)
+                    {
+                        categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
+                    }
+                    prod.Add(new XElement("categoryId", categoryId));
+                    foreach (var picture in product.Images.OrderBy(entry => entry.Order))
+                    {
+                        var pictureUrl = picture.IsAbsoluteUrl
+                            ? picture.ImageUrl
+                            : string.Format("{0}://{1}/Images/ProductGallery/{2}/{3}", Request.Url.Scheme, Request.Url.Host, product.Id,
+                                picture.ImageUrl);
+                        prod.Add(new XElement("picture", pictureUrl));
+                    }
 
-                prod.Add(new XElement("description", product.Description));
-                prod.Add(new XElement("country_of_origin", product.OriginCountry));
-                foreach (var parameterProduct in product.ProductParameterProducts)
-                {
-                    prod.Add(new XElement("param", new XAttribute("name", parameterProduct.ProductParameter.Name), parameterProduct.StartText));
+                    prod.Add(new XElement("description", product.Description));
+                    prod.Add(new XElement("country_of_origin", product.OriginCountry));
+                    foreach (var parameterProduct in product.ProductParameterProducts)
+                    {
+                        prod.Add(new XElement("param", new XAttribute("name", parameterProduct.ProductParameter.Name), parameterProduct.StartText));
+                    }
+
+                    prod.Add(new XElement("param", new XAttribute("name", "Доставка"),
+                        string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Name))));
+                    var paymentSB = new StringBuilder();
+                    if (product.Seller.IsCashPaymentActive)
+                    {
+                        paymentSB.Append("Наличными");
+                    }
+
+                    if (product.Seller.IsAcquiringActive)
+                    {
+                        paymentSB.Append("Картой Visa/MasterCard");
+                    }
+
+                    prod.Add(new XElement("param", new XAttribute("name", "Оплата"), paymentSB.ToString()));
+                    prod.Add(new XElement("param", new XAttribute("name", "Гарантия"), "Обмен/возврат товара в течение 14 дней"));
+
+                    offersList.Add(prod);
                 }
-
-                prod.Add(new XElement("param", new XAttribute("name", "Доставка"),
-                    string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Name))));
-                var paymentSB = new StringBuilder();
-                if (product.Seller.IsCashPaymentActive)
-                {
-                    paymentSB.Append("Наличными");
-                }
-
-                if (product.Seller.IsAcquiringActive)
-                {
-                    paymentSB.Append("Картой Visa/MasterCard");
-                }
-
-                prod.Add(new XElement("param", new XAttribute("name", "Оплата"), paymentSB.ToString()));
-                prod.Add(new XElement("param", new XAttribute("name", "Гарантия"), "Обмен/возврат товара в течение 14 дней"));
-
-                offers.Add(prod);
+            }
+            foreach (var o in offersList)
+            {
+                offers.Add(o);
             }
 
             shop.Add(name);
