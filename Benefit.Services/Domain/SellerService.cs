@@ -301,13 +301,13 @@ namespace Benefit.Services.Domain
             //{
             var seller =
                 db.Sellers
-                .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
-                .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory))
+                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.Products))
+                .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory.Products))
                     .FirstOrDefault(entry => entry.UrlName == sellerUrl);
             var all = new List<Category>();
-            var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).ToList();
-            var sellerRootCats = seller.SellerCategories.Where(entry => entry.RootDisplay).Select(entry => entry.Category).ToList();
-            var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null && entry.IsActive).Select(entry => entry.MappedParentCategory).ToList();
+            var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).Where(entry=>entry.Products.Any()).ToList();
+            var sellerRootCats = seller.SellerCategories.Where(entry => entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
+            var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null && entry.IsActive).Select(entry => entry.MappedParentCategory).Where(entry => entry.Products.Any()).ToList();
             all.AddRange(sellerCats);
             all.AddRange(sellerMappedCats);
             foreach (var sellerRootCat in sellerRootCats)
