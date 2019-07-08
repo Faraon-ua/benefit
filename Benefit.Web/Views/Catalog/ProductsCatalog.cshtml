@@ -18,7 +18,7 @@
         else
         {
             title = Model.Category.Name + " " + Model.Seller.Name;
-            description = Model.Category.Name + " " + Model.Category.Name;
+            description = string.Format("{0}. {1} на Benefit-Company по кращим цінам. ✅Гарантія якості ✅Доставка по Україні.", Model.Category.Name, Model.Seller.Name);
             h1 = Model.Category.Name;
         }
     }
