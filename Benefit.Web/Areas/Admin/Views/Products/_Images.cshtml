@@ -18,7 +18,14 @@
                 {
                     <li class="cursor-move width-10" data-image-id="@image.Id">
                         <div class="dd-handle">
-                            <img src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" height="70" />
+                            @if (image.IsAbsoluteUrl)
+                            {
+                                <img src="@image.ImageUrl" height="70" />
+                            }
+                            else
+                            {
+                                <img src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" height="70" />
+                            }
                         </div>
                     </li>
                 }

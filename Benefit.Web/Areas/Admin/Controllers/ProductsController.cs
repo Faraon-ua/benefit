@@ -32,7 +32,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var product = db.Products.Find(id);
             if (product != null)
             {
-                return Json(product.Images.Select(entry => new { entry.ImageUrl }), JsonRequestBehavior.AllowGet);
+                return Json(product.Images.Select(entry => new { entry.ImageUrl, entry.IsAbsoluteUrl }), JsonRequestBehavior.AllowGet);
             }
 
             return Json(null);

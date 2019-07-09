@@ -227,7 +227,11 @@
                             $.each(data, function (key, value) {
                                 var mockFile = { name: value.ImageUrl, size: 100000 };
                                 thisDropzone.options.addedfile.call(thisDropzone, mockFile);
-                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile, routePrefix + "/Images/ProductGallery/@Model.Id/" + value.ImageUrl);
+                                var imageUrl = value.ImageUrl;
+                                if (!value.IsAbsoluteUrl) {
+                                    imageUrl = routePrefix + "/Images/ProductGallery/@Model.Id/" + value.ImageUrl;
+                                }
+                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile, imageUrl);
                             });
 
                         });
