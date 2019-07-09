@@ -48,7 +48,9 @@ namespace Benefit.Domain.Models
         [Display(Name = "На модерації")]
         IsModerating,
         [Display(Name = "Невалідний контент")]
-        UnappropriateContent
+        UnappropriateContent,
+        [Display(Name = "Корзина")]
+        Trash
     }
 
     public enum ComputedProductAvailabilityState
