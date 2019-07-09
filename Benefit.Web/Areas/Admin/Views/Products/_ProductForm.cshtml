@@ -3,13 +3,6 @@
 @using Benefit.Domain.Models
 @using Benefit.Web.Models.ViewModels
 @model  Benefit.Domain.Models.Product
-@{
-    var category = Model.Category;
-    if (category.IsSellerCategory)
-    {
-        category = category.MappedParentCategory;
-    }
-}
 <div class="form-horizontal">
     @Html.HiddenFor(model => model.Id)
 
@@ -140,7 +133,7 @@
             @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
             {
                 Name = "CategoryId",
-                Value = category.Id,
+                Value = Model.CategoryId,
                 Items = ViewBag.Categories
             })
             @Html.ValidationMessageFor(model => model.CategoryId)

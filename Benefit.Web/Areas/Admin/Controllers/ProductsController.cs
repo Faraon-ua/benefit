@@ -154,9 +154,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                           };
             if (User.IsInRole(DomainConstants.AdminRoleName))
             {
-                ViewBag.Categories = db.Categories.Where(entry=>!entry.IsSellerCategory).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
+                ViewBag.Categories = db.Categories.Where(entry=>!entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
                 {
-                    Text = entry.Name,
+                    Text = entry.IsSellerCategory ? string.Format("[seller]{0}", entry.Name) : entry.Name,
                     Value = entry.Id,
                     Level = entry.HierarchicalLevel
                 });
