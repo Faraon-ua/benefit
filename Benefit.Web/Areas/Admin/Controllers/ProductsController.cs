@@ -60,6 +60,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if(product == null) return new HttpStatusCodeResult(404);
             product.Id = Guid.NewGuid().ToString();
             product.SKU = db.Products.Max(entry => entry.SKU) + 1;
+            product.ModerationStatus = ModerationStatus.IsModerating;
             db.Products.Add(product);
             product.Images.ForEach(entry =>
             {

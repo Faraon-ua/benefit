@@ -70,11 +70,11 @@
         }
     </td>
     <td>
-        <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
+        <div class="btn-group">
             <a class="btn btn-xs btn-info" href="@Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU)})" target="_blank">
                 <i class="icon-eye-open bigger-120"></i>
             </a>
-            <a class="btn btn-xs btn-info fn-clone" title="Клонувати" data-product-id="@Model.Id">
+            <a class="btn btn-xs btn-success fn-clone" title="Клонувати" data-product-id="@Model.Id">
                 <i class="icon-copy bigger-120"></i>
             </a>
             @{
