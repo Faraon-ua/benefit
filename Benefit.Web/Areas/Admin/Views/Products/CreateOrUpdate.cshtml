@@ -74,7 +74,6 @@
                 });
             });
 
-
             var removeReviewUrl = '@Url.Action("RemoveReview","Reviews")';
 
             $(".remove-review").click(function () {
@@ -108,6 +107,13 @@
                     });
                 });
             });
+            var startLoad = true;
+            $("input[name=CategoryId]").change(function () {
+                if (!startLoad) {
+                    alert("При зміні категорії товару буде втрачено його характеристики");
+                }
+                startLoad = false;
+            });
 
             $(".fn-add-product-option-value").click(function () {
                 var parameterId = $(this).attr("data-parameter-id");
@@ -130,7 +136,7 @@
             });
             $("#add-feature").click(function () {
                 var btn = $(this);
-                var orders = 
+                var orders =
                     $(".feature-row[data-order]").map(function () {
                     return parseInt($(this).attr("data-order"));
                     }).get();

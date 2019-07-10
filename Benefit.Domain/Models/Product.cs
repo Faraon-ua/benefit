@@ -176,7 +176,7 @@ namespace Benefit.Domain.Models
         private ProductAvailability _availableForPurchase = null;
         public ProductAvailability AvailableForPurchase(int regionId)
         {
-            if (_availableForPurchase!=null)
+            if (_availableForPurchase != null)
             {
                 return _availableForPurchase;
             }
@@ -194,7 +194,7 @@ namespace Benefit.Domain.Models
                 if (!isAvailable)
                 {
                     result.Regions =
-                        Seller.ShippingMethods.Select(entry=>entry.Region).Distinct(new RegionComparer()).ToDictionary(entry => entry.Id.ToString(),
+                        Seller.ShippingMethods.Select(entry => entry.Region).Distinct(new RegionComparer()).ToDictionary(entry => entry.Id.ToString(),
                             entry => entry.Name_ua);
                     result.State = ComputedProductAvailabilityState.AvailableInOtherRegion;
                 }
@@ -204,6 +204,22 @@ namespace Benefit.Domain.Models
                 }
             }
             return result;
+        }
+
+        public Product Clone()
+        {
+            var productClone = (Product)this.MemberwiseClone();
+            productClone.Id = Guid.NewGuid().ToString();
+
+            var images = new List<Image>(this.Images);
+            images.ForEach(entry => entry.ProductId = productClone.Id);
+
+            var options = new List<ProductOption>(this.ProductOptions);
+            options.ForEach(entry => entry.ProductId = productClone.Id);
+
+            var parameters = new List<ProductParameterProduct>(this.ProductParameterProducts);
+            parameters.ForEach(entry => entry.ProductId = productClone.Id);
+            return productClone;
         }
     }
 }
