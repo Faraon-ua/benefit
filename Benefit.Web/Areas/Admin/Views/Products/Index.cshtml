@@ -21,8 +21,18 @@
         var bulkProductsActionUrl = '@Url.Action("BulkProductsAction")';
         var saveSortingUrl = '@Url.Action("SaveSorting")';
         var removeExportUrl = '@Url.Action("RemoveFromExport")';
+        var cloneUrl = '@Url.Action("Clone")';
         var hSelect;
         $(function () {
+            $(".fn-clone").click(function () {
+                var btn = $(this);
+                var id = btn.attr("data-product-id");
+                $.get(cloneUrl + '?id=' + id, function (data) {
+                    debugger;
+                    btn.parents("tr").eq(0).after(data);
+                })
+            });
+
             $("#products-table tbody .product-select").change(function () {
                 if (this.checked) {
                     $(this).parent().parent().addClass("selected");

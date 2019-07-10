@@ -50,6 +50,32 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return new HttpStatusCodeResult(200);
         }
 
+        public ActionResult Clone(string id)
+        {
+            var product = db.Products.AsNoTracking()
+                .Include(entry => entry.Images)
+                .Include(entry => entry.ProductOptions)
+                .Include(entry => entry.ProductParameterProducts)
+                .FirstOrDefault(entry=>entry.Id == id);
+            if(product == null) return new HttpStatusCodeResult(404);
+            product.Id = Guid.NewGuid().ToString();
+            product.SKU = db.Products.Max(entry => entry.SKU) + 1;
+            db.Products.Add(product);
+            product.Images.ForEach(entry =>
+            {
+                entry.Id = Guid.NewGuid().ToString();
+                entry.ProductId = product.Id;
+            });
+            product.ProductOptions.ForEach(entry =>
+            {
+                entry.Id = Guid.NewGuid().ToString();
+                entry.ProductId = product.Id;
+            });
+            product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
+            db.SaveChanges();
+            return PartialView("_ProductPartial", product);
+        }
+
         [HttpGet]
         public ActionResult Index(ProductFilterValues filters)
         {

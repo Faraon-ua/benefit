@@ -205,21 +205,5 @@ namespace Benefit.Domain.Models
             }
             return result;
         }
-
-        public Product Clone()
-        {
-            var productClone = (Product)this.MemberwiseClone();
-            productClone.Id = Guid.NewGuid().ToString();
-
-            var images = new List<Image>(this.Images);
-            images.ForEach(entry => entry.ProductId = productClone.Id);
-
-            var options = new List<ProductOption>(this.ProductOptions);
-            options.ForEach(entry => entry.ProductId = productClone.Id);
-
-            var parameters = new List<ProductParameterProduct>(this.ProductParameterProducts);
-            parameters.ForEach(entry => entry.ProductId = productClone.Id);
-            return productClone;
-        }
     }
 }

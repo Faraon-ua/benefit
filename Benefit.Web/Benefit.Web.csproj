@@ -1029,6 +1029,7 @@
     <Content Include="Areas\Admin\Views\Products\_Moderation.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ProductParameters.cshtml" />
     <Content Include="Areas\Admin\Views\ProductParameters\_NewProductFeature.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductPartial.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

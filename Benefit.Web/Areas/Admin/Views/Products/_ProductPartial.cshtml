@@ -1,0 +1,92 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@using Benefit.Domain.Models.ModelExtensions
+@model Product
+
+<tr id="tr-@Model.Id" data-product-id="@Model.Id" data-index="@Model.Order">
+    <td>
+        <input type="checkbox" class="product-select" data-product-id="@Model.Id" />
+    </td>
+    <td>
+        @Model.SKU
+    </td>
+    <td>
+        @Html.ActionLink(Model.Name, "CreateOrUpdate", new { id = Model.Id }, new { target = "_blank" })
+    </td>
+
+    <td>
+        @Model.Category.Name
+    </td>
+    <td>
+        @Html.ActionLink(Model.Seller.Name, "CreateOrUpdate", "Sellers", new { id = Model.Seller.Id }, null)
+    </td>
+    <td>
+        @if (Model.AvailabilityState == ProductAvailabilityState.AlwaysAvailable
+             || (Model.AvailabilityState == ProductAvailabilityState.Available && Model.AvailableAmount == null)
+             || Model.AvailabilityState == ProductAvailabilityState.OnDemand)
+        {
+            <div class="icon-check-sign green"></div>
+        }
+        else if (Model.AvailableAmount == 0 || Model.AvailabilityState == ProductAvailabilityState.NotInStock)
+        {
+            <div class="icon-ban-circle red"></div>
+        }
+        else
+        {
+            @Model.AvailableAmount
+        }
+    </td>
+    <td>
+        <div>
+            @if (Model.ModerationStatus == ModerationStatus.IsModerating)
+            {
+                <a href="#" title="Підтвердити" class="moderate font-bigger" data-moderation="true" data-product-id="@Model.Id">
+                    <i class="icon-check-sign green"></i>
+                </a>
+                <a href="#" title="Відхилити" class="moderate font-bigger margin-left-10" data-moderation="false" data-product-id="@Model.Id">
+                    <i class="icon-ban-circle red"></i>
+                </a>
+            }
+            @if (Model.ModerationStatus == ModerationStatus.Moderated)
+            {
+                <i class="icon-check-sign green opacity07"></i>
+            }
+            @if (Model.ModerationStatus == ModerationStatus.UnappropriateContent)
+            {
+                <i class="icon-ban-circle red opacity07"></i>
+            }
+        </div>
+    </td>
+    <td>
+        @Model.Price
+    </td>
+    <td>
+        @if (Model.ExportProducts.Any())
+        {
+            <span>@Html.Raw(string.Join("<br />", Model.ExportProducts.Select(entry => entry.Export.Name)))</span>
+            <a href="#" data-product-id="@Model.Id" class="remove-export">
+                <i class="icon icon-remove red"></i>
+            </a>
+        }
+    </td>
+    <td>
+        <div class="visible-md visible-lg hidden-sm hidden-xs btn-group">
+            <a class="btn btn-xs btn-info" href="@Url.RouteUrl(RouteConstants.ProductRouteName, new {productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU)})" target="_blank">
+                <i class="icon-eye-open bigger-120"></i>
+            </a>
+            <a class="btn btn-xs btn-info fn-clone" title="Клонувати" data-product-id="@Model.Id">
+                <i class="icon-copy bigger-120"></i>
+            </a>
+            @{
+                var lockClassName = Model.IsActive ? "unlock" : "lock";
+            }
+            <a class="btn btn-xs btn-warning" onclick="LockUnlock('@Model.Id');">
+                <i class="lockUser-@Model.Id icon-@lockClassName bigger-120"></i>
+            </a>
+
+            <a class="btn btn-xs btn-danger" onclick="DeleteProduct('@Model.Id', '@Model.Name.Sanitize()');">
+                <i class="icon-trash bigger-120"></i>
+            </a>
+        </div>
+    </td>
+</tr>
