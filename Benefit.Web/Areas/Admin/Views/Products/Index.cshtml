@@ -47,6 +47,9 @@
                     $("#save-sorting").show();
                 },
                 helper: function (e, item) {
+                    if (!item.hasClass('selected')) {
+                        item.addClass('selected');
+                    }
                     var elements = item.parent().children('.selected').clone();
                     item.data('multidrag', elements).siblings('.selected').remove();
                     var helper = $('<tr/>');
