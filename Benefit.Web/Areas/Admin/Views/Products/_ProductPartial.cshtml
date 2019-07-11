@@ -4,8 +4,10 @@
 @model Product
 
 <tr id="tr-@Model.Id" data-product-id="@Model.Id" data-index="@Model.Order">
-    <td>
+    <td class="drag cursor-move">
         <input type="checkbox" class="product-select" data-product-id="@Model.Id" />
+        <br />
+        <i class="fa fa-arrows-v font-bigger" style="font-size:1.5em; margin: 3px 0 0 2px;"></i>
     </td>
     <td>
         @Model.SKU
@@ -13,7 +15,6 @@
     <td>
         @Html.ActionLink(Model.Name, "CreateOrUpdate", new { id = Model.Id }, new { target = "_blank" })
     </td>
-
     <td>
         @Model.Category.Name
     </td>

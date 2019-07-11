@@ -11,8 +11,6 @@
     <script src="~/Scripts/hierarchy-select.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
-
-
     @*    <script src="~/Scripts/sorting-filtering.js"></script>*@
 
     <script>
@@ -57,7 +55,8 @@
                 stop: function (e, ui) {
                     var elements = ui.item.data('multidrag');
                     ui.item.after(elements).remove();
-                }
+                },
+                cancel: 'td:not(.drag)'
             });
 
             $("#save-sorting").click(function () {
@@ -232,6 +231,7 @@
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
     <link href="~/Content/css/pygments.css" rel="stylesheet" />
     <link href="~/Content/css/hierarchy-select.min.css" rel="stylesheet" />
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
     <style>
         #select-all {
             cursor: pointer;
