@@ -861,21 +861,23 @@ namespace Benefit.Services.Domain
 
                     //productParams = productParams.Distinct(new ProductParameterProductComparer()).ToList();
 
-                    //var order = 0;
-                    //lock (lockObj)
-                    //{
-                    //    imagesToAddList.AddRange(xmlProductsToAdd.Elements("picture").Select(xmlImage => new Image()
-                    //    {
-                    //        Id = Guid.NewGuid().ToString(),
-                    //        ImageType = ImageType.ProductGallery,
-                    //        ImageUrl = xmlImage.Value,
-                    //        IsAbsoluteUrl = true,
-                    //        Order = order++,
-                    //        ProductId = product.Id,
-                    //        IsImported = true
-                    //    }));
-                    //    dbProductParameterProducts.AddRange(productParams);
-                    //}
+                    var order = 0;
+                    lock (lockObj)
+                    {
+                        var existingImages = db.Images.Where(entry => entry.ProductId == product.Id).Select(entry=>entry.ImageUrl);
+                        var newImages = xmlProduct.Elements("picture").Select(xmlImage => new Image()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            ImageType = ImageType.ProductGallery,
+                            ImageUrl = xmlImage.Value,
+                            IsAbsoluteUrl = true,
+                            Order = order++,
+                            ProductId = product.Id,
+                            IsImported = true
+                        }).Where(entry=>!existingImages.Contains(entry.ImageUrl));
+                        imagesToAddList.AddRange(newImages);
+                        //dbProductParameterProducts.AddRange(productParams);
+                    }
                 });
 
                 foreach (var product in productsToAddList)
