@@ -193,8 +193,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Entry(category).Property(entry => entry.BannerImageUrl).IsModified = false;
                 }
                 db.SaveChanges();
-                db.ExportCategories.AddRange(exportCategories);
-                db.SaveChanges();
                 TempData["SuccessMessage"] = "Категорію було збережено";
                 return RedirectToAction("CreateOrUpdate", new { id = category.Id });
             }
