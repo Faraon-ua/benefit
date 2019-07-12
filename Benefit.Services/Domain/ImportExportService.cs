@@ -470,6 +470,7 @@ namespace Benefit.Services.Domain
                         SellerId = sellerId,
                         Name = catName.Truncate(64),
                         UrlName = string.Format("{0}-{1}", catId, catName.Translit()).Truncate(128),
+                        ExternalIds = catId,
                         IsActive = true,
                         LastModified = DateTime.UtcNow,
                         LastModifiedBy = "ImportFrom1C"
@@ -483,6 +484,7 @@ namespace Benefit.Services.Domain
                         CategoryId = dbCategory.MappedParentCategoryId,
                         SellerId = sellerId
                     });
+                    dbCategory.ExternalIds = catId;
                     dbCategory.IsActive = true;
                     dbCategory.Name = catName.Truncate(64);
                     dbCategory.UrlName = string.Format("{0}-{1}", catId, catName.Translit()).Truncate(128);
