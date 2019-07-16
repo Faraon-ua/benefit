@@ -33,7 +33,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             var imagesService = new ImagesService();
             if (Uri.IsWellFormedUriString(fileName, UriKind.Absolute))
             {
-                imagesService.DeleteAbsoluteUrlImage(fileName);   
+                imagesService.DeleteAbsoluteUrlImage(fileName, parentId);   
             }
             else
             {

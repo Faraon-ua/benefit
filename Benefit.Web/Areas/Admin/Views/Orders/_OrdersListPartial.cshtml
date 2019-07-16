@@ -8,8 +8,8 @@
 {
     <ul class="pagination">
         @{
-    var firstStage = Model.Pages >= ListConstants.PagingFirstStage ? ListConstants.PagingFirstStage : Model.Pages;
-    var lastDisplayedPage = 0;
+            var firstStage = Model.Pages >= ListConstants.PagingFirstStage ? ListConstants.PagingFirstStage : Model.Pages;
+            var lastDisplayedPage = 0;
         }
         @for (var i = 0; i < Model.Pages; i++)
         {
@@ -45,9 +45,12 @@
                 Номер чеку
             </th>
         }
-        <th>
-            Постачальник
-        </th>
+        @if (User.IsInRole(DomainConstants.AdminRoleName))
+        {
+            <th>
+                Постачальник
+            </th>
+        }
         @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitCard)
         {
             <th>
@@ -79,7 +82,6 @@
                 Статус
             </th>
         }
-        <th></th>
     </tr>
 
     @foreach (var item in Model.Items)
@@ -87,7 +89,9 @@
         var className = (item.OrderType == OrderType.BenefitCard && item.IsRepeating) ? "bg-pink" : "";
         <tr class="@className">
             <td>
-                @Html.DisplayFor(modelItem => item.OrderNumber)
+                <a href="#" class="fn-show-order" data-order-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.OrderNumber)
+                </a>
             </td>
             @if (Model.Items.Any() && Model.Items.First().OrderType == OrderType.BenefitCard)
             {
@@ -124,8 +128,8 @@
             {
                 <td>
                     @{
-                var finishedStamp = item.OrderStatusStamps.FirstOrDefault(entry => entry.OrderStatus == OrderStatus.Finished);
-                var finishedTime = finishedStamp == null ? "-" : finishedStamp.Time.ToLocalDateTimeWithFormat();
+                        var finishedStamp = item.OrderStatusStamps.FirstOrDefault(entry => entry.OrderStatus == OrderStatus.Finished);
+                        var finishedTime = finishedStamp == null ? "-" : finishedStamp.Time.ToLocalDateTimeWithFormat();
                     }
                     @finishedTime
                 </td>
@@ -139,20 +143,20 @@
                     @Enumerations.GetEnumDescription(item.Status)
                 </td>
             }
-            <td>
-                @if (item.OrderType == OrderType.BenefitSite)
-                {
-                    @Html.ActionLink("Детальніше", "Details", "Orders", new { id = item.Id }, new { target = "_blank" })
-                    <span>|</span>
-                }
-                @{
-                    var now = DateTime.UtcNow;
-                }
-                @if (User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time.StartOfMonth().AddMonths(1).AddDays(15) > now)
-                {
-                    <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>
-                }
-            </td>
+            @*<td>
+                    @if (item.OrderType == OrderType.BenefitSite)
+                    {
+                        @Html.ActionLink("Детальніше", "Details", "Orders", new { id = item.Id }, new { target = "_blank" })
+                        <span>|</span>
+                    }
+                    @{
+                        var now = DateTime.UtcNow;
+                    }
+                    @if (User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time.StartOfMonth().AddMonths(1).AddDays(15) > now)
+                    {
+                        <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>
+                    }
+                </td>*@
         </tr>
     }
 </table>

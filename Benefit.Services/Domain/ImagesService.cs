@@ -176,9 +176,9 @@ namespace Benefit.Services
             DeleteFile(image.ImageUrl, parentId, type);
         }
 
-        public void DeleteAbsoluteUrlImage(string url)
+        public void DeleteAbsoluteUrlImage(string url, string productId)
         {
-            var image = db.Images.FirstOrDefault(entry=>entry.ImageUrl == url);
+            var image = db.Images.FirstOrDefault(entry=>entry.ImageUrl == url && entry.ProductId == productId);
             if (image == null) return;
             db.Images.Remove(image);
             db.SaveChanges();
