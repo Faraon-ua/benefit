@@ -76,7 +76,7 @@ namespace Benefit.Services
 
         public void ResizeToSiteRatio(string imagePath, ImageType imageType)
         {
-            if(!File.Exists(imagePath)) return;
+            if (!File.Exists(imagePath)) return;
             var img = Image.FromFile(imagePath);
             int maxHeight = 0;
             int maxWidth = 0;
@@ -97,7 +97,7 @@ namespace Benefit.Services
                 case ImageType.UserAvatar:
                     maxHeight = SettingsService.Images.SellerGalleryImageMaxHeight;
                     maxWidth = SettingsService.Images.SellerGalleryImageMaxWidth;
-                    break;  
+                    break;
                 case ImageType.CategoryLogo:
                     maxHeight = SettingsService.Images.CategoryLogoMaxHeight;
                     maxWidth = SettingsService.Images.CategoryLogoMaxWidth;
@@ -134,7 +134,7 @@ namespace Benefit.Services
                 using (var fs = new FileStream(imagePath, FileMode.Create, FileAccess.ReadWrite))
                 {
                     var format = GetImageFormatByExtension(imagePath);
-                    if(format == null) return;
+                    if (format == null) return;
                     newImage.Save(memory, format);
                     byte[] bytes = memory.ToArray();
                     fs.Write(bytes, 0, bytes.Length);
@@ -171,14 +171,22 @@ namespace Benefit.Services
 
         public void Delete(string imageId, string parentId, ImageType type)
         {
-            var image = db.Images.Find(imageId);
+            Benefit.Domain.Models.Image image = null;
+            if (type == ImageType.ProductGallery)
+            {
+                image = db.Images.FirstOrDefault(entry => entry.Id == imageId && entry.ProductId == parentId);
+            }
+            else
+            {
+                image = db.Images.Find(imageId);
+            }
             if (image == null) return;
             DeleteFile(image.ImageUrl, parentId, type);
         }
 
         public void DeleteAbsoluteUrlImage(string url, string productId)
         {
-            var image = db.Images.FirstOrDefault(entry=>entry.ImageUrl == url && entry.ProductId == productId);
+            var image = db.Images.FirstOrDefault(entry => entry.ImageUrl == url && entry.ProductId == productId);
             if (image == null) return;
             db.Images.Remove(image);
             db.SaveChanges();

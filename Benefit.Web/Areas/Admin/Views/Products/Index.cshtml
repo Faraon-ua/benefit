@@ -26,7 +26,6 @@
                 var btn = $(this);
                 var id = btn.attr("data-product-id");
                 $.get(cloneUrl + '?id=' + id, function (data) {
-                    debugger;
                     btn.parents("tr").eq(0).after(data);
                 })
             });

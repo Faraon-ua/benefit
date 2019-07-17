@@ -19,6 +19,7 @@ using System.Web.Mvc;
 using WebGrease.Css.Extensions;
 using System.Web.Mvc.Html;
 using Benefit.Common.Extensions;
+using System.IO;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -67,6 +68,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 entry.Id = Guid.NewGuid().ToString();
                 entry.ProductId = product.Id;
             });
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var productImagesPath = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), id);
+            var newProductImagesPath = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), product.Id);
+            var oldDir = new DirectoryInfo(productImagesPath);
+            var newDir = new DirectoryInfo(newProductImagesPath);
+            if (oldDir.Exists)
+            {
+                newDir.Create();
+                oldDir.GetFiles().ForEach(entry => entry.CopyTo(newDir.FullName));
+            }
             product.ProductOptions.ForEach(entry =>
             {
                 entry.Id = Guid.NewGuid().ToString();
