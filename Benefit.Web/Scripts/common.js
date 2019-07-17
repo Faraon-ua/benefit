@@ -124,7 +124,7 @@ function ReAssignIndexesToChildren(id, itemSelector) {
     });
 
     UpdateCategoriesNumber();
-    UpdateCurrenciesNumber();
+    //UpdateCurrenciesNumber();
     UpdateShippingMethodsNumber();
     UpdateAddressesNumber();
 }

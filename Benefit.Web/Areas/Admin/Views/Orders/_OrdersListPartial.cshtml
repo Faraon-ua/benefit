@@ -143,20 +143,20 @@
                     @Enumerations.GetEnumDescription(item.Status)
                 </td>
             }
-            @*<td>
-                    @if (item.OrderType == OrderType.BenefitSite)
-                    {
-                        @Html.ActionLink("Детальніше", "Details", "Orders", new { id = item.Id }, new { target = "_blank" })
-                        <span>|</span>
-                    }
-                    @{
-                        var now = DateTime.UtcNow;
-                    }
-                    @if (User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time.StartOfMonth().AddMonths(1).AddDays(15) > now)
-                    {
-                        <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>
-                    }
-                </td>*@
+            <td>
+                @if (item.OrderType == OrderType.BenefitSite)
+                {
+                    @Html.ActionLink("Детальніше", "Details", "Orders", new { id = item.Id }, new { target = "_blank" })
+                    <span>|</span>
+                }
+                @{
+                    var now = DateTime.UtcNow;
+                }
+                @if (User.IsInRole(DomainConstants.SuperAdminRoleName) && item.Time.StartOfMonth().AddMonths(1).AddDays(15) > now)
+                {
+                    <a href="#" id="delete-order" data-order-id="@item.Id">Видалити</a>
+                }
+            </td>
         </tr>
     }
 </table>

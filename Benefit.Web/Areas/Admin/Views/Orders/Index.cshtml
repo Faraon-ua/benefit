@@ -10,6 +10,8 @@
 
     <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
+    <link href="~/Content/css/order-details.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />
 }
 @section scripts
 {
@@ -40,7 +42,18 @@
         </script>
     }
     <script>
+        var getOrderDetailsUrl = '@Url.Action("Details")';
+
         $(function () {
+            $(".fn-show-order").click(function (e) {
+                e.preventDefault();
+                var id = $(this).attr("data-order-id");
+                $.get(getOrderDetailsUrl + "?id=" + id, function (data) {
+                    $("#order-details").html(data);
+                    $(".modal").modal();
+                });
+            });
+
             $(".chosen-select").chosen({
                 search_contains: true
             });
@@ -141,7 +154,7 @@
                 {
                     <li>
                         @{
-                    var paymentName = Enumerations.GetEnumDescription(paymentMethod);
+                            var paymentName = Enumerations.GetEnumDescription(paymentMethod);
                         }
                         <input type="checkbox" name="PaymentTypeChk" value="@paymentMethod" @(Model.PaymentType.Contains(paymentMethod.ToString()) ? "checked" : "") />
                         <label for="@paymentMethod">@paymentName</label>
@@ -161,7 +174,7 @@
                     {
                         <li>
                             @{
-                        var statusName = Enumerations.GetEnumDescription(status);
+                                var statusName = Enumerations.GetEnumDescription(status);
                             }
                             <input type="checkbox" name="StatusChk" value="@status" @(Model.Status.Contains(status.ToString()) ? "checked" : "") />
                             <label for="@status">@statusName</label>
@@ -211,6 +224,22 @@
     <h1 class="no-padding-bottom pull-left">Загальна сума обраних замовлень:</h1> <h1 class="orange">@Model.Sum.ToString("F") грн</h1>
     <h1 class="no-padding-bottom pull-left">Кількість обраних замовлень:</h1> <h1 class="orange">@Model.Number.ToString("F")</h1>
 </div>
-<div>
 
+<div class="modal" tabindex="-1" role="dialog" style="display: none">
+    <div class="modal-dialog" role="document" style="width:85%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="icon icon-remove-sign"></i>
+                        @*<span aria-hidden="true">&times;</span>*@
+                    </button>
+                </div>
+            <div class="modal-body" id="order-details">
+            </div>
+            @*<div class="modal-footer">
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>*@
+        </div>
+    </div>
 </div>
