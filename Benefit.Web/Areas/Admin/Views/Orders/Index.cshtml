@@ -10,8 +10,8 @@
 
     <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
-    <link href="~/Content/css/order-details.css" rel="stylesheet" />
-    <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />
+    @*<link href="~/Content/css/order-details.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />*@
 }
 @section scripts
 {
@@ -45,14 +45,14 @@
         var getOrderDetailsUrl = '@Url.Action("Details")';
 
         $(function () {
-            $(".fn-show-order").click(function (e) {
-                e.preventDefault();
-                var id = $(this).attr("data-order-id");
-                $.get(getOrderDetailsUrl + "?id=" + id, function (data) {
-                    $("#order-details").html(data);
-                    $(".modal").modal();
-                });
-            });
+            //$(".fn-show-order").click(function (e) {
+            //    e.preventDefault();
+            //    var id = $(this).attr("data-order-id");
+            //    $.get(getOrderDetailsUrl + "?id=" + id, function (data) {
+            //        $("#order-details").html(data);
+            //        $(".modal").modal();
+            //    });
+            //});
 
             $(".chosen-select").chosen({
                 search_contains: true

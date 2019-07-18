@@ -247,6 +247,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             product.ProductParameterProducts = product.ProductParameterProducts.Where(entry => entry.StartText != null).ToList();
             product.ProductParameterProducts.ForEach(entry => entry.StartValue = entry.StartText.Translit());
+            if (product.ProductParameterProducts.Any(entry => entry.StartValue.Length > ProductConstants.ParameterStartTextMaxLength))
+            {
+                ModelState.AddModelError("ProductParameter", "Значення характеристики перевищує максимально допустиму довжину в " + ProductConstants.ParameterStartTextMaxLength + " символів");
+            }
             product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
             db.ProductParameterProducts.RemoveRange(
                db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));

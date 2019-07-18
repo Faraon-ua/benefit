@@ -614,6 +614,10 @@
     <Compile Include="Migrations\201906251332532_AddLastModifiedByToProduct.Designer.cs">
       <DependentUpon>201906251332532_AddLastModifiedByToProduct.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907180847209_ExtendProductParameterValueStartText.cs" />
+    <Compile Include="Migrations\201907180847209_ExtendProductParameterValueStartText.Designer.cs">
+      <DependentUpon>201907180847209_ExtendProductParameterValueStartText.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1069,6 +1073,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201906251332532_AddLastModifiedByToProduct.resx">
       <DependentUpon>201906251332532_AddLastModifiedByToProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907180847209_ExtendProductParameterValueStartText.resx">
+      <DependentUpon>201907180847209_ExtendProductParameterValueStartText.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

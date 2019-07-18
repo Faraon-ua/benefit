@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Benefit.Common.Constants;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -41,10 +42,10 @@ namespace Benefit.Domain.Models
         public string ProductId { get; set; }
         public Product Product { get; set; }
         public int? Amount { get; set; }
-        [MaxLength(64)]
+        [MaxLength(ProductConstants.ParameterStartTextMaxLength)]
         [Key, Column(Order = 2)]
         public string StartValue { get; set; }
-        [MaxLength(64)]
+        [MaxLength(ProductConstants.ParameterStartTextMaxLength)]
         public string StartText { get; set; }
         [MaxLength(64)]
         [Index]
