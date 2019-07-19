@@ -135,7 +135,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Entry(category).State = EntityState.Modified;
                     var existingCategoryExports = db.ExportCategories.Where(entry => entry.CategoryId == category.Id).ToList();
                     db.ExportCategories.RemoveRange(existingCategoryExports);
-
+                    db.ExportCategories.AddRange(category.ExportCategories);
                     var existingCat = db.Categories.Find(category.Id);
                     var children = existingCat.GetAllChildrenRecursively().Distinct(new CategoryComparer()).ToList();
                     children.ForEach(entry =>
