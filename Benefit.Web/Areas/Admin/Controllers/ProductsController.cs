@@ -44,7 +44,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var products = db.Products.Where(entry => sortedProducts.Contains(entry.Id)).ToList();
             for (var i = 1; i <= sortedProducts.Length; i++)
             {
-                products.FirstOrDefault(entry=>entry.Id == sortedProducts[i - 1]).Order = i;
+                products.FirstOrDefault(entry => entry.Id == sortedProducts[i - 1]).Order = i;
                 db.Entry(products[i - 1]).State = EntityState.Modified;
             }
             db.SaveChanges();
@@ -57,8 +57,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 .Include(entry => entry.Images)
                 .Include(entry => entry.ProductOptions)
                 .Include(entry => entry.ProductParameterProducts)
-                .FirstOrDefault(entry=>entry.Id == id);
-            if(product == null) return new HttpStatusCodeResult(404);
+                .FirstOrDefault(entry => entry.Id == id);
+            if (product == null) return new HttpStatusCodeResult(404);
             product.Id = Guid.NewGuid().ToString();
             product.SKU = db.Products.Max(entry => entry.SKU) + 1;
             product.ModerationStatus = ModerationStatus.IsModerating;
@@ -192,7 +192,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                           };
             if (User.IsInRole(DomainConstants.AdminRoleName))
             {
-                ViewBag.Categories = db.Categories.Where(entry=>!entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
+                ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
                 {
                     Text = entry.IsSellerCategory ? string.Format("[seller]{0}", entry.Name) : entry.Name,
                     Value = entry.Id,
@@ -247,7 +247,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             product.ProductParameterProducts = product.ProductParameterProducts.Where(entry => entry.StartText != null).ToList();
             product.ProductParameterProducts.ForEach(entry => entry.StartValue = entry.StartText.Translit());
-            if (product.ProductParameterProducts.Any(entry => entry.StartValue.Length > ProductConstants.ParameterStartTextMaxLength))
+            var exceededParams = product.ProductParameterProducts.Where(entry => entry.StartValue.Length > ProductConstants.ParameterStartTextMaxLength);
+            if (exceededParams.Any())
             {
                 ModelState.AddModelError("ProductParameter", "Значення характеристики перевищує максимально допустиму довжину в " + ProductConstants.ParameterStartTextMaxLength + " символів");
             }

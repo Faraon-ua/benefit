@@ -239,7 +239,7 @@
             @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
         </section>
     </div>
-  
+
     @{
         var activeTabSet = false;
     }
@@ -550,22 +550,23 @@
                                     <div class="tab-pane additional_block @(activeTabSet ? "" : "active")" id="ask">
                                         <div class="title-tab-heading visible-xs">Характеристики</div>
                                         <div class="detail_text">
-                                            @foreach (var groupResult in Model.Product.ProductParameterProducts.Where(entry => !string.IsNullOrEmpty(entry.StartText)).GroupBy(entry => entry.ProductParameterId))
-                                            {
-                                                var productParameter = groupResult.Select(entry => entry.ProductParameter).FirstOrDefault();
-                                                var productParameterValues = string.Join(", ", groupResult.Select(entry => entry.StartText));
-                                                <div class="stores_block wo_image margin-top-10">
-                                                    <span class="width-30" style="display: inline-block">
-                                                        <a class="title_stores">@productParameter.Name</a>
-                                                    </span>
-                                                    <span>.................</span>
-                                                    <span class="value">
-                                                        <span>
-                                                            @productParameterValues
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                            }
+                                            <table>
+                                                @foreach (var groupResult in Model.Product.ProductParameterProducts.Where(entry => !string.IsNullOrEmpty(entry.StartText)).GroupBy(entry => entry.ProductParameterId))
+                                                {
+                                                    var productParameter = groupResult.Select(entry => entry.ProductParameter).FirstOrDefault();
+                                                    var productParameterValues = string.Join(", ", groupResult.Select(entry => entry.StartText));
+                                                    <tr>
+                                                        <td class="width-50 padding_5">
+                                                            <a class="title_stores">@productParameter.Name</a>
+                                                        </td>
+                                                        <td class="width-50 padding_5">
+                                                            <span>
+                                                                @productParameterValues
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </table>
                                         </div>
                                     </div>
                                     activeTabSet = true;

@@ -593,75 +593,49 @@
                         <div class="stores_wrapp col-md-6">
                             <!--'start_frame_cache_lEnm5l'-->
                             <div class="stores_block_wrap">
-                                @if (!string.IsNullOrEmpty(Model.Product.Vendor))
-                                {
-                                    <div class="stores_block wo_image">
-                                        <div class="stores_text_wrapp ">
-                                            <div class="main_info">
+                                <table>
+                                    @if (!string.IsNullOrEmpty(Model.Product.Vendor))
+                                    {
+                                        <tr>
+                                            <td class="width-50 padding_5">
+                                                <a class="title_stores">Виробник</a>
+                                            </td>
+                                            <td class="width-50 padding_5">
                                                 <span>
-                                                    <a class="title_stores">Виробник</a>
+                                                    <span>@Model.Product.Vendor</span>
                                                 </span>
-                                            </div>
-                                        </div>
-                                        <div class="item-stock">
-                                            <span class="value">
-                                                <span>@Model.Product.Vendor</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                }
-                                @if (!string.IsNullOrEmpty(Model.Product.OriginCountry))
-                                {
-                                    <div class="stores_block wo_image">
-                                        <div class="stores_text_wrapp ">
-                                            <div class="main_info">
+                                            </td>
+                                        </tr>
+                                    }
+                                    @if (!string.IsNullOrEmpty(Model.Product.OriginCountry))
+                                    {
+                                        <tr>
+                                            <td class="width-50 padding_5">
+                                                <a class="title_stores">Країна виробник</a>
+                                            </td>
+                                            <td class="width-50 padding_5">
                                                 <span>
-                                                    <a class="title_stores">Країна виробник</a>
+                                                    <span>@Model.Product.OriginCountry</span>
                                                 </span>
-                                            </div>
-                                        </div>
-                                        <div class="item-stock">
-                                            <span class="value">
-                                                <span>@Model.Product.OriginCountry</span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                }
-                                @foreach (var groupResult in Model.Product.ProductParameterProducts.Where(entry => !string.IsNullOrEmpty(entry.StartText)).GroupBy(entry=>entry.ProductParameterId))
-                                {
-                                    var productParameter = groupResult.Select(entry => entry.ProductParameter).FirstOrDefault();
-                                    var productParameterValues = string.Join(", ", groupResult.Select(entry => entry.StartText));
-                                    <div class="stores_block wo_image">
-                                        <div class="stores_text_wrapp ">
-                                            <div class="main_info">
-                                                <span>
-                                                    <a class="title_stores">@productParameter.Name</a>
-                                                </span>
-                                            </div>
-                                        </div>
-                                        <div class="item-stock">
-                                            <span class="value">
-                                                @*@if (productParameter.Amount.HasValue)
-                                                {
-                                                    <span>@(productParameter.Amount.Value)x</span>
-                                                }
-                                                @(productParameter.StartText ?? productParameter.StartValue)
-                                                @if (!string.IsNullOrEmpty(productParameter.EndValue))
-                                                {
-                                                    <span>- @productParameter.EndValue</span>
-                                                }
-                                                @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
-                                                {
-                                                    <span>@productParameter.ProductParameter.MeasureUnit</span>
-                                                }*@
+                                            </td>
+                                        </tr>
+                                    }
+                                    @foreach (var groupResult in Model.Product.ProductParameterProducts.Where(entry => !string.IsNullOrEmpty(entry.StartText)).GroupBy(entry => entry.ProductParameterId))
+                                    {
+                                        var productParameter = groupResult.Select(entry => entry.ProductParameter).FirstOrDefault();
+                                        var productParameterValues = string.Join(", ", groupResult.Select(entry => entry.StartText));
+                                        <tr>
+                                            <td class="width-50 padding_5">
+                                                <a class="title_stores">@productParameter.Name</a>
+                                            </td>
+                                            <td class="width-50 padding_5">
                                                 <span>
                                                     @productParameterValues
                                                 </span>
-                                            </span>
-                                        </div>
-                                    </div>
-                                }
-
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
                             </div>
                             <!--'end_frame_cache_lEnm5l'-->
                         </div>
@@ -1023,30 +997,31 @@
                                     <div class="tab-pane additional_block @(activeTabSet ? "" : "active")" id="ask">
                                         <div class="title-tab-heading visible-xs">Характеристики</div>
                                         <div class="detail_text">
-                                            @foreach (var productParameter in parameters)
-                                            {
-                                                <div class="stores_block wo_image margin-top-10">
-                                                    <span class="width-30" style="display: inline-block">
-                                                        <a class="title_stores">@productParameter.ProductParameter.Name</a>
-                                                    </span>
-                                                    <span>.................</span>
-                                                    <span class="value">
-                                                        @if (productParameter.Amount.HasValue)
-                                                        {
-                                                            <span>@(productParameter.Amount.Value)x</span>
-                                                        }
-                                                        @(productParameter.StartText ?? productParameter.StartValue)
-                                                        @if (!string.IsNullOrEmpty(productParameter.EndValue))
-                                                        {
-                                                            <span>- @productParameter.EndValue</span>
-                                                        }
-                                                        @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
-                                                        {
-                                                            <span>@productParameter.ProductParameter.MeasureUnit</span>
-                                                        }
-                                                    </span>
-                                                </div>
-                                            }
+                                            <table>
+                                                @foreach (var productParameter in parameters)
+                                                {
+                                                    <tr>
+                                                        <td>
+                                                            @productParameter.ProductParameter.Name
+                                                        </td>
+                                                        <td>
+                                                            @if (productParameter.Amount.HasValue)
+                                                            {
+                                                                <span>@(productParameter.Amount.Value)x</span>
+                                                            }
+                                                            @(productParameter.StartText ?? productParameter.StartValue)
+                                                            @if (!string.IsNullOrEmpty(productParameter.EndValue))
+                                                            {
+                                                                <span>- @productParameter.EndValue</span>
+                                                            }
+                                                            @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
+                                                            {
+                                                                <span>@productParameter.ProductParameter.MeasureUnit</span>
+                                                            }
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            </table>
                                         </div>
                                     </div>
                                     activeTabSet = true;
