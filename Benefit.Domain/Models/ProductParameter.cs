@@ -45,5 +45,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<ProductParameter> ChildProductParameters { get; set; }
         [NotMapped]
         public bool SkipCheckInItems { get; set; }
+        [NotMapped]
+        public string CategoryName { get; set; }
     }
 }

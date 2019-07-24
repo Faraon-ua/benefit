@@ -1141,7 +1141,6 @@ namespace Benefit.Services.Domain
             db.DeleteWhereColumnIn(existingProductParameterProducts, "ProductParameterId");
             db.DeleteWhereColumnIn(existingProductParameterValues);
             db.DeleteWhereColumnIn(existingProductParameters);
-            return null;
             #endregion
 
             var currencies = db.Currencies.AsNoTracking().ToList();
@@ -1242,7 +1241,8 @@ namespace Benefit.Services.Domain
                         Name = parameterName.Truncate(64),
                         UrlName = parameterName.Translit().Truncate(64),
                         CategoryId = cat.Id,
-                        AddedBy = "YmlImport",
+                        CategoryName = cat.Name,
+                        AddedBy = "XlsImport",
                         DisplayInFilters = true,
                         IsVerified = true,
                         Type = typeof(string).ToString()
@@ -1268,17 +1268,17 @@ namespace Benefit.Services.Domain
                     productParameterValuesToAdd.AddRange(productParameterValues);
                 }
 
-
                 var productParameterRows =
                     rows.Where(entry => !string.IsNullOrEmpty(entry[parameterName].Value.ToString())).ToList();
                 foreach (var productParameterRow in productParameterRows)
                 {
                     var product = excelProducts.FirstOrDefault(entry =>
                         entry.Product.ExternalId == productParameterRow["SKU"].Cast<string>());
+                    var pp = productParametersToAdd.FirstOrDefault(entry => entry.Name == parameterName && entry.CategoryName == productParameterRow["Category"].Value.ToString().Clear());
                     var productParameterProduct = new ProductParameterProduct()
                     {
                         ProductId = product.Product.Id,
-                        ProductParameterId = productParametersToAdd.FirstOrDefault(entry => entry.Name == parameterName).Id,
+                        ProductParameterId = pp.Id,
                         StartValue = productParameterRow[parameterName].Value.ToString().Translit().Truncate(64),
                         StartText = productParameterRow[parameterName].Value.ToString().Truncate(64)
                     };
@@ -1297,7 +1297,6 @@ namespace Benefit.Services.Domain
                     pp.ParentProductParameterId = mappedProductParameter.ProductParameterId;
                 }
             }
-
             db.ProductParameters.AddRange(productParametersToAdd);
             db.ProductParameterValues.AddRange(productParameterValuesToAdd);
             db.ProductParameterProducts.AddRange(productParameterProductsToAdd);

@@ -12,6 +12,11 @@ namespace Benefit.Common.Extensions
                    strInput.StartsWith("[") && strInput.EndsWith("]");
         }
 
+        public static string Clear(this string input)
+        {
+            return input.Trim().Replace("\n", string.Empty).Replace("\t", string.Empty);
+        }
+
         public static string Truncate(this string value, int maxLength)
         {
             if (value == null) return null;
