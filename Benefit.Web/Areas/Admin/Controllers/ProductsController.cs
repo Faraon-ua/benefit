@@ -76,7 +76,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             if (oldDir.Exists)
             {
                 newDir.Create();
-                oldDir.GetFiles().ForEach(entry => entry.CopyTo(newDir.FullName));
+                oldDir.GetFiles().ForEach(entry => entry.CopyTo(Path.Combine(newDir.FullName, entry.Name), true));
             }
             product.ProductOptions.ForEach(entry =>
             {
@@ -369,7 +369,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             var product = db.Products.Find(id);
             if (product == null) return HttpNotFound();
-            product.ModerationStatus = accept ? ModerationStatus.Moderated : ModerationStatus.UnappropriateContent;
+            if(accept)
+            {
+                product.ModerationStatus = ModerationStatus.Moderated;
+                if (!product.Name.Contains("(bc-"))
+                {
+                    product.Name += string.Format(" (bc-{0})", product.SKU);
+                }
+            }
+            else
+            {
+                product.ModerationStatus = ModerationStatus.UnappropriateContent;
+            }
             product.Comment = comment;
             db.SaveChanges();
             return new HttpStatusCodeResult(200);
