@@ -82,6 +82,7 @@
     <Compile Include="ViewModels\ReviewsViewModel.cs" />
     <Compile Include="ViewModels\SellerApplicationViewModel.cs" />
     <Compile Include="ViewModels\SellerCatalogViewModel.cs" />
+    <Compile Include="ViewModels\SellerDashboard.cs" />
     <Compile Include="ViewModels\SellerDetailsViewModel.cs" />
     <Compile Include="ViewModels\NavigationEntities\ProductsViewModel.cs" />
     <Compile Include="ViewModels\SellerMapLocation.cs" />

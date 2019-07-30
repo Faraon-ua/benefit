@@ -110,7 +110,7 @@ namespace Benefit.Services.Domain
                 }
             }
         }
-        public string Export(string exportId)
+        public string Export(string exportId, string savePath = null)
         {
             var Request = HttpContext.Current.Request;
             var exportTask = db.ExportImports
@@ -270,6 +270,10 @@ namespace Benefit.Services.Domain
             shop.Add(offers);
             yml_catalog.Add(shop);
             doc.Add(yml_catalog);
+            if (savePath != null)
+            {
+                doc.Save(savePath);
+            }
             return doc.ToString();
         }
 

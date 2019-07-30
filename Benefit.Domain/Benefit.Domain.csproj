@@ -618,6 +618,10 @@
     <Compile Include="Migrations\201907180847209_ExtendProductParameterValueStartText.Designer.cs">
       <DependentUpon>201907180847209_ExtendProductParameterValueStartText.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201907290944117_AddBillInfoToSeller.cs" />
+    <Compile Include="Migrations\201907290944117_AddBillInfoToSeller.Designer.cs">
+      <DependentUpon>201907290944117_AddBillInfoToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -645,6 +649,7 @@
     <Compile Include="Models\NotificationChannel.cs" />
     <Compile Include="Models\OrderProductOption.cs" />
     <Compile Include="Models\OrderProduct.cs" />
+    <Compile Include="Models\PaymentBill.cs" />
     <Compile Include="Models\Personnel.cs" />
     <Compile Include="Models\ProductOption.cs" />
     <Compile Include="Models\ProductParameter.cs" />
@@ -1076,6 +1081,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907180847209_ExtendProductParameterValueStartText.resx">
       <DependentUpon>201907180847209_ExtendProductParameterValueStartText.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201907290944117_AddBillInfoToSeller.resx">
+      <DependentUpon>201907290944117_AddBillInfoToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

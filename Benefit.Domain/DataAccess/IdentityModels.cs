@@ -60,6 +60,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<Favorite> Favorites { get; set; }
         public DbSet<ExportProduct> ExportProducts { get; set; }
         public DbSet<ExportCategory> ExportCategories { get; set; }
+        public DbSet<PaymentBill> PaymentBills { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

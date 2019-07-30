@@ -48,6 +48,8 @@ namespace Benefit.Domain.Models
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public string Widget { get; set; }
+        public double CurrentBill { get; set; }
+        public double GreyZone { get; set; }
         //to filter in sellers catalog
         [MaxLength(50)]
         public string CategoryName { get; set; }
@@ -157,6 +159,8 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Promotion> Promotions { get; set; }
         public virtual ICollection<NotificationChannel> NotificationChannels { get; set; }
         public virtual ICollection<InfoPage> InfoPages { get; set; }
+        public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<PaymentBill> PaymentBills { get; set; }
 
         [NotMapped]
         public ICollection<Product> FeaturedProducts { get; set; }

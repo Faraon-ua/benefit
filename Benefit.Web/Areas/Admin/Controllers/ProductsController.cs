@@ -382,6 +382,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 product.ModerationStatus = ModerationStatus.UnappropriateContent;
             }
             product.Comment = comment;
+            product.LastModified = DateTime.UtcNow;
+            product.LastModifiedBy = User.Identity.Name;
             db.SaveChanges();
             return new HttpStatusCodeResult(200);
         }

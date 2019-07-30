@@ -6,16 +6,17 @@ using System.Data.Entity;
 using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
+using Benefit.Domain.Models;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = DomainConstants.AdminRoleName)]
     public class DashboardController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
         //
         //
         // GET: /Admin/Dashboard/
+        [Authorize(Roles = DomainConstants.AdminRoleName)]
         public ActionResult Index(string date)
         {
             var revenue = db.CompanyRevenues.OrderByDescending(entry => entry.Stamp).FirstOrDefault();
@@ -34,10 +35,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(revenue);
         }
 
+        [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName + ", " + DomainConstants.SellerOperatorRoleName)]
+        public ActionResult Cabinet()
+        {
+            var model = new SellerDashboard()
+            {
+                Seller = db.Sellers.Include(entry => entry.Transactions).AsNoTracking().FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId),
+                //Transactions = db.Transactions.Where(entry=>entry.)
+            };
+            return View(model);
+        }
+
+        public ActionResult GetLiqpayForm(double amount, string description)
+        {
+            return PartialView();
+        }
+
+        [Authorize(Roles = DomainConstants.AdminRoleName)]
         public ActionResult GetNotifications()
         {
             var reviewsToModerate = db.Reviews.Count(entry => !entry.IsActive);
-            var sellerNewContent = db.ExportImports.Include(entry=>entry.Seller).Where(entry => entry.HasNewContent).Select(entry=>entry.Seller).ToList();
+            var sellerNewContent = db.ExportImports.Include(entry => entry.Seller).Where(entry => entry.HasNewContent).Select(entry => entry.Seller).ToList();
             var result = new NotificationsViewModel()
             {
                 Reviews = reviewsToModerate,

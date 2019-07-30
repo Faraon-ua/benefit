@@ -11,6 +11,10 @@
             </a>
         </li>
     }
+    @if(User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
+    {
+
+    }
     @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
     {
         <li>

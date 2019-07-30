@@ -39,6 +39,8 @@ namespace Benefit.Domain.Models
         Comission,
         [Description("Бонуси по акції за поточний період")]
         PromotionCurrentPeriod,
+        [Description("Поповнення рахунку")]
+        SellerBillRefill,
     }
     public class Transaction
     {
@@ -54,6 +56,9 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string OrderId { get; set; }
         public Order Order { get; set; }
+        [MaxLength(128)]
+        public string SellerId { get; set; }
+        public Seller Seller { get; set; }
 
         [MaxLength(128)]
         public string PayerId { get; set; }

@@ -39,11 +39,13 @@
             </td>
             <td>
                 @{
-                    var link = string.Format("{0}://{1}/export?id={2}", Request.Url.Scheme, Request.Url.Host, export.Id);
+                    var link = string.Format("{0}://{1}/Export/{2}/index.xml", Request.Url.Scheme, Request.Url.Host, export.Name);
                 }
                 <a href="@link" target="_blank">@link</a>
             </td>
             <td>
+                @Html.ActionLink("Згенерувати", "GenerateExportFiles", "Schedule", new { key="15e77370-9268-4007-a00d-49aca257b7d6", exportId = export.Id, area = string.Empty }, new { @class="btn btn-success" })
+                |
                 @Html.ActionLink("Видалити", "DeleteExport", new { id = export.Id }, new { onclick = "return confirm('Ви впевнені? Також видаляться звязані назви категорій і звязки товарів з експортом. ');" })
             </td>
         </tr>

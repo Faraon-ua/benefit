@@ -7,9 +7,11 @@ using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using System;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Xml;
 
 namespace Benefit.Web.Controllers
 {
@@ -28,6 +30,32 @@ namespace Benefit.Web.Controllers
                 }
             });
             return Content("Ok");
+        }
+
+        public ActionResult GenerateExportFiles(string exportId = null)
+        {
+            var exportService = new ImportExportService();
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            using (var db = new ApplicationDbContext())
+            {
+                var exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
+                if(exportId != null)
+                {
+                    exports = exports.Where(entry => entry.Id == exportId).ToList();
+                }
+                foreach (var export in exports)
+                {
+                    var destPath = Path.Combine(originalDirectory, "Export", export.Name);
+                    var isExists = Directory.Exists(destPath);
+                    if (!isExists)
+                    {
+                        Directory.CreateDirectory(destPath);
+                    }
+                    destPath = Path.Combine(destPath, "index.xml");
+                    exportService.Export(export.Id, destPath);
+                }
+            }
+            return Content("Export files generated");
         }
 
         public ActionResult GenerateSiteMap()
