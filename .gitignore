@@ -29,6 +29,7 @@ _UpgradeReport_Files/
 .vs/
 bin/
 FTP/
+Export/
 logs/
 obj/
 TestResults/

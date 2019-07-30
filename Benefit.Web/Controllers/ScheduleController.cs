@@ -39,7 +39,7 @@ namespace Benefit.Web.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
-                if(exportId != null)
+                if (exportId != null)
                 {
                     exports = exports.Where(entry => entry.Id == exportId).ToList();
                 }
@@ -52,6 +52,10 @@ namespace Benefit.Web.Controllers
                         Directory.CreateDirectory(destPath);
                     }
                     destPath = Path.Combine(destPath, "index.xml");
+                    if (System.IO.File.Exists(destPath))
+                    {
+                        System.IO.File.Delete(destPath);
+                    }
                     exportService.Export(export.Id, destPath);
                 }
             }
