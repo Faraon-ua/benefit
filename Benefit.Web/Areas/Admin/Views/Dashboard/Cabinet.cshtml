@@ -8,7 +8,15 @@
     <script src="~/Areas/Admin/assets/js/flot/jquery.flot.pie.min.js"></script>
     <script src="~/Areas/Admin/assets/js/flot/jquery.flot.resize.min.js"></script>
     <script>
+        var createBillUrl = '@Url.Action("CreateBill")';
         $(function () {
+            $("#fn-create-bill").click(function () {
+                var sum = $("#data-bill-sum").val();
+                $.post(createBillUrl, { sum: sum }, function (data) {
+                    flashMessage("Рахунок на оплату створено", false, true);
+                });
+            });
+
             var placeholder = $('#piechart-placeholder').css({ 'width': '90%', 'min-height': '250px' });
             var data = [
                 { label: "В обробці", data: 24.5, color: "#2091CF" },
@@ -67,8 +75,8 @@
 <div class="bordered margin-top-20 padding-10">
     <p class="font-bigger">Поповненя рахунку</p>
     <div>
-        Сума поповнення рахунку <input type="number" style="width:100px; height:30px; border-radius: 3px; box-shadow: inset 3px 3px 1px 0 #eeeeef; font-size: 15px!important;" /> грн
-        <button type="button" class="btn btn-success margin-left-30">Формувати рахунок</button>
+        Сума поповнення рахунку <input id="data-bill-sum" type="number" style="width:100px; height:30px; border-radius: 3px; box-shadow: inset 3px 3px 1px 0 #eeeeef; font-size: 15px!important;" /> грн
+        <button type="button" class="btn btn-success margin-left-30" id="fn-create-bill">Формувати рахунок</button>
     </div>
 </div>
 <div class="margin-top-50">

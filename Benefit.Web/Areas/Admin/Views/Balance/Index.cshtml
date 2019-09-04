@@ -1,0 +1,48 @@
+﻿@{
+    ViewBag.Title = "Мій баланс";
+}
+@section styles{
+    <link href="~/Areas/Admin/assets/css/datepicker.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/Areas/Admin/assets/js/date-time/bootstrap-datepicker.min.js"></script>
+    <script>
+        $(".date-picker").datepicker();
+    </script>
+}
+<div>
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a data-toggle="tab" href="#hisory">
+                    Історія транзакцій
+                </a>
+            </li>
+            <li class="">
+                <a data-toggle="tab" href="#invoices">
+                    Рахунки на опату
+                    <span class="badge badge-danger">@ViewBag.NotPaidCount</span>
+                </a>
+            </li>
+
+            <li class="">
+                <a data-toggle="tab" href="#reports">
+                    Звіти
+                </a>
+            </li>
+
+        </ul>
+        <div class="tab-content no-border no-padding">
+            <div id="history" class="tab-pane active">
+                <p>Raw denim you probably haven't heard of them jean shorts Austin.</p>
+            </div>
+            <div id="invoices" class="tab-pane">
+                @Html.Action("Invoices")
+            </div>
+            <div id="reports" class="tab-pane">
+                <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade.</p>
+            </div>
+        </div>
+    </div>
+</div>

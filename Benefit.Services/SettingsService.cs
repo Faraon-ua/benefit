@@ -71,6 +71,24 @@ namespace Benefit.Services
             }
         }
 
+        public class Liqpay
+        {
+            public static string PublicKey
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["LiqpayPublicKey"];
+                }
+            }
+            public static string PrivateKey
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["LiqpayPrivateKey"];
+                }
+            }
+        }
+
         public class Telegram
         {
             public static string BotToken

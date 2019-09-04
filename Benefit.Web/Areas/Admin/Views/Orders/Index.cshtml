@@ -1,7 +1,7 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Common.Helpers
 @using Benefit.Domain.Models
-@model Benefit.Web.Models.Admin.OrdersFilters
+@model Benefit.Web.Models.Admin.AdminOrdersFilters
 @{
     ViewBag.Title = "Замовлення";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
@@ -10,8 +10,9 @@
 
     <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
-    @*<link href="~/Content/css/order-details.css" rel="stylesheet" />
-    <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.full.min.css" rel="stylesheet" />*@
+    <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet" />
 }
 @section scripts
 {
@@ -20,6 +21,106 @@
     <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+    <script>
+        var changeStatusUrl = '@Url.Action("UpdateStatus")';
+        var addCommentUrl = '@Url.Action("AddComment")';
+        $(function () {
+            var popOverSettings = {
+                placement: 'bottom',
+                container: 'body',
+                html: true,
+                selector: '[data-rel="popover"]',
+                content: function () {
+                    return $(this).next('.popover-content-wrapper').html();
+                }
+            };
+            $('[data-rel="hoverpopover"]').popover({
+                trigger: "hover",
+                placement: 'bottom'
+            });
+            $('body').popover(popOverSettings);
+
+            $("body").on("keyup", ".data-status-comment", function () {
+                if ($(this).val()) {
+                    $(".fn-add-comment-submit").prop("disabled", "");
+                }
+                else {
+                    $(".fn-add-comment-submit").prop("disabled", "disabled");
+                }
+            });
+            $("body").on("click", ".fn-add-comment-submit", function () {
+                var orderId = $(this).attr("data-order-id");
+                $.post(addCommentUrl, {
+                    orderId: orderId,
+                    status: $(this).attr("data-status"),
+                    comment: $(".data-status-comment").val()
+                }, function (data) {
+                    $(".data-status-wrap[data-order-id=" + orderId + "]").html(data.statusPartial);
+                });
+            });
+
+            $("body").on("change", ".status-list input", function () {
+                if (this.checked) {
+                    $(".fn-change-status-submit").prop("disabled", "");
+                    if ($(this).attr("data-status") == '@((int)OrderStatus.PassedToDelivery)') {
+                        $(this).parent().siblings(".data-delievery").show();
+                    }
+                    else {
+                        $(this).parent().siblings(".data-delievery").hide();
+                    }
+                    if ($(this).attr("data-status-schema") == 'danger' || $(this).attr("data-status-schema") == 'default') {
+                        var commentSection = $(".comment-section");
+                        commentSection.appendTo($(this).parent());
+                        commentSection.show();
+                    }
+                }
+            });
+            $("body").on("click", ".fn-change-status-submit", function () {
+                var btn = $(this);
+                var orderId = btn.attr("data-order-id");
+                var status = btn.parents(".change-status").find(".status-list input:checked").attr("data-status");
+                var comment = btn.parents(".status-wrap").find(".status-comment").val();
+                var model = { orderStatus: status, orderId: orderId, comment: comment };
+                var ttn = btn.parents(".change-status").find(".delievery-tracking").val();
+                if (ttn) {
+                    delieveryType = btn.parents(".change-status").find(".delievery-type").val();
+                    model.delieveryType = delieveryType;
+                    model.delieveryTracking = ttn;
+                }
+                $.post(changeStatusUrl, model, function (data) {
+                    $('[data-rel=popover]').popover('hide');
+                    $(".data-status-preview[data-order-id=" + orderId + "]").html(data.statusPreview);
+                    $(".data-status-wrap[data-order-id=" + orderId + "]").html(data.statusPartial);
+                });
+            });
+            $("body").on("click", ".fn-popover-close", function () {
+                $('[data-rel=popover]').popover('hide');
+            });
+
+            $(".images-thmb").each(function () {
+                var maxWidth = $(this).get(0).scrollWidth;
+                $(this).css("max-width", maxWidth + "px");
+                $(this).find("img").each(function () {
+                    $(this).attr("src", $(this).attr("data-src"));
+                })
+            })
+
+            $("body").on("click", ".order-number", function (e) {
+                e.preventDefault();
+                var orderWrap = $(this).parents(".order-wrap");
+                if (orderWrap.attr("data-collapsed") == "true") {
+                    orderWrap.animate({ height: orderWrap.get(0).scrollHeight }, 200);
+                    orderWrap.attr("data-collapsed", "false")
+                    $(".images-thmb").hide();
+                }
+                else {
+                    orderWrap.animate({ height: 54 }, 200);
+                    orderWrap.attr("data-collapsed", "true")
+                    $(".images-thmb").show();
+                }
+            });
+        })
+    </script>
     @if (User.IsInRole(DomainConstants.SuperAdminRoleName))
     {
         <script>
@@ -36,8 +137,7 @@
                             parent.remove();
                         }
                     });
-                }
-                );
+                });
             });
         </script>
     }
@@ -55,7 +155,8 @@
             //});
 
             $(".chosen-select").chosen({
-                search_contains: true
+                search_contains: true,
+                width: "360px"
             });
 
             $('#date-range-picker').daterangepicker({
@@ -102,49 +203,67 @@
         });
     </script>
 }
-@using (Html.BeginForm())
-{
-    <div class="page-header no-padding-bottom">
-        <h1 class="no-padding-bottom">Тип замовлення</h1>
-    </div>
-    <div class="row">
-        @Html.Hidden("page", Model)
-        <div class="col-md-3">
-            <a data-navtype="BenefitSite" class="btn switchNavigationType @(Model.NavigationType == OrderType.BenefitSite ? "btn-primary" : "")">Онлайн</a>
-            <a data-navtype="BenefitCard" class="btn switchNavigationType @(Model.NavigationType == OrderType.BenefitCard ? "btn-primary" : "")">Benefit Card</a>
-            @Html.Hidden("NavigationType", Model.NavigationType.ToString(), new { id = "navType" })
+<div class="filters-wrap display-flex border-bottom width-100">
+    @{ 
+        var status = 0;
+        int.TryParse(Request.QueryString["status"], out status);
+    }
+    <a class="filter-tab border-left border-right @(status == 0 ? "active" : "")" href="@Url.Action("Index", new { status=0 })">В обробці</a>
+    <a class="filter-tab border-right @(status == 1 ? "active" : "")" href="@Url.Action("Index", new { status=1 })">Успішно завершені</a>
+    <a class="filter-tab border-right @(status == 2 ? "active" : "")" href="@Url.Action("Index", new { status=2 })">Неуспішно завершені</a>
+    <a class="filter-tab border-right @(status == 3 ? "active" : "")" href="@Url.Action("Index", new { status=3 })">Створити замовлення</a>
+</div>
+<br />
+<div class="alert alert-secondary orders-filters">
+    @using (Html.BeginForm())
+    {
+        @*@Html.Hidden("page", Model)*@
+        <div style="width: 140px;">
+            <p>Номер замовлення</p>
+            <input type="text" class="form-control" name="OrderNumber" value="@Model.OrderNumber" />
         </div>
-        <div class="col-md-2">
-            @if (Model.NavigationType == OrderType.BenefitSite)
-            {
-                <input type="text" class="width-100 form-control number-input" name="OrderNumber" placeholder="Номер замовлення" value="@Model.OrderNumber" />
-            }
-            @if (Model.NavigationType == OrderType.BenefitCard)
-            {
-                <input type="text" class="width-100 form-control" name="PersonnelName" placeholder="І’мя касира" value="@Model.PersonnelName" />
-            }
+        <div style="width: 260px;">
+            <p>Назва товару / Код товару</p>
+            <input type="text" class="form-control" name="ProductName" value="@Model.ProductName" />
         </div>
-        <div class="col-md-2">
-            <input type="text" class="width-100 form-control" name="ClientName" placeholder="І’мя клієнта" value="@Model.ClientName" />
-        </div>
-
-        <div class="col-md-2">
-            @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName))
-            {
-                @Html.DropDownList("SellerId", Model.Sellers, "Вибрати постачальника", new { @class = "width-70 chosen-select" })
-            }
-        </div>
-        <div class="col-md-2">
+        @*<div style="width: 260px;">
+            <p>Статус замовлення</p>
+            @Html.EnumDropDownListFor(m => m.Status, "Не обрано")
+        </div>*@
+        <div style="width: 260px;">
+            <p>Дата замовлення</p>
             <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange">
         </div>
-        <div class="col-md-1">
-            <button type="submit" class="btn btn-purple btn-sm">
-                Фільтрувати
-            </button>
+        <div style="width: 200px;">
+            <p>Телефон</p>
+            <input type="text" class="form-control" name="Phone" value="@Model.Phone" />
         </div>
-    </div>
-    <div class="row">
-        <div class="col-md-3">
+        <div style="width: 260px;">
+            <p>ПІБ покупця</p>
+            <input type="text" class="form-control" name="ClientName" value="@Model.ClientName" />
+        </div>
+        <div style="width: 260px;">
+            <p>Коментар менеджера</p>
+            <input type="text" class="form-control" name="Comment" value="@Model.Comment" />
+        </div>
+        <div style="width: 250px;">
+            <p>Сума замовлення</p>
+            <input type="number" style="width:100px;" class="form-control display-inline" name="SumFrom" value="@Model.SumFrom" /> -
+            <input type="number" style="width:100px;" class="form-control display-inline" name="SumTo" value="@Model.SumTo" />
+        </div>
+        if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName))
+        {
+            <div style="width: 360px; margin-top:20px;">
+                @Html.DropDownList("SellerId", Model.Sellers, "Вибрати постачальника", new { @class = "chosen-select" })
+            </div>
+        }
+
+        @*<input type="text" class="width-100 form-control" name="ClientName" placeholder="І’мя клієнта" value="@Model.ClientName" />
+
+            <div class="col-md-2">
+                <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange">
+            </div>
+
             @Html.HiddenFor(m => m.PaymentType)
             <div class="page-header no-padding-bottom">
                 <h1 class="no-padding-bottom">Метод оплати</h1>
@@ -161,67 +280,61 @@
                     </li>
                 }
             </ul>
-        </div>
-        @if (Model.NavigationType == OrderType.BenefitSite)
-        {
             <div class="col-md-3">
                 @Html.HiddenFor(m => m.Status)
                 <div class="page-header no-padding-bottom">
                     <h1 class="no-padding-bottom">Статус</h1>
                 </div>
                 <ul style="list-style-type: none; margin: 0;">
-                    @foreach (Enum status in Enum.GetValues(typeof(OrderStatus)))
-                    {
-                        <li>
-                            @{
-                                var statusName = Enumerations.GetEnumDescription(status);
-                            }
-                            <input type="checkbox" name="StatusChk" value="@status" @(Model.Status.Contains(status.ToString()) ? "checked" : "") />
-                            <label for="@status">@statusName</label>
-                        </li>
-                    }
                 </ul>
-            </div>
-        }
-        @if (!string.IsNullOrEmpty(Model.DateRange))
-        {
-            <div class="col-md-3">
-                <div class="page-header no-padding-bottom">
-                    <h1 class="no-padding-bottom">Додаткові опції</h1>
-                </div>
-                <ul style="list-style-type: none; margin: 0;">
-                    <li>
-                        @Html.CheckBoxFor(m => m.ClientGrouping)
-                        <label for="ClientGrouping">Групувати за клієнтом</label>
-                    </li>
-                </ul>
-            </div>
-        }
-        <div class="col-md-3">
-            <div class="page-header no-padding-bottom">
-                <h1 class="no-padding-bottom">Сортування</h1>
-            </div>
-            <ul style="list-style-type: none; margin: 0;">
-                @foreach (var item in Model.Sorting)
+                @if (!string.IsNullOrEmpty(Model.DateRange))
                 {
-                    <li>
-                        <label>
-                            @Html.RadioButtonFor(m => m.Sort, item.Value)
-                            @Html.Raw(item.Text)
-                        </label>
-                    </li>
+                    <div class="col-md-3">
+                        <div class="page-header no-padding-bottom">
+                            <h1 class="no-padding-bottom">Додаткові опції</h1>
+                        </div>
+                        <ul style="list-style-type: none; margin: 0;">
+                            <li>
+                                @Html.CheckBoxFor(m => m.ClientGrouping)
+                                <label for="ClientGrouping">Групувати за клієнтом</label>
+                            </li>
+                        </ul>
+                    </div>
                 }
-            </ul>
+                <div class="col-md-3">
+                    <div class="page-header no-padding-bottom">
+                        <h1 class="no-padding-bottom">Сортування</h1>
+                    </div>
+                    <ul style="list-style-type: none; margin: 0;">
+                        @foreach (var item in Model.Sorting)
+                        {
+                            <li>
+                                <label>
+                                    @Html.RadioButtonFor(m => m.Sort, item.Value)
+                                    @Html.Raw(item.Text)
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        *@
+        <div style="clear:both; margin-top:25px;">
+            <button type="submit" class="btn btn-purple btn-sm">
+                Фільтрувати
+            </button>
         </div>
-    </div>
-}
+        <br style="clear:both" />
+    }
+
+</div>
 
 <div id="ordersList">
     @Html.Partial("_OrdersListPartial", Model.Orders)
 </div>
 
 <div class="page-header no-padding-bottom">
-    <h1 class="no-padding-bottom pull-left">Загальна сума обраних замовлень:</h1> <h1 class="orange">@Model.Sum.ToString("F") грн</h1>
+    <h1 class="no-padding-bottom pull-left">Загальна сума обраних замовлень:</h1> <h1 class="orange">@Model.TotalSum.ToString("F") грн</h1>
     <h1 class="no-padding-bottom pull-left">Кількість обраних замовлень:</h1> <h1 class="orange">@Model.Number.ToString("F")</h1>
 </div>
 
@@ -229,11 +342,11 @@
     <div class="modal-dialog" role="document" style="width:85%;">
         <div class="modal-content">
             <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <i class="icon icon-remove-sign"></i>
-                        @*<span aria-hidden="true">&times;</span>*@
-                    </button>
-                </div>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="icon icon-remove-sign"></i>
+                    @*<span aria-hidden="true">&times;</span>*@
+                </button>
+            </div>
             <div class="modal-body" id="order-details">
             </div>
             @*<div class="modal-footer">

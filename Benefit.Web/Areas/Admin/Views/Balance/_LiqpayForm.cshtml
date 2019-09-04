@@ -1,0 +1,10 @@
+﻿@model Benefit.DataTransfer.ViewModels.LiqpayViewModel
+
+<form method="POST" action="https://www.liqpay.ua/api/3/checkout" accept-charset="utf-8" target="_blank">
+    <input type="hidden" name="data" value="@Model.Base64Data" />
+    <input type="hidden" name="signature" value="@Model.Signature" />
+    @*        <input type="image" src="//static.liqpay.ua/buttons/p1ru.radius.png" />*@
+    <button type="submit" class="btn-link-i">
+        <i class="icon icon-credit-card font-bigger"></i>
+    </button>
+</form>

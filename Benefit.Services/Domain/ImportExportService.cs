@@ -34,7 +34,7 @@ namespace Benefit.Services.Domain
 
         public void FetchOffers(List<XElement> offers, Product product, List<ProductOption> variants, ProductOption currentVariant, string suffix, double priceChange, HttpRequest Request)
         {
-            foreach(var variant in currentVariant.ChildProductOptions)
+            foreach (var variant in currentVariant.ChildProductOptions)
             {
                 var newSuffix = suffix + string.Format("{0} {1} ", currentVariant.Name, variant.Name);
                 priceChange += variant.PriceGrowth;
@@ -122,14 +122,16 @@ namespace Benefit.Services.Domain
             }
 
             var productIds = exportTask.ExportProducts.Select(entry => entry.ProductId).ToList();
-            var products = db.Products
+            var products = db.Products.AsNoTracking()
                 .Include(entry => entry.Seller.ShippingMethods)
                 .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
                 .Include(entry => entry.ProductOptions.Select(op => op.ChildProductOptions))
                 .Include(entry => entry.Images)
                 .Include(entry => entry.Currency)
                 .Include(entry => entry.Category.ExportCategories)
+                .Include(entry => entry.Category.SellerCategories)
                 .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
+                .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
                 .Where(entry => productIds.Contains(entry.Id)).ToList();
 
             #region Categories
@@ -141,6 +143,7 @@ namespace Benefit.Services.Domain
                     foreach (var product in products.Where(entry => entry.CategoryId == dbcategories[i].Id))
                     {
                         product.CategoryId = dbcategories[i].MappedParentCategoryId;
+                        product.Category = dbcategories[i].MappedParentCategory;
                     }
                     dbcategories[i] = dbcategories[i].MappedParentCategory;
                 }
@@ -153,7 +156,7 @@ namespace Benefit.Services.Domain
                 if (!exportCategories.ContainsKey(id))
                 {
                     var catExport = dbCat.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId);
-                    var catName = catExport == null ? "Не задано мапінг" : catExport.Name;
+                    var catName = catExport == null ? "Не задано мапінг " + dbCat.Id : catExport.Name;
                     exportCategories.Add(id, catName);
                 }
             }
@@ -197,23 +200,32 @@ namespace Benefit.Services.Domain
                     prod.Add(new XElement("name", product.Name));
                     prod.Add(new XElement("vendor", product.Vendor));
                     prod.Add(new XElement("vendorCode", product.SKU));
-                    var price = product.Price;
                     if (product.Currency != null)
                     {
-                        price *= product.Currency.Rate;
+                        product.Price *= product.Currency.Rate;
                     }
-                    prod.Add(new XElement("price", price));
-                    prod.Add(new XElement("currencyId", "UAH"));
-                    prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
+                    var sellerCategory = product.Category.SellerCategories.FirstOrDefault(sc => sc.CategoryId == product.CategoryId && sc.SellerId == product.SellerId);
+                    if (sellerCategory != null && sellerCategory.CustomMargin.HasValue)
+                    {
+                        if (product.OldPrice.HasValue)
+                        {
+                            product.OldPrice += product.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                        }
+                        product.Price += product.Price * sellerCategory.CustomMargin.Value / 100;
+                    }
                     if (product.OldPrice.HasValue)
                     {
-                        var oldprice = product.OldPrice;
                         if (product.Currency != null)
                         {
-                            oldprice *= product.Currency.Rate;
+                            product.OldPrice *= product.Currency.Rate;
                         }
-                        prod.Add(new XElement("price_old", oldprice));
+                        prod.Add(new XElement("price_old", product.OldPrice));
                     }
+                    
+                    prod.Add(new XElement("price", product.Price));
+                    prod.Add(new XElement("currencyId", "UAH"));
+                    prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
+                    
                     prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
                     var categoryId = Math.Abs(product.CategoryId.GetHashCode());
                     if (product.Category.MappedParentCategory != null)
@@ -272,6 +284,10 @@ namespace Benefit.Services.Domain
             doc.Add(yml_catalog);
             if (savePath != null)
             {
+                if (File.Exists(savePath))
+                {
+                    File.Delete(savePath);
+                }
                 doc.Save(savePath);
             }
             return doc.ToString();
@@ -870,7 +886,7 @@ namespace Benefit.Services.Domain
                     var order = 0;
                     lock (lockObj)
                     {
-                        var existingImages = db.Images.Where(entry => entry.ProductId == product.Id).Select(entry=>entry.ImageUrl);
+                        var existingImages = db.Images.Where(entry => entry.ProductId == product.Id).Select(entry => entry.ImageUrl);
                         var newImages = xmlProduct.Elements("picture").Select(xmlImage => new Image()
                         {
                             Id = Guid.NewGuid().ToString(),
@@ -880,7 +896,7 @@ namespace Benefit.Services.Domain
                             Order = order++,
                             ProductId = product.Id,
                             IsImported = true
-                        }).Where(entry=>!existingImages.Contains(entry.ImageUrl));
+                        }).Where(entry => !existingImages.Contains(entry.ImageUrl));
                         imagesToAddList.AddRange(newImages);
                         //dbProductParameterProducts.AddRange(productParams);
                     }

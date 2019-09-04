@@ -48,7 +48,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var model = new List<Category>();
             if (!string.IsNullOrEmpty(search))
             {
-                model = db.Categories.Where(entry => entry.Name.ToLower().Contains(search.ToLower())).ToList();
+                model = db.Categories.Where(entry => entry.Name.ToLower().Contains(search.ToLower()) || entry.Id == search).ToList();
             }
             return View(model);
         }
@@ -135,7 +135,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Entry(category).State = EntityState.Modified;
                     var existingCategoryExports = db.ExportCategories.Where(entry => entry.CategoryId == category.Id).ToList();
                     db.ExportCategories.RemoveRange(existingCategoryExports);
-                    db.ExportCategories.AddRange(category.ExportCategories);
+                    db.SaveChanges();
+                    db.ExportCategories.AddRange(exportCategories);
                     var existingCat = db.Categories.Find(category.Id);
                     var children = existingCat.GetAllChildrenRecursively().Distinct(new CategoryComparer()).ToList();
                     children.ForEach(entry =>

@@ -1,0 +1,22 @@
+﻿@using Benefit.Domain.Models
+@using Benefit.Common.Helpers
+@model Order
+@{
+    var name = Enumerations.GetDisplayNameValue(Model.Status);
+    var color = Order.StatusColorMapping[Enumerations.GetDisplayShortNameValue(Model.Status)];
+}
+@if (Model.ShippingTrackingNumber == null)
+{
+    <div style="margin: 15px;">
+        <b class="status-text" style="color: @color;">@name</b>
+    </div>
+}
+else
+{
+    <div style="margin: 5px 0 0 15px;">
+        <b class="status-text" style="color: @color;">@name</b>
+        <div>ТТН:@Model.ShippingTrackingNumber</div>
+    </div>
+}
+
+

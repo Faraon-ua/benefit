@@ -245,6 +245,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminStuffController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BalanceController.cs" />
     <Compile Include="Areas\Admin\Controllers\BannersController.cs" />
     <Compile Include="Areas\Admin\Controllers\Base\AdminController.cs" />
     <Compile Include="Areas\Admin\Controllers\Base\CardsController.cs" />
@@ -313,9 +314,9 @@
     <Compile Include="Helpers\SiteMapHelper.cs" />
     <Compile Include="Helpers\UrlHelperExtension.cs" />
     <Compile Include="Helpers\VersionedFileHtmlHelper.cs" />
+    <Compile Include="Models\Admin\OrdersFilters.cs" />
     <Compile Include="Models\Admin\ProductFilters.cs" />
     <Compile Include="Models\ViewModels\AccountViewModels.cs" />
-    <Compile Include="Models\Admin\OrdersFilters.cs" />
     <Compile Include="Models\Admin\ProductsViewModel.cs" />
     <Compile Include="Models\Admin\UserFilters.cs" />
     <Compile Include="Models\Admin\SellerFilters.cs" />
@@ -792,6 +793,7 @@
     <Content Include="Scripts\admin.js" />
     <Content Include="Scripts\bootstrap-select.js" />
     <Content Include="Scripts\bootstrap-slider.min.js" />
+    <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Areas\Admin\Views\web.config" />
@@ -1031,6 +1033,11 @@
     <Content Include="Areas\Admin\Views\ProductParameters\_NewProductFeature.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ProductPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Dashboard\Cabinet.cshtml" />
+    <Content Include="Areas\Admin\Views\Balance\_LiqpayForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Balance\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Balance\_Invoices.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\_OrderStatusPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\_OrderStatusPreviewPartial.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -1577,7 +1584,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Admin\Models\ViewModels\" />
+    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Cabinet\Views\BasePartner\" />
     <Folder Include="Content\UserFiles\" />
     <Folder Include="Images\CategoryLogo\" />

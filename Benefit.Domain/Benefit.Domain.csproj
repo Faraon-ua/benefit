@@ -622,6 +622,10 @@
     <Compile Include="Migrations\201907290944117_AddBillInfoToSeller.Designer.cs">
       <DependentUpon>201907290944117_AddBillInfoToSeller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909041153328_AddProductSkuOrder.cs" />
+    <Compile Include="Migrations\201909041153328_AddProductSkuOrder.Designer.cs">
+      <DependentUpon>201909041153328_AddProductSkuOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1084,6 +1088,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201907290944117_AddBillInfoToSeller.resx">
       <DependentUpon>201907290944117_AddBillInfoToSeller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909041153328_AddProductSkuOrder.resx">
+      <DependentUpon>201909041153328_AddProductSkuOrder.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

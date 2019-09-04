@@ -63,6 +63,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="JSON\AutocompleteSearch.cs" />
     <Compile Include="Results\FavoritesResult.cs" />
+    <Compile Include="ViewModels\Admin\OrdersFilters.cs" />
     <Compile Include="ViewModels\AnketaViewModel.cs" />
     <Compile Include="ViewModels\Base\NavigationEntitiesViewModel.cs" />
     <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="ViewModels\CategoriesListViewModel.cs" />
     <Compile Include="ViewModels\CompleteOrderViewModel.cs" />
     <Compile Include="ViewModels\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\LiqpayViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\NavigationEntities\CategoriesViewModel.cs" />
     <Compile Include="ViewModels\NotificationsViewModel.cs" />

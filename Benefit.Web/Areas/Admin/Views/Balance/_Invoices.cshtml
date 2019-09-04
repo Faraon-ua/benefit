@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Benefit.Domain.Models.PaymentBill>
+@using Benefit.Common.Extensions
+@using Benefit.Common.Helpers
+@if (!Model.Any())
+{
+    <p>Немає жодного рахунку</p>
+}
+else
+{
+    <table class="rz-sellerbalance-table margin-top-20">
+        <thead>
+            <tr>
+                <th class="width-20">
+                    Дата
+                </th>
+                <th class="width-15">
+                    Тип
+                </th>
+                <th class="width-20">
+                    Номер рахунку
+                </th>
+                <th class="width-20">
+                    Сума
+                </th>
+                <th class="width-20">
+                    Статус оплати
+                </th>
+                <th class="width-5">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var invoice in Model)
+            {
+                <tr>
+                    <td>
+                        @invoice.Time.ToLocalDateTimeWithFormat()
+                    </td>
+                    <td>
+                        @Enumerations.GetDisplayNameValue(invoice.Type)
+                    </td>
+                    <td>
+                        <a href="#">
+                            @invoice.Number
+                        </a>
+                    </td>
+                    <td>
+                        @invoice.Sum.ToString("F") грн
+                    </td>
+                    <td class="@Enumerations.GetDisplayDescriptionValue(invoice.Status)">
+                        @Enumerations.GetDisplayNameValue(invoice.Status)
+                    </td>
+                    <td>
+                        @{
+                            var paymentDescr = string.Format("Передплата роялтi, згiдно рахунку №{0} від {1}, без ПДВ.", invoice.Number, invoice.Time.ToLocalTimeWithDateFormat());
+                        }
+                        @Html.Action("GetLiqpayForm", new { amount = invoice.Sum, description = paymentDescr, order_id = invoice.Number })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

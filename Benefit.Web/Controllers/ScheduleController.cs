@@ -52,10 +52,6 @@ namespace Benefit.Web.Controllers
                         Directory.CreateDirectory(destPath);
                     }
                     destPath = Path.Combine(destPath, "index.xml");
-                    if (System.IO.File.Exists(destPath))
-                    {
-                        System.IO.File.Delete(destPath);
-                    }
                     exportService.Export(export.Id, destPath);
                 }
             }

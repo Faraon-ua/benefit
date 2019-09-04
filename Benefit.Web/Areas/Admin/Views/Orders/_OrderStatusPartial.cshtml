@@ -1,0 +1,102 @@
+﻿@using Benefit.Domain.Models
+@using Benefit.Common.Helpers
+@using Benefit.Common.Extensions
+@model Order
+@{
+    List<OrderStatus> availableStatuses = null;
+    if (Order.AvailableStatuses.Keys.Contains(Model.Status))
+    {
+        availableStatuses = Order.AvailableStatuses[Model.Status];
+    }
+}
+@if (availableStatuses != null)
+{
+    <span class="btn-change-order-status fn-change-status" data-rel="popover" data-placement="bottom">Змінити статус замовлення</span>
+    <div class="popover-content-wrapper" style="display: none">
+        <div class="change-status">
+            <span class="popover-close fn-popover-close">
+                <i class="icon icon-remove-sign fn-popover-close"></i>
+            </span>
+            <div>
+                <b style="font-size: 1.2em; color:black;">Змінити статус замовлення</b>
+                <br />
+                <br />
+                <div class="status-list">
+                    @foreach (var status in availableStatuses)
+                    {
+                        <div class="status-wrap border-top">
+                            <label class="inline">
+                                <input type="radio" class="ace" name="order-status" data-status="@((int)status)" data-status-schema="@(Enumerations.GetDisplayShortNameValue(status))">
+                                <span class="lbl" style="color: @Order.StatusColorMapping[Enumerations.GetDisplayShortNameValue(status)]">@Enumerations.GetDisplayNameValue(status)</span>
+                            </label>
+                            @if (status == OrderStatus.PassedToDelivery)
+                            {
+                                <div style="display: none;" class="data-delievery">
+                                    <span>Служба доставки</span>
+                                    <br />
+                                    <input type="text" value="Нова Пошта" class="delievery-type" />
+                                    <br />
+                                    <span>Номер ТТН</span>
+                                    <br />
+                                    <input type="text" value="@Model.ShippingTrackingNumber" required class="delievery-tracking" />
+                                </div>
+                            }
+                        </div>
+
+                    }
+                </div>
+                <div class="padding-top-15">
+                    <button class="btn btn-info fn-change-status-submit" disabled data-order-id="@Model.Id">Змінити статус</button>
+                    <span class="fn-popover-close btn-change-order-status">Відміна</span>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<hr class="width-90" />
+<div>
+    <div class="order-user-name">@Model.User.FullName</div>
+    <div class="order-user-phone">@Model.User.PhoneNumber</div>
+</div>
+<hr class="width-90" />
+<div>
+    <div class="order-user-name">Коментар менеджера</div>
+    <div>
+        @{
+            var statusStamp = Model.OrderStatusStamps.OrderByDescending(entry => entry.Time).FirstOrDefault();
+            var comment = statusStamp == null ? string.Empty : statusStamp.Comment;
+        }
+        <div>
+            @comment
+        </div>
+        <div style="margin: 10px 0;">
+            <span class="btn-change-order-status fn-show-comments" data-rel="popover" data-placement="bottom">Всі коментарі менеджера</span>
+        </div>
+        <div class="popover-content-wrapper" style="display: none">
+            <div class="change-status">
+                <span class="popover-close fn-popover-close">
+                    <i class="icon icon-remove-sign fn-popover-close"></i>
+                </span>
+                <div>
+                    <b style="font-size: 1.2em; color:black;">Історія коментарів менеджера</b>
+                    <br />
+                    <br />
+                    <div class="comments-list">
+                        @foreach (var stamp in Model.OrderStatusStamps.Where(entry => !string.IsNullOrEmpty(entry.Comment)).OrderBy(entry => entry.Time))
+                        {
+                            <p>
+                                @stamp.Time.ToLocalDateTimeWithFormat() <b>@stamp.UpdatedBy</b><br />
+                                <i class="icon icon-circle" style="color:#4ebf42; margin-right:5px;"></i>@stamp.Comment
+                            </p> 
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <p>Додати коментар</p>
+        <textarea name="statusComment" class="data-status-comment" style="width: 300px; height:50px;"></textarea>
+        <button class="btn btn-info fn-add-comment-submit" disabled data-order-id="@Model.Id" data-status="@((int)Model.Status)">Зберегти</button>
+    </div>
+</div>

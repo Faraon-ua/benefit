@@ -40,13 +40,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         // GET: /Admin/Orders/
-        public ActionResult Index(OrdersFilters ordersFilters, int page = 0)
+        public ActionResult Index(AdminOrdersFilters ordersFilters, int page = 0)
         {
             var takePerPage = 50;
 
             var orders =
-                db.Orders.Include(o => o.User)
-                    .Where(entry => entry.OrderType == ordersFilters.NavigationType);
+                db.Orders
+                .Include(o => o.User)
+                .Include(o => o.OrderStatusStamps)
+                .Include(o => o.OrderProducts);
 
             if (Seller.CurrentAuthorizedSellerId != null)
             {
@@ -62,13 +64,44 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                      DbFunctions.DiffHours(o.Time, entry.Time) < seller.RepeatingTransactionInterval)).ToList().ForEach(entry => entry.IsRepeating = true);
                 }
             }
-            if (!string.IsNullOrEmpty(ordersFilters.ClientName))
+
+            if (ordersFilters.Status == null)
             {
-                orders = orders.Where(entry => entry.User.FullName.ToLower().Contains(ordersFilters.ClientName.ToLower()));
+                ordersFilters.Status = 0;
             }
-            if (!string.IsNullOrEmpty(ordersFilters.PersonnelName))
+            switch (ordersFilters.Status)
             {
-                orders = orders.Where(entry => entry.PersonnelName.ToLower().Contains(ordersFilters.PersonnelName.ToLower()));
+                case 0:
+                    orders = orders.Where(entry => entry.Status == OrderStatus.Created ||
+                                                   entry.Status == OrderStatus.PassedToDelivery ||
+                                                   entry.Status == OrderStatus.Processed ||
+                                                   entry.Status == OrderStatus.AwaitingDelivery ||
+                                                   entry.Status == OrderStatus.IsDelivering ||
+                                                   entry.Status == OrderStatus.AwaitingDelivery ||
+                                                   entry.Status == OrderStatus.WaitingInSelfPickup);
+                    break;
+                case 1:
+                    orders = orders.Where(entry => entry.Status == OrderStatus.Finished);
+                    break;
+                case 2:
+                    orders = orders.Where(entry => entry.Status != OrderStatus.Created &&
+                                                   entry.Status != OrderStatus.Processed &&
+                                                   entry.Status != OrderStatus.AwaitingDelivery &&
+                                                   entry.Status != OrderStatus.IsDelivering &&
+                                                   entry.Status != OrderStatus.Finished &&
+                                                   entry.Status != OrderStatus.AwaitingDelivery &&
+                                                   entry.Status != OrderStatus.WaitingInSelfPickup);
+                    break;
+            }
+
+            if (ordersFilters.OrderNumber.HasValue)
+            {
+                orders = orders.Where(entry => entry.OrderNumber == ordersFilters.OrderNumber);
+            }
+            if (!string.IsNullOrEmpty(ordersFilters.ProductName))
+            {
+                orders = orders.Where(entry => entry.OrderProducts.Select(op => op.ProductName).Any(pn=>pn.ToLower().Contains(ordersFilters.ProductName.ToLower())) ||
+                entry.OrderProducts.Select(op => op.ProductSku.ToString()).Contains(ordersFilters.ProductName));
             }
             if (!string.IsNullOrEmpty(ordersFilters.DateRange))
             {
@@ -77,33 +110,24 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
                 orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
             }
+           
+            if (!string.IsNullOrEmpty(ordersFilters.Phone))
+            {
+                orders = orders.Where(entry => entry.User.PhoneNumber.Contains(ordersFilters.Phone));
+            }
+            if (!string.IsNullOrEmpty(ordersFilters.ClientName))
+            {
+                orders = orders.Where(entry => entry.User.FullName.ToLower().Contains(ordersFilters.ClientName.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(ordersFilters.Comment))
+            {
+                orders = orders.Where(entry => entry.OrderStatusStamps.Select(s=>s.Comment).Any(st=> st.ToLower().Contains(ordersFilters.Comment.ToLower())));
+            }
             if (ordersFilters.SellerId != null)
             {
                 orders = orders.Where(entry => entry.SellerId == ordersFilters.SellerId);
             }
-            if (!string.IsNullOrEmpty(ordersFilters.PaymentType))
-            {
-                orders = orders.Where(entry => ordersFilters.PaymentType.Contains(entry.PaymentType.ToString()));
-            }
-            else
-            {
-                ordersFilters.PaymentType = string.Empty;
-            }
-            if (ordersFilters.NavigationType == OrderType.BenefitSite)
-            {
-                if (!string.IsNullOrEmpty(ordersFilters.Status))
-                {
-                    orders = orders.Where(entry => ordersFilters.Status.Contains(entry.Status.ToString()));
-                }
-                else
-                {
-                    ordersFilters.Status = string.Empty;
-                }
-                if (ordersFilters.OrderNumber.HasValue)
-                {
-                    orders = orders.Where(entry => entry.OrderNumber == ordersFilters.OrderNumber);
-                }
-            }
+
             if (ordersFilters.ClientGrouping)
             {
                 var groupedOrders =
@@ -129,16 +153,41 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
             }
             var ordersTotal = orders.Count();
-            ordersFilters.Sum = orders.ToList().Select(l => l.SumWithDiscount).DefaultIfEmpty(0).Sum();
+            ordersFilters.TotalSum = orders.ToList().Select(l => l.SumWithDiscount).DefaultIfEmpty(0).Sum();
             ordersFilters.Number = orders.Count();
             orders = orders.Skip(page * takePerPage).Take(takePerPage);
-
             ordersFilters.Orders = new PaginatedList<Order>
             {
                 Items = orders.ToList(),
                 Pages = ordersTotal / takePerPage + 1,
                 ActivePage = page
             };
+            var productIdsInOrders = ordersFilters.Orders.Items.SelectMany(entry => entry.OrderProducts).Select(entry => entry.ProductId).Distinct().ToList();
+            var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
+            ordersFilters.Orders.Items.ForEach(order =>
+            {
+                foreach (var orderProduct in order.OrderProducts)
+                {
+                    var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                    if (product != null)
+                    {
+                        orderProduct.ProductSku = product.SKU;
+                        orderProduct.IsWeightProduct = product.IsWeightProduct;
+                        var productImg = product.Images.FirstOrDefault();
+                        if (productImg != null)
+                        {
+                            if (productImg.IsAbsoluteUrl)
+                            {
+                                orderProduct.ProductImageUrl = productImg.ImageUrl;
+                            }
+                            else
+                            {
+                                orderProduct.ProductImageUrl = string.Format("~/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
+                            }
+                        }
+                    }
+                }
+            });
             ordersFilters.Sorting = (from OrderSortOption sortOption in Enum.GetValues(typeof(OrderSortOption))
                                      select
                                          new SelectListItem()
@@ -151,6 +200,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 db.Sellers.OrderBy(entry => entry.Name)
                     .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
             return View(ordersFilters);
+        }
+
+        public ActionResult GetStatus(string orderId)
+        {
+            var order = db.Orders.Find(orderId);
+            return PartialView("_OrderStatusPartial", order);
+        }
+
+        public ActionResult GetProcessed()
+        {
+
+            return View();
         }
 
         public ActionResult Print(string id)
@@ -169,18 +230,35 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId)
+        public ActionResult AddComment(string orderId, OrderStatus status, string comment)
+        {
+            var statusStamp = new OrderStatusStamp()
+            {
+                Id = Guid.NewGuid().ToString(),
+                OrderId = orderId,
+                OrderStatus = status,
+                Time = DateTime.UtcNow,
+                Comment = comment,
+                UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+            };
+            db.OrderStatusStamps.Add(statusStamp);
+            db.SaveChanges();
+            var order = db.Orders.Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == orderId);
+            var partialHtml = ControllerContext.RenderPartialToString("_OrderStatusPartial", order);
+            return Json(new { statusPartial = partialHtml });
+
+        }
+        [HttpPost]
+        public ActionResult UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId, string delieveryType, string delieveryTracking)
         {
             using (var dbTransaction = db.Database.BeginTransaction())
             {
                 try
                 {
                     var order = db.Orders.Find(orderId);
-                    if (order.Status == OrderStatus.Abandoned || order.Status == OrderStatus.Finished)
-                    {
-                        return Json(new { error = "Статус Замовлення не може бути змінено, будь ласка оновіть сторінку" });
-                    }
                     order.Status = orderStatus;
+                    order.ShippingName = delieveryType;
+                    order.ShippingTrackingNumber = delieveryTracking;
 
                     var statusStamp = new OrderStatusStamp()
                     {
@@ -223,7 +301,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Entry(order).State = EntityState.Modified;
                     db.SaveChanges();
                     dbTransaction.Commit();
-                    return Json(new { status = true });
+                    var partialHtml = ControllerContext.RenderPartialToString("_OrderStatusPartial", order);
+                    var statusPreviewHtml = ControllerContext.RenderPartialToString("_OrderStatusPreviewPartial", order);
+                    return Json(new { statusPartial = partialHtml, statusPreview = statusPreviewHtml });
                 }
                 catch (Exception ex)
                 {

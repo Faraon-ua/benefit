@@ -23,12 +23,11 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string ProductId { get; set; }
         public string ProductName { get; set; }
+        public int? ProductSku { get; set; }
         [NotMapped]
         public string SellerId { get; set; }
         [NotMapped]
         public string ProductUrlName { get; set; }
-        [NotMapped]
-        public int ProductSku { get; set; }
         [NotMapped]
         public string ProductImageUrl { get; set; }
         public double ProductPrice { get; set; }

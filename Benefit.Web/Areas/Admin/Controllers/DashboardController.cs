@@ -7,6 +7,7 @@ using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Common.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -42,13 +43,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 Seller = db.Sellers.Include(entry => entry.Transactions).AsNoTracking().FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId),
                 //Transactions = db.Transactions.Where(entry=>entry.)
+                
             };
             return View(model);
         }
 
-        public ActionResult GetLiqpayForm(double amount, string description)
+        [HttpPost]
+        public ActionResult CreateBill(double sum)
         {
-            return PartialView();
+            var maxNumber = db.PaymentBills.Select(entry => entry.InnerNumber).DefaultIfEmpty(10000).Max() + 1;
+            var bill = new PaymentBill()
+            {
+                Id = Guid.NewGuid().ToString(),
+                Type = BillType.Royalty,
+                Status = BillStatus.AwaitingPayment,
+                SellerId = Seller.CurrentAuthorizedSellerId,
+                Sum = sum,
+                Time = DateTime.UtcNow,
+                InnerNumber = maxNumber,
+                Number = string.Format("{0}-{1}", Enumerations.GetEnumDescription(BillType.Royalty), maxNumber.ToString("D8"))
+            };
+            db.PaymentBills.Add(bill);
+            db.SaveChanges();
+            return new HttpStatusCodeResult(200);
         }
 
         [Authorize(Roles = DomainConstants.AdminRoleName)]

@@ -72,6 +72,7 @@ namespace Benefit.Services.Cart
                         .Include(entry => entry.Images)
                         .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
                 orderProduct.ProductName = product.Name + orderProduct.NameSuffix;
+                orderProduct.ProductSku = product.SKU;
                 if (!string.IsNullOrEmpty(product.ExternalId))
                 {
                     orderProduct.ProductName += string.Format(" ({0})", product.ExternalId);

@@ -13,6 +13,7 @@ namespace Benefit.Domain.Migrations
                     {
                         Id = c.String(nullable: false, maxLength: 128),
                         Number = c.String(nullable: false),
+                        InnerNumber = c.Int(nullable: false),
                         Time = c.DateTime(nullable: false),
                         Type = c.Int(nullable: false),
                         Sum = c.Double(nullable: false),
@@ -26,6 +27,7 @@ namespace Benefit.Domain.Migrations
             
             AddColumn("dbo.Sellers", "CurrentBill", c => c.Double(nullable: false));
             AddColumn("dbo.Sellers", "GreyZone", c => c.Double(nullable: false));
+            AddColumn("dbo.Orders", "ShippingTrackingNumber", c => c.String(maxLength: 64));
             AddColumn("dbo.Transactions", "SellerId", c => c.String(maxLength: 128));
             CreateIndex("dbo.Transactions", "SellerId");
             AddForeignKey("dbo.Transactions", "SellerId", "dbo.Sellers", "Id");
@@ -38,6 +40,7 @@ namespace Benefit.Domain.Migrations
             DropIndex("dbo.PaymentBills", new[] { "SellerId" });
             DropIndex("dbo.Transactions", new[] { "SellerId" });
             DropColumn("dbo.Transactions", "SellerId");
+            DropColumn("dbo.Orders", "ShippingTrackingNumber");
             DropColumn("dbo.Sellers", "GreyZone");
             DropColumn("dbo.Sellers", "CurrentBill");
             DropTable("dbo.PaymentBills");

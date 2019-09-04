@@ -5063,6 +5063,21 @@ a.thumbnail:focus {
   color: #2d6987;
 }
 
+.alert-secondary {
+    color: #383d41;
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+}
+
+    .alert-secondary hr {
+        border-top-color: #c8cbcf;
+    }
+
+    .alert-secondary .alert-link {
+        color: #202326;
+    }
+
+
 .alert-warning {
   color: #c09853;
   background-color: #fcf8e3;

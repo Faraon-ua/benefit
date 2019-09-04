@@ -9,6 +9,7 @@ using Benefit.Common.Extensions;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Web.Models.Admin;
 
 namespace Benefit.Services.Domain
 {
@@ -16,16 +17,119 @@ namespace Benefit.Services.Domain
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        public List<Order> GetOrders(string sellerId, int skip, int take = ListConstants.DefaultTakePerPage)
-        {
-            var orders = db.Orders as IQueryable<Order>;
-            if (sellerId != null)
-            {
-                orders = orders.Where(entry => entry.SellerId == sellerId);
-            }
-            orders = orders.OrderByDescending(entry => entry.Time);
-            return orders.Skip(skip).Take(take).ToList();
-        }
+        //public List<Order> GetOrders(OrdersFilters ordersFilters, int page = 0)
+        //{
+        //    var takePerPage = 50;
+
+        //    var orders =
+        //        db.Orders.Include(o => o.User)
+        //            .Where(entry => entry.OrderType == ordersFilters.NavigationType);
+
+        //    if (Seller.CurrentAuthorizedSellerId != null)
+        //    {
+        //        orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+        //        var seller = db.Sellers.Find(Seller.CurrentAuthorizedSellerId);
+        //        if (seller.RepeatingTransactionInterval != null)
+        //        {
+        //            orders.Where(
+        //                entry =>
+        //                    orders.Any(
+        //                        o => o.Id != entry.Id &&
+        //                            o.UserId == entry.UserId &&
+        //                             DbFunctions.DiffHours(o.Time, entry.Time) < seller.RepeatingTransactionInterval)).ToList().ForEach(entry => entry.IsRepeating = true);
+        //        }
+        //    }
+        //    if (!string.IsNullOrEmpty(ordersFilters.ClientName))
+        //    {
+        //        orders = orders.Where(entry => entry.User.FullName.ToLower().Contains(ordersFilters.ClientName.ToLower()));
+        //    }
+        //    if (!string.IsNullOrEmpty(ordersFilters.PersonnelName))
+        //    {
+        //        orders = orders.Where(entry => entry.PersonnelName.ToLower().Contains(ordersFilters.PersonnelName.ToLower()));
+        //    }
+        //    if (!string.IsNullOrEmpty(ordersFilters.DateRange))
+        //    {
+        //        var dateRangeValues = ordersFilters.DateRange.Split('-');
+        //        var startDate = DateTime.Parse(dateRangeValues.First());
+        //        var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
+        //        orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
+        //    }
+        //    if (ordersFilters.SellerId != null)
+        //    {
+        //        orders = orders.Where(entry => entry.SellerId == ordersFilters.SellerId);
+        //    }
+        //    if (!string.IsNullOrEmpty(ordersFilters.PaymentType))
+        //    {
+        //        orders = orders.Where(entry => ordersFilters.PaymentType.Contains(entry.PaymentType.ToString()));
+        //    }
+        //    else
+        //    {
+        //        ordersFilters.PaymentType = string.Empty;
+        //    }
+        //    if (ordersFilters.NavigationType == OrderType.BenefitSite)
+        //    {
+        //        if (!string.IsNullOrEmpty(ordersFilters.Status))
+        //        {
+        //            orders = orders.Where(entry => ordersFilters.Status.Contains(entry.Status.ToString()));
+        //        }
+        //        else
+        //        {
+        //            ordersFilters.Status = string.Empty;
+        //        }
+        //        if (ordersFilters.OrderNumber.HasValue)
+        //        {
+        //            orders = orders.Where(entry => entry.OrderNumber == ordersFilters.OrderNumber);
+        //        }
+        //    }
+        //    if (ordersFilters.ClientGrouping)
+        //    {
+        //        var groupedOrders =
+        //            orders.GroupBy(entry => entry.UserId).OrderByDescending(entry => entry.Count()).ToList();
+        //        orders = groupedOrders.SelectMany(entry => entry.OrderByDescending(grp => grp.Time)).AsQueryable();
+        //    }
+        //    else
+        //    {
+        //        switch (ordersFilters.Sort)
+        //        {
+        //            case OrderSortOption.DateAsc:
+        //                orders = orders.OrderBy(entry => entry.Time);
+        //                break;
+        //            case OrderSortOption.DateDesc:
+        //                orders = orders.OrderByDescending(entry => entry.Time);
+        //                break;
+        //            case OrderSortOption.SumAsc:
+        //                orders = orders.OrderBy(entry => entry.Sum);
+        //                break;
+        //            case OrderSortOption.SumDesc:
+        //                orders = orders.OrderByDescending(entry => entry.Sum);
+        //                break;
+        //        }
+        //    }
+        //    var ordersTotal = orders.Count();
+        //    ordersFilters.Sum = orders.ToList().Select(l => l.SumWithDiscount).DefaultIfEmpty(0).Sum();
+        //    ordersFilters.Number = orders.Count();
+        //    orders = orders.Skip(page * takePerPage).Take(takePerPage);
+
+        //    ordersFilters.Orders = new PaginatedList<Order>
+        //    {
+        //        Items = orders.ToList(),
+        //        Pages = ordersTotal / takePerPage + 1,
+        //        ActivePage = page
+        //    };
+        //    ordersFilters.Sorting = (from OrderSortOption sortOption in Enum.GetValues(typeof(OrderSortOption))
+        //                             select
+        //                                 new SelectListItem()
+        //                                 {
+        //                                     Text = Enumerations.GetEnumDescription(sortOption),
+        //                                     Value = sortOption.ToString(),
+        //                                     Selected = sortOption == ordersFilters.Sort
+        //                                 }).ToList();
+        //    ordersFilters.Sellers =
+        //        db.Sellers.OrderBy(entry => entry.Name)
+        //            .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
+        //}
+
+        
 
         public string AddOrder(CompleteOrder model)
         {

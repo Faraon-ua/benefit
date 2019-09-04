@@ -1,4 +1,256 @@
-﻿.feature_name {
+﻿.filters-wrap{}
+    .filters-wrap .filter-tab.active {
+        border-top: solid 3px #74d46b;
+        color: #333;
+    }
+    .filters-wrap .filter-tab:not(.active):hover {
+        color: #fb3f4c;
+        border-top: solid 2px #fb3f4c;
+    }
+
+.filters-wrap .filter-tab{
+    padding: 8px 15px;
+    display: block;
+}
+.comments-list {
+    color: #333;
+}
+
+.data-status-wrap {
+    padding-left: 15px;
+}
+
+.order-user-name {
+    font-weight: 700;
+    font-size: 17px;
+    margin-bottom: 16px;
+    color: #000;
+}
+
+.order-user-name {
+    font-size: 15px;
+}
+
+.popover {
+    max-width: 400px !important;
+}
+
+.status-wrap {
+    padding: 5px;
+}
+
+    .status-wrap .lbl::before {
+        margin-right: 5px !important;
+    }
+
+.change-status {
+    position: relative;
+    width: 400px;
+    padding: 10px;
+}
+
+    .change-status .data-delievery span, .change-status .comment-section span {
+        font-size: 13px;
+        color: #333;
+    }
+
+    .change-status .data-delievery, .change-status .comment-section {
+        margin: 15px 30px;
+    }
+
+    .change-status .status-list {
+        width: 95%;
+        max-height: 350px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
+
+        .change-status .status-list .status-wrap {
+            width: 350px;
+        }
+
+    .change-status .popover-close {
+        font-size: 2em;
+        color: #c7cdd1;
+        position: absolute;
+        top: -10px;
+        right: 20px;
+        cursor: pointer;
+    }
+
+        .change-status .popover-close:hover {
+            color: #fb3f4c;
+        }
+
+.btn-change-order-status {
+    text-decoration: none;
+    border-bottom: 1px dotted;
+    color: #3e77aa;
+    cursor: pointer;
+}
+
+    .btn-change-order-status:hover {
+        color: #fb3f4c;
+        text-decoration: none;
+    }
+
+.product-wrap {
+    padding: 10px;
+}
+
+    .product-wrap img {
+        max-width: 180px;
+        max-height: 80px;
+    }
+
+    .product-wrap .product-price {
+        background: #fff3b5;
+        border-radius: 4px;
+        display: inline-block;
+        font-size: 18px;
+        line-height: 18px;
+        padding: 7px 9px 5px;
+    }
+
+    .product-wrap .product-purchase-info {
+        color: #333;
+    }
+
+.product-title {
+    color: #333;
+    width: 80%;
+    max-width: 600px;
+    word-wrap: break-word;
+}
+
+.product-secondary {
+    color: #999;
+    font-size: 13px;
+}
+
+.orders-list div.order-wrap {
+    border-radius: 7px;
+    width: 100%;
+    border: 1px solid #ececec;
+    margin: 5px 0;
+    font-size: 14px;
+    height: 54px;
+    overflow: hidden;
+}
+
+    .orders-list div.order-wrap:hover {
+        box-shadow: 0 0 13px 0 rgba(0,0,0,.4)
+    }
+
+    .orders-list div.order-wrap .col {
+        padding: 15px;
+    }
+
+    .orders-list div.order-wrap .images-thmb {
+        overflow: hidden;
+        height: 30px;
+    }
+
+        .orders-list div.order-wrap .images-thmb img {
+            max-height: 30px;
+        }
+
+.order-wrap .status-text {
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.order-wrap .tracking-number {
+    font-size: 11px;
+    font-weight: 400;
+    color: #333;
+}
+
+.orders-list div.order-wrap .order-preview {
+    display: flex;
+    width: 100%;
+}
+
+.orders-list div.order-wrap .order-number-wrap i {
+    opacity: 0.7;
+    font-size: 19px;
+    cursor:pointer;
+}
+
+    .orders-list div.order-wrap .order-number-wrap i:hover {
+        opacity: 1;
+    }
+
+.orders-list div.order-wrap .order-number {
+    font-size: 15px;
+    padding-right: 10px;
+}
+
+    .orders-list div.order-wrap .order-number:hover {
+        text-decoration: none;
+    }
+
+.orders-filters div p {
+    font-size: 13px;
+    margin-bottom: 3px;
+}
+
+.orders-filters form {
+    width:100%;
+    display:flex;
+    flex-wrap: wrap;
+}
+
+.orders-filters div {
+    margin-top: 10px;
+    margin-right: 20px;
+}
+
+.orders-filters input, .orders-filters select {
+    height: 30px;
+    width: 100%;
+}
+
+.btn-link-i {
+    background: 0 0;
+    border: 0;
+    color: #333;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    outline: 0;
+    text-align: center;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+    .btn-link-i i {
+        color: #438eb9;
+    }
+
+        .btn-link-i i:hover {
+            color: red;
+        }
+
+.rz-sellerbalance-table {
+    display: table;
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid;
+}
+
+    .rz-sellerbalance-table tr {
+        border: 1px solid;
+        border-radius: 24px;
+        border-color: rgb(100,100,100,0.25);
+    }
+
+        .rz-sellerbalance-table tr td, .rz-sellerbalance-table tr th {
+            padding: 10px;
+        }
+
+.feature_name {
     float: left;
     font-style: normal;
     font-stretch: normal;

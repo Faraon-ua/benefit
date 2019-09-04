@@ -114,6 +114,7 @@
     <Compile Include="EmailService.cs" />
     <Compile Include="Domain\ImagesService.cs" />
     <Compile Include="Domain\LocalizationService.cs" />
+    <Compile Include="EncodingService.cs" />
     <Compile Include="ExternalApi\Facebook.cs" />
     <Compile Include="ExternalApi\Rozetka.cs" />
     <Compile Include="Files\FilesExportService.cs" />
