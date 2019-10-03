@@ -61,6 +61,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<ExportProduct> ExportProducts { get; set; }
         public DbSet<ExportCategory> ExportCategories { get; set; }
         public DbSet<PaymentBill> PaymentBills { get; set; }
+        public DbSet<SellerTransaction> SellerTransactions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

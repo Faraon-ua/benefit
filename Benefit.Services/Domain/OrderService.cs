@@ -133,7 +133,7 @@ namespace Benefit.Services.Domain
 
         public string AddOrder(CompleteOrder model)
         {
-            var seller = db.Sellers.FirstOrDefault(entry => entry.Id == model.Order.SellerId);
+            var seller = db.Sellers.Include(entry=>entry.SellerCategories).FirstOrDefault(entry => entry.Id == model.Order.SellerId);
             var order = model.Order;
             order.Id = Guid.NewGuid().ToString();
             var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
@@ -182,6 +182,33 @@ namespace Benefit.Services.Domain
                     orderProductOption.OrderProductId = product.Id;
                     db.OrderProductOptions.Add(orderProductOption);
                 }
+                //add seller transaction
+                var dbProduct = db.Products.Include(entry => entry.Seller.SellerCategories).FirstOrDefault(entry => entry.Id == product.ProductId);
+                var sellerCategory =
+                   seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == dbProduct.CategoryId) ??
+                   seller.SellerCategories.FirstOrDefault(entry =>
+                       entry.CategoryId == dbProduct.Category.MappedParentCategoryId);
+                var comissionPercent = sellerCategory == null ? dbProduct.Seller.TotalDiscount : sellerCategory.CustomDiscount ?? dbProduct.Seller.TotalDiscount;
+                var sellerTransaction = new SellerTransaction()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Number = db.SellerTransactions.Select(entry => entry.Number).DefaultIfEmpty(10000).Max() + 1,
+                    SellerId = model.Order.SellerId,
+                    Time = DateTime.UtcNow,
+                    ProductSKU = product.ProductSku.Value,
+                    ProductUrlName = product.ProductUrlName,
+                    Amount = product.Amount,
+                    Price = product.ActualPrice,
+                    TotalPrice = product.ActualPrice * product.Amount,
+                    Type = SellerTransactionType.Reserve,
+                    OrderNumber = model.Order.OrderNumber,
+                    Charge = null,
+                    Writeoff = (product.ActualPrice * product.Amount) * comissionPercent / 100,
+                    Balance = seller.CurrentBill,
+                    GreyZoneBalance = seller.GreyZone + (product.ActualPrice * product.Amount) * comissionPercent / 100
+                };
+                seller.GreyZone = sellerTransaction.GreyZoneBalance;
+                db.SellerTransactions.Add(sellerTransaction);
             }
             db.SaveChanges();
 

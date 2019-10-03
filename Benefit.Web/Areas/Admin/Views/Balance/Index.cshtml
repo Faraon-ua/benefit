@@ -1,21 +1,92 @@
-﻿@{
+﻿@using Benefit.Common.Extensions
+@using Benefit.Common.Helpers
+@model Benefit.DataTransfer.ViewModels.BalanceViewModel
+@{
     ViewBag.Title = "Мій баланс";
 }
 @section styles{
     <link href="~/Areas/Admin/assets/css/datepicker.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
     <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
 }
 @section scripts{
     <script src="~/Areas/Admin/assets/js/date-time/bootstrap-datepicker.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/flot/jquery.flot.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/flot/jquery.flot.pie.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/flot/jquery.flot.resize.min.js"></script>
     <script>
-        $(".date-picker").datepicker();
+        var createBillUrl = '@Url.Action("CreateBill")';
+        $(function () {
+             $(".date-picker").datepicker();
+             $('#date-range-picker').daterangepicker({
+                locale: {
+                    format: 'DD.MM.YYYY',
+                    "applyLabel": "Ок",
+                    "cancelLabel": "Відміна",
+                    "customRangeLabel": "Обрати період"
+                },
+                ranges: {
+                    'Сьогодні': [moment(), moment()],
+                    'Вчора': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Цей тиждень': [moment().startOf('week'), moment().endOf('week')],
+                    'Цей Місяць': [moment().startOf('month'), moment().endOf('month')],
+                    'Останній місяць': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                },
+                autoApply: true
+            });
+
+            $("#fn-create-bill").click(function () {
+                var sum = $("#data-bill-sum").val();
+                $.post(createBillUrl, { sum: sum }, function (data) {
+                    flashMessage("Рахунок на оплату створено", false, true);
+                });
+            });
+
+            var placeholder = $('#piechart-placeholder').css({ 'width': '90%', 'min-height': '250px' });
+            var data = [
+                { label: "В обробці", data: 24.5, color: "#2091CF" },
+                { label: "Успішно завершені", data: 38.7, color: "#68BC31" },
+                { label: "Неуспішно завершені", data: 18.6, color: "#DA5430" }
+            ]
+            function drawPieChart(placeholder, data, position) {
+                $.plot(placeholder, data, {
+                    series: {
+                        pie: {
+                            show: true,
+                            tilt: 0.8,
+                            highlight: {
+                                opacity: 0.25
+                            },
+                            stroke: {
+                                color: '#fff',
+                                width: 2
+                            },
+                            startAngle: 2
+                        }
+                    },
+                    legend: {
+                        show: true,
+                        position: position || "ne",
+                        labelBoxBorderColor: null,
+                        margin: [-30, 15]
+                    }
+                    ,
+                    grid: {
+                        hoverable: true,
+                        clickable: true
+                    }
+                })
+            }
+            drawPieChart(placeholder, data);
+        });
     </script>
 }
 <div>
     <div class="tabbable">
         <ul class="nav nav-tabs">
             <li class="active">
-                <a data-toggle="tab" href="#hisory">
+                <a data-toggle="tab" href="#history">
                     Історія транзакцій
                 </a>
             </li>
@@ -25,7 +96,6 @@
                     <span class="badge badge-danger">@ViewBag.NotPaidCount</span>
                 </a>
             </li>
-
             <li class="">
                 <a data-toggle="tab" href="#reports">
                     Звіти
@@ -34,8 +104,127 @@
 
         </ul>
         <div class="tab-content no-border no-padding">
-            <div id="history" class="tab-pane active">
-                <p>Raw denim you probably haven't heard of them jean shorts Austin.</p>
+            <div id="history" class="tab-pane active padding-top-15">
+                @Html.Partial("~/Areas/Admin/Views/Dashboard/_CabinetPartial.cshtml", Model.Seller)
+                <div class="alert alert-secondary orders-filters margin-top-20">
+                    @using (Html.BeginForm())
+                    {
+                        <div style="width: 140px;">
+                            <p>Номер замовлення</p>
+                            <input type="text" class="form-control" name="OrderNumber" value="@Model.OrderNumber" />
+                        </div>
+                        <div style="width: 260px;">
+                            <p>Код товару</p>
+                            <input type="text" class="form-control" name="ProductSKU" value="@Model.ProductSKU" />
+                        </div>
+                        <div style="width: 360px;">
+                            <p>Тип операції</p>
+                            @Html.EnumDropDownListFor(m => m.TransactionType)
+                        </div>
+                        <div style="width: 260px;">
+                            <p>Дата операції</p>
+                            <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange">
+                        </div>
+                        <div style="clear:both; margin-top:25px;">
+                            <button type="submit" class="btn btn-purple btn-sm">
+                                Фільтрувати
+                            </button>
+                        </div>
+                        <br style="clear:both" />
+                    }
+
+                </div>
+                <table class="transactions-table border-top margin-top-20">
+                    <thead>
+                        <tr class="border-bottom">
+                            <th>
+                                Номер<br /> операції
+                            </th>
+                            <th>
+                                Дата операції
+                            </th>
+                            <th>
+                                Тип операції
+                            </th>
+                            <th>
+                                ID замовлення
+                            </th>
+                            <th>
+                                ID товару
+                            </th>
+                            <th>
+                                Ціна, грн
+                            </th>
+                            <th>
+                                К-ть
+                            </th>
+                            <th>
+                                Загальна вартість, грн
+                            </th>
+                            <th>
+                                Нарахування, грн
+                            </th>
+                            <th>
+                                Списання, грн
+                            </th>
+                            <th>
+                                Баланс, грн
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var transaction in Model.SellerTransactions)
+                        {
+                            <tr class="border-bottom">
+                                <td>@transaction.Number</td>
+                                <td>@transaction.Time.ToLocalDateTimeWithFormat()</td>
+                                <td class="secondary">@Enumerations.GetDisplayNameValue(transaction.Type)</td>
+                                <td>@transaction.OrderNumber</td>
+                                <td>@transaction.ProductSKU</td>
+                                <td>@transaction.Price.ToString("F")</td>
+                                <td>@transaction.Amount</td>
+                                <td>@transaction.TotalPrice.ToString("F")</td>
+                                @{
+                                    var chargeClass = transaction.Type == Benefit.Domain.Models.SellerTransactionType.SalesComission ? "secondary" : "";
+                                }
+                                <td class="@chargeClass">
+                                    @if (!transaction.Charge.HasValue)
+                                    {
+                                        <span>
+                                            –
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span>@transaction.Charge.Value.ToString("F")</span>
+                                    }
+                                </td>
+                                @{
+                                    var writeoffClass = transaction.Type == Benefit.Domain.Models.SellerTransactionType.Reserve ? "secondary" : "";
+                                }
+                                <td class="@writeoffClass">
+                                    @if (!transaction.Writeoff.HasValue)
+                                    {
+                                        <span>
+                                            –
+                                        </span>
+                                    }
+                                    else
+                                    {
+
+                                        <span>@transaction.Writeoff.Value.ToString("F")</span>
+                                    }
+                                </td>
+                                <td>
+                                    <b>@transaction.Balance.ToString("F")</b>
+                                    <br />
+                                    <span>(-@transaction.GreyZoneBalance.ToString("F"))</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
             </div>
             <div id="invoices" class="tab-pane">
                 @Html.Action("Invoices")

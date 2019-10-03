@@ -44,6 +44,13 @@ namespace Benefit.Services
                 return int.Parse(ConfigurationManager.AppSettings["BonusesComissionRate"]);
             }
         }
+        public static int BenefitSaleComission
+        {
+            get
+            {
+                return int.Parse(ConfigurationManager.AppSettings["BenefitSaleComission"]);
+            }
+        }
         public static int SkuMinValue
         {
             get

@@ -265,7 +265,7 @@
             });
 
             $("#Seller_UserDiscount").focus(function () {
-                if ($(this).val() == "" || $(this).val() == "0") {
+                if ($(this).val() == "") {
                     var userDiscount;
                     var totalDiscount = parseInt($("#Seller_TotalDiscount").val());
                     if (totalDiscount <= 10) {
@@ -296,6 +296,12 @@
                 <a href="#home" data-toggle="tab">
                     <i class="blue icon-info bigger-110"></i>
                     Основна інфо
+                </a>
+            </li>
+            <li class="@displayClass">
+                <a href="#finance" data-toggle="tab">
+                    <i class="green icon-money bigger-110"></i>
+                    Фінансова інфо
                 </a>
             </li>
             <li class="@displayClass">
@@ -408,6 +414,9 @@
             </div>
             <div class="tab-pane" id="SEO">
                 @Html.Partial("_Seo")
+            </div>
+            <div class="tab-pane" id="finance">
+                @Html.Partial("_Finance")
             </div>
             <div class="tab-pane" id="terminal">
                 @Html.Partial("_TerminalForm")

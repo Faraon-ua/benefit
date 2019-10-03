@@ -626,6 +626,10 @@
     <Compile Include="Migrations\201909041153328_AddProductSkuOrder.Designer.cs">
       <DependentUpon>201909041153328_AddProductSkuOrder.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201909231316112_AddSellerTransactions.cs" />
+    <Compile Include="Migrations\201909231316112_AddSellerTransactions.Designer.cs">
+      <DependentUpon>201909231316112_AddSellerTransactions.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -676,6 +680,7 @@
     <Compile Include="Models\Seller.cs" />
     <Compile Include="Models\SellerBusinessLevelIndexes.cs" />
     <Compile Include="Models\SellerCategory.cs" />
+    <Compile Include="Models\SellerTransaction.cs" />
     <Compile Include="Models\Service\PartnerRecon.cs" />
     <Compile Include="Models\Service\TransactionServiceModel.cs" />
     <Compile Include="Models\Service\VipPortion.cs" />
@@ -1091,6 +1096,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909041153328_AddProductSkuOrder.resx">
       <DependentUpon>201909041153328_AddProductSkuOrder.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201909231316112_AddSellerTransactions.resx">
+      <DependentUpon>201909231316112_AddSellerTransactions.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

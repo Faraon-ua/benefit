@@ -56,29 +56,7 @@
         });
     </script>
 }
-<div class="alert alert-success">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="gray">На рахунку</div>
-            <div style="font-size:2em;" class="black">@Model.Seller.CurrentBill грн</div>
-        </div>
-        <div class="col-md-3">
-            <div class="gray">Сіра зона</div>
-            <div style="font-size:2em;" class="black">@Model.Seller.GreyZone грн</div>
-        </div>
-        <div class="col-md-3" style="border-left: solid 1px white;">
-            <div class="gray">Разом</div>
-            <div style="font-size:2em;" class="black">@Model.Seller.GreyZone грн</div>
-        </div>
-    </div>
-</div>
-<div class="bordered margin-top-20 padding-10">
-    <p class="font-bigger">Поповненя рахунку</p>
-    <div>
-        Сума поповнення рахунку <input id="data-bill-sum" type="number" style="width:100px; height:30px; border-radius: 3px; box-shadow: inset 3px 3px 1px 0 #eeeeef; font-size: 15px!important;" /> грн
-        <button type="button" class="btn btn-success margin-left-30" id="fn-create-bill">Формувати рахунок</button>
-    </div>
-</div>
+@Html.Partial("_CabinetPartial", Model.Seller)
 <div class="margin-top-50">
     <div class="row">
         <div class="col-md-6" col-sm-12>

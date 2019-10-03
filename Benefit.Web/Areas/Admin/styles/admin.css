@@ -1,4 +1,14 @@
-﻿.filters-wrap{}
+﻿.transactions-table td, .transactions-table th {
+    padding: 15px;
+}
+.transactions-table th, .transactions-table .secondary {
+    color: #999 !important;
+    font-weight: normal;
+}
+.transactions-table td {
+    color: #333;
+}
+    .filters-wrap{}
     .filters-wrap .filter-tab.active {
         border-top: solid 3px #74d46b;
         color: #333;

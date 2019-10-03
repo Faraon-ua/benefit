@@ -16,10 +16,36 @@ namespace Benefit.Web.Areas.Admin.Controllers
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
-        public ActionResult Index()
+        public ActionResult Index(BalanceViewModel model)
         {
+            model = model ?? new BalanceViewModel();
+            model.Seller = db.Sellers.Find(Seller.CurrentAuthorizedSellerId);
+            var sellerTransactions = db.SellerTransactions
+                .Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
             ViewBag.NotPaidCount = db.PaymentBills.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.Status == BillStatus.AwaitingPayment).Count();
-            return View();
+
+            if (!string.IsNullOrEmpty(model.OrderNumber))
+            {
+                sellerTransactions = sellerTransactions.Where(entry => entry.OrderNumber.ToString() == model.OrderNumber);
+            }
+            if (!string.IsNullOrEmpty(model.ProductSKU))
+            {
+                sellerTransactions = sellerTransactions.Where(entry => entry.ProductSKU.ToString() == model.ProductSKU);
+            }
+            if (model.TransactionType.HasValue)
+            {
+                sellerTransactions = sellerTransactions.Where(entry => entry.Type == model.TransactionType.Value);
+            }
+            if (!string.IsNullOrEmpty(model.DateRange))
+            {
+                var dateRangeValues = model.DateRange.Split('-');
+                var startDate = DateTime.Parse(dateRangeValues.First());
+                var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
+                sellerTransactions = sellerTransactions.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
+            }
+            model.SellerTransactions = sellerTransactions.OrderByDescending(entry => entry.Time).ToList();
+
+            return View(model);
         }
         // GET: Admin/Balance
         public ActionResult Invoices()

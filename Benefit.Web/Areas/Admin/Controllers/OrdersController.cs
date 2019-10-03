@@ -100,7 +100,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             if (!string.IsNullOrEmpty(ordersFilters.ProductName))
             {
-                orders = orders.Where(entry => entry.OrderProducts.Select(op => op.ProductName).Any(pn=>pn.ToLower().Contains(ordersFilters.ProductName.ToLower())) ||
+                orders = orders.Where(entry => entry.OrderProducts.Select(op => op.ProductName).Any(pn => pn.ToLower().Contains(ordersFilters.ProductName.ToLower())) ||
                 entry.OrderProducts.Select(op => op.ProductSku.ToString()).Contains(ordersFilters.ProductName));
             }
             if (!string.IsNullOrEmpty(ordersFilters.DateRange))
@@ -110,7 +110,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
                 orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
             }
-           
+
             if (!string.IsNullOrEmpty(ordersFilters.Phone))
             {
                 orders = orders.Where(entry => entry.User.PhoneNumber.Contains(ordersFilters.Phone));
@@ -121,7 +121,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             if (!string.IsNullOrEmpty(ordersFilters.Comment))
             {
-                orders = orders.Where(entry => entry.OrderStatusStamps.Select(s=>s.Comment).Any(st=> st.ToLower().Contains(ordersFilters.Comment.ToLower())));
+                orders = orders.Where(entry => entry.OrderStatusStamps.Select(s => s.Comment).Any(st => st.ToLower().Contains(ordersFilters.Comment.ToLower())));
             }
             if (ordersFilters.SellerId != null)
             {
@@ -275,6 +275,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     if (orderStatus == OrderStatus.Finished)
                     {
                         TransactionsService.AddOrderFinishedTransaction(order, db);
+                        TransactionsService.AddOrderFinishedSellerTransaction(order, db);
                         //update available amount
                         foreach (var orderProduct in order.OrderProducts)
                         {
@@ -293,9 +294,40 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var PromotionService = new PromotionService(db);
                         PromotionService.ProcessPromotions(order);
                     }
-                    if (orderStatus == OrderStatus.Abandoned && order.PaymentType == PaymentType.Bonuses)
+                    if (orderStatus == OrderStatus.Abandoned ||
+                        orderStatus == OrderStatus.NotProcessedBySeller ||
+                        orderStatus == OrderStatus.OverduedDelivery ||
+                        orderStatus == OrderStatus.PackageNotAquired ||
+                        orderStatus == OrderStatus.RefusedFromProducts ||
+                        orderStatus == OrderStatus.Defect ||
+                        orderStatus == OrderStatus.UnsuitedPayment ||
+                        orderStatus == OrderStatus.NoncontactCustomer ||
+                        orderStatus == OrderStatus.Returning ||
+                        orderStatus == OrderStatus.UnacceptableProduct ||
+                        orderStatus == OrderStatus.UnacceptableShipping ||
+                        orderStatus == OrderStatus.WrongContactInfo ||
+                        orderStatus == OrderStatus.WrongSitePrice ||
+                        orderStatus == OrderStatus.ReserveTimeOver ||
+                        orderStatus == OrderStatus.OrderRestored ||
+                        orderStatus == OrderStatus.UnacceptableOrderGrouping ||
+                        orderStatus == OrderStatus.UnacceptableShippingPrice ||
+                        orderStatus == OrderStatus.UnacceptableShippingTime ||
+                        orderStatus == OrderStatus.UnacceptableNoncashPayment ||
+                        orderStatus == OrderStatus.UnacceptablePrePayment ||
+                        orderStatus == OrderStatus.UnacceptableProductQuality ||
+                        orderStatus == OrderStatus.UnacceptableProductOptions ||
+                        orderStatus == OrderStatus.CustomerRefused ||
+                        orderStatus == OrderStatus.AnotherSiteBought ||
+                        orderStatus == OrderStatus.NotAvailable ||
+                        orderStatus == OrderStatus.Fake ||
+                        orderStatus == OrderStatus.CustomerAbolished ||
+                        orderStatus == OrderStatus.Test)
                     {
-                        TransactionsService.AddBonusesOrderAbandonedTransaction(order, db);
+                        TransactionsService.AddOrderAbandonedSellerTransaction(order, db);
+                        if (order.PaymentType == PaymentType.Bonuses)
+                        {
+                            TransactionsService.AddBonusesOrderAbandonedTransaction(order, db);
+                        }
                     }
 
                     db.Entry(order).State = EntityState.Modified;

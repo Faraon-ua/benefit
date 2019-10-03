@@ -115,6 +115,77 @@ namespace Benefit.Services.Domain
             db.SaveChanges();
         }
 
+        public void AddOrderFinishedSellerTransaction(Order order, ApplicationDbContext transactionDb)
+        {
+            var seller = transactionDb.Sellers.Include(entry=>entry.SellerCategories).FirstOrDefault(entry=>entry.Id == order.SellerId);
+            foreach (var orderProduct in order.OrderProducts)
+            {
+                var product = transactionDb.Products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                var sellerCategory =
+                   seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == product.CategoryId) ??
+                   seller.SellerCategories.FirstOrDefault(entry =>
+                       entry.CategoryId == product.Category.MappedParentCategoryId);
+                var comissionPercent = sellerCategory == null ? product.Seller.TotalDiscount : sellerCategory.CustomDiscount ?? product.Seller.TotalDiscount; 
+                var sellerTransaction = new SellerTransaction()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Number = db.SellerTransactions.Select(entry => entry.Number).DefaultIfEmpty(10000).Max() + 1,
+                    SellerId = order.SellerId,
+                    Time = DateTime.UtcNow,
+                    ProductSKU = orderProduct.ProductSku.Value,
+                    ProductUrlName = orderProduct.ProductUrlName,
+                    Amount = orderProduct.Amount,
+                    Price = orderProduct.ActualPrice,
+                    TotalPrice = orderProduct.ActualPrice * orderProduct.Amount,
+                    Type = SellerTransactionType.SalesComission,
+                    OrderNumber = order.OrderNumber,
+                    Charge = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100,
+                    Writeoff = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100,
+                };
+                sellerTransaction.Balance = seller.CurrentBill - sellerTransaction.Writeoff.Value;
+                sellerTransaction.GreyZoneBalance = seller.GreyZone - sellerTransaction.Charge.Value;
+                seller.GreyZone = sellerTransaction.GreyZoneBalance;
+                seller.CurrentBill = sellerTransaction.Balance;
+                db.SellerTransactions.Add(sellerTransaction);
+            }
+            db.SaveChanges();
+        }
+
+        public void AddOrderAbandonedSellerTransaction(Order order, ApplicationDbContext transactionDb)
+        {
+            var seller = transactionDb.Sellers.Include(entry=>entry.SellerCategories).FirstOrDefault(entry=>entry.Id == order.SellerId);
+            foreach (var orderProduct in order.OrderProducts)
+            {
+                var product = transactionDb.Products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                var sellerCategory =
+                   seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == product.CategoryId) ??
+                   seller.SellerCategories.FirstOrDefault(entry =>
+                       entry.CategoryId == product.Category.MappedParentCategoryId);
+                var comissionPercent = sellerCategory == null ? product.Seller.TotalDiscount : sellerCategory.CustomDiscount ?? product.Seller.TotalDiscount;
+                var sellerTransaction = new SellerTransaction()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    Number = db.SellerTransactions.Select(entry => entry.Number).DefaultIfEmpty(10000).Max() + 1,
+                    SellerId = order.SellerId,
+                    Time = DateTime.UtcNow,
+                    ProductSKU = orderProduct.ProductSku.Value,
+                    ProductUrlName = orderProduct.ProductUrlName,
+                    Amount = orderProduct.Amount,
+                    Price = orderProduct.ActualPrice,
+                    TotalPrice = orderProduct.ActualPrice * orderProduct.Amount,
+                    Type = SellerTransactionType.FailOrderReserveReturn,
+                    OrderNumber = order.OrderNumber,
+                    Charge = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100,
+                    Writeoff = null,
+                };
+                sellerTransaction.Balance = seller.CurrentBill;
+                sellerTransaction.GreyZoneBalance = seller.GreyZone - sellerTransaction.Charge.Value;
+                seller.GreyZone = sellerTransaction.GreyZoneBalance;
+                seller.CurrentBill = sellerTransaction.Balance;
+                db.SellerTransactions.Add(sellerTransaction);
+            }
+            db.SaveChanges();
+        }
         public void AddOrderFinishedTransaction(Order order, ApplicationDbContext transactionDb)
         {
             var user = transactionDb.Users.Find(order.UserId);

@@ -65,6 +65,7 @@
     <Compile Include="Results\FavoritesResult.cs" />
     <Compile Include="ViewModels\Admin\OrdersFilters.cs" />
     <Compile Include="ViewModels\AnketaViewModel.cs" />
+    <Compile Include="ViewModels\BalanceViewModel.cs" />
     <Compile Include="ViewModels\Base\NavigationEntitiesViewModel.cs" />
     <Compile Include="ViewModels\BreadCrumbsViewModel.cs" />
     <Compile Include="ViewModels\CartEditResult.cs" />

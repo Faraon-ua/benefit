@@ -1,0 +1,32 @@
+﻿@model Benefit.Web.Models.Admin.SellerViewModel
+
+<div class="form-group">
+    <label class=" control-label no-padding-right">Загальна знижка</label>
+    <div>
+        @Html.TextBoxFor(model => model.Seller.TotalDiscount, new { @class = "width-10" }) %
+        @Html.ValidationMessageFor(model => model.Seller.TotalDiscount)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label no-padding-right">Особиста вигода</label>
+
+    <div>
+        @Html.TextBoxFor(model => model.Seller.UserDiscount, new { @class = "width-10" }) %
+        @Html.ValidationMessageFor(model => model.Seller.UserDiscount)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label no-padding-right">На рахунку</label>
+    <div>
+        @Html.TextBoxFor(model => model.Seller.CurrentBill) грн
+        @Html.ValidationMessageFor(model => model.Seller.CurrentBill)
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label no-padding-right">Сіра зона</label>
+
+    <div>
+        @Html.TextBoxFor(model => model.Seller.GreyZone) грн
+        @Html.ValidationMessageFor(model => model.Seller.GreyZone)
+    </div>
+</div>
