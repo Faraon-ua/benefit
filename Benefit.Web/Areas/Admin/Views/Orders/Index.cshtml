@@ -109,11 +109,15 @@
                 e.preventDefault();
                 var orderWrap = $(this).parents(".order-wrap");
                 if (orderWrap.attr("data-collapsed") == "true") {
+                    orderWrap.find("i").removeClass("icon-chevron-down");
+                    orderWrap.find("i").addClass("icon-chevron-up");
                     orderWrap.animate({ height: orderWrap.get(0).scrollHeight }, 200);
                     orderWrap.attr("data-collapsed", "false")
                     $(".images-thmb").hide();
                 }
                 else {
+                    orderWrap.find("i").addClass("icon-chevron-down");
+                    orderWrap.find("i").removeClass("icon-chevron-up");
                     orderWrap.animate({ height: 54 }, 200);
                     orderWrap.attr("data-collapsed", "true")
                     $(".images-thmb").show();
@@ -232,7 +236,7 @@
         </div>*@
         <div style="width: 260px;">
             <p>Дата замовлення</p>
-            <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange">
+            <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange" autocomplete="off">
         </div>
         <div style="width: 200px;">
             <p>Телефон</p>
@@ -336,23 +340,4 @@
 <div class="page-header no-padding-bottom">
     <h1 class="no-padding-bottom pull-left">Загальна сума обраних замовлень:</h1> <h1 class="orange">@Model.TotalSum.ToString("F") грн</h1>
     <h1 class="no-padding-bottom pull-left">Кількість обраних замовлень:</h1> <h1 class="orange">@Model.Number.ToString("F")</h1>
-</div>
-
-<div class="modal" tabindex="-1" role="dialog" style="display: none">
-    <div class="modal-dialog" role="document" style="width:85%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <i class="icon icon-remove-sign"></i>
-                    @*<span aria-hidden="true">&times;</span>*@
-                </button>
-            </div>
-            <div class="modal-body" id="order-details">
-            </div>
-            @*<div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>*@
-        </div>
-    </div>
 </div>

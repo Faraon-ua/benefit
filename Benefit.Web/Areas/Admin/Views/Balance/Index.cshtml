@@ -1,5 +1,6 @@
 ﻿@using Benefit.Common.Extensions
 @using Benefit.Common.Helpers
+@using Benefit.Common.Constants
 @model Benefit.DataTransfer.ViewModels.BalanceViewModel
 @{
     ViewBag.Title = "Мій баланс";
@@ -8,16 +9,28 @@
     <link href="~/Areas/Admin/assets/css/datepicker.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/daterangepicker.css" rel="stylesheet" />
     <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet" />
 }
 @section scripts{
+    <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/bootstrap-datepicker.min.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
     <script src="~/Areas/Admin/assets/js/flot/jquery.flot.min.js"></script>
     <script src="~/Areas/Admin/assets/js/flot/jquery.flot.pie.min.js"></script>
     <script src="~/Areas/Admin/assets/js/flot/jquery.flot.resize.min.js"></script>
     <script>
-        var createBillUrl = '@Url.Action("CreateBill")';
+        var createBillUrl = '@Url.Action("CreateBill", "Dashboard")';
         $(function () {
+            $(".fn-show-order").click(function (e) {
+                e.preventDefault();
+                var requestUrl = $(this).attr("href");
+                $.get(requestUrl, function (data) {
+                    $(".modal-body").html(data);
+                    $(".modal").modal();
+                });
+            });
+
              $(".date-picker").datepicker();
              $('#date-range-picker').daterangepicker({
                 locale: {
@@ -123,7 +136,7 @@
                         </div>
                         <div style="width: 260px;">
                             <p>Дата операції</p>
-                            <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange">
+                            <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange" autocomplete="off">
                         </div>
                         <div style="clear:both; margin-top:25px;">
                             <button type="submit" class="btn btn-purple btn-sm">
@@ -179,8 +192,15 @@
                                 <td>@transaction.Number</td>
                                 <td>@transaction.Time.ToLocalDateTimeWithFormat()</td>
                                 <td class="secondary">@Enumerations.GetDisplayNameValue(transaction.Type)</td>
-                                <td>@transaction.OrderNumber</td>
-                                <td>@transaction.ProductSKU</td>
+                                <td>
+                                    <a class="fn-show-order" href="@Url.Action("GetOrderPartial", "Orders", new { id = transaction.OrderNumber })">@transaction.OrderNumber</a>
+                                </td>
+                                <td>
+                                    @{ 
+                                        var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", transaction.ProductUrlName, transaction.ProductSKU) });
+                                    }
+                                    <a href="@productDetailsUrl" target="_blank">@transaction.ProductSKU</a>
+                                </td>
                                 <td>@transaction.Price.ToString("F")</td>
                                 <td>@transaction.Amount</td>
                                 <td>@transaction.TotalPrice.ToString("F")</td>
@@ -231,6 +251,20 @@
             </div>
             <div id="reports" class="tab-pane">
                 <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade.</p>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" tabindex="-1" role="dialog" style="display: none">
+    <div class="modal-dialog" role="document" style="width:85%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="icon icon-remove-sign"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="order-details">
+
             </div>
         </div>
     </div>

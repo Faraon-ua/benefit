@@ -1,0 +1,132 @@
+﻿@using Benefit.Common.Helpers
+@using Benefit.Common.Extensions
+@using Benefit.Domain.Models
+@model  Order
+@{
+    var isExternalRequest = false;
+    if (ViewBag.ExternalRequest != null && ViewBag.ExternalRequest)
+    {
+        isExternalRequest = true;
+    }
+}
+<div class="orders-list">
+    <div class="order-wrap" data-collapsed="true" @(isExternalRequest ? "style=height:auto":"")>
+        <div class="order-preview">
+            <div class="col text-left border-bottom order-number-wrap" style="width: 190px;">
+                <a href="#" class="order-number">
+                    <i class="icon @(isExternalRequest ? "icon-chevron-up" : "icon-chevron-down")"></i>
+                    № @Html.DisplayFor(modelItem => Model.OrderNumber)
+                </a>
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <i class="fas fa-comment-alt" style="color:#FFDD33;" data-rel="hoverpopover" title="" data-content="@Model.Description" data-html="true" data-original-title="Коментар покупця" data-trigger="hover"></i>
+                }
+                @if (Model.OrderStatusStamps.Any(entry => !string.IsNullOrEmpty(entry.Comment)))
+                {
+                    var comments = string.Join(
+                        "",
+                        Model.OrderStatusStamps
+                        .Where(entry => !string.IsNullOrEmpty(entry.Comment))
+                        .OrderBy(entry => entry.Time)
+                        .Select(entry => string.Format("<p>{0} <b>{1}</b><br /><i class='icon icon-circle' style='color:#4ebf42; margin-right:5px;'></i> {2}</p>", entry.Time.ToLocalDateTimeWithFormat(), entry.UpdatedBy, entry.Comment)));
+                    <i class="fas fa-file" style="color:#8b0000;  margin-left: 5px;" data-rel="hoverpopover" title="" data-content="@comments" data-html="true" data-original-title="Коментар менеджера" data-trigger="hover"></i>
+
+                }
+            </div>
+            <div class="col border-bottom" style="width: 145px;">
+                @Model.Time.ToLocalDateTimeWithFormat()
+            </div>
+            <div class="border-bottom" style="flex-grow: 1; padding: 15px 0;">
+                <div class="images-thmb">
+                    @foreach (var product in Model.OrderProducts)
+                    {
+                        <img data-src="@product.ProductImageUrl" />
+                    }
+                </div>
+            </div>
+            <div class="col border-bottom" style="width: 60px;">
+                @Model.OrderProducts.Count()
+            </div>
+            <div class="col text-center border-bottom" style="width: 150px;">
+                @Model.Sum.ToString("F") грн
+            </div>
+            <div class="border-left data-status-preview" style="width: 380px;" data-order-id="@Model.Id">
+                @Html.Partial("_OrderStatusPreviewPartial", Model)
+            </div>
+        </div>
+        <div class="display-flex">
+            <div style="flex-grow:1;">
+                @foreach (var product in Model.OrderProducts)
+                {
+                    <div class="product-wrap">
+                        <div class="border-bottom padding-10" style="display:flex;">
+                            <div style="width: 200px; text-align: center;">
+                                <img src="@product.ProductImageUrl" />
+                            </div>
+                            <div class="width-100">
+                                <div class="product-title">@product.ProductName</div>
+                                <div class="product-secondary">
+                                    Код товару: @product.ProductSku
+                                </div>
+                                <div style="display:flex; justify-content: space-between;" class="product-purchase-info">
+                                    <div class="product-price">@product.ActualPrice грн</div>
+                                    <div>
+                                        @product.Amount
+                                        @if (!product.IsWeightProduct)
+                                        {
+                                            <span> шт.</span>
+                                        }
+                                    </div>
+                                    <div>@(product.ActualPrice * product.Amount) грн</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <div>
+                    <div class="display-flex">
+                        <div style="margin-left: auto;" class="padding-15">
+                            Всього за товари
+                            <b style="margin-left: 200px;">@Model.Sum.ToString("F") грн</b>
+                        </div>
+                    </div>
+                </div>
+                <div class="display-flex padding-15" style="justify-content: space-between;">
+                    <div class="width-20">Спосіб доставки</div>
+                    <div style="max-width:250px;">
+                        <b>@Model.ShippingName</b>, <span style="font-size:13px;">@Model.ShippingAddress</span>
+                    </div>
+                    <div style="margin-left: auto;" class="padding-15">
+                        Доставка
+                        <b style="margin-left: 200px;">@Model.ShippingCost.ToString("F") грн</b>
+                    </div>
+                </div>
+                <div class="display-flex padding-15">
+                    <div class="width-20">Спосіб оплати</div>
+                    <div style="max-width:250px;">
+                        <b>@Enumerations.GetEnumDescription(Model.PaymentType)</b>
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.Description))
+                {
+                    <div class="display-flex padding-15">
+                        <div class="width-20">Коментар</div>
+                        <div style="max-width:250px;">
+                            @Html.Raw(Model.Description)
+                        </div>
+                    </div>
+                }
+                <div class="display-flex border-top">
+                    <div style="margin-left: auto; font-size:18px;" class="padding-15">
+                        Всього до сплати
+                        <b style="margin-left: 200px;">@((Model.Sum + Model.ShippingCost).ToString("F")) грн</b>
+                    </div>
+                </div>
+            </div>
+            <div style="width:380px;" class="border-left data-status-wrap" data-order-id="@Model.Id">
+                @Html.Partial("_OrderStatusPartial", Model)
+            </div>
+        </div>
+        <br style="clear:both;display: none;" />
+    </div>
+</div>

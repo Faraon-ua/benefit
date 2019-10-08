@@ -133,7 +133,7 @@ namespace Benefit.Services.Domain
                     SellerId = order.SellerId,
                     Time = DateTime.UtcNow,
                     ProductSKU = orderProduct.ProductSku.Value,
-                    ProductUrlName = orderProduct.ProductUrlName,
+                    ProductUrlName = product.UrlName,
                     Amount = orderProduct.Amount,
                     Price = orderProduct.ActualPrice,
                     TotalPrice = orderProduct.ActualPrice * orderProduct.Amount,

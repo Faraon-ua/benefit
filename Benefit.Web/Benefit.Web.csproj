@@ -1040,6 +1040,7 @@
     <Content Include="Areas\Admin\Views\Orders\_OrderStatusPreviewPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Dashboard\_CabinetPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_Finance.cshtml" />
+    <Content Include="Areas\Admin\Views\Orders\_OrderPartial.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

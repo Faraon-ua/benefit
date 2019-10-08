@@ -202,6 +202,40 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(ordersFilters);
         }
 
+        public ActionResult GetOrderPartial(string id)
+        {
+            var order = db.Orders
+                .Include(entry => entry.OrderStatusStamps)
+                .Include(entry => entry.OrderProducts)
+                .FirstOrDefault(entry => entry.OrderNumber.ToString() == id);
+
+            var productIdsInOrders = order.OrderProducts.Select(entry => entry.ProductId).Distinct().ToList();
+            var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
+            foreach (var orderProduct in order.OrderProducts)
+            {
+                var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                if (product != null)
+                {
+                    orderProduct.ProductSku = product.SKU;
+                    orderProduct.IsWeightProduct = product.IsWeightProduct;
+                    var productImg = product.Images.FirstOrDefault();
+                    if (productImg != null)
+                    {
+                        if (productImg.IsAbsoluteUrl)
+                        {
+                            orderProduct.ProductImageUrl = productImg.ImageUrl;
+                        }
+                        else
+                        {
+                            orderProduct.ProductImageUrl = string.Format("~/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
+                        }
+                    }
+                }
+            }
+            ViewBag.ExternalRequest = true;
+            return PartialView("_OrderPartial", order);
+        }
+
         public ActionResult GetStatus(string orderId)
         {
             var order = db.Orders.Find(orderId);
