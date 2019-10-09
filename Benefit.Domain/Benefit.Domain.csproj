@@ -630,6 +630,10 @@
     <Compile Include="Migrations\201909231316112_AddSellerTransactions.Designer.cs">
       <DependentUpon>201909231316112_AddSellerTransactions.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201910090906223_AddBlockOnToSeller.cs" />
+    <Compile Include="Migrations\201910090906223_AddBlockOnToSeller.Designer.cs">
+      <DependentUpon>201910090906223_AddBlockOnToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1099,6 +1103,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201909231316112_AddSellerTransactions.resx">
       <DependentUpon>201909231316112_AddSellerTransactions.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201910090906223_AddBlockOnToSeller.resx">
+      <DependentUpon>201910090906223_AddBlockOnToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

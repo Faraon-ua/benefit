@@ -119,6 +119,12 @@ namespace Benefit.Services
             SendEmail(BenefitInfoEmail, body, "Запит на зміну даних партнера");
         }
 
+        public void SendSellerBlockAlert(string email, int days)
+        {
+            var body = string.Format("У Вас борг за рахунком, магазин буде заблокований через {0} днів(я)", days);
+            SendEmail(email, body, "Попередження про блокування магазину");
+        }
+
         public void SendBonusesRozrahunokResults(string result)
         {
             SendEmail(BenefitInfoEmail, result, "Результати розрахунку бонусів");

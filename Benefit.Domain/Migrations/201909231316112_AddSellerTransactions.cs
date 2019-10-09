@@ -13,7 +13,7 @@ namespace Benefit.Domain.Migrations
                     {
                         Id = c.String(nullable: false, maxLength: 128),
                         Number = c.Int(nullable: false),
-                        Time = c.DateTime(nullable: false),
+                        Time = c.DateTime(nullable: false, storeType: "datetime2"),
                         Type = c.Int(nullable: false),
                         OrderNumber = c.Int(nullable: false),
                         ProductSKU = c.Int(nullable: false),

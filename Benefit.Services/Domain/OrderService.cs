@@ -129,11 +129,11 @@ namespace Benefit.Services.Domain
         //            .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
         //}
 
-        
+
 
         public string AddOrder(CompleteOrder model)
         {
-            var seller = db.Sellers.Include(entry=>entry.SellerCategories).FirstOrDefault(entry => entry.Id == model.Order.SellerId);
+            var seller = db.Sellers.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.Id == model.Order.SellerId);
             var order = model.Order;
             order.Id = Guid.NewGuid().ToString();
             var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
@@ -144,7 +144,7 @@ namespace Benefit.Services.Domain
                 string.Format("{0}<br/>--------------------------------------------<br/> Заказ створено на {1}",
                     model.Comment, HttpContext.Current.Request.Url.Host);
             //order.PersonalBonusesSum = order.SumWithDiscount * seller.UserDiscount / 100;
-            order.PersonalBonusesSum = order.OrderProducts.Sum(entry=>entry.BonusesAcquired * entry.Amount);
+            order.PersonalBonusesSum = order.OrderProducts.Sum(entry => entry.BonusesAcquired * entry.Amount);
 
             order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.SumWithDiscount / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
             order.SellerName = seller.Name;
@@ -209,6 +209,10 @@ namespace Benefit.Services.Domain
                 };
                 seller.GreyZone = sellerTransaction.GreyZoneBalance;
                 db.SellerTransactions.Add(sellerTransaction);
+                if (seller.CurrentBill - seller.GreyZone < 0)
+                {
+                    seller.BlockOn = DateTime.UtcNow.AddDays(5);
+                }
             }
             db.SaveChanges();
 
@@ -271,7 +275,7 @@ namespace Benefit.Services.Domain
             }
 
             db.Transactions.RemoveRange(order.Transactions);
-            db.OrderProductOptions.RemoveRange(order.OrderProducts.SelectMany(op=>op.OrderProductOptions));
+            db.OrderProductOptions.RemoveRange(order.OrderProducts.SelectMany(op => op.OrderProductOptions));
             db.OrderProducts.RemoveRange(order.OrderProducts);
             db.Entry(order.User).State = EntityState.Modified;
             db.Orders.Remove(order);

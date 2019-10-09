@@ -1,6 +1,7 @@
 ﻿using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services;
 using Benefit.Services.Admin;
 using Benefit.Services.Domain;
 using Benefit.Web.Filters;
@@ -32,6 +33,29 @@ namespace Benefit.Web.Controllers
             return Content("Ok");
         }
 
+        public ActionResult CheckSellersToBlock()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var emailService = new EmailService();
+                var sellersToBlock = db.Sellers.Include(entry=>entry.Owner).Where(entry => entry.BlockOn != null).ToList();
+                foreach(var seller in sellersToBlock)
+                {
+                    if (DateTime.UtcNow > seller.BlockOn)
+                    {
+                        seller.BlockOn = null;
+                        seller.IsActive = false;
+                    }
+                    else
+                    {
+                        var days = (seller.BlockOn.Value - DateTime.UtcNow).Days;
+                        emailService.SendSellerBlockAlert(seller.Owner.Email, days);
+                    }
+                }
+                db.SaveChanges();
+            }
+            return Content("Ok");
+        }
         public ActionResult GenerateExportFiles(string exportId = null)
         {
             var exportService = new ImportExportService();

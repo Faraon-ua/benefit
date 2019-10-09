@@ -50,6 +50,7 @@ namespace Benefit.Domain.Models
         public string Widget { get; set; }
         public double CurrentBill { get; set; }
         public double GreyZone { get; set; }
+        public DateTime? BlockOn { get; set; }
         //to filter in sellers catalog
         [MaxLength(50)]
         public string CategoryName { get; set; }

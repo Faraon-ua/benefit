@@ -1,8 +1,8 @@
 ﻿@model Benefit.Domain.Models.Seller
-    @{ 
-        var total = Model.CurrentBill - Model.GreyZone;
-        var className = total >= 0 ? "alert-success" : "alert-danger";
-    }
+@{
+    var total = Model.CurrentBill - Model.GreyZone;
+    var className = total >= 0 ? "alert-success" : "alert-danger";
+}
 <div class="alert @className">
     <div class="row">
         <div class="col-md-3">
@@ -19,6 +19,19 @@
         </div>
     </div>
 </div>
+@if (Model.BlockOn.HasValue)
+{
+    var daysLeft = (Model.BlockOn.Value - DateTime.UtcNow).Days;
+    <div class="alert alert-danger padding-30 border-left" style="border-left: 3px solid #fc6d72; color:#333;">
+        У Вас борг за рахунком, магазин буде заблокований через @daysLeft днів(я)
+    </div>
+}
+@if (!Model.IsActive)
+{
+    <div class="alert alert-danger padding-30 border-left" style="border-left: 3px solid #fc6d72; color:#333;">
+        Ваш магазин заблоковано, покупці не зможуть робити замовлення ваших товарів. Для розблокування поповніть рахунок.
+    </div>
+}
 <div class="bordered margin-top-20 padding-10">
     <p class="font-bigger">Поповненя рахунку</p>
     <div>
