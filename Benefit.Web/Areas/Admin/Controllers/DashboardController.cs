@@ -8,6 +8,8 @@ using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Common.Helpers;
+using Benefit.Services.ExternalApi;
+using Benefit.Services;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -42,7 +44,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var model = new SellerDashboard()
             {
                 Seller = db.Sellers.Include(entry => entry.Transactions).AsNoTracking().FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId),
-                //Transactions = db.Transactions.Where(entry=>entry.)
                 
             };
             return View(model);

@@ -24,21 +24,22 @@ namespace Benefit.Domain.Models
         public string ProductId { get; set; }
         public string ProductName { get; set; }
         public int? ProductSku { get; set; }
+        public double Amount { get; set; }
+        public double ProductPrice { get; set; }
+        public int Index { get; set; }
         [NotMapped]
         public string SellerId { get; set; }
         [NotMapped]
         public string ProductUrlName { get; set; }
         [NotMapped]
         public string ProductImageUrl { get; set; }
-        public double ProductPrice { get; set; }
+
         [NotMapped]
         public double? WholesaleProductPrice { get; set; }
         [NotMapped]
         public double PriceGrowth { get; set; }
         [NotMapped]
         public double? WholesaleFrom { get; set; }
-        public double Amount { get; set; }
-        public int Index { get; set; }
         [NotMapped]
         public int? AvailableAmount { get; set; }
         [NotMapped]

@@ -11,7 +11,7 @@ namespace Benefit.Services
     {
         public async Task<T> PostObectToService<T>(string url, HttpContent content, string authorization = null)
         {
-            using (var client = new HttpClient())
+            using (var client = new System.Net.Http.HttpClient())
             {
                 if (authorization != null)
                 {
@@ -35,7 +35,7 @@ namespace Benefit.Services
 
         public async Task<T> GetObectFromService<T>(string url)
         {
-            using (var client = new HttpClient())
+            using (var client = new System.Net.Http.HttpClient())
             {
                 var response = await client.GetAsync(url).ConfigureAwait(false);
                 var responseString = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

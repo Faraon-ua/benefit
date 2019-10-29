@@ -166,6 +166,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
             ordersFilters.Orders.Items.ForEach(order =>
             {
+                if(order.User == null)
+                {
+                    order.User = new ApplicationUser
+                    {
+                        FullName = order.UserName,
+                        PhoneNumber = order.UserPhone
+                    };
+                }
                 foreach (var orderProduct in order.OrderProducts)
                 {
                     var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);

@@ -138,7 +138,8 @@ namespace Benefit.Domain.Models
     public enum OrderType
     {
         BenefitSite,
-        BenefitCard
+        BenefitCard,
+        Rozetka
     }
 
     [Serializable]
@@ -179,6 +180,7 @@ namespace Benefit.Domain.Models
             OrderProducts = new Collection<OrderProduct>();
         }
         public string Id { get; set; }
+        public string ExternalId { get; set; }
         public int OrderNumber { get; set; }
         public double Sum { get; set; }
         public string Description { get; set; }
@@ -210,9 +212,11 @@ namespace Benefit.Domain.Models
         public string SellerDiscountName { get; set; }
         public double? SellerDiscount { get; set; }
         [MaxLength(128)]
-        [Required]
         public string UserId { get; set; }
         public virtual ApplicationUser User { get; set; }
+        public string UserName { get; set; }
+        [MaxLength(20)]
+        public string UserPhone { get; set; }
         [MaxLength(64)]
         public string PersonnelName { get; set; }
         public DateTime LastModified { get; set; }

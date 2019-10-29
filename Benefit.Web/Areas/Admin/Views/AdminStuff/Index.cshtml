@@ -52,6 +52,12 @@
     </legend>
     <a class="btn btn-info" target="_blank" href="@Url.Action("FetchFeaturedProducts", "Schedule", new {key=SettingsService.ScheduleKey, area=string.Empty})">Згенерувати</a>
 </fieldset>
+<fieldset>
+    <legend>
+        Синхронізувати замовлення з Розетка
+    </legend>
+    <a class="btn btn-info" target="_blank" href="@Url.Action("ProcessRozetkaOrders", "Schedule", new {key=SettingsService.ScheduleKey, area=string.Empty})">Синхронізувати</a>
+</fieldset>
 @*<fieldset>
         <legend>
             Термінація

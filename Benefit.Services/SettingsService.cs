@@ -125,6 +125,29 @@ namespace Benefit.Services
             }
         }
 
+        public class Rozetka {
+            public static string BaseUrl
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["RozetkaBaseUrl"];
+                }
+            }
+            public static string UserName
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["RozetkaUserName"];
+                }
+            }
+            public static string Password
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["RozetkaPassword"];
+                }
+            }
+        }
         public class Facebook
         {
             public static string VerificationToken

@@ -10,6 +10,7 @@ using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Domain.Models.ModelExtensions;
 using Benefit.Domain.Models.Service;
+using Benefit.Services.ExternalApi;
 using Benefit.Services.Files;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -27,6 +28,11 @@ namespace Benefit.Services.Admin
         public ScheduleService()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db)))
         {
+        }
+        public void ProcessRozetkaOrders()
+        {
+            var rozetkaService = new RozetkaApiService();
+            rozetkaService.ProcessOrders();
         }
         public void CloseQualificationPeriod()
         {

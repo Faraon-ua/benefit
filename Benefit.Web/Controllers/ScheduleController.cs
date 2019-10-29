@@ -4,6 +4,7 @@ using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Admin;
 using Benefit.Services.Domain;
+using Benefit.Services.ExternalApi;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using System;
@@ -31,6 +32,13 @@ namespace Benefit.Web.Controllers
                 }
             });
             return Content("Ok");
+        }
+
+        public ActionResult ProcessRozetkaOrders()
+        {
+            var rozetkaService = new RozetkaApiService();
+            rozetkaService.ProcessOrders();
+            return Content("Замовлення з Розетка успішно синхронізовані");
         }
 
         public ActionResult CheckSellersToBlock()
