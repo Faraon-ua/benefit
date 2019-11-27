@@ -36,6 +36,14 @@
                                     <br />
                                     <input type="text" value="Нова Пошта" class="delievery-type" />
                                     <br />
+                                    <span>Місто</span>
+                                    <br />
+                                    <input type="text" class="delievery-city" />
+                                    <br />
+                                    <span>Номер відділення</span>
+                                    <br />
+                                    <input type="text" class="delievery-otd" />
+                                    <br />
                                     <span>Номер ТТН</span>
                                     <br />
                                     <input type="text" value="@Model.ShippingTrackingNumber" required class="delievery-tracking" />
@@ -87,7 +95,7 @@
                             <p>
                                 @stamp.Time.ToLocalDateTimeWithFormat() <b>@stamp.UpdatedBy</b><br />
                                 <i class="icon icon-circle" style="color:#4ebf42; margin-right:5px;"></i>@stamp.Comment
-                            </p> 
+                            </p>
                         }
                     </div>
                 </div>

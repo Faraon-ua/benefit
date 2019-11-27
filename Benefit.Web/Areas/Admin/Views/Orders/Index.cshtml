@@ -82,10 +82,12 @@
                 var comment = btn.parents(".status-wrap").find(".status-comment").val();
                 var model = { orderStatus: status, orderId: orderId, comment: comment };
                 var ttn = btn.parents(".change-status").find(".delievery-tracking").val();
+                var shipDetails = btn.parents(".change-status").find(".delievery-city").val() + ", від. " + btn.parents(".change-status").find(".delievery-otd").val();
                 if (ttn) {
                     delieveryType = btn.parents(".change-status").find(".delievery-type").val();
                     model.delieveryType = delieveryType;
                     model.delieveryTracking = ttn;
+                    model.delieveryAddress = shipDetails;
                 }
                 $.post(changeStatusUrl, model, function (data) {
                     $('[data-rel=popover]').popover('hide');
@@ -208,7 +210,7 @@
     </script>
 }
 <div class="filters-wrap display-flex border-bottom width-100">
-    @{ 
+    @{
         var status = 0;
         int.TryParse(Request.QueryString["status"], out status);
     }
@@ -231,9 +233,9 @@
             <input type="text" class="form-control" name="ProductName" value="@Model.ProductName" />
         </div>
         @*<div style="width: 260px;">
-            <p>Статус замовлення</p>
-            @Html.EnumDropDownListFor(m => m.Status, "Не обрано")
-        </div>*@
+                <p>Статус замовлення</p>
+                @Html.EnumDropDownListFor(m => m.Status, "Не обрано")
+            </div>*@
         <div style="width: 260px;">
             <p>Дата замовлення</p>
             <input type="text" id="date-range-picker" name="DateRange" class="form-control" placeholder="Виберіть період" value="@Model.DateRange" autocomplete="off">

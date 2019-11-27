@@ -161,7 +161,6 @@ namespace Benefit.Services.Domain
                         address.Region.Name_ua, address.AddressLine);
                 }
             }
-
             order.Time = DateTime.UtcNow;
             order.OrderType = OrderType.BenefitSite;
             order.PaymentType = model.PaymentType.Value;

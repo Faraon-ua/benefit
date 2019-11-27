@@ -81,7 +81,7 @@ namespace Benefit.HttpClient
             return result;
         }
 
-        public ResponseResult<T> Post<T>(string url, string ingestData, string contentType, string authorizationToken = null)
+        public ResponseResult<T> Post<T>(string url, string ingestData, string contentType, string authorizationToken = null, string method = "post")
         {
             var result = new ResponseResult<T>();
             string response = null;
@@ -92,7 +92,7 @@ namespace Benefit.HttpClient
                     client.Headers.Add("Authorization", string.Format("Bearer {0}", authorizationToken));
                 }
                 client.Headers[HttpRequestHeader.ContentType] = contentType;
-                response = client.UploadString(url, ingestData);
+                response = client.UploadString(url, method, ingestData);
                 result.StatusCode = HttpStatusCode.OK;
             }
             catch (WebException ex)

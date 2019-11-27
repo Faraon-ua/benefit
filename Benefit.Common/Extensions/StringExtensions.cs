@@ -35,6 +35,16 @@ namespace Benefit.Common.Extensions
             return value.Substring(0, value.Length > maxLength ? maxLength : value.Length);
         }
 
+        public static string ToPhoneFormat(this string value)
+        {
+            value = value.Replace("+", string.Empty);
+            if (value.StartsWith("0"))
+            {
+                value = value.Insert(0, "38");
+            }
+            return value;
+        }
+
         public static string Translit(this string value)
         {
             if (value == null) return null;
@@ -54,7 +64,7 @@ namespace Benefit.Common.Extensions
             words.Add("'", "");
             words.Add(".", "");
             words.Add(",", "");
-            words.Add(" ", "-");
+            words.Add(" ", " ");
             words.Add("\t", "-");
             words.Add("\n", "");
             words.Add("а", "a");
@@ -84,9 +94,9 @@ namespace Benefit.Common.Extensions
             words.Add("ч", "ch");
             words.Add("ш", "sh");
             words.Add("щ", "sch");
-            words.Add("ъ", "j");
+            words.Add("ъ", "");
             words.Add("ы", "i");
-            words.Add("ь", "j");
+            words.Add("ь", "");
             words.Add("э", "e");
             words.Add("ю", "yu");
             words.Add("я", "ya");

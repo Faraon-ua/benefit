@@ -96,6 +96,31 @@ namespace Benefit.Services
             }
         }
 
+        public class SmsApi
+        {
+            public static string Login
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["SmsApiLogin"];
+                }
+            }
+            public static string Password
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["SmsApiPassword"];
+                }
+            }
+            public static string Name
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["SmsApiName"];
+                }
+            }
+        }
+
         public class Telegram
         {
             public static string BotToken

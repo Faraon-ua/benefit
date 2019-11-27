@@ -17,6 +17,8 @@ namespace Benefit.Domain.Models
         }
         public string Id { get; set; }
         [MaxLength(128)]
+        public string ExternalId { get; set; }
+        [MaxLength(128)]
         public string OrderId { get; set; }
         [NonSerialized]
         public Order Order;

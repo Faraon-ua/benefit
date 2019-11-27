@@ -31,7 +31,7 @@ namespace Benefit.DataTransfer.ApiDto.Rozetka
     }
     public class OrderProductDto
     {
-        //public string id { get; set; }
+        public string id { get; set; }
         //public double price { get; set; }
         public double cost { get; set; }
         public double quantity { get; set; }

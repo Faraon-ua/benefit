@@ -118,6 +118,7 @@
     <Compile Include="EncodingService.cs" />
     <Compile Include="ExternalApi\Facebook.cs" />
     <Compile Include="ExternalApi\Rozetka.cs" />
+    <Compile Include="ExternalApi\SmsService.cs" />
     <Compile Include="Files\FilesExportService.cs" />
     <Compile Include="HttpClientService.cs" />
     <Compile Include="NotificationsService.cs" />

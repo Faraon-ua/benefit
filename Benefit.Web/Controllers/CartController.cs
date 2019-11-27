@@ -298,7 +298,9 @@ namespace Benefit.Web.Controllers
                 }
 
                 completeOrder.Order.UserId = user.Id;
-                completeOrder.Order.ShippingAddress = completeOrder.ShippingAddress;
+                completeOrder.Order.UserName = user.FullName;
+                completeOrder.Order.UserPhone = user.PhoneNumber;
+                completeOrder.Order.ShippingAddress = completeOrder.ShippingAddress.Clear();
                 var orderNumber = OrderService.AddOrder(completeOrder);
 
                 //order notifications

@@ -13,15 +13,6 @@ namespace Benefit.Domain.Models
         [Display(Name = "Нове замовлення", ShortName = "secondary")]
         [Description("Нове замовлення")]
         Created,
-        [Display(Name = "Обробляється менеджером", ShortName = "info")]
-        [Description("Обробляється менеджером")]
-        Processed,
-        [Display(Name = "Отримано", ShortName = "success")]
-        [Description("Отримано")]
-        Finished,
-        [Display(Name = "Відмінено адміністратором", ShortName = "info")]
-        [Description("Відмінено адміністратором")]
-        Abandoned,
         [Display(Name = "Дані підтверджено. Очікує відправлення", ShortName = "info")]
         [Description("Дані підтверджено. Очікує відправлення")]
         AwaitingDelivery,
@@ -31,12 +22,17 @@ namespace Benefit.Domain.Models
         [Display(Name = "Доставляється", ShortName = "presuccess")]
         [Description("Доставляється")]
         IsDelivering,
-        [Display(Name = "Очікує в пункті самовивозу", ShortName = "info")]
+        [Display(Name = "Очікує в пункті самовивозу", ShortName = "danger")]
         [Description("Очікує в пункті самовивозу")]
         WaitingInSelfPickup,
+        [Display(Name = "Отримано", ShortName = "success")]
+        [Description("Отримано")]
+        Finished,
         [Display(Name = "Не відпрацьовано продавцем", ShortName = "info")]
         [Description("Не відпрацьовано продавцем")]
         NotProcessedBySeller,
+        miss8,
+        miss9,
         [Display(Name = "Відправка прострочена", ShortName = "info")]
         [Description("Відправка прострочена")]
         OverduedDelivery,
@@ -46,12 +42,16 @@ namespace Benefit.Domain.Models
         [Display(Name = "Відмовився від товару", ShortName = "default")]
         [Description("Відмовився від товару")]
         RefusedFromProducts,
+        [Display(Name = "Відмінено адміністратором", ShortName = "info")]
+        [Description("Відмінено адміністратором")]
+        Abandoned,
+        miss14,
         [Display(Name = "Некоректна ТТН", ShortName = "info")]
         [Description("Некоректна ТТН")]
         WrongTTH,
-        [Display(Name = "Брак", ShortName = "default")]
-        [Description("Брак")]
-        Defect,
+        [Display(Name = "Немає в наявності/Брак", ShortName = "default")]
+        [Description("Немає в наявності/Брак")]
+        NotAvailableOrDefect,
         [Display(Name = "Відміна. Не влаштовує оплата", ShortName = "default")]
         [Description("Відміна. Не влаштовує оплата")]
         UnsuitedPayment,
@@ -64,9 +64,18 @@ namespace Benefit.Domain.Models
         [Display(Name = "Відміна. Не влаштовує товар", ShortName = "info")]
         [Description("Відміна. Не влаштовує товар")]
         UnacceptableProduct,
+        miss21,
+        miss22,
+        miss23,
         [Display(Name = "Відміна. Не влаштовує доставка", ShortName = "info")]
         [Description("Відміна. Не влаштовує доставка")]
         UnacceptableShipping,
+        [Display(Name = "Тестове замовлення", ShortName = "info")]
+        [Description("Тестове замовлення")]
+        Test,
+        [Display(Name = "Обробляється менеджером", ShortName = "info")]
+        [Description("Обробляється менеджером")]
+        Processed,
         [Display(Name = "Вимагає доукомплектаціі", ShortName = "info")]
         [Description("Вимагає доукомплектаціі")]
         AddEquipmentNeeded,
@@ -115,6 +124,9 @@ namespace Benefit.Domain.Models
         [Display(Name = "Немає в наявності", ShortName = "default")]
         [Description("Немає в наявності")]
         NotAvailable,
+        [Display(Name = "Брак", ShortName = "default")]
+        [Description("Брак")]
+        Defect,
         [Display(Name = "Відміна. Фейкове замовлення", ShortName = "info")]
         [Description("Відміна. Фейкове замовлення")]
         Fake,
@@ -130,9 +142,9 @@ namespace Benefit.Domain.Models
         [Display(Name = "Обробляється менеджером(не вдалося зв'язатися 2-ий раз)", ShortName = "info")]
         [Description("Обробляється менеджером(не вдалося зв'язатися 2-ий раз)")]
         ContactFail2,
-        [Display(Name = "Тестове замовлення", ShortName = "info")]
-        [Description("Тестове замовлення")]
-        Test
+        [Display(Name = "Відміна. Дубль замовлення", ShortName = "info")]
+        [Description("Відміна. Дубль замовлення")]
+        Duplicate
     }
 
     public enum OrderType
@@ -281,8 +293,12 @@ namespace Benefit.Domain.Models
                                                                             OrderStatus.OverduedDelivery,
                                                                             OrderStatus.PackageNotAquired,
                                                                             OrderStatus.ReserveTimeOver }},
-                        { OrderStatus.IsDelivering, new List<OrderStatus> { OrderStatus.Processed,
-                                                                            OrderStatus.IsDelivering,
+                        { OrderStatus.IsDelivering, new List<OrderStatus> { OrderStatus.WaitingInSelfPickup,
+                                                                            OrderStatus.Processed,
+                                                                            OrderStatus.Finished,
+                                                                            OrderStatus.CustomerRefused }},
+                        { OrderStatus.PassedToDelivery, new List<OrderStatus> { OrderStatus.WaitingInSelfPickup,
+                                                                            OrderStatus.Processed,
                                                                             OrderStatus.Finished,
                                                                             OrderStatus.CustomerRefused }},
                         { OrderStatus.ContactFail1, new List<OrderStatus> { OrderStatus.AwaitingDelivery,

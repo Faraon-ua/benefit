@@ -4,6 +4,7 @@ using Benefit.DataTransfer.ApiDto.Rozetka;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.HttpClient;
+using Newtonsoft.Json;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,51 @@ namespace Benefit.Services.ExternalApi
                 return authResult.Data.content.access_token;
             }
             return null;
+        }
+
+        public void UpdateOrderStatus(string id, OrderStatus orderStatus, string ttn)
+        {
+            var orders = new List<Order>();
+            var updateOrderUrl = SettingsService.Rozetka.BaseUrl + "orders/" + id;
+            var authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
+            if (authToken != null)
+            {
+                var updateOrderIngest = new UpdateOrderIngest
+                {
+                    status = (int)orderStatus
+                };
+                var postData = JsonConvert.SerializeObject(updateOrderIngest);
+                var ordersResult = _httpClient.Post<BaseDto>(updateOrderUrl, postData, "application/json", authToken, "put");
+                if (ordersResult.StatusCode == HttpStatusCode.OK)
+                {
+                    if(!ordersResult.Data.success)
+                    {
+                        _logger.Fatal("[Rozetka] update order fail: " + id);
+                    }
+                }
+            }
+        }
+
+        public void RemoveOrderPurchases(Order order)
+        {
+            var updateOrderUrl = SettingsService.Rozetka.BaseUrl + "orders/" + order.ExternalId;
+            var authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
+            if (authToken != null)
+            {
+                var updateOrderIngest = new UpdateOrderPurchasesIngest
+                {
+                    purchases = order.OrderProducts.Select(entry=>new OrderProductQuantityIngest { id = entry.ExternalId, quantity = 0 }).ToList()
+                };
+                var postData = JsonConvert.SerializeObject(updateOrderIngest);
+                var ordersResult = _httpClient.Post<BaseDto>(updateOrderUrl, postData, "application/json", authToken, "put");
+                if (ordersResult.StatusCode == HttpStatusCode.OK)
+                {
+                    if (!ordersResult.Data.success)
+                    {
+                        _logger.Fatal("[Rozetka] update purchases order fail: " + order.ExternalId);
+                    }
+                }
+            }
         }
 
         public void ProcessOrders()
@@ -77,7 +123,7 @@ namespace Benefit.Services.ExternalApi
                                 Status = OrderStatus.Created,
                                 ShippingName = rOrder.delivery.delivery_service_name,
                                 ShippingCost = rOrder.delivery.cost.GetValueOrDefault(0),
-                                ShippingAddress = string.Format("{0}, {1} {2}", rOrder.delivery.city.title, rOrder.delivery.place_street, rOrder.delivery.place_house + " "+ rOrder.delivery.place_flat),
+                                ShippingAddress = string.Format("{0}, {1} {2}", rOrder.delivery.city.title, rOrder.delivery.place_street, rOrder.delivery.place_house + " " + rOrder.delivery.place_flat),
                                 PersonalBonusesSum = 0,
                                 PointsSum = 0,
                                 LastModified = DateTime.UtcNow,
@@ -93,6 +139,7 @@ namespace Benefit.Services.ExternalApi
                                     var orderProduct = new OrderProduct()
                                     {
                                         Id = Guid.NewGuid().ToString(),
+                                        ExternalId = rProduct.id,
                                         OrderId = order.Id,
                                         ProductName = rProduct.item_name,
                                         ProductId = product.Id,

@@ -17,6 +17,8 @@ using Benefit.Web.Helpers;
 using Benefit.Web.Models.Admin;
 using NLog;
 using Benefit.Common.Helpers;
+using Benefit.Services.ExternalApi;
+using Benefit.Common.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -166,7 +168,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
             ordersFilters.Orders.Items.ForEach(order =>
             {
-                if(order.User == null)
+                if (order.User == null)
                 {
                     order.User = new ApplicationUser
                     {
@@ -291,7 +293,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         }
         [HttpPost]
-        public ActionResult UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId, string delieveryType, string delieveryTracking)
+        public ActionResult UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId, string delieveryType, string delieveryTracking, string delieveryAddress)
         {
             using (var dbTransaction = db.Database.BeginTransaction())
             {
@@ -299,8 +301,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     var order = db.Orders.Find(orderId);
                     order.Status = orderStatus;
-                    order.ShippingName = delieveryType;
-                    order.ShippingTrackingNumber = delieveryTracking;
+                    if (delieveryType != null)
+                    {
+                        order.ShippingName = delieveryType;
+                    }
+                    if (delieveryTracking != null)
+                    {
+                        order.ShippingTrackingNumber = delieveryTracking;
+                    }
+                    if (delieveryAddress != null)
+                    {
+                        order.ShippingAddress = delieveryAddress;
+                    }
 
                     var statusStamp = new OrderStatusStamp()
                     {
@@ -313,9 +325,40 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     };
                     db.OrderStatusStamps.Add(statusStamp);
 
+                    if (orderStatus == OrderStatus.Processed)
+                    {
+                        if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
+                        {
+                            var rozetkaService = new RozetkaApiService();
+                            rozetkaService.UpdateOrderStatus(order.ExternalId, orderStatus, null);
+                        }
+                    }
+                    if (orderStatus == OrderStatus.Abandoned)
+                    {
+                        if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
+                        {
+                            var rozetkaService = new RozetkaApiService();
+                            rozetkaService.RemoveOrderPurchases(order);
+                        }
+                    }
+                    if (orderStatus == OrderStatus.PassedToDelivery)
+                    {
+                        var smsService = new SmsService();
+                        var phone = order.UserPhone.ToPhoneFormat();
+                        smsService.Send(phone, string.Format(SmsService.npTtnSmsFormat, order.ShippingAddress.Translit(), order.ShippingTrackingNumber, order.Sum));
+                    }
                     //add points and bonuses if order finished and is not bonuses
                     if (orderStatus == OrderStatus.Finished)
                     {
+                        if (order.OrderType == OrderType.Rozetka && order.ExternalId != null)
+                        {
+                            var rozetkaOrders = db.Orders.Where(entry => entry.ExternalId == order.ExternalId).ToList();
+                            if (rozetkaOrders.All(entry => entry.Status == OrderStatus.Finished || entry.Status == OrderStatus.Abandoned))
+                            {
+                                var rozetkaService = new RozetkaApiService();
+                                rozetkaService.UpdateOrderStatus(order.ExternalId, orderStatus, null);
+                            }
+                        }
                         TransactionsService.AddOrderFinishedTransaction(order, db);
                         TransactionsService.AddOrderFinishedSellerTransaction(order, db);
                         //update available amount
