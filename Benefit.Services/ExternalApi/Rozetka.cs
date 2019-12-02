@@ -47,7 +47,7 @@ namespace Benefit.Services.ExternalApi
             {
                 var updateOrderIngest = new UpdateOrderIngest
                 {
-                    status = (int)orderStatus
+                    status = (int)orderStatus + 1
                 };
                 var postData = JsonConvert.SerializeObject(updateOrderIngest);
                 var ordersResult = _httpClient.Post<BaseDto>(updateOrderUrl, postData, "application/json", authToken, "put");
@@ -119,7 +119,7 @@ namespace Benefit.Services.ExternalApi
                                 Description = rOrder.comment,
                                 SellerId = sellerId,
                                 OrderNumber = ++maxOrderNumber,
-                                Time = DateTime.UtcNow,
+                                Time = DateTime.Parse(rOrder.created),
                                 Status = OrderStatus.Created,
                                 ShippingName = rOrder.delivery.delivery_service_name,
                                 ShippingCost = rOrder.delivery.cost.GetValueOrDefault(0),
@@ -144,7 +144,7 @@ namespace Benefit.Services.ExternalApi
                                         ProductName = rProduct.item_name,
                                         ProductId = product.Id,
                                         ProductSku = product.SKU,
-                                        ProductPrice = rProduct.cost,
+                                        ProductPrice = rProduct.price,
                                         Amount = rProduct.quantity,
                                         ProductImageUrl = image == null ? null : image.ImageUrl
                                     };

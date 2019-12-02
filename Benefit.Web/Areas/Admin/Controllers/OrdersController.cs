@@ -80,6 +80,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                                    entry.Status == OrderStatus.AwaitingDelivery ||
                                                    entry.Status == OrderStatus.IsDelivering ||
                                                    entry.Status == OrderStatus.AwaitingDelivery ||
+                                                   entry.Status == OrderStatus.ContactFail1 ||
+                                                   entry.Status == OrderStatus.ContactFail2||
                                                    entry.Status == OrderStatus.WaitingInSelfPickup);
                     break;
                 case 1:
@@ -325,14 +327,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     };
                     db.OrderStatusStamps.Add(statusStamp);
 
-                    if (orderStatus == OrderStatus.Processed)
-                    {
-                        if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
-                        {
-                            var rozetkaService = new RozetkaApiService();
-                            rozetkaService.UpdateOrderStatus(order.ExternalId, orderStatus, null);
-                        }
-                    }
+                  
                     if (orderStatus == OrderStatus.Abandoned)
                     {
                         if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
@@ -341,14 +336,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             rozetkaService.RemoveOrderPurchases(order);
                         }
                     }
-                    if (orderStatus == OrderStatus.PassedToDelivery)
+                    else if (orderStatus == OrderStatus.PassedToDelivery)
                     {
                         var smsService = new SmsService();
                         var phone = order.UserPhone.ToPhoneFormat();
                         smsService.Send(phone, string.Format(SmsService.npTtnSmsFormat, order.ShippingAddress.Translit(), order.ShippingTrackingNumber, order.Sum));
                     }
                     //add points and bonuses if order finished and is not bonuses
-                    if (orderStatus == OrderStatus.Finished)
+                    else if (orderStatus == OrderStatus.Finished)
                     {
                         if (order.OrderType == OrderType.Rozetka && order.ExternalId != null)
                         {
@@ -378,6 +373,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         }
                         var PromotionService = new PromotionService(db);
                         PromotionService.ProcessPromotions(order);
+                    }
+                    else
+                    {
+                        if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
+                        {
+                            var rozetkaService = new RozetkaApiService();
+                            rozetkaService.UpdateOrderStatus(order.ExternalId, orderStatus, null);
+                        }
                     }
                     if (orderStatus == OrderStatus.Abandoned ||
                         orderStatus == OrderStatus.NotProcessedBySeller ||
