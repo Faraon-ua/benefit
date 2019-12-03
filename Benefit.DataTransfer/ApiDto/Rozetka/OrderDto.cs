@@ -47,6 +47,7 @@ namespace Benefit.DataTransfer.ApiDto.Rozetka
         public string comment { get; set; }
         public string user_phone { get; set; }
         public string payment_type { get; set; }
+        public int status { get; set; }
         public List<OrderProductDto> purchases { get; set; }
         public DeliveryDto delivery { get; set; }
     }

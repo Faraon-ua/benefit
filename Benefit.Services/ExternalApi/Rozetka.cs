@@ -94,7 +94,7 @@ namespace Benefit.Services.ExternalApi
             }
             else
             {
-                getOrdersUrl += string.Format("&created_from={0}", DateTime.Now.AddDays(-1).ToString("YYYY-MM-DD"));
+                getOrdersUrl += string.Format("&created_from={0}", DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"));
             }
             var authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
             if (authToken != null)
@@ -103,7 +103,8 @@ namespace Benefit.Services.ExternalApi
                 if (ordersResult.StatusCode == HttpStatusCode.OK)
                 {
                     var maxOrderNumber = db.Orders.Max(entry => entry.OrderNumber);
-                    foreach (var rOrder in ordersResult.Data.content.orders)
+                    var rOrders = ordersResult.Data.content.orders.Where(entry => !db.Orders.Any(or => or.ExternalId == entry.id)).ToList();
+                    foreach (var rOrder in rOrders)
                     {
                         var productNames = rOrder.purchases.Select(entry => entry.item_name).ToList();
                         var products = db.Products.Where(entry => productNames.Contains(entry.Name)).ToList();
@@ -120,7 +121,7 @@ namespace Benefit.Services.ExternalApi
                                 SellerId = sellerId,
                                 OrderNumber = ++maxOrderNumber,
                                 Time = DateTime.Parse(rOrder.created),
-                                Status = OrderStatus.Created,
+                                Status = ((OrderStatus)rOrder.status - 1),
                                 ShippingName = rOrder.delivery.delivery_service_name,
                                 ShippingCost = rOrder.delivery.cost.GetValueOrDefault(0),
                                 ShippingAddress = string.Format("{0}, {1} {2}", rOrder.delivery.city.title, rOrder.delivery.place_street, rOrder.delivery.place_house + " " + rOrder.delivery.place_flat),
