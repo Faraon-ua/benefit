@@ -115,7 +115,7 @@ namespace Benefit.Services.ExternalApi
                                 Id = Guid.NewGuid().ToString(),
                                 ExternalId = rOrder.id,
                                 OrderType = OrderType.Rozetka,
-                                PaymentType = PaymentType.PrePaid,
+                                PaymentType = PaymentType.Cash,
                                 Description = rOrder.comment,
                                 SellerId = sellerId,
                                 OrderNumber = ++maxOrderNumber,
