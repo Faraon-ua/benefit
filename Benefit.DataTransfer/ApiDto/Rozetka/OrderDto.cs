@@ -10,10 +10,16 @@ namespace Benefit.DataTransfer.ApiDto.Rozetka
         public string success { get; set; }
         public OrdersListDto content { get; set; }
     }
+    public class MetaModelDto
+    {
+        public int pageCount { get; set; }
+        public int currentPage { get; set; }
+    }
 
     public class OrdersListDto
     {
         public List<OrderDto> orders { get; set; }
+        public MetaModelDto _meta { get; set; }
     }
     public class DeliveryCityDto
     {

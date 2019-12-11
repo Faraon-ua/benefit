@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace Benefit.Services.ExternalApi
@@ -53,7 +54,7 @@ namespace Benefit.Services.ExternalApi
                 var ordersResult = _httpClient.Post<BaseDto>(updateOrderUrl, postData, "application/json", authToken, "put");
                 if (ordersResult.StatusCode == HttpStatusCode.OK)
                 {
-                    if(!ordersResult.Data.success)
+                    if (!ordersResult.Data.success)
                     {
                         _logger.Fatal("[Rozetka] update order fail: " + id);
                     }
@@ -69,7 +70,7 @@ namespace Benefit.Services.ExternalApi
             {
                 var updateOrderIngest = new UpdateOrderPurchasesIngest
                 {
-                    purchases = order.OrderProducts.Select(entry=>new OrderProductQuantityIngest { id = entry.ExternalId, quantity = 0 }).ToList()
+                    purchases = order.OrderProducts.Select(entry => new OrderProductQuantityIngest { id = entry.ExternalId, quantity = 0 }).ToList()
                 };
                 var postData = JsonConvert.SerializeObject(updateOrderIngest);
                 var ordersResult = _httpClient.Post<BaseDto>(updateOrderUrl, postData, "application/json", authToken, "put");
@@ -83,20 +84,27 @@ namespace Benefit.Services.ExternalApi
             }
         }
 
-        public void ProcessOrders()
+        public void ProcessOrders(string getOrdersUrl = null, string authToken = null)
         {
+            var orderSuffixRegex = new Regex(@"\(\b(\w*.?(bc|BC).+\d\w*)\b\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             var orders = new List<Order>();
-            var getOrdersUrl = SettingsService.Rozetka.BaseUrl + "orders/search?expand=purchases,delivery";
-            var lastOrder = db.Orders.Where(entry => entry.OrderType == OrderType.Rozetka).OrderByDescending(entry => entry.Time).FirstOrDefault();
-            if (lastOrder != null)
+            if (getOrdersUrl == null)
             {
-                getOrdersUrl += string.Format("&created_from={0}", lastOrder.Time.ToString("yyyy-MM-dd"));
+                getOrdersUrl = SettingsService.Rozetka.BaseUrl + "orders/search?expand=purchases,delivery&page=1";
+                var lastOrder = db.Orders.Where(entry => entry.OrderType == OrderType.Rozetka).OrderByDescending(entry => entry.Time).FirstOrDefault();
+                if (lastOrder != null)
+                {
+                    getOrdersUrl += string.Format("&created_from={0}", lastOrder.Time.ToString("yyyy-MM-dd"));
+                }
+                else
+                {
+                    getOrdersUrl += string.Format("&created_from={0}", DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"));
+                }
             }
-            else
+            if(authToken == null)
             {
-                getOrdersUrl += string.Format("&created_from={0}", DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"));
+                authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
             }
-            var authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
             if (authToken != null)
             {
                 var ordersResult = _httpClient.Get<OrdersModelDto>(getOrdersUrl, authToken);
@@ -106,8 +114,8 @@ namespace Benefit.Services.ExternalApi
                     var rOrders = ordersResult.Data.content.orders.Where(entry => !db.Orders.Any(or => or.ExternalId == entry.id)).ToList();
                     foreach (var rOrder in rOrders)
                     {
-                        var productNames = rOrder.purchases.Select(entry => entry.item_name).ToList();
-                        var products = db.Products.Where(entry => productNames.Contains(entry.Name)).ToList();
+                        var productNames = rOrder.purchases.Select(entry => orderSuffixRegex.Match(entry.item_name).Value.ToLower()).ToList();
+                        var products = db.Products.Where(entry => productNames.Any(pn=> entry.Name.ToLower().Contains(pn))).ToList();
                         var sellerIds = products.Select(entry => entry.SellerId).Distinct().ToList();
                         foreach (var sellerId in sellerIds)
                         {
@@ -158,6 +166,11 @@ namespace Benefit.Services.ExternalApi
                     }
                     db.Orders.AddRange(orders);
                     db.SaveChanges();
+                    if (ordersResult.Data.content._meta.currentPage != ordersResult.Data.content._meta.pageCount)
+                    {
+                        getOrdersUrl = getOrdersUrl.Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=" + (ordersResult.Data.content._meta.currentPage + 1));
+                        ProcessOrders(getOrdersUrl, authToken);
+                    }
                 }
                 else
                 {
