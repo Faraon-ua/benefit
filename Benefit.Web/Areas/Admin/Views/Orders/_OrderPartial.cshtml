@@ -10,7 +10,7 @@
     }
 }
 <div class="orders-list">
-    <div class="order-wrap" data-collapsed="true" @(isExternalRequest ? "style=height:auto":"")>
+    <div class="order-wrap" data-collapsed="true" @(isExternalRequest ? "style=height:auto" : "")>
         <div class="order-preview">
             <div class="col text-left border-bottom order-number-wrap" style="width: 190px;">
                 <a href="#" class="order-number">
@@ -45,7 +45,7 @@
                 </div>
             </div>
             <div class="col border-bottom" style="width: 60px;">
-                @Model.OrderProducts.Sum(entry=>entry.Amount)
+                @Model.OrderProducts.Sum(entry => entry.Amount)
             </div>
             <div class="col text-center border-bottom" style="width: 150px;">
                 @Model.Sum.ToString("F") грн
@@ -117,6 +117,9 @@
                     </div>
                 }
                 <div class="display-flex border-top">
+                    <button class="btn btn-info" style="margin: 10px;" onclick="window.open('@Url.Action("Print", new { id = Model.Id })')">
+                        <i class="icon-print bigger-120"></i>
+                    </button>
                     <div style="margin-left: auto; font-size:18px;" class="padding-15">
                         Всього до сплати
                         <b style="margin-left: 200px;">@((Model.Sum + Model.ShippingCost).ToString("F")) грн</b>

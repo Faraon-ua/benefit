@@ -111,8 +111,8 @@
                 e.preventDefault();
                 var orderWrap = $(this).parents(".order-wrap");
                 if (orderWrap.attr("data-collapsed") == "true") {
-                    orderWrap.find("i").removeClass("icon-chevron-down");
-                    orderWrap.find("i").addClass("icon-chevron-up");
+                    orderWrap.find(".order-preview i").removeClass("icon-chevron-down");
+                    orderWrap.find(".order-preview i").addClass("icon-chevron-up");
                     orderWrap.animate({ height: orderWrap.get(0).scrollHeight }, 200);
                     orderWrap.attr("data-collapsed", "false")
                     $(".images-thmb").hide();
