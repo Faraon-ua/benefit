@@ -56,7 +56,7 @@
             if ($(".nova-poshta").length > 0) {
                 $.post('@SettingsService.NovaPoshta.ApiUrl',
                     JSON.stringify(npCitiesRequestData),
-                    function(res) {
+                    function (res) {
                         $.each(res.data,
                             function(index, value) {
                                 $("#npCity").append($("<option></option>")

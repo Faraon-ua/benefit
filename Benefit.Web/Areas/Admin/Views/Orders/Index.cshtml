@@ -111,6 +111,8 @@
                 e.preventDefault();
                 var orderWrap = $(this).parents(".order-wrap");
                 if (orderWrap.attr("data-collapsed") == "true") {
+                    orderWrap.find(".order-preview .hide-on-expand").hide();
+                    orderWrap.find(".order-preview .show-on-expand").show();
                     orderWrap.find(".order-preview i").removeClass("icon-chevron-down");
                     orderWrap.find(".order-preview i").addClass("icon-chevron-up");
                     orderWrap.animate({ height: orderWrap.get(0).scrollHeight }, 200);
@@ -118,6 +120,8 @@
                     $(".images-thmb").hide();
                 }
                 else {
+                    orderWrap.find(".order-preview .hide-on-expand").show();
+                    orderWrap.find(".order-preview .show-on-expand").hide();
                     orderWrap.find("i").addClass("icon-chevron-down");
                     orderWrap.find("i").removeClass("icon-chevron-up");
                     orderWrap.animate({ height: 54 }, 200);
