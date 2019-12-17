@@ -26,6 +26,7 @@ namespace Benefit.Common.Extensions
 
         public static string Clear(this string input)
         {
+            if (input == null) return null;
             return input.Trim().Replace("\n", string.Empty).Replace("\t", string.Empty);
         }
 
