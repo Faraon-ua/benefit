@@ -120,7 +120,16 @@ namespace Benefit.Services.Domain
             var seller = transactionDb.Sellers.Include(entry=>entry.SellerCategories).FirstOrDefault(entry=>entry.Id == order.SellerId);
             foreach (var orderProduct in order.OrderProducts)
             {
-                var product = transactionDb.Products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                var product = transactionDb.Products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId) ??
+                    new Product
+                    {
+                        UrlName = orderProduct.ProductName,
+                        Seller = seller,
+                        Category = new Category
+                        {
+                            MappedParentCategoryId = null
+                        }
+                    };
                 var sellerCategory =
                    seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == product.CategoryId) ??
                    seller.SellerCategories.FirstOrDefault(entry =>
@@ -132,7 +141,7 @@ namespace Benefit.Services.Domain
                     Number = db.SellerTransactions.Select(entry => entry.Number).DefaultIfEmpty(10000).Max() + 1,
                     SellerId = order.SellerId,
                     Time = DateTime.UtcNow,
-                    ProductSKU = orderProduct.ProductSku.Value,
+                    ProductSKU = orderProduct.ProductSku.GetValueOrDefault(default(int)),
                     ProductUrlName = product.UrlName,
                     Amount = orderProduct.Amount,
                     Price = orderProduct.ActualPrice,

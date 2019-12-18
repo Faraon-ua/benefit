@@ -50,9 +50,12 @@
             <div class="col text-center border-bottom hide-on-expand" style="width: 130px;">
                 @Model.Sum.ToString("F") грн
             </div>
-            <div class="col text-center border-bottom show-on-expand" style="width: 210px; display:none;">
-                <a href="#" class="edit-order" data-order-id="@Model.Id">Редагувати замовлення</a>
-            </div>
+            @if (Model.Status == OrderStatus.Processed)
+            {
+                <div class="col text-center border-bottom show-on-expand" style="width: 210px; display:none;">
+                    <a href="#" class="edit-order" data-order-id="@Model.Id">Редагувати замовлення</a>
+                </div>
+            }
             <div class="border-left data-status-preview" style="width: 380px;" data-order-id="@Model.Id">
                 @Html.Partial("_OrderStatusPreviewPartial", Model)
             </div>

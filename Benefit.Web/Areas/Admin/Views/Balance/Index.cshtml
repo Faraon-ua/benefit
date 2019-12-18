@@ -196,10 +196,15 @@
                                     <a class="fn-show-order" href="@Url.Action("GetOrderPartial", "Orders", new { id = transaction.OrderNumber })">@transaction.OrderNumber</a>
                                 </td>
                                 <td>
-                                    @{ 
+                                    @if (transaction.ProductSKU != default(int))
+                                    {
                                         var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", transaction.ProductUrlName, transaction.ProductSKU) });
+                                        <a href="@productDetailsUrl" target="_blank">@transaction.ProductSKU</a>
                                     }
-                                    <a href="@productDetailsUrl" target="_blank">@transaction.ProductSKU</a>
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
                                 </td>
                                 <td>@transaction.Price.ToString("F")</td>
                                 <td>@transaction.Amount</td>
