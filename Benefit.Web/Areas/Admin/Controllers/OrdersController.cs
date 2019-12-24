@@ -219,7 +219,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var order = db.Orders
                 .Include(entry => entry.OrderStatusStamps)
                 .Include(entry => entry.OrderProducts)
-                .FirstOrDefault(entry => entry.OrderNumber.ToString() == id);
+                .FirstOrDefault(entry => entry.OrderNumber.ToString() == id || entry.Id == id);
 
             var productIdsInOrders = order.OrderProducts.Select(entry => entry.ProductId).Distinct().ToList();
             var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
@@ -560,6 +560,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return RedirectToAction("Details", new { id = orderProduct.OrderId });
         }
 
+        public ActionResult GetEditForm(string id)
+        {
+            var order = db.Orders.Include(entry => entry.OrderProducts).FirstOrDefault(entry => entry.Id == id);
+            return PartialView("_EditPartial", order);
+        }
         // GET: /Admin/Orders/Details/5
         public ActionResult Details(string id)
         {

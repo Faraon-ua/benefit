@@ -1,0 +1,54 @@
+﻿@using Benefit.Domain.Models
+@using Benefit.Common.Constants
+@model Benefit.Domain.Models.Order
+
+<p class="bigger-150">Товари в кошику</p>
+<table class="order_in_table">
+    <thead>
+        <tr>
+            <th>Назва</th>
+            <th>Кількість</th>
+            <th>Ціна</th>
+            <th>Сума</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody style="max-height:none; overflow-y: auto;">
+        @foreach (var product in Model.OrderProducts)
+        {
+            var productOptionsSum = product.DbOrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+            var productSum = product.ProductPrice * product.Amount;
+            <tr data-product-id="@product.ProductId" class="order-product">
+                <td class="padding-horizontal-10">
+                    <input type="text" class="product-name col-sm-10" value="@product.ProductName" />
+                    @if (!string.IsNullOrEmpty(product.ProductUrlName))
+                    {
+                        <a class="btn btn-xs btn-info margin-left-10" href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) })" target="_blank">
+                            <i class="icon-eye-open bigger-120"></i>
+                        </a>
+                    }
+                </td>
+                <td>
+                    <input type="text" class="number-input product-amount col-sm-12" value="@product.Amount" />
+                </td>
+                <td>
+                    <input type="text" class="number-input product-price col-md-12" value="@product.ProductPrice" />
+
+                </td>
+                <td>@((productSum + productOptionsSum).ToString("F"))</td>
+                <td>
+                    @if (Model.Status == OrderStatus.Processed)
+                    {
+                        <a class="btn btn-danger" href="@Url.Action("DeleteOrderProduct", new {orderId = Model.Id, productId = product.ProductId})" onclick=" return confirm('Ви впевненні?') ">
+                            <i class="icon-trash"></i>
+                        </a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a class="btn btn-success margin-left-10 btn-sm fn-update-order-products" data-order-id="@Model.Id" href="#" title="Зберегти">
+    <i class="icon-refresh bigger-150"></i>
+    <span class="bigger-150">Зберегти</span>
+</a>

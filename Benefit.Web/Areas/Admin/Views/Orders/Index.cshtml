@@ -122,8 +122,8 @@
                 else {
                     orderWrap.find(".order-preview .hide-on-expand").show();
                     orderWrap.find(".order-preview .show-on-expand").hide();
-                    orderWrap.find("i").addClass("icon-chevron-down");
-                    orderWrap.find("i").removeClass("icon-chevron-up");
+                    orderWrap.find(".order-preview i").addClass("icon-chevron-down");
+                    orderWrap.find(".order-preview i").removeClass("icon-chevron-up");
                     orderWrap.animate({ height: 54 }, 200);
                     orderWrap.attr("data-collapsed", "true")
                     $(".images-thmb").show();
@@ -153,16 +153,68 @@
     }
     <script>
         var getOrderDetailsUrl = '@Url.Action("Details")';
-
+        var editOrderUrl = '@Url.Action("GetEditForm")';
+        var getOrderPartialUrl = '@Url.Action("GetOrderPartial")';
+        var bulkUpdateProductDetailsUrl = '@Url.Action("BulkUpdateOrderProducts")';
         $(function () {
-            //$(".fn-show-order").click(function (e) {
-            //    e.preventDefault();
-            //    var id = $(this).attr("data-order-id");
-            //    $.get(getOrderDetailsUrl + "?id=" + id, function (data) {
-            //        $("#order-details").html(data);
-            //        $(".modal").modal();
-            //    });
-            //});
+           $("body").on("click", ".fn-edit-order",function (e) {
+                e.preventDefault();
+                var id = $(this).attr("data-order-id");
+               $.get(editOrderUrl + "?id=" + id, function (data) {
+                    $(".area-order-edit").html(data);
+                    $(".modal").modal();
+                });
+            });
+
+            $("body").on("click", ".fn-update-order-products", function () {
+                var orderId = $(this).attr("data-order-id");
+                var orderProducts = new Array();
+                var orderProductOptions = new Array();
+                $(".order_in_table tbody tr.order-product").each(function() {
+                    var tr = $(this);
+                    var productId = tr.attr("data-product-id");
+                    var name = tr.find(".product-name").val();
+                    var amount = tr.find(".product-amount").val();
+                    var price = tr.find(".product-price").val();
+                    orderProducts.push({
+                        ProductId: productId,
+                        ProductName: name,
+                        Amount: amount,
+                        ProductPrice: price
+                    });
+                });
+
+                $(".order_in_table tbody tr.order-product-option").each(function() {
+                    var tr = $(this);
+                    var productOptionId = tr.attr("data-product-option-id");
+                    var productId = tr.attr("data-product-id");
+                    var name = tr.find(".product-option-name").val();
+                    var amount = tr.find(".product-option-amount").val();
+                    var price = tr.find(".product-option-price").val();
+                    orderProductOptions.push({
+                        ProductId: productId,
+                        ProductOptionId: productOptionId,
+                        ProductOptionName: name,
+                        Amount: amount,
+                        ProductOptionPriceGrowth: price
+                    });
+                });
+                $.ajax({
+                    type: 'Post',
+                    dataType: 'json',
+                    url: bulkUpdateProductDetailsUrl,
+                    data: JSON.stringify({ orderId: orderId, orderProducts: orderProducts, orderProductOptions: orderProductOptions }),
+                    contentType: 'application/json; charset=utf-8',
+                    async: true,
+                    complete: function () {
+                        $.get(getOrderPartialUrl + "?id=" + orderId, function (data) {
+                            debugger;
+                            $(".order-wrap[data-order-id=" + orderId + "]").replaceWith(data);
+                            $(".modal").modal("hide");
+                        });
+                    }
+                });
+            });
 
             $(".chosen-select").chosen({
                 search_contains: true,
@@ -346,4 +398,18 @@
 <div class="page-header no-padding-bottom">
     <h1 class="no-padding-bottom pull-left">Загальна сума обраних замовлень:</h1> <h1 class="orange">@Model.TotalSum.ToString("F") грн</h1>
     <h1 class="no-padding-bottom pull-left">Кількість обраних замовлень:</h1> <h1 class="orange">@Model.Number.ToString("F")</h1>
+</div>
+
+<div class="modal" tabindex="-1" role="dialog" style="display: none">
+    <div class="modal-dialog" role="document" style="width:85%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="icon icon-remove-sign"></i>
+                </button>
+            </div>
+            <div class="modal-body area-order-edit">
+            </div>
+        </div>
+    </div>
 </div>
