@@ -161,6 +161,13 @@
         var bulkUpdateProductDetailsUrl = '@Url.Action("BulkUpdateOrderProducts")';
         var searchProductUrl = '@Url.Action("SearchProduct", new { area = string.Empty})';
         $(function () {
+            $("body").on("click", ".remove-sign", function (e) {
+                var productsContainer = $(this).parents(".edit-products-container");
+                $(this).parents(".product-wrap").remove();
+                if (productsContainer.find(".product-wrap").length == 1) {
+                    $(".remove-sign").hide();
+                }
+            });
            $("body").on("click", ".fn-edit-order",function (e) {
                 e.preventDefault();
                 var id = $(this).attr("data-order-id");
@@ -176,6 +183,11 @@
                             var lastProduct = $(".product_modal_form .product-wrap").last();
                             lastProduct.after(`<div class="product-wrap" data-product-id="` + suggestion.value + `" data-product-price="` + suggestion.data.price +`">
                                                     <div class="border-bottom padding-10" style="display:flex;">
+                                                        <div style="width: 20px;">
+                                                            <a href="#">
+                                                                <i class="icon icon-remove remove-sign"></i>
+                                                            </a>
+                                                        </div>
                                                         <div style="width: 200px; text-align: center;">
                                                             <img src="`+ suggestion.data.image +`" />
                                                         </div>
@@ -200,6 +212,8 @@
                                                         </div>
                                                     </div>
                                                 </div>`);
+                            $(".remove-sign").show();
+                            $("#product-name").val("");
                         },
                         formatResult: function (suggestion) {
                             return `<div class='product-wrap ' data-product-id='' data-product-price=''>
@@ -231,7 +245,6 @@
                     var tr = $(this);
                     var productId = tr.attr("data-product-id");
                     var amount = tr.find(".quantity").val();
-                    var price = tr.attr("data-product-price");
                     orderProducts.push({
                         ProductId: productId,
                         Amount: amount
@@ -461,7 +474,7 @@
                     <i class="icon icon-remove-sign"></i>
                 </button>
             </div>
-            <div class="modal-body area-order-edit">
+            <div class="modal-body area-order-edit" style="padding:0 15px; top: -30px;">
             </div>
         </div>
     </div>

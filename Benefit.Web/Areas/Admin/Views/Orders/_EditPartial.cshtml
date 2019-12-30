@@ -12,11 +12,19 @@
     </div>
 }
 <div class="display-flex">
-    <div style="flex-grow:1;">
+    <div style="max-height: 360px;overflow-y: scroll; flex-grow:1;" class="edit-products-container">
         @foreach (var product in Model.OrderProducts)
         {
             <div class="product-wrap" data-product-id="@product.ProductId" data-product-price="@product.ActualPrice">
                 <div class="border-bottom padding-10" style="display:flex;">
+                    @if (Model.OrderProducts.Count > 1)
+                    {
+                        <div style="width: 20px;">
+                            <a href="#">
+                                <i class="icon icon-remove remove-sign"></i>
+                            </a>
+                        </div>
+                    }
                     <div style="width: 200px; text-align: center;">
                         <img src="@product.ProductImageUrl" />
                     </div>

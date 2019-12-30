@@ -533,6 +533,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         db.Entry(product).State = EntityState.Modified;
                     }
                 }
+                var productIds = orderProducts.Select(entry => entry.ProductId).ToList();
+                var existingProductIds = order.OrderProducts.Select(entry => entry.ProductId).ToList();
+                var productIdsToDelete = existingProductIds.Except(productIds).ToList();
+                db.OrderProducts.RemoveRange(db.OrderProducts.Where(entry => entry.OrderId == orderId && productIdsToDelete.Contains(entry.ProductId)));
             }
             if (orderProductOptions != null)
             {

@@ -21,9 +21,18 @@
     text-align:center;
 }
 
-.transactions-table td, .transactions-table th {
-    padding: 15px;
+.remove-sign {
+    color: #fb3f4c;
+    opacity: 0.5;
+    font-size: 2em;
 }
+.remove-sign:hover {
+    opacity:1;
+}
+
+    .transactions-table td, .transactions-table th {
+        padding: 15px;
+    }
 
 .transactions-table th, .transactions-table .secondary {
     color: #999 !important;
