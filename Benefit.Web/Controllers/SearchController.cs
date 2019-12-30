@@ -15,6 +15,7 @@ namespace Benefit.Web.Controllers
     public class SearchController : Controller
     {
         SearchService SearchService = new SearchService();
+      
         public ActionResult SearchWords(string query, string sellerId = null)
         {
             var searchResult = SearchService.SearchKeyWords(query, sellerId);
@@ -31,7 +32,7 @@ namespace Benefit.Web.Controllers
                 JsonRequestBehavior.AllowGet);
         }
 
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult Index(string term, string options, string searchSellerId)
         {

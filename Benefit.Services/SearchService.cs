@@ -16,6 +16,21 @@ namespace Benefit.Services
     {
         public ApplicationDbContext db = new ApplicationDbContext();
 
+        public List<Product> SearchProducts(string term, string sellerId)
+        {
+            term = term.ToLower();
+            var products = db.Products.Include(entry => entry.Category).Include(entry => entry.Seller).Include(entry=>entry.Images)
+                .Where(entry => entry.IsActive &&
+                                entry.AvailabilityState != ProductAvailabilityState.NotInStock &&
+                                entry.Seller.IsActive &&
+                                entry.Category.IsActive &&
+                                entry.SellerId == sellerId &&
+                                (entry.Name.ToLower().Contains(term) ||
+                                entry.SKU.ToString() == term)).Take(20).ToList();
+            return products;
+        }
+
+
         public List<string> SearchKeyWords(string term, string sellerId = null)
         {
             term = term.ToLower();

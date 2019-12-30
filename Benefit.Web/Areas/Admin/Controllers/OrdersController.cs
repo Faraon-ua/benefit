@@ -19,6 +19,7 @@ using NLog;
 using Benefit.Common.Helpers;
 using Benefit.Services.ExternalApi;
 using Benefit.Common.Extensions;
+using Benefit.DataTransfer.JSON;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -39,6 +40,32 @@ namespace Benefit.Web.Areas.Admin.Controllers
             order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree.HasValue ? shipping.CostBeforeFree.Value : 0) : 0);
             order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
             order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
+        }
+
+        public ActionResult SearchProduct(string query, string sellerId)
+        {
+            SearchService SearchService = new SearchService();
+
+            var products = SearchService.SearchProducts(query, Seller.CurrentAuthorizedSellerId);
+            var pResult = products.Select(entry => new
+            {
+                id = entry.Id,
+                name = entry.Name,
+                sku = entry.SKU,
+                price = entry.Price,
+                isWeight = entry.IsWeightProduct,
+                image = entry.Images.FirstOrDefault() == null ? null : entry.Images.FirstOrDefault().IsAbsoluteUrl ? entry.Images.FirstOrDefault().ImageUrl : string.Format("~/Images/ProductGallery/{0}/{1}", entry.Id, entry.Images.FirstOrDefault())
+            }).ToList();
+            var result = new AutocompleteSearch
+            {
+                query = query,
+                suggestions = pResult.Select(entry => new ValueData()
+                {
+                    value = entry.id,
+                    data = new { entry.name, entry.image, entry.sku, entry.price, entry.isWeight }
+                }).ToArray()
+            };
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
         // GET: /Admin/Orders/
@@ -81,7 +108,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                                    entry.Status == OrderStatus.IsDelivering ||
                                                    entry.Status == OrderStatus.AwaitingDelivery ||
                                                    entry.Status == OrderStatus.ContactFail1 ||
-                                                   entry.Status == OrderStatus.ContactFail2||
+                                                   entry.Status == OrderStatus.ContactFail2 ||
                                                    entry.Status == OrderStatus.WaitingInSelfPickup);
                     break;
                 case 1:
@@ -327,7 +354,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     };
                     db.OrderStatusStamps.Add(statusStamp);
 
-                  
+
                     if (orderStatus == OrderStatus.Abandoned)
                     {
                         if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
@@ -482,10 +509,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 foreach (var orderProduct in orderProducts)
                 {
                     var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
-                    product.ProductName = orderProduct.ProductName;
-                    product.Amount = orderProduct.Amount;
-                    product.ProductPrice = orderProduct.ProductPrice;
-                    db.Entry(product).State = EntityState.Modified;
+                    if (product == null)
+                    {
+                        var pr = db.Products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                        if (pr != null)
+                        {
+                            product = new OrderProduct
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ProductId = orderProduct.ProductId,
+                                ProductName = pr.Name,
+                                OrderId = order.Id,
+                                ProductSku = pr.SKU,
+                                ProductPrice = pr.Price,
+                                Amount = orderProduct.Amount
+                            };
+                            db.OrderProducts.Add(product);
+                        }
+                    }
+                    else
+                    {
+                        product.Amount = orderProduct.Amount;
+                        db.Entry(product).State = EntityState.Modified;
+                    }
                 }
             }
             if (orderProductOptions != null)
@@ -563,6 +609,29 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult GetEditForm(string id)
         {
             var order = db.Orders.Include(entry => entry.OrderProducts).FirstOrDefault(entry => entry.Id == id);
+            var productIdsInOrders = order.OrderProducts.Select(entry => entry.ProductId).Distinct().ToList();
+            var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
+            foreach (var orderProduct in order.OrderProducts)
+            {
+                var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                if (product != null)
+                {
+                    orderProduct.ProductSku = product.SKU;
+                    orderProduct.IsWeightProduct = product.IsWeightProduct;
+                    var productImg = product.Images.FirstOrDefault();
+                    if (productImg != null)
+                    {
+                        if (productImg.IsAbsoluteUrl)
+                        {
+                            orderProduct.ProductImageUrl = productImg.ImageUrl;
+                        }
+                        else
+                        {
+                            orderProduct.ProductImageUrl = string.Format("~/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
+                        }
+                    }
+                }
+            }
             return PartialView("_EditPartial", order);
         }
         // GET: /Admin/Orders/Details/5

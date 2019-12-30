@@ -13,6 +13,7 @@
     <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css" rel="stylesheet" />
+    <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
 }
 @section scripts
 {
@@ -21,6 +22,8 @@
     <script src="~/Areas/Admin/assets/js/date-time/moment.min.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/daterangepicker.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
     <script>
         var changeStatusUrl = '@Url.Action("UpdateStatus")';
         var addCommentUrl = '@Url.Action("AddComment")';
@@ -156,59 +159,109 @@
         var editOrderUrl = '@Url.Action("GetEditForm")';
         var getOrderPartialUrl = '@Url.Action("GetOrderPartial")';
         var bulkUpdateProductDetailsUrl = '@Url.Action("BulkUpdateOrderProducts")';
+        var searchProductUrl = '@Url.Action("SearchProduct", new { area = string.Empty})';
         $(function () {
            $("body").on("click", ".fn-edit-order",function (e) {
                 e.preventDefault();
                 var id = $(this).attr("data-order-id");
-               $.get(editOrderUrl + "?id=" + id, function (data) {
+                $.get(editOrderUrl + "?id=" + id, function (data) {
                     $(".area-order-edit").html(data);
                     $(".modal").modal();
+                    $("#product-name").devbridgeAutocomplete({
+                        width: 900,
+                        height: 500,
+                        minChars: 3,
+                        serviceUrl: searchProductUrl,
+                        onSelect: function (suggestion) {
+                            var lastProduct = $(".product_modal_form .product-wrap").last();
+                            lastProduct.after(`<div class="product-wrap" data-product-id="` + suggestion.value + `" data-product-price="` + suggestion.data.price +`">
+                                                    <div class="border-bottom padding-10" style="display:flex;">
+                                                        <div style="width: 200px; text-align: center;">
+                                                            <img src="`+ suggestion.data.image +`" />
+                                                        </div>
+                                                        <div class="width-100">
+                                                            <div class="product-title">`+ suggestion.data.name+`</div>
+                                                            <div class="product-secondary">
+                                                                Код товару: `+ suggestion.data.sku +`
+                                                            </div>
+                                                            <div style="display:flex; justify-content: space-between;" class="product-purchase-info">
+                                                                <div class="product-price">`+ suggestion.data.price +` грн</div>
+                                                                <div _ngcontent-c31="" class="counter no-update">
+                                                                    <a _ngcontent-c31="" class="minus fn-update-price" href="#">
+                                                                        <i class="icon icon-minus"></i>
+                                                                    </a>
+                                                                    <input name="quantity" class="quantity" readonly="" type="text" value="1" data-weight-product="`+ suggestion.data.isWeight +`">
+                                                                    <a class="plus fn-update-price" href="#">
+                                                                        <i class="icon icon-plus"></i>
+                                                                    </a>
+                                                                </div>
+                                                                <div class="total-product-price" data-original-price="`+ suggestion.data.price + `"><span>` + suggestion.data.price +`</span> грн</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>`);
+                        },
+                        formatResult: function (suggestion) {
+                            return `<div class='product-wrap ' data-product-id='' data-product-price=''>
+                                        <div class='border-bottom padding-10 display-flex'>
+                                            <div style="width: 100px; text-align: center;">
+                                                <img src="`+ suggestion.data.image + `" style='max-width:54px;max-height:47px;' />
+                                            </div>
+                                            <div class="width-100">
+                                                <div class="product-title">`+ suggestion.data.name + `</div>
+                                                <div class="product-secondary">
+                                                    Код товару: `+ suggestion.data.sku + `
+                                                </div>
+                                                <div>
+                                                    <b>`+ suggestion.data.price + ` грн</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`;
+                        }
+                    });
                 });
             });
 
             $("body").on("click", ".fn-update-order-products", function () {
                 var orderId = $(this).attr("data-order-id");
                 var orderProducts = new Array();
-                var orderProductOptions = new Array();
-                $(".order_in_table tbody tr.order-product").each(function() {
+                //var orderProductOptions = new Array();
+                $(".product_modal_form .product-wrap").each(function() {
                     var tr = $(this);
                     var productId = tr.attr("data-product-id");
-                    var name = tr.find(".product-name").val();
-                    var amount = tr.find(".product-amount").val();
-                    var price = tr.find(".product-price").val();
+                    var amount = tr.find(".quantity").val();
+                    var price = tr.attr("data-product-price");
                     orderProducts.push({
                         ProductId: productId,
-                        ProductName: name,
-                        Amount: amount,
-                        ProductPrice: price
+                        Amount: amount
                     });
                 });
 
-                $(".order_in_table tbody tr.order-product-option").each(function() {
-                    var tr = $(this);
-                    var productOptionId = tr.attr("data-product-option-id");
-                    var productId = tr.attr("data-product-id");
-                    var name = tr.find(".product-option-name").val();
-                    var amount = tr.find(".product-option-amount").val();
-                    var price = tr.find(".product-option-price").val();
-                    orderProductOptions.push({
-                        ProductId: productId,
-                        ProductOptionId: productOptionId,
-                        ProductOptionName: name,
-                        Amount: amount,
-                        ProductOptionPriceGrowth: price
-                    });
-                });
+                //$(".order_in_table tbody tr.order-product-option").each(function() {
+                //    var tr = $(this);
+                //    var productOptionId = tr.attr("data-product-option-id");
+                //    var productId = tr.attr("data-product-id");
+                //    var name = tr.find(".product-option-name").val();
+                //    var amount = tr.find(".product-option-amount").val();
+                //    var price = tr.find(".product-option-price").val();
+                //    orderProductOptions.push({
+                //        ProductId: productId,
+                //        ProductOptionId: productOptionId,
+                //        ProductOptionName: name,
+                //        Amount: amount,
+                //        ProductOptionPriceGrowth: price
+                //    });
+                //});
                 $.ajax({
                     type: 'Post',
                     dataType: 'json',
                     url: bulkUpdateProductDetailsUrl,
-                    data: JSON.stringify({ orderId: orderId, orderProducts: orderProducts, orderProductOptions: orderProductOptions }),
+                    data: JSON.stringify({ orderId: orderId, orderProducts: orderProducts }),
                     contentType: 'application/json; charset=utf-8',
                     async: true,
                     complete: function () {
                         $.get(getOrderPartialUrl + "?id=" + orderId, function (data) {
-                            debugger;
                             $(".order-wrap[data-order-id=" + orderId + "]").replaceWith(data);
                             $(".modal").modal("hide");
                         });
@@ -400,10 +453,10 @@
     <h1 class="no-padding-bottom pull-left">Кількість обраних замовлень:</h1> <h1 class="orange">@Model.Number.ToString("F")</h1>
 </div>
 
-<div class="modal" tabindex="-1" role="dialog" style="display: none">
-    <div class="modal-dialog" role="document" style="width:85%;">
-        <div class="modal-content">
-            <div class="modal-header">
+<div class="modal product_modal_form" tabindex="-1" role="dialog" style="display: none">
+    <div class="modal-dialog" role="document" style="width:60%;">
+        <div class="modal-content" style="border-radius:15px; padding:25px;">
+            <div class="modal-header" style="padding:0px; border:0;">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="icon icon-remove-sign"></i>
                 </button>

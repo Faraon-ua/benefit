@@ -3,7 +3,7 @@
     public class ValueData
     {
         public string value { get; set; }
-        public string data { get; set; }
+        public object data { get; set; }
     }
     public class AutocompleteSearch
     {

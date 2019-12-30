@@ -1,27 +1,57 @@
-﻿.transactions-table td, .transactions-table th {
+﻿.counter .minus, .counter .plus {
+    color: #3e77aa;
+    width: 35px;
+    height: 34px;
+    line-height: 32px !important;
+    display: inline-block;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    text-align:center;
+    font-size: 1.5em;
+}
+
+    .counter .minus:hover, .counter .plus:hover {
+        border: 1px solid #fb3f4c;
+        color: #fb3f4c;
+        text-decoration:none;
+    }
+
+.counter .quantity {
+    width: 48px;
+    text-align:center;
+}
+
+.transactions-table td, .transactions-table th {
     padding: 15px;
 }
+
 .transactions-table th, .transactions-table .secondary {
     color: #999 !important;
     font-weight: normal;
 }
+
 .transactions-table td {
     color: #333;
 }
-    .filters-wrap{}
+
+.filters-wrap {
+}
+
     .filters-wrap .filter-tab.active {
         border-top: solid 3px #74d46b;
         color: #333;
     }
+
     .filters-wrap .filter-tab:not(.active):hover {
         color: #fb3f4c;
         border-top: solid 2px #fb3f4c;
     }
 
-.filters-wrap .filter-tab{
-    padding: 8px 15px;
-    display: block;
-}
+    .filters-wrap .filter-tab {
+        padding: 8px 15px;
+        display: block;
+    }
+
 .comments-list {
     color: #333;
 }
@@ -184,7 +214,7 @@
 .orders-list div.order-wrap .order-number-wrap i {
     opacity: 0.7;
     font-size: 19px;
-    cursor:pointer;
+    cursor: pointer;
 }
 
     .orders-list div.order-wrap .order-number-wrap i:hover {
@@ -206,8 +236,8 @@
 }
 
 .orders-filters form {
-    width:100%;
-    display:flex;
+    width: 100%;
+    display: flex;
     flex-wrap: wrap;
 }
 

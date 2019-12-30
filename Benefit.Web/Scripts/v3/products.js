@@ -15,7 +15,7 @@
     }
 
     $('body').on("blur",
-        ".product_modal_form .counter",
+        ".product_modal_form .counter:not(.no-update)",
         function () {
             CalculateCartSum();
         });
@@ -36,7 +36,8 @@
 
     $("body").on('click',
         ".product_modal_form .plus, .product_modal_form .minus, .product-item .plus, .product-item .minus, .product-page .plus, .product-page .minus",
-        function () {
+        function (e) {
+            e.preventDefault();
             var quantity = $(this).parent().find('input[name=quantity]');
             var valueToAdd = 1;
             var isMinus = $(this).hasClass("minus");
@@ -55,6 +56,11 @@
                 productCurrentValue = productCurrentValue.toFixed(1);
             }
             quantity.val(productCurrentValue);
+            if ($(this).hasClass("fn-update-price")) {
+                var productPriceDiv = $(this).parent().parent().find('.total-product-price');
+                var productPrice = parseFloat(productPriceDiv.attr("data-original-price"));
+                productPriceDiv.find("span").text((productPrice * productCurrentValue).toFixed(1));
+            }
         });
 
     //$("body").on('click',
