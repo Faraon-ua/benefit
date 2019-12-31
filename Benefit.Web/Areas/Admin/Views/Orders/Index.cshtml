@@ -167,6 +167,11 @@
                 if (productsContainer.find(".product-wrap").length == 1) {
                     $(".remove-sign").hide();
                 }
+                var totalPrices = $(".total-product-price").map(function () {
+                    return parseFloat($(this).find("span").text());
+                }).get();
+                var total = totalPrices.reduce(function (pv, cv) { return pv + cv; }, 0);
+                $(".total").text(total.toFixed(2));
             });
            $("body").on("click", ".fn-edit-order",function (e) {
                 e.preventDefault();
@@ -214,6 +219,11 @@
                                                 </div>`);
                             $(".remove-sign").show();
                             $("#product-name").val("");
+                            var totalPrices = $(".total-product-price").map(function () {
+                                return parseFloat($(this).find("span").text());
+                            }).get();
+                            var total = totalPrices.reduce(function (pv, cv) { return pv + cv; }, 0);
+                            $(".total").text(total.toFixed(2));
                         },
                         formatResult: function (suggestion) {
                             return `<div class='product-wrap ' data-product-id='' data-product-price=''>
@@ -469,7 +479,7 @@
 <div class="modal product_modal_form" tabindex="-1" role="dialog" style="display: none">
     <div class="modal-dialog" role="document" style="width:60%;">
         <div class="modal-content" style="border-radius:15px; padding:25px;">
-            <div class="modal-header" style="padding:0px; border:0;">
+            <div class="modal-header" style="padding:0px; border:0;position: relative; z-index:1000;">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <i class="icon icon-remove-sign"></i>
                 </button>

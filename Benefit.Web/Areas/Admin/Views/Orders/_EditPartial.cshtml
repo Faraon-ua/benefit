@@ -11,7 +11,7 @@
         <input type="text" placeholder="Введіть ID або назву товару" id="product-name" class="width-60 margin-left-30" />
     </div>
 }
-<div class="display-flex">
+<div>
     <div style="max-height: 360px;overflow-y: scroll; flex-grow:1;" class="edit-products-container">
         @foreach (var product in Model.OrderProducts)
         {
@@ -51,6 +51,11 @@
             </div>
         }
     </div>
+    <div class="display-flex padding-15 font-bigger">
+        <div style="flex-grow:1; text-align:right; margin-right: 100px;">Всього за товари</div>
+        <span class="total" style="width:100px;">@(Model.OrderProducts.Sum(entry => entry.Amount * entry.ActualPrice).ToString("F"))</span> грн
+    </div>
+
 </div>
 
 @*@foreach (var product in Model.OrderProducts)

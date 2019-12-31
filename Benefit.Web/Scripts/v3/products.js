@@ -60,6 +60,11 @@
                 var productPriceDiv = $(this).parent().parent().find('.total-product-price');
                 var productPrice = parseFloat(productPriceDiv.attr("data-original-price"));
                 productPriceDiv.find("span").text((productPrice * productCurrentValue).toFixed(1));
+                var totalPrices = $(".total-product-price").map(function () {
+                    return parseFloat($(this).find("span").text());
+                }).get();
+                var total = totalPrices.reduce(function (pv, cv) { return pv + cv; }, 0);
+                $(".total").text(total.toFixed(2));
             }
         });
 
