@@ -116,6 +116,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     break;
                 case 2:
                     orders = orders.Where(entry => entry.Status != OrderStatus.Created &&
+                                                   entry.Status != OrderStatus.PassedToDelivery &&
                                                    entry.Status != OrderStatus.Processed &&
                                                    entry.Status != OrderStatus.AwaitingDelivery &&
                                                    entry.Status != OrderStatus.IsDelivering &&
