@@ -33,7 +33,14 @@
             }
         </div>
         <div class="col border-bottom" style="width: 145px;">
-            @Model.Time.ToLocalDateTimeWithFormat()
+            @if (Model.OrderType == OrderType.Rozetka)
+            {
+                <span>@Model.Time.ToDateTimeWithFormat()</span>
+            }
+            else
+            {
+                <span>@Model.Time.ToLocalDateTimeWithFormat()</span>
+            }
         </div>
         <div class="border-bottom" style="flex-grow: 1; padding: 15px 0;">
             <div class="images-thmb">

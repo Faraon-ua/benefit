@@ -4,6 +4,10 @@ namespace Benefit.Common.Extensions
 {
     public static class DateTimeExtensions
     {
+        public static string ToDateTimeWithFormat(this DateTime dateTime)
+        {
+            return dateTime.ToString("d.M.yyyy HH:mm");
+        }
         public static string ToLocalDateTimeWithFormat(this DateTime dateTime)
         {
             return dateTime.ToLocalTime().ToString("d.M.yyyy HH:mm");

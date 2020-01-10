@@ -84,13 +84,13 @@ namespace Benefit.Services.ExternalApi
             }
         }
 
-        public void ProcessOrders(string getOrdersUrl = null, string authToken = null)
+        public void ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1)
         {
             var orderSuffixRegex = new Regex(@"\(\b(\w*.?(bc|BC).+\d\w*)\b\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             var orders = new List<Order>();
             if (getOrdersUrl == null)
             {
-                getOrdersUrl = SettingsService.Rozetka.BaseUrl + "orders/search?expand=purchases,delivery&page=1";
+                getOrdersUrl = SettingsService.Rozetka.BaseUrl + "orders/search?expand=purchases,delivery&page=1&type=1";
                 var lastOrder = db.Orders.Where(entry => entry.OrderType == OrderType.Rozetka).OrderByDescending(entry => entry.Time).FirstOrDefault();
                 if (lastOrder != null)
                 {
@@ -101,7 +101,7 @@ namespace Benefit.Services.ExternalApi
                     getOrdersUrl += string.Format("&created_from={0}", DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd"));
                 }
             }
-            if(authToken == null)
+            if (authToken == null)
             {
                 authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
             }
@@ -115,7 +115,7 @@ namespace Benefit.Services.ExternalApi
                     foreach (var rOrder in rOrders)
                     {
                         var productNames = rOrder.purchases.Select(entry => orderSuffixRegex.Match(entry.item_name).Value.ToLower()).ToList();
-                        var products = db.Products.Where(entry => productNames.Any(pn=> entry.Name.ToLower().Contains(pn))).ToList();
+                        var products = db.Products.Where(entry => productNames.Any(pn => entry.Name.ToLower().Contains(pn))).ToList();
                         var sellerIds = products.Select(entry => entry.SellerId).Distinct().ToList();
                         foreach (var sellerId in sellerIds)
                         {
@@ -170,6 +170,11 @@ namespace Benefit.Services.ExternalApi
                     {
                         getOrdersUrl = getOrdersUrl.Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=" + (ordersResult.Data.content._meta.currentPage + 1));
                         ProcessOrders(getOrdersUrl, authToken);
+                    }
+                    else if (type < 3)
+                    {
+                        getOrdersUrl = getOrdersUrl.Replace("type=" + type, "type=" + (type + 1));
+                        ProcessOrders(getOrdersUrl, authToken, ++type);
                     }
                 }
                 else

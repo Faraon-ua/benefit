@@ -121,6 +121,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                                    entry.Status != OrderStatus.IsDelivering &&
                                                    entry.Status != OrderStatus.Finished &&
                                                    entry.Status != OrderStatus.AwaitingDelivery &&
+                                                   entry.Status != OrderStatus.ContactFail1 &&
+                                                   entry.Status != OrderStatus.ContactFail2 &&
                                                    entry.Status != OrderStatus.WaitingInSelfPickup);
                     break;
             }
@@ -221,7 +223,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             }
                             else
                             {
-                                orderProduct.ProductImageUrl = string.Format("~/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
+                                orderProduct.ProductImageUrl = string.Format("/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
                             }
                         }
                     }
