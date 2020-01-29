@@ -234,7 +234,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
 
                 var xml = XDocument.Load(importFile.FullName);
-
                 if (!ImportService.ImportFrom1C(xml, seller))
                 {
                     return Json(new { error = "Ошибка імпорту файлів" }, JsonRequestBehavior.AllowGet);

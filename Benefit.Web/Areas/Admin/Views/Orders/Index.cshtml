@@ -43,6 +43,8 @@
             });
             $('body').popover(popOverSettings);
 
+            $(".quantity").mask("#9.99", { reverse: true });
+
             $("body").on("keyup", ".data-status-comment", function () {
                 if ($(this).val()) {
                     $(".fn-add-comment-submit").prop("disabled", "");

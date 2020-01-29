@@ -58,9 +58,11 @@
             <li class="partner_menu_network @Enumerations.GetEnumDescription(active)">
                 @if (active == ActiveStatus.Active)
                 {
-                    <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
+                    @*<a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>*@
+                    <a href="#" class="partner_menu_back"></a>
                 }
-                <a href="@Url.Action("Structure", "Panel")">Структура</a>
+                @*<a href="@Url.Action("Structure", "Panel")">Структура</a>*@
+                <a href="#">Структура</a>
             </li>
             @{
                 active = ViewContext.RouteData.GetRequiredString("action") == "planvunagorod" ? ActiveStatus.Active : ActiveStatus.None;

@@ -218,7 +218,7 @@
                             <label class="text-left control-label">Зображення</label>
                         </div>
                         <div class="col-md-10">
-                            <img src="~/Images/CategoryLogo/@Model.ImageUrl" />
+                            <img src="~/Images/CategoryLogo/@Model.ImageUrl?time=@DateTime.Now.ToLocalDateTimeWithFormat().Replace(" ","-")" />
                             <input type="file" id="CategoryImage" name="categoryImage" />
                         </div>
                     </div>
