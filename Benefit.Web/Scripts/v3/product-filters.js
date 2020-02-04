@@ -47,7 +47,8 @@ $(function () {
             options = "page=" + (page + 1) + ";";
             pageUrl = lastSegment + "/" + options;
         } else {
-            if (lastSegment.indexOf("page=") > 0) {
+            debugger;
+            if (lastSegment.indexOf("page=") >= 0) {
                 options = pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
             }
             else {
