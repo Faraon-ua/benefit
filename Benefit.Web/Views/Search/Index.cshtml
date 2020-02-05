@@ -11,7 +11,9 @@
 @section scripts
 {
     <script> 
+        var reloadOnProductAdd = false;
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var productVariantsUrl = '@Url.Action("GetProductVariants", "Tovar")';
         var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
         var getProductsUrl = '@Url.Action("GetProducts", "Search")';
         var addToFavoritesUrl =
