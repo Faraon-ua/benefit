@@ -201,9 +201,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             else
             {
-                var categories = db.Categories.Where(
+                var categories = db.Categories.Include(entry=>entry.SellerCategories).Where(
                     entry =>
-                        entry.SellerCategories.Where(sc => !sc.IsDefault)
+                        entry.SellerCategories
                             .Select(sc => sc.SellerId)
                             .Contains(Seller.CurrentAuthorizedSellerId)).ToList();
                 if (id != null)

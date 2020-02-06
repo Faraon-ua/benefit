@@ -168,7 +168,7 @@
                 @if (availableForPurchase.State != ComputedProductAvailabilityState.NotAvailable)
                 {
                     <div class="button_block product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct" 
-                         @(availableForPurchase.State == ComputedProductAvailabilityState.AvailableInOtherRegion ? "data-purchase-region='"+string.Join(",",availableForPurchase.Regions.Values)+"' data-purchase-region-id='"+availableForPurchase.Regions.First().Key+"'" : string.Empty)>
+                         @(availableForPurchase.State == ComputedProductAvailabilityState.AvailableInOtherRegion ? "data-purchase-region='"+string.Join(",",availableForPurchase.Regions.Values)+"' data-purchase-region-id='"+(availableForPurchase.Regions.Any() ? availableForPurchase.Regions.FirstOrDefault().Key : string.Empty) + "'" : string.Empty)>
                         <span class="small to-cart btn btn-default" style="height: 36px; padding: 7px 10px 10px 10px;">
                             <i class="visible-xs fa fa-shopping-cart" style="width: 20px; font-size: 1.5em;"></i>
                             <i></i>
