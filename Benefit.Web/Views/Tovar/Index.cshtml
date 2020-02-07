@@ -379,7 +379,8 @@
                                     <div class="x-product-info__item" style="width: 50%; margin-top: 30px;">
                                         <div class="x-product-price">
                                             <div class="x-product-price__value" data-qaid="product_price">
-                                                <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")
+                                                <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span>
+                                                <span class="font-smaller">грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
                                             </div>
                                             @if (Model.Product.OldPrice.HasValue)
                                             {

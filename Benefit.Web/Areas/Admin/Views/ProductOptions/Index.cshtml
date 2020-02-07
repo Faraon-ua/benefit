@@ -30,6 +30,7 @@
             $("#groupEditContainer").load(routePrefix + "/Admin/ProductOptions/ProductOptionValue?parentId=" + parentId + "&categoryId=@Model.CategoryId&sellerId=@Model.SellerId&productId=@Model.ProductId", function (response, status, xhr) {
                 $("#dialog").removeClass('hide').dialog({
                     minWidth: 500,
+                    position: { my: "center", at: "center top+300", of: window },
                     buttons: [
                         {
                             text: "Зберегти",
