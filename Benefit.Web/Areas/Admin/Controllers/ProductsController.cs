@@ -201,7 +201,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
             else
             {
-                var categories = db.Categories.Include(entry=>entry.SellerCategories).Where(
+                var categories = db.Categories.Include(entry => entry.SellerCategories).Where(
                     entry =>
                         entry.SellerCategories
                             .Select(sc => sc.SellerId)
@@ -305,20 +305,33 @@ namespace Benefit.Web.Areas.Admin.Controllers
             //todo: add check for seller role
             var ownerId = User.Identity.GetUserId();
             var seller = db.Sellers.FirstOrDefault(entry => ownerId == entry.Owner.Id) ?? db.Sellers.FirstOrDefault(entry => entry.Id == product.SellerId);
-            var categories = db.Categories.Where(
-                entry =>
-                    entry.SellerCategories.Where(sc => !sc.IsDefault)
-                        .Select(sc => sc.SellerId)
-                        .Contains(Seller.CurrentAuthorizedSellerId)).ToList();
-            categories =
-                categories.Union(
-                    db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == product.SellerId)).ToList().SortByHierarchy().ToList();
-            ViewBag.Categories = categories.Select(entry => new HierarchySelectItem()
+            if (User.IsInRole(DomainConstants.AdminRoleName))
             {
-                Text = entry.Name,
-                Value = entry.Id,
-                Level = entry.HierarchicalLevel
-            });
+                ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
+                {
+                    Text = entry.IsSellerCategory ? string.Format("[seller]{0}", entry.Name) : entry.Name,
+                    Value = entry.Id,
+                    Level = entry.HierarchicalLevel
+                });
+            }
+            else
+            {
+                var categories = db.Categories.Include(entry => entry.SellerCategories).Where(
+                    entry =>
+                        entry.SellerCategories
+                            .Select(sc => sc.SellerId)
+                            .Contains(Seller.CurrentAuthorizedSellerId)).ToList();
+                categories =
+                    categories.Union(
+                        db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == product.SellerId)).ToList().SortByHierarchy().ToList();
+
+                ViewBag.Categories = categories.Select(entry => new HierarchySelectItem()
+                {
+                    Text = entry.Name,
+                    Value = entry.Id,
+                    Level = entry.HierarchicalLevel
+                });
+            }
             ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name");
             product.Category = db.Categories
                 .Include(entry => entry.ProductParameters)
@@ -369,7 +382,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             var product = db.Products.Find(id);
             if (product == null) return HttpNotFound();
-            if(accept)
+            if (accept)
             {
                 product.ModerationStatus = ModerationStatus.Moderated;
                 if (!product.Name.Contains("(bc-"))
