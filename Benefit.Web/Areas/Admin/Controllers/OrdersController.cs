@@ -333,6 +333,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 try
                 {
                     var order = db.Orders.Find(orderId);
+                    var oldStatus = order.Status;
                     order.Status = orderStatus;
                     if (delieveryType != null)
                     {
@@ -382,7 +383,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             if (rozetkaOrders.All(entry => entry.Status == OrderStatus.Finished || entry.Status == OrderStatus.Abandoned))
                             {
                                 var rozetkaService = new RozetkaApiService();
-                                Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, order.Status, orderStatus, null));
+                                Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null));
                             }
                         }
                         TransactionsService.AddOrderFinishedTransaction(order, db);
@@ -410,7 +411,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
                         {
                             var rozetkaService = new RozetkaApiService();
-                            Task.Run(()=> rozetkaService.UpdateOrderStatus(order.ExternalId, order.Status, orderStatus, null));
+                            Task.Run(()=> rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null));
                         }
                     }
                     if (orderStatus == OrderStatus.Abandoned ||
