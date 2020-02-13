@@ -3,6 +3,7 @@ using System.Web.Http;
 using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Domain;
+using NLog;
 using Telegram.Bot;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
@@ -13,11 +14,13 @@ namespace Benefit.Web.Controllers.API
     {
         private TelegramBotClient _bot = new TelegramBotClient(SettingsService.Telegram.BotToken);
         private SellerService SellerService = new SellerService();
+        private Logger _logger = LogManager.GetCurrentClassLogger();
 
         public async Task<IHttpActionResult> Post(Update update)
         {
             var message = update.Message;
-            if (message.Type.Equals(MessageType.TextMessage))
+            _logger.Warn("Telegram message: "+message);
+            if (message.Type.Equals(MessageType.Text))
             {
                 if (message.Text == "/start")
                 {
@@ -37,7 +40,7 @@ namespace Benefit.Web.Controllers.API
                     }
                     else
                     {
-                        await _bot.SendTextMessageAsync(message.Chat.Id, "Telegram сповіщення не увімкненно");
+                        await _bot.SendTextMessageAsync(message.Chat.Id, "Telegram сповіщення не увімкненноz");
                     }
                 }
                 else
