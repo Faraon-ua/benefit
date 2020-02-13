@@ -17,7 +17,7 @@ namespace Benefit.Services
         {
             var existingNotification =
                 db.NotificationChannels.FirstOrDefault(
-                    entry => entry.SellerId == apiName && entry.Address == channelAddress);
+                    entry => entry.Name == apiName && entry.Address == channelAddress);
             if (existingNotification != null)
             {
                 return apiName;
@@ -25,7 +25,7 @@ namespace Benefit.Services
             var notificationCHannel = new NotificationChannel()
             {
                 Id = Guid.NewGuid().ToString(),
-                SellerId = apiName,
+                Name = apiName,
                 ChannelType = channelType,
                 Address = channelAddress
             };
@@ -38,11 +38,11 @@ namespace Benefit.Services
             var message = string.Format(
                 "Статус замовлення №{0} не було змінено на маркетплейсі {1}, {2} -> {3}",
                 orderNumber, marketPlaceName, Enumerations.GetDisplayNameValue(oldStatus), Enumerations.GetDisplayNameValue(newStatus));
-            var notificationChannels = db.NotificationChannels.Where(entry => entry.ChannelType == NotificationChannelType.TelegramApiFail).ToList();
+            var notificationChannels = db.NotificationChannels.Where(entry => entry.ChannelType == NotificationChannelType.TelegramApiFail && entry.Name == marketPlaceName).ToList();
             foreach (var notificationChannel in notificationChannels)
             {
                 var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
-                telegram.SendTextMessageAsync(notificationChannel.Address, message);
+                telegram.SendTextMessageAsync(notificationChannel.Address, message).ConfigureAwait(false);
             }
         }
         public void NotifySeller(int orderNumber, string orderUrl, string sellerId)

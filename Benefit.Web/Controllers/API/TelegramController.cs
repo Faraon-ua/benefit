@@ -22,7 +22,7 @@ namespace Benefit.Web.Controllers.API
             {
                 if (message.Text == "/start")
                 {
-                    await _bot.SendTextMessageAsync(message.Chat.Id, "Доброго дня, ведіть - 1 для сповіщень про замовлення, 2 - для сповіщень про помилки в обробці замовлень марктеплейсів").ConfigureAwait(false);
+                    await _bot.SendTextMessageAsync(message.Chat.Id, "Доброго дня, ведіть 1 - для сповіщень про замовлення, 2 - для сповіщень про помилки в обробці замовлень марктеплейсів").ConfigureAwait(false);
                 }
                 else if(message.Text == "1")
                 {

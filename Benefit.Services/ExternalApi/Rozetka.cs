@@ -45,7 +45,11 @@ namespace Benefit.Services.ExternalApi
             var orders = new List<Order>();
             var updateOrderUrl = SettingsService.Rozetka.BaseUrl + "orders/" + id;
             var authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
-            if (authToken != null)
+            if (authToken == null)
+            {
+                success = false;
+            }
+            else
             {
                 var updateOrderIngest = new UpdateOrderIngest
                 {
@@ -64,18 +68,18 @@ namespace Benefit.Services.ExternalApi
                         success = false;
                     }
                 }
-                if (!success)
+            }
+            if (!success)
+            {
+                if (tryCount <= 3)
                 {
-                    if (tryCount <= 3)
-                    {
-                        Thread.Sleep(3000);
-                        UpdateOrderStatus(id, oldStatus, newStatus, ttn, tryCount + 1);
-                    }
-                    else
-                    {
-                        var notificationService = new NotificationsService();
-                        notificationService.NotifyApiFailRequest(id, "Rozetka", oldStatus, newStatus);
-                    }
+                    Thread.Sleep(3000);
+                    UpdateOrderStatus(id, oldStatus, newStatus, ttn, tryCount + 1);
+                }
+                else
+                {
+                    var notificationService = new NotificationsService();
+                    notificationService.NotifyApiFailRequest(id, "Rozetka", oldStatus, newStatus);
                 }
             }
         }
