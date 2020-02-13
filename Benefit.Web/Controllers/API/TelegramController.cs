@@ -21,7 +21,24 @@ namespace Benefit.Web.Controllers.API
             {
                 if (message.Text == "/start")
                 {
-                    await _bot.SendTextMessageAsync(message.Chat.Id, "Доброго дня");
+                    await _bot.SendTextMessageAsync(message.Chat.Id, "Доброго дня, ведіть - 1 для сповіщень про замовлення, 2 - для сповіщень про помилки в обробці замовленнь марктеплейсів");
+                }
+                else if(message.Text == "1")
+                {
+                    await _bot.SendTextMessageAsync(message.Chat.Id, "Введіть ідентифікатор постачальника");
+                }
+                else if (message.Text == "2")
+                {
+                    var result = SellerService.AddNotificationChannel(null, message.Chat.Id.ToString(),
+                        NotificationChannelType.TelegramApiFail);
+                    if (result != null)
+                    {
+                        await _bot.SendTextMessageAsync(message.Chat.Id, "Telegram сповіщення успішно увімкненно");
+                    }
+                    else
+                    {
+                        await _bot.SendTextMessageAsync(message.Chat.Id, "Telegram сповіщення не увімкненно");
+                    }
                 }
                 else
                 {

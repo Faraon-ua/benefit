@@ -12,7 +12,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using System.Threading;
 
 namespace Benefit.Services.ExternalApi
 {
@@ -39,8 +39,9 @@ namespace Benefit.Services.ExternalApi
             return null;
         }
 
-        public void UpdateOrderStatus(string id, OrderStatus orderStatus, string ttn)
+        public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1)
         {
+            var success = true;
             var orders = new List<Order>();
             var updateOrderUrl = SettingsService.Rozetka.BaseUrl + "orders/" + id;
             var authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
@@ -48,7 +49,7 @@ namespace Benefit.Services.ExternalApi
             {
                 var updateOrderIngest = new UpdateOrderIngest
                 {
-                    status = (int)orderStatus + 1
+                    status = (int)newStatus + 1
                 };
                 var postData = JsonConvert.SerializeObject(updateOrderIngest);
                 var ordersResult = _httpClient.Post<BaseDto>(updateOrderUrl, postData, "application/json", authToken, "put");
@@ -56,7 +57,24 @@ namespace Benefit.Services.ExternalApi
                 {
                     if (!ordersResult.Data.success)
                     {
-                        _logger.Fatal("[Rozetka] update order fail: " + id);
+                        success = false;
+                    }
+                    else
+                    {
+                        success = false;
+                    }
+                }
+                if (!success)
+                {
+                    if (tryCount <= 3)
+                    {
+                        Thread.Sleep(3000);
+                        UpdateOrderStatus(id, oldStatus, newStatus, ttn, tryCount + 1);
+                    }
+                    else
+                    {
+                        var notificationService = new NotificationsService();
+                        notificationService.NotifyApiFailRequest(id, "Rozetka", oldStatus, newStatus);
                     }
                 }
             }

@@ -20,6 +20,7 @@ using Benefit.Common.Helpers;
 using Benefit.Services.ExternalApi;
 using Benefit.Common.Extensions;
 using Benefit.DataTransfer.JSON;
+using System.Threading.Tasks;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -381,7 +382,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             if (rozetkaOrders.All(entry => entry.Status == OrderStatus.Finished || entry.Status == OrderStatus.Abandoned))
                             {
                                 var rozetkaService = new RozetkaApiService();
-                                rozetkaService.UpdateOrderStatus(order.ExternalId, orderStatus, null);
+                                Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, order.Status, orderStatus, null));
                             }
                         }
                         TransactionsService.AddOrderFinishedTransaction(order, db);
@@ -409,7 +410,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
                         {
                             var rozetkaService = new RozetkaApiService();
-                            rozetkaService.UpdateOrderStatus(order.ExternalId, orderStatus, null);
+                            Task.Run(()=> rozetkaService.UpdateOrderStatus(order.ExternalId, order.Status, orderStatus, null));
                         }
                     }
                     if (orderStatus == OrderStatus.Abandoned ||

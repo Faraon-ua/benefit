@@ -5,11 +5,27 @@ using System.Data.Entity;
 using System.Linq;
 using Benefit.Domain.Models;
 using Telegram.Bot;
+using Benefit.Common.Helpers;
 
 namespace Benefit.Services
 {
     public class NotificationsService
     {
+        public void NotifyApiFailRequest(string orderNumber, string marketPlaceName, OrderStatus oldStatus, OrderStatus newStatus)
+        {
+            var message = string.Format(
+                "Статус замовлення №{0} не було змінено на маркетплейсі {1}, {2} -> {3}",
+                orderNumber, marketPlaceName, Enumerations.GetDisplayNameValue(oldStatus), Enumerations.GetDisplayNameValue(newStatus));
+            using (var db = new ApplicationDbContext())
+            {
+                var notificationChannels = db.NotificationChannels.Where(entry => entry.ChannelType == NotificationChannelType.TelegramApiFail).ToList();
+                foreach(var notificationChannel in notificationChannels)
+                {
+                    var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
+                    telegram.SendTextMessageAsync(notificationChannel.Address, message);
+                }
+            }
+        }
         public void NotifySeller(int orderNumber, string orderUrl, string sellerId)
         {
             var message = string.Format(
