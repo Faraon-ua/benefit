@@ -97,6 +97,7 @@ namespace Benefit.HttpClient
             }
             catch (WebException ex)
             {
+                if (ex.Response == null) return new ResponseResult<T> { StatusCode = HttpStatusCode.NotFound, Data = default(T), ErrorMessage = ex.Message };
                 result.StatusCode = ((HttpWebResponse)ex.Response).StatusCode;
 
                 var responseStream = ex.Response == null ? null : ex.Response.GetResponseStream();

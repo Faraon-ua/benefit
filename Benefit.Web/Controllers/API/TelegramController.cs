@@ -54,7 +54,6 @@ namespace Benefit.Web.Controllers.API
                         await _bot.SendTextMessageAsync(message.Chat.Id, "Telegram сповіщення не увімкненно, перевірте чи вірний ідинтифікатор постачальника").ConfigureAwait(false);
                     }
                 }
-
             }
             return Ok();
         }
