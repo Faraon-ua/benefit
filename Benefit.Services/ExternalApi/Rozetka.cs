@@ -188,7 +188,7 @@ namespace Benefit.Services.ExternalApi
                     }
                     db.Orders.AddRange(orders);
                     db.SaveChanges();
-                    if (ordersResult.Data.content._meta.currentPage != ordersResult.Data.content._meta.pageCount)
+                    if (ordersResult.Data.content._meta.currentPage != ordersResult.Data.content._meta.pageCount && ordersResult.Data.content._meta.pageCount != 0)
                     {
                         getOrdersUrl = getOrdersUrl.Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=" + (ordersResult.Data.content._meta.currentPage + 1));
                         ProcessOrders(getOrdersUrl, authToken);
