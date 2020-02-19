@@ -335,6 +335,7 @@
         var checkOrdersUrl = '@Url.Action("CheckNewOrder", "Orders")';
         var soundPath = '@Url.Content("~/Content/sounds/newOrder.mp3")';
         var audio = new Audio(soundPath);
+        audio.autoplay = true;
 
         setInterval(function () {
             CheckNewOrder();
@@ -344,6 +345,16 @@
             $.get(checkOrdersUrl, function (data) {
                 if (data) {
                     audio.play();
+                    if (typeof isOrdersPage !== 'undefined') {
+                        $.each(data, function (index, elem) {
+                            if ($(".order-wrap[data-order-id=" + elem + "]").length == 0) {
+                                $.get(getOrderPartialUrl + "?id=" + elem +"&expanded=false", function (partial) {
+                                    $(".orders-list .order-wrap").eq(0).after(partial);
+                                    ProcessProductImages();
+                                });
+                            }
+                        })
+                    }
                 } else {
                     audio.pause();
                 }

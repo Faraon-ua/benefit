@@ -245,7 +245,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return View(ordersFilters);
         }
 
-        public ActionResult GetOrderPartial(string id)
+        public ActionResult GetOrderPartial(string id, bool expanded = true)
         {
             var order = db.Orders
                 .Include(entry => entry.OrderStatusStamps)
@@ -275,7 +275,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                 }
             }
-            ViewBag.ExternalRequest = true;
+            ViewBag.ExternalRequest = expanded;
             return PartialView("_OrderPartial", order);
         }
 
@@ -474,7 +474,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 newOrders = newOrders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
             }
-            return Json(newOrders.Any(), JsonRequestBehavior.AllowGet);
+            var orderIds = newOrders.Select(entry => entry.Id).ToList();
+            return Json(orderIds, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult GetOrdersList(OrderType orderType, int page = 0)

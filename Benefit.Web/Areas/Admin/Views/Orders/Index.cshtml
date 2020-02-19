@@ -25,8 +25,18 @@
     <script src="~/Scripts/v3/products.js"></script>
     <script src="~/Scripts/jquery.autocomplete.min.js"></script>
     <script>
+        var isOrdersPage = true;
         var changeStatusUrl = '@Url.Action("UpdateStatus")';
         var addCommentUrl = '@Url.Action("AddComment")';
+       function ProcessProductImages() {
+           $(".images-thmb").each(function () {
+               var maxWidth = $(this).get(0).scrollWidth;
+               $(this).css("max-width", maxWidth + "px");
+               $(this).find("img").each(function () {
+                   $(this).attr("src", $(this).attr("data-src"));
+               })
+           });
+        }
         $(function () {
             var popOverSettings = {
                 placement: 'bottom',
@@ -104,13 +114,7 @@
                 $('[data-rel=popover]').popover('hide');
             });
 
-            $(".images-thmb").each(function () {
-                var maxWidth = $(this).get(0).scrollWidth;
-                $(this).css("max-width", maxWidth + "px");
-                $(this).find("img").each(function () {
-                    $(this).attr("src", $(this).attr("data-src"));
-                })
-            })
+            ProcessProductImages();
 
             $("body").on("click", ".order-number", function (e) {
                 e.preventDefault();
