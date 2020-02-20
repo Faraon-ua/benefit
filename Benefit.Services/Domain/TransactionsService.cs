@@ -146,15 +146,27 @@ namespace Benefit.Services.Domain
                     Amount = orderProduct.Amount,
                     Price = orderProduct.ActualPrice,
                     TotalPrice = orderProduct.ActualPrice * orderProduct.Amount,
-                    Type = SellerTransactionType.SalesComission,
                     OrderNumber = order.OrderNumber,
                     Charge = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100,
-                    Writeoff = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100,
+                    Writeoff = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100
                 };
-                sellerTransaction.Balance = seller.CurrentBill - sellerTransaction.Writeoff.Value;
-                sellerTransaction.GreyZoneBalance = seller.GreyZone - sellerTransaction.Charge.Value;
-                seller.GreyZone = sellerTransaction.GreyZoneBalance;
-                seller.CurrentBill = sellerTransaction.Balance;
+                if(order.PaymentType == PaymentType.Bonuses)
+                {
+                    sellerTransaction.Type = SellerTransactionType.Bonuses;
+                    sellerTransaction.Charge = orderProduct.ActualPrice * orderProduct.Amount - (orderProduct.ActualPrice * orderProduct.Amount * comissionPercent / 100);
+                    sellerTransaction.Writeoff = null;
+                    sellerTransaction.Balance = seller.CurrentBill + sellerTransaction.Charge.Value;
+                    sellerTransaction.GreyZoneBalance = seller.GreyZone;
+                    seller.CurrentBill = sellerTransaction.Balance;
+                }
+                else
+                {
+                    sellerTransaction.Type = SellerTransactionType.SalesComission;
+                    sellerTransaction.Balance = seller.CurrentBill - sellerTransaction.Writeoff.Value;
+                    sellerTransaction.GreyZoneBalance = seller.GreyZone - sellerTransaction.Charge.Value;
+                    seller.GreyZone = sellerTransaction.GreyZoneBalance;
+                    seller.CurrentBill = sellerTransaction.Balance;
+                }
                 db.SellerTransactions.Add(sellerTransaction);
             }
             db.SaveChanges();

@@ -12,7 +12,9 @@ namespace Benefit.Domain.Models
         [Display(Name = "Зняття резерву за невиконане замовлення")]
         FailOrderReserveReturn,
         [Display(Name = "Поповнення рахунку")]
-        Refill
+        Refill,
+        [Display(Name = "Нарахування за оплату замовлення бонусами")]
+        Bonuses
     }
     public class SellerTransaction
     {
