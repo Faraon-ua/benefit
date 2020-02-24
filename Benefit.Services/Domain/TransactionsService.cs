@@ -156,17 +156,16 @@ namespace Benefit.Services.Domain
                     sellerTransaction.Charge = orderProduct.ActualPrice * orderProduct.Amount - (orderProduct.ActualPrice * orderProduct.Amount * comissionPercent / 100);
                     sellerTransaction.Writeoff = null;
                     sellerTransaction.Balance = seller.CurrentBill + sellerTransaction.Charge.Value;
-                    sellerTransaction.GreyZoneBalance = seller.GreyZone;
-                    seller.CurrentBill = sellerTransaction.Balance;
+                    sellerTransaction.GreyZoneBalance = seller.GreyZone - (orderProduct.ActualPrice * orderProduct.Amount * comissionPercent / 100);
                 }
                 else
                 {
                     sellerTransaction.Type = SellerTransactionType.SalesComission;
                     sellerTransaction.Balance = seller.CurrentBill - sellerTransaction.Writeoff.Value;
                     sellerTransaction.GreyZoneBalance = seller.GreyZone - sellerTransaction.Charge.Value;
-                    seller.GreyZone = sellerTransaction.GreyZoneBalance;
-                    seller.CurrentBill = sellerTransaction.Balance;
                 }
+                seller.GreyZone = sellerTransaction.GreyZoneBalance;
+                seller.CurrentBill = sellerTransaction.Balance;
                 db.SellerTransactions.Add(sellerTransaction);
             }
             db.SaveChanges();

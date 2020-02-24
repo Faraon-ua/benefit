@@ -22005,12 +22005,12 @@ body .tabs_slider .catalog_item:hover {
 
 .stickers {
     width: 200px;
+    height:30px;
     left: 0;
-    padding-top: 10px;
+    padding-top: 5px;
     z-index: 3;
     line-height: 0px;
     text-align: left;
-    padding-bottom: 10px;
     font-size: 0
 }
 
