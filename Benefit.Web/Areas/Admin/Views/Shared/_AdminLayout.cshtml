@@ -335,7 +335,6 @@
         var checkOrdersUrl = '@Url.Action("CheckNewOrder", "Orders")';
         var soundPath = '@Url.Content("~/Content/sounds/newOrder.mp3")';
         var audio = new Audio(soundPath);
-        audio.autoplay = true;
 
         setInterval(function () {
             CheckNewOrder();
