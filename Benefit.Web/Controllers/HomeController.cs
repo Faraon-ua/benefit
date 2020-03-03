@@ -56,6 +56,27 @@ namespace Benefit.Web.Controllers
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).Take(8).ToList();
+                    foreach (var featuredProduct in seller.FeaturedProducts)
+                    {
+                        if (featuredProduct.Currency != null)
+                        {
+                            featuredProduct.Price = featuredProduct.Price * featuredProduct.Currency.Rate;
+                        }
+                    }
+                    foreach (var newProduct in seller.NewProducts)
+                    {
+                        if (newProduct.Currency != null)
+                        {
+                            newProduct.Price = newProduct.Price * newProduct.Currency.Rate;
+                        }
+                    }
+                    foreach (var promotionProduct in seller.PromotionProducts)
+                    {
+                        if (promotionProduct.Currency != null)
+                        {
+                            promotionProduct.Price = promotionProduct.Price * promotionProduct.Currency.Rate;
+                        }
+                    }
                 }
 
                 if (seller.HasEcommerce)

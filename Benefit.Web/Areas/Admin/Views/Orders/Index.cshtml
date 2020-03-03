@@ -327,13 +327,10 @@
                 $("#navType").val(navType);
             });
 
-            $(".pagination a").click(function () {
+            $(".pagination a").click(function (e) {
+                e.preventDefault();
                 $("#page").val($(this).attr("data-page-number"));
                 $("form").submit();
-            });
-
-            $("button[type=submit]").click(function () {
-                $("#page").val(0);
             });
 
             $("input[name=PaymentTypeChk]").change(function () {
@@ -361,7 +358,7 @@
 <div class="alert alert-secondary orders-filters">
     @using (Html.BeginForm())
     {
-        @*@Html.Hidden("page", Model)*@
+        <input type="hidden" name="page" id="page" value="@Model.Orders.ActivePage"/>
         <div style="width: 140px;">
             <p>Номер замовлення</p>
             <input type="text" class="form-control" name="OrderNumber" value="@Model.OrderNumber" />
