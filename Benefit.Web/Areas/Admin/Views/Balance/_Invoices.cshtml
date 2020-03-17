@@ -27,6 +27,8 @@ else
                 </th>
                 <th class="width-5">
                 </th>
+                <th class="width-5">
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -55,6 +57,12 @@ else
                             var paymentDescr = string.Format("Передплата роялтi, згiдно рахунку №{0} від {1}, без ПДВ.", invoice.Number, invoice.Time.ToLocalTimeWithDateFormat());
                         }
                         @Html.Action("GetLiqpayForm", new { amount = invoice.Sum, description = paymentDescr, order_id = invoice.Number })
+                    </td>
+                    <td>
+                        <a href="@Url.Action("GetBankForm", "Balance", new { invoiceNumber = invoice.InnerNumber })" class="btn-link-i" target="_blank">
+                            <i class="icon icon-file" style="color:#438eb9; font-size: 1.5em;">
+                            </i>
+                        </a>
                     </td>
                 </tr>
             }

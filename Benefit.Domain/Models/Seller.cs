@@ -41,6 +41,12 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         [Index]
         public string Name { get; set; }
+        [Required]
+        [MaxLength(128)]
+        public string LegalName { get; set; }
+        [Required]
+        [MaxLength(500)]
+        public string LegalDescription { get; set; }
         public string Description { get; set; }
         [MaxLength(50)]
         public string PrimaryRegionName { get; set; }

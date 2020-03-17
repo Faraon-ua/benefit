@@ -6,7 +6,7 @@ namespace Benefit.Domain.Models
 {
     public enum BillType
     {
-        [Description("МП")]
+        [Description("BCUA")]
         [Display(Name = "Роялті")]
         Royalty
     }

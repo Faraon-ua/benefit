@@ -642,6 +642,10 @@
     <Compile Include="Migrations\201911181319259_AddExternalIdToOrderProduct.Designer.cs">
       <DependentUpon>201911181319259_AddExternalIdToOrderProduct.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202003121015458_AddSellerLegalInfo.cs" />
+    <Compile Include="Migrations\202003121015458_AddSellerLegalInfo.Designer.cs">
+      <DependentUpon>202003121015458_AddSellerLegalInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\BenefitCard.cs" />
@@ -1120,6 +1124,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201911181319259_AddExternalIdToOrderProduct.resx">
       <DependentUpon>201911181319259_AddExternalIdToOrderProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202003121015458_AddSellerLegalInfo.resx">
+      <DependentUpon>202003121015458_AddSellerLegalInfo.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

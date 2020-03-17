@@ -9,6 +9,8 @@ using Benefit.DataTransfer.ViewModels;
 using System;
 using System.Security.Cryptography;
 using System.Text;
+using System.Web;
+using System.Data.Entity;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -16,6 +18,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
+        public ActionResult GetBankForm(int invoiceNumber)
+        {
+            var invoice = db.PaymentBills.Include(entry=>entry.Seller).FirstOrDefault(entry => entry.InnerNumber == invoiceNumber);
+            if(invoice == null)
+            {
+                throw new HttpException(404, "Not found");
+            }
+            return View(invoice);
+        }
         public ActionResult Index(BalanceViewModel model)
         {
             model = model ?? new BalanceViewModel();

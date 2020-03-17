@@ -279,7 +279,7 @@
     }
 
         .btn-link-i i:hover {
-            color: red;
+            color: red !important;
         }
 
 .rz-sellerbalance-table {
