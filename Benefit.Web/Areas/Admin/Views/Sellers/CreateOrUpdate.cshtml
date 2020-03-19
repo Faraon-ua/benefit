@@ -305,6 +305,12 @@
                 </a>
             </li>
             <li class="@displayClass">
+                <a href="#legal" data-toggle="tab">
+                    <i class="purple icon-legal bigger-110"></i>
+                    Юридична інфо
+                </a>
+            </li>
+            <li class="@displayClass">
                 <a href="#paymentTypes" data-toggle="tab">
                     <i class="grey icon-money bigger-110"></i>
                     Види оплати та <br /> коефіцієнти
@@ -411,6 +417,9 @@
         <div class="tab-content" style="min-height: 450px;">
             <div class="tab-pane in active @displayClass" id="home">
                 @Html.Partial("_SellerForm")
+            </div>
+            <div class="tab-pane" id="legal">
+                @Html.Partial("_LegalPartial")
             </div>
             <div class="tab-pane" id="SEO">
                 @Html.Partial("_Seo")

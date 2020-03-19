@@ -782,7 +782,6 @@
     <Content Include="Content\v3\images\loaders\preloader.gif" />
     <Content Include="Content\v3\images\Lock_big_mask.svg" />
     <Content Include="Content\v3\images\Lock_big_white.svg" />
-    <Content Include="EmailTemplates\invoice.html" />
     <Content Include="EmailTemplates\SendImportResults.html" />
     <Content Include="EmailTemplates\PasswordChanged.html" />
     <Content Include="favicon.ico" />
@@ -1043,6 +1042,7 @@
     <Content Include="Areas\Admin\Views\Orders\_OrderPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Orders\_EditPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Balance\GetBankForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Sellers\_LegalPartial.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

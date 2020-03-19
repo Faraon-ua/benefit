@@ -1,0 +1,14 @@
+﻿@model Benefit.Web.Models.Admin.SellerViewModel
+
+<div class="form-group">
+    <label class="control-label no-padding-right">Юридична назва</label>
+    <div>
+        @Html.TextBoxFor(entry => entry.Seller.LegalName, new { @class = "width-50 number-float-input" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="control-label no-padding-right">Підстава (договір)</label>
+    <div>
+        @Html.TextBoxFor(entry => entry.Seller.LegalDescription, new { @class = "width-50 number-float-input" })
+    </div>
+</div> 
