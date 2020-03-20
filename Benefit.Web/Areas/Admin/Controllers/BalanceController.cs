@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Web;
 using System.Data.Entity;
+using Benefit.Common.Constants;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -20,14 +21,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult GetBankForm(int invoiceNumber)
         {
-            var invoice = db.PaymentBills.Include(entry=>entry.Seller).FirstOrDefault(entry => entry.InnerNumber == invoiceNumber);
-            if(invoice == null)
+            var invoice = db.PaymentBills.Include(entry => entry.Seller).FirstOrDefault(entry => entry.InnerNumber == invoiceNumber);
+            if (invoice == null)
             {
                 throw new HttpException(404, "Not found");
             }
             return View(invoice);
         }
-        public ActionResult Index(BalanceViewModel model)
+        public ActionResult Index(BalanceViewModel model, int page = 0)
         {
             model = model ?? new BalanceViewModel();
             model.Seller = db.Sellers.Find(Seller.CurrentAuthorizedSellerId);
@@ -54,8 +55,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
                 sellerTransactions = sellerTransactions.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
             }
-            model.SellerTransactions = sellerTransactions.OrderByDescending(entry => entry.Time).ToList();
-
+            var transactionsTotal = sellerTransactions.Count();
+            model.SellerTransactions = new PaginatedList<SellerTransaction>
+            {
+                Items = sellerTransactions.OrderByDescending(entry => entry.Time)
+                    .Skip(ListConstants.AdminTakePerPage * page)
+                    .Take(ListConstants.AdminTakePerPage)
+                    .ToList(),
+                Pages = transactionsTotal / ListConstants.AdminTakePerPage + 1,
+                ActivePage = page
+            };
             return View(model);
         }
         // GET: Admin/Balance

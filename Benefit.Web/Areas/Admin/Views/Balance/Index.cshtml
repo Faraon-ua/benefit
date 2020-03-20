@@ -22,6 +22,12 @@
     <script>
         var createBillUrl = '@Url.Action("CreateBill", "Dashboard")';
         $(function () {
+             $(".pagination a").click(function (e) {
+                e.preventDefault();
+                $("#page").val($(this).attr("data-page-number"));
+                $("form").submit();
+             });
+
             $(".fn-show-order").click(function (e) {
                 e.preventDefault();
                 var requestUrl = $(this).attr("href");
@@ -122,6 +128,7 @@
                 <div class="alert alert-secondary orders-filters margin-top-20">
                     @using (Html.BeginForm())
                     {
+                        <input type="hidden" name="page" id="page" value="@Model.SellerTransactions.ActivePage" />
                         <div style="width: 140px;">
                             <p>Номер замовлення</p>
                             <input type="text" class="form-control" name="OrderNumber" value="@Model.OrderNumber" />
@@ -147,6 +154,36 @@
                     }
 
                 </div>
+                @if (Model.SellerTransactions.Items.Any())
+                {
+                    <ul class="pagination">
+                        @{
+                            var firstStage = Model.SellerTransactions.Pages >= ListConstants.PagingFirstStage ? ListConstants.PagingFirstStage : Model.SellerTransactions.Pages;
+                            var lastDisplayedPage = 0;
+                        }
+                        @for (var i = 0; i < Model.SellerTransactions.Pages; i++)
+                        {
+                            if ((i >= 0 && i < firstStage) ||
+                                (i >= Model.SellerTransactions.ActivePage - ListConstants.PagingActivePageSiblinbgsRange && i <= Model.SellerTransactions.ActivePage + ListConstants.PagingActivePageSiblinbgsRange) ||
+                                (i >= Model.SellerTransactions.Pages - ListConstants.PagingFirstStage && i < Model.SellerTransactions.Pages))
+                            {
+                                <li class="@(i == Model.SellerTransactions.ActivePage ? "active" : "" )">
+                                    <a href="#" data-page-number="@i">@(i + 1)</a>
+                                </li>
+                                lastDisplayedPage = i;
+                            }
+                            else
+                            {
+                                if (i == lastDisplayedPage + 1)
+                                {
+                                    <li>
+                                        <span class="pull-left">...</span>
+                                    </li>
+                                }
+                            }
+                        }
+                    </ul>
+                }
                 <table class="transactions-table border-top margin-top-20">
                     <thead>
                         <tr class="border-bottom">
@@ -186,7 +223,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var transaction in Model.SellerTransactions)
+                        @foreach (var transaction in Model.SellerTransactions.Items)
                         {
                             <tr class="border-bottom">
                                 <td>@transaction.Number</td>

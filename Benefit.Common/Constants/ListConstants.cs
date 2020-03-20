@@ -2,6 +2,7 @@
 {
     public class ListConstants
     {
+        public const int AdminTakePerPage = 50;
         public const int DefaultTakePerPage = 16;
         public const int NewsTakePerPage = 6;
         public const int PagingFirstStage = 3;
