@@ -21,6 +21,7 @@ using Benefit.Services.ExternalApi;
 using Benefit.Common.Extensions;
 using Benefit.DataTransfer.JSON;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -72,7 +73,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         // GET: /Admin/Orders/
         public ActionResult Index(AdminOrdersFilters ordersFilters, int page = 0)
         {
-            var takePerPage = 50;
+            var takePerPage = 16;
 
             var orders =
                 db.Orders
@@ -188,7 +189,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
             }
             var ordersTotal = orders.Count();
-            ordersFilters.TotalSum = orders.ToList().Select(l => l.SumWithDiscount).DefaultIfEmpty(0).Sum();
             ordersFilters.Number = orders.Count();
             orders = orders.Skip(page * takePerPage).Take(takePerPage);
             ordersFilters.Orders = new PaginatedList<Order>
