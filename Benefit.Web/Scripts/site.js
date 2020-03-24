@@ -223,12 +223,16 @@ $(function () {
 
     $(".submit-review").click(function () {
         var parent = $(this).parents(".review-form");
+        var productId = parent.find("input[name=ProductId]").val();
+        var sellerId = parent.find("input[name=SellerId]").val();
         var rating = parent.find("#Rating").val();
         var message = parent.find("#Message").val();
         $.post(submitReviewUrl,
             {
                 Message: message,
-                Rating: rating
+                Rating: rating,
+                ProductId: productId,
+                SellerId: sellerId
             },
             function (data) {
                 if (data.error) {

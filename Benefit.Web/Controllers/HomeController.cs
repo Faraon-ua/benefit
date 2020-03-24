@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Configuration;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using Benefit.Common.Constants;
+using System.Collections.Generic;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -31,6 +32,10 @@ namespace Benefit.Web.Controllers
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByCustom = "IsMobile")]
         public async Task<ActionResult> Index()
         {
+            var productsDbContext = new ProductsDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            var bannersDbContext = new BannersDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            var infoPagesDBContext = new InfoPagesDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            var sellersDBContext = new SellersDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
             //handle seller subdomain
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
@@ -88,80 +93,97 @@ namespace Benefit.Web.Controllers
                 return View("~/views/sellerareabc/home.cshtml", seller);
             }
             var mainPageViewModel = new MainPageViewModel();
-            using (var db = new ApplicationDbContext())
-            {
-                mainPageViewModel.FeaturedProducts = (from element in db.Products.Include(entry => entry.Currency)
-                        .Include(entry => entry.Reviews)
-                        .Include(entry => entry.Images)
-                        .Include(entry => entry.Category)
-                        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
-                        .Where(entry =>
-                            entry.Seller.IsActive &&
-                            entry.Category.IsActive &&
-                            entry.IsFeatured &&
-                            (entry.AvailabilityState == ProductAvailabilityState.Available ||
-                            entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
-                            entry.Images.Any() && 
-                            entry.Seller.AreProductsFeatured)
-                        .ToList()
-                    group element by element.SellerId
-                    into groups
-                    select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
-                mainPageViewModel.NewProducts = (from element in db.Products.Include(entry => entry.Currency)
-                        .Include(entry => entry.Reviews)
-                        .Include(entry => entry.Images)
-                        .Include(entry => entry.Category)
-                        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
-                        .Where(entry => entry.IsNewProduct &&
-                                        entry.Seller.IsActive &&
-                                        entry.Category.IsActive &&
-                                        (entry.AvailabilityState == ProductAvailabilityState.Available ||
-                                        entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
-                                        entry.Images.Any() &&
-                                        entry.Seller.AreProductsFeatured).ToList()
-                    group element by element.SellerId
-                    into groups
-                    select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
+            //using (var db = new ApplicationDbContext())
+            //{
+            var products = productsDbContext.GetMainPageProducts();
+            var banners = bannersDbContext.Get("BannerType != 1 and SellerId is null");
+            var pages = infoPagesDBContext.GetMainPagesNews();
+            var sellers = sellersDBContext.GetBrands();
 
-                foreach (var featuredProduct in mainPageViewModel.FeaturedProducts)
-                {
-                    if (featuredProduct.Currency != null)
-                    {
-                        featuredProduct.Price = featuredProduct.Price * featuredProduct.Currency.Rate;
-                    }
-                }
-                foreach (var newProduct in mainPageViewModel.NewProducts)
-                {
-                    if (newProduct.Currency != null)
-                    {
-                        newProduct.Price = newProduct.Price * newProduct.Currency.Rate;
-                    }
-                }
-                mainPageViewModel.News = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive)
-                    .OrderByDescending(entry => entry.CreatedOn).Take(5).ToList();
-                mainPageViewModel.News.ForEach(entry =>
-                    entry.Name = entry.Name.Length > 75 ? entry.Name.Substring(0, 75) + "..." : entry.Name);
-                mainPageViewModel.PrimaryBanners =
-                    db.Banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage && entry.SellerId == null)
-                        .OrderBy(entry => entry.Order)
-                        .ToList();
-                mainPageViewModel.MobileBanners =
-                    db.Banners.Where(entry => entry.BannerType == BannerType.MobileMainPage)
-                        .OrderBy(entry => entry.Order)
-                        .ToList();
-                mainPageViewModel.TopSideBanners =
-                    db.Banners.Where(entry => entry.BannerType == BannerType.SideTopMainPage)
-                        .OrderBy(entry => entry.Order)
-                        .ToList();
-                mainPageViewModel.BottomSideBanners =
-                    db.Banners.Where(entry => entry.BannerType == BannerType.SideBottomMainPage)
-                        .OrderBy(entry => entry.Order)
-                        .ToList();
-                mainPageViewModel.FirstRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.FirstRowMainPage);
-                mainPageViewModel.SecondRowBanner = db.Banners.FirstOrDefault(entry => entry.BannerType == BannerType.SecondRowMainPage);
-                mainPageViewModel.Brands = db.Sellers.Include(entry => entry.Images).Where(entry => entry.IsActive && entry.IsFeatured).ToList();
-                mainPageViewModel.Description = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "golovna");
-            }
+            mainPageViewModel.FeaturedProducts = (from element in products.Where(entry=>entry.IsFeatured)
+                                                  group element by element.SellerId
+                                                  into groups
+                                                  select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
+            mainPageViewModel.NewProducts = (from element in products.Where(entry=>entry.IsNewProduct)
+                                             group element by element.SellerId
+                                                 into groups
+                                             select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
+
+            mainPageViewModel.PrimaryBanners = banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage)
+                    .OrderBy(entry => entry.Order)
+                    .ToList();
+            mainPageViewModel.MobileBanners = banners.Where(entry => entry.BannerType == BannerType.MobileMainPage)
+                    .OrderBy(entry => entry.Order)
+                    .ToList();
+            mainPageViewModel.TopSideBanners = banners.Where(entry => entry.BannerType == BannerType.SideTopMainPage)
+                    .OrderBy(entry => entry.Order)
+                    .ToList();
+            mainPageViewModel.BottomSideBanners =
+                banners.Where(entry => entry.BannerType == BannerType.SideBottomMainPage)
+                    .OrderBy(entry => entry.Order)
+                    .ToList();
+            mainPageViewModel.FirstRowBanner = banners.FirstOrDefault(entry => entry.BannerType == BannerType.FirstRowMainPage);
+            mainPageViewModel.SecondRowBanner = banners.FirstOrDefault(entry => entry.BannerType == BannerType.SecondRowMainPage);
+
+            mainPageViewModel.News = pages.Where(entry => entry.IsNews).ToList();
+            mainPageViewModel.News.ForEach(entry =>
+                entry.Name = entry.Name.Length > 75 ? entry.Name.Substring(0, 75) + "..." : entry.Name);
+            mainPageViewModel.Description = pages.FirstOrDefault(entry => entry.UrlName == "golovna");
+            mainPageViewModel.Brands = sellers.ToList();
+
+            //.Include(entry => entry.Reviews)
+            //.Include(entry => entry.Images)
+            //.Include(entry => entry.Category)
+            //.Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
+            //.Where(entry =>
+            //    entry.Seller.IsActive &&
+            //    entry.Category.IsActive &&
+            //    entry.IsFeatured &&
+            //    (entry.AvailabilityState == ProductAvailabilityState.Available ||
+            //    entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
+            //    entry.Images.Any() && 
+            //    entry.Seller.AreProductsFeatured)
+            //.ToList()
+
+            //mainPageViewModel.NewProducts = (from element in db.Products.Include(entry => entry.Currency)
+
+            //        .Include(entry => entry.Reviews)
+            //        .Include(entry => entry.Images)
+            //        .Include(entry => entry.Category)
+            //        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
+            //        .Where(entry => entry.IsNewProduct &&
+            //                        entry.Seller.IsActive &&
+            //                        entry.Category.IsActive &&
+            //                        (entry.AvailabilityState == ProductAvailabilityState.Available ||
+            //                        entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
+            //                        entry.Images.Any() &&
+            //                        entry.Seller.AreProductsFeatured).ToList()
+            //    group element by element.SellerId
+            //    into groups
+            //    select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
+
+            //foreach (var featuredProduct in mainPageViewModel.FeaturedProducts)
+            //{
+            //    if (featuredProduct.Currency != null)
+            //    {
+            //        featuredProduct.Price = featuredProduct.Price * featuredProduct.Currency.Rate;
+            //    }
+            //}
+            //foreach (var newProduct in mainPageViewModel.NewProducts)
+            //{
+            //    if (newProduct.Currency != null)
+            //    {
+            //        newProduct.Price = newProduct.Price * newProduct.Currency.Rate;
+            //    }
+            //}
+            //mainPageViewModel.News = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive)
+            //    .OrderByDescending(entry => entry.CreatedOn).Take(5).ToList();
+            //mainPageViewModel.News.ForEach(entry =>
+            //    entry.Name = entry.Name.Length > 75 ? entry.Name.Substring(0, 75) + "..." : entry.Name);
+
+            //mainPageViewModel.Brands = db.Sellers.Include(entry => entry.Images).Where(entry => entry.IsActive && entry.IsFeatured).ToList();
+            //mainPageViewModel.Description = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "golovna");
+            //}
             return View(mainPageViewModel);
         }
 

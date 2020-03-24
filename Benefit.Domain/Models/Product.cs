@@ -205,5 +205,7 @@ namespace Benefit.Domain.Models
             }
             return result;
         }
+        [NotMapped]
+        public int ReviewsCount { get; set; }
     }
 }

@@ -93,7 +93,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataAccess\AdoDbContext.cs" />
+    <Compile Include="DataAccess\SellersDBContext.cs" />
+    <Compile Include="DataAccess\InfoPagesDBContext.cs" />
     <Compile Include="DataAccess\IdentityModels.cs" />
+    <Compile Include="DataAccess\BannersDBContext.cs" />
+    <Compile Include="DataAccess\RegionsDBContext.cs" />
+    <Compile Include="DataAccess\ProductsDBContext.cs" />
     <Compile Include="Migrations\201608121114202_AddUsers.cs" />
     <Compile Include="Migrations\201608121114202_AddUsers.Designer.cs">
       <DependentUpon>201608121114202_AddUsers.cs</DependentUpon>

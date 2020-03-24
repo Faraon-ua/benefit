@@ -9,7 +9,8 @@
     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
     //var sellerUrl = Url.SubdomainAction(Model.Seller.UrlName, "Index", "Home", null);
     var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.Seller.UrlName, category = string.Empty, options = string.Empty });
-    var reviewsCount = Model.Reviews.Count;
+    //var reviewsCount = Model.Reviews.Count;
+    var reviewsCount = Model.ReviewsCount;
     var availableForPurchase = Model.AvailableForPurchase(RegionService.GetRegionId());
     var categoryToSellerDiscountPercent = ViewBag.CategoryToSellerDiscountPercent as Dictionary<string, double>;
     var categoryDiscount = Model.Seller.UserDiscount;
