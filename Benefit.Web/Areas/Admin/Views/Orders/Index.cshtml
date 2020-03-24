@@ -5,6 +5,8 @@
 @{
     ViewBag.Title = "Замовлення";
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    var status = 0;
+    int.TryParse(Request.QueryString["status"], out status);
 }
 @section styles {
 
@@ -25,7 +27,7 @@
     <script src="~/Scripts/v3/products.js"></script>
     <script src="~/Scripts/jquery.autocomplete.min.js"></script>
     <script>
-        var isOrdersPage = true;
+        var isNewOrdersPage = @(status == 0 ? "true" : "false");
         var changeStatusUrl = '@Url.Action("UpdateStatus")';
         var addCommentUrl = '@Url.Action("AddComment")';
        function ProcessProductImages() {
@@ -345,10 +347,6 @@
     </script>
 }
 <div class="filters-wrap display-flex border-bottom width-100">
-    @{
-        var status = 0;
-        int.TryParse(Request.QueryString["status"], out status);
-    }
     <a class="filter-tab border-left border-right @(status == 0 ? "active" : "")" href="@Url.Action("Index", new { status=0 })">В обробці</a>
     <a class="filter-tab border-right @(status == 1 ? "active" : "")" href="@Url.Action("Index", new { status=1 })">Успішно завершені</a>
     <a class="filter-tab border-right @(status == 2 ? "active" : "")" href="@Url.Action("Index", new { status=2 })">Неуспішно завершені</a>
@@ -358,7 +356,7 @@
 <div class="alert alert-secondary orders-filters">
     @using (Html.BeginForm())
     {
-        <input type="hidden" name="page" id="page" value="@Model.Orders.ActivePage"/>
+        <input type="hidden" name="page" id="page" value="@Model.Orders.ActivePage" />
         <div style="width: 140px;">
             <p>Номер замовлення</p>
             <input type="text" class="form-control" name="OrderNumber" value="@Model.OrderNumber" />
@@ -475,7 +473,7 @@
 </div>
 
 <div class="page-header no-padding-bottom">
-  @*  <h1 class="no-padding-bottom pull-left">Загальна сума обраних замовлень:</h1> <h1 class="orange">@Model.TotalSum.ToString("F") грн</h1>*@
+    @*  <h1 class="no-padding-bottom pull-left">Загальна сума обраних замовлень:</h1> <h1 class="orange">@Model.TotalSum.ToString("F") грн</h1>*@
     <h1 class="no-padding-bottom pull-left">Кількість обраних замовлень:</h1> <h1 class="orange">@Model.Number.ToString("F")</h1>
 </div>
 

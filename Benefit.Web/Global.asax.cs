@@ -19,7 +19,6 @@ namespace Benefit.Web
     {
         protected void Application_Start()
         {
-            Database.SetInitializer<ApplicationDbContext>(null);
             AreaRegistration.RegisterAllAreas();
             GlobalConfiguration.Configure(WebApiConfig.Register);
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

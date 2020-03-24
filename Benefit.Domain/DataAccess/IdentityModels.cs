@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
+using System.Data.Common;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.Infrastructure.Annotations;
@@ -14,6 +15,32 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Benefit.Domain.DataAccess
 {
+    public class MyConfig : DbConfiguration
+    {
+        public MyConfig()
+        {
+            SetDatabaseInitializer<ApplicationDbContext>(null);
+            SetManifestTokenResolver(new MyManifestTokenResolver());
+        }
+    }
+
+    public class MyManifestTokenResolver : IManifestTokenResolver
+    {
+        private readonly IManifestTokenResolver _defaultResolver = new DefaultManifestTokenResolver();
+
+        public string ResolveManifestToken(DbConnection connection)
+        {
+            var sqlConn = connection as SqlConnection;
+            if (sqlConn != null)
+            {
+                return "2012";
+            }
+            else
+            {
+                return _defaultResolver.ResolveManifestToken(connection);
+            }
+        }
+    }
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
@@ -22,6 +49,7 @@ namespace Benefit.Domain.DataAccess
             var adapter = (IObjectContextAdapter)this;
             var objectContext = adapter.ObjectContext;
             objectContext.CommandTimeout = 1200; // value in seconds 20 min
+            Configuration.LazyLoadingEnabled = false;
         }
 
         public DbSet<Seller> Sellers { get; set; }

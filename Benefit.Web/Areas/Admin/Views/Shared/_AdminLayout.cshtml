@@ -344,7 +344,7 @@
             $.get(checkOrdersUrl, function (data) {
                 if (data.length > 0) {
                     audio.play();
-                    if (typeof isOrdersPage !== 'undefined') {
+                    if (typeof isNewOrdersPage !== 'undefined') {
                         $.each(data, function (index, elem) {
                             if ($(".order-wrap[data-order-id=" + elem + "]").length == 0) {
                                 $.get(getOrderPartialUrl + "?id=" + elem + "&expanded=false", function (partial) {
