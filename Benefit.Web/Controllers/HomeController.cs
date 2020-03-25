@@ -131,59 +131,6 @@ namespace Benefit.Web.Controllers
             mainPageViewModel.Description = pages.FirstOrDefault(entry => entry.UrlName == "golovna");
             mainPageViewModel.Brands = sellers.ToList();
 
-            //.Include(entry => entry.Reviews)
-            //.Include(entry => entry.Images)
-            //.Include(entry => entry.Category)
-            //.Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
-            //.Where(entry =>
-            //    entry.Seller.IsActive &&
-            //    entry.Category.IsActive &&
-            //    entry.IsFeatured &&
-            //    (entry.AvailabilityState == ProductAvailabilityState.Available ||
-            //    entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
-            //    entry.Images.Any() && 
-            //    entry.Seller.AreProductsFeatured)
-            //.ToList()
-
-            //mainPageViewModel.NewProducts = (from element in db.Products.Include(entry => entry.Currency)
-
-            //        .Include(entry => entry.Reviews)
-            //        .Include(entry => entry.Images)
-            //        .Include(entry => entry.Category)
-            //        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
-            //        .Where(entry => entry.IsNewProduct &&
-            //                        entry.Seller.IsActive &&
-            //                        entry.Category.IsActive &&
-            //                        (entry.AvailabilityState == ProductAvailabilityState.Available ||
-            //                        entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
-            //                        entry.Images.Any() &&
-            //                        entry.Seller.AreProductsFeatured).ToList()
-            //    group element by element.SellerId
-            //    into groups
-            //    select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
-
-            //foreach (var featuredProduct in mainPageViewModel.FeaturedProducts)
-            //{
-            //    if (featuredProduct.Currency != null)
-            //    {
-            //        featuredProduct.Price = featuredProduct.Price * featuredProduct.Currency.Rate;
-            //    }
-            //}
-            //foreach (var newProduct in mainPageViewModel.NewProducts)
-            //{
-            //    if (newProduct.Currency != null)
-            //    {
-            //        newProduct.Price = newProduct.Price * newProduct.Currency.Rate;
-            //    }
-            //}
-            //mainPageViewModel.News = db.InfoPages.Where(entry => entry.IsNews && entry.IsActive)
-            //    .OrderByDescending(entry => entry.CreatedOn).Take(5).ToList();
-            //mainPageViewModel.News.ForEach(entry =>
-            //    entry.Name = entry.Name.Length > 75 ? entry.Name.Substring(0, 75) + "..." : entry.Name);
-
-            //mainPageViewModel.Brands = db.Sellers.Include(entry => entry.Images).Where(entry => entry.IsActive && entry.IsFeatured).ToList();
-            //mainPageViewModel.Description = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "golovna");
-            //}
             return View(mainPageViewModel);
         }
 
