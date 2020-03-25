@@ -49,7 +49,6 @@ namespace Benefit.Domain.DataAccess
             var adapter = (IObjectContextAdapter)this;
             var objectContext = adapter.ObjectContext;
             objectContext.CommandTimeout = 1200; // value in seconds 20 min
-            Configuration.LazyLoadingEnabled = false;
         }
 
         public DbSet<Seller> Sellers { get; set; }

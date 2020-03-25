@@ -242,66 +242,18 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.Images)
                 .Include(entry => entry.SellerCategories)
                 .Include(entry => entry.Schedules)
-                .Include(entry => entry.Addresses)
+                .Include(entry => entry.Addresses.Select(a=>a.Region))
                 .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
                 .FirstOrDefault(entry => entry.Domain == urlName || entry.UrlName == urlName);
             return seller;
         }
 
-        //public SellerDetailsViewModel GetSellerDetails(string urlName, string categoryUrlName, string currentUserId)
-        //{
-        //    var sellerVM = new SellerDetailsViewModel();
-        //    var seller = db.Sellers
-        //        .Include(entry => entry.SellerCategories)
-        //        .Include(entry => entry.Schedules)
-        //        .Include(entry => entry.Addresses)
-        //        .Include(entry => entry.ShippingMethods)
-        //        .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
-        //        .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
-        //        .FirstOrDefault(entry => entry.UrlName == urlName);
-        //    if (seller != null)
-        //    {
-        //        var regionId = RegionService.GetRegionId();
-        //        var tempAddresses = new List<Address>(seller.Addresses.ToList());
-        //        seller.Addresses = new Collection<Address>();
-        //        foreach (var address in tempAddresses.Where(addr => addr.RegionId == regionId))
-        //        {
-        //            seller.Addresses.Add(address);
-        //        }
-        //        foreach (var address in tempAddresses.Where(addr => addr.RegionId != regionId))
-        //        {
-        //            seller.Addresses.Add(address);
-        //        }
-
-        //        sellerVM.Seller = seller;
-        //        var categoriesService = new CategoriesService();
-        //        sellerVM.Breadcrumbs = new BreadCrumbsViewModel
-        //        {
-        //            Seller = seller
-        //        };
-        //        if (categoryUrlName == null)
-        //        {
-        //            sellerVM.Breadcrumbs.Categories = categoriesService.GetBreadcrumbs(null, seller.SellerCategories.First().CategoryId);
-        //        }
-        //        else
-        //        {
-        //            sellerVM.Breadcrumbs.Categories = categoriesService.GetBreadcrumbs(null, urlName: categoryUrlName);
-        //        }
-        //        sellerVM.Breadcrumbs.IsInfoPage = true;
-        //        sellerVM.CanReview = db.Orders.Any(entry => entry.Status == OrderStatus.Finished && entry.UserId == currentUserId && entry.SellerId == seller.Id);
-        //    }
-        //    return sellerVM;
-        //}
-
         public List<Category> GetAllSellerCategories(string sellerUrl)
         {
-            //var cacheCats =
-            //    HttpContext.Current.Cache[string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, sellerUrl)];
-            //if (cacheCats == null)
-            //{
             var seller =
                 db.Sellers
                 .Include(entry => entry.SellerCategories.Select(sc => sc.Category.Products))
+                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
                 .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory.Products))
                     .FirstOrDefault(entry => entry.UrlName == sellerUrl);
             var all = new List<Category>();
@@ -335,12 +287,6 @@ namespace Benefit.Services.Domain
                 }
             }
             return all.Distinct(new CategoryComparer()).ToList();
-            //    HttpContext.Current.Cache.Add(string.Format("{0}-{1}", CacheConstants.SellerCategoriessKey, seller.Id),
-            //        cacheCats, null, Cache.NoAbsoluteExpiration,
-            //        new TimeSpan(0, 0, CacheConstants.OutputCacheLength, 0),
-            //        CacheItemPriority.Default, null);
-            ////}
-            //return cacheCats as List<Category>;
         }
 
         public ProductsWithParametersList GetSellerCatalogProducts(string sellerId, string categoryId, string options, int take = ListConstants.DefaultTakePerPage, bool fetchParameters = true)
