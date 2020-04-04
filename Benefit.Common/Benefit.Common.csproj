@@ -35,7 +35,7 @@
     <OutputPath>bin\Staging\</OutputPath>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>Benefit.Common.pfx</AssemblyOriginatorKeyFile>
@@ -82,6 +82,7 @@
     <Compile Include="Helpers\HexHelper.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Extensions\DataRowMap.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Attributes\" />

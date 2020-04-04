@@ -5,12 +5,12 @@
 @{
     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
     var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-    var categoryToSellerDiscountPercent = ViewBag.CategoryToSellerDiscountPercent as Dictionary<string, double>;
-    var categoryDiscount = Model.Seller.UserDiscount;
-    if (categoryToSellerDiscountPercent != null && categoryToSellerDiscountPercent.ContainsKey(Model.SellerId))
-    {
-        categoryDiscount = categoryToSellerDiscountPercent[Model.SellerId];
-    }
+    //var categoryToSellerDiscountPercent = ViewBag.CategoryToSellerDiscountPercent as Dictionary<string, double>;
+    //var categoryDiscount = Model.Seller.UserDiscount;
+    //if (categoryToSellerDiscountPercent != null && categoryToSellerDiscountPercent.ContainsKey(Model.SellerId))
+    //{
+    //    categoryDiscount = categoryToSellerDiscountPercent[Model.SellerId];
+    //}
     var isFavorites = ViewBag.IsFavorites as bool?;
 }
 
@@ -28,14 +28,14 @@
     <div class="preview fn_product">
         <div class="fn_transfer clearfix">
             <div class="stickers">
-                @if (categoryDiscount > 0)
+                @*@if (categoryDiscount > 0)
                 {
                     <div class="sticker_sale_text">Кешбек @categoryDiscount%</div>
                 }
                 @if (Model.Seller.SafePurchase)
                 {
                     <div class="sticker_safe">Безпечна покупка</div>
-                }
+                }*@
             </div>
             <a class="preview_image" href="@productDetailsUrl">
                 @if (image == null)
@@ -55,7 +55,7 @@
                 }
             </a>
             @{
-                var favClass = Model.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()) ? "selected remove-from-favorites" : "add-to-favorites";
+                var favClass = Model.IsFavorite ? "selected remove-from-favorites" : "add-to-favorites";
             }
             <div class="overlay_buttons">
                 @*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
@@ -82,10 +82,10 @@
                 <div class="fn_variants preview_form" style="margin-right:3px;">
                     @if (isAvailable)
                     {
-                        <button class="button fn_is_stock lg-hidden product_buy" type="submit" style="padding: 7px 17px 5px 13px;" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">
+                        <button class="button fn_is_stock lg-hidden product_buy" type="submit" style="padding: 7px 17px 5px 13px;" data-product-id="@Model.Id" data-seller-id="@Model.SellerId" data-is-weight-product="@Model.IsWeightProduct">
                             <img src="~/Content/seller/megashop/images/basket.png">
                         </button>
-                        <button class="button fn_is_stock small-hidden product_buy" type="submit" style="padding:9px 15px 9px 15px; font-size:14px;" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">Купити</button>
+                        <button class="button fn_is_stock small-hidden product_buy" type="submit" style="padding:9px 15px 9px 15px; font-size:14px;" data-product-id="@Model.Id" data-seller-id="@Model.SellerId" data-is-weight-product="@Model.IsWeightProduct">Купити</button>
                         <div class="amount fn_product_amount counter partial" data-weight-product="@Model.IsWeightProduct">
                             <input class="input_amount quantity" type="text" name="quantity" value="1" data-weight-product="@Model.IsWeightProduct">
                             <span class="plus"></span>

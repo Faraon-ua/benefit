@@ -21,13 +21,14 @@ using Benefit.Web.Helpers;
 using Benefit.Web.Models;
 using Benefit.Web.Models.ViewModels;
 using NLog;
+using Benefit.Common.Constants;
 
 namespace Benefit.Web.Controllers
 {
     public class HomeController : BaseController
     {
         private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        [FetchSeller(Order = 0)]
+        [FetchSeller(Order = 0, Include = "Banners")]
         [FetchCategories(Order = 1)]
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByCustom = "IsMobile")]
         public async Task<ActionResult> Index()

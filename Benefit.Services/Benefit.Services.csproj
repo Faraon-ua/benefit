@@ -101,6 +101,7 @@
     <Compile Include="CacheService.cs" />
     <Compile Include="Cart\Cart.cs" />
     <Compile Include="CookiesService.cs" />
+    <Compile Include="Domain\CatalogService.cs" />
     <Compile Include="Domain\CategoriesService.cs" />
     <Compile Include="Domain\ImportExportService.cs" />
     <Compile Include="Domain\OrderService.cs" />

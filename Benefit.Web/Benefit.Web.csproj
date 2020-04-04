@@ -276,6 +276,7 @@
     <Compile Include="Controllers\API\TelegramController.cs" />
     <Compile Include="Controllers\Base\BaseController.cs" />
     <Compile Include="Controllers\CartController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\EmailController.cs" />
     <Compile Include="Controllers\ErrorController.cs" />
     <Compile Include="Controllers\ExportController.cs" />
@@ -1583,6 +1584,7 @@
     <Content Include="Views\Shared\_head.mobile.cshtml" />
     <Content Include="Views\Home\_ImageSlider.mobile.cshtml" />
     <Content Include="Views\Tovar\Index.mobile.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\_ProductListPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -1601,7 +1603,6 @@
     <Folder Include="Images\SellerLogo\" />
     <Folder Include="Images\uploads\" />
     <Folder Include="Images\UserPictures\" />
-    <Folder Include="Views\Base\" />
     <Folder Include="Views\Export\" />
     <Folder Include="Views\Localizations\" />
     <Folder Include="Views\Notifications\" />

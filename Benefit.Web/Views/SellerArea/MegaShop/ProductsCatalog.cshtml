@@ -12,7 +12,7 @@
 }
 @section meta
 {
-    <meta name="description" content="@(Model.Category == null ? Model.Seller.ShortDescription : Model.Category.MetaDescription) @seller.SeoSuffix">
+    <meta name="description" content="@(Model.Category == null ? seller.ShortDescription : Model.Category.MetaDescription) @seller.SeoSuffix">
 }
 @section styles
 {
@@ -44,24 +44,27 @@
         var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
         var productTemplateLayout = 1;
         var term = "@Request.QueryString["term"]";
+        var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category.Id, area = string.Empty })';
+
+        $(function () {
+            $.get(getProductParameters, function (data) {
+                $(".area-product-filters").html(data);
+                $.getScript("/Benefit.Web/Scripts/v3/product-filters.js")
+            });
+        })
     </script>
     <script src="~/Scripts/v3/products.js"></script>
-    <script src="~/Scripts/v3/product-filters.js"></script>
 }
 @section LeftAside
 {
-    @if (Model.ProductParameters.Any())
-    {
-        <div class="filters_block">
-            <div class="filters_heading fn_switch md-hidden">
-                <span data-language="filters">Фильтр</span>
-                <i class="angle_icon"></i>
-            </div>
-            <div class="filters mobile-hidden">
-                @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
-            </div>
+    <div class="filters_block">
+        <div class="filters_heading fn_switch md-hidden">
+            <span data-language="filters">Фильтр</span>
+            <i class="angle_icon"></i>
         </div>
-    }
+        <div class="filters mobile-hidden product-filters area-product-filters">
+        </div>
+    </div>
 }
 <div class="col-md-8 col-xl-9 content">
     @Html.Partial("~/views/sellerarea/megashop/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
@@ -73,7 +76,7 @@
             {
                 <div class="padding-15">
                     @*<button id="remove-all" type="button" class="button btn-danger no-border">Видалити всі</button>
-                    <button id="remove-selected" type="button" class="button no-border margin-left-30">Видалити обрані</button>*@
+                        <button id="remove-selected" type="button" class="button no-border margin-left-30">Видалити обрані</button>*@
                     <button id="buy-all" type="button" class="button btn-success no-border">Купити всі</button>
                     <button id="buy-selected" type="button" class="button no-border margin-left-30">Купити обрані</button>
                 </div>
@@ -99,45 +102,7 @@
                     </div>
                 </div>
             }
-
-            <div id="fn_products_content" class="fn_categories products row products-wrapper">
-                @{
-                    var take = Model.IsFavorites ? Model.Items.Count : ListConstants.DefaultTakePerPage;
-                }
-                @foreach (var product in Model.Items.Take(take))
-                {
-                    @Html.Partial("~/Views/SellerArea/megashop/_ProductPartial.cshtml", product)
-                }
-            </div>
-            @if (!Model.IsFavorites)
-            {
-                if (Model.Items.Count > ListConstants.DefaultTakePerPage)
-                {
-                    <div class="ajax_load_btn" data-page="1">
-                        <span class="more_text_ajax">Показати ще</span>
-                    </div>
-                }
-                if (Model.PagesCount > 1)
-                {
-                    <ul class="pagination">
-                        <li class="page_item" data-page="0" style="display: none;">
-                            <a class="page_link paging prev" href="#" data-page="0"><< Назад</a>
-                        </li>
-                        <li class="page_item active" data-page="0">
-                            <a class="page_link paging" href="#" data-page="0">1</a>
-                        </li>
-                        @for (int i = 2; i <= Model.PagesCount; i++)
-                        {
-                            <li class="page_item">
-                                <a class="page_link paging" href="#" data-page="@(i - 1)">@i</a>
-                            </li>
-                        }
-                        <li class="page_item" data-page="1">
-                            <a class="page_link paging next" href="#" data-page="1">Вперед >></a>
-                        </li>
-                    </ul>
-                }
-            }
+            @Html.Partial("~/Views/SellerArea/megashop/_ProductListPartial.cshtml")
             <br style="clear: both;" />
         </div>
     </div>

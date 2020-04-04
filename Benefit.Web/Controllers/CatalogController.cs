@@ -11,6 +11,10 @@ using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.Models;
+using Benefit.DataTransfer.ViewModels.Base;
+using Benefit.Domain.DataAccess;
+using System.Configuration;
+using Microsoft.AspNet.Identity;
 
 namespace Benefit.Web.Controllers
 {
@@ -31,12 +35,16 @@ namespace Benefit.Web.Controllers
             return PartialView("_BaseCategoriesPartial", categories);
         }
 
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0, Include = "Images")]
         [FetchCategories(Order = 1)]
-        [FetchLastNews]
+        [FetchLastNews(Order = 2)]
         public ActionResult Index(string categoryUrl, string options)
         {
+            var categoriesDbContext = new CategoiesDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            var category = categoriesDbContext.Get(string.Format("UrlName = '{0}'", categoryUrl)).FirstOrDefault();
+            var seller = ViewBag.Seller as Seller;
             var cachedCats = ViewBag.Categories as List<CategoryVM>;
+
             if (categoryUrl == "postachalnuky")
             {
                 var sellers = SellerService.GetSellersCatalog(options);
@@ -50,25 +58,26 @@ namespace Benefit.Web.Controllers
                 };
                 return View("SellersCatalog", sellers);
             }
-
-            CategoriesViewModel catsModel = CategoriesService.GetCategoriesCatalog(cachedCats, categoryUrl, ViewBag.SellerUrl);
-            if (catsModel == null)
+            if (category.HasChildCategories)
             {
-                throw new HttpException(404, "Not found");
-            }
-            if (catsModel.Items.Any())
-            {
-                if (ViewBag.Seller != null)
+                CategoriesViewModel catsModel = CategoriesService.GetCategoriesCatalog(cachedCats, categoryUrl, ViewBag.SellerUrl);
+                if (catsModel == null)
                 {
-                    var viewPath = string.Format("~/views/sellerarea/{0}/categoriescatalog.cshtml",
-                        (ViewBag.Seller as Seller).EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
-                        .ToString());
-                    return View(viewPath, catsModel);
+                    throw new HttpException(404, "Not found");
                 }
-                return View("CategoriesCatalog", catsModel);
+                if (catsModel.Items.Any())
+                {
+                    if (seller != null)
+                    {
+                        var viewPath = string.Format("~/views/sellerarea/{0}/categoriescatalog.cshtml",
+                            seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
+                            .ToString());
+                        return View(viewPath, catsModel);
+                    }
+                    return View("CategoriesCatalog", catsModel);
+                }
             }
-
-            if(options!= null && options.Contains("page=1;"))
+            if (options != null && options.Contains("page=1;"))
             {
                 Response.StatusCode = 301;
                 var location =
@@ -76,14 +85,24 @@ namespace Benefit.Web.Controllers
                 Response.AddHeader("Location", location);
                 Response.End();
             }
-            var catalog = SellerService.GetSellerProductsCatalog(cachedCats, ViewBag.SellerUrl, categoryUrl, options);
-            if (ViewBag.Seller != null)
+            if (seller != null)
             {
+                var catalogService = new CatalogService();
+                var model = catalogService.GetSellerProductsCatalog(cachedCats, seller.Id, category.Id, User.Identity.GetUserId(), options);
+                model.Category = category.MapToVM();
+                model.Breadcrumbs = new BreadCrumbsViewModel()
+                {
+                    Seller = seller,
+                    Categories = catalogService.GetBreadcrumbs(cachedCats, model.Category == null ? null : model.Category.Id)
+                };
+                if (!seller.IsActive || !seller.HasEcommerce) return Content("Seller is not active or has no eCommerce");
                 var viewPath = string.Format("~/views/sellerarea/{0}/productscatalog.cshtml",
-                    (ViewBag.Seller as Seller).EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
                     .ToString());
-                return View(viewPath, catalog);
+                return View(viewPath, model);
             }
+
+            var catalog = SellerService.GetSellerProductsCatalog(cachedCats, ViewBag.SellerUrl, categoryUrl, options);
             return View("ProductsCatalog", catalog);
         }
 

@@ -1,4 +1,5 @@
 ﻿using Benefit.Common.Constants;
+using Benefit.Domain.Models.Base;
 using Benefit.Domain.Models.Enums;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.Linq;
 using System.Web;
 
@@ -17,7 +19,7 @@ namespace Benefit.Domain.Models
         MegaShop
     }
 
-    public class Seller
+    public class Seller : BaseDomainModel
     {
         public Seller()
         {
@@ -33,10 +35,7 @@ namespace Benefit.Domain.Models
             InfoPages = new Collection<InfoPage>();
             Reviews = new Collection<Review>();
         }
-
-        [Key]
-        [MaxLength(128)]
-        public string Id { get; set; }
+       
         [Required]
         [MaxLength(128)]
         [Index]

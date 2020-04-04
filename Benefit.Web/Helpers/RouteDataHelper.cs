@@ -21,6 +21,15 @@ namespace Benefit.Web.Helpers
             }
         }
 
+        public static string Options
+        {
+            get
+            {
+                var options = HttpContext.Current.Request.RequestContext.RouteData.Values["options"];
+                return options == null ? null : options.ToString().ToLower();
+            }
+        }
+
         public static string CategoryRoute
         {
             get

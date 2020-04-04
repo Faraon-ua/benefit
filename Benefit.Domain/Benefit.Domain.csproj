@@ -59,6 +59,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
@@ -94,6 +95,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DataAccess\AdoDbContext.cs" />
+    <Compile Include="DataAccess\CategoriesDBContext.cs" />
+    <Compile Include="DataAccess\ProductParametersDBContext.cs" />
     <Compile Include="DataAccess\SellersDBContext.cs" />
     <Compile Include="DataAccess\InfoPagesDBContext.cs" />
     <Compile Include="DataAccess\IdentityModels.cs" />
@@ -654,6 +657,7 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
+    <Compile Include="Models\Base\BaseDomainModel.cs" />
     <Compile Include="Models\BenefitCard.cs" />
     <Compile Include="Models\CompanyRevenue.cs" />
     <Compile Include="Models\Enums\ProductSortOption.cs" />
