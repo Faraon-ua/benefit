@@ -28,7 +28,7 @@ namespace Benefit.Web.Controllers
     public class HomeController : BaseController
     {
         private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        [FetchSeller(Order = 0, Include = "Banners")]
+        [FetchSeller(Order = 0, Include = "Banners,Images")]
         [FetchCategories(Order = 1)]
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByCustom = "IsMobile")]
         public async Task<ActionResult> Index()
@@ -219,7 +219,7 @@ namespace Benefit.Web.Controllers
             return Content(output);
         }
 
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order=0, Include = "Schedules")]
         [FetchCategories(Order = 1)]
         public ActionResult Contacts()
         {

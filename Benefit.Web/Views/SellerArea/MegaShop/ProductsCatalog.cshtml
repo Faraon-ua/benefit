@@ -49,7 +49,7 @@
         $(function () {
             $.get(getProductParameters, function (data) {
                 $(".area-product-filters").html(data);
-                $.getScript("/Benefit.Web/Scripts/v3/product-filters.js")
+                $.getScript(routePrefix +"/Scripts/v3/product-filters.js")
             });
         })
     </script>
