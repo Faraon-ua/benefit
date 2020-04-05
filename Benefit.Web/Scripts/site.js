@@ -208,13 +208,13 @@ $(function () {
             });
     });
 
-    $(".show-more-options").click(function (e) {
+    $("body").on("click", ".show-more-options", function (e) {
         e.preventDefault();
         $(this).parent().prev().css("max-height", "");
         $(this).parent().find(".show-less-options").show();
         $(this).hide();
     });
-    $(".show-less-options").click(function (e) {
+    $("body").on("click", ".show-less-options", function (e) {
         e.preventDefault();
         $(this).parent().prev().css("max-height", "215px");
         $(this).parent().find(".show-more-options").show();

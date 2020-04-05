@@ -58,7 +58,7 @@ namespace Benefit.Web.Controllers
                 };
                 return View("SellersCatalog", sellers);
             }
-            if (category.HasChildCategories)
+            if (category == null || (category != null && category.HasChildCategories))
             {
                 CategoriesViewModel catsModel = CategoriesService.GetCategoriesCatalog(cachedCats, categoryUrl, ViewBag.SellerUrl);
                 if (catsModel == null)

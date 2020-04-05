@@ -91,6 +91,7 @@ namespace Benefit.Domain.DataAccess
         public List<Product> GetCatalog(string categoryId, string sellerId, string userId, string where, string orderBy, int skip, int take)
         {
             cmd.CommandText = string.Format(@"SELECT p.Id
+                  ,p.SellerId
                   ,p.Name
                   ,p.UrlName
                   ,p.SKU

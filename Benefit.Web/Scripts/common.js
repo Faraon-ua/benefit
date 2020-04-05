@@ -139,13 +139,13 @@ $(function () {
         $('.phone-input').mask("+38(000)000-00-00", { placeholder: "+38(___)___-__-__" });
     }
 
-    $(".show-more-options").click(function (e) {
+    $('body').on('click', ".show-more-options", function (e) {
         e.preventDefault();
         $(this).parent().prev().css("max-height", "");
         $(this).parent().find(".show-less-options").show();
         $(this).hide();
     });
-    $(".show-less-options").click(function (e) {
+    $('body').on('click', ".show-less-options", function (e) {
         e.preventDefault();
         $(this).parent().prev().css("max-height", "305px");
         $(this).parent().find(".show-more-options").show();

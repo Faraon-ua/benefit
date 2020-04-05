@@ -267,7 +267,6 @@ $(function () {
                     }
                     $.each(optionValues,
                         function (j, optValue) {
-                            debugger;
                             if (optionName == "page") {
                                 return;
                             }
