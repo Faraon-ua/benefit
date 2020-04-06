@@ -258,40 +258,46 @@ namespace Benefit.Services.Domain
                 });
             }
 
-            var vendorParams =
-                catalogParams.Vendors.Split(',').Select(entry => new ProductParameterValue()
+            if (catalogParams.Vendors != null)
+            {
+                var vendorParams =
+                    catalogParams.Vendors.Split(',').Select(entry => new ProductParameterValue()
                     {
                         ParameterValue = entry,
                         ParameterValueUrl = entry.Replace("&", "")
                     }).OrderBy(entry => entry.ParameterValue).ToList();
-            if (vendorParams.Count >= 1)
-            {
-                productParametersList.Add(new ProductParameter()
+                if (vendorParams.Count >= 1)
                 {
-                    Name = "Виробник",
-                    UrlName = "vendor",
-                    Type = typeof(string).ToString(),
-                    DisplayInFilters = true,
-                    ProductParameterValues = vendorParams
-                });
+                    productParametersList.Add(new ProductParameter()
+                    {
+                        Name = "Виробник",
+                        UrlName = "vendor",
+                        Type = typeof(string).ToString(),
+                        DisplayInFilters = true,
+                        ProductParameterValues = vendorParams
+                    });
+                }
             }
 
-            var originCountryParams =
+            if (catalogParams.OriginCountries != null)
+            {
+                var originCountryParams =
                  catalogParams.OriginCountries.Split(',').Select(entry => new ProductParameterValue()
                  {
                      ParameterValue = entry,
                      ParameterValueUrl = entry
                  }).OrderBy(entry => entry.ParameterValue).ToList();
-            if (originCountryParams.Count >= 1)
-            {
-                productParametersList.Add(new ProductParameter()
+                if (originCountryParams.Count >= 1)
                 {
-                    Name = "Країна виробник",
-                    UrlName = "country",
-                    Type = typeof(string).ToString(),
-                    DisplayInFilters = true,
-                    ProductParameterValues = originCountryParams
-                });
+                    productParametersList.Add(new ProductParameter()
+                    {
+                        Name = "Країна виробник",
+                        UrlName = "country",
+                        Type = typeof(string).ToString(),
+                        DisplayInFilters = true,
+                        ProductParameterValues = originCountryParams
+                    });
+                }
             }
             return productParametersList;
         }

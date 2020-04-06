@@ -47,10 +47,21 @@
         var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category.Id, area = string.Empty })';
 
         $(function () {
-            $.get(getProductParameters, function (data) {
-                $(".area-product-filters").html(data);
-                $.getScript(routePrefix +"/Scripts/v3/product-filters.js")
-            });
+            @if(!isFavorites)
+            {
+                <text>
+                    $.get(getProductParameters, function (data) {
+                        $(".area-product-filters").html(data);
+                        $.getScript(routePrefix +"/Scripts/v3/product-filters.js")
+                    });
+                </text>
+            }
+            else
+            {
+                <text>
+                    $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
+                </text>
+            }
         })
     </script>
     <script src="~/Scripts/v3/products.js"></script>

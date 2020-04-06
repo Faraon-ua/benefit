@@ -63,7 +63,12 @@ namespace Benefit.Domain.DataAccess
             var result = new DataSet();
             adapter.Fill(result);
             var drwRow = result.Tables[0].Rows[0];
-            return drwRow.ToObject<CatalogParams>();
+            var catalog = drwRow.ToObject<CatalogParams>();
+            if(catalog.ProductParameters == null)
+            {
+                catalog.ProductParameters = string.Empty;
+            }
+            return catalog;
         }
         public int GetCatalogCount(string categoryId, string sellerId, string where)
         {
@@ -95,6 +100,7 @@ namespace Benefit.Domain.DataAccess
                   ,p.Name
                   ,p.UrlName
                   ,p.SKU
+                  ,p.IsWeightProduct
                   ,(p.Price * ISNULL(c.Rate, 1)) as Price
                   ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{0}')
                         THEN CAST(1 AS BIT)

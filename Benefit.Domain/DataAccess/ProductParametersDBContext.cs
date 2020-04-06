@@ -34,6 +34,10 @@ namespace Benefit.Domain.DataAccess
             adapter.Fill(result);
 
             var ppIds = result.Tables[0].AsEnumerable().Select(dataRow => string.Format("'{0}'", dataRow["Id"].ToString())).ToList();
+            if (!ppIds.Any())
+            {
+                ppIds.Add("''");
+            }
             cmd.CommandText = string.Format("Select * from ProductParameterValues where ProductParameterId in ({0})", string.Join(",", ppIds));
             adapter.Fill(valuesResult);
             foreach (DataRow drwRow in result.Tables[0].Rows)
