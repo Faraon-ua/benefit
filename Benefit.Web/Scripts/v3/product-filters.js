@@ -29,7 +29,7 @@ $(function () {
 
     $("#buy-all").click(function () {
         $(this).attr("disabled", "disabled");
-        $(".product_buy").click();
+        $(".products_item").each(function () { $(this).find(".product_buy").eq(0).click(); })
     });
 
     $(".ajax_load_btn, .paging").click(function (e) {
@@ -58,7 +58,7 @@ $(function () {
             pageUrl += location.search;
         }
         history.pushState("history", "page " + page, pageUrl);
-        
+
         $(".loader").show();
         if (!moreBtn.hasClass("ajax_load_btn")) {
             $("html, body").animate({ scrollTop: 0 }, 1000);

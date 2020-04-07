@@ -101,6 +101,7 @@ namespace Benefit.Domain.DataAccess
                   ,p.UrlName
                   ,p.SKU
                   ,p.IsWeightProduct
+                  ,p.AvailabilityState
                   ,(p.Price * ISNULL(c.Rate, 1)) as Price
                   ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{0}')
                         THEN CAST(1 AS BIT)
