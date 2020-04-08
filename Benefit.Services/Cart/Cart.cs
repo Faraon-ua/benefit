@@ -15,26 +15,28 @@ namespace Benefit.Services.Cart
     {
         private static readonly TimeSpan SlidingExpiration = new TimeSpan(6, 0, 0);
         private ApplicationDbContext db = new ApplicationDbContext();
-        public string SessionKey;
+        public static string SessionKey
+        {
+            get
+            {
+                return string.Format("{0}-{1}", DomainConstants.OrderPrefixKey, HttpContext.Current.Session.SessionID);
+            }
+        }
         public List<OrderVM> Orders { get; set; }
         private static Cart _cart;
         public static Cart CurrentInstance
         {
             get
             {
-                var sessionKey = string.Format("{0}-{1}", DomainConstants.OrderPrefixKey, HttpContext.Current.Session.SessionID);
                 if (_cart == null)
                 {
-                    _cart = new Cart()
-                    {
-                        SessionKey = sessionKey
-                    };
+                    _cart = new Cart();
                 }
-                _cart.Orders = HttpRuntime.Cache[sessionKey] as List<OrderVM>;
+                _cart.Orders = HttpRuntime.Cache[SessionKey] as List<OrderVM>;
                 if (_cart.Orders == null)
                 {
                     _cart.Orders = new List<OrderVM>();
-                    HttpRuntime.Cache.Insert(sessionKey, _cart.Orders, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
+                    HttpRuntime.Cache.Insert(SessionKey, _cart.Orders, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
                 }
                 return _cart;
             }
