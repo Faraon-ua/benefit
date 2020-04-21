@@ -88,7 +88,7 @@ namespace Benefit.Web.Controllers
             if (seller != null)
             {
                 var catalogService = new CatalogService();
-                var model = catalogService.GetSellerProductsCatalog(cachedCats, seller.Id, category.Id, User.Identity.GetUserId(), options);
+                var model = catalogService.GetSellerProductsCatalog(seller.Id, category.Id, User.Identity.GetUserId(), options);
                 model.Category = category.MapToVM();
                 model.Breadcrumbs = new BreadCrumbsViewModel()
                 {
@@ -106,8 +106,11 @@ namespace Benefit.Web.Controllers
             return View("ProductsCatalog", catalog);
         }
 
-        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page, SellerEcommerceTemplate? layout)
+        [FetchSeller(Order = 0)]
+        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page, SellerEcommerceTemplate? layout, bool isFilterRequest = false)
         {
+            List<Product> products = null;
+            var templateName = "_ProductPartial";
             if (options.Contains("page"))
             {
                 options = Regex.Replace(options, "page=\\d+", "page=" + page);
@@ -116,8 +119,23 @@ namespace Benefit.Web.Controllers
             {
                 options += "page=" + page;
             }
-            var products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, ListConstants.DefaultTakePerPage, false).Products;
-            var templateName = "_ProductPartial";
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                var catalogService = new CatalogService();
+                var catalog = catalogService.GetSellerProductsCatalog(seller.Id, categoryId, User.Identity.GetUserId(), options);
+                products = catalog.Items;
+                if (isFilterRequest)
+                {
+                    templateName = string.Format("~/Views/SellerArea/{0}/_ProductListPartial.cshtml", layout.ToString());
+                    var html = ControllerContext.RenderPartialToString(templateName, catalog);
+                    return Json(new { number = catalog.PagesCount, products = html }, JsonRequestBehavior.AllowGet);
+                }
+            }
+            else
+            {
+                products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, ListConstants.DefaultTakePerPage, false).Products;
+            }
             if (layout.HasValue)
             {
                 templateName = string.Format("~/Views/SellerArea/{0}/_ProductPartial.cshtml", layout.ToString());

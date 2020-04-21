@@ -46,8 +46,8 @@ namespace Benefit.Web.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var emailService = new EmailService();
-                var sellersToBlock = db.Sellers.Include(entry=>entry.Owner).Where(entry => entry.BlockOn != null).ToList();
-                foreach(var seller in sellersToBlock)
+                var sellersToBlock = db.Sellers.Include(entry => entry.Owner).Where(entry => entry.BlockOn != null).ToList();
+                foreach (var seller in sellersToBlock)
                 {
                     if (DateTime.UtcNow > seller.BlockOn)
                     {
@@ -84,7 +84,10 @@ namespace Benefit.Web.Controllers
                         Directory.CreateDirectory(destPath);
                     }
                     destPath = Path.Combine(destPath, "index.xml");
-                    exportService.Export(export.Id, destPath);
+                    if (exportService.Export(export.Id, destPath) == null)
+                    {
+                        return Content("Export file was not generated");
+                    }
                 }
             }
             return Content("Export files generated");

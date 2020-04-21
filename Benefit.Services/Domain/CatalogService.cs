@@ -57,7 +57,7 @@ namespace Benefit.Services.Domain
             }
             return productParameters;
         }
-        public ProductsViewModel GetSellerProductsCatalog(IEnumerable<CategoryVM> cachedCats, string sellerId, string categoryId, string userId, string options)
+        public ProductsViewModel GetSellerProductsCatalog(string sellerId, string categoryId, string userId, string options)
         {
             var result = new ProductsViewModel();
             var where = new StringBuilder();
@@ -75,7 +75,6 @@ namespace Benefit.Services.Domain
                     {
                         continue;
                     }
-
                     var optionKeyValue = optionSegment.Split('=');
                     var optionKey = optionKeyValue.First();
                     //var dbOptionKey = db.ProductParameters.Include(entry => entry.ChildProductParameters)
@@ -145,10 +144,10 @@ namespace Benefit.Services.Domain
 					            where ppp.ProductParameterId = pp.Id and ppp.StartValue in ({1}) and pp.UrlName in ({0})
 					            group by ProductId
 					            having STRING_AGG(StartValue,',') WITHIN GROUP (ORDER BY StartValue) = '{2}'
-				            )", 
-                            string.Join(",", whereProductParameters), 
-                            string.Join(",", whereProductParameterProducts.Select(entry=>string.Format("'{0}'", entry))),
-                            string.Join(",", whereProductParameterProducts.OrderBy(entry=>entry))));
+				            )",
+                            string.Join(",", whereProductParameters),
+                            string.Join(",", whereProductParameterProducts.Select(entry => string.Format("'{0}'", entry))),
+                            string.Join(",", whereProductParameterProducts.OrderBy(entry => entry))));
             }
             switch (sort)
             {
@@ -185,8 +184,10 @@ namespace Benefit.Services.Domain
             //        .Where(entry => entry.DisplayInFilters).ToList();
             //    productParameters = productParameters.Union(mappedCategoriesParameters).ToList();
             //}
-
-            result.PagesCount = (productsDBContext.GetCatalogCount(categoryId, sellerId, where.ToString()) - 1) / ListConstants.DefaultTakePerPage + 1;
+            if (options == null || (options != null && result.Page == 1))
+            {
+                result.PagesCount = (productsDBContext.GetCatalogCount(categoryId, sellerId, where.ToString()) - 1) / ListConstants.DefaultTakePerPage + 1;
+            }
             result.Items = productsDBContext.GetCatalog(categoryId, sellerId, userId, where.ToString(), orderby, ListConstants.DefaultTakePerPage * (result.Page - 1), ListConstants.DefaultTakePerPage);
             return result;
         }

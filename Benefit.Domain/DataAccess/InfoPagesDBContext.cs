@@ -33,7 +33,7 @@ namespace Benefit.Domain.DataAccess
                 {
                     Name = (string)drwRow["Name"],
                     UrlName = (string)drwRow["UrlName"],
-                    ImageUrl = (string)drwRow["ImageUrl"],
+                    ImageUrl = ConvertFromDBVal<String>(drwRow["ImageUrl"]),
                     Order = (int)drwRow["Order"],
                     CreatedOn = (DateTime)drwRow["CreatedOn"],
                     Title = ConvertFromDBVal<String>(drwRow["Title"]),

@@ -31,15 +31,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
         // GET: /Admin/InfoPages/Create
         public ActionResult CreateOrUpdate(string id = null)
         {
-            if (Seller.CurrentAuthorizedSellerId != null)
-            {
-                if (db.InfoPages.Count(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && !entry.IsNews) > 4)
-                {
-                    TempData["ErrorMessage"] = "Ви не можете створити більшу кількість сторінок";
-                    return RedirectToAction("Index");
-                }
-            }
-
             var infoPages = db.InfoPages.Where(entry => entry.Id == id);
             if (Seller.CurrentAuthorizedSellerId != null)
             {
@@ -68,6 +59,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult CreateOrUpdate(InfoPage infopage)
         {
+            if (Seller.CurrentAuthorizedSellerId != null && !infopage.IsNews)
+            {
+                if (db.InfoPages.Count(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && !entry.IsNews) > 4)
+                {
+                    TempData["ErrorMessage"] = "Ви не можете створити більшу кількість сторінок";
+                    return RedirectToAction("Index");
+                }
+            }
             if (infopage.UrlName == null)
             {
                 infopage.UrlName = infopage.Name.Translit();

@@ -4,6 +4,123 @@ var parts = location.href.split('/');
 var lastSegment = (parts.pop() || parts.pop()).replace('#', ''); // handle potential trailing slash
 lastSegment = lastSegment.replace(location.search, ""); //handle query params
 var sortControl = $(".sort_btn[data-sort-value=Rating]");
+var pagesMaxNumber = pagesCount - 1;
+
+function setPaging() {
+    var pagesMaxNumber = pagesCount - 1;
+    var currentPage = 0;
+    if (lastSegment !== categoryUrlName) {
+        var result = lastSegment.match(/page=(\d+)/i);
+        if (result && result[1]) {
+            currentPage = parseInt(result[1]) - 1;
+            $(".paging").parent().removeClass("active");
+            $("a[data-page=" + currentPage + "]").parent().addClass("active");
+            $(".ajax_load_btn").attr("data-page", currentPage + 1);
+        }
+    }
+    //hide redundant pages
+    var visibleLinks = $("a[data-page=0],a[data-page=1],a[data-page=2],a[data-page=" +
+        pagesMaxNumber +
+        "],a[data-page=" +
+        (pagesMaxNumber - 1) +
+        "],a[data-page=" +
+        currentPage +
+        "],a[data-page=" +
+        (currentPage + 1) +
+        "],a[data-page=" +
+        (currentPage - 1) +
+        "]").not(".prev,.next");
+    $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
+    if (currentPage >= pagesMaxNumber) {
+        $(".paging.next").parent().hide();
+        $(".ajax_load_btn").hide();
+    }
+    if (currentPage > 0) {
+        $(".paging.prev").parent().show();
+    }
+    $(".paging[data-page=2]").parent().after("<li class='page_item split'>...</li>");
+}
+
+function setFilters() {
+    options = "";
+    showFiltersReset = false;
+    parts = location.href.split('/');
+    lastSegment = (parts.pop() || parts.pop()).replace('#', '');
+    lastSegment = lastSegment.replace(location.search, "");
+    //select all checkboxes from url
+    if (hasCategory) {
+        var resetAllFilters = $(".selected-filters span").eq(0);
+        $(".selected-filters").html("");
+        $(".selected-filters").append(resetAllFilters);
+        if (lastSegment.toLowerCase() != categoryUrlName) {
+            options = lastSegment;
+            $.each(options.split(";"),
+                function (i, urlSegment) {
+                    if (urlSegment === "") return;
+                    var optKeyValue = urlSegment.split("=");
+                    var optionName = optKeyValue[0];
+                    var optionValues = optKeyValue[1].split(",");
+                    if (optionName) {
+                        if (optionName === "sort") {
+                            var optionValue = optionValues[0];
+                            sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
+                            $(".sort_btn span").removeClass("badge");
+                            return true;
+                        }
+                    }
+                    if (optionName === "price") {
+                        var optionValue = optionValues[0];
+                        var prices = optionValue.split('-');
+                        var lowerPrice = parseInt(prices[0]);
+                        var upperPrice = parseInt(prices[1]);
+                        $("#price-lower-bound").val(lowerPrice);
+                        $("#price-upper-bound").val(upperPrice);
+                        $("#price-filter").prop('checked', true);
+                        $("#price-slider").data('bootstrapSlider').setValue([lowerPrice, upperPrice]);
+                        $(".selected-filters").append(
+                            "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='price' data-option-value='price-filter'>" +
+                            optionValue +
+                            " грн<i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                        );
+                        return true;
+                    }
+                    $.each(optionValues,
+                        function (j, optValue) {
+                            if (optionName == "page") {
+                                return;
+                            }
+                            showFiltersReset = true;
+                            var checkbox = $(".filter-section[data-filter-name=" +
+                                optionName +
+                                "] input#" +
+                                decodeURI(optValue));
+                            if (checkbox.length === 0) {
+                                checkbox = $(".filter-section[data-filter-name=" +
+                                    optionName +
+                                    "] input[name=" +
+                                    decodeURI(optValue).replace(" ", "") +
+                                    "]");
+                            }
+                            checkbox.prop('checked', true);
+                            var optionvalueText = checkbox.attr("text");
+                            $(".selected-filters").append(
+                                "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" +
+                                optionName +
+                                "' data-option-value='" +
+                                optValue +
+                                "'>" +
+                                optionvalueText +
+                                " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
+                            );
+                        });
+                    if (showFiltersReset) {
+                        $("#reset-filters").show();
+                    }
+                });
+        }
+    }
+    sortControl.find("span").addClass("badge");
+}
 
 $(function () {
     if ($('#price-slider').length > 0) {
@@ -32,7 +149,7 @@ $(function () {
         $(".products_item").each(function () { $(this).find(".product_buy").eq(0).click(); })
     });
 
-    $(".ajax_load_btn, .paging").click(function (e) {
+    $("body").on("click", ".ajax_load_btn, .paging", function (e) {
         e.preventDefault();
         if ($(this).parent().hasClass("active"))
             return;
@@ -163,8 +280,8 @@ $(function () {
             });
     });
 
-    $("#reset-filters").click(function () {
-        location.href = location.href.substring(0, location.href.indexOf(lastSegment)) + location.search;
+    $("body").on("click", "#reset-filters", function () {
+        location.href = location.href.substring(0, location.href.indexOf(lastSegment) - 1) + location.search;
     });
 
     $('body').on("click",
@@ -197,117 +314,16 @@ $(function () {
         $(".bx_filter_vertical, .bx_filter").slideToggle(333);
     });
 
-    var pagesMaxNumber = pagesCount - 1;
-    var currentPage = 0;
-    if (lastSegment !== categoryUrlName) {
-        var result = lastSegment.match(/page=(\d+)/i);
-        if (result && result[1]) {
-            currentPage = parseInt(result[1]) - 1;
-            $(".paging").parent().removeClass("active");
-            $("a[data-page=" + currentPage + "]").parent().addClass("active");
-            $(".ajax_load_btn").attr("data-page", currentPage + 1);
-        }
-    }
-    //hide redundant pages
-    var visibleLinks = $("a[data-page=0],a[data-page=1],a[data-page=2],a[data-page=" +
-        pagesMaxNumber +
-        "],a[data-page=" +
-        (pagesMaxNumber - 1) +
-        "],a[data-page=" +
-        currentPage +
-        "],a[data-page=" +
-        (currentPage + 1) +
-        "],a[data-page=" +
-        (currentPage - 1) +
-        "]").not(".prev,.next");
-    $(".paging:not(.prev):not(.next)").not(visibleLinks).parent().hide();
-    if (currentPage >= pagesMaxNumber) {
-        $(".paging.next").parent().hide();
-        $(".ajax_load_btn").hide();
-    }
-    if (currentPage > 0) {
-        $(".paging.prev").parent().show();
-    }
-    $(".paging[data-page=2]").parent().after("<li class='page_item split'>...</li>");
+    setPaging();
 
-    //select all checkboxes from url
-
-    if (hasCategory) {
-        if (lastSegment.toLowerCase() != categoryUrlName) {
-            options = lastSegment;
-            $.each(options.split(";"),
-                function (i, urlSegment) {
-                    if (urlSegment === "") return;
-                    var optKeyValue = urlSegment.split("=");
-                    var optionName = optKeyValue[0];
-                    var optionValues = optKeyValue[1].split(",");
-                    if (optionName) {
-                        if (optionName === "sort") {
-                            var optionValue = optionValues[0];
-                            sortControl = $(".sort_btn[data-sort-value=" + optionValue + "]");
-                            $(".sort_btn span").removeClass("badge");
-                            return true;
-                        }
-                    }
-                    if (optionName === "price") {
-                        var optionValue = optionValues[0];
-                        var prices = optionValue.split('-');
-                        var lowerPrice = parseInt(prices[0]);
-                        var upperPrice = parseInt(prices[1]);
-                        $("#price-lower-bound").val(lowerPrice);
-                        $("#price-upper-bound").val(upperPrice);
-                        $("#price-filter").prop('checked', true);
-                        $("#price-slider").data('bootstrapSlider').setValue([lowerPrice, upperPrice]);
-                        $(".selected-filters").append(
-                            "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='price' data-option-value='price-filter'>" +
-                            optionValue +
-                            " грн<i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
-                        );
-                        return true;
-                    }
-                    $.each(optionValues,
-                        function (j, optValue) {
-                            if (optionName == "page") {
-                                return;
-                            }
-                            showFiltersReset = true;
-                            var checkbox = $(".filter-section[data-filter-name=" +
-                                optionName +
-                                "] input#" +
-                                decodeURI(optValue));
-                            if (checkbox.length === 0) {
-                                checkbox = $(".filter-section[data-filter-name=" +
-                                    optionName +
-                                    "] input[name=" +
-                                    decodeURI(optValue).replace(" ", "") +
-                                    "]");
-                            }
-                            checkbox.prop('checked', true);
-                            var optionvalueText = checkbox.attr("text");
-                            $(".selected-filters").append(
-                                "<span class='badge padding_5 margin-right-10 margin-top-5 ' data-option-name='" +
-                                optionName +
-                                "' data-option-value='" +
-                                optValue +
-                                "'>" +
-                                optionvalueText +
-                                " <i class='fa fa-times-circle pointer remove-filter' style='font-size:1.5em'></i></span>"
-                            );
-                        });
-                    if (showFiltersReset) {
-                        $("#reset-filters").show();
-                    }
-                });
-        }
-
-    }
-    sortControl.find("span").addClass("badge");
+    setFilters();
 
     if (hasCategory) {
         $('body').on('change click',
             "#productFilters input[type=checkbox], #productFilters button, .sort_btn",
             function (e) {
                 e.preventDefault();
+                $(".area-products-list").css("opacity", "0.3");
                 $(".loader").show();
                 var parts = location.href.split('/');
                 lastSegment =
@@ -352,21 +368,47 @@ $(function () {
                 if (options.indexOf('page=') === -1) {
                     options += "page=1;";
                 }
-                var locBuilder;
-                if (lastSegment !== categoryUrlName) {
-                    locBuilder = location.protocol + '//' + location.host + location.pathname.replace(lastSegment, "") + options + location.search;
-                    location.href = locBuilder;
-                } else {
-                    locBuilder = location.protocol + '//' + location.host + location.pathname.replace(location.search, "");
-                    if (location.href[location.href.length - 1] !== "/") {
-                        locBuilder += "/";
+                var getProductsWithDataUrl = getProductsUrl +
+                    "?categoryId=" +
+                    categoryId +
+                    "&sellerId=" +
+                    sellerId +
+                    "&options=" +
+                    options +
+                    "&layout=1" +
+                    "&page=1" +
+                    "&isFilterRequest=true";
+                $.get(getProductsWithDataUrl, function (data) {
+                    var pageUrl;
+                    if (lastSegment == categoryUrlName) {
+                        pageUrl = categoryUrlName + "/" + options;
                     }
-                    if (lastSegment === "search") {
-                        window.location.href = locBuilder + options + location.search;
-                    } else {
-                        window.location.href = locBuilder + options;
+                    else {
+                        pageUrl = options;
                     }
-                }
+                    history.pushState("history", "options" + options, pageUrl);
+                    $(".area-products-list").html(data.products);
+                    $(".area-products-list").css("opacity", "1");
+                    pagesCount = data.number;
+                    setPaging();
+                    setFilters();
+                });
+                //var locBuilder;
+                //debugger;
+                //if (lastSegment !== categoryUrlName) {
+                //    locBuilder = location.protocol + '//' + location.host + location.pathname.replace(lastSegment, "") + options + location.search;
+                //    location.href = locBuilder;
+                //} else {
+                //    locBuilder = location.protocol + '//' + location.host + location.pathname.replace(location.search, "");
+                //    if (location.href[location.href.length - 1] !== "/") {
+                //        locBuilder += "/";
+                //    }
+                //    if (lastSegment === "search") {
+                //        window.location.href = locBuilder + options + location.search;
+                //    } else {
+                //        window.location.href = locBuilder + options;
+                //    }
+                //}
             });
     }
 });

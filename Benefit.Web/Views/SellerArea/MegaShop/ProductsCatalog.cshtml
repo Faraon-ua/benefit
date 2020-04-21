@@ -113,7 +113,9 @@
                     </div>
                 </div>
             }
-            @Html.Partial("~/Views/SellerArea/megashop/_ProductListPartial.cshtml")
+            <div class="area-products-list">
+                @Html.Partial("~/Views/SellerArea/megashop/_ProductListPartial.cshtml", Model)
+            </div>
             <br style="clear: both;" />
         </div>
     </div>
