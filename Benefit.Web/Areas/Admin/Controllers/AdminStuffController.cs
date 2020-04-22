@@ -15,6 +15,7 @@ using System.Data.Entity;
 using System.Web;
 using Benefit.Domain.Models;
 using Benefit.Web.Filters;
+using System.Collections;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -81,6 +82,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 area = string.Empty
             });
             Response.RemoveOutputCacheItem(staleItem);
+            IDictionaryEnumerator enumerator = HttpRuntime.Cache.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                string key = (string)enumerator.Key;
+                if (key.Contains("Seller"))
+                {
+                    HttpRuntime.Cache.Remove(key);
+                }
+            }
             TempData["SuccessMessage"] = "Кеш категорій очищено";
             return RedirectToAction("Index");
         }
