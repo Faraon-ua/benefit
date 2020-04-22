@@ -389,6 +389,7 @@ $(function () {
                     history.pushState("history", "options" + options, pageUrl);
                     $(".area-products-list").html(data.products);
                     $(".area-products-list").css("opacity", "1");
+                    $("html, body").animate({ scrollTop: 0 }, 1000);
                     pagesCount = data.number;
                     setPaging();
                     setFilters();

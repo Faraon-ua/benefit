@@ -242,7 +242,7 @@ namespace Benefit.Services.Domain
                         prod.Add(new XElement("picture", pictureUrl));
                     }
 
-                    prod.Add(new XElement("description", product.Description));
+                    prod.Add(new XElement("description", new XCData(product.Description)));
                     prod.Add(new XElement("country_of_origin", product.OriginCountry));
                     foreach (var parameterProduct in product.ProductParameterProducts)
                     {
