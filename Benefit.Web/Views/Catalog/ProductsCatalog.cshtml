@@ -1,6 +1,6 @@
-﻿@using System.Text
-@using Benefit.Common.Constants
+﻿@using Benefit.Common.Constants
 @using Benefit.Web.Helpers
+@using Benefit.Domain.Models
 @model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
 
 @{
@@ -33,7 +33,9 @@
     ViewBag.CategoryToSellerDiscountPercent = Model.CategoryToSellerDiscountPercent;
     var isFavorites = (Model.Category != null && Model.Category.UrlName == "favorites");
     ViewBag.IsFavorites = isFavorites;
-    var options = Request.RequestContext.RoteValue("options");
+    var options = Request.RequestContext.RouteValue("options");
+    var seller = ViewBag.Seller as Seller;
+    var categories = ViewBag.SellerCategories as List<CategoryVM>;
 }
 @section meta
 {
@@ -80,7 +82,7 @@
     <link href="~/Content/css/bootstrap-slider.css" rel="stylesheet" />
 }
 @section scripts{
-    <script>
+    <script defer>
         var selectedProductId = null;
         var reloadOnProductAdd = false;
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
@@ -99,14 +101,32 @@
         var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
         var term = "";
         var showCartOnOrder = '@(Model.Category == null ? "false" : Model.Category.ShowCartOnOrder.ToString())'.toLowerCase() === 'true';
-
+        var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category == null ? null : Model.Category.Id, area = string.Empty })';
+        var productTemplateLayout = null;
         window.addEventListener('DOMContentLoaded', function() {
             $(".seo-fix").css("height", $(".group_description_block").outerHeight());
+        });
+
+        $(function () {
+            @if(!isFavorites)
+            {
+                <text>
+                    $.get(getProductParameters, function (data) {
+                        $(".area-product-filters").html(data);
+                        $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
+                    });
+                </text>
+            }
+            else
+            {
+                <text>
+                    $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
+                </text>
+            }
         });
     </script>
     <script src="~/Scripts/v3/products.js" defer></script>
     <script src="~/Scripts/bootstrap-slider.min.js" defer></script>
-    <script src="~/Scripts/v3/product-filters.js" defer></script>
 }
 
 <div class="wraps hover_shine" id="content">
@@ -149,7 +169,7 @@
                                 </a>
                             </div>
 
-                            @if (Model.Category != null && string.IsNullOrEmpty(Request.RequestContext.RoteValue("options")))
+                            @if (Model.Category != null && string.IsNullOrEmpty(Request.RequestContext.RouteValue("options")))
                             {
                                 <div class="group_description_block bottom">
                                     <div>
@@ -176,58 +196,12 @@
                                         </a>
                                     </div>
                                 }
-                                @*<div class="sort_display">
-                                        <a rel="nofollow" href="catalog_block.html" class="sort_btn block current"><i title="плиткой"></i></a>
-                                        <a rel="nofollow" href="catalog_list.html" class="sort_btn list "><i title="списком"></i></a>
-                                        <a rel="nofollow" href="catalog_table.html" class="sort_btn table "><i title="таблицей"></i></a>
-                                    </div>*@
                                 <div class="clearfix"></div>
                                 <!--/noindex-->
                             </div>
 
-                            <div class="sections_wrapper">
-                                <div class="list items">
-                                    <div class="row margin0 products-wrapper">
-                                        @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
-                                        {
-                                            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
-                                        }
-                                    </div>
-                                </div>
-                                <div class="bottom_nav margin-top-20">
-                                    @if (!Model.IsFavorites)
-                                    {
-                                        if (Model.Items.Count > ListConstants.DefaultTakePerPage)
-                                        {
-                                            <div class="ajax_load_btn" data-page="1">
-                                                <span class="more_text_ajax">Показати ще</span>
-                                            </div>
-                                        }
-                                        if (Model.PagesCount > 1)
-                                        {
-                                            <div class="pagination-wrap">
-                                                <ul class="pagination no-list-style">
-                                                    <li class="page_item" data-page="0" style="display: none;">
-                                                        <a class="page_link paging prev" href="#" data-page="0"><<</a>
-                                                    </li>
-                                                    <li class="page_item active" data-page="0">
-                                                        <a class="page_link paging dark_link" href="#" data-page="0">1</a>
-                                                    </li>
-                                                    @for (int i = 2; i <= Model.PagesCount; i++)
-                                                    {
-                                                        <li class="page_item">
-                                                            <a class="page_link paging dark_link" href="#" data-page="@(i - 1)">@i</a>
-                                                        </li>
-                                                    }
-                                                    <li class="page_item" data-page="1">
-                                                        <a class="page_link paging next dark_link" href="#" data-page="1">>></a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        }
-                                    }
-
-                                </div>
+                            <div class="sections_wrapper area-products-list">
+                                @Html.Partial("~/Views/Catalog/_ProductsListPartial.cshtml", Model)
                             </div>
                             <div id="layout_fix" class="seo-fix">&nbsp;</div>
                         </div>
@@ -236,11 +210,21 @@
             </div>
         </div>
 
-        <div class="left_block">
-            @if (Model.ProductParameters.Any() || Model.Seller != null)
+
+        <div class="left_block ">
+            @if (seller != null && categories != null)
             {
-                @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
+                <div class="bx_filter bx_filter_vertical">
+                    <div class="bx_filter_section" id="productFilters">
+                        <div class="bx_filter_parameters_box title">
+
+                            @Html.Partial("~/Views/Seller/_SellerMenu.cshtml", categories)
+                        </div>
+                    </div>
+                </div>
             }
+            <div class="area-product-filters">
+            </div>
         </div>
     </div>
 </div>

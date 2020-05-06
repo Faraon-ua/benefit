@@ -1,18 +1,10 @@
 ﻿@using System.Web.Mvc.Html
 @using Benefit.Domain.Models
 @model ICollection<ProductParameter>
-@{
-    var seller = ViewBag.Seller as Seller;
-    var categories = ViewBag.SellerCategories as List<CategoryVM>;
-}
 <div class="bx_filter bx_filter_vertical">
     <div class="bx_filter_section" id="productFilters">
         <div class="bx_filter_parameters_box title">
-            @if (seller != null && categories != null)
-            {
-                @Html.Partial("~/Views/Seller/_SellerMenu.cshtml", categories)
-            }
-            @if (Model.Any())
+            @if (Model != null && Model.Any())
             {
                 <div class="bx_filter_parameters_box_title">
                     Фільтри
@@ -37,15 +29,14 @@
                 </div>
             }
         </div>
-
-        @{
-            var categoryFilter = Model.FirstOrDefault(entry => entry.Type == typeof(Category).ToString());
-        }
-        @if (categoryFilter != null)
+        @if (Model != null && Model.Any())
         {
-            <div class="bx_filter_parameters_box active filter-section" data-expanded="Y" data-filter-name="category">
-                <span class="bx_filter_container_modef"></span>
-                <div class="bx_filter_parameters_box_title icons_fa">
+            var categoryFilter = Model.FirstOrDefault(entry => entry.Type == typeof(Category).ToString());
+            if (categoryFilter != null)
+            {
+                <div class="bx_filter_parameters_box active filter-section" data-expanded="Y" data-filter-name="category">
+                    <span class="bx_filter_container_modef"></span>
+                    <div class="bx_filter_parameters_box_title icons_fa">
                         <div>
                             Категорія
                             <div class="char_name">
@@ -54,116 +45,115 @@
                             </div>
                         </div>
                     </div>
-                <div class="bx_filter_parameters_box_container">
-                    <div style="overflow: hidden;">
-                        <ul class="no-list-style no-padding">
-                            @foreach (var parentCatValue in categoryFilter.ProductParameterValues.OrderByDescending(entry=>entry.Children.Sum(ch=>ch.ProductsCount)))
-                            {
-                                <li>
-                                    <a href="#" class="bold">@parentCatValue.ParameterValue</a>
-                                    @foreach (var filterValue in parentCatValue.Children)
+                    <div class="bx_filter_parameters_box_container">
+                        <div style="overflow: hidden;">
+                            <ul class="no-list-style no-padding">
+                                @foreach (var parentCatValue in categoryFilter.ProductParameterValues.OrderByDescending(entry => entry.Children.Sum(ch => ch.ProductsCount)))
+                                {
+                                    <li>
+                                        <a href="#" class="bold">@parentCatValue.ParameterValue</a>
+                                        @foreach (var filterValue in parentCatValue.Children)
+                                        {
+                                            var name = filterValue.ParameterValueUrl == null ? string.Empty : filterValue.ParameterValueUrl.Replace(" ", string.Empty);
+                                            <div class="bx_filter_block limited_block">
+                                                <div class="bx_filter_parameters_box_container">
+                                                    <input type="checkbox" id="@filterValue.ParameterValueUrl" name="@name" class="hidden" text="@filterValue.ParameterValue">
+                                                    <label class="bx_filter_param_label  last" for="@filterValue.ParameterValueUrl">
+                                                        <span class="bx_filter_input_checkbox">
+                                                            <span class="bx_filter_param_text">@filterValue.ParameterValue (@filterValue.ProductsCount)</span>
+                                                        </span>
+                                                    </label>
+                                                </div>
+                                                <div class="clb"></div>
+                                            </div>
+                                        }
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            var priceFilter = Model.FirstOrDefault(entry => entry.UrlName == "price");
+            if (priceFilter != null)
+            {
+                var lowerBound = priceFilter.ProductParameterValues.First().ParameterValue;
+                var upperBound = priceFilter.ProductParameterValues.Last().ParameterValue;
+                <div class="bx_filter_parameters_box active filter-section" data-filter-name="price">
+                    <span class="bx_filter_container_modef"></span>
+                    <div class="bx_filter_parameters_box_title icons_fa">Ціна</div>
+                    <div class="bx_filter_block">
+                        <div>
+                            <input readonly="readonly" type="text" value="@lowerBound" class="width-30" id="price-lower-bound" />
+                            <label class="padding-horizontal-10"> - </label>
+                            <input readonly="readonly" type="text" value="@upperBound" class="width-30" id="price-upper-bound" />
+                            <label class="padding-horizontal-10"> грн</label>
+                        </div>
+                        <div class="bx_filter_parameters_box_container numbers">
+                            <div class="wrapp_all_inputs wrap_md">
+                                <input id="price-slider" type="text" class="span2" value="" data-slider-tooltip="hide" data-slider-min="@lowerBound" data-slider-max="@upperBound" data-slider-value="[@lowerBound,@upperBound]" />
+                            </div>
+                        </div>
+                        <div class="margin-top-10">
+                            <button data-filter-value="@lowerBound-@upperBound" id="price-filter" name="price-filter" class="btn btn-sm btn-danger bg-site-button">Фільтрувати за ціною</button>
+                        </div>
+                    </div>
+                </div>
+            }
+            foreach (var filter in Model.Where(entry => entry.DisplayInFilters && entry.Type != typeof(Category).ToString()).OrderBy(entry => entry.Order))
+            {
+                if (filter.ProductParameterValues.Any())
+                {
+                    <div class="bx_filter_parameters_box active filter-section" data-expanded="Y" data-filter-name="@filter.UrlName">
+                        <span class="bx_filter_container_modef"></span>
+                        <div class="bx_filter_parameters_box_title icons_fa">
+                            <div>
+                                @filter.Name
+                                <div class="char_name">
+                                    <div class="props_list">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bx_filter_parameters_box_container">
+                            <div style="max-height: 215px; overflow: hidden;">
+                                @if (filter.Type == typeof(string).ToString())
+                                {
+                                    foreach (var filterValue in filter.ProductParameterValues.OrderByDescending(entry => entry.Enabled).ThenBy(entry => entry.Order))
                                     {
                                         var name = filterValue.ParameterValueUrl == null ? string.Empty : filterValue.ParameterValueUrl.Replace(" ", string.Empty);
+                                        var disClass = filterValue.Enabled ? string.Empty : "disabled";
                                         <div class="bx_filter_block limited_block">
                                             <div class="bx_filter_parameters_box_container">
-                                                <input type="checkbox" id="@filterValue.ParameterValueUrl" name="@name" class="hidden" text="@filterValue.ParameterValue">
-                                                <label class="bx_filter_param_label  last" for="@filterValue.ParameterValueUrl">
+                                                <input @(disClass) type="checkbox" id="@filterValue.ParameterValueUrl" name="@name" class="hidden" text="@filterValue.ParameterValue @filter.MeasureUnit">
+                                                <label class="bx_filter_param_label last @disClass" for="@filterValue.ParameterValueUrl">
                                                     <span class="bx_filter_input_checkbox">
-                                                        <span class="bx_filter_param_text">@filterValue.ParameterValue (@filterValue.ProductsCount)</span>
+                                                        <span class="bx_filter_param_text">@filterValue.ParameterValue @filter.MeasureUnit</span>
                                                     </span>
                                                 </label>
                                             </div>
                                             <div class="clb"></div>
                                         </div>
                                     }
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        }
-
-        @{
-            var priceFilter = Model.FirstOrDefault(entry => entry.UrlName == "price");
-        }
-        @if (priceFilter != null)
-        {
-            var lowerBound = priceFilter.ProductParameterValues.First().ParameterValue;
-            var upperBound = priceFilter.ProductParameterValues.Last().ParameterValue;
-            <div class="bx_filter_parameters_box active filter-section" data-filter-name="price">
-                <span class="bx_filter_container_modef"></span>
-                <div class="bx_filter_parameters_box_title icons_fa">Ціна</div>
-                <div class="bx_filter_block">
-                    <div>
-                        <input readonly="readonly" type="text" value="@lowerBound" class="width-30" id="price-lower-bound" />
-                        <label class="padding-horizontal-10"> - </label>
-                        <input readonly="readonly" type="text" value="@upperBound" class="width-30" id="price-upper-bound" />
-                        <label class="padding-horizontal-10"> грн</label>
-                    </div>
-                    <div class="bx_filter_parameters_box_container numbers">
-                        <div class="wrapp_all_inputs wrap_md">
-                            <input id="price-slider" type="text" class="span2" value="" data-slider-tooltip="hide" data-slider-min="@lowerBound" data-slider-max="@upperBound" data-slider-value="[@lowerBound,@upperBound]" />
-                        </div>
-                    </div>
-                    <div class="margin-top-10">
-                        <button data-filter-value="@lowerBound-@upperBound" id="price-filter" name="price-filter" class="btn btn-sm btn-danger bg-site-button">Фільтрувати за ціною</button>
-                    </div>
-                </div>
-            </div>
-        }
-        @foreach (var filter in Model.Where(entry => entry.DisplayInFilters && entry.Type != typeof(Category).ToString()).OrderBy(entry => entry.Order))
-        {
-            if (filter.ProductParameterValues.Any())
-            {
-                <div class="bx_filter_parameters_box active filter-section" data-expanded="Y" data-filter-name="@filter.UrlName">
-                    <span class="bx_filter_container_modef"></span>
-                    <div class="bx_filter_parameters_box_title icons_fa">
-                        <div>
-                            @filter.Name
-                            <div class="char_name">
-                                <div class="props_list">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bx_filter_parameters_box_container">
-                        <div style="max-height: 215px; overflow: hidden;">
-                            @if (filter.Type == typeof(string).ToString())
-                            {
-                                foreach (var filterValue in filter.ProductParameterValues.OrderByDescending(entry=>entry.Enabled).ThenBy(entry => entry.Order))
-                                {
-                                    var name = filterValue.ParameterValueUrl == null ? string.Empty : filterValue.ParameterValueUrl.Replace(" ", string.Empty);
-                                    var disClass = filterValue.Enabled ? string.Empty: "disabled";
-                                    <div class="bx_filter_block limited_block">
-                                        <div class="bx_filter_parameters_box_container">
-                                            <input @(disClass) type="checkbox" id="@filterValue.ParameterValueUrl" name="@name" class="hidden" text="@filterValue.ParameterValue @filter.MeasureUnit">
-                                            <label class="bx_filter_param_label last @disClass" for="@filterValue.ParameterValueUrl">
-                                                <span class="bx_filter_input_checkbox">
-                                                    <span class="bx_filter_param_text">@filterValue.ParameterValue @filter.MeasureUnit</span>
-                                                </span>
-                                            </label>
-                                        </div>
-                                        <div class="clb"></div>
-                                    </div>
                                 }
+                            </div>
+                            @if (filter.ProductParameterValues.Count > 7)
+                            {
+                                <div>
+                                    <a href="#" class="show-more-options" style="font-size: 0.9em;">
+                                        <i class="fa fa-angle-down"></i>
+                                        Ще
+                                    </a>
+                                    <a href="#" class="show-less-options" style="font-size: 0.9em; display: none;">
+                                        <i class="fa fa-angle-up"></i>
+                                        Згорнути
+                                    </a>
+                                </div>
                             }
                         </div>
-                        @if (filter.ProductParameterValues.Count > 7)
-                        {
-                            <div>
-                                <a href="#" class="show-more-options" style="font-size: 0.9em;">
-                                    <i class="fa fa-angle-down"></i>
-                                    Ще
-                                </a>
-                                <a href="#" class="show-less-options" style="font-size: 0.9em; display: none;">
-                                    <i class="fa fa-angle-up"></i>
-                                    Згорнути
-                                </a>
-                            </div>
-                        }
                     </div>
-                </div>
+                }
             }
         }
         <div style="clear: both;"></div>

@@ -28,7 +28,7 @@ namespace Benefit.Web.Filters
                 }
                 else
                 {
-                    var sellerService = new SellersDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+                    var sellerService = new SellersDBContext();
                     seller = sellerService.Get(string.Format("UrlName = '{0}'", subdomain)).FirstOrDefault();
                     seller.Include<Image>("Images").Include<InfoPage>("InfoPages");
                     if (!string.IsNullOrEmpty(Include))

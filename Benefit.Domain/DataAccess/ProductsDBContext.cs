@@ -21,7 +21,7 @@ namespace Benefit.Domain.DataAccess
     public class ProductsDBContext : AdoDbContext
     {
         private SqlCommand cmd;
-        public ProductsDBContext(string connectionString)
+        public ProductsDBContext()
         {
             cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(connectionString);
@@ -29,6 +29,7 @@ namespace Benefit.Domain.DataAccess
 
         public CatalogParams GetCatalogParams(string categoryId, string sellerId)
         {
+            var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
             cmd.CommandText = string.Format(@"
             with result as
                 (SELECT p.Id, 
@@ -46,9 +47,9 @@ namespace Benefit.Domain.DataAccess
                   WHERE
 	                p.IsActive = 1 and
 	                p.ModerationStatus = 0 and
-	                p.SellerId = '{0}' and
+	                {0}
 	                (cat.IsActive = 1 or pCat.IsActive = 1) and
-	                (cat.Id = '{1}' or pCat.Id = '{1}')
+	                (cat.Id = @categoryId or pCat.Id = @categoryId)
                 ) 
                 select 
                 (select STRING_AGG(cast(sub.Vendor as NVARCHAR(MAX)), ',') from (select distinct(Vendor) from result) as sub) as Vendors
@@ -58,20 +59,40 @@ namespace Benefit.Domain.DataAccess
                 ,(select STRING_AGG(cast(sub.OriginCountry as NVARCHAR(MAX)), ',') from (select distinct(OriginCountry) from result) as sub) as OriginCountries
                 ,Min(result.Price) as MinPrice
                 ,Max(result.Price) as MaxPrice
-                from result", sellerId, categoryId);
+                from result", sellerWhere);
+            if (sellerId != null)
+            {
+                var sellerIdParam = new SqlParameter
+                {
+                    ParameterName = "@sellerId",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Direction = ParameterDirection.Input,
+                    Value = sellerId
+                };
+                cmd.Parameters.Add(sellerIdParam);
+            }
+            var categoryIdParam = new SqlParameter
+            {
+                ParameterName = "@categoryId",
+                SqlDbType = SqlDbType.NVarChar,
+                Direction = ParameterDirection.Input,
+                Value = categoryId
+            };
+            cmd.Parameters.Add(categoryIdParam);
             var adapter = new SqlDataAdapter(cmd);
             var result = new DataSet();
             adapter.Fill(result);
             var drwRow = result.Tables[0].Rows[0];
             var catalog = drwRow.ToObject<CatalogParams>();
-            if(catalog.ProductParameters == null)
+            if (catalog.ProductParameters == null)
             {
                 catalog.ProductParameters = string.Empty;
             }
             return catalog;
         }
-        public int GetCatalogCount(string categoryId, string sellerId, string where)
+        public int GetCatalogCount(string categoryId, string sellerId, string where, IEnumerable<SqlParameter> sqlParameters)
         {
+            var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
             //products in mapped categories
             cmd.CommandText = string.Format(@"select count(Id) from
               (SELECT p.Id,
@@ -84,26 +105,51 @@ namespace Benefit.Domain.DataAccess
               WHERE
 	            p.IsActive = 1 and
 	            p.ModerationStatus = 0 and
-	            p.SellerId = '{0}' and
+	            {0}
 	            (cat.IsActive = 1 or pCat.IsActive = 1) and
-	            (cat.Id = '{1}' or pCat.Id = '{1}') {2}) as result", sellerId, categoryId, where);
+	            (cat.Id = @categoryId or pCat.Id = @categoryId) {1}) as result", sellerWhere, where);
+            if (sellerId != null)
+            {
+                var sellerIdParam = new SqlParameter
+                {
+                    ParameterName = "@sellerId",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Direction = ParameterDirection.Input,
+                    Value = sellerId
+                };
+                cmd.Parameters.Add(sellerIdParam);
+            }
+            var categoryIdParam = new SqlParameter
+            {
+                ParameterName = "@categoryId",
+                SqlDbType = SqlDbType.NVarChar,
+                Direction = ParameterDirection.Input,
+                Value = categoryId
+            };
+            cmd.Parameters.Add(categoryIdParam);
+            cmd.Parameters.AddRange(sqlParameters.ToArray());
             int count = 0;
             cmd.Connection.Open();
             count = (int)cmd.ExecuteScalar();
             cmd.Connection.Close();
             return count;
         }
-        public List<Product> GetCatalog(string categoryId, string sellerId, string userId, string where, string orderBy, int skip, int take)
+        public List<Product> GetCatalog(string categoryId, string sellerId, string userId, string where, string orderBy, int skip, int take, IEnumerable<SqlParameter> sqlParams)
         {
+            var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
             cmd.CommandText = string.Format(@"SELECT p.Id
                   ,p.SellerId
+                    ,s.Name as SellerName
+	                ,s.SafePurchase as SellerSafePurchase
+	                ,s.UrlName as SellerUrlName
+	                ,s.UserDiscount as SellerUserDiscount
                   ,p.Name
                   ,p.UrlName
                   ,p.SKU
                   ,p.IsWeightProduct
                   ,p.AvailabilityState
                   ,(p.Price * ISNULL(c.Rate, 1)) as Price
-                  ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{0}')
+                  ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{1}')
                         THEN CAST(1 AS BIT)
                         ELSE CAST(0 AS BIT) END) as IsFavorite
                   ,(SELECT CASE WHEN EXISTS (SELECT * FROM Images WHERE ProductId = p.Id)
@@ -117,11 +163,31 @@ namespace Benefit.Domain.DataAccess
               WHERE
 	            p.IsActive = 1 and
 	            p.ModerationStatus = 0 and
-	            p.SellerId = '{1}' and
+	            {0}
 	            (cat.IsActive = 1 or pCat.IsActive = 1) and
-	            (cat.Id = '{2}' or pcat.Id = '{2}') {3}
-                order by {4}
-	            OFFSET {5} ROWS FETCH NEXT {6} ROWS ONLY", userId, sellerId, categoryId, where, orderBy, skip, take);
+	            (cat.Id = @categoryId or pcat.Id = @categoryId) {2}
+                order by {3}
+	            OFFSET {4} ROWS FETCH NEXT {5} ROWS ONLY", sellerWhere, userId, where, orderBy, skip, take);
+            cmd.Parameters.Clear();
+            cmd.Parameters.Add(new SqlParameter
+            {
+                ParameterName = "@categoryId",
+                SqlDbType = SqlDbType.NVarChar,
+                Direction = ParameterDirection.Input,
+                Value = categoryId
+            });
+            if (sellerId != null)
+            {
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@sellerId",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Direction = ParameterDirection.Input,
+                    Value = sellerId
+                });
+            }
+
+            cmd.Parameters.AddRange(sqlParams.ToArray());
             return FetchProducts(false, true);
         }
 
@@ -166,49 +232,19 @@ namespace Benefit.Domain.DataAccess
             foreach (DataRow drwRow in result.Tables[0].Rows)
             {
                 var product = drwRow.ToObject<Product>();
-                if (fetchSeller)
+                product.Seller = new Seller
                 {
-                    product.Seller = new Seller
-                    {
-                        Name = (String)drwRow["SellerName"],
-                        SafePurchase = (bool)drwRow["SellerSafePurchase"],
-                        UrlName = (String)drwRow["SellerUrlName"],
-                        UserDiscount = (double)drwRow["SellerUserDiscount"]
-                    };
-                }
+                    Id = (String)drwRow["SellerId"],
+                    Name = (String)drwRow["SellerName"],
+                    SafePurchase = (bool)drwRow["SellerSafePurchase"],
+                    UrlName = (String)drwRow["SellerUrlName"],
+                    UserDiscount = (double)drwRow["SellerUserDiscount"]
+                };
                 if (fetchImages)
                 {
                     product.Images = imgResult.Tables[0].AsEnumerable().Where(entry => entry["ProductId"].ToString() == (String)drwRow["Id"]).Select(img =>
                               img.ToObject<Image>()).ToList();
                 }
-                //returnList.Add(new Product
-                //{
-                //    Id = (String)drwRow["Id"],
-                //    Price = (double)drwRow["Price"],
-                //    Name = (String)drwRow["Name"],
-                //    SellerId = (String)drwRow["SellerId"],
-                //    UrlName = (String)drwRow["UrlName"],
-                //    Title = ConvertFromDBVal<String>(drwRow["Title"]),
-                //    SKU = (int)drwRow["SKU"],
-                //    IsFeatured = (bool)drwRow["IsFeatured"],
-                //    IsNewProduct = (bool)drwRow["IsNewProduct"],
-                //    AvailabilityState = (ProductAvailabilityState)(int)drwRow["AvailabilityState"],
-                //    Seller = new Seller
-                //    {
-                //        Name = (String)drwRow["SellerName"],
-                //        SafePurchase = (bool)drwRow["SellerSafePurchase"],
-                //        UrlName = (String)drwRow["SellerUrlName"],
-                //        UserDiscount = (double)drwRow["SellerUserDiscount"]
-                //    },
-                //    ReviewsCount = (int)drwRow["ReviewsCount"],
-                //    Images = imgResult.Tables[0].AsEnumerable().Where(entry=>entry["ProductId"].ToString() == (String)drwRow["Id"]).Select(img =>
-                //        new Image
-                //        {
-                //            ImageUrl = (string)img["ImageUrl"],
-                //            IsAbsoluteUrl = (bool)img["IsAbsoluteUrl"],
-                //            Order = (int)img["Order"],
-                //        }).ToList()
-                //});
                 returnList.Add(product);
             }
             return returnList;

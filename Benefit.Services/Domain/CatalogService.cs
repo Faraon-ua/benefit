@@ -7,6 +7,8 @@ using Benefit.Domain.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,11 +20,11 @@ namespace Benefit.Services.Domain
         ProductsDBContext productsDBContext;
         public CatalogService()
         {
-            productsDBContext = new ProductsDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            productsDBContext = new ProductsDBContext();
         }
         public ICollection<ProductParameter> GetProductParameters(string categoryId, string sellerId)
         {
-            var ppContext = new ProductParametersDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            var ppContext = new ProductParametersDBContext();
             var catalogParams = productsDBContext.GetCatalogParams(categoryId, sellerId);
             var productParameters = ppContext.Get(categoryId, sellerId);
             var generalParams = FetchGeneralProductParameters(catalogParams, sellerId == null);
@@ -61,8 +63,8 @@ namespace Benefit.Services.Domain
         {
             var result = new ProductsViewModel();
             var where = new StringBuilder();
-            var whereProductParameters = new List<string>();
-            var whereProductParameterProducts = new List<string>();
+            var sqlParams = new List<SqlParameter>();
+            var whereProductParameters = new Dictionary<string, List<string>>();
             string orderby = null;
             var sort = ProductSortOption.Rating;
             result.Page = 1;
@@ -84,8 +86,7 @@ namespace Benefit.Services.Domain
                     //    : dbOptionKey.ChildProductParameters
                     //        .Select(entry => entry.UrlName).Distinct().ToList();
                     //optionKeysWithChildren.Add(optionKey);
-                    var optionValues = optionKeyValue.Last().Split(',');
-                    var optionValuesQuoted = optionValues.Select(entry => string.Format("'{0}'", entry));
+                    var optionValues = optionKeyValue.Last().Split(',').ToList();
                     switch (optionKey)
                     {
                         case "sort":
@@ -95,7 +96,16 @@ namespace Benefit.Services.Domain
                             result.Page = int.Parse(optionValues[0]);
                             break;
                         case "vendor":
-                            where.Append(string.Format(" and p.Vendor in ({0})", string.Join(",", optionValuesQuoted)));
+                            var vendors = string.Join(",", optionValues.Select((entry, index) => "@vendor" + index));
+                            var vendorParams = optionValues.Select((entry, index) => new SqlParameter
+                            {
+                                ParameterName = "@vendor" + index,
+                                SqlDbType = SqlDbType.NVarChar,
+                                Direction = ParameterDirection.Input,
+                                Value = optionValues[index]
+                            });
+                            sqlParams.AddRange(vendorParams);
+                            where.Append(string.Format(" and p.Vendor in ({0})", vendors));
                             break;
                         case "available":
                             if (optionValues.Any())
@@ -120,7 +130,16 @@ namespace Benefit.Services.Domain
                             }
                             break;
                         case "country":
-                            where.Append(string.Format(" and p.OriginCountry in ({0})", string.Join(",", optionValuesQuoted)));
+                            var countries = string.Join(",", optionValues.Select((entry, index) => "@country" + index));
+                            var countryParams = optionValues.Select((entry, index) => new SqlParameter
+                            {
+                                ParameterName = "@country" + index,
+                                SqlDbType = SqlDbType.NVarChar,
+                                Direction = ParameterDirection.Input,
+                                Value = optionValues[index]
+                            });
+                            sqlParams.AddRange(countryParams);
+                            where.Append(string.Format(" and p.Vendor in ({0})", countries));
                             break;
                         case "price":
                             var prices = optionValues[0].Split('-');
@@ -129,25 +148,46 @@ namespace Benefit.Services.Domain
                             where.Append(string.Format(" and Price > {0} and Price < {1}", lowerPrice, upperPrice));
                             break;
                         default:
-                            whereProductParameters.Add(string.Format("'{0}'", optionKey));
-                            whereProductParameterProducts.AddRange(optionValues);
+                            whereProductParameters.Add(optionKey, optionValues);
                             break;
                     }
                 }
             }
-            if (whereProductParameterProducts.Any())
+            if (whereProductParameters.Any())
             {
-                where.Append(string.Format(@" and p.Id in
-				            (
-					            SELECT ProductId
-					            FROM ProductParameterProducts ppp, ProductParameters pp
-					            where ppp.ProductParameterId = pp.Id and ppp.StartValue in ({1}) and pp.UrlName in ({0})
-					            group by ProductId
-					            having STRING_AGG(StartValue,',') WITHIN GROUP (ORDER BY StartValue) = '{2}'
-				            )",
-                            string.Join(",", whereProductParameters),
-                            string.Join(",", whereProductParameterProducts.Select(entry => string.Format("'{0}'", entry))),
-                            string.Join(",", whereProductParameterProducts.OrderBy(entry => entry))));
+                where.Append(" and p.Id in (");
+                for (var i = 0; i < whereProductParameters.Count; i++)
+                {
+                    var pValCount = 0;
+                    where.Append(string.Format(@"SELECT distinct ProductId
+                                    FROM ProductParameterProducts ppp, ProductParameters pp
+                                    where ppp.ProductParameterId = pp.Id and ppp.StartValue in ({0}) and 
+                                    pp.UrlName = @productParam{1}",
+                                    string.Join(",", whereProductParameters.ElementAt(i).Value.Select(entry => string.Format("@pVal{0}{1}", i, pValCount++))),
+                                    i));
+                    if (i < whereProductParameters.Count - 1)
+                    {
+                        where.Append(" INTERSECT ");
+                    }
+                    sqlParams.Add(new SqlParameter
+                    {
+                        ParameterName = "@productParam" + i,
+                        SqlDbType = SqlDbType.NVarChar,
+                        Direction = ParameterDirection.Input,
+                        Value = whereProductParameters.ElementAt(i).Key
+                    });
+                    for (var j = 0; j < whereProductParameters.ElementAt(i).Value.Count; j++)
+                    {
+                        sqlParams.Add(new SqlParameter
+                        {
+                            ParameterName = string.Format("@pVal{0}{1}", i, j),
+                            SqlDbType = SqlDbType.NVarChar,
+                            Direction = ParameterDirection.Input,
+                            Value = whereProductParameters.ElementAt(i).Value[j]
+                        });
+                    }
+                }
+                where.Append(")");
             }
             switch (sort)
             {
@@ -186,9 +226,9 @@ namespace Benefit.Services.Domain
             //}
             if (options == null || (options != null && result.Page == 1))
             {
-                result.PagesCount = (productsDBContext.GetCatalogCount(categoryId, sellerId, where.ToString()) - 1) / ListConstants.DefaultTakePerPage + 1;
+                result.PagesCount = (productsDBContext.GetCatalogCount(categoryId, sellerId, where.ToString(), sqlParams) - 1) / ListConstants.DefaultTakePerPage + 1;
             }
-            result.Items = productsDBContext.GetCatalog(categoryId, sellerId, userId, where.ToString(), orderby, ListConstants.DefaultTakePerPage * (result.Page - 1), ListConstants.DefaultTakePerPage);
+            result.Items = productsDBContext.GetCatalog(categoryId, sellerId, userId, where.ToString(), orderby, ListConstants.DefaultTakePerPage * (result.Page - 1), ListConstants.DefaultTakePerPage, sqlParams);
             return result;
         }
 

@@ -1,4 +1,5 @@
 ﻿using Benefit.Common.Constants;
+using Benefit.DataTransfer.ViewModels;
 using Benefit.DataTransfer.ViewModels.Base;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.DataAccess;
@@ -6,6 +7,7 @@ using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Controllers.Base;
 using Benefit.Web.Filters;
+using Microsoft.AspNet.Identity;
 using System.Data.Entity;
 using System.Linq;
 using System.Web;
@@ -65,6 +67,7 @@ namespace Benefit.Web.Controllers
                             .Include(entry => entry.Images)
                             .Include(entry => entry.Category.SellerCategories)
                             .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
+                            .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
                             .Where(entry => entry.SellerId == seller.Id && entry.IsActive && entry.Category.IsActive &&
                                             (!entry.Category.IsSellerCategory || entry.Category.IsSellerCategory &&
                                              entry.Category.MappedParentCategory != null))
@@ -105,9 +108,16 @@ namespace Benefit.Web.Controllers
                 {
                     throw new HttpException(404, "Not Found");
                 }
-
+                var catalogService = new CatalogService();
+                viewModel = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, selectedCat.Id, User.Identity.GetUserId(), options);
                 viewModel.Category = selectedCat;
-                viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
+                viewModel.Breadcrumbs = new BreadCrumbsViewModel()
+                {
+                    Seller = seller,
+                    Categories = catalogService.GetBreadcrumbs(categories, selectedCat == null ? null : selectedCat.Id)
+                };
+                //viewModel.Category = selectedCat;
+                //viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
             }
 
             viewModel.Breadcrumbs = null;

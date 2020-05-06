@@ -10,7 +10,7 @@ namespace Benefit.Domain.DataAccess
     public class InfoPagesDBContext : AdoDbContext
     {
         private SqlCommand cmd;
-        public InfoPagesDBContext(string connectionString)
+        public InfoPagesDBContext()
         {
             cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(connectionString);

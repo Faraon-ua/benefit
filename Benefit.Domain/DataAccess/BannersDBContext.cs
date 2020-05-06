@@ -10,7 +10,7 @@ namespace Benefit.Domain.DataAccess
     public class BannersDBContext : AdoDbContext
     {
         private SqlCommand cmd;
-        public BannersDBContext(string connectionString)
+        public BannersDBContext()
         {
             cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(connectionString);

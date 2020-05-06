@@ -375,9 +375,11 @@ $(function () {
                     sellerId +
                     "&options=" +
                     options +
-                    "&layout=1" +
                     "&page=1" +
                     "&isFilterRequest=true";
+                if (typeof productTemplateLayout !== 'undefined' && productTemplateLayout !== null) {
+                    getProductsWithDataUrl = getProductsWithDataUrl + "&layout=" + productTemplateLayout;
+                }
                 $.get(getProductsWithDataUrl, function (data) {
                     var pageUrl;
                     if (lastSegment == categoryUrlName) {
@@ -393,9 +395,12 @@ $(function () {
                     pagesCount = data.number;
                     setPaging();
                     setFilters();
+                    $(".loader").hide();
+                    $("img[data-defer-src]").each(function () {
+                        $(this).attr("src", $(this).attr("data-defer-src"));
+                    });
                 });
                 //var locBuilder;
-                //debugger;
                 //if (lastSegment !== categoryUrlName) {
                 //    locBuilder = location.protocol + '//' + location.host + location.pathname.replace(lastSegment, "") + options + location.search;
                 //    location.href = locBuilder;

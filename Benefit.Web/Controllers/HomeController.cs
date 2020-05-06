@@ -33,10 +33,10 @@ namespace Benefit.Web.Controllers
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByCustom = "IsMobile")]
         public async Task<ActionResult> Index()
         {
-            var productsDbContext = new ProductsDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            var bannersDbContext = new BannersDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            var infoPagesDBContext = new InfoPagesDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            var sellersDBContext = new SellersDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
+            var productsDbContext = new ProductsDBContext();
+            var bannersDbContext = new BannersDBContext();
+            var infoPagesDBContext = new InfoPagesDBContext();
+            var sellersDBContext = new SellersDBContext();
             //handle seller subdomain
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
@@ -137,7 +137,7 @@ namespace Benefit.Web.Controllers
 
         public ActionResult GettingBetter()
         {
-            var casheSize = 0;
+            var cacheSize = 0;
             BinaryFormatter bf = new BinaryFormatter();
             var sb = new StringBuilder();
             sb.Append("Cache objects:\n");

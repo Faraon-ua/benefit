@@ -11,12 +11,12 @@ namespace Benefit.Domain.DataAccess
     public class CategoiesDBContext : AdoDbContext
     {
         private SqlCommand cmd;
-        public CategoiesDBContext(string connectionString)
+        public CategoiesDBContext()
         {
             cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(connectionString);
         }
-        public List<Category> Get(string whereParams)
+        public List<Category> Get(string whereParams, IEnumerable<SqlParameter> sqlParameters)
         {
             List<Category> returnList = new List<Category>();
             cmd.CommandText = string.Format(@"SELECT c.*,
@@ -25,6 +25,7 @@ namespace Benefit.Domain.DataAccess
                                                                         ELSE CAST(0 AS BIT) END) as HasChildCategories
                                 FROM Categories c
                                 where {0}", whereParams);
+            cmd.Parameters.AddRange(sqlParameters.ToArray());
             var adapter = new SqlDataAdapter(cmd);
             var result = new DataSet();
             adapter.Fill(result);

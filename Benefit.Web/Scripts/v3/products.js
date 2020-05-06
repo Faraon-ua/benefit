@@ -127,15 +127,6 @@
         function (e) {
             e.preventDefault();
             var productId = selectedProductId = $(this).attr("data-product-id");
-            if ($(this).attr("data-purchase-region")) {
-                var regionName = $(this).attr("data-purchase-region").replace(/['"]+/g, '');
-                var regionId = $(this).attr("data-purchase-region-id").replace(/['"]+/g, '');
-                $(".auto-select-region").attr("data-region-id", regionId);
-                $(".purchase-region-container").text(regionName);
-                $(".auto-select-region").attr("data-region-name", regionName);
-                $(".purchase-region").modal();
-                return;
-            }
             if ($(this).attr("disabled")) {
                 return;
             }
@@ -201,12 +192,23 @@ function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduc
                 $("#buy-product, #buy-product-with-options").removeAttr('disabled');
                 $("#" + productId).css("opacity", 1);
                 $(".product_buy").removeClass("loadings");
-                setCartSummary(data);
-                if (typeof showCartOnOrder !== 'undefined' && showCartOnOrder) {
-                    $(".basket-link:not(.no-action)").eq(0).click();
+                if (data.Comment) {
+                    if ($(".purchase-region-container").length > 0) {
+                        $(".purchase-region-container").text(data.Comment);
+                        $(".purchase-region").modal();
+                    }
+                    else {
+                        alert("Товар не доступний у вибраному регіоні");
+                    }
                 }
-                if (reloadOnProductAdd) {
-                    location.reload();
+                else {
+                    setCartSummary(data);
+                    if (typeof showCartOnOrder !== 'undefined' && showCartOnOrder) {
+                        $(".basket-link:not(.no-action)").eq(0).click();
+                    }
+                    if (reloadOnProductAdd) {
+                        location.reload();
+                    }
                 }
             }, 1000);
         });

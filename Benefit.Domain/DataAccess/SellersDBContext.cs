@@ -11,7 +11,7 @@ namespace Benefit.Domain.DataAccess
     public class SellersDBContext : AdoDbContext
     {
         private SqlCommand cmd;
-        public SellersDBContext(string connectionString)
+        public SellersDBContext()
         {
             cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(connectionString);

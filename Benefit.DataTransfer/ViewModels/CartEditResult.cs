@@ -4,5 +4,6 @@
     {
         public int ProductsNumber { get; set; }
         public double Price { get; set; }
+        public string Comment { get; set; }
     }
 }

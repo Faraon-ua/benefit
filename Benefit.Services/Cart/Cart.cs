@@ -2,6 +2,7 @@
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using Benefit.Services.Domain;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -70,9 +71,21 @@ namespace Benefit.Services.Cart
                 var product =
                     db.Products
                         .Include(entry => entry.Seller.SellerCategories)
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sh=>sh.Region))
                         .Include(entry => entry.Currency)
                         .Include(entry => entry.Images)
                         .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                var regionId = RegionService.GetRegionId();
+                var isAvailable =
+                    product.Seller.ShippingMethods.Any(
+                        entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
+                if (!isAvailable)
+                {
+                    var result = new CartEditResult() {
+                        Comment = string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Region).Distinct(new RegionComparer()).Select(entry => entry.Name_ua))
+                    };
+                    return result;
+                }
                 orderProduct.ProductName = product.Name + orderProduct.NameSuffix;
                 orderProduct.ProductSku = product.SKU;
                 if (!string.IsNullOrEmpty(product.ExternalId))

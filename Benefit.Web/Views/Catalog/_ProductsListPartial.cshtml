@@ -1,16 +1,44 @@
 ﻿@using Benefit.Common.Constants
-@using Benefit.DataTransfer.ViewModels
-@model List<Benefit.Domain.Models.Product>
-@foreach (var product in Model.Take(ListConstants.DefaultTakePerPage))
-{
-    var partialModel = new ProductPartialViewModel { Product = product, CategoryUrl = product.Category.UrlName, SellerUrl = product.Seller.UrlName };
-    @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", partialModel)
-}
-@if (Model.Count > ListConstants.DefaultTakePerPage)
-{
-    <div class="bottom_nav margin-top-20">
-        <div class="ajax_load_btn" data-page="0">
-            <span class="more_text_ajax">Показати ще</span>
-        </div>
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
+<div class="list items">
+    <div class="row margin0 products-wrapper">
+        @foreach (var product in Model.Items.Take(ListConstants.DefaultTakePerPage))
+        {
+            @Html.Partial("~/Views/Catalog/_ProductPartial.cshtml", product)
+        }
     </div>
-}
+</div>
+<div class="bottom_nav margin-top-20">
+    @if (!Model.IsFavorites)
+    {
+        if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+        {
+            <div class="ajax_load_btn" data-page="1">
+                <span class="more_text_ajax">Показати ще</span>
+            </div>
+        }
+        if (Model.PagesCount > 1)
+        {
+            <div class="pagination-wrap">
+                <ul class="pagination no-list-style">
+                    <li class="page_item" data-page="0" style="display: none;">
+                        <a class="page_link paging prev" href="#" data-page="0"><<</a>
+                    </li>
+                    <li class="page_item active" data-page="0">
+                        <a class="page_link paging dark_link" href="#" data-page="0">1</a>
+                    </li>
+                    @for (int i = 2; i <= Model.PagesCount; i++)
+                    {
+                        <li class="page_item">
+                            <a class="page_link paging dark_link" href="#" data-page="@(i - 1)">@i</a>
+                        </li>
+                    }
+                    <li class="page_item" data-page="1">
+                        <a class="page_link paging next dark_link" href="#" data-page="1">>></a>
+                    </li>
+                </ul>
+            </div>
+        }
+    }
+
+</div>

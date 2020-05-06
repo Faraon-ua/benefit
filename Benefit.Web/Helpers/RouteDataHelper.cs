@@ -41,7 +41,7 @@ namespace Benefit.Web.Helpers
             }
         }
 
-        public static string RoteValue(this RequestContext context, string routeSegmentName)
+        public static string RouteValue(this RequestContext context, string routeSegmentName)
         {
             return context.RouteData.Values[routeSegmentName] == null ? null : context.RouteData.Values[routeSegmentName].ToString();
         }

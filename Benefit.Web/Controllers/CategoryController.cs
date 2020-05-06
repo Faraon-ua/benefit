@@ -1,6 +1,7 @@
 ﻿using Benefit.Domain.Models;
 using Benefit.Services.Domain;
 using Benefit.Web.Filters;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace Benefit.Web.Controllers
@@ -16,17 +17,12 @@ namespace Benefit.Web.Controllers
         public ActionResult GetProductFilters(string categoryId)
         {
             var seller = ViewBag.Seller as Seller;
-            var parameters = catalogService.GetProductParameters(categoryId, seller.Id);
-            var viewPath = string.Format("~/views/catalog/_ProductFilters.cshtml",
-                   seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
-                   .ToString());
-            return PartialView(viewPath, parameters);
+            ICollection<ProductParameter> parameters = null;
+            if (categoryId != null)
+            {
+                parameters = catalogService.GetProductParameters(categoryId, seller == null ? null : seller.Id);
+            }
+            return PartialView("~/views/catalog/_ProductFilters.cshtml", parameters);
         }
-
-        //public ActionResult GetProducts(string categoryId, string sellerId, string options)
-        //{
-        //catalogService.GetSellerProductGetCatalogCountsCatalog(category, cachedCats, seller.Id, categoryUrl, User.Identity.GetUserId(), options);
-
-        //}
     }
 }

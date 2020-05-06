@@ -15,6 +15,8 @@ using Benefit.DataTransfer.ViewModels.Base;
 using Benefit.Domain.DataAccess;
 using System.Configuration;
 using Microsoft.AspNet.Identity;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace Benefit.Web.Controllers
 {
@@ -40,8 +42,15 @@ namespace Benefit.Web.Controllers
         [FetchLastNews(Order = 2)]
         public ActionResult Index(string categoryUrl, string options)
         {
-            var categoriesDbContext = new CategoiesDBContext(ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString);
-            var category = categoriesDbContext.Get(string.Format("UrlName = '{0}'", categoryUrl)).FirstOrDefault();
+            var categoriesDbContext = new CategoiesDBContext();
+            var sqlParam = new SqlParameter
+            {
+                ParameterName = "@categoryUrl",
+                SqlDbType = SqlDbType.NVarChar,
+                Direction = ParameterDirection.Input,
+                Value = categoryUrl
+            };
+            var category = categoriesDbContext.Get("UrlName = @categoryUrl", new List<SqlParameter> { sqlParam }).FirstOrDefault();
             var seller = ViewBag.Seller as Seller;
             var cachedCats = ViewBag.Categories as List<CategoryVM>;
 
@@ -85,25 +94,23 @@ namespace Benefit.Web.Controllers
                 Response.AddHeader("Location", location);
                 Response.End();
             }
+            var catalogService = new CatalogService();
+            var model = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, category.Id, User.Identity.GetUserId(), options);
+            model.Category = category.MapToVM();
+            model.Breadcrumbs = new BreadCrumbsViewModel()
+            {
+                Seller = seller,
+                Categories = catalogService.GetBreadcrumbs(cachedCats, model.Category == null ? null : model.Category.Id)
+            };
             if (seller != null)
             {
-                var catalogService = new CatalogService();
-                var model = catalogService.GetSellerProductsCatalog(seller.Id, category.Id, User.Identity.GetUserId(), options);
-                model.Category = category.MapToVM();
-                model.Breadcrumbs = new BreadCrumbsViewModel()
-                {
-                    Seller = seller,
-                    Categories = catalogService.GetBreadcrumbs(cachedCats, model.Category == null ? null : model.Category.Id)
-                };
                 if (!seller.IsActive || !seller.HasEcommerce) return Content("Seller is not active or has no eCommerce");
                 var viewPath = string.Format("~/views/sellerarea/{0}/productscatalog.cshtml",
                     seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
                     .ToString());
                 return View(viewPath, model);
             }
-
-            var catalog = SellerService.GetSellerProductsCatalog(cachedCats, ViewBag.SellerUrl, categoryUrl, options);
-            return View("ProductsCatalog", catalog);
+            return View("ProductsCatalog", model);
         }
 
         [FetchSeller(Order = 0)]
@@ -120,25 +127,20 @@ namespace Benefit.Web.Controllers
                 options += "page=" + page;
             }
             var seller = ViewBag.Seller as Seller;
-            if (seller != null)
+            var catalogService = new CatalogService();
+            var catalog = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, categoryId, User.Identity.GetUserId(), options);
+            products = catalog.Items;
+            if (isFilterRequest)
             {
-                var catalogService = new CatalogService();
-                var catalog = catalogService.GetSellerProductsCatalog(seller.Id, categoryId, User.Identity.GetUserId(), options);
-                products = catalog.Items;
-                if (isFilterRequest)
-                {
-                    templateName = string.Format("~/Views/SellerArea/{0}/_ProductListPartial.cshtml", layout.ToString());
-                    var html = ControllerContext.RenderPartialToString(templateName, catalog);
-                    return Json(new { number = catalog.PagesCount, products = html }, JsonRequestBehavior.AllowGet);
-                }
-            }
-            else
-            {
-                products = SellerService.GetSellerCatalogProducts(sellerId, categoryId, options, ListConstants.DefaultTakePerPage, false).Products;
+                templateName = seller == null ? "~/Views/Catalog/_ProductsListPartial.cshtml" :
+                    string.Format("~/Views/SellerArea/{0}/_ProductListPartial.cshtml", layout.ToString());
+                var html = ControllerContext.RenderPartialToString(templateName, catalog);
+                return Json(new { number = catalog.PagesCount, products = html }, JsonRequestBehavior.AllowGet);
             }
             if (layout.HasValue)
             {
-                templateName = string.Format("~/Views/SellerArea/{0}/_ProductPartial.cshtml", layout.ToString());
+                templateName = seller == null ? "~/Views/Catalog/_ProductPartial.cshtml"
+                    : string.Format("~/Views/SellerArea/{0}/_ProductPartial.cshtml", layout.ToString());
             }
             var productsHtml = string.Join("", products.Take(ListConstants.DefaultTakePerPage).Select(entry => ControllerContext.RenderPartialToString(templateName, entry)));
             return Json(new { number = products.Count, products = productsHtml }, JsonRequestBehavior.AllowGet);

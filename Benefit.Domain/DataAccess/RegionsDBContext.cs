@@ -5,7 +5,7 @@ namespace Benefit.Domain.DataAccess
     public class RegionsDBContext : AdoDbContext
     {
         private SqlCommand cmd;
-        public RegionsDBContext(string connectionString)
+        public RegionsDBContext()
         {
             cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(connectionString);

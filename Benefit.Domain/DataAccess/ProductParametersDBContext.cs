@@ -11,7 +11,7 @@ namespace Benefit.Domain.DataAccess
     public class ProductParametersDBContext : AdoDbContext
     {
         private SqlCommand cmd;
-        public ProductParametersDBContext(string connectionString)
+        public ProductParametersDBContext()
         {
             cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(connectionString);
@@ -19,14 +19,33 @@ namespace Benefit.Domain.DataAccess
 
         public List<ProductParameter> Get(string categoryId, string sellerId)
         {
+            var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
             cmd.CommandText = string.Format(@"select distinct pp.*
             from ProductParameters pp
             join ProductParameterProducts ppp on ppp.ProductParameterId = pp.Id
             join Products p on p.Id = ppp.ProductId
-            where (pp.CategoryId = '{0}' or pp.CategoryId in (Select Id from Categories where MappedParentCategoryId = pp.CategoryId)) and 
-	            DisplayInFilters = 1 and
-	            p.SellerId = '{1}'", categoryId, sellerId);
-
+            where (pp.CategoryId = @categoryId or pp.CategoryId in (Select Id from Categories where MappedParentCategoryId = pp.CategoryId)) and 
+                {0}
+	            DisplayInFilters = 1", sellerWhere);
+            if (sellerId != null)
+            {
+                var sellerIdParam = new SqlParameter
+                {
+                    ParameterName = "@sellerId",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Direction = ParameterDirection.Input,
+                    Value = sellerId
+                };
+                cmd.Parameters.Add(sellerIdParam);
+            }
+            var categoryIdParam = new SqlParameter
+            {
+                ParameterName = "@categoryId",
+                SqlDbType = SqlDbType.NVarChar,
+                Direction = ParameterDirection.Input,
+                Value = categoryId
+            };
+            cmd.Parameters.Add(categoryIdParam);
             List<ProductParameter> returnList = new List<ProductParameter>();
             var adapter = new SqlDataAdapter(cmd);
             var result = new DataSet();
