@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 
 namespace Benefit.Domain.DataAccess
 {
@@ -16,25 +17,46 @@ namespace Benefit.Domain.DataAccess
             cmd = new SqlCommand();
             cmd.Connection = new SqlConnection(connectionString);
         }
-        public List<Category> Get(string whereParams, IEnumerable<SqlParameter> sqlParameters)
+        public Category Get(string urlName)
         {
-            List<Category> returnList = new List<Category>();
-            cmd.CommandText = string.Format(@"SELECT c.*,
+            var sql = new StringBuilder(@"SELECT c.*, pc.UrlName as ParentUrl, pc.Name as ParentName,
                                                      (SELECT CASE WHEN EXISTS (SELECT Id FROM Categories WHERE ParentCategoryId = c.Id)
                                                                         THEN CAST(1 AS BIT)
                                                                         ELSE CAST(0 AS BIT) END) as HasChildCategories
                                 FROM Categories c
-                                where {0}", whereParams);
-            cmd.Parameters.AddRange(sqlParameters.ToArray());
+								left join Categories pc on c.ParentCategoryId = pc.Id");
+            if (string.IsNullOrEmpty(urlName))
+            {
+                return null;
+            }
+            else
+            {
+                sql.Append(" where c.UrlName = @categoryUrl");
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@categoryUrl",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Direction = ParameterDirection.Input,
+                    Value = urlName
+                });
+            }
+            cmd.CommandText = sql.ToString();
+
             var adapter = new SqlDataAdapter(cmd);
             var result = new DataSet();
             adapter.Fill(result);
 
-            foreach (DataRow drwRow in result.Tables[0].Rows)
+            if (result.Tables[0].Rows.Count == 0) return null;
+            var category = result.Tables[0].Rows[0].ToObject<Category>();
+            if (result.Tables[0].Rows[0]["ParentUrl"] != null)
             {
-                returnList.Add(drwRow.ToObject<Category>());
+                category.ParentCategory = new Category
+                {
+                    UrlName = (String)result.Tables[0].Rows[0]["ParentUrl"],
+                    Name  = (String)result.Tables[0].Rows[0]["ParentName"]
+                };
             }
-            return returnList;
+            return category;
         }
     }
 }

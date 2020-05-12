@@ -655,6 +655,10 @@
     <Compile Include="Migrations\202003121015458_AddSellerLegalInfo.Designer.cs">
       <DependentUpon>202003121015458_AddSellerLegalInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005121442335_AddContactsToSeller.cs" />
+    <Compile Include="Migrations\202005121442335_AddContactsToSeller.Designer.cs">
+      <DependentUpon>202005121442335_AddContactsToSeller.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1137,6 +1141,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202003121015458_AddSellerLegalInfo.resx">
       <DependentUpon>202003121015458_AddSellerLegalInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005121442335_AddContactsToSeller.resx">
+      <DependentUpon>202005121442335_AddContactsToSeller.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

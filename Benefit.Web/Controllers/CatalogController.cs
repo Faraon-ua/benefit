@@ -43,14 +43,9 @@ namespace Benefit.Web.Controllers
         public ActionResult Index(string categoryUrl, string options)
         {
             var categoriesDbContext = new CategoiesDBContext();
-            var sqlParam = new SqlParameter
-            {
-                ParameterName = "@categoryUrl",
-                SqlDbType = SqlDbType.NVarChar,
-                Direction = ParameterDirection.Input,
-                Value = categoryUrl
-            };
-            var category = categoriesDbContext.Get("UrlName = @categoryUrl", new List<SqlParameter> { sqlParam }).FirstOrDefault();
+            var sqlParams = new List<SqlParameter>();
+            string where = string.Empty;
+            var category = categoriesDbContext.Get(categoryUrl);
             var seller = ViewBag.Seller as Seller;
             var cachedCats = ViewBag.Categories as List<CategoryVM>;
 
@@ -95,7 +90,7 @@ namespace Benefit.Web.Controllers
                 Response.End();
             }
             var catalogService = new CatalogService();
-            var model = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, category.Id, User.Identity.GetUserId(), options);
+            var model = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, category == null ? null : category.Id, User.Identity.GetUserId(), options);
             model.Category = category.MapToVM();
             model.Breadcrumbs = new BreadCrumbsViewModel()
             {

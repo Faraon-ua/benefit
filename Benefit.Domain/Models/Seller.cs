@@ -110,6 +110,7 @@ namespace Benefit.Domain.Models
         public string CatalogButtonName { get; set; }
         [MaxLength(64)]
         public string OnlineOrdersPhone { get; set; }
+        public string Contacts { get; set; }
         public bool IsActive { get; set; }
         public bool IsBenefitCardActive { get; set; }
         //todo: move payment types to separate table
@@ -196,6 +197,19 @@ namespace Benefit.Domain.Models
                 }
 
                 return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.Name;
+            }
+        } 
+        [NotMapped]
+        public virtual string LogoUrl
+        {
+            get
+            {
+                if (Images.Any())
+                {
+                    var logo = Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+                    return logo == null ? string.Empty : logo.ImageUrl;
+                }
+                return null;
             }
         }
 

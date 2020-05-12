@@ -680,6 +680,7 @@
     <Content Include="Content\css\owl.carousel.css" />
     <Content Include="Content\css\pygments.css" />
     <Content Include="Content\css\select2.min.css" />
+    <Content Include="Content\css\seller.css" />
     <Content Include="Content\css\validation-errors.css" />
     <Content Include="Content\fonts\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
@@ -1585,6 +1586,7 @@
     <Content Include="Views\Home\_ImageSlider.mobile.cshtml" />
     <Content Include="Views\Tovar\Index.mobile.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\_ProductListPartial.cshtml" />
+    <Content Include="Views\Seller\_SellerHead.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

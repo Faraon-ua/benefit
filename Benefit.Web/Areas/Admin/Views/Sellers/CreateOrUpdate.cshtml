@@ -264,6 +264,10 @@
                 filebrowserImageUploadUrl: '/home/UploadImage'
             });
 
+            CKEDITOR.replace('sellerContacts', {
+                filebrowserImageUploadUrl: '/home/UploadImage'
+            });
+
             $("#Seller_UserDiscount").focus(function () {
                 if ($(this).val() == "") {
                     var userDiscount;
@@ -367,7 +371,7 @@
             <li>
                 <a href="#addresses" data-toggle="tab">
                     <i class="green icon-home bigger-110"></i>
-                    Адреси
+                    Контакти та Адреси
                 </a>
             </li>
             <li>

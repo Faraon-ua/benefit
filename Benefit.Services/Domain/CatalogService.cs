@@ -107,6 +107,18 @@ namespace Benefit.Services.Domain
                             sqlParams.AddRange(vendorParams);
                             where.Append(string.Format(" and p.Vendor in ({0})", vendors));
                             break;
+                        case "seller":
+                            var sellers = string.Join(",", optionValues.Select((entry, index) => "@seller" + index));
+                            var sellerParams = optionValues.Select((entry, index) => new SqlParameter
+                            {
+                                ParameterName = "@seller" + index,
+                                SqlDbType = SqlDbType.NVarChar,
+                                Direction = ParameterDirection.Input,
+                                Value = optionValues[index]
+                            });
+                            sqlParams.AddRange(sellerParams);
+                            where.Append(string.Format(" and s.UrlName in ({0})", sellers));
+                            break;
                         case "available":
                             if (optionValues.Any())
                             {
@@ -192,7 +204,7 @@ namespace Benefit.Services.Domain
             switch (sort)
             {
                 case ProductSortOption.Rating:
-                    orderby = "p.[Order], AvailabilityState, HasImages desc, p.AddedOn, p.AvarageRating, p.SKU";
+                    orderby = "p.[Order], IsNewProduct desc, AvailabilityState, HasImages desc, p.AddedOn, p.AvarageRating, p.SKU";
                     break;
                 case ProductSortOption.Order:
                     orderby = "HasImages desc, p.SKU";

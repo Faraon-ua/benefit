@@ -101,11 +101,11 @@ namespace Benefit.Web.Controllers
             var pages = infoPagesDBContext.GetMainPagesNews();
             var sellers = sellersDBContext.GetBrands();
 
-            mainPageViewModel.FeaturedProducts = (from element in products.Where(entry=>entry.IsFeatured)
+            mainPageViewModel.FeaturedProducts = (from element in products.Where(entry => entry.IsFeatured)
                                                   group element by element.SellerId
                                                   into groups
                                                   select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
-            mainPageViewModel.NewProducts = (from element in products.Where(entry=>entry.IsNewProduct)
+            mainPageViewModel.NewProducts = (from element in products.Where(entry => entry.IsNewProduct)
                                              group element by element.SellerId
                                                  into groups
                                              select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
@@ -219,7 +219,7 @@ namespace Benefit.Web.Controllers
             return Content(output);
         }
 
-        [FetchSeller(Order=0, Include = "Schedules")]
+        [FetchSeller(Order = 0, Include = "Schedules")]
         [FetchCategories(Order = 1)]
         public ActionResult Contacts()
         {
@@ -229,7 +229,7 @@ namespace Benefit.Web.Controllers
             return View(viewName, seller);
         }
 
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0, Include = "Reviews")]
         [FetchCategories(Order = 1)]
         public ActionResult Reviews()
         {
@@ -239,7 +239,7 @@ namespace Benefit.Web.Controllers
             return View(layoutName);
         }
 
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult catalog()
         {
@@ -249,7 +249,7 @@ namespace Benefit.Web.Controllers
             return View(viewName, seller);
         }
 
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult gallery()
         {
@@ -345,7 +345,7 @@ namespace Benefit.Web.Controllers
             return View(anketa);
         }
 
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult About()
         {

@@ -224,14 +224,17 @@ namespace Benefit.Services.Domain
 
             Cart.Cart.CurrentInstance.ClearSellerOrder(model.Order.SellerId);
             var cartNumberCookie = HttpContext.Current.Response.Cookies["cartNumber"];
+            var cartPriceCookie = HttpContext.Current.Response.Cookies["cartPrice"];
             if (cartNumberCookie != null)
                 if (Cart.Cart.CurrentInstance.Orders.Count == 0)
                 {
                     cartNumberCookie.Expires = DateTime.UtcNow.AddDays(-1);
+                    cartPriceCookie.Expires = DateTime.UtcNow.AddDays(-1);
                 }
                 else
                 {
                     cartNumberCookie.Value = Cart.Cart.CurrentInstance.GetOrderProductsCountAndPrice().ProductsNumber.ToString();
+                    cartPriceCookie.Value = Cart.Cart.CurrentInstance.GetOrderProductsCountAndPrice().Price.ToString();
                 }
             return order.OrderNumber.ToString();
         }

@@ -13,117 +13,65 @@
             @{
                 active = (ViewContext.RouteData.GetRequiredString("action") == "Index" && ViewContext.RouteData.GetRequiredString("controller") == "Panel") ? ActiveStatus.Active : ActiveStatus.None;
             }
-            <li class="partner_menu_main @Enumerations.GetEnumDescription(active)">
-                <a href="@Url.Action("Index","Panel")">Головна</a>
+            <li class="@Enumerations.GetEnumDescription(active)">
+
+                <a href="@Url.Action("Index","Panel")">
+                    <i class="fa fa-home"></i>
+                    <br />
+                    Головна
+                </a>
             </li>
             @{
                 active = ViewContext.RouteData.GetRequiredString("action") == "Profile" ? ActiveStatus.Active : ActiveStatus.None;
             }
             <li class="partner_menu_profile @Enumerations.GetEnumDescription(active)">
-                @if (active == ActiveStatus.Active)
-                {
-                    <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
-                }
-                <a href="@Url.Action("Profile", "Panel")">Профіль</a>
+                <a href="@Url.Action("Profile", "Panel")">
+                    <i class="fa fa-user"></i>
+                    <br />
+                    Профіль
+                </a>
             </li>
-            @{
-                if (ViewBag.User.CardNumber != null)
-                {
-                    active = ViewContext.RouteData.GetRequiredString("controller") == "BenefitFamily" ? ActiveStatus.Active : ActiveStatus.None;
-                }
-                else
-                {
-                    active = ActiveStatus.Inactive;
-                }
-            }
-            <li class="partner_menu_family @Enumerations.GetEnumDescription(active)">
-                @if (active == ActiveStatus.Active)
-                {
-                    <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
-                }
-                @if (active == ActiveStatus.Inactive)
-                {
-                    <a href="#" title="Для активації Benefit Family зареєструйте і верифікуйте особисту бонусну картку у розділі Профіль" class="title-to-tooltip">
-                        <span class="inactive">Benefit Family</span>
-                    </a>
-                }
-                else
-                {
-                    <a href="@Url.Action("Index", "BenefitFamily")">Benefit Family</a>
-                }
-            </li>
-            @{
-                active = ViewContext.RouteData.GetRequiredString("action") == "Structure" ? ActiveStatus.Active : ActiveStatus.None;
-            }
-            <li class="partner_menu_network @Enumerations.GetEnumDescription(active)">
-                @if (active == ActiveStatus.Active)
-                {
-                    @*<a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>*@
-                    <a href="#" class="partner_menu_back"></a>
-                }
-                @*<a href="@Url.Action("Structure", "Panel")">Структура</a>*@
-                <a href="#">Структура</a>
-            </li>
-            @{
-                active = ViewContext.RouteData.GetRequiredString("action") == "planvunagorod" ? ActiveStatus.Active : ActiveStatus.None;
-            }
-            <li class="partner_menu_reward @Enumerations.GetEnumDescription(active)">
-                @if (active == ActiveStatus.Active)
-                {
-                    <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
-                }
-                <a href="@Url.Action("planvunagorod", "Panel")">План винагород</a>
-            </li>
-            @*@{
-                    active = ActiveStatus.Inactive;
-                }
-                <li class="partner_menu_study">
-                    @if (active == ActiveStatus.Active)
-                    {
-                        <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
-                    }
-                    <a href="#" class="inactive">Бізнес навчання</a>
-                </li>*@
             @{
                 active = ViewContext.RouteData.GetRequiredString("action") == "finansovui_oblik" ? ActiveStatus.Active : ActiveStatus.None;
             }
             <li class="partner_menu_finance @Enumerations.GetEnumDescription(active)">
-                @if (active == ActiveStatus.Active)
-                {
-                    <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
-                }
-                <a href="@Url.Action("finansovui_oblik", "Panel")">Фінансовий облік</a>
+                <a href="@Url.Action("finansovui_oblik", "Panel")">
+                    <i class="fa fa-dollar"></i>
+                    <br />
+                    Фінансовий облік
+                </a>
             </li>
             @{
                 active = ViewContext.RouteData.GetRequiredString("action") == "history" ? ActiveStatus.Active : ActiveStatus.None;
             }
             <li class="partner_menu_history @Enumerations.GetEnumDescription(active)">
-                @if (active == ActiveStatus.Active)
-                {
-                    <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
-                }
-                <a href="@Url.Action("history", "Panel")">Історія замовлень</a>
+                <a href="@Url.Action("history", "Panel")">
+                    <i class="fa fa-list"></i>
+                    <br />
+                    Історія замовлень
+                </a>
             </li>
             @if (user.HasSellers)
             {
                 active = ViewContext.RouteData.GetRequiredString("action") == "Zakladu" ? ActiveStatus.Active : ActiveStatus.None;
                 <li class="partner_menu_zakladu @Enumerations.GetEnumDescription(active)">
-                    @if (active == ActiveStatus.Active)
-                    {
-                        <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
-                    }
-                    <a href="@Url.Action("Zakladu", "Panel")">Заклади</a>
+                   
+                    <a href="@Url.Action("Zakladu", "Panel")">
+                        <i class="fa fa-building-o"></i>
+                        <br />
+                        Заклади
+                    </a>
                 </li>
             }
             @{
                 active = ViewContext.RouteData.GetRequiredString("action") == "contact_us" ? ActiveStatus.Active : ActiveStatus.None;
             }
             <li class="partner_menu_write_us @Enumerations.GetEnumDescription(active)">
-                @if (active == ActiveStatus.Active)
-                {
-                    <a href="@Url.Action("Index", "Panel")" class="partner_menu_back"></a>
-                }
-                <a href="@Url.Action("contact_us","Panel")">Написати <br>нам</a>
+                <a href="@Url.Action("contact_us","Panel")">
+                    <i class="fa fa-comment-o"></i>
+                    <br />
+                    Написати <br>нам
+                </a>
             </li>
         </ul>
     }

@@ -33,7 +33,7 @@ namespace Benefit.Domain.DataAccess
             cmd.CommandText = string.Format(@"
             with result as
                 (SELECT p.Id, 
-	                (Select STRING_AGG(StartValue, ', ') from ProductParameterProducts pp where pp.ProductId = p.Id) as ProductParameters,
+	                (Select STRING_AGG(cast(StartValue as NVARCHAR(MAX)), ',') from ProductParameterProducts pp where pp.ProductId = p.Id) as ProductParameters,
 	                p.Vendor,
 	                (p.Price *  ISNULL(c.Rate, 1)) as Price,
 	                s.Name as SellerName,

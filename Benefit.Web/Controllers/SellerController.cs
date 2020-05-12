@@ -25,6 +25,7 @@ namespace Benefit.Web.Controllers
         {
             var viewModel = new NavigationEntitiesViewModel<Product>();
             var seller = db.Sellers
+                .Include(entry => entry.Images)
                 .Include(entry => entry.SellerCategories)
                 .FirstOrDefault(entry => entry.UrlName == id);
             if (seller == null)

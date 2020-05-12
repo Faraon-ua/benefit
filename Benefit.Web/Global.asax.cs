@@ -93,7 +93,7 @@ namespace Benefit.Web
                 return;
             }
             var subdomain = host.Substring(0, index);
-            var blacklist = new List<string> { "www", "benefit", "mail", "benefit-company", "uzhgorod" };
+            var blacklist = new List<string> { "www", "benefit", "mail", "benefit-company", "dechevle" };
 
             if (!blacklist.Contains(subdomain) && host.Contains(SettingsService.BaseHostName))
             {

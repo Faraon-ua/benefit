@@ -29,12 +29,12 @@
 
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
     <ul class="profile_menu nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#benefit_cards">Benefit <br>Card</a></li>
-        <li><a data-toggle="tab" href="#internet_orders">Інтернет-<br>замовлення</a></li>
+        @*<li class="active"><a data-toggle="tab" href="#benefit_cards">Benefit <br>Card</a></li>*@
+        <li class="active"><a data-toggle="tab" href="#internet_orders">Інтернет-<br>замовлення</a></li>
     </ul>
 
     <div class="tab-content">
-        <div id="internet_orders" class="internet_orders tab-pane fade">
+        <div id="internet_orders" class="active internet_orders tab-pane">
             <p class="orders_title">Пошук по даті нарахувань</p>
             <div class="order_controls clearfix">
                 <form class="orders_date_form">
@@ -115,84 +115,6 @@
                         </select>
                     </div>
                 </div>*@
-        </div>
-
-        <div id="benefit_cards" class="benefit_cards tab-pane fade in active">
-            <p class="orders_title">Пошук по даті нарахувань</p>
-            <div class="order_controls">
-                <form class="orders_date_form">
-                    <div class="calendar"></div>
-                    <input class="orders_search" type="text" onkeyup="this.value=this.value.replace(/[^\d\.]+/g,'')" placeholder="Оберіть дату">
-                    <button class="orders_search_btn"><i></i>Знайти</button>
-                </form>
-                <form class="orders_org_form">
-                    <label for="orders_org_choice2">Заклад:</label>
-                    <select id="orders_org_choice2" class="orders_org_choice">
-                        <option>Всі заклади</option>
-                    </select>
-                </form>
-            </div>
-
-            <div class="orders_table_wrap">
-                <div>
-                    <table class="orders_table">
-                        <tr>
-                            <th>Дата</th>
-                            <th>Номер картки</th>
-                            <th>Заклад</th>
-                            <th>Сума</th>
-                            <th>Бонуси</th>
-                            <th>Бали</th>
-                        </tr>
-                        @foreach (var order in Model.Orders.Where(entry => entry.OrderType == OrderType.BenefitCard))
-                        {
-                            <tr>
-                                <td>@order.Time.ToLocalTimeWithDateFormat()</td>
-                                <td>@order.CardNumber</td>
-                                <td>@order.SellerName</td>
-                                <td>
-                                    @order.Sum.ToString("F")
-                                    @if (order.PaymentType == PaymentType.Bonuses)
-                                    {
-                                        <span>бонусів</span>
-                                    }
-                                    else
-                                    {
-                                        <span>грн</span>
-                                    }
-                                </td>
-                                <td>@order.PersonalBonusesSum.ToString("F")</td>
-                                <td>@order.PointsSum.ToString("F")</td>
-                            </tr>
-                        }
-                    </table>
-                </div>
-            </div>
-            <div class="bottom_control clearfix"></div>
-
-            @* <div class="bottom_control clearfix">
-                <div class="pagination_wrap">
-                    <div class="pagination_prew">&lt;</div>
-                    <ul class="pagination">
-                        <li>1</li>
-                        <li>2</li>
-                        <li>3</li>
-                        <li class="active">4</li>
-                        <li>5</li>
-                        <li>6</li>
-                        <li>...</li>
-                        <li>54</li>
-                    </ul>
-                    <div class="pagination_next">&gt;</div>
-                </div>
-                <div class="show_more_orders">
-                    <label for="more_orders2">Показати</label>
-                    <select id="more_orders2" class="orders_org_choice">
-                        <option>10</option>
-                        <option>20</option>
-                    </select>
-                </div>
-            </div>*@
         </div>
     </div>
 </div>

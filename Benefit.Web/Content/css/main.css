@@ -1678,7 +1678,7 @@ footer {
             .partner_menu ul li a:active,
             .partner_menu ul li a:visited {
                 position: relative;
-                padding-top: 62px;
+                padding-top: 32px;
                 display: block;
                 font-size: 13px;
                 line-height: 15px;
@@ -1692,18 +1692,11 @@ footer {
                 color: #ff3333;
             }
 
-            .partner_menu ul li a:before {
-                display: block;
-                position: absolute;
-                margin-left: -20px;
-                left: 50%;
-                top: 22px;
-                content: "";
-                width: 39px;
-                height: 34px;
-                background: url(../img/cabinet_menu_sprite.png) 0 0 no-repeat;
-                z-index: 1;
+            .partner_menu ul li a i{
+                font-size: 3em;
+                margin-bottom:5px;
             }
+
 
 .kabinet_profile .partner_menu ul li .partner_menu_back,
 .kabinet_profile .partner_menu ul li.active .partner_menu_back {
@@ -1734,105 +1727,6 @@ footer {
     .partner_menu ul li .partner_menu_back:before {
         display: none;
     }
-
-.partner_menu ul .partner_menu_main.active a:before,
-.partner_menu ul .partner_menu_main:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px 0 no-repeat;
-}
-
-.partner_menu ul .partner_menu_profile a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -34px no-repeat;
-}
-
-.partner_menu ul .partner_menu_profile.active a:before,
-.partner_menu ul .partner_menu_profile:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -34px no-repeat;
-}
-
-.partner_menu ul .partner_menu_network a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -68px no-repeat;
-}
-
-.partner_menu ul .partner_menu_network.active a:before,
-.partner_menu ul .partner_menu_network:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -68px no-repeat;
-}
-
-.partner_menu ul .partner_menu_reward a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -102px no-repeat;
-}
-
-.partner_menu ul .partner_menu_reward.active a:before,
-.partner_menu ul .partner_menu_reward:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -102px no-repeat;
-}
-
-.partner_menu ul .partner_menu_study a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -136px no-repeat;
-}
-
-.partner_menu ul .partner_menu_study.active a:before,
-.partner_menu ul .partner_menu_study:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -136px no-repeat;
-}
-
-.partner_menu ul .partner_menu_finance a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -170px no-repeat;
-}
-
-.partner_menu ul .partner_menu_finance.active a:before,
-.partner_menu ul .partner_menu_finance:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -170px no-repeat;
-}
-
-.partner_menu ul .partner_menu_history a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -204px no-repeat;
-}
-
-.partner_menu ul .partner_menu_history.active a:before,
-.partner_menu ul .partner_menu_history:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -204px no-repeat;
-}
-
-.partner_menu ul .partner_menu_chosen a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -238px no-repeat;
-}
-
-.partner_menu ul .partner_menu_chosen.active a:before,
-.partner_menu ul .partner_menu_chosen:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -238px no-repeat;
-}
-
-.partner_menu ul .partner_menu_write_us a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -272px no-repeat;
-}
-
-.partner_menu ul .partner_menu_write_us.active a:before,
-.partner_menu ul .partner_menu_write_us:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -272px no-repeat;
-}
-
-.partner_menu ul .partner_menu_zakladu a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -311px no-repeat;
-}
-
-.partner_menu ul .partner_menu_zakladu.active a:before,
-.partner_menu ul .partner_menu_zakladu:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -39px -311px no-repeat;
-}
-
-.partner_menu ul .partner_menu_family a:before {
-    background: url(../img/cabinet_menu_sprite.png) 0 -345px no-repeat;
-}
-
-.partner_menu ul .partner_menu_family.active a:before,
-.partner_menu ul .partner_menu_family:hover a:before {
-    background: url(../img/cabinet_menu_sprite.png) -40px -345px no-repeat;
-}
-
-.partner_menu ul .partner_menu_family.inactive a:before {
-    background: url(../img/cabinet_menu_sprite.png) -80px -345px no-repeat;
-}
 
 .partner_menu_exit {
     display: none;

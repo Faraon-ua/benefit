@@ -1,0 +1,117 @@
+﻿@using Benefit.Domain.Models
+@using Benefit.DataTransfer.ViewModels
+
+@model Benefit.Domain.Models.Seller
+<div class="seller-wrap">
+    <div class="display-flex">
+        <img src="~/Images/SellerLogo/@Model.LogoUrl" alt="@Model.Name" class="logo" />
+        <div class="margin-left-30">
+            <h1 style="">@Model.Name</h1>
+            <div class="rating">
+                <div class="iblock-vote small">
+                    <table class="table-no-border">
+                        <tr>
+                            @for (int i = 1; i <= 5; i++)
+                            {
+                                <td>
+                                    <div class="star-@(i<=Model.AvarageRating.GetValueOrDefault(0)?"active":"empty") star-voted" title="@i"></div>
+                                </td>
+                            }
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <div style="flex-grow:1;"></div>
+        <div>
+            <a href="#" class="contact">
+                Контакти продавця
+            </a>
+            <div class="content">
+                @Html.Raw(Model.Contacts)
+            </div>
+        </div>
+    </div>
+    <div class="pages-wrap">
+        <ul class="seller-menu">
+            @if (!string.IsNullOrEmpty(Model.Description))
+            {
+                <li class="menu_item">
+                    <a class="menu_link" href="#">Про нас</a>
+                    <div class="content">
+                        @Html.Raw(Model.Description)
+                    </div>
+                </li>
+            }
+            @if (Model.Images.Any(entry => entry.ImageType == ImageType.SellerGallery))
+            {
+                <li class="menu_item">
+                    <a class="menu_link" href="#">Фотогалерея</a>
+                    <div class="content">
+                        <div class="seller-catalog padding row">
+                            @foreach (var img in Model.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+                            {
+                                <div class="col-lg-3 gallery">
+                                    <img src="~/Images/SellerGallery/@Model.Id/@img.ImageUrl" style="width: 100%;" />
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </li>
+            }
+            @if (!string.IsNullOrEmpty(Model.ShippingDescription))
+            {
+                <li class="menu_item">
+                    <a class="menu_link" href="#">Доставка та оплата</a>
+                    <div class="content">
+                        @Html.Raw(Model.ShippingDescription)
+                    </div>
+                </li>
+            }
+            @if (Model.Reviews.Any())
+            {
+                <li class="menu_item">
+                    <a class="menu_link" href="#">Відгуки</a>
+                    <div class="content">
+                        @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                       {
+                           CanReview = false,
+                           SellerId = Model.Id,
+                           TargetName = Model.Name,
+                           Reviews = Model.ApprovedReviews
+                       })
+                    </div>
+                </li>
+            }
+            @if (Model.InfoPages.Any(entry => entry.IsNews && entry.IsActive))
+            {
+                <li class="menu_item">
+                    <a class="menu_link" href="#">Новини</a>
+                    <div class="content">
+                        @foreach (var news in Model.InfoPages.Where(entry => entry.IsNews).OrderByDescending(entry => entry.CreatedOn))
+                        {
+                            <h3>@news.Name</h3>
+                            @Html.Raw(news.Content)
+                            <hr />
+                        }
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</div>
+<div class="modal seller-content" tabindex="-1" role="dialog" style="text-align:center;">
+    <div class="modal-dialog" role="document" style="width:60%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"></h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-top: -20px; font-size:2.5em;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>

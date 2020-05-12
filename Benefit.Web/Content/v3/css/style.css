@@ -20895,10 +20895,6 @@ body .basket_bottom_block .basket-link.basket.basket-count .prices {
     padding-top: 0
 }
 
-    .front_page .wraps > .wrapper_inner.wide_page > .middle .maxwidth-theme {
-        padding-top: 30px
-    }
-
 .top_slider_wrapp {
     margin: 0 auto 30px;
     overflow: hidden
@@ -25018,7 +25014,7 @@ body .title-v4.wrapper1 header .header-wrapper > .wrapper_inner {
 }
 
 .top_inner_block_wrapper {
-    padding: 0 0 30px
+    padding: 0;
 }
 
 .fill_bg_n .top_inner_block_wrapper {
@@ -27725,7 +27721,6 @@ div[id^=smartFilterDropDown] {
 
 .front_page .wraps > .wrapper_inner {
     padding-bottom: 20px;
-    padding-top: 30px
 }
 
 .wraps > .wrapper_inner:after {

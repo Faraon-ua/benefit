@@ -11,7 +11,7 @@
     {
         if (Model.Category == null)
         {
-            title = Model.Seller.Name + ": широкий вибір товарів на сайті benefit-company.com";
+            title = Model.Seller.Name + ": широкий вибір товарів на сайті benefit.ua";
             description = "Каталог товарів компанії " + Model.Seller.Name + " на Benefit-Company по кращим цінам. ✅Гарантія якості ✅Доставка по Україні.";
             h1 = Model.Seller.Name;
         }
@@ -80,6 +80,10 @@
 @section styles
 {
     <link href="~/Content/css/bootstrap-slider.css" rel="stylesheet" />
+    @if (Model.Seller != null)
+    {
+        <link href="~/Content/css/seller.css" rel="stylesheet" />
+    }
 }
 @section scripts{
     <script defer>
@@ -111,18 +115,25 @@
             @if(!isFavorites)
             {
                 <text>
-                    $.get(getProductParameters, function (data) {
-                        $(".area-product-filters").html(data);
-                        $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
-                    });
+            $.get(getProductParameters, function (data) {
+                $(".area-product-filters").html(data);
+                $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
+            });
                 </text>
             }
             else
             {
                 <text>
-                    $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
+            $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
                 </text>
             }
+            $(".seller-wrap a").click(function () {
+                var title = $(this).html();
+                var body = $(this).next(".content").html();
+                $(".seller-content .modal-title").html(title);
+                $(".seller-content .modal-body").html(body);
+                $(".seller-content").modal();
+            });
         });
     </script>
     <script src="~/Scripts/v3/products.js" defer></script>
@@ -131,7 +142,7 @@
 
 <div class="wraps hover_shine" id="content">
     <!--title_content-->
-    <div class="top_inner_block_wrapper maxwidth-theme" style="height: 80px;">
+    <div class="top_inner_block_wrapper maxwidth-theme">
         <section class="page-top maxwidth-theme ">
             @if (Model.Breadcrumbs != null)
             {
@@ -145,15 +156,19 @@
                             < @Model.Category.ParentCategory.Name
                         </a>
                     </div>
+                    <h1 id="pagetitle" style="text-align: left;">
+                        @h1
+                    </h1>
                 }
-                <h1 id="pagetitle" style="text-align: left;">
-                    @h1
-                </h1>
+                @if (Model.Seller != null)
+                {
+                    @Html.Partial("~/Views/Seller/_SellerHead.cshtml", seller)
+                }
             </div>
         </section>
     </div>
 
-    <div class="wrapper_inner " style=" margin-top: 10px;">
+    <div class="wrapper_inner">
         <div class="right_block  wide_N">
             <div class="middle ">
                 <div class="container">
