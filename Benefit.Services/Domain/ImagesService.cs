@@ -183,6 +183,21 @@ namespace Benefit.Services
             if (image == null) return;
             DeleteFile(image.ImageUrl, parentId, type);
         }
+        
+        public void DeleteByFileName(string imageFileName, string parentId, ImageType type)
+        {
+            Benefit.Domain.Models.Image image = null;
+            if (type == ImageType.ProductGallery)
+            {
+                image = db.Images.FirstOrDefault(entry => entry.ImageUrl == imageFileName && entry.ProductId == parentId);
+            }
+            else
+            {
+                image = db.Images.FirstOrDefault(entry=>entry.ImageUrl == imageFileName);
+            }
+            if (image == null) return;
+            DeleteFile(image.Id, parentId, type);
+        }
 
         public void DeleteAbsoluteUrlImage(string url, string productId)
         {
@@ -211,7 +226,7 @@ namespace Benefit.Services
                 Debug.Write(e.Message);
             }
             var dotIndex = fileName.IndexOf('.');
-            var id = fileName.Substring(0, dotIndex);
+            var id =  dotIndex > 0 ? fileName.Substring(0, dotIndex) : fileName;
             using (var db = new ApplicationDbContext())
             {
                 var image = db.Images.Find(id);

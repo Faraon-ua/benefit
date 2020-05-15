@@ -48,7 +48,7 @@ namespace Benefit.Domain.DataAccess
 
             if (result.Tables[0].Rows.Count == 0) return null;
             var category = result.Tables[0].Rows[0].ToObject<Category>();
-            if (result.Tables[0].Rows[0]["ParentUrl"] != null)
+            if (result.Tables[0].Rows[0]["ParentUrl"] != DBNull.Value)
             {
                 category.ParentCategory = new Category
                 {

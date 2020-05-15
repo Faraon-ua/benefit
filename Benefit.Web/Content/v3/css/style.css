@@ -24853,8 +24853,7 @@ div[id^=wait_comp] {
 }
 
 .breadcrumbs {
-    margin: -7px 0 0;
-    padding: 0 0 11px
+    padding: 10px 0;
 }
 
     .breadcrumbs .breadcrumbs {

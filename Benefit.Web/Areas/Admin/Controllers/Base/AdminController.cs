@@ -37,9 +37,16 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             }
             else
             {
-                var dotIndex = fileName.LastIndexOf('.');
-                var id = fileName.Substring(0, dotIndex);
-                imagesService.Delete(id, parentId, type);
+                if (type == ImageType.ProductGallery)
+                {
+                    imagesService.DeleteByFileName(fileName, parentId, type);
+                }
+                else
+                {
+                    var dotIndex = fileName.LastIndexOf('.');
+                    var id = fileName.Substring(0, dotIndex);
+                    imagesService.Delete(id, parentId, type);
+                }
             }
             return Json(true);
         }
