@@ -51,6 +51,10 @@
                 text-decoration: underline !important;
             }
 
-            .seller-wrap div.content{
-                display:none;
-            }
+    .seller-wrap div.content {
+        display: none;
+    }
+
+    ul.seller-gallery li:before {
+        content: none !important;
+    }

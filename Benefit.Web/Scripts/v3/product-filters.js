@@ -42,6 +42,7 @@ function setPaging() {
 }
 
 function setFilters() {
+    $("#productFilters input[type=checkbox]").prop('checked', false);
     options = "";
     showFiltersReset = false;
     parts = location.href.split('/');

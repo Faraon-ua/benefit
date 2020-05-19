@@ -238,8 +238,8 @@
 }
 <div class="wraps hover_shine product-page" id="content">
     <!--title_content-->
-    <div class="top_inner_block_wrapper maxwidth-theme hidden-xs" style="height: 0px;">
-        <section class="page-top maxwidth-theme">
+    <div class="top_inner_block_wrapper maxwidth-theme hidden-xs">
+        <section class="page-top maxwidth-theme" style="padding-top:0px; padding-bottom: 0px;">
             @Html.Partial("_BreadcrumbsPartial", Model.Breadcrumbs)
         </section>
     </div>
@@ -570,7 +570,7 @@
                         <div class="title-tab-heading visible-xs">Опис</div>
                         <div>
                             <div class="col-md-6">
-                                <div class="detail_text">
+                                <div class="detail_text" style="text-align: justify;">
                                     @Html.Raw(Model.Product.Description)
                                 </div>
                             </div>

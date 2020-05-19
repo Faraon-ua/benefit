@@ -1,4 +1,4 @@
-﻿.catalog-category {
+﻿    .catalog-category {
     padding: 5px;
     clear: both;
 }
@@ -24907,7 +24907,6 @@ div[id^=wait_comp] {
 
 section.page-top {
     padding-top: 30px;
-    min-height: 56px;
     position: relative
 }
 
@@ -24925,12 +24924,12 @@ section.page-top {
 
 .title-v2 .page-top.maxwidth-theme, .title-v3 .page-top.maxwidth-theme, .title-v4 .page-top.maxwidth-theme {
     background: none;
-    padding-top: 30px;
+    padding-top: 0;
     padding-bottom: 8px
 }
 
 .title-v3 .page-top.maxwidth-theme, .title-v4 .page-top.maxwidth-theme {
-    padding-top: 26px;
+    padding-top: 0;
     padding-bottom: 15px
 }
 

@@ -50,12 +50,16 @@
                     <a class="menu_link" href="#">Фотогалерея</a>
                     <div class="content">
                         <div class="seller-catalog padding row">
-                            @foreach (var img in Model.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
-                            {
-                                <div class="col-lg-3 gallery">
-                                    <img src="~/Images/SellerGallery/@Model.Id/@img.ImageUrl" style="width: 100%;" />
-                                </div>
-                            }
+                            <ul class="seller-gallery display-flex" style="flex-wrap:wrap">
+                                @foreach (var img in Model.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+                                {
+                                    <li style="width:25%;padding:10px;">
+                                        <a class="fancybox" data-fancybox-group="gallery" href="~/Images/SellerGallery/@Model.Id/@img.ImageUrl">
+                                            <img src="~/Images/SellerGallery/@Model.Id/@img.ImageUrl" style="width:100%;" />
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
                         </div>
                     </div>
                 </li>
