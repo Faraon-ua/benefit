@@ -323,6 +323,7 @@ $(function () {
         $('body').on('change click',
             "#productFilters input[type=checkbox], #productFilters button, .sort_btn",
             function (e) {
+                var isSellers = $(this).parents("#productFilters").hasClass("sellers-catalog");
                 e.preventDefault();
                 $(".area-products-list").css("opacity", "0.3");
                 $(".loader").show();
@@ -390,6 +391,9 @@ $(function () {
                         pageUrl = options;
                     }
                     history.pushState("history", "options" + options, pageUrl);
+                    if (isSellers) {
+                        location.href = location.href;
+                    }
                     $(".area-products-list").html(data.products);
                     $(".area-products-list").css("opacity", "1");
                     $("html, body").animate({ scrollTop: 0 }, 1000);
