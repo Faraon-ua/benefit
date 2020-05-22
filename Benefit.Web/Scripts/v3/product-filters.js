@@ -323,7 +323,11 @@ $(function () {
         $('body').on('change click',
             "#productFilters input[type=checkbox], #productFilters button, .sort_btn",
             function (e) {
-                var isSellers = $(this).parents("#productFilters").hasClass("sellers-catalog");
+                var parent = $(this).parents("#productFilters");
+                if (parent.length == 0) {
+                    var parent = $(this).parent();
+                }
+                var isSellers = parent.hasClass("sellers-catalog");
                 e.preventDefault();
                 $(".area-products-list").css("opacity", "0.3");
                 $(".loader").show();
