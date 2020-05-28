@@ -18,6 +18,7 @@ using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using WebGrease.Css.Extensions;
+using System.Collections;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -32,7 +33,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
             var userStore = new UserStore<ApplicationUser>(db);
             UserManager = new UserManager<ApplicationUser>(userStore);
         }
-
+        public ActionResult ClearCache(string id)
+        {
+            var seller = db.Sellers.Find(id);
+            if (seller == null) throw new HttpException(404, "Not found");
+            IDictionaryEnumerator enumerator = HttpRuntime.Cache.GetEnumerator();
+            while (enumerator.MoveNext())
+            {
+                string key = (string)enumerator.Key;
+                if (key.Contains(string.Format("Seller[{0}]", seller.UrlName)))
+                {
+                    HttpRuntime.Cache.Remove(key);
+                }
+            }
+            TempData["SuccessMessage"] = "Кеш очищено";
+            return RedirectToAction("CreateOrUpdate", new { id });
+        }
         public ActionResult DownloadIntelHexFile(string id)
         {
             var seller = db.Sellers.Find(id);

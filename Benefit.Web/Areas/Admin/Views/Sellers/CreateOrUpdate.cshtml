@@ -501,6 +501,12 @@
                 <i class="icon-undo bigger-110"></i>
                 До пошуку
             </a>
+
+            &nbsp; &nbsp; &nbsp;
+            <a href="@Url.Action("ClearCache", "Sellers", new { id = Model.Seller.Id })" class="btn btn-yellow">
+                <i class="icon-exclamation bigger-110"></i>
+                Очистити кеш
+            </a>
         </div>
     </div>
 }
