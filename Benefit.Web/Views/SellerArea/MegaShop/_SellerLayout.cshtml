@@ -68,7 +68,7 @@
                 </div>
             </div>
         </nav>
-        <div class="header_top">
+        <div class="header_top" style="background-color: @seller.HeaderColor;">
             <div class="container">
                 <div class="row">
 
@@ -97,7 +97,7 @@
                     </div>
 
                     <div class="col-md-3 account_wrap">
-                        <a class="fn_account account_switch mobile-hidden" href="@Url.Action("index", "Panel", new {area = "Cabinet"})">
+                        <a class="fn_account account_switch mobile-hidden" href="@Url.Action("index", "Panel", new {area = "Cabinet"})" style="background-color: @seller.CabinetColor">
                             <i class="account_icon"></i>
                             <span data-language="index_account">Мій кабінет</span>
                         </a>
@@ -106,7 +106,7 @@
             </div>
         </div>
 
-        <nav class="main_nav">
+        <nav class="main_nav" style="background-color: @seller.MenuColor;">
             <div class="container">
 
                 <div class="fn_menu_catalog categories_heading md-hidden">
@@ -116,7 +116,7 @@
                 </div>
                 <div class="row">
                     <div class="col-md-4 col-xl-3">
-                        <a class="categories_heading mobile-hidden" href="@Url.Action("index", "catalog", new { categoryUrl = string.Empty })">
+                        <a class="categories_heading mobile-hidden" href="@Url.Action("index", "catalog", new { categoryUrl = string.Empty })" style="background-color: @seller.CatalogColor;">
                             <i class="catmenu_i"></i>
                             <span data-language="index_categories">
                                 Каталог товарів
@@ -162,14 +162,14 @@
                         </ul>
 
                         <a id="cart_informer" href="@Url.Action("order", "cart", new { id=seller.Id })">
-                            <div class="cart_info">
+                            <div class="cart_info" style="background-color: @seller.CardColor;">
                                 <span class="cart_counter cart-items-number">0</span>
                                 <span class="cart_title small-hidden" data-language="index_cart">Кошик</span>
                             </div>
 
                         </a>
                         <a id="wishlist" class="mobile-hidden" href="@Url.Action("favorites","tovar")" style="float: right;">
-                            <div class="favorit_info">
+                            <div class="favorit_info" style="background-color: @seller.FavoritesColor;">
                                 <span class="cart_counter seller-favorites-number">0</span>
                             </div>
                         </a>
@@ -179,7 +179,7 @@
         </nav>
     </header>
 
-    <div class="main">
+    <div class="main" style="background-color: @seller.BodyColor;">
         <div class="container">
             <div class="row">
                 <div class="col-md-4 col-xl-3">
@@ -237,7 +237,7 @@
     <div class="to_top"></div>
 
     <footer class="footer">
-        <div class="footer_top">
+        <div class="footer_top" style="background-color: @seller.AdverticementColor;">
             <div class="container">
                 <div class="row">
                     @foreach (var page in seller.InfoPages.Where(entry => !entry.IsNews).OrderBy(entry => entry.Order).Take(4))
@@ -253,7 +253,7 @@
             </div>
         </div>
 
-        <div class="footer_bottom">
+        <div class="footer_bottom" style="background-color: @seller.FooterColor;">
             <div class="container">
                 <div class="row">
 
@@ -360,10 +360,10 @@
             </div>
         </div>
 
-        <div class="copyright">
+        <div class="copyright"  style="background-color: @seller.CopyrightColor;">
             <span>© 2018</span>
             Сайт створено на маркетплейсі
-            <a href="https://benefit-company.com" target="_blank">
+            <a href="https://benefit.ua" target="_blank">
                 <span data-language="index_copyright">Benefit</span>
             </a>
         </div>

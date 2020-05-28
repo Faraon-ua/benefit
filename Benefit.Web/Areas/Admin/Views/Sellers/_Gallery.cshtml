@@ -1,38 +1,112 @@
 ﻿@using Benefit.Domain.Models
 @model Benefit.Web.Models.Admin.SellerViewModel
 
-<h3>Фотогалерея</h3>
+<h3 style="margin-top:0px;">Фотогалерея</h3>
 <div class="form-group">
     <div>
-    @if (Model.Seller.Id != null)
-    {
-        <div class="dropzone" upload-type="SellerGallery">
-        </div>
-        <br />
-        if (Model.Seller.Images.Any(entry => entry.ImageType == ImageType.SellerGallery))
+        @if (Model.Seller.Id != null)
         {
-            <br />
-            <p>Порядок зображень</p>
-            <div>
-                <ol class="dd-list" id="imagesOrder">
-                    @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
-                    {
-                        <li class="cursor-move width-10" data-image-id="@image.Id">
-                            <div class="dd-handle">
-                                <img src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" height="70" />
-                            </div>
-                        </li>
-                    }
-                </ol>
+            <div class="dropzone" upload-type="SellerGallery">
             </div>
-            <button class="btn btn-info" id="saveImagesOrder">Зберегти порядок</button>
+            <br />
+            if (Model.Seller.Images.Any(entry => entry.ImageType == ImageType.SellerGallery))
+            {
+                <br />
+                <h3 style="margin-top:0px;">Порядок зображень</h3>
+                <div>
+                    <ol class="dd-list" id="imagesOrder" style="display:flex;">
+                        @foreach (var image in Model.Seller.Images.Where(entry => entry.ImageType == ImageType.SellerGallery).OrderBy(entry => entry.Order))
+                        {
+                            <li class="cursor-move width-10" data-image-id="@image.Id">
+                                <div class="dd-handle">
+                                    <img src="~/Images/SellerGallery/@Model.Seller.Id/@image.ImageUrl" height="70" />
+                                </div>
+                            </li>
+                        }
+                    </ol>
+                    <button class="btn btn-info" id="saveImagesOrder">Зберегти порядок</button>
+                </div>
+                <h3>Кольори сайту</h3>
+                <p>формат #FFFFFF або rgb(255,255,255)</p>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Шапка</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.HeaderColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Меню</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.MenuColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Тіло</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.BodyColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Блок інфо сторінок</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.AdverticementColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Футер\Підвал</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.FooterColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Строка Copyright</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.CopyrightColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Кнопка Кабінет</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.CabinetColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Кнопка Каталог</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.CatalogColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Кнопка Улюблені</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.FavoritesColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Кнопка Кошик</label>
+
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Seller.CardColor, new { @class = "col-xs-10 col-sm-5" })
+                        </div>
+                    </div>
+                </div>
+            }
         }
-    }
-    else
-    {
-        <p>
-            Редагування зображеннь доступно для збереженного постачальника
-        </p>
-    }
+        else
+        {
+            <p>
+                Редагування зображеннь доступно для збереженного постачальника
+            </p>
+        }
     </div>
 </div> 

@@ -13059,6 +13059,9 @@ th[aria-selected=true] .ui-jqgrid-sortable {
   padding: 0;
   list-style: none;
 }
+.dd-list li img{
+    width:100%;
+}
 .dd-list .dd-list {
   padding-left: 30px;
 }

@@ -1,6 +1,7 @@
 ﻿@using Benefit.Common.Helpers
 @using Benefit.Common.Extensions
 @using Benefit.Domain.Models
+@using Benefit.Common.Constants
 @model  Order
 @{
     var isExternalRequest = false;
@@ -76,7 +77,11 @@
                             <img src="@product.ProductImageUrl" />
                         </div>
                         <div class="width-100">
-                            <div class="product-title">@product.ProductName</div>
+                            <div class="product-title">
+                                <a target="_blank" href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) })">
+                                    @product.ProductName
+                                </a>
+                            </div>
                             <div class="product-secondary">
                                 Код товару: @product.ProductSku
                             </div>

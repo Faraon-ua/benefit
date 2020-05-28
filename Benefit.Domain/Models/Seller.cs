@@ -52,7 +52,7 @@ namespace Benefit.Domain.Models
         public int PrimaryRegionId { get; set; }
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
-        public string Widget { get; set; }
+        public string Widget { get; set; }  
         public double CurrentBill { get; set; }
         public double GreyZone { get; set; }
         public DateTime? BlockOn { get; set; }
@@ -76,6 +76,28 @@ namespace Benefit.Domain.Models
         public int? AvarageRating { get; set; }
         public SellerStatus Status { get; set; }
         public bool SafePurchase { get; set; }
+        #region colors
+        [MaxLength(16)]
+        public string HeaderColor { get; set; }
+        [MaxLength(16)]
+        public string MenuColor { get; set; }
+        [MaxLength(16)]
+        public string BodyColor { get; set; }
+        [MaxLength(16)]
+        public string AdverticementColor { get; set; }
+        [MaxLength(16)]
+        public string FooterColor { get; set; }
+        [MaxLength(16)]
+        public string CopyrightColor { get; set; }
+        [MaxLength(16)]
+        public string CabinetColor { get; set; }
+        [MaxLength(16)]
+        public string CatalogColor { get; set; }
+        [MaxLength(16)]
+        public string FavoritesColor { get; set; }
+        [MaxLength(16)]
+        public string CardColor { get; set; }
+        #endregion
         #region SEO
         [MaxLength(50)]
         public string GoogleSiteVerificationToken { get; set; }

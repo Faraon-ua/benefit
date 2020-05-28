@@ -659,6 +659,10 @@
     <Compile Include="Migrations\202005121442335_AddContactsToSeller.Designer.cs">
       <DependentUpon>202005121442335_AddContactsToSeller.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202005280857289_AddSellerCustomColors.cs" />
+    <Compile Include="Migrations\202005280857289_AddSellerCustomColors.Designer.cs">
+      <DependentUpon>202005280857289_AddSellerCustomColors.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1144,6 +1148,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005121442335_AddContactsToSeller.resx">
       <DependentUpon>202005121442335_AddContactsToSeller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202005280857289_AddSellerCustomColors.resx">
+      <DependentUpon>202005280857289_AddSellerCustomColors.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
