@@ -26,81 +26,81 @@
                     </ol>
                     <button class="btn btn-info" id="saveImagesOrder">Зберегти порядок</button>
                 </div>
-                <h3>Кольори сайту</h3>
-                <p>формат #FFFFFF або rgb(255,255,255)</p>
-                <div class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Шапка</label>
+            }
+            <h3>Кольори сайту</h3>
+            <p>формат #FFFFFF або rgb(255,255,255)</p>
+            <div class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Шапка</label>
 
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.HeaderColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Меню</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.MenuColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Тіло</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.BodyColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Блок інфо сторінок</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.AdverticementColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Футер\Підвал</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.FooterColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Строка Copyright</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.CopyrightColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Кнопка Кабінет</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.CabinetColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Кнопка Каталог</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.CatalogColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Кнопка Улюблені</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.FavoritesColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label no-padding-right">Кнопка Кошик</label>
-
-                        <div class="col-sm-9">
-                            @Html.TextBoxFor(m => m.Seller.CardColor, new { @class = "col-xs-10 col-sm-5" })
-                        </div>
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.HeaderColor, new { @class = "col-xs-10 col-sm-5" })
                     </div>
                 </div>
-            }
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Меню</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.MenuColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Тіло</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.BodyColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Блок інфо сторінок</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.AdverticementColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Футер\Підвал</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.FooterColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Строка Copyright</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.CopyrightColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Кнопка Кабінет</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.CabinetColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Кнопка Каталог</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.CatalogColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Кнопка Улюблені</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.FavoritesColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Кнопка Кошик</label>
+
+                    <div class="col-sm-9">
+                        @Html.TextBoxFor(m => m.Seller.CardColor, new { @class = "col-xs-10 col-sm-5" })
+                    </div>
+                </div>
+            </div>
         }
         else
         {

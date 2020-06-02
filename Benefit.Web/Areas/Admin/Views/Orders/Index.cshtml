@@ -193,8 +193,8 @@
                         minChars: 3,
                         serviceUrl: searchProductUrl,
                         onSelect: function (suggestion) {
-                            var lastProduct = $(".product_modal_form .product-wrap").last();
-                            lastProduct.after(`<div class="product-wrap" data-product-id="` + suggestion.value + `" data-product-price="` + suggestion.data.price +`">
+                            var lastProduct = $(".product_modal_form .product-wrap").first();
+                            lastProduct.before(`<div class="product-wrap" data-product-id="` + suggestion.value + `" data-product-price="` + suggestion.data.price +`">
                                                     <div class="border-bottom padding-10" style="display:flex;">
                                                         <div style="width: 20px;">
                                                             <a href="#">
