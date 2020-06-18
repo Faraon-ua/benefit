@@ -16,7 +16,7 @@ using System.Threading;
 
 namespace Benefit.Services.ExternalApi
 {
-    public class RozetkaApiService
+    public class RozetkaApiService : IMarketPlaceApi
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private BenefitHttpClient _httpClient = new BenefitHttpClient();
@@ -42,7 +42,6 @@ namespace Benefit.Services.ExternalApi
         public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1)
         {
             var success = true;
-            var orders = new List<Order>();
             var updateOrderUrl = SettingsService.Rozetka.BaseUrl + "orders/" + id;
             var authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
             if (authToken == null)
@@ -208,6 +207,11 @@ namespace Benefit.Services.ExternalApi
             {
                 _logger.Error("Rozetka auth token is null");
             }
+        }
+
+        public void ProcessOrders()
+        {
+            throw new NotImplementedException();
         }
     }
 }

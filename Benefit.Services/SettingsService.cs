@@ -173,6 +173,29 @@ namespace Benefit.Services
                 }
             }
         }
+        public class Allo {
+            public static string BaseUrl
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["AlloBaseUrl"];
+                }
+            }
+            public static string UserName
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["AlloUserName"];
+                }
+            }
+            public static string ApiKey
+            {
+                get
+                {
+                    return ConfigurationManager.AppSettings["AlloApiKey"];
+                }
+            }
+        }
         public class Facebook
         {
             public static string VerificationToken

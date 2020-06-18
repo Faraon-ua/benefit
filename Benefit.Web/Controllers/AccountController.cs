@@ -341,8 +341,16 @@ namespace Benefit.Web.Controllers
         [FetchCategories(Order = 1)]
         [HttpGet]
         [AllowAnonymous]
+        [FetchSeller]
         public async Task<ActionResult> ForgotPassword()
         {
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                var viewName = string.Format("~/views/sellerarea/{0}/ForgotPassword.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName);
+            }
             return View();
         }
 
@@ -350,6 +358,7 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [FetchSeller]
         public async Task<ActionResult> ForgotPassword(string Email)
         {
             var user = await UserManager.FindByNameAsync(Email);
@@ -362,6 +371,13 @@ namespace Benefit.Web.Controllers
             string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
             var callbackUrl = Url.Action("resetPassword", "account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
             await UserManager.SendEmailAsync(user.Id, "Reset Password", "Для відновлення паролю натисніть <a href=\"" + callbackUrl + "\">ТУТ</a>");
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                var viewName = string.Format("~/views/sellerarea/{0}/ForgotPasswordConfirmation.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName);
+            }
             return View("ForgotPasswordConfirmation");
         }
 
@@ -370,9 +386,22 @@ namespace Benefit.Web.Controllers
         [FetchCategories(Order = 1)]
         [HttpGet]
         [AllowAnonymous]
+        [FetchSeller]
         public ActionResult ResetPassword(string userId, string code = null)
         {
-            return code == null ? View("Error") : View(new ResetPasswordViewModel
+            if (code == null)
+                return View("Error");
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                var viewName = string.Format("~/views/sellerarea/{0}/ResetPassword.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName, new ResetPasswordViewModel
+                {
+                    Id = userId
+                });
+            }
+            return View("ResetPassword",new ResetPasswordViewModel
             {
                 Id = userId
             });
@@ -383,12 +412,20 @@ namespace Benefit.Web.Controllers
         [FetchCategories(Order = 1)]
         [HttpPost]
         [AllowAnonymous]
+        [FetchSeller]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> ResetPassword(ResetPasswordViewModel model)
         {
+            var viewName = "ResetPassword";
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                viewName = string.Format("~/views/sellerarea/{0}/ResetPasswordConfirmation.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+            }
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return View(viewName, model);
             }
             var user = await UserManager.FindByIdAsync(model.Id);
             if (user == null)
@@ -407,9 +444,17 @@ namespace Benefit.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
+        [FetchSeller]
         [FetchCategories(Order = 1)]
         public ActionResult ResetPasswordConfirmation()
         {
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null)
+            {
+                var viewName = string.Format("~/views/sellerarea/{0}/ResetPasswordConfirmation.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName);
+            }
             return View();
         }
 

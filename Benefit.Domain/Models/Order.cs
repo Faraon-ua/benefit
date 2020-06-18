@@ -151,7 +151,8 @@ namespace Benefit.Domain.Models
     {
         BenefitSite,
         BenefitCard,
-        Rozetka
+        Rozetka,
+        Allo
     }
 
     [Serializable]

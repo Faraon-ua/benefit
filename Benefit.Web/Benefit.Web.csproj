@@ -1587,6 +1587,10 @@
     <Content Include="Views\Tovar\Index.mobile.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\_ProductListPartial.cshtml" />
     <Content Include="Views\Seller\_SellerHead.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\ForgotPassword.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\ResetPassword.cshtml" />
+    <Content Include="Views\SellerArea\MegaShop\ResetPasswordConfirmation.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
