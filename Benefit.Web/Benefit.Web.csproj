@@ -1045,6 +1045,7 @@
     <Content Include="Areas\Admin\Views\Orders\_EditPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Balance\GetBankForm.cshtml" />
     <Content Include="Areas\Admin\Views\Sellers\_LegalPartial.cshtml" />
+    <Content Include="Areas\Admin\Views\Balance\Reports.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

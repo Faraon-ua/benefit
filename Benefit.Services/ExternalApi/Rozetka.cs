@@ -208,10 +208,5 @@ namespace Benefit.Services.ExternalApi
                 _logger.Error("Rozetka auth token is null");
             }
         }
-
-        public void ProcessOrders()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

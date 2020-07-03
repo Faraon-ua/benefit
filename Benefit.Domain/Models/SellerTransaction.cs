@@ -28,6 +28,7 @@ namespace Benefit.Domain.Models
         public double Price { get; set; }
         public double TotalPrice { get; set; }
         public double Amount { get; set; }
+        public double FeePercent { get; set; }
         public double? Charge { get; set; }
         public double? Writeoff { get; set; }
         public double Balance { get; set; }

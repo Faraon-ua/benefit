@@ -201,6 +201,7 @@ namespace Benefit.Services.Domain
                     TotalPrice = product.ActualPrice * product.Amount,
                     Type = SellerTransactionType.Reserve,
                     OrderNumber = model.Order.OrderNumber,
+                    FeePercent = comissionPercent,
                     Charge = null,
                     Writeoff = (product.ActualPrice * product.Amount) * comissionPercent / 100,
                     Balance = seller.CurrentBill,

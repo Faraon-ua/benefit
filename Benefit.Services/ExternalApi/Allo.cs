@@ -105,7 +105,7 @@ namespace Benefit.Services.ExternalApi
         //    }
         //}
 
-        public void ProcessOrders()
+        public void ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1)
         {
             var ingest = new OrdersIngest()
             {
@@ -113,7 +113,7 @@ namespace Benefit.Services.ExternalApi
             };
             //var orderSuffixRegex = new Regex(@"\(\b(\w*.?(bc|BC).+\d\w*)\b\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
             var orders = new List<Order>();
-            var getOrdersUrl = SettingsService.Allo.BaseUrl + "call?apiPath=orders.orderList";
+            getOrdersUrl = SettingsService.Allo.BaseUrl + "call?apiPath=orders.orderList";
             var lastOrder = db.Orders.Where(entry => entry.OrderType == OrderType.Allo).OrderByDescending(entry => entry.Time).FirstOrDefault();
             if (lastOrder != null)
             {
@@ -123,7 +123,7 @@ namespace Benefit.Services.ExternalApi
             {
                 ingest.args.accepted_from = DateTime.Now.AddDays(-1).ToString("yyyy-MM-dd hh:mm:ss");
             }
-            var authToken = GetAccessToken(SettingsService.Allo.UserName, SettingsService.Allo.ApiKey);
+            authToken = GetAccessToken(SettingsService.Allo.UserName, SettingsService.Allo.ApiKey);
             if (authToken != null)
             {
                 ingest.sessionId = authToken;
@@ -229,11 +229,6 @@ namespace Benefit.Services.ExternalApi
             {
                 _logger.Error("Rozetka auth token is null");
             }
-        }
-
-        public void ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1)
-        {
-            throw new NotImplementedException();
         }
 
         public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1)

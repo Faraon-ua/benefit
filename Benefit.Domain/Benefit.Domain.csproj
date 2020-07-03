@@ -57,6 +57,9 @@
       <HintPath>..\packages\Newtonsoft.Json.5.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.4.4.2\lib\net45\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
@@ -663,6 +666,14 @@
     <Compile Include="Migrations\202005280857289_AddSellerCustomColors.Designer.cs">
       <DependentUpon>202005280857289_AddSellerCustomColors.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202006261552423_AddCategoryNameToOrderProduct.cs" />
+    <Compile Include="Migrations\202006261552423_AddCategoryNameToOrderProduct.Designer.cs">
+      <DependentUpon>202006261552423_AddCategoryNameToOrderProduct.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\202007031313261_AddSellerReports.cs" />
+    <Compile Include="Migrations\202007031313261_AddSellerReports.Designer.cs">
+      <DependentUpon>202007031313261_AddSellerReports.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -714,6 +725,7 @@
     <Compile Include="Models\Seller.cs" />
     <Compile Include="Models\SellerBusinessLevelIndexes.cs" />
     <Compile Include="Models\SellerCategory.cs" />
+    <Compile Include="Models\SellerReport.cs" />
     <Compile Include="Models\SellerTransaction.cs" />
     <Compile Include="Models\Service\PartnerRecon.cs" />
     <Compile Include="Models\Service\TransactionServiceModel.cs" />
@@ -1151,6 +1163,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202005280857289_AddSellerCustomColors.resx">
       <DependentUpon>202005280857289_AddSellerCustomColors.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202006261552423_AddCategoryNameToOrderProduct.resx">
+      <DependentUpon>202006261552423_AddCategoryNameToOrderProduct.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202007031313261_AddSellerReports.resx">
+      <DependentUpon>202007031313261_AddSellerReports.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

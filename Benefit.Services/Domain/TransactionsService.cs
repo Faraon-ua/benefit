@@ -148,7 +148,8 @@ namespace Benefit.Services.Domain
                     TotalPrice = orderProduct.ActualPrice * orderProduct.Amount,
                     OrderNumber = order.OrderNumber,
                     Charge = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100,
-                    Writeoff = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100
+                    Writeoff = (orderProduct.ActualPrice * orderProduct.Amount) * comissionPercent / 100,
+                    FeePercent = comissionPercent
                 };
                 if(order.PaymentType == PaymentType.Bonuses)
                 {

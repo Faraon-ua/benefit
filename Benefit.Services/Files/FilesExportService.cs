@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -14,7 +15,7 @@ namespace Benefit.Services.Files
         /// <typeparam name="T"></typeparam>;
         /// <param name="list">The list.</param>;
         /// <param name="csvNameWithExt">Name of CSV (w/ path) w/ file ext.</param>;
-        public byte[] CreateCSVFromGenericList<T>(List<T> list)
+        public byte[] CreateCSVFromGenericList<T>(List<T> list, string delimeter = "$")
         {
 //            if (list == null || list.Count == 0) return new byte[0];
 
@@ -31,13 +32,26 @@ namespace Benefit.Services.Files
 
             //foreach of the properties in class above, write out properties
             //this is the header row
-            sw.Append(string.Join("$", props.Select(d => d.Name).ToArray()) + newLine);
+            var headers = new List<string>();
+            foreach(var prop in props)
+            {
+                var displayAttr = prop.GetCustomAttributes(typeof(DisplayNameAttribute), true).Cast<DisplayNameAttribute>().Single();
+                if(displayAttr != null)
+                {
+                    headers.Add(displayAttr.DisplayName);
+                }
+                else
+                {
+                    headers.Add(prop.Name);
+                }
+            }
+            sw.Append(string.Join(delimeter, headers) + newLine);
 
             //this acts as datarow
             foreach (T item in list)
             {
                 //this acts as datacolumn
-                var row = string.Join("$", props.Select(d =>
+                var row = string.Join(delimeter, props.Select(d =>
                 {
                     var strValue =
                         item.GetType()
@@ -46,7 +60,6 @@ namespace Benefit.Services.Files
                     return strValue == null ? string.Empty : strValue.ToString();
                 }).ToArray());
                 sw.Append(row + newLine);
-
             }
             return Encoding.UTF8.GetBytes(sw.ToString());
         }

@@ -7,6 +7,7 @@ namespace Benefit.DataTransfer.ViewModels
     {
         public Seller Seller { get; set; }
         public PaginatedList<SellerTransaction> SellerTransactions { get; set; }
+        public List<SellerReport> SellerReports { get; set; }
         public string OrderNumber { get; set; }
         public string ProductSKU { get; set; }
         public SellerTransactionType? TransactionType { get; set; }

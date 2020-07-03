@@ -12,6 +12,7 @@ using System.Linq;
 using Benefit.Common.Extensions;
 using Benefit.Domain.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
+using NLog;
 
 namespace Benefit.Domain.DataAccess
 {
@@ -27,7 +28,6 @@ namespace Benefit.Domain.DataAccess
     public class MyManifestTokenResolver : IManifestTokenResolver
     {
         private readonly IManifestTokenResolver _defaultResolver = new DefaultManifestTokenResolver();
-
         public string ResolveManifestToken(DbConnection connection)
         {
             var sqlConn = connection as SqlConnection;
@@ -43,6 +43,8 @@ namespace Benefit.Domain.DataAccess
     }
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        private Logger _logger = LogManager.GetCurrentClassLogger();
+
         public ApplicationDbContext()
             : base("DefaultConnection")
         {
@@ -89,6 +91,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<ExportCategory> ExportCategories { get; set; }
         public DbSet<PaymentBill> PaymentBills { get; set; }
         public DbSet<SellerTransaction> SellerTransactions { get; set; }
+        public DbSet<SellerReport> SellerReports { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
@@ -222,6 +225,7 @@ namespace Benefit.Domain.DataAccess
             }
             catch (Exception ex)
             {
+                _logger.Fatal(ex.ToString());
                 transaction.Rollback();
             }
             connection.Close();

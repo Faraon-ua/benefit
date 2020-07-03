@@ -10,6 +10,7 @@ using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using Benefit.Services.Domain;
 using Microsoft.AspNet.Identity;
+using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Controllers
 {
@@ -17,6 +18,35 @@ namespace Benefit.Web.Controllers
     {
         ApplicationDbContext db = new ApplicationDbContext();
 
+        public ActionResult AddCategoriesToOrderProducts(string sellerId)
+        {
+            var orderProducts = db.Orders.Include(entry => entry.OrderProducts)
+                .Where(entry => entry.SellerId == sellerId)
+                .SelectMany(entry => entry.OrderProducts)
+                .ToList();
+            var productIds = orderProducts.Select(entry => entry.ProductId).ToList();
+            var products = db.Products.AsNoTracking()
+                .Include(entry => entry.Category.MappedParentCategory)
+                .Where(entry => productIds.Contains(entry.Id)).ToList();
+            foreach(var orderProduct in orderProducts)
+            {
+                var product = products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                if (product != null)
+                {
+                    if(product.Category.MappedParentCategoryId== null)
+                    {
+                        orderProduct.CategoryName = product.Category.Name;
+                    }
+                    else
+                    {
+                        orderProduct.CategoryName = product.Category.MappedParentCategory.Name;
+                    }
+                    db.Entry(orderProduct).State = EntityState.Modified;
+                }
+            }
+            db.SaveChanges();
+            return Content("OK");
+        }
         public ActionResult ResizeAllImages(ImageType imageType)
         {
             var imagesService = new ImagesService();

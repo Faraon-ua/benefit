@@ -20,11 +20,13 @@ namespace Benefit.Domain.Models
         public string ExternalId { get; set; }
         [MaxLength(128)]
         public string OrderId { get; set; }
-        [NonSerialized]
-        public Order Order;
+        //[NonSerialized]
+        public Order Order { get; set; }
         [MaxLength(128)]
         public string ProductId { get; set; }
         public string ProductName { get; set; }
+        [MaxLength(64)]
+        public string CategoryName { get; set; }
         public int? ProductSku { get; set; }
         public double Amount { get; set; }
         public double ProductPrice { get; set; }

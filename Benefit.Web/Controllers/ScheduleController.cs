@@ -22,6 +22,43 @@ namespace Benefit.Web.Controllers
     {
         private ScheduleService ScheduleService = new ScheduleService();
 
+        public ActionResult GenerateSellerReport(int? year = null, int? month = null)
+        {
+            var sellerReportService = new SellerReportService();
+            var startDate = new DateTime(year ?? DateTime.Now.Year, month ?? DateTime.Now.Month, 1, 0, 0, 0);
+            var endDate = new DateTime(year ?? DateTime.Now.Year, month ?? DateTime.Now.Month, DateTime.DaysInMonth(year ?? DateTime.Now.Year, month ?? DateTime.Now.Month), 23, 59, 59);
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var reportsPath = Path.Combine(originalDirectory, "Reports");
+            using (var db = new ApplicationDbContext())
+            {
+                var sellerIds = db.Orders
+                    .Where(entry => entry.Time > startDate && entry.Time < endDate)
+                    .Select(entry => entry.SellerId).Distinct().ToList();
+                foreach (var sellerId in sellerIds)
+                {
+                    var bytes = sellerReportService.GenerateSellerReport(sellerId, startDate, endDate);
+                    var reportPath = Path.Combine(reportsPath, sellerId);
+                    if (!Directory.Exists(reportPath))
+                    {
+                        Directory.CreateDirectory(reportPath);
+                    }
+                    System.IO.File.WriteAllBytes(
+                        Path.Combine(reportPath, string.Format("{0}-{1}.xls", DateTime.Now.Year, DateTime.Now.Month)), bytes);
+                    var sellerReport = new SellerReport()
+                    {
+                        Date = DateTime.Now,
+                        FileUrl = string.Format("{0}-{1}.xls", DateTime.Now.Year, DateTime.Now.Month),
+                        Id = Guid.NewGuid().ToString(),
+                        SellerId = sellerId,
+                        Month = month ?? DateTime.Now.Month,
+                        Year = year ?? DateTime.Now.Year
+                    };
+                    db.SellerReports.Add(sellerReport);
+                }
+                db.SaveChanges();
+            }
+            return Content("Ok");
+        }
         public ActionResult ProcessImportTasks()
         {
             Task.Run(() =>
@@ -34,6 +71,11 @@ namespace Benefit.Web.Controllers
             return Content("Ok");
         }
 
+        public ActionResult GenerateSellerReports()
+        {
+
+            return Content("OK");
+        }
         public ActionResult ProcessRozetkaOrders()
         {
             var rozetkaService = new RozetkaApiService();

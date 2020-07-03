@@ -1,0 +1,45 @@
+﻿@model List<Benefit.Domain.Models.SellerReport>
+<div class="table-responsive margin-top-10">
+    <table class="table table-striped table-bordered table-hover" id="sample-table-1">
+        <thead>
+            <tr>
+                <th>
+                    Id
+                </th>
+                <th>
+                    Звітній період
+                </th>
+                <th>
+                    Дата
+                </th>
+                <th>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var report in Model)
+            {
+            <tr>
+                <td>
+                    @report.Id
+                </td>
+                <td>
+                    @{ 
+                        var date = new DateTime(report.Year, report.Month, 1);
+                    }
+                    @date.ToString("MMM") @report.Year
+                </td>
+                <td>
+                    @report.Date.ToString("dd.MM.yyyy hh:mm")
+                </td>
+                <td>
+                    <a href="~/Reports/@Benefit.Domain.Models.Seller.CurrentAuthorizedSellerId/@report.FileUrl" class="btn-link-i" target="_blank">
+                        <i class="icon icon-download" style="color:#438eb9; font-size: 1.5em;">
+                        </i>
+                    </a>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

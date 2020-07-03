@@ -292,7 +292,7 @@
                 @Html.Action("Invoices")
             </div>
             <div id="reports" class="tab-pane">
-                <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade.</p>
+                @Html.Partial("Reports", Model.SellerReports)
             </div>
         </div>
     </div>

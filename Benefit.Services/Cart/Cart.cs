@@ -74,6 +74,7 @@ namespace Benefit.Services.Cart
                         .Include(entry => entry.Seller.ShippingMethods.Select(sh=>sh.Region))
                         .Include(entry => entry.Currency)
                         .Include(entry => entry.Images)
+                        .Include(entry => entry.Category)
                         .FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
                 var regionId = RegionService.GetRegionId();
                 var isAvailable =
@@ -93,6 +94,7 @@ namespace Benefit.Services.Cart
                     orderProduct.ProductName += string.Format(" ({0})", product.ExternalId);
                 }
                 orderProduct.SellerId = product.SellerId;
+                orderProduct.CategoryName = product.Category.Name;
                 var sellerCategory =
                     product.Seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == product.CategoryId) ??
                     product.Seller.SellerCategories.FirstOrDefault(entry =>

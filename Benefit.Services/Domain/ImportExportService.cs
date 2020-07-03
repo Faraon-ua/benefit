@@ -825,6 +825,7 @@ namespace Benefit.Services.Domain
                 {
                     var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToUpdate);
                     var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToUpdate);
+                    var currencyId = xmlProduct.Element("currencyId").Value;
                     var category =
                         categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value);
                     if (category == null)
@@ -846,6 +847,7 @@ namespace Benefit.Services.Domain
                             oldPrice = null;
                         }
                     }
+                    product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
 
                     //product.Name = name;
                     product.ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null);
@@ -907,13 +909,13 @@ namespace Benefit.Services.Domain
                     product.SKU = maxSku;
                     product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
                 }
-
+                productsToAddList = productsToAddList.Distinct(new ProductComparer()).ToList();
                 db.InsertIntoMembers(productsToAddList);
                 db.SaveChanges();
                 db.InsertIntoMembers(imagesToAddList);
                 db.InsertIntoMembers(dbProductParameters);
                 db.InsertIntoMembers(dbProductParameterValues);
-                dbProductParameterProducts = dbProductParameterProducts.Where(entry => entry != null).ToList();
+                dbProductParameterProducts = dbProductParameterProducts.Where(entry => entry != null).Distinct(new ProductParameterProductComparer()).ToList();
                 db.InsertIntoMembers(dbProductParameterProducts);
                 var mappedProductParameters =
                     db.MappedProductParameters.Where(entry => entry.SellerId == sellerId).ToList();
