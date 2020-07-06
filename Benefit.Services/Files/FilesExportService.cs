@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -17,7 +18,9 @@ namespace Benefit.Services.Files
         /// <param name="csvNameWithExt">Name of CSV (w/ path) w/ file ext.</param>;
         public byte[] CreateCSVFromGenericList<T>(List<T> list, string delimeter = "$")
         {
-//            if (list == null || list.Count == 0) return new byte[0];
+            NumberFormatInfo nfi = new NumberFormatInfo();
+            nfi.NumberDecimalSeparator = ",";
+            //            if (list == null || list.Count == 0) return new byte[0];
 
             //get type from 0th member
             var t = typeof(T);
@@ -57,11 +60,19 @@ namespace Benefit.Services.Files
                         item.GetType()
                             .GetProperty(d.Name)
                             .GetValue(item, null);
-                    return strValue == null ? string.Empty : strValue.ToString();
+                    var type = item.GetType().GetProperty(d.Name).PropertyType;
+
+                    if (strValue == null)
+                        return string.Empty;
+                    if(type == typeof(double))
+                    {
+                        return ((double)strValue).ToString(nfi);
+                    }
+                    return strValue.ToString();
                 }).ToArray());
                 sw.Append(row + newLine);
             }
-            return Encoding.UTF8.GetBytes(sw.ToString());
+            return Encoding.GetEncoding(1251).GetBytes(sw.ToString());
         }
     }
 }

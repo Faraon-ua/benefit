@@ -78,7 +78,7 @@ namespace Benefit.Services.Domain
             };
             result.Add(resultReport);
             var fileService = new FilesExportService();
-            return fileService.CreateCSVFromGenericList(result, ",");
+            return fileService.CreateCSVFromGenericList(result, "\t");
         }
     }
 }

@@ -25,8 +25,10 @@ namespace Benefit.Web.Controllers
         public ActionResult GenerateSellerReport(int? year = null, int? month = null)
         {
             var sellerReportService = new SellerReportService();
-            var startDate = new DateTime(year ?? DateTime.Now.Year, month ?? DateTime.Now.Month, 1, 0, 0, 0);
-            var endDate = new DateTime(year ?? DateTime.Now.Year, month ?? DateTime.Now.Month, DateTime.DaysInMonth(year ?? DateTime.Now.Year, month ?? DateTime.Now.Month), 23, 59, 59);
+            year = year ?? DateTime.Now.Year;
+            month = month ?? DateTime.Now.Month;
+            var startDate = new DateTime(year.Value, month.Value, 1, 0, 0, 0);
+            var endDate = new DateTime(year.Value, month.Value, DateTime.DaysInMonth(year.Value, month.Value), 23, 59, 59);
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var reportsPath = Path.Combine(originalDirectory, "Reports");
             using (var db = new ApplicationDbContext())
@@ -43,15 +45,15 @@ namespace Benefit.Web.Controllers
                         Directory.CreateDirectory(reportPath);
                     }
                     System.IO.File.WriteAllBytes(
-                        Path.Combine(reportPath, string.Format("{0}-{1}.xls", DateTime.Now.Year, DateTime.Now.Month)), bytes);
+                        Path.Combine(reportPath, string.Format("{0}-{1}.xls", year.Value, month.Value)), bytes);
                     var sellerReport = new SellerReport()
                     {
                         Date = DateTime.Now,
-                        FileUrl = string.Format("{0}-{1}.xls", DateTime.Now.Year, DateTime.Now.Month),
+                        FileUrl = string.Format("{0}-{1}.xls", year.Value, month.Value),
                         Id = Guid.NewGuid().ToString(),
                         SellerId = sellerId,
-                        Month = month ?? DateTime.Now.Month,
-                        Year = year ?? DateTime.Now.Year
+                        Month = month.Value,
+                        Year = year.Value
                     };
                     db.SellerReports.Add(sellerReport);
                 }
