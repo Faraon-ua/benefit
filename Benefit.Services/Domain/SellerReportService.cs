@@ -21,7 +21,8 @@ namespace Benefit.Services.Domain
             var result = new List<Report>();
             var orderIds = db.Orders
                 .Include(entry => entry.OrderProducts)
-                .Where(entry => entry.SellerId == sellerId && entry.Time > startDate && entry.Time < endDate).Select(entry=>entry.Id).ToList();
+                .Where(entry => entry.Status == OrderStatus.Finished && entry.SellerId == sellerId && entry.Time > startDate && entry.Time < endDate)
+                .Select(entry=>entry.Id).ToList();
             var orderProducts = db.OrderProducts.Include(entry=>entry.Order).Where(entry=>orderIds.Contains(entry.OrderId)).ToList();
             var categories = orderProducts.Select(entry => entry.CategoryName).Distinct().ToList();
             var orderNumbers = orderProducts.Select(entry => entry.Order.OrderNumber).Distinct().ToList();
@@ -38,7 +39,6 @@ namespace Benefit.Services.Domain
                     {
                         var report = new Report()
                         {
-                            //Id = entry.Order.OrderNumber.ToString(),
                             Date = product.Order.Time.ToString("yyyy-MM-dd"),
                             OrderId = product.Order.OrderNumber.ToString(),
                             OrderStatus = Enumerations.GetDisplayNameValue(product.Order.Status),
@@ -49,6 +49,7 @@ namespace Benefit.Services.Domain
                             Sum = product.ProductPrice * product.Amount,
                             Percent = sellerTransaction.FeePercent == 0 ? seller.TotalDiscount : sellerTransaction.FeePercent,
                             Charge = sellerTransaction.Writeoff.Value,
+                            Bonuses = product.Order.PaymentType == PaymentType.Bonuses ? product.ProductPrice * product.Amount : 0,
                             ProductName = product.ProductName.Replace(",", " "),
                             Shipment = string.Format("{0} {1}", product.Order.ShippingName, product.Order.ShippingAddress).Replace(","," "),
                             ShipmentPrice = product.Order.ShippingCost,
@@ -64,7 +65,8 @@ namespace Benefit.Services.Domain
                     Category = category == null ? "Інше" + " Всього" : category.Replace(",", " ") + " Всього",
                     Amount = categoryResult.Sum(entry=>entry.Amount),
                     Sum = categoryResult.Sum(entry=>entry.Sum),
-                    Charge = categoryResult.Sum(entry => entry.Charge)
+                    Charge = categoryResult.Sum(entry => entry.Charge),
+                    Bonuses = categoryResult.Sum(entry => entry.Bonuses)
                 };
                 result.AddRange(categoryResult);
                 result.Add(sumReport);
@@ -74,7 +76,8 @@ namespace Benefit.Services.Domain
                 Category = "Всього",
                 Amount = result.Where(entry=>entry.OrderId!=null).Sum(entry => entry.Amount),
                 Sum = result.Where(entry => entry.OrderId != null).Sum(entry => entry.Sum),
-                Charge = result.Where(entry => entry.OrderId != null).Sum(entry => entry.Charge)
+                Charge = result.Where(entry => entry.OrderId != null).Sum(entry => entry.Charge),
+                Bonuses = result.Where(entry => entry.OrderId != null).Sum(entry => entry.Bonuses)
             };
             result.Add(resultReport);
             var fileService = new FilesExportService();

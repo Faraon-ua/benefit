@@ -43,6 +43,8 @@ namespace Benefit.Domain.Models
         public double Sum { get; set; }
         [DisplayName("Ставка %")]
         public double? Percent { get; set; }
+        [DisplayName("Оплата бонусами")]
+        public double Bonuses { get; set; }
         [DisplayName("Списано (грн)")]
         public double Charge { get; set; }
         [DisplayName("Назва товару")]

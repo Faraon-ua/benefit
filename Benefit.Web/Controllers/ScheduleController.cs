@@ -26,7 +26,7 @@ namespace Benefit.Web.Controllers
         {
             var sellerReportService = new SellerReportService();
             year = year ?? DateTime.Now.Year;
-            month = month ?? DateTime.Now.Month;
+            month = month ?? DateTime.Now.Month - 1;
             var startDate = new DateTime(year.Value, month.Value, 1, 0, 0, 0);
             var endDate = new DateTime(year.Value, month.Value, DateTime.DaysInMonth(year.Value, month.Value), 23, 59, 59);
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);

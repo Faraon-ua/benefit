@@ -21,12 +21,24 @@
     <script src="~/Areas/Admin/assets/js/flot/jquery.flot.resize.min.js"></script>
     <script>
         var createBillUrl = '@Url.Action("CreateBill", "Dashboard")';
+        var removeReportUrl = '@Url.Action("RemoveSellerReport")';
         $(function () {
              $(".pagination a").click(function (e) {
                 e.preventDefault();
                 $("#page").val($(this).attr("data-page-number"));
                 $("form").submit();
              });
+
+            $(".fn-remove-report").click(function (e) {
+                e.preventDefault();
+                if (confirm("Видалити цей звіт?")) {
+                    var tr = $(this).parents("tr");
+                    var id = $(this).attr("data-id");
+                    $.get(removeReportUrl + "?id=" + id, function () {
+                        tr.remove();
+                    })
+                }
+            });
 
             $(".fn-show-order").click(function (e) {
                 e.preventDefault();

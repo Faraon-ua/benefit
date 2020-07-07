@@ -12,6 +12,7 @@ using System.Text;
 using System.Web;
 using System.Data.Entity;
 using Benefit.Common.Constants;
+using System.IO;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -27,6 +28,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 throw new HttpException(404, "Not found");
             }
             return View(invoice);
+        }
+        public ActionResult RemoveSellerReport(string id)
+        {
+            var report = db.SellerReports.Find(id);
+            if (report != null)
+            {
+                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                var reportPath = Path.Combine(originalDirectory, "Reports", report.SellerId,report.FileUrl);
+                if (System.IO.File.Exists(reportPath))
+                {
+                    System.IO.File.Delete(reportPath);
+                }
+                db.SellerReports.Remove(report);
+                db.SaveChanges();
+                return new HttpStatusCodeResult(200);
+            }
+            return new HttpStatusCodeResult(404);
         }
         public ActionResult Index(BalanceViewModel model, int page = 0)
         {
