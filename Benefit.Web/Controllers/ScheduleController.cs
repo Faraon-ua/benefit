@@ -45,11 +45,11 @@ namespace Benefit.Web.Controllers
                         Directory.CreateDirectory(reportPath);
                     }
                     System.IO.File.WriteAllBytes(
-                        Path.Combine(reportPath, string.Format("{0}-{1}.xls", year.Value, month.Value)), bytes);
+                        Path.Combine(reportPath, string.Format("{0}-{1}-{2}.xls", year.Value, month.Value, DateTime.Now.ToString("yyyyMMddhhmm"))), bytes);
                     var sellerReport = new SellerReport()
                     {
                         Date = DateTime.Now,
-                        FileUrl = string.Format("{0}-{1}.xls", year.Value, month.Value),
+                        FileUrl = string.Format("{0}-{1}-{2}.xls", year.Value, month.Value, DateTime.Now.ToString("yyyyMMddhhmm")),
                         Id = Guid.NewGuid().ToString(),
                         SellerId = sellerId,
                         Month = month.Value,

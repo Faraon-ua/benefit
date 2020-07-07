@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Benefit.Domain.Models;
 using Benefit.Common.Helpers;
 using Benefit.Services.Files;
+using System.Text.RegularExpressions;
 
 namespace Benefit.Services.Domain
 {
@@ -22,8 +23,8 @@ namespace Benefit.Services.Domain
             var orderIds = db.Orders
                 .Include(entry => entry.OrderProducts)
                 .Where(entry => entry.Status == OrderStatus.Finished && entry.SellerId == sellerId && entry.Time > startDate && entry.Time < endDate)
-                .Select(entry=>entry.Id).ToList();
-            var orderProducts = db.OrderProducts.Include(entry=>entry.Order).Where(entry=>orderIds.Contains(entry.OrderId)).ToList();
+                .Select(entry => entry.Id).ToList();
+            var orderProducts = db.OrderProducts.Include(entry => entry.Order).Where(entry => orderIds.Contains(entry.OrderId)).ToList();
             var categories = orderProducts.Select(entry => entry.CategoryName).Distinct().ToList();
             var orderNumbers = orderProducts.Select(entry => entry.Order.OrderNumber).Distinct().ToList();
             var sellerTransactions = db.SellerTransactions.Where(entry => orderNumbers.Contains(entry.OrderNumber) && entry.Writeoff != null);
@@ -37,6 +38,10 @@ namespace Benefit.Services.Domain
                     var sellerTransaction = sellerTransactions.FirstOrDefault(entry => entry.ProductSKU == product.ProductSku && entry.OrderNumber == product.Order.OrderNumber);
                     if (sellerTransaction != null)
                     {
+                        if (product.ProductName == "Чіпси Лейс із сіллю 133гр (5900259070166)" && product.Order.OrderNumber == 169176)
+                        {
+                            var a = 1;
+                        }
                         var report = new Report()
                         {
                             Date = product.Order.Time.ToString("yyyy-MM-dd"),
@@ -51,7 +56,7 @@ namespace Benefit.Services.Domain
                             Charge = sellerTransaction.Writeoff.Value,
                             Bonuses = product.Order.PaymentType == PaymentType.Bonuses ? product.ProductPrice * product.Amount : 0,
                             ProductName = product.ProductName.Replace(",", " "),
-                            Shipment = string.Format("{0} {1}", product.Order.ShippingName, product.Order.ShippingAddress).Replace(","," "),
+                            Shipment = Regex.Replace(string.Format("{0} {1}", product.Order.ShippingName, product.Order.ShippingAddress).Replace(",", " ").Replace("\r", string.Empty).Replace("\t", string.Empty), " {2,}", " "),
                             ShipmentPrice = product.Order.ShippingCost,
                             Customer = product.Order.UserName,
                             Phone = product.Order.UserPhone,
@@ -63,8 +68,8 @@ namespace Benefit.Services.Domain
                 var sumReport = new Report()
                 {
                     Category = category == null ? "Інше" + " Всього" : category.Replace(",", " ") + " Всього",
-                    Amount = categoryResult.Sum(entry=>entry.Amount),
-                    Sum = categoryResult.Sum(entry=>entry.Sum),
+                    Amount = categoryResult.Sum(entry => entry.Amount),
+                    Sum = categoryResult.Sum(entry => entry.Sum),
                     Charge = categoryResult.Sum(entry => entry.Charge),
                     Bonuses = categoryResult.Sum(entry => entry.Bonuses)
                 };
@@ -74,7 +79,7 @@ namespace Benefit.Services.Domain
             var resultReport = new Report()
             {
                 Category = "Всього",
-                Amount = result.Where(entry=>entry.OrderId!=null).Sum(entry => entry.Amount),
+                Amount = result.Where(entry => entry.OrderId != null).Sum(entry => entry.Amount),
                 Sum = result.Where(entry => entry.OrderId != null).Sum(entry => entry.Sum),
                 Charge = result.Where(entry => entry.OrderId != null).Sum(entry => entry.Charge),
                 Bonuses = result.Where(entry => entry.OrderId != null).Sum(entry => entry.Bonuses)
