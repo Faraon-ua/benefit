@@ -598,7 +598,7 @@ namespace Benefit.Services.Domain
             }
         }
 
-        private void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories, SyncType importType)
+        public void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories, SyncType importType)
         {
             var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.ExternalIds).Distinct().ToList();
             List<string> xmlCategoryIds = null;
@@ -609,6 +609,10 @@ namespace Benefit.Services.Domain
             if (importType == SyncType.Yml)
             {
                 xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
+            } 
+            if (importType == SyncType.Gbs)
+            {
+                xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
             }
             var catIdsToRemove = currentSellercategoyIds.Except(xmlCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)

@@ -4,6 +4,7 @@ using Benefit.Domain.Models;
 using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
 using Benefit.Services.Domain;
+using Benefit.Services.Import;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -108,7 +109,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         IsActive = false,
                         IsImport = false,
                         SyncType = syncType,
-                        FileUrl = string.Format("https://benefit-company.com/export?id={0}", newId),
+                        FileUrl = string.Format("https://benefit.ua/export?id={0}", newId),
                         SellerId = Seller.CurrentAuthorizedSellerId
                     };
 
@@ -157,19 +158,27 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult YmlImport(string sellerId)
+        public ActionResult ProcessImport(string sellerId, SyncType type)
         {
             var importTask = db.ExportImports
                 .AsNoTracking()
                 .Include(entry => entry.Seller)
-                .FirstOrDefault(entry => entry.SellerId == sellerId);
+                .FirstOrDefault(entry => entry.SellerId == sellerId && entry.SyncType == type);
             if (importTask == null)
             {
                 return Json(new { error = "Дані іморту ще не задано" }, JsonRequestBehavior.AllowGet);
             }
 
-            var importExportService = new ImportExportService();
-            Task.Run(() => importExportService.ImportFromYml(importTask.Id));
+            if (type == SyncType.Yml)
+            {
+                var importExportService = new ImportExportService();
+                Task.Run(() => importExportService.ImportFromYml(importTask.Id));
+            }
+            if(type == SyncType.Gbs)
+            {
+                var gbsService = new GbsImportService();
+                Task.Run(() => gbsService.Import(importTask.Id));
+            }
             return Json(new { message = "Іморт запущено" }, JsonRequestBehavior.AllowGet);
         }
 
@@ -312,9 +321,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        public ActionResult YmlImportStatus(string sellerId)
+        public ActionResult ImportStatus(string sellerId, SyncType type)
         {
-            var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
+            var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId && entry.SyncType == type);
             return Json(new { status = (importTask != null && importTask.IsImport) }, JsonRequestBehavior.AllowGet);
         }
     }

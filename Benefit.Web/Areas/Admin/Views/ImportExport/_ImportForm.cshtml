@@ -76,9 +76,13 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Зберегти" class="btn btn-info" />
-                @if (Model.SyncType != SyncType.YmlExport)
+                @if (Model.SyncType == SyncType.Yml)
                 {
-                    <button type="button" class="margin-left-30 btn btn-success" id="launch-yml-import">Запустити</button>
+                    <button type="button" class="margin-left-30 btn btn-success fn-launch-yml-import">Запустити</button>
+                }
+                @if (Model.SyncType == SyncType.Gbs)
+                {
+                    <button type="button" class="margin-left-30 btn btn-success fn-launch-gbs-import">Запустити</button>
                 }
             </div>
         </div>

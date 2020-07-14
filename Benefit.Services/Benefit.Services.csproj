@@ -124,6 +124,7 @@
     <Compile Include="Files\ExceleService.cs" />
     <Compile Include="Files\FilesExportService.cs" />
     <Compile Include="HttpClientService.cs" />
+    <Compile Include="Import\Gbs.cs" />
     <Compile Include="NotificationsService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchService.cs" />

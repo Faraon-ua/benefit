@@ -10,7 +10,8 @@ namespace Benefit.Domain.Models
         OneCCommerceMl,
         Yml,
         Excel,
-        YmlExport
+        YmlExport,
+        Gbs
     }
     public class ExportImport
     {

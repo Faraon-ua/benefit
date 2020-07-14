@@ -7,8 +7,8 @@
 @section scripts
 {
     <script>
-        var launchYmlImportUrl = '@Url.Action("YmlImport","ImportExport", new {sellerId = Model.Id})';
-        var getImportStatusUrl = '@Url.Action("YmlImportStatus","ImportExport", new {sellerId = Model.Id})';
+        var launchImportUrl = '@Url.Action("ProcessImport","ImportExport", new {sellerId = Model.Id})';
+        var getImportStatusUrl = '@Url.Action("ImportStatus","ImportExport", new {sellerId = Model.Id})';
         var intervalId;
 
         $(function() {
@@ -47,18 +47,40 @@
                 });
             });
 
-            $("#launch-yml-import").click(function () {
+            $(".fn-launch-yml-import").click(function () {
                 $("#importing-process").show();
-                $.get(launchYmlImportUrl,
+                $.get(launchImportUrl +"&type=Yml",
                     function(data) {
                         if (data.error) {
                             flashMessage(data.error, true, true);
                         } else {
                             flashMessage(data.message, false, true);
                             intervalId = setInterval(function f() {
-                                $.get(getImportStatusUrl,
+                                $.get(getImportStatusUrl+"&type=Yml",
                                     function (data) {
-                                        if (!data.active) {
+                                        if (!data.status) {
+                                            $("#importing-process").hide();
+                                            clearInterval(intervalId);
+                                            location.reload();
+                                        }
+                                    });
+                            }, 5000);
+                        }
+                    });
+            });
+
+            $(".fn-launch-gbs-import").click(function () {
+                $("#importing-process").show();
+                $.get(launchImportUrl + "&type=Gbs",
+                    function (data) {
+                        if (data.error) {
+                            flashMessage(data.error, true, true);
+                        } else {
+                            flashMessage(data.message, false, true);
+                            intervalId = setInterval(function f() {
+                                $.get(getImportStatusUrl+"&type=Gbs",
+                                    function (data) {
+                                        if (!data.status) {
                                             $("#importing-process").hide();
                                             clearInterval(intervalId);
                                             location.reload();
@@ -93,19 +115,27 @@
                 1C Commerce ML
             </a>
         </li>
+        <li>
+            <a data-toggle="tab" href="#gbs">
+                GBS Market
+            </a>
+        </li>
         @*<li>
-                <a data-toggle="tab" href="#ymlexport">
-                    YML Export
-                </a>
-            </li>*@
+            <a data-toggle="tab" href="#ymlexport">
+                YML Export
+            </a>
+        </li>*@
     </ul>
     <div class="tab-content">
         <div id="prom" class="tab-pane in active">
             @Html.Action("GetImportForm", new { syncType = SyncType.Yml })
         </div>
+        <div id="gbs" class="tab-pane">
+            @Html.Action("GetImportForm", new { syncType = SyncType.Gbs })
+        </div>
         @*<div id="ymlexport" class="tab-pane">
-                @Html.Action("GetImportForm", new { syncType = SyncType.YmlExport })
-            </div>*@
+            @Html.Action("GetImportForm", new { syncType = SyncType.YmlExport })
+        </div>*@
         <div id="excel" class="tab-pane">
             <div>
                 <h3 class="red" id="warning-message">Імпорт з файлу зробить неактивними всі товари з бази, яких немає у файлі імпорту.</h3>
