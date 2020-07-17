@@ -1,5 +1,6 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Services.Domain
+@using Benefit.Domain.Models
 @model Benefit.Domain.Models.Product
 @{
     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
@@ -38,7 +39,7 @@
                     }
                 </div>
                 <div class="input-group">
-                    @if (availableForPurchase.Key)
+                    @if (availableForPurchase.State != ComputedProductAvailabilityState.NotAvailable)
                     {
                         <button class="btn btn-primary product_buy" data-product-id="@Model.Id" data-seller-id="@Model.Seller.Id" data-is-weight-product="@Model.IsWeightProduct">Купити</button>
                     }

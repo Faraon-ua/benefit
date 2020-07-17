@@ -26,6 +26,7 @@ namespace Benefit.Services.Import
             var importTask = db.ExportImports
                 .Include(entry => entry.Seller)
                 .FirstOrDefault(entry => entry.Id == importTaskId);
+            if (importTask.IsImport == true) return;
             //show that import task is processing
             importTask.IsImport = true;
             db.SaveChanges();
@@ -183,6 +184,7 @@ namespace Benefit.Services.Import
                         Id = Guid.NewGuid().ToString(),
                         ExternalId = xmlProduct.Element("id").Value,
                         Name = name,
+                        Description = name,
                         UrlName = urlName,
                         CategoryId = category.Id,
                         SellerId = sellerId,

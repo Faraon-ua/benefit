@@ -188,7 +188,7 @@
                             <input class="text-center quantity" name="amount" value="1" type="text">
                             <span class="clickable plus">+</span>
                         </div>
-                        @if (availableForPurchase.Key)
+                        @if (availableForPurchase.State != ComputedProductAvailabilityState.NotAvailable)
                         {
                             <button id="buy-product" class="btn-primary ico-btn_2cart fn-is_stock btn " title="" type="button">Купити</button>
                         }

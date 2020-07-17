@@ -966,6 +966,7 @@ namespace Benefit.Services.Domain
             var importTask = db.ExportImports
                 .Include(entry => entry.Seller)
                 .FirstOrDefault(entry => entry.Id == importTaskId);
+            if (importTask.IsImport == true) return;
             //show that import task is processing
             importTask.IsImport = true;
             db.SaveChanges();
