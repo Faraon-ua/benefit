@@ -27,7 +27,7 @@
                     @{ 
                         var date = new DateTime(report.Year, report.Month, 1);
                     }
-                    @date.ToString("MMM") @report.Year
+                    @date.ToString("MMMM", new System.Globalization.CultureInfo("uk-UA")) @report.Year
                 </td>
                 <td>
                     @report.Date.ToString("dd.MM.yyyy hh:mm")

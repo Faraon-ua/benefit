@@ -83,7 +83,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 Pages = transactionsTotal / ListConstants.AdminTakePerPage + 1,
                 ActivePage = page
             };
-            model.SellerReports = db.SellerReports.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId).OrderByDescending(entry => entry.Date).ToList();
+            model.SellerReports = db.SellerReports.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId).OrderBy(entry => entry.Year).ThenBy(entry=>entry.Month).ToList();
             return View(model);
         }
         // GET: Admin/Balance
