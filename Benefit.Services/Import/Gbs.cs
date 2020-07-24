@@ -207,7 +207,7 @@ namespace Benefit.Services.Import
 
                 Parallel.ForEach(productIdsToUpdate, (productIdToUpdate) =>
                 {
-                    var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToUpdate);
+                    var product = dbProducts.FirstOrDefault(entry => entry.ExternalId == productIdToUpdate);
                     var xmlProduct = xmlProducts.First(entry => entry.Element("id").Value == productIdToUpdate);
                     var category =
                         categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("group_id").Value);

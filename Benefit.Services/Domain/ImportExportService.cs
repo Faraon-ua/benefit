@@ -2,6 +2,7 @@
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Excel;
+using Benefit.Services.Import;
 using Benefit.Web.Helpers;
 using Benefit.Web.Models.Admin;
 using NLog;
@@ -1026,11 +1027,11 @@ namespace Benefit.Services.Domain
             }
         }
 
-        public void ProcessYmlImportTasks()
+        public void ProcessImportTasks()
         {
             var importTasks =
                 db.ExportImports.Include(entry => entry.Seller.MappedCategories).Where(
-                    entry => entry.IsActive && entry.SyncType == SyncType.Yml).ToList();
+                    entry => entry.IsActive && (entry.SyncType == SyncType.Yml || entry.SyncType == SyncType.Gbs)).ToList();
             foreach (var importTask in importTasks)
             {
                 if (importTask.LastSync.HasValue &&
@@ -1038,7 +1039,15 @@ namespace Benefit.Services.Domain
                 {
                     continue;
                 }
-                ImportFromYml(importTask.Id);
+                if (importTask.SyncType == SyncType.Yml)
+                {
+                    ImportFromYml(importTask.Id);
+                }
+                if (importTask.SyncType == SyncType.Gbs)
+                {
+                    var gbsService = new GbsImportService();
+                    gbsService.Import(importTask.Id);
+                }                
             }
         }
 

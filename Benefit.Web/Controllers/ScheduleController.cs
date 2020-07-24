@@ -68,7 +68,7 @@ namespace Benefit.Web.Controllers
             {
                 using (var importService = new ImportExportService())
                 {
-                    importService.ProcessYmlImportTasks();
+                    importService.ProcessImportTasks();
                 }
             });
             return Content("Ok");

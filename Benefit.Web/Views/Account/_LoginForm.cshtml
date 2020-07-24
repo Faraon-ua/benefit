@@ -44,42 +44,41 @@
             }
             <hr />
             @*<p>Вхід через</p>
-            <div>
-                @{var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes(); }
-                @if (loginProviders.Count() == 0)
+        <div>
+            @{var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes(); }
+            @if (loginProviders.Count() == 0)
+            {
+                <div>
+                    <p>
+                        There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=313242">this article</a>
+                        for details on setting up this ASP.NET application to support logging in via external services.
+                    </p>
+                </div>
+            }
+            else
+            {
+                string action = "ExternalLogin";
+                using (Html.BeginForm(action, "Account"))
                 {
-                    <div>
+                    <div id="socialLoginList">
                         <p>
-                            There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=313242">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
+                            @foreach (var p in loginProviders)
+                            {
+                                <button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>
+                            }
                         </p>
                     </div>
                 }
-                else
-                {
-                    string action = "ExternalLogin";
-                    using (Html.BeginForm(action, "Account"))
-                    {
-                        <div id="socialLoginList">
-                            <p>
-                                @foreach (var p in loginProviders)
-                                {
-                                    <button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>
-                                }
-                            </p>
-                        </div>
-                    }
-                }*@
-                @*@using (Html.BeginForm("ExternalLogin", "Account"))
-                {
-                    @Html.AntiForgeryToken()
-                    <div id="socialLoginList">
-                        <p>
-                            <button type="submit" class="btn btn-default" id="Facebook" name="provider" value="Facebook" title="Log in using your Facebook account">Facebook</button>
-                        </p>
-                    </div>
-                }*@
-            </div>
+            }*@
+            @*@using (Html.BeginForm("ExternalLogin", "Account"))
+            {
+                @Html.AntiForgeryToken()
+                <div id="socialLoginList">
+                    <p>
+                        <button type="submit" class="btn btn-default" id="Facebook" name="provider" value="Facebook" title="Log in using your Facebook account">Facebook</button>
+                    </p>
+                </div>
+        </div>}*@
         </div>
         <div role="tabpanel" class="tab-pane @(actionName == "register" ? "active":string.Empty )" id="reg">
             @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))
