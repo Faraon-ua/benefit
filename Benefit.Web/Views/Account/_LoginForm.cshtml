@@ -1,16 +1,18 @@
 ﻿@using Benefit.Web.Helpers
+@using Microsoft.Owin.Security
+
 @{
     var actionName = RouteDataHelper.ActionName;
 }
 <div class="card">
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="@(actionName == "login" ? "active":string.Empty )"><a href="#auth" aria-controls="home" role="tab" data-toggle="tab">Авторизація</a></li>
-        <li role="presentation" class="@(actionName == "register" ? "active":string.Empty )"><a href="#reg" aria-controls="home" role="tab" data-toggle="tab">Реєстрація</a></li>
+        <li role="presentation" class="@(actionName == "login" ? "active" : string.Empty )"><a href="#auth" aria-controls="home" role="tab" data-toggle="tab">Авторизація</a></li>
+        <li role="presentation" class="@(actionName == "register" ? "active" : string.Empty )"><a href="#reg" aria-controls="home" role="tab" data-toggle="tab">Реєстрація</a></li>
     </ul>
 
     <!-- Tab panes -->
     <div class="tab-content no-padding-top">
-        <div role="tabpanel" class="tab-pane padding-0 @(actionName == "login" ? "active":string.Empty )" id="auth">
+        <div role="tabpanel" class="tab-pane padding-0 @(actionName == "login" ? "active" : string.Empty )" id="auth">
             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
             {
                 @Html.AntiForgeryToken()
@@ -38,7 +40,46 @@
                         <input type="submit" class="btn btn-default btn-lg btn-order-save" value="Увійти" />
                     </div>
                 </div>
+
             }
+            <hr />
+            @*<p>Вхід через</p>
+            <div>
+                @{var loginProviders = Context.GetOwinContext().Authentication.GetExternalAuthenticationTypes(); }
+                @if (loginProviders.Count() == 0)
+                {
+                    <div>
+                        <p>
+                            There are no external authentication services configured. See <a href="http://go.microsoft.com/fwlink/?LinkId=313242">this article</a>
+                            for details on setting up this ASP.NET application to support logging in via external services.
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    string action = "ExternalLogin";
+                    using (Html.BeginForm(action, "Account"))
+                    {
+                        <div id="socialLoginList">
+                            <p>
+                                @foreach (var p in loginProviders)
+                                {
+                                    <button type="submit" class="btn btn-default" id="@p.AuthenticationType" name="provider" value="@p.AuthenticationType" title="Log in using your @p.Caption account">@p.AuthenticationType</button>
+                                }
+                            </p>
+                        </div>
+                    }
+                }*@
+                @*@using (Html.BeginForm("ExternalLogin", "Account"))
+                {
+                    @Html.AntiForgeryToken()
+                    <div id="socialLoginList">
+                        <p>
+                            <button type="submit" class="btn btn-default" id="Facebook" name="provider" value="Facebook" title="Log in using your Facebook account">Facebook</button>
+                        </p>
+                    </div>
+                }*@
+            </div>
         </div>
         <div role="tabpanel" class="tab-pane @(actionName == "register" ? "active":string.Empty )" id="reg">
             @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))

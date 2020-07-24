@@ -35,35 +35,33 @@ namespace Benefit.Services.Domain
                 var products = orderProducts.Where(entry => entry.CategoryName == category).OrderBy(entry => entry.Order.Time).ToList();
                 foreach (var product in products)
                 {
-                    var sellerTransaction = sellerTransactions.FirstOrDefault(entry => entry.ProductSKU == product.ProductSku && entry.OrderNumber == product.Order.OrderNumber);
-                    if (sellerTransaction != null)
-                    {
-                        if (product.ProductName == "Чіпси Лейс із сіллю 133гр (5900259070166)" && product.Order.OrderNumber == 169176)
+                    if (product.Amount < 1) continue;
+                    var sellerTransaction = sellerTransactions.FirstOrDefault(entry => entry.ProductSKU == product.ProductSku && entry.OrderNumber == product.Order.OrderNumber) ??
+                        new SellerTransaction
                         {
-                            var a = 1;
-                        }
-                        var report = new Report()
-                        {
-                            Date = product.Order.Time.ToString("yyyy-MM-dd"),
-                            OrderId = product.Order.OrderNumber.ToString(),
-                            OrderStatus = Enumerations.GetDisplayNameValue(product.Order.Status),
-                            ProductSKU = product.ProductSku.ToString(),
-                            Category = category == null ? "Інше" : category.Replace(",", " "),
-                            Price = product.ProductPrice,
-                            Amount = product.Amount,
-                            Sum = product.ProductPrice * product.Amount,
-                            Percent = sellerTransaction.FeePercent == 0 ? seller.TotalDiscount : sellerTransaction.FeePercent,
-                            Charge = sellerTransaction.Writeoff.Value,
-                            Bonuses = product.Order.PaymentType == PaymentType.Bonuses ? product.ProductPrice * product.Amount : 0,
-                            ProductName = product.ProductName.Replace(",", " "),
-                            Shipment = Regex.Replace(string.Format("{0} {1}", product.Order.ShippingName, product.Order.ShippingAddress).Replace(",", " ").Replace("\r", string.Empty).Replace("\t", string.Empty), " {2,}", " "),
-                            ShipmentPrice = product.Order.ShippingCost,
-                            Customer = product.Order.UserName,
-                            Phone = product.Order.UserPhone,
-                            TTN = product.Order.ShippingTrackingNumber
+                            Writeoff = product.ProductPrice * product.Amount * seller.TotalDiscount / 100
                         };
-                        categoryResult.Add(report);
-                    }
+                    var report = new Report()
+                    {
+                        Date = product.Order.Time.ToString("yyyy-MM-dd"),
+                        OrderId = product.Order.OrderNumber.ToString(),
+                        OrderStatus = Enumerations.GetDisplayNameValue(product.Order.Status),
+                        ProductSKU = product.ProductSku.ToString(),
+                        Category = category == null ? "Інше" : category.Replace(",", " "),
+                        Price = product.ProductPrice,
+                        Amount = product.Amount,
+                        Sum = product.ProductPrice * product.Amount,
+                        Percent = sellerTransaction.FeePercent == 0 ? seller.TotalDiscount : sellerTransaction.FeePercent,
+                        Charge = sellerTransaction.Writeoff.Value,
+                        Bonuses = product.Order.PaymentType == PaymentType.Bonuses ? product.ProductPrice * product.Amount : 0,
+                        ProductName = product.ProductName.Replace(",", " "),
+                        Shipment = Regex.Replace(string.Format("{0} {1}", product.Order.ShippingName, product.Order.ShippingAddress).Replace(",", " ").Replace("\r", string.Empty).Replace("\t", string.Empty), " {2,}", " "),
+                        ShipmentPrice = product.Order.ShippingCost,
+                        Customer = product.Order.UserName,
+                        Phone = product.Order.UserPhone,
+                        TTN = product.Order.ShippingTrackingNumber
+                    };
+                    categoryResult.Add(report);
                 }
                 var sumReport = new Report()
                 {

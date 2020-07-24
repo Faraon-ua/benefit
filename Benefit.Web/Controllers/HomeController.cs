@@ -382,5 +382,11 @@ namespace Benefit.Web.Controllers
             ModelState.AddModelError("password", "пароль невірний");
             return View();
         }
+
+        [HttpGet]
+        public ActionResult Pivacy()
+        {
+            return View();
+        }
     }
 }

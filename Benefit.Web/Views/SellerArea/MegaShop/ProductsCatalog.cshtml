@@ -23,7 +23,6 @@
 @section scripts
 {
     <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
-    <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/bootstrap-slider.min.js"></script>
     <script>
         var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
@@ -121,3 +120,8 @@
     </div>
 </div>
 <div class="modal-container"></div>
+<div id="product-purchase-wrap">
+    @Html.Partial("~/Views/Tovar/_PurchaseRegion.cshtml", new Dictionary<string, string>() { { "0", string.Empty } })
+</div>
+<div id="product-options-wrap"></div>
+<div id="product-variants-wrap"></div>

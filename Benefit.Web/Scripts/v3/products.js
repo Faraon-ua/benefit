@@ -198,7 +198,7 @@ function AddOrderProduct(amount, productId, sellerId, hasOptions, isWeightProduc
                         $(".purchase-region").modal();
                     }
                     else {
-                        alert("Товар не доступний у вибраному регіоні");
+                        alert("Товар не доступний в обраному регіоні");
                     }
                 }
                 else {

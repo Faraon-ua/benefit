@@ -8,6 +8,7 @@ using Benefit.Services.ExternalApi;
 using Benefit.Web.Filters;
 using Benefit.Web.Helpers;
 using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;

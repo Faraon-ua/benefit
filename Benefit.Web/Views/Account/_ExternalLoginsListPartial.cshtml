@@ -13,11 +13,9 @@
     }
     else
     {
-        string action = Model.Action;
-        string returnUrl = Model.ReturnUrl;
-        using (Html.BeginForm(action, "Account", new { ReturnUrl = returnUrl }))
+        string action = "ExternalLogin";
+        using (Html.BeginForm(action, "Account"))
         {
-            @Html.AntiForgeryToken()
             <div id="socialLoginList">
                 <p>
                 @foreach (AuthenticationDescription p in loginProviders)

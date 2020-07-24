@@ -11,6 +11,8 @@ namespace Benefit.Web
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.RouteExistingFiles = true;
 
+            //routes.MapRoute(name: "signin-facebook", url: "signin-facebook", defaults: new { controller = "Account", action = "ExternalLoginCallback" });
+
             routes.MapRoute(
               name: RouteConstants.CatalogRouteName + "GetProducts",
               url: RouteConstants.CatalogRoutePrefix + "/getproducts",
