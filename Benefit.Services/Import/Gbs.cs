@@ -216,6 +216,7 @@ namespace Benefit.Services.Import
                         return;
                     }
                     product.Price = double.Parse(xmlProduct.Element("price").Value);
+                    product.AvailabilityState = ProductAvailabilityState.Available;
                     product.AvailableAmount = int.Parse(xmlProduct.Element("stock").Value);
                     product.LastModified = DateTime.UtcNow;
                 });
@@ -233,11 +234,11 @@ namespace Benefit.Services.Import
         private void DeleteGbsProducts(List<XElement> xmlProducts, string sellerId)
         {
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
-                .Select(entry => entry.ExternalId).ToList();
+                .Select(entry => entry.ExternalId).Distinct().ToList();
             List<string> xmlProductIds = null;
-            xmlProductIds = xmlProducts.Select(entry => entry.Element("id").Value).ToList();
-            var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).ToList();
-            var productsToRemove = db.Products.Where(entry => productIdsToRemove.Contains(entry.ExternalId)).ToList();
+            xmlProductIds = xmlProducts.Select(entry => entry.Element("id").Value).Distinct().ToList();
+            var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).Where(entry => entry != null).ToList();
+            var productsToRemove = db.Products.Where(entry => entry.SellerId == sellerId && productIdsToRemove.Contains(entry.ExternalId)).ToList();
             Parallel.ForEach(productsToRemove, (dbProduct) =>
             {
                 dbProduct.AvailabilityState = ProductAvailabilityState.NotInStock;

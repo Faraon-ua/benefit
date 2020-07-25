@@ -222,11 +222,11 @@ namespace Benefit.Services.Domain
                         }
                         prod.Add(new XElement("price_old", product.OldPrice));
                     }
-                    
+
                     prod.Add(new XElement("price", product.Price));
                     prod.Add(new XElement("currencyId", "UAH"));
                     prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
-                    
+
                     prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
                     var categoryId = Math.Abs(product.CategoryId.GetHashCode());
                     if (product.Category.MappedParentCategory != null)
@@ -610,7 +610,7 @@ namespace Benefit.Services.Domain
             if (importType == SyncType.Yml)
             {
                 xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
-            } 
+            }
             if (importType == SyncType.Gbs)
             {
                 xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
@@ -954,8 +954,8 @@ namespace Benefit.Services.Domain
             {
                 xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
             }
-            var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).ToList();
-            var productsToRemove = db.Products.Where(entry => productIdsToRemove.Contains(entry.Id)).ToList();
+            var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).Where(entry => entry != null).ToList();
+            var productsToRemove = db.Products.Where(entry => entry.SellerId == sellerId && productIdsToRemove.Contains(entry.Id)).ToList();
             Parallel.ForEach(productsToRemove, (dbProduct) =>
             {
                 dbProduct.AvailabilityState = ProductAvailabilityState.NotInStock;
@@ -1047,7 +1047,7 @@ namespace Benefit.Services.Domain
                 {
                     var gbsService = new GbsImportService();
                     gbsService.Import(importTask.Id);
-                }                
+                }
             }
         }
 
