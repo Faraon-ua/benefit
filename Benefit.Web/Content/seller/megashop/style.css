@@ -1,3 +1,82 @@
+.counter {
+    float: left;
+    box-sizing: border-box;
+    background: #f3f3f5;
+    font-size: 0;
+    width: 100px;
+    display: inline-block;
+    vertical-align: top;
+    border-radius: 2px;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+    height: 36px;
+}
+
+    .counter > div,
+    .counter > .quantity {
+        display: inline-block;
+        width: 30px;
+        height: 34px;
+        opacity: 0.7;
+        text-align: center;
+        font-size: 19px;
+        vertical-align: center;
+        cursor: pointer;
+    }
+
+        .counter > div:hover {
+            opacity: 1;
+            font-weight: bold;
+        }
+
+    .counter > .quantity {
+        font-size: 13px;
+        line-height: 25px;
+        cursor: auto;
+        width: 40px;
+        padding: 0px;
+    }
+
+
+input[type="checkbox"].editable-amount:checked ~ .display-after-checked {
+    display: block;
+}
+
+input[type="checkbox"].editable-amount ~ .display-after-checked {
+    display: none;
+}
+
+.product_modal {
+    text-align: left !important;
+}
+
+    .product_modal .plus, .product_modal .minus {
+        background: none;
+        float:none;
+    }
+
+fieldset, legend {
+    padding: 0;
+    border: 0
+}
+
+fieldset {
+    margin: 0
+}
+
+legend {
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 21px;
+    line-height: inherit;
+    border-bottom: 1px solid #e5e5e5
+}
+
 button.close {
     padding: 0;
     cursor: pointer;
@@ -424,6 +503,7 @@ header.header-v4 .top-description .region_wrapper, header.header-v5 .top-descrip
         background: #999;
         border: 2px solid #fff
     }
+
 .popover {
     top: 0;
     left: 0;
@@ -571,6 +651,7 @@ header.header-v4 .top-description .region_wrapper, header.header-v5 .top-descrip
 .more_text_ajax::after {
     background-color: #FF9F00 !important;
 }
+
 .doublesize-checkbox {
     -ms-transform: scale(2); /* IE */
     -moz-transform: scale(2); /* FF */
@@ -666,13 +747,37 @@ td.visible-xs {
     .mobile-hidden {
         display: none;
     }
-    .purchase_amount{float:left;}
-    .purchase_sum{margin-top:10px;}
-    .purchase_price{float:left;margin-top:10px;}
-    .purchase_image{float:left;}
-    .text_left{width:80%;text-align:left;}
-    .purchase_tr{float:left;}
-    .purchase{float:left;}
+
+    .purchase_amount {
+        float: left;
+    }
+
+    .purchase_sum {
+        margin-top: 10px;
+    }
+
+    .purchase_price {
+        float: left;
+        margin-top: 10px;
+    }
+
+    .purchase_image {
+        float: left;
+    }
+
+    .text_left {
+        width: 80%;
+        text-align: left;
+    }
+
+    .purchase_tr {
+        float: left;
+    }
+
+    .purchase {
+        float: left;
+    }
+
     .visible-xs {
         display: block !important;
     }
@@ -3226,6 +3331,7 @@ a {
 }
 /* Buttons */
 .button,
+.btn,
 .disable_button {
     position: relative;
     display: inline-block;
@@ -3234,22 +3340,25 @@ a {
     line-height: 19px;
     color: #fff;
     border: 2px solid #FF9F00;
-    background-color:#FF9F00;
+    background-color: #FF9F00;
     border-radius: 2px;
     text-decoration: none;
     text-align: center;
     cursor: pointer;
-    padding:9px 15px 9px 15px; font-size:14px;
+    padding: 9px 15px 9px 15px;
+    font-size: 14px;
 }
+
 .disable_button {
     background-color: #d3d4d5;
     border: 2px solid #d3d4d5;
     color: #fff;
 }
-.disable_button:hover {
-    background-color: #c2c2c2;
-    border: 2px solid #c2c2c2;
-}
+
+    .disable_button:hover {
+        background-color: #c2c2c2;
+        border: 2px solid #c2c2c2;
+    }
 
 .fn_is_stock:hover {
     background-color: #ff820b;
@@ -3257,7 +3366,7 @@ a {
     color: #fff;
 }
 
-.button:hover {
+.button:hover, .btn:hover {
     background-color: #ff820b;
     border-color: #ff820b;
     color: #fff;

@@ -267,6 +267,22 @@
                                                 </a>
                                             </td>
                                         </tr>
+                                        if (product.OrderProductOptions.Any())
+                                        {
+                                            foreach (var orderProductOption in product.OrderProductOptions)
+                                            {
+                                                <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
+                                                    <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
+                                                    <td class="basket_modal_td">
+                                                    </td>
+                                                    <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F") грн</td>
+                                                    <td class="basket_modal_td">@orderProductOption.Amount</td>
+                                                    <td class="basket_modal_td">
+                                                        <div class="delete-option" onclick="$(this).parent().parent().remove()"></div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
                                     }
                                 </tbody>
                                 <tfoot>

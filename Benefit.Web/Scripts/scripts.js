@@ -378,24 +378,26 @@ $(document).ready(function () {
         $('.structre_year').append(tmp);
     }
 
-    /*organization slider*/
-    $('.grr').owlCarousel({
-        loop: true,
-        margin: 0,
-        dots: true,
-        responsiveClass: true,
-        nav: true,
-        navText: [
-          "<i class='fa fa-angle-left' aria-hidden='true'></i>",
-          "<i class='fa fa-angle-right' aria-hidden='true'></i>"
-        ],
-        items: 1,
-        autoplay: true,
-        autoplayTimeout: 7000,
-        startPosition: '0',
-        fluidSpeed: true,
-        smartSpeed: 1000
-    });
+/*organization slider*/
+    if (typeof owlCarousel !== 'undefined') {
+        $('.grr').owlCarousel({
+            loop: true,
+            margin: 0,
+            dots: true,
+            responsiveClass: true,
+            nav: true,
+            navText: [
+                "<i class='fa fa-angle-left' aria-hidden='true'></i>",
+                "<i class='fa fa-angle-right' aria-hidden='true'></i>"
+            ],
+            items: 1,
+            autoplay: true,
+            autoplayTimeout: 7000,
+            startPosition: '0',
+            fluidSpeed: true,
+            smartSpeed: 1000
+        });
+    }
 
     /*product_description_amount*/
     if ($('.product_description_amount').length > 0) {

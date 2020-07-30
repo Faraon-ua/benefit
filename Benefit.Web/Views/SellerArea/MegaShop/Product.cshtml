@@ -7,7 +7,7 @@
 @{
     ViewBag.Title = Model.Product.Name;
     Layout = "_SellerLayout.cshtml";
-    var image_src = Model.Product.Images.OrderBy(entry=>entry.Order).FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
+    var image_src = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
     var img_src = image_src == null ? "default_product_picture.png" : image_src.ImageUrl;
     var image_src_str = string.Empty;
     if (image_src != null)
@@ -38,24 +38,52 @@
     }
 
     var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
+    var productVariants = Model.Product.ProductOptions.Where(entry => entry.IsVariant).OrderBy(entry => entry.Order).ToList();
     var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
 }
 @section meta{
-    <meta name="description" content="@Model.Product.ShortDescription @seller.SeoSuffix">
+    <meta name="description" content="@Model.Product.ShortDescription">
 }
 @section scripts
 {
+    <script src="~/Scripts/jquery.mask.min.js"></script>
     <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
+    <script src="~/Scripts/v3/products.js"></script>
     <script>
         var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
         var sellerId = '@Model.Product.SellerId';
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
         var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new { returnUrl = Request.Url.PathAndQuery}))';
         var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
-        $(function() {
+        $(function () {
+            $(".add-product-options").click(function () {
+                $("#product_modal").modal("show");
+                if ($(this).hasClass("mobile")) {
+                    $("#buy-product-with-options").addClass("mobile");
+                }
+            });
 
+            $(".variants .variant-item").click(function() {
+                $(this).siblings().removeClass("active");
+                $(this).addClass("active");
+                var imageId = $(this).attr("data-image-id");
+                if (imageId) {
+                    $(".ubislider li[data-image-id=" + imageId + "]").click();
+                }
+                var sufix = "";
+                var priceGrowth = 0;
+                $(".variants .variant-item.active").each(function() {
+                    sufix += " " +
+                        $(this).attr("data-option-title") +
+                        " " +
+                        $(this).attr("data-option-name");
+                    priceGrowth += parseFloat($(this).attr("data-price-growth"));
+                    $(".x-title").text('@Model.Product.Name ' + sufix);
+                    $(".product-price").text((parseFloat('@Model.Product.Price') + priceGrowth).toFixed(2));
+                });
+            });
 
             $("#buy-product, #buy-product-with-options").click(function () {
                 //var buttonId = $(this).attr("id");
@@ -67,15 +95,45 @@
                 //             return;
                 //         }
                 //     }
+                var productNameSufix = "";
+                var productPriceGrowth = 0;
+                var buttonId = $(this).attr("id");
+                if ($(".variants").length > 0) {
+                    var variantsWrap = $(".variants").eq(0);
+                    if ($(this).hasClass("mobile")) {
+                        variantsWrap = $(".variants.mobile").eq(0);
+                    }
+                    var variantsSelected = true;
+                    variantsWrap.find(".row").each(function () {
+                        if ($(this).find(".active").length == 0) {
+                            $(this).prev(".validation").show();
+                            $("#product_modal").modal("hide");
+                            variantsSelected = false;
+                        } else {
+                            $(this).prev(".validation").hide();
+                        }
+                    });
+                    if (!variantsSelected) {
+                        return;
+                    }
 
+                    $(".variants .variant-item.active").each(function () {
+                        productNameSufix += " " +
+                            $(this).attr("data-option-title") +
+                            " " +
+                            $(this).attr("data-option-name");
+                        productPriceGrowth += parseFloat($(this).attr("data-price-growth"));
+                    });
+                }
                 $(this).attr("disabled", "disabled");
                 $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
                 $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
 
                 var productAmount = $(".quantity").val();
+                debugger;
                 var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
                     var id = $(this).attr("id");
-                    var amount = $(this).siblings(".modal_amount_wrap").find(".product_modal_amount").val();
+                    var amount = $(this).parent().find(".quantity").val();
                     if (!amount) {
                         amount = 1;
                     }
@@ -104,6 +162,8 @@
                 var product = {
                     ProductId: '@Model.Product.Id',
                     IsWeightProduct: '@Model.Product.IsWeightProduct',
+                    NameSuffix: productNameSufix,
+                    PriceGrowth: productPriceGrowth,
                     Amount: amount,
                     AvailableAmount: available,
                     OrderProductOptions: productOptions
@@ -111,7 +171,7 @@
 
                 var order = {
                     product: product,
-                    amount: productAmount
+                    amount: productAmount,
                 };
                 $.post(addToCartUrl,
                     order,
@@ -143,11 +203,11 @@
     <meta itemprop="image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)" />
     <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
         <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
-        <meta itemprop="price" content="@Model.Product.Price"/>
-        <meta itemprop="priceCurrency" content="UAH"/>
+        <meta itemprop="price" content="@Model.Product.Price" />
+        <meta itemprop="priceCurrency" content="UAH" />
         @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
         {
-            <link itemprop="availability" href="http://schema.org/InStock"/>
+            <link itemprop="availability" href="http://schema.org/InStock" />
         }
     </div>
     @if (Model.Product.AvarageRating.HasValue)
@@ -174,7 +234,7 @@
         <div class="block padding">
             <div class="fn_product product product_info_wrap">
                 <h1 class="h2">
-                    <span itemprop="name">@Model.Product.Name</span>
+                    <span itemprop="name" class="x-title">@Model.Product.Name</span>
                 </h1>
 
                 <div class="fn_transfer row">
@@ -203,7 +263,7 @@
                         @if (Model.Product.Images.Count > 1)
                         {
                             <div class="fn_images images clearfix">
-                                @foreach(var img in Model.Product.Images.OrderBy(entry => entry.Order).Skip(1))
+                                @foreach (var img in Model.Product.Images.OrderBy(entry => entry.Order).Skip(1))
                                 {
                                     <div class="images_item">
                                         @if (img.IsAbsoluteUrl)
@@ -312,18 +372,11 @@
                                             <span class="minus"></span>
                                         </div>
                                     </div>
-
-                                    @*<div class="col-sm-6">
-                                            <select name="variant" class="fn_variant variant_select hidden">
-                                                <option value="22" data-price="2 899" data-stock="3" selected="selected">Кресло мешок груша L Cats</option>
-                                            </select>
-                                        </div>*@
                                 </div>
 
                                 <div class="price_wrap">
-
                                     <span class="price ">
-                                        <span class="fn_price" itemprop="price" content="@Model.Product.Price">@Model.Product.Price.ToString("F")</span>
+                                        <span class="fn_price product-price" itemprop="price" content="@Model.Product.Price">@Model.Product.Price.ToString("F")</span>
                                         <span itemprop="priceCurrency" content="UAH">грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
                                     </span>
 
@@ -334,8 +387,47 @@
                                         </span>
                                     }
                                 </div>
+                                @if (productVariants.Any())
+                                {
+                                    <div class="variants">
+                                        @foreach (var group in productVariants)
+                                        {
+                                            <div>
+                                                <p class="margin-top-10 validation alert alert-warning width-50" style="display: none;">
+                                                    Будь ласка оберіть @group.Name
+                                                </p>
+                                                <div class="row">
+                                                    <div class="col-sm-2 title">@group.Name:</div>
+                                                    <div class="col-sm-10">
+                                                        @foreach (var option in group.ChildProductOptions.OrderBy(entry => entry.Order))
+                                                        {
+                                                            if (option.Image != null)
+                                                            {
+                                                                <div class="variant-item" data-image-id="@option.Id" data-option-title="@group.Name" data-option-name="@option.Name" data-price-growth="@option.PriceGrowth">
+                                                                    <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="variant-item" data-option-name="@option.Name" data-option-title="@group.Name" data-price-growth="@option.PriceGrowth">
+                                                                    @option.Name
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
                                 @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
                                 {
+                                    if (Model.ProductOptions.Any(entry => !entry.IsVariant))
+                                    {
+                                        <a href="#" class="add-product-options">+ Додати інгредієнти</a>
+                                        <br />
+                                        <br />
+                                    }
                                     <button id="buy-product" class="fn_is_stock button" type="submit" data-language="product_add_cart">Купити</button>
                                 }
                             </form>
@@ -418,3 +510,7 @@
 <div id="product-purchase-wrap">
     @Html.Partial("~/Views/Tovar/_PurchaseRegion.cshtml", new Dictionary<string, string>() { { "0", string.Empty } })
 </div>
+@if (Model.ProductOptions.Any(entry => !entry.IsVariant))
+{
+    @Html.Partial("_ProductOptions", Model)
+}

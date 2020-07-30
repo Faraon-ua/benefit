@@ -455,7 +455,7 @@ $(function () {
         }
     });
 
-    $("body").on("click", ".select_place_container", function() {
+    $("body").on("click", ".select_place_container", function () {
         $(".region_modal").modal();
     });
 

@@ -180,6 +180,10 @@ namespace Benefit.Domain.Models
             {
                 return _availableForPurchase;
             }
+            if (!Seller.IsActive || !Category.IsActive || ModerationStatus != ModerationStatus.Moderated)
+            {
+                AvailabilityState = ProductAvailabilityState.NotInStock;
+            }
             var result = new ProductAvailability();
             if (AvailabilityState == ProductAvailabilityState.NotInStock ||
                 (AvailabilityState == ProductAvailabilityState.Available && AvailableAmount == 0))

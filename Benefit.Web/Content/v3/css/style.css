@@ -33,7 +33,7 @@
         }
 
 input[type="checkbox"].editable-amount:checked ~ .display-after-checked {
-    display: inline-block;
+    display: block;
 }
 
 input[type="checkbox"].editable-amount ~ .display-after-checked {
