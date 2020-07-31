@@ -139,10 +139,13 @@ namespace Benefit.Domain.DataAccess
             var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
             cmd.CommandText = string.Format(@"SELECT p.Id
                   ,p.SellerId
+                    ,s.IsActive as SellerIsActive
                     ,s.Name as SellerName
 	                ,s.SafePurchase as SellerSafePurchase
 	                ,s.UrlName as SellerUrlName
 	                ,s.UserDiscount as SellerUserDiscount
+                    ,cat.IsActive as CategoryIsActive
+                    ,cat.Name as CategoryName
                   ,p.Name
                   ,p.UrlName
                   ,p.SKU
@@ -194,11 +197,14 @@ namespace Benefit.Domain.DataAccess
         public List<Product> GetMainPageProducts()
         {
             cmd.CommandText = @"select distinct(p.Id), p.Name, p.UrlName, p.SKU, p.Title, p.AvailabilityState, (p.Price * c.Rate) as Price, p.SellerId, p.IsNewProduct, p.IsFeatured,
+	            s.IsActive as SellerIsActive, 
 	            s.Name as SellerName, 
 	            s.SafePurchase as SellerSafePurchase, 
 	            s.UrlName as SellerUrlName, 
 	            s.UserDiscount as SellerUserDiscount, 
-	            (SELECT count(Id) FROM Reviews where ProductId = p.Id) as ReviewsCount
+	            (SELECT count(Id) FROM Reviews where ProductId = p.Id) as ReviewsCount,
+                cat.IsActive as CategoryIsActive,
+                cat.Name as CategoryName
 	            FROM Products p
             left join Currencies c on c.Id = p.CurrencyId
             left join Reviews r on r.ProductId = p.Id
@@ -235,10 +241,16 @@ namespace Benefit.Domain.DataAccess
                 product.Seller = new Seller
                 {
                     Id = (String)drwRow["SellerId"],
+                    IsActive = (bool)drwRow["SellerIsActive"],
                     Name = (String)drwRow["SellerName"],
                     SafePurchase = (bool)drwRow["SellerSafePurchase"],
                     UrlName = (String)drwRow["SellerUrlName"],
                     UserDiscount = (double)drwRow["SellerUserDiscount"]
+                };
+                product.Category = new Category
+                {
+                    IsActive = (bool)drwRow["CategoryIsActive"],
+                    Name = (String)drwRow["CategoryName"],
                 };
                 if (fetchImages)
                 {
