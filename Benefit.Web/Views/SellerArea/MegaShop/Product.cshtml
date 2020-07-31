@@ -130,7 +130,6 @@
                 $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
 
                 var productAmount = $(".quantity").val();
-                debugger;
                 var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
                     var id = $(this).attr("id");
                     var amount = $(this).parent().find(".quantity").val();
@@ -181,6 +180,7 @@
                             $("#buy-product, #buy-product-with-options").removeAttr('disabled');
                             $(".product_info_wrap,.item_main_info").css("opacity", 1);
                             $(".button_block  ").removeClass("loadings");
+                            $(".modal").modal('hide');
                             setCartSummary(data);
                         }, 1000);
                     });

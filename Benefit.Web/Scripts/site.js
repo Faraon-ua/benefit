@@ -84,8 +84,8 @@ function CalculateCartSum(sellerId) {
             var optionAmount = parseFloat($(this).find(".quantity").val());
             return optionPrice * optionAmount;
         }).get();
-        var actualProductSum = actualPrice * amount + productOptionSum.reduce(function (pv, cv) { return pv + cv; }, 0);
-        var oldProductSum = oldPrice * amount + productOptionSum.reduce(function (pv, cv) { return pv + cv; }, 0);
+        var actualProductSum = (actualPrice + productOptionSum.reduce(function (pv, cv) { return pv + cv; }, 0)) * amount;
+        var oldProductSum = (oldPrice + productOptionSum.reduce(function (pv, cv) { return pv + cv; }, 0)) * amount;
         $(this).find(".actual-product-total").text(actualProductSum.toFixed(2));
         $(this).find(".old-product-total").text(oldProductSum.toFixed(2));
         return { actual: actualProductSum, old: oldProductSum };

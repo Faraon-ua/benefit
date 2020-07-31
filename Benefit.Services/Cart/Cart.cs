@@ -213,7 +213,8 @@ namespace Benefit.Services.Cart
                         ? product.WholesaleProductPrice.Value
                         : product.ProductPrice;
 
-                    result.Price += productTotal * product.Amount + (product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount));
+                    var productTotalWithOptions = productTotal + product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                    result.Price += (productTotalWithOptions * product.Amount);
                 }
             }
 
