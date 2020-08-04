@@ -23,7 +23,7 @@ namespace Benefit.Web.Controllers
     {
         private ScheduleService ScheduleService = new ScheduleService();
 
-        public ActionResult GenerateSellerReport(int? year = null, int? month = null)
+        public ActionResult GenerateSellerReport(int? year = null, int? month = null, string sellerId = null)
         {
             var sellerReportService = new SellerReportService();
             year = year ?? DateTime.Now.Year;
@@ -36,11 +36,15 @@ namespace Benefit.Web.Controllers
             {
                 var sellerIds = db.Orders
                     .Where(entry => entry.Time > startDate && entry.Time < endDate)
-                    .Select(entry => entry.SellerId).Distinct().ToList();
-                foreach (var sellerId in sellerIds)
+                    .Select(entry => entry.SellerId).Distinct();
+                if(sellerId != null)
                 {
-                    var bytes = sellerReportService.GenerateSellerReport(sellerId, startDate, endDate);
-                    var reportPath = Path.Combine(reportsPath, sellerId);
+                    sellerIds = sellerIds.Where(entry => entry == sellerId);
+                }
+                foreach (var seller_id in sellerIds)
+                {
+                    var bytes = sellerReportService.GenerateSellerReport(seller_id, startDate, endDate);
+                    var reportPath = Path.Combine(reportsPath, seller_id);
                     if (!Directory.Exists(reportPath))
                     {
                         Directory.CreateDirectory(reportPath);
@@ -52,7 +56,7 @@ namespace Benefit.Web.Controllers
                         Date = DateTime.Now,
                         FileUrl = string.Format("{0}-{1}-{2}.xls", year.Value, month.Value, DateTime.Now.ToString("yyyyMMddhhmm")),
                         Id = Guid.NewGuid().ToString(),
-                        SellerId = sellerId,
+                        SellerId = seller_id,
                         Month = month.Value,
                         Year = year.Value
                     };

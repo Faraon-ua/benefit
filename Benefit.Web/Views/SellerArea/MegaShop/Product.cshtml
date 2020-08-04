@@ -2,6 +2,7 @@
 @using Benefit.Domain.Models
 @using Benefit.Services.Domain
 @using Microsoft.AspNet.Identity
+@using Benefit.Web.Helpers
 @model ProductDetailsViewModel
 
 @{
@@ -50,7 +51,7 @@
     <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
     <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
-    <script src="~/Scripts/v3/products.js"></script>
+    <link href="~/@Html.IncludeVersionedFile("Scripts/v3/products.js")" type="text/css" rel="stylesheet">
     <script>
         var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
         var sellerId = '@Model.Product.SellerId';

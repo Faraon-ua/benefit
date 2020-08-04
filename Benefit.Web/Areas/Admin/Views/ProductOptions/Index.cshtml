@@ -1,5 +1,5 @@
 ﻿@model  Benefit.Web.Models.ProductOptionsViewModel
-
+@using Benefit.Domain.Models
 @{
     if (Model.CategoryName != null)
     {
@@ -120,7 +120,7 @@
 <div>
     @if (Model.ProductId != null)
     {
-        <a href="@Url.Action("Index", new {sellerId = Model.SellerId, categoryId = Model.Product.CategoryId})">
+        <a href="@Url.Action("Index", new { sellerId = Model.Product.SellerId, categoryId = Model.Product.CategoryId })">
             Редагування опцій категорії
         </a>
         <br />
@@ -141,15 +141,15 @@
     <button class="btn-connect-option btn btn-sm btn-success pull-left">Прив’язати</button>
 </div>
 <div class="row">
-    @if (string.IsNullOrEmpty(Request.QueryString["productId"]))
+    @if (string.IsNullOrEmpty(Request.QueryString["productId"]) && Seller.CurrentAuthorizedSellerId == null)
     {
         <div class="col-md-3">
             @Html.DropDownList("SellerId", Model.Sellers as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select" })
         </div>
     }
     <div class="col-md-3">
-        <a class="btn btn-purple btn-sm" onclick="ProductOptionGroup('')" href="#">Додати групу опцій</a>
-        <a class="btn btn-success btn-sm" href="#" id="save-ordering">Зберегти сортування</a>
+        <a class="btn btn-purple btn-sm margin-top-10" onclick="ProductOptionGroup('')" href="#">Додати групу опцій</a>
+        <a class="btn btn-success btn-sm margin-top-10" href="#" id="save-ordering">Зберегти сортування</a>
     </div>
 </div>
 <br />
