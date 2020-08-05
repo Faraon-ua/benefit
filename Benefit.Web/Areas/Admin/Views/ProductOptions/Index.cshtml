@@ -120,10 +120,16 @@
 <div>
     @if (Model.ProductId != null)
     {
-        <a href="@Url.Action("Index", new { sellerId = Model.Product.SellerId, categoryId = Model.Product.CategoryId })">
-            Редагування опцій категорії
+        <h3>Опції товару "@Model.Product.Name"</h3>
+        <a href="@Url.Action("Index", new { sellerId = Model.Product.SellerId, categoryId = Model.Product.CategoryId })" class="font-bigger">
+            Редагування опцій категорії "@Model.Product.Category.Name"
         </a>
         <br />
+    }
+    else
+    {
+        <a href="@Request.UrlReferrer.AbsoluteUri"><= Назад до опцій товару</a>
+        <h3>Опції категорії "@Model.CategoryName"</h3>
     }
 </div>
 <div class="options-select-container clearfix" style="display: none;">
@@ -147,7 +153,7 @@
             @Html.DropDownList("SellerId", Model.Sellers as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select" })
         </div>
     }
-    <div class="col-md-3">
+    <div class="col-md-12">
         <a class="btn btn-purple btn-sm margin-top-10" onclick="ProductOptionGroup('')" href="#">Додати групу опцій</a>
         <a class="btn btn-success btn-sm margin-top-10" href="#" id="save-ordering">Зберегти сортування</a>
     </div>
@@ -160,19 +166,25 @@
     @foreach (var group in Model.ProductOptions.OrderBy(entry => entry.Order))
     {
         <div class="margin-top-10">
-            <h3 class="pull-left">@group.Name</h3>
-            @if (group.Editable)
-            {
-                <a class="btn btn-success btn-sm margin-right-10 pull-left" onclick="ProductOptionValue('@group.Id')" title=" додати опцію">
-                    <i class="icon-plus"></i>
-                </a>
-                <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Редагувати" onclick="ProductOptionGroup('@group.Id')">
-                    <i class="icon-edit"></i>
-                </a>
-                <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
-                    <i class="icon-trash"></i>
-                </a>
-            }
+            <h3>
+                <span class="pull-left margin-right-10">@group.Name</span>
+                @if (group.Editable)
+                {
+                    <a class="btn btn-success btn-sm margin-right-10 pull-left" onclick="ProductOptionValue('@group.Id')" title=" додати опцію">
+                        <i class="icon-plus"></i>
+                    </a>
+                    <a class="btn btn-primary margin-right-10 pull-left btn-sm" href="#" title="Редагувати" onclick="ProductOptionGroup('@group.Id')">
+                        <i class="icon-edit"></i>
+                    </a>
+                    <a class="btn btn-danger btn-sm pull-left" title="Видалити" href="@Url.Action("Delete", new { id = group.Id, categoryid = Model.CategoryId, sellerid = Model.SellerId, productid = Model.ProductId })" onclick=" return confirm('Ви впевненні?') ">
+                        <i class="icon-trash"></i>
+                    </a>
+                }
+                else
+                {
+                    <span>(редагування в опціях категорії)</span>
+                }
+            </h3>
             <div class="clearfix"></div>
         </div>
         <hr class="margin-top-0" />
