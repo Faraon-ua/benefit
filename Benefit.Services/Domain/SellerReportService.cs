@@ -35,7 +35,7 @@ namespace Benefit.Services.Domain
                 var products = orderProducts.Where(entry => entry.CategoryName == category).OrderBy(entry => entry.Order.Time).ToList();
                 foreach (var product in products)
                 {
-                    if (product.Amount < 1) continue;
+                    if (product.Amount <= 0) continue;
                     var sellerTransaction = sellerTransactions.FirstOrDefault(entry => entry.ProductSKU == product.ProductSku && entry.OrderNumber == product.Order.OrderNumber) ??
                         new SellerTransaction
                         {
