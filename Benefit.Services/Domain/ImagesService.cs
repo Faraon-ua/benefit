@@ -8,6 +8,8 @@ using System.IO;
 using System.Linq;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
+using ImageProcessor;
+using ImageProcessor.Plugins.WebP.Imaging.Formats;
 using Image = System.Drawing.Image;
 
 namespace Benefit.Services
@@ -16,7 +18,7 @@ namespace Benefit.Services
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
-        private ImageFormat GetImageFormatByExtension(string imagePath)
+        public ImageFormat GetImageFormatByExtension(string imagePath)
         {
             var extension = Path.GetExtension(imagePath);
             if (string.IsNullOrEmpty(extension))
@@ -46,8 +48,8 @@ namespace Benefit.Services
                     return ImageFormat.Tiff;
 
                 case @".wmf":
-                    return ImageFormat.Wmf;
-
+                    return ImageFormat.Wmf; 
+                
                 default:
                     return null;
             }
@@ -74,10 +76,14 @@ namespace Benefit.Services
             db.SaveChanges();
         }
 
-        public void ResizeToSiteRatio(string imagePath, ImageType imageType)
+        public void ResizeToSiteRatio(string imagePath, ImageType imageType, BannerType? bannerType = null, ImageFormat imageFormat = null)
         {
             if (!File.Exists(imagePath)) return;
-            var img = Image.FromFile(imagePath);
+            Bitmap img;
+            using (var bmpTemp = new Bitmap(imagePath))
+            {
+                img = new Bitmap(bmpTemp);
+            }
             int maxHeight = 0;
             int maxWidth = 0;
             switch (imageType)
@@ -106,9 +112,28 @@ namespace Benefit.Services
                     maxWidth = SettingsService.Images.ProductGalleryMaxWidth;
                     maxHeight = SettingsService.Images.ProductGalleryMaxHeight;
                     break;
+                case ImageType.Banner:
+                    if (bannerType == BannerType.FirstRowMainPage || bannerType == BannerType.FirstRowMainPage)
+                    {
+                        maxWidth = 1400;
+                        maxHeight = 200;
+                    }
+                    if(bannerType == BannerType.PrimaryMainPage)
+                    {
+                        maxWidth = 724;
+                        maxHeight = 433;
+                    }
+                    break;
             }
             if (img.Height <= maxHeight &&
-                img.Width <= maxWidth) return;
+                img.Width <= maxWidth)
+            {
+                if (imagePath.Contains(".webp"))
+                {
+                    ConvertToWebp(new Bitmap(img), imagePath, imageFormat);
+                }
+                return;
+            }
             Bitmap newImage;
             using (img)
             {
@@ -129,19 +154,40 @@ namespace Benefit.Services
                         GraphicsUnit.Pixel);
                 }
             }
-            using (var memory = new MemoryStream())
+            if (imagePath.Contains(".webp"))
             {
-                using (var fs = new FileStream(imagePath, FileMode.Create, FileAccess.ReadWrite))
+                ConvertToWebp(newImage, imagePath, imageFormat);
+            }
+            else
+            {
+                using (var memory = new MemoryStream())
                 {
-                    var format = GetImageFormatByExtension(imagePath);
-                    if (format == null) return;
-                    newImage.Save(memory, format);
-                    byte[] bytes = memory.ToArray();
-                    fs.Write(bytes, 0, bytes.Length);
+                    using (var fs = new FileStream(imagePath, FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        var format = GetImageFormatByExtension(imagePath);
+                        if (format == null) return;
+                        newImage.Save(memory, format);
+                        byte[] bytes = memory.ToArray();
+                        fs.Write(bytes, 0, bytes.Length);
+                    }
                 }
             }
         }
 
+        public void ConvertToWebp(Bitmap newImage, string imagePath, ImageFormat imageFormat)
+        {
+            using (var memory = new MemoryStream())
+            {
+                newImage.Save(memory, imageFormat);
+                var bytes = memory.ToArray();
+                using (var imageFactory = new ImageFactory(preserveExifData: false))
+                {
+                    imageFactory.Load(bytes)
+                                .Format(new WebPFormat())
+                                .Save(imagePath);
+                }
+            }
+        }
         public void DeleteAll(IEnumerable<Benefit.Domain.Models.Image> images, string parentId, ImageType type, bool deleteFolder = false, bool deleteFromDb = true)
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
@@ -183,7 +229,7 @@ namespace Benefit.Services
             if (image == null) return;
             DeleteFile(image.ImageUrl, parentId, type);
         }
-        
+
         public void DeleteByFileName(string imageFileName, string parentId, ImageType type)
         {
             Benefit.Domain.Models.Image image = null;
@@ -193,7 +239,7 @@ namespace Benefit.Services
             }
             else
             {
-                image = db.Images.FirstOrDefault(entry=>entry.ImageUrl == imageFileName);
+                image = db.Images.FirstOrDefault(entry => entry.ImageUrl == imageFileName);
             }
             if (image == null) return;
             DeleteFile(image.Id, parentId, type);
@@ -226,7 +272,7 @@ namespace Benefit.Services
                 Debug.Write(e.Message);
             }
             var dotIndex = fileName.IndexOf('.');
-            var id =  dotIndex > 0 ? fileName.Substring(0, dotIndex) : fileName;
+            var id = dotIndex > 0 ? fileName.Substring(0, dotIndex) : fileName;
             using (var db = new ApplicationDbContext())
             {
                 var image = db.Images.Find(id);

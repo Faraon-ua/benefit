@@ -12,7 +12,8 @@ namespace Benefit.Domain.Models
         CategoryLogo,
         SellerCatalog,
         SellerFavicon,
-        SellerSlider
+        SellerSlider,
+        Banner
     }
     public class Image
     {

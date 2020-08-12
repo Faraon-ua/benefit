@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
+using Benefit.Services;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -58,13 +59,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var logo = Request.Files[0];
                 if (logo != null && logo.ContentLength != 0)
                 {
-                    var fileName = Path.GetFileName(logo.FileName);
-                    var dotIndex = fileName.IndexOf('.');
-                    var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
+                    var imageService = new ImagesService();
+                    var format = imageService.GetImageFormatByExtension(logo.FileName);
                     var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                     var pathString = Path.Combine(originalDirectory, "Images", banner.BannerType.ToString());
-                    banner.ImageUrl = banner.Id + fileExt;
-                    logo.SaveAs(Path.Combine(pathString, banner.ImageUrl));
+                    banner.ImageUrl = banner.Id + ".webp";
+                    var path = Path.Combine(pathString, banner.ImageUrl);
+                    logo.SaveAs(path);
+                    imageService.ResizeToSiteRatio(path, ImageType.Banner, banner.BannerType, imageFormat: format);
                 }
                 else
                 {

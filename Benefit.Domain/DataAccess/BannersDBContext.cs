@@ -1,4 +1,5 @@
-﻿using Benefit.Domain.Models;
+﻿using Benefit.Common.Extensions;
+using Benefit.Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -26,12 +27,7 @@ namespace Benefit.Domain.DataAccess
 
             foreach (DataRow drwRow in result.Tables[0].Rows)
             {
-                returnList.Add(new Banner
-                {
-                    BannerType = (BannerType)drwRow["BannerType"],
-                    ImageUrl = (string)drwRow["ImageUrl"],
-                    Order = (int)drwRow["Order"]
-                });
+                returnList.Add(drwRow.ToObject<Banner>());
             }
             return returnList;
         }

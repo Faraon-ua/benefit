@@ -1,3 +1,11 @@
+.gallery a {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    overflow: hidden;
+}
+
 .counter {
     float: left;
     box-sizing: border-box;
