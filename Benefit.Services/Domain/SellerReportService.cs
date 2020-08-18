@@ -36,11 +36,21 @@ namespace Benefit.Services.Domain
                 foreach (var product in products)
                 {
                     if (product.Amount <= 0) continue;
-                    var sellerTransaction = sellerTransactions.FirstOrDefault(entry => entry.ProductSKU == product.ProductSku && entry.OrderNumber == product.Order.OrderNumber) ??
+                    var sellerTransaction = sellerTransactions.FirstOrDefault(entry => entry.ProductSKU == product.ProductSku && entry.OrderNumber == product.Order.OrderNumber && entry.Amount == product.Amount) ??
                         new SellerTransaction
                         {
                             Writeoff = product.ProductPrice * product.Amount * seller.TotalDiscount / 100
                         };
+                    if(product.Order.Time < new DateTime(2020, 4, 16,0,0,0))
+                    {
+                        sellerTransaction.Writeoff = product.ProductPrice * product.Amount * 4 / 100;
+                        sellerTransaction.FeePercent = 4;
+                    }
+                    else
+                    {
+                        sellerTransaction.Writeoff = product.ProductPrice * product.Amount * 2 / 100;
+                        sellerTransaction.FeePercent = 2;
+                    }
                     var report = new Report()
                     {
                         Date = product.Order.Time.ToString("yyyy-MM-dd"),
@@ -48,11 +58,11 @@ namespace Benefit.Services.Domain
                         OrderStatus = Enumerations.GetDisplayNameValue(product.Order.Status),
                         ProductSKU = product.ProductSku.ToString(),
                         Category = category == null ? "Інше" : category.Replace(",", " "),
-                        Price = product.ProductPrice,
+                        Price = Math.Round(product.ProductPrice, 2),
                         Amount = product.Amount,
-                        Sum = product.ProductPrice * product.Amount,
+                        Sum = Math.Round(Math.Round(product.ProductPrice, 2) * product.Amount, 2),
                         Percent = sellerTransaction.FeePercent == 0 ? seller.TotalDiscount : sellerTransaction.FeePercent,
-                        Charge = sellerTransaction.Writeoff.Value,
+                        Charge = Math.Round(sellerTransaction.Writeoff.Value, 3),
                         Bonuses = product.Order.PaymentType == PaymentType.Bonuses ? product.ProductPrice * product.Amount : 0,
                         ProductName = product.ProductName.Replace(",", " "),
                         Shipment = Regex.Replace(string.Format("{0} {1}", product.Order.ShippingName, product.Order.ShippingAddress).Replace(",", " ").Replace("\r", string.Empty).Replace("\t", string.Empty), " {2,}", " "),
