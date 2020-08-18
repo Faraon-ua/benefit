@@ -674,6 +674,10 @@
     <Compile Include="Migrations\202007031313261_AddSellerReports.Designer.cs">
       <DependentUpon>202007031313261_AddSellerReports.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202008181450317_AddSellerCustomScripts.cs" />
+    <Compile Include="Migrations\202008181450317_AddSellerCustomScripts.Designer.cs">
+      <DependentUpon>202008181450317_AddSellerCustomScripts.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1169,6 +1173,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202007031313261_AddSellerReports.resx">
       <DependentUpon>202007031313261_AddSellerReports.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008181450317_AddSellerCustomScripts.resx">
+      <DependentUpon>202008181450317_AddSellerCustomScripts.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

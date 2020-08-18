@@ -6,17 +6,40 @@ using System.IO;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services;
-using Benefit.Web.Filters;
-using Benefit.Web.Helpers;
 using Benefit.Services.Domain;
 using Microsoft.AspNet.Identity;
-using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Controllers
 {
     public class HelperController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
+
+        public ActionResult CleanImages()
+        {
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var originalPath = Path.Combine(originalDirectory, "Images", "ProductGallery");
+            var originalDir = new DirectoryInfo(originalPath);
+            foreach (var dir in originalDir.GetDirectories())
+            {
+                var product = db.Products.Include(entry => entry.Images).FirstOrDefault(entry => entry.Id == dir.Name);
+                if(product == null || !dir.EnumerateFileSystemInfos().Any())
+                {
+                    dir.Delete(true);
+                }
+                else
+                {
+                    foreach(var img in dir.GetFiles())
+                    {
+                        if(product.Images.FirstOrDefault(entry=>entry.ImageUrl == img.Name) == null)
+                        {
+                            System.IO.File.Delete(Path.Combine(dir.FullName, img.Name));
+                        }
+                    }
+                }
+            }
+            return Content("Images cleaned");
+        }
 
         public ActionResult AddCategoriesToOrderProducts(string sellerId)
         {

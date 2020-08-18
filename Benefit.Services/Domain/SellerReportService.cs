@@ -41,16 +41,16 @@ namespace Benefit.Services.Domain
                         {
                             Writeoff = product.ProductPrice * product.Amount * seller.TotalDiscount / 100
                         };
-                    if(product.Order.Time < new DateTime(2020, 4, 16,0,0,0))
-                    {
-                        sellerTransaction.Writeoff = product.ProductPrice * product.Amount * 4 / 100;
-                        sellerTransaction.FeePercent = 4;
-                    }
-                    else
-                    {
-                        sellerTransaction.Writeoff = product.ProductPrice * product.Amount * 2 / 100;
-                        sellerTransaction.FeePercent = 2;
-                    }
+                    //if(product.Order.Time < new DateTime(2020, 4, 16,0,0,0))
+                    //{
+                    //    sellerTransaction.Writeoff = product.ProductPrice * product.Amount * 4 / 100;
+                    //    sellerTransaction.FeePercent = 4;
+                    //}
+                    //else
+                    //{
+                    //    sellerTransaction.Writeoff = product.ProductPrice * product.Amount * 2 / 100;
+                    //    sellerTransaction.FeePercent = 2;
+                    //}
                     var report = new Report()
                     {
                         Date = product.Order.Time.ToString("yyyy-MM-dd"),

@@ -53,6 +53,7 @@ namespace Benefit.Domain.Models
         public double? Latitude { get; set; }
         public double? Longitude { get; set; }
         public string Widget { get; set; }  
+        public string CustomScripts { get; set; }  
         public double CurrentBill { get; set; }
         public double GreyZone { get; set; }
         public DateTime? BlockOn { get; set; }
