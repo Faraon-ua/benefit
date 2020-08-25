@@ -10,7 +10,7 @@ using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using ImageProcessor;
 using ImageProcessor.Plugins.WebP.Imaging.Formats;
-using Image = System.Drawing.Image;
+using Image = Benefit.Domain.Models.Image;
 
 namespace Benefit.Services
 {
@@ -18,6 +18,27 @@ namespace Benefit.Services
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        public string AddProductDefaultImage(Image img, ImageFormat format)
+        {
+            if (img.IsAbsoluteUrl)
+                return img.Id;
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var pathString = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), img.ProductId);
+            var imgId = Guid.NewGuid().ToString();
+            var defaultImgName = imgId + ".webp";
+            File.Copy(Path.Combine(pathString, img.ImageUrl), Path.Combine(pathString, defaultImgName));
+            var image = new Image()
+            {
+                Id = imgId,
+                ImageUrl = defaultImgName,
+                IsAbsoluteUrl = false,
+                ProductId = img.ProductId,
+                ImageType = ImageType.ProductDefault
+            };
+            db.Images.Add(image);
+            ResizeToSiteRatio(Path.Combine(pathString, defaultImgName), ImageType.ProductDefault, imageFormat: format);
+            return imgId;
+        }
         public ImageFormat GetImageFormatByExtension(string imagePath)
         {
             var extension = Path.GetExtension(imagePath);
@@ -112,6 +133,10 @@ namespace Benefit.Services
                     maxWidth = SettingsService.Images.ProductGalleryMaxWidth;
                     maxHeight = SettingsService.Images.ProductGalleryMaxHeight;
                     break;
+                case ImageType.ProductDefault:
+                    maxWidth = 290;
+                    maxHeight = 184;
+                    break;
                 case ImageType.Banner:
                     if (bannerType == BannerType.FirstRowMainPage || bannerType == BannerType.FirstRowMainPage)
                     {
@@ -122,6 +147,11 @@ namespace Benefit.Services
                     {
                         maxWidth = 724;
                         maxHeight = 433;
+                    }
+                    if (bannerType == BannerType.SideTopMainPage || bannerType == BannerType.SideBottomMainPage)
+                    {
+                        maxWidth = 377;
+                        maxHeight = 212;
                     }
                     break;
             }
@@ -217,7 +247,7 @@ namespace Benefit.Services
 
         public void Delete(string imageId, string parentId, ImageType type)
         {
-            Benefit.Domain.Models.Image image = null;
+            Image image = null;
             if (type == ImageType.ProductGallery)
             {
                 image = db.Images.FirstOrDefault(entry => entry.Id == imageId && entry.ProductId == parentId);

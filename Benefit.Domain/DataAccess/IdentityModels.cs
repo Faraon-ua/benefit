@@ -154,6 +154,8 @@ namespace Benefit.Domain.DataAccess
             modelBuilder.Entity<ProductOption>()
                .HasOptional<ProductOption>(s => s.BindedProductOption)
                .WithMany(s => s.BindedProductOptions).WillCascadeOnDelete(false);
+            modelBuilder.Entity<Product>()
+               .HasOptional<Image>(s => s.DefaultImage).WithMany(i=>i.DefaultProducts).WillCascadeOnDelete(false);
         }
 
         public override int SaveChanges()

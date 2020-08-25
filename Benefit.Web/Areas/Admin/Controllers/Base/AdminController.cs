@@ -18,6 +18,21 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             using (var db = new ApplicationDbContext())
             {
                 var images = db.Images.Where(entry => sortedImages.Contains(entry.Id)).ToList();
+                var first = images.First();
+                if (first.ProductId != null)
+                {
+                    ImagesService imagesService = new ImagesService();
+                    var product = db.Products.Find(first.ProductId);
+                    var oldImageId = product.DefaultImageId;
+                    var format = imagesService.GetImageFormatByExtension(first.ImageUrl);
+                    product.DefaultImageId = imagesService.AddProductDefaultImage(first, format);
+                    db.Entry(product).State = EntityState.Modified;
+                    db.SaveChanges();
+                    if (oldImageId != null)
+                    {
+                        imagesService.Delete(oldImageId, product.Id, ImageType.ProductDefault);
+                    }
+                }
                 for (var i = 0; i < sortedImages.Count; i++)
                 {
                     var img = images.FirstOrDefault(entry => entry.Id == sortedImages[i]);
@@ -33,7 +48,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             var imagesService = new ImagesService();
             if (Uri.IsWellFormedUriString(fileName, UriKind.Absolute))
             {
-                imagesService.DeleteAbsoluteUrlImage(fileName, parentId);   
+                imagesService.DeleteAbsoluteUrlImage(fileName, parentId);
             }
             else
             {

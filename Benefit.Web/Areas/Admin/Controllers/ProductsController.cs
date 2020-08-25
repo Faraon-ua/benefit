@@ -298,6 +298,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     product.AddedOn = DateTime.UtcNow;
                     db.Products.Add(product);
                 }
+                if(product.DefaultImageId == null)
+                {
+                    var image = db.Images.Where(entry => entry.ProductId == product.Id).OrderBy(entry => entry.Order).FirstOrDefault();
+                    if (image != null)
+                    {
+                        ImagesService imagesService = new ImagesService();
+                        var format = imagesService.GetImageFormatByExtension(image.ImageUrl);
+                        product.DefaultImageId = imagesService.AddProductDefaultImage(image, format);
+                    }
+                }
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Товар збережено";
                 return RedirectToAction("CreateOrUpdate", new { id = product.Id });

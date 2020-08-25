@@ -678,6 +678,10 @@
     <Compile Include="Migrations\202008181450317_AddSellerCustomScripts.Designer.cs">
       <DependentUpon>202008181450317_AddSellerCustomScripts.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202008200932212_AddDefaultProductImage.cs" />
+    <Compile Include="Migrations\202008200932212_AddDefaultProductImage.Designer.cs">
+      <DependentUpon>202008200932212_AddDefaultProductImage.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1176,6 +1180,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008181450317_AddSellerCustomScripts.resx">
       <DependentUpon>202008181450317_AddSellerCustomScripts.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202008200932212_AddDefaultProductImage.resx">
+      <DependentUpon>202008200932212_AddDefaultProductImage.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

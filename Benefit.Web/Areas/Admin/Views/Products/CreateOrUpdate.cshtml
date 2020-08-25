@@ -149,7 +149,11 @@
                 $(this).parent().parent().remove();
             });
 
-            $("#imagesOrder").sortable();
+            $("#imagesOrder").sortable({
+                change: function (event, ui) {
+                    $("#imagesOrder li").eq(0).find(".dd-list").append('<div style="padding:3px; background-color:rgb(209,91,71); position:absolute;bottom:10px;left:5px; color:#FFF;">Головне</div>');
+                }
+            });
             $("#imagesOrder").disableSelection();
 
             var saveImagesOrderUrl = '@Url.Action("SaveImagesOrder", "Products")';

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.Domain.Models
 {
@@ -13,7 +14,8 @@ namespace Benefit.Domain.Models
         SellerCatalog,
         SellerFavicon,
         SellerSlider,
-        Banner
+        Banner,
+        ProductDefault
     }
     public class Image
     {
@@ -33,5 +35,6 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string ProductId { get; set; }
         public Product Product { get; set; }
+        public ICollection<Product> DefaultProducts { get; set; }
     }
 }

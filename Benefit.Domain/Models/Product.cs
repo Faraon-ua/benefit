@@ -150,6 +150,9 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string CurrencyId { get; set; }
         public virtual Currency Currency { get; set; }
+        [MaxLength(128)]
+        public string DefaultImageId { get; set; }
+        public Image DefaultImage { get; set; }
         public virtual ICollection<Image> Images { get; set; }
         public virtual ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
         public virtual ICollection<ProductOption> ProductOptions { get; set; }

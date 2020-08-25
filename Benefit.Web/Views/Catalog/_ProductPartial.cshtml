@@ -5,7 +5,6 @@
 @model Product
 
 @{
-    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
     //var sellerUrl = Url.SubdomainAction(Model.Seller.UrlName, "Index", "Home", null);
     var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.Seller.UrlName, category = string.Empty, options = string.Empty });
@@ -36,19 +35,19 @@
             <a href="@productDetailsUrl" title="@Model.Title">
                 <div class="row">
                     <div class="span2">
-                        @if (image == null)
+                        @if (Model.DefaultImage == null)
                         {
                             <img src="/Images/ProductGallery/default_product_thumbnail.png" />
                         }
                         else
                         {
-                            if (image.IsAbsoluteUrl)
+                            if (Model.DefaultImage.IsAbsoluteUrl)
                             {
-                                <img data-defer-src="@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" src="~/Content/v3/images/loaders/img-loader.gif" />
+                                <img data-defer-src="@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" src="~/Content/v3/images/loaders/img-loader.gif" />
                             }
                             else
                             {
-                                <img data-defer-src="/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" src="~/Content/v3/images/loaders/img-loader.gif" />
+                                <img data-defer-src="/Images/ProductGallery/@Model.Id/@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" src="~/Content/v3/images/loaders/img-loader.gif" />
                             }
                         }
                     </div>

@@ -2,6 +2,7 @@
 @model Product
 @if (Model.Name != null)
 {
+    @Html.HiddenFor(m => m.DefaultImageId)
     <br />
     <p>
         Галерея
@@ -11,20 +12,27 @@
     if (Model.Images.Any())
     {
         <br />
-        <p>Порядок зображень</p>
+        <b>Порядок зображень</b>
         <div>
-            <ol class="dd-list" id="imagesOrder">
-                @foreach (var image in Model.Images.Where(entry => entry.ImageType == ImageType.ProductGallery).OrderBy(entry => entry.Order))
+            <ol class="dd-list display-flex" id="imagesOrder">
+                @{
+                    var images = Model.Images.Where(entry => entry.ImageType == ImageType.ProductGallery).OrderBy(entry => entry.Order).ToList();
+                }
+                @for (var i = 0; i < images.Count; i++)
                 {
-                    <li class="cursor-move width-10" data-image-id="@image.Id">
+                    <li class="cursor-move width-10 margin-5" data-image-id="@images[i].Id">
                         <div class="dd-handle">
-                            @if (image.IsAbsoluteUrl)
+                            @if (images[i].IsAbsoluteUrl)
                             {
-                                <img src="@image.ImageUrl" height="70" />
+                                <img src="@images[i].ImageUrl" height="70" />
                             }
                             else
                             {
-                                <img src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" height="70" />
+                                <img src="~/Images/ProductGallery/@Model.Id/@images[i].ImageUrl" height="70" />
+                            }
+                            @if (i == 0)
+                            {
+                                <div style="padding:3px; background-color:rgb(209,91,71); position:absolute;bottom:10px;left:5px; color:#FFF;">Головне</div>
                             }
                         </div>
                     </li>

@@ -14,6 +14,33 @@ namespace Benefit.Web.Controllers
     public class HelperController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
+        public ActionResult SetDefaultImage()
+        {
+            var products = db.Products.Include(enty=>enty.DefaultImage).Include(enty=>enty.Images).Where(entry => entry.IsActive && entry.Category.IsActive && entry.Seller.IsActive && entry.Images.Any()).ToList();
+            foreach(var product in products)
+            {
+                if (product.DefaultImage == null)
+                {
+                    var first = product.Images.OrderBy(entry => entry.Order).First();
+
+                    var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                    var pathString = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), product.Id);
+                    if (first.IsAbsoluteUrl)
+                    {
+                        product.DefaultImageId = first.Id;
+                    }
+                    else if (System.IO.File.Exists(Path.Combine(pathString, first.ImageUrl)))
+                    {
+                        ImagesService imagesService = new ImagesService();
+                        var format = imagesService.GetImageFormatByExtension(first.ImageUrl);
+                        product.DefaultImageId = imagesService.AddProductDefaultImage(first, format);
+                        db.Entry(product).State = EntityState.Modified;
+                    }
+                    db.SaveChanges();
+                }
+            }
+            return Content("Ok");
+        }
 
         public ActionResult CleanImages()
         {

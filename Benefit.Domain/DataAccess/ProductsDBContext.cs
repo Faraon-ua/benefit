@@ -144,6 +144,9 @@ namespace Benefit.Domain.DataAccess
 	                ,s.SafePurchase as SellerSafePurchase
 	                ,s.UrlName as SellerUrlName
 	                ,s.UserDiscount as SellerUserDiscount
+                    /*=Default Image=*/
+                    img.ImageUrl as ImageUrl,
+                    img.IsAbsoluteUrl as ImageIsAbsoluteUrl,
                     ,cat.IsActive as CategoryIsActive
                     ,cat.Name as CategoryName
                   ,p.Name
@@ -191,17 +194,21 @@ namespace Benefit.Domain.DataAccess
             }
 
             cmd.Parameters.AddRange(sqlParams.ToArray());
-            return FetchProducts(false, true);
+            return FetchProducts();
         }
 
         public List<Product> GetMainPageProducts()
         {
             cmd.CommandText = @"select distinct(p.Id), p.Name, p.UrlName, p.SKU, p.Title, p.AvailabilityState, (p.Price * c.Rate) as Price, p.SellerId, p.IsNewProduct, p.IsFeatured,
+                /*=Seller=*/
 	            s.IsActive as SellerIsActive, 
 	            s.Name as SellerName, 
 	            s.SafePurchase as SellerSafePurchase, 
 	            s.UrlName as SellerUrlName, 
 	            s.UserDiscount as SellerUserDiscount, 
+                /*=Default Image=*/
+                img.ImageUrl as ImageUrl,
+                img.IsAbsoluteUrl as ImageIsAbsoluteUrl,
 	            (SELECT count(Id) FROM Reviews where ProductId = p.Id) as ReviewsCount,
                 cat.IsActive as CategoryIsActive,
                 cat.Name as CategoryName
@@ -209,6 +216,7 @@ namespace Benefit.Domain.DataAccess
             left join Currencies c on c.Id = p.CurrencyId
             left join Reviews r on r.ProductId = p.Id
             join Sellers s on p.SellerId = s.Id
+            join Images img on img.ProductId = p.Id
             join Categories cat on p.CategoryId = cat.Id
             where p.SellerId = s.Id and
 	              p.CategoryId = cat.Id and
@@ -218,23 +226,14 @@ namespace Benefit.Domain.DataAccess
 	              cat.IsActive = 1 and
                   (p.IsFeatured = 1 or p.IsNewProduct = 1) and
 	              s.AreProductsFeatured = 1";
-            return FetchProducts(true, true);
+            return FetchProducts();
         }
-        private List<Product> FetchProducts(bool fetchSeller, bool fetchImages)
+        private List<Product> FetchProducts()
         {
             List<Product> returnList = new List<Product>();
             var adapter = new SqlDataAdapter(cmd);
             var result = new DataSet();
-            var imgResult = new DataSet();
             adapter.Fill(result);
-
-            if (fetchImages)
-            {
-                var productIds = result.Tables[0].AsEnumerable().Select(dataRow => string.Format("'{0}'", dataRow["Id"].ToString())).ToList();
-                if (!productIds.Any()) productIds.Add("'0'");
-                cmd.CommandText = string.Format("Select * from Images where ProductId in ({0})", string.Join(",", productIds));
-                adapter.Fill(imgResult);
-            }
             foreach (DataRow drwRow in result.Tables[0].Rows)
             {
                 var product = drwRow.ToObject<Product>();
@@ -252,11 +251,12 @@ namespace Benefit.Domain.DataAccess
                     IsActive = (bool)drwRow["CategoryIsActive"],
                     Name = (String)drwRow["CategoryName"],
                 };
-                if (fetchImages)
+                product.DefaultImage = new Image
                 {
-                    product.Images = imgResult.Tables[0].AsEnumerable().Where(entry => entry["ProductId"].ToString() == (String)drwRow["Id"]).Select(img =>
-                              img.ToObject<Image>()).ToList();
-                }
+                    ImageUrl = (string)drwRow["ImageUrl"],
+                    IsAbsoluteUrl = (bool)drwRow["ImageIsAbsoluteUrl"],
+                };
+                
                 returnList.Add(product);
             }
             return returnList;
