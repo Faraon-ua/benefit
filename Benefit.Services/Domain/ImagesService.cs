@@ -36,6 +36,7 @@ namespace Benefit.Services
                 ImageType = ImageType.ProductDefault
             };
             db.Images.Add(image);
+            db.SaveChanges();
             ResizeToSiteRatio(Path.Combine(pathString, defaultImgName), ImageType.ProductDefault, imageFormat: format);
             return imgId;
         }

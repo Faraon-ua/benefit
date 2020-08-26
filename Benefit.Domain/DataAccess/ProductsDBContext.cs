@@ -145,8 +145,8 @@ namespace Benefit.Domain.DataAccess
 	                ,s.UrlName as SellerUrlName
 	                ,s.UserDiscount as SellerUserDiscount
                     /*=Default Image=*/
-                    img.ImageUrl as ImageUrl,
-                    img.IsAbsoluteUrl as ImageIsAbsoluteUrl,
+                    ,img.ImageUrl as ImageUrl
+                    ,img.IsAbsoluteUrl as ImageIsAbsoluteUrl
                     ,cat.IsActive as CategoryIsActive
                     ,cat.Name as CategoryName
                   ,p.Name
@@ -166,6 +166,7 @@ namespace Benefit.Domain.DataAccess
 	            join Sellers s on s.Id = p.SellerId
 	            join Categories cat on cat.Id = p.CategoryId
 	            left join Categories pCat on cat.MappedParentCategoryId = pCat.Id
+                left join Images img on img.Id = p.DefaultImageId
               WHERE
 	            p.IsActive = 1 and
 	            p.ModerationStatus = 0 and
@@ -216,7 +217,7 @@ namespace Benefit.Domain.DataAccess
             left join Currencies c on c.Id = p.CurrencyId
             left join Reviews r on r.ProductId = p.Id
             join Sellers s on p.SellerId = s.Id
-            join Images img on img.ProductId = p.Id
+            left join Images img on img.Id = p.DefaultImageId
             join Categories cat on p.CategoryId = cat.Id
             where p.SellerId = s.Id and
 	              p.CategoryId = cat.Id and
@@ -251,12 +252,15 @@ namespace Benefit.Domain.DataAccess
                     IsActive = (bool)drwRow["CategoryIsActive"],
                     Name = (String)drwRow["CategoryName"],
                 };
-                product.DefaultImage = new Image
+                if (drwRow["ImageUrl"] != DBNull.Value)
                 {
-                    ImageUrl = (string)drwRow["ImageUrl"],
-                    IsAbsoluteUrl = (bool)drwRow["ImageIsAbsoluteUrl"],
-                };
-                
+                    product.DefaultImage = new Image
+                    {
+                        ImageUrl = (string)drwRow["ImageUrl"],
+                        IsAbsoluteUrl = (bool)drwRow["ImageIsAbsoluteUrl"],
+                    };
+                }
+
                 returnList.Add(product);
             }
             return returnList;

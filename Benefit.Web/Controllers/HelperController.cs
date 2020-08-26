@@ -16,28 +16,26 @@ namespace Benefit.Web.Controllers
         ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult SetDefaultImage()
         {
-            var products = db.Products.Include(enty=>enty.DefaultImage).Include(enty=>enty.Images).Where(entry => entry.IsActive && entry.Category.IsActive && entry.Seller.IsActive && entry.Images.Any()).ToList();
-            foreach(var product in products)
+            var products = db.Products.Include(enty => enty.DefaultImage).Include(enty => enty.Images)
+                .Where(entry => entry.IsActive && entry.Category.IsActive && entry.Seller.IsActive && entry.Images.Any() && entry.DefaultImageId == null).ToList();
+            foreach (var product in products)
             {
-                if (product.DefaultImage == null)
-                {
-                    var first = product.Images.OrderBy(entry => entry.Order).First();
+                var first = product.Images.OrderBy(entry => entry.Order).First();
 
-                    var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                    var pathString = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), product.Id);
-                    if (first.IsAbsoluteUrl)
-                    {
-                        product.DefaultImageId = first.Id;
-                    }
-                    else if (System.IO.File.Exists(Path.Combine(pathString, first.ImageUrl)))
-                    {
-                        ImagesService imagesService = new ImagesService();
-                        var format = imagesService.GetImageFormatByExtension(first.ImageUrl);
-                        product.DefaultImageId = imagesService.AddProductDefaultImage(first, format);
-                        db.Entry(product).State = EntityState.Modified;
-                    }
-                    db.SaveChanges();
+                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                var pathString = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), product.Id);
+                if (first.IsAbsoluteUrl)
+                {
+                    product.DefaultImageId = first.Id;
                 }
+                else if (System.IO.File.Exists(Path.Combine(pathString, first.ImageUrl)))
+                {
+                    ImagesService imagesService = new ImagesService();
+                    var format = imagesService.GetImageFormatByExtension(first.ImageUrl);
+                    product.DefaultImageId = imagesService.AddProductDefaultImage(first, format);
+                    db.Entry(product).State = EntityState.Modified;
+                }
+                db.SaveChanges();
             }
             return Content("Ok");
         }
@@ -50,15 +48,15 @@ namespace Benefit.Web.Controllers
             foreach (var dir in originalDir.GetDirectories())
             {
                 var product = db.Products.Include(entry => entry.Images).FirstOrDefault(entry => entry.Id == dir.Name);
-                if(product == null || !dir.EnumerateFileSystemInfos().Any())
+                if (product == null || !dir.EnumerateFileSystemInfos().Any())
                 {
                     dir.Delete(true);
                 }
                 else
                 {
-                    foreach(var img in dir.GetFiles())
+                    foreach (var img in dir.GetFiles())
                     {
-                        if(product.Images.FirstOrDefault(entry=>entry.ImageUrl == img.Name) == null)
+                        if (product.Images.FirstOrDefault(entry => entry.ImageUrl == img.Name) == null)
                         {
                             System.IO.File.Delete(Path.Combine(dir.FullName, img.Name));
                         }
@@ -78,12 +76,12 @@ namespace Benefit.Web.Controllers
             var products = db.Products.AsNoTracking()
                 .Include(entry => entry.Category.MappedParentCategory)
                 .Where(entry => productIds.Contains(entry.Id)).ToList();
-            foreach(var orderProduct in orderProducts)
+            foreach (var orderProduct in orderProducts)
             {
                 var product = products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
                 if (product != null)
                 {
-                    if(product.Category.MappedParentCategoryId== null)
+                    if (product.Category.MappedParentCategoryId == null)
                     {
                         orderProduct.CategoryName = product.Category.Name;
                     }
@@ -113,8 +111,8 @@ namespace Benefit.Web.Controllers
         public ActionResult DeleteAllSellerProducts(string sellerId)
         {
             var productservice = new ProductsService();
-            var products = db.Products.Where(entry => entry.SellerId == sellerId).Select(entry=>entry.Id).ToList();
-            foreach(var product in products)
+            var products = db.Products.Where(entry => entry.SellerId == sellerId).Select(entry => entry.Id).ToList();
+            foreach (var product in products)
             {
                 productservice.Delete(product);
             }
