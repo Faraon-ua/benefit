@@ -90,6 +90,7 @@ namespace Benefit.Services.Domain
             {
                 return null;
             }
+            product.Images = product.Images.Where(entry => entry.ImageType == ImageType.ProductGallery).ToList();
             if (product.Currency != null)
             {
                 if (product.OldPrice.HasValue)

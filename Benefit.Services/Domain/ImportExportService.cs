@@ -345,7 +345,7 @@ namespace Benefit.Services.Domain
             var productsToAddList = new List<Product>();
             var imagesToAddList = new List<Image>();
 
-            var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId) && entry.IsImported).ToList();
+            var existingImages = db.Images.Where(entry => dbProductIds.Contains(entry.ProductId) && entry.IsImported && entry.ImageType != ImageType.ProductDefault).ToList();
             db.DeleteWhereColumnIn(existingImages);
 
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>

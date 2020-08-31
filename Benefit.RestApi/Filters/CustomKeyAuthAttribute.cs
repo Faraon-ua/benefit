@@ -2,7 +2,7 @@
 using System.Web.Mvc;
 using Benefit.Services;
 
-namespace Benefit.Web.Filters
+namespace Benefit.RestApi.Filters
 {
     public class CustomKeyAuthAttribute : ActionFilterAttribute
     {

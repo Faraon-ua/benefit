@@ -298,9 +298,9 @@
     <Compile Include="Controllers\ValidationController.cs" />
     <Compile Include="Filters\AccessPasswordFilterAttribute.cs" />
     <Compile Include="Filters\CabinetFilterAttribute.cs" />
+    <Compile Include="Filters\CustomKeyAuthAttribute.cs" />
     <Compile Include="Filters\FetchLastNewsAttribute.cs" />
     <Compile Include="Filters\FetchCategoriesAttribute.cs" />
-    <Compile Include="Filters\CustomKeyAuthAttribute.cs" />
     <Compile Include="Filters\FetchSellerAttribute.cs" />
     <Compile Include="Filters\SubdomainFilterAttribute.cs" />
     <Compile Include="Filters\UserFilterAttribute.cs" />
