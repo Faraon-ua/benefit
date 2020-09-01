@@ -43,8 +43,6 @@ namespace Benefit.Web.Controllers
         public ActionResult Index(string categoryUrl, string options)
         {
             var categoriesDbContext = new CategoiesDBContext();
-            var sqlParams = new List<SqlParameter>();
-            string where = string.Empty;
             var category = categoriesDbContext.Get(categoryUrl);
             var seller = ViewBag.Seller as Seller;
             var cachedCats = ViewBag.Categories as List<CategoryVM>;

@@ -4,7 +4,6 @@
 @model Product
 @{
     var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) });
-    var image = Model.Images.OrderBy(entry => entry.Order).FirstOrDefault();
     //var categoryToSellerDiscountPercent = ViewBag.CategoryToSellerDiscountPercent as Dictionary<string, double>;
     //var categoryDiscount = Model.Seller.UserDiscount;
     //if (categoryToSellerDiscountPercent != null && categoryToSellerDiscountPercent.ContainsKey(Model.SellerId))
@@ -38,19 +37,19 @@
                 }*@
             </div>
             <a class="preview_image" href="@productDetailsUrl">
-                @if (image == null)
+                @if (Model.DefaultImage == null)
                 {
                     <img class="fn_img preview_img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
                 }
                 else
                 {
-                    if (image.IsAbsoluteUrl)
+                    if (Model.DefaultImage.IsAbsoluteUrl)
                     {
-                        <img class="fn_img preview_img" src="@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
+                        <img class="fn_img preview_img" src="@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
                     }
                     else
                     {
-                        <img class="fn_img preview_img" src="~/Images/ProductGallery/@Model.Id/@image.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
+                        <img class="fn_img preview_img" src="~/Images/ProductGallery/@Model.Id/@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
                     }
                 }
             </a>
