@@ -3,183 +3,190 @@
 @using Benefit.Domain.Models
 @using Benefit.Web.Models.ViewModels
 @model  Benefit.Domain.Models.Product
-<div class="form-horizontal">
-    @Html.HiddenFor(model => model.Id)
+    <div class="form-horizontal">
+        @Html.HiddenFor(model => model.Id)
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">* Назва</label>
-        <div class="col-sm-9">
-            @Html.TextBoxFor(model => model.Name, new { @class = "col-xs-10 col-sm-5 name" })
-            @Html.ValidationMessageFor(model => model.Name)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">* Url Назва</label>
-        <div class="col-md-9">
-            @Html.TextBoxFor(model => model.UrlName, new { @class = "col-xs-10 col-sm-5 urlName" })
-            @Html.ValidationMessageFor(model => model.UrlName)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Title</label>
-        <div class="col-md-9">
-            @Html.TextBoxFor(model => model.Title, new { @class = "col-xs-10 col-sm-5" })
-            @Html.ValidationMessageFor(model => model.Title)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Код товару</label>
-        <div class="col-md-9">
-            @Html.TextBoxFor(model => model.SKU, new { @class = "col-xs-10 col-sm-5", @readonly = "readonly" })
-            @Html.ValidationMessageFor(model => model.SKU)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Ціна</label>
-        <div class="col-md-9">
-            @Html.TextBox("Price", Model.Price.ToString("F"), new { @class = "col-sm-1 pull-left" })
-            @Html.DropDownList("CurrencyId", null, new { @class = "col-sm-2" })
-            @Html.ValidationMessageFor(model => model.Price)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Стара Ціна</label>
-        <div class="col-md-9">
-            @Html.TextBox("OldPrice", Model.OldPrice == null ? null : Model.OldPrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
-            @Html.ValidationMessageFor(model => model.WholesalePrice)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Оптова Ціна</label>
-        <div class="col-md-9">
-            @Html.TextBox("WholesalePrice", Model.WholesalePrice == null ? null : Model.WholesalePrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
-            @Html.ValidationMessageFor(model => model.WholesalePrice)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Опт від</label>
-        <div class="col-md-9">
-            @Html.TextBox("WholesaleFrom", Model.WholesaleFrom == null ? null : Model.WholesaleFrom.Value.ToString(), new { @class = "col-sm-1 pull-left" }) шт
-            @Html.ValidationMessageFor(model => model.WholesaleFrom)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Виробник</label>
-        <div class="col-md-9">
-            @Html.TextBoxFor(model => model.Vendor, new { @class = "col-xs-10 col-sm-5" })
-            @Html.ValidationMessageFor(model => model.Vendor)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Країна виробник</label>
-        <div class="col-md-9">
-            @Html.TextBoxFor(model => model.OriginCountry, new { @class = "col-xs-10 col-sm-5" })
-            @Html.ValidationMessageFor(model => model.OriginCountry)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Статус доступності</label>
-        <div class="col-md-9">
-            @Html.EnumDropDownListFor(m => m.AvailabilityState)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Доступна кількість</label>
-        <div class="col-md-9">
-            @Html.EditorFor(entry => entry.AvailableAmount)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right" for="IsActive">Активний</label>
-        <div class="col-md-9">
-            @Html.EditorFor(model => model.IsActive)
-            @Html.ValidationMessageFor(model => model.IsActive)
-        </div>
-    </div>
-
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right" for="DoesCountForShipping">Враховується в сумму доставки</label>
-        <div class="col-md-9">
-            @Html.EditorFor(model => model.DoesCountForShipping)
-            @Html.ValidationMessageFor(model => model.DoesCountForShipping)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right" for="IsWeightProduct">Ваговий продукт</label>
-        <div class="col-md-9">
-            @Html.EditorFor(model => model.IsWeightProduct)
-            @Html.ValidationMessageFor(model => model.IsWeightProduct)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right" for="IsImported">Імпортований із файлу</label>
-        <div class="col-md-9">
-            @Html.EditorFor(model => model.IsImported)
-            @Html.ValidationMessageFor(model => model.IsImported)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Порядок</label>
-        <div class="col-sm-9">
-            @Html.TextBoxFor(model => model.Order, new { @class = "col-xs-4 col-sm-2", type = "number" })
-            @Html.ValidationMessageFor(model => model.Order)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Категорія</label>
-        <div class="col-md-9">
-            @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
-            {
-                Name = "CategoryId",
-                Value = Model.CategoryId,
-                Items = ViewBag.Categories
-            })
-            @Html.ValidationMessageFor(model => model.CategoryId)
-        </div>
-    </div>
-    @if (User.IsInRole(DomainConstants.AdminRoleName))
-    {
         <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Постачальник</label>
-            <div class="col-md-9">
-                @Html.DropDownList("SellerId", null, new { @class = "chosen-select col-xs-10 col-sm-5" })
-                @Html.ValidationMessageFor(model => model.SellerId)
+            <label class="col-sm-3 control-label no-padding-right">* Назва</label>
+            <div class="col-sm-9">
+                @Html.TextBoxFor(model => model.Name, new { @class = "col-xs-10 col-sm-5 name" })
+                @Html.ValidationMessageFor(model => model.Name)
             </div>
         </div>
-    }
-    else
-    {
-        @Html.Hidden("SellerId", Seller.CurrentAuthorizedSellerId)
-    }
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Пошукові теги (через кому)</label>
-        <div class="col-xs-10 col-sm-5">
-            <input type="text" name="SearchTags" id="SearchTags" value="@Model.SearchTags" placeholder="Пошукові теги (через кому)" />
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">* Url Назва</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.UrlName, new { @class = "col-xs-10 col-sm-5 urlName" })
+                @Html.ValidationMessageFor(model => model.UrlName)
+            </div>
         </div>
-    </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Title</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Title, new { @class = "col-xs-10 col-sm-5" })
+                @Html.ValidationMessageFor(model => model.Title)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Код товару</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.SKU, new { @class = "col-xs-10 col-sm-5", @readonly = "readonly" })
+                @Html.ValidationMessageFor(model => model.SKU)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Ціна</label>
+            <div class="col-md-9">
+                @Html.TextBox("Price", Model.Price.ToString("F"), new { @class = "col-sm-1 pull-left" })
+                @Html.DropDownList("CurrencyId", null, new { @class = "col-sm-2" })
+                @Html.ValidationMessageFor(model => model.Price)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Стара Ціна</label>
+            <div class="col-md-9">
+                @Html.TextBox("OldPrice", Model.OldPrice == null ? null : Model.OldPrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
+                @Html.ValidationMessageFor(model => model.OldPrice)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Оптова Ціна</label>
+            <div class="col-md-9">
+                @Html.TextBox("WholesalePrice", Model.WholesalePrice == null ? null : Model.WholesalePrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
+                @Html.ValidationMessageFor(model => model.WholesalePrice)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Промо Ціна</label>
+            <div class="col-md-9">
+                @Html.TextBox("PromoPrice", Model.PromoPrice == null ? null : Model.PromoPrice.Value.ToString("F"), new { @class = "col-sm-1 pull-left" })
+                @Html.ValidationMessageFor(model => model.PromoPrice)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Опт від</label>
+            <div class="col-md-9">
+                @Html.TextBox("WholesaleFrom", Model.WholesaleFrom == null ? null : Model.WholesaleFrom.Value.ToString(), new { @class = "col-sm-1 pull-left" }) шт
+                @Html.ValidationMessageFor(model => model.WholesaleFrom)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Виробник</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.Vendor, new { @class = "col-xs-10 col-sm-5" })
+                @Html.ValidationMessageFor(model => model.Vendor)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Країна виробник</label>
+            <div class="col-md-9">
+                @Html.TextBoxFor(model => model.OriginCountry, new { @class = "col-xs-10 col-sm-5" })
+                @Html.ValidationMessageFor(model => model.OriginCountry)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Статус доступності</label>
+            <div class="col-md-9">
+                @Html.EnumDropDownListFor(m => m.AvailabilityState)
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Альтернативний текст зображень</label>
-        <div class="col-xs-10 col-sm-5">
-            @Html.TextBoxFor(model => model.AltText, new { @class = "width-100" })
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Доступна кількість</label>
+            <div class="col-md-9">
+                @Html.EditorFor(entry => entry.AvailableAmount)
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">* Meta Description (до 210 символів)</label>
-        <div class="col-xs-10 col-sm-5">
-            @Html.TextAreaFor(model => model.ShortDescription, new { cols = 70, rows = 5 })
-            @Html.ValidationMessageFor(model => model.ShortDescription)
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right" for="IsActive">Активний</label>
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.IsActive)
+                @Html.ValidationMessageFor(model => model.IsActive)
+            </div>
         </div>
-    </div>
 
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">* Опис</label>
-        <div class="col-xs-10 col-sm-5">
-            @Html.TextAreaFor(model => model.Description, new { cols = 70, rows = 5 })
-            @Html.ValidationMessageFor(model => model.Description)
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right" for="DoesCountForShipping">Враховується в сумму доставки</label>
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.DoesCountForShipping)
+                @Html.ValidationMessageFor(model => model.DoesCountForShipping)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right" for="IsWeightProduct">Ваговий продукт</label>
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.IsWeightProduct)
+                @Html.ValidationMessageFor(model => model.IsWeightProduct)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right" for="IsImported">Імпортований із файлу</label>
+            <div class="col-md-9">
+                @Html.EditorFor(model => model.IsImported)
+                @Html.ValidationMessageFor(model => model.IsImported)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Порядок</label>
+            <div class="col-sm-9">
+                @Html.TextBoxFor(model => model.Order, new { @class = "col-xs-4 col-sm-2", type = "number" })
+                @Html.ValidationMessageFor(model => model.Order)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Категорія</label>
+            <div class="col-md-9">
+                @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
+                {
+                    Name = "CategoryId",
+                    Value = Model.CategoryId,
+                    Items = ViewBag.Categories
+                })
+                @Html.ValidationMessageFor(model => model.CategoryId)
+            </div>
+        </div>
+        @if (User.IsInRole(DomainConstants.AdminRoleName))
+        {
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">Постачальник</label>
+                <div class="col-md-9">
+                    @Html.DropDownList("SellerId", null, new { @class = "chosen-select col-xs-10 col-sm-5" })
+                    @Html.ValidationMessageFor(model => model.SellerId)
+                </div>
+            </div>
+        }
+        else
+        {
+            @Html.Hidden("SellerId", Seller.CurrentAuthorizedSellerId)
+        }
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Пошукові теги (через кому)</label>
+            <div class="col-xs-10 col-sm-5">
+                <input type="text" name="SearchTags" id="SearchTags" value="@Model.SearchTags" placeholder="Пошукові теги (через кому)" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">Альтернативний текст зображень</label>
+            <div class="col-xs-10 col-sm-5">
+                @Html.TextBoxFor(model => model.AltText, new { @class = "width-100" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">* Meta Description (до 210 символів)</label>
+            <div class="col-xs-10 col-sm-5">
+                @Html.TextAreaFor(model => model.ShortDescription, new { cols = 70, rows = 5 })
+                @Html.ValidationMessageFor(model => model.ShortDescription)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-sm-3 control-label no-padding-right">* Опис</label>
+            <div class="col-xs-10 col-sm-5">
+                @Html.TextAreaFor(model => model.Description, new { cols = 70, rows = 5 })
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
         </div>
     </div>
-</div>

@@ -682,6 +682,10 @@
     <Compile Include="Migrations\202008200932212_AddDefaultProductImage.Designer.cs">
       <DependentUpon>202008200932212_AddDefaultProductImage.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202009041225224_AddPromoPrice.cs" />
+    <Compile Include="Migrations\202009041225224_AddPromoPrice.Designer.cs">
+      <DependentUpon>202009041225224_AddPromoPrice.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1183,6 +1187,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202008200932212_AddDefaultProductImage.resx">
       <DependentUpon>202008200932212_AddDefaultProductImage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202009041225224_AddPromoPrice.resx">
+      <DependentUpon>202009041225224_AddPromoPrice.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -110,6 +110,7 @@ namespace Benefit.Domain.Models
         public double Price { get; set; }
         public double? OldPrice { get; set; }
         public double? WholesalePrice { get; set; }
+        public double? PromoPrice { get; set; }
         public int? WholesaleFrom { get; set; }
         public bool IsWeightProduct { get; set; }
         public ProductAvailabilityState AvailabilityState { get; set; }

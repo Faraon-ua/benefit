@@ -222,7 +222,14 @@ namespace Benefit.Services.Domain
                         }
                         prod.Add(new XElement("price_old", product.OldPrice));
                     }
-
+                    if (product.PromoPrice.HasValue)
+                    {
+                        if (product.Currency != null)
+                        {
+                            product.PromoPrice *= product.Currency.Rate;
+                        }
+                        prod.Add(new XElement("price_promo", product.PromoPrice));
+                    }
                     prod.Add(new XElement("price", product.Price));
                     prod.Add(new XElement("currencyId", "UAH"));
                     prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
