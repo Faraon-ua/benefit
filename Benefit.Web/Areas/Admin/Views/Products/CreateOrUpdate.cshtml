@@ -173,7 +173,8 @@
                     contentType: 'application/json; charset=utf-8',
                     async: true,
                     success: function (data) {
-                        flashMessage(data);
+                        $("#DefaultImageId").val(data.defaultImageId);
+                        flashMessage(data.message);
                         $("#saveImagesOrder").removeAttr("disabled");
                     },
                     error: function (data) {

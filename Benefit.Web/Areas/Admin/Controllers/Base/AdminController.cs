@@ -15,17 +15,18 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
     {
         public ActionResult SaveImagesOrder(List<string> sortedImages)
         {
+            var returnImgId = string.Empty;
             using (var db = new ApplicationDbContext())
             {
                 var images = db.Images.Where(entry => sortedImages.Contains(entry.Id)).ToList();
                 var first = images.First();
                 if (first.ProductId != null)
                 {
-                    ImagesService imagesService = new ImagesService();
+                    var imagesService = new ImagesService();
                     var product = db.Products.Find(first.ProductId);
                     var oldImageId = product.DefaultImageId;
                     var format = imagesService.GetImageFormatByExtension(first.ImageUrl);
-                    product.DefaultImageId = imagesService.AddProductDefaultImage(first, format);
+                    returnImgId = product.DefaultImageId = imagesService.AddProductDefaultImage(first, format);
                     db.Entry(product).State = EntityState.Modified;
                     db.SaveChanges();
                     if (oldImageId != null)
@@ -41,7 +42,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
                 }
                 db.SaveChanges();
             }
-            return Json("Сортування зображень збережено");
+            return Json(new { defaultImageId = returnImgId, message = "Сортування зображень збережено" });
         }
         public ActionResult DeleteUploadedFile(string fileName, string parentId, ImageType type)
         {

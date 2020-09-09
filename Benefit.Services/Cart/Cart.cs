@@ -58,10 +58,10 @@ namespace Benefit.Services.Cart
 
             var productOptionIds = orderProduct.OrderProductOptions.Select(entry => entry.ProductOptionId).ToList();
             var existingProduct = order.OrderProducts.FirstOrDefault(entry =>
-                entry.ProductId == orderProduct.ProductId && 
+                entry.ProductId == orderProduct.ProductId &&
                 entry.NameSuffix == orderProduct.NameSuffix &&
                 entry.OrderProductOptions.Count == productOptionIds.Count &&
-                entry.OrderProductOptions.All(po=>productOptionIds.Contains(po.ProductOptionId)));
+                entry.OrderProductOptions.All(po => productOptionIds.Contains(po.ProductOptionId)));
             if (existingProduct != null)
             {
                 existingProduct.Amount += orderProduct.Amount;
@@ -71,7 +71,7 @@ namespace Benefit.Services.Cart
                 var product =
                     db.Products
                         .Include(entry => entry.Seller.SellerCategories)
-                        .Include(entry => entry.Seller.ShippingMethods.Select(sh=>sh.Region))
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
                         .Include(entry => entry.Currency)
                         .Include(entry => entry.Images)
                         .Include(entry => entry.Category)
@@ -82,7 +82,8 @@ namespace Benefit.Services.Cart
                         entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
                 if (!isAvailable)
                 {
-                    var result = new CartEditResult() {
+                    var result = new CartEditResult()
+                    {
                         Comment = string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Region).Distinct(new RegionComparer()).Select(entry => entry.Name_ua))
                     };
                     return result;
@@ -181,7 +182,14 @@ namespace Benefit.Services.Cart
         public void ClearSellerOrder(string sellerId)
         {
             Orders.Remove(Orders.FirstOrDefault(entry => entry.SellerId == sellerId));
-            HttpRuntime.Cache.Insert(SessionKey, this.Orders, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
+            if (Orders.Count == 0)
+            {
+                HttpRuntime.Cache.Remove(SessionKey);
+            }
+            else
+            {
+                HttpRuntime.Cache.Insert(SessionKey, this.Orders, null, Cache.NoAbsoluteExpiration, SlidingExpiration);
+            }
         }
 
         public double GetOrderSum()
