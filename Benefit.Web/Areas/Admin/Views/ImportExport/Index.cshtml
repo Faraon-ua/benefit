@@ -7,7 +7,7 @@
 @section scripts
 {
     <script>
-        var launchImportUrl = '@Url.Action("ProcessImport","ImportExport", new {sellerId = Model.Id})';
+        var launchImportUrl = apiUrl + 'Import/ProcessImport?sellerId=@Model.Id';
         var getImportStatusUrl = '@Url.Action("ImportStatus","ImportExport", new {sellerId = Model.Id})';
         var intervalId;
 
@@ -18,7 +18,7 @@
                 $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
                 $.ajax({
                     type: "POST",
-                    url: routePrefix + '/Admin/ImportExport/OneCCommerceMLImport?id=@Model.Id',
+                    url: apiUrl + 'Import/OneCCommerceMLImport?id=@Model.Id',
                     success: function (result) {
                         if (result.error) {
                             flashMessage(result.error, true, true);
@@ -49,6 +49,7 @@
 
             $(".fn-launch-yml-import").click(function () {
                 $("#importing-process").show();
+                debugger;
                 $.get(launchImportUrl +"&type=Yml",
                     function(data) {
                         if (data.error) {

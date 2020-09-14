@@ -425,8 +425,7 @@ $(function () {
         if ($(this).attr("data-region-name")) {
             regionName = $(this).attr("data-region-name");
         }
-        else
-        {
+        else {
             regionName = $(this).text();
         }
         var regionId = $(this).attr("data-region-id");
@@ -439,8 +438,8 @@ $(function () {
         selectRegionsWrap.load(selectRegionsWrap.attr("data-url"));
         $(".region_modal").modal("hide");
         if (selectedProductId !== null) {
-            $(".product_buy").each(function() {
-                if ($(this).attr("data-purchase-region") && $(this).attr("data-purchase-region").indexOf(regionName)>-1) {
+            $(".product_buy").each(function () {
+                if ($(this).attr("data-purchase-region") && $(this).attr("data-purchase-region").indexOf(regionName) > -1) {
                     $(this).attr("data-purchase-region", "");
                     $(this).attr("data-purchase-region-id", "");
                 }

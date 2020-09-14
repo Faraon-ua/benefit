@@ -1,4 +1,6 @@
-﻿var routePrefix = "/Benefit.Web";
+﻿//var apiUrl = "http://benefit-api.pp.ua/";
+var apiUrl = "http://localhost/Benefit.RestApi/";
+var routePrefix = "/Benefit.Web";
 //var routePrefix = "";
 
 jQuery.expr[':'].hasValue = function (el, index, match) {
