@@ -24,7 +24,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
     [Authorize(Roles = DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName)]
     public class ImportExportController : Controller
     {
-        ApplicationDbContext db = new ApplicationDbContext();
         ProductsService ProductService = new ProductsService();
         EmailService EmailService = new EmailService();
         ImagesService ImagesService = new ImagesService();
@@ -33,214 +32,243 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult Index()
         {
-            var seller = db.Sellers.FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
-            return View(seller);
+            using (var db = new ApplicationDbContext())
+            {
+                var seller = db.Sellers.FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
+                return View(seller);
+            }
         }
 
         public ActionResult Status()
         {
-            var importTasks = db.ExportImports.Include(entry=>entry.Seller).Where(entry=>entry.SellerId != null).ToList();
-            foreach(var task in importTasks)
+            using (var db = new ApplicationDbContext())
             {
-                if(DateTime.Now - task.LastSync > TimeSpan.FromDays(7))
+                var importTasks = db.ExportImports.Include(entry => entry.Seller).Where(entry => entry.SellerId != null).ToList();
+                foreach (var task in importTasks)
                 {
-                    task.Status = 2;
+                    if (DateTime.Now - task.LastSync > TimeSpan.FromDays(7))
+                    {
+                        task.Status = 2;
+                    }
+                    if (DateTime.Now - task.LastSync > TimeSpan.FromDays(1) && DateTime.Now - task.LastSync < TimeSpan.FromDays(7))
+                    {
+                        task.Status = 1;
+                    }
                 }
-                if (DateTime.Now - task.LastSync > TimeSpan.FromDays(1) && DateTime.Now - task.LastSync < TimeSpan.FromDays(7))
-                {
-                    task.Status = 1;
-                }
+                importTasks = importTasks.OrderByDescending(entry => entry.Status).ThenBy(entry => entry.LastSync).ToList();
+                return View(importTasks);
             }
-            importTasks = importTasks.OrderByDescending(entry => entry.Status).ThenBy(entry=>entry.LastSync).ToList();
-            return View(importTasks);
         }
 
         public ActionResult Exports()
         {
-            var exports = db.ExportImports
+            using (var db = new ApplicationDbContext())
+            {
+                var exports = db.ExportImports
                 .Include(entry => entry.Seller)
                 .Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
 
-            return View(exports);
+                return View(exports);
+            }
         }
 
         public ActionResult CreateOrUpdateExport(string name)
         {
-            if (string.IsNullOrEmpty(name))
+            using (var db = new ApplicationDbContext())
             {
-                TempData["ErrorMessage"] = "Назва не може бути порожньою";
-            }
-            else
-            {
-                var export = new ExportImport()
+                if (string.IsNullOrEmpty(name))
                 {
-                    Id = Guid.NewGuid().ToString(),
-                    Name = name,
-                    SyncType = SyncType.YmlExport,
-                    IsActive = true
-                };
-                db.ExportImports.Add(export);
-                db.SaveChanges();
+                    TempData["ErrorMessage"] = "Назва не може бути порожньою";
+                }
+                else
+                {
+                    var export = new ExportImport()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Name = name,
+                        SyncType = SyncType.YmlExport,
+                        IsActive = true
+                    };
+                    db.ExportImports.Add(export);
+                    db.SaveChanges();
+                }
+                return RedirectToAction("Exports");
             }
-            return RedirectToAction("Exports");
         }
 
         public ActionResult DeleteExport(string id)
         {
-            var export = db.ExportImports.Include(entry => entry.ExportProducts).FirstOrDefault(entry => entry.Id == id);
-            if (export != null)
+            using (var db = new ApplicationDbContext())
             {
-                db.ExportProducts.RemoveRange(export.ExportProducts);
-                db.ExportCategories.RemoveRange(export.ExportCategories);
-                db.ExportImports.Remove(export);
+                var export = db.ExportImports.Include(entry => entry.ExportProducts).FirstOrDefault(entry => entry.Id == id);
+                if (export != null)
+                {
+                    db.ExportProducts.RemoveRange(export.ExportProducts);
+                    db.ExportCategories.RemoveRange(export.ExportCategories);
+                    db.ExportImports.Remove(export);
+                }
+                db.SaveChanges();
+                return RedirectToAction("Exports");
             }
-            db.SaveChanges();
-            return RedirectToAction("Exports");
         }
 
         public ActionResult GetImportForm(SyncType syncType)
         {
-            var newId = Guid.NewGuid().ToString();
-            var importTask =
-                db.ExportImports.FirstOrDefault(
-                    entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == syncType) ?? new ExportImport()
-                    {
-                        Id = newId,
-                        IsActive = false,
-                        IsImport = false,
-                        SyncType = syncType,
-                        FileUrl = string.Format("https://benefit.ua/export?id={0}", newId),
-                        SellerId = Seller.CurrentAuthorizedSellerId
-                    };
+            using (var db = new ApplicationDbContext())
+            {
+                var newId = Guid.NewGuid().ToString();
+                var importTask =
+                    db.ExportImports.FirstOrDefault(
+                        entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == syncType) ?? new ExportImport()
+                        {
+                            Id = newId,
+                            IsActive = false,
+                            IsImport = false,
+                            SyncType = syncType,
+                            FileUrl = string.Format("https://benefit.ua/export?id={0}", newId),
+                            SellerId = Seller.CurrentAuthorizedSellerId
+                        };
 
-            var updateFrequency = new List<SelectListItem>()
+                var updateFrequency = new List<SelectListItem>()
             {
                 new SelectListItem() { Text = "Щоденно", Value = 1.ToString()},
                 new SelectListItem() { Text = "Раз в 3 дні", Value = 3.ToString()},
                 new SelectListItem() { Text = "Раз в тиждень", Value = 7.ToString()},
                 new SelectListItem() { Text = "Раз в місяць", Value = 30.ToString()}
             };
-            ViewBag.SyncPeriod = new SelectList(updateFrequency, "Value", "Text", importTask.SyncPeriod.ToString());
-            return PartialView("_ImportForm", importTask);
+                ViewBag.SyncPeriod = new SelectList(updateFrequency, "Value", "Text", importTask.SyncPeriod.ToString());
+                return PartialView("_ImportForm", importTask);
+            }
         }
 
         [HttpPost]
         public ActionResult CreateOrUpdate(ExportImport exportImport)
         {
-            if (exportImport.FileUrl == null)
+            using (var db = new ApplicationDbContext())
             {
-                TempData["ErrorMessage"] = "Url має бути заповнено";
-                return RedirectToAction("Index");
-            }
-            if (db.ExportImports.Any(entry => entry.FileUrl == exportImport.FileUrl && entry.Id != exportImport.Id))
-            {
-                TempData["ErrorMessage"] = "Такий файл вже зареєстровано";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var import = db.ExportImports.Find(exportImport.Id);
-                if (import == null)
+                if (exportImport.FileUrl == null)
                 {
-                    import = exportImport;
-                    db.ExportImports.Add(import);
+                    TempData["ErrorMessage"] = "Url має бути заповнено";
+                    return RedirectToAction("Index");
+                }
+                if (db.ExportImports.Any(entry => entry.FileUrl == exportImport.FileUrl && entry.Id != exportImport.Id))
+                {
+                    TempData["ErrorMessage"] = "Такий файл вже зареєстровано";
+                    return RedirectToAction("Index");
                 }
                 else
                 {
-                    db.Entry(import).State = EntityState.Modified;
+                    var import = db.ExportImports.Find(exportImport.Id);
+                    if (import == null)
+                    {
+                        import = exportImport;
+                        db.ExportImports.Add(import);
+                    }
+                    else
+                    {
+                        db.Entry(import).State = EntityState.Modified;
+                    }
+                    import.IsActive = exportImport.IsActive;
+                    import.FileUrl = exportImport.FileUrl;
+                    import.SyncPeriod = exportImport.SyncPeriod;
                 }
-                import.IsActive = exportImport.IsActive;
-                import.FileUrl = exportImport.FileUrl;
-                import.SyncPeriod = exportImport.SyncPeriod;
+                db.SaveChanges();
+                TempData["SuccessMessage"] = "Дані імпорту/експорту оновлено";
+                return RedirectToAction("Index");
             }
-            db.SaveChanges();
-            TempData["SuccessMessage"] = "Дані імпорту/експорту оновлено";
-            return RedirectToAction("Index");
         }
 
         [HttpPost]
         public async Task<JsonResult> ExceleImport(string id)
         {
-            try
+            using (var db = new ApplicationDbContext())
             {
-                var seller = db.Sellers.Find(id);
-                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
-                var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", seller.UrlName);
-                var importFile = new DirectoryInfo(sellerPath).GetFiles("import.xls", SearchOption.AllDirectories).FirstOrDefault();
-
-                if (importFile == null || importFile.Length == 0)
+                try
                 {
-                    return Json(new { error = "Файл import.xml не знайдено" }, JsonRequestBehavior.AllowGet);
+                    var seller = db.Sellers.Find(id);
+                    var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                    var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
+                    var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", seller.UrlName);
+                    var importFile = new DirectoryInfo(sellerPath).GetFiles("import.xls", SearchOption.AllDirectories).FirstOrDefault();
+
+                    if (importFile == null || importFile.Length == 0)
+                    {
+                        return Json(new { error = "Файл import.xml не знайдено" }, JsonRequestBehavior.AllowGet);
+                    }
+                    var result = await ImportService.ImportFromExcel(id, importFile.FullName);
+
+                    Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, result));
                 }
-                var result = await ImportService.ImportFromExcel(id, importFile.FullName);
+                catch (Exception ex)
+                {
+                    _logger.Fatal("[Excele Import] " + ex);
+                    return Json(new { error = "Файл імпорту має невірну структуру" });
+                }
 
-                Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, result));
+                return Json(new
+                {
+                    message = "Імпорт з файлу Excel успішно виконаний"
+                });
             }
-            catch (Exception ex)
-            {
-                _logger.Fatal("[Excele Import] " + ex);
-                return Json(new { error = "Файл імпорту має невірну структуру" });
-            }
-
-            return Json(new
-            {
-                message = "Імпорт з файлу Excel успішно виконаний"
-            });
-
         }
 
         public ActionResult UploadExcelFile(string sellerUrlName, HttpPostedFileBase import, HttpPostedFileBase images)
         {
-            if (import == null || import.ContentLength == 0)
+            using (var db = new ApplicationDbContext())
             {
-                TempData["ErrorMessage"] = "Невірно вибраний файл імпорту";
-            }
-            else
-            {
-                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
-                var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", sellerUrlName);
-                var imagesPath = Path.Combine(sellerPath, "images");
-                if (!Directory.Exists(sellerPath))
+                if (import == null || import.ContentLength == 0)
                 {
-                    Directory.CreateDirectory(sellerPath);
-                    if (!Directory.Exists(imagesPath))
-                    {
-                        Directory.CreateDirectory(imagesPath);
-                    }
+                    TempData["ErrorMessage"] = "Невірно вибраний файл імпорту";
                 }
-                import.SaveAs(Path.Combine(sellerPath, "import.xls"));
-                if (images != null && images.ContentLength > 0)
+                else
                 {
-                    var imagesFile = Path.Combine(sellerPath, "images.zip");
-                    images.SaveAs(imagesFile);
-                    try
+                    var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                    var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
+                    var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", sellerUrlName);
+                    var imagesPath = Path.Combine(sellerPath, "images");
+                    if (!Directory.Exists(sellerPath))
                     {
-                        var filePaths = Directory.GetFiles(imagesPath);
-                        foreach (var filePath in filePaths)
+                        Directory.CreateDirectory(sellerPath);
+                        if (!Directory.Exists(imagesPath))
                         {
-                            System.IO.File.Delete(filePath);
+                            Directory.CreateDirectory(imagesPath);
                         }
-
-                        ZipFile.ExtractToDirectory(imagesFile, imagesPath);
-                        System.IO.File.Delete(imagesFile);
                     }
-                    catch (Exception ex)
+                    import.SaveAs(Path.Combine(sellerPath, "import.xls"));
+                    if (images != null && images.ContentLength > 0)
                     {
-                        TempData["ErrorMessage"] = "Не вдалось розархівувати файл із зображеннями";
+                        var imagesFile = Path.Combine(sellerPath, "images.zip");
+                        images.SaveAs(imagesFile);
+                        try
+                        {
+                            var filePaths = Directory.GetFiles(imagesPath);
+                            foreach (var filePath in filePaths)
+                            {
+                                System.IO.File.Delete(filePath);
+                            }
+
+                            ZipFile.ExtractToDirectory(imagesFile, imagesPath);
+                            System.IO.File.Delete(imagesFile);
+                        }
+                        catch (Exception ex)
+                        {
+                            TempData["ErrorMessage"] = "Не вдалось розархівувати файл із зображеннями";
+                        }
                     }
                 }
-            }
-            TempData["SuccessMessage"] = "Файли успішно завантажено, тепер можна застосувати імпорт";
+                TempData["SuccessMessage"] = "Файли успішно завантажено, тепер можна застосувати імпорт";
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
         }
 
         public ActionResult ImportStatus(string sellerId, SyncType type)
         {
-            var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId && entry.SyncType == type);
-            return Json(new { status = (importTask != null && importTask.IsImport) }, JsonRequestBehavior.AllowGet);
+            using (var db = new ApplicationDbContext())
+            {
+                var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId && entry.SyncType == type);
+                return Json(new { status = (importTask != null && importTask.IsImport) }, JsonRequestBehavior.AllowGet);
+            }
         }
     }
 }

@@ -12,72 +12,86 @@ namespace Benefit.Web.Areas.Admin.Controllers
     [Authorize(Roles = DomainConstants.AdminRoleName)]
     public class ReviewsController : AdminController
     {
-        ApplicationDbContext db = new ApplicationDbContext();
         public ActionResult Index()
         {
-            var reviews = db.Reviews
+            using (var db = new ApplicationDbContext())
+            {
+                var reviews = db.Reviews
                 .Include(entry => entry.ParentReview)
                 .Include(entry => entry.Product.Category)
                 .Include(entry => entry.Product.Seller)
-                .Include(entry => entry.Seller).Where(entry => !entry.IsActive).OrderByDescending(entry=>entry.Stamp);
-            return View(reviews);
+                .Include(entry => entry.Seller).Where(entry => !entry.IsActive).OrderByDescending(entry => entry.Stamp);
+                return View(reviews);
+            }
         }
 
         [HttpPost]
         public ActionResult AcceptReview(string reviewId)
         {
-            var review = db.Reviews.Find(reviewId);
-            review.IsActive = true;
-            db.Entry(review).State = EntityState.Modified;
-            db.SaveChanges();
-
-            if (review.ProductId != null)
+            using (var db = new ApplicationDbContext())
             {
-                var product =
-                    db.Products.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.Id == review.ProductId);
-                product.AvarageRating = (int) Math.Round(product.ApprovedReviews.Average(entry => entry.Rating.Value), 0);
-                db.Entry(product).State = EntityState.Modified;
-            }
-            if (review.SellerId != null)
-            {
-                var seller =
-                    db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.Id == review.SellerId);
-                seller.AvarageRating = (int)Math.Round(seller.ApprovedReviews.Average(entry => entry.Rating.Value), 0);
-                db.Entry(seller).State = EntityState.Modified;
-            }
-            db.SaveChanges();
+                var review = db.Reviews.Find(reviewId);
+                review.IsActive = true;
+                db.Entry(review).State = EntityState.Modified;
+                db.SaveChanges();
 
-            return Content(string.Empty);
+                if (review.ProductId != null)
+                {
+                    var product =
+                        db.Products.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.Id == review.ProductId);
+                    product.AvarageRating = (int)Math.Round(product.ApprovedReviews.Average(entry => entry.Rating.Value), 0);
+                    db.Entry(product).State = EntityState.Modified;
+                }
+                if (review.SellerId != null)
+                {
+                    var seller =
+                        db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.Id == review.SellerId);
+                    seller.AvarageRating = (int)Math.Round(seller.ApprovedReviews.Average(entry => entry.Rating.Value), 0);
+                    db.Entry(seller).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+
+                return Content(string.Empty);
+            }
         }
 
         [HttpPost]
         public ActionResult RemoveReview(string reviewId)
         {
-            var review = db.Reviews.Find(reviewId);
-            db.Reviews.Remove(review);
-            db.SaveChanges();
-            return Content(string.Empty);
+            using (var db = new ApplicationDbContext())
+            {
+                var review = db.Reviews.Find(reviewId);
+                db.Reviews.Remove(review);
+                db.SaveChanges();
+                return Content(string.Empty);
+            }
         }
 
         public ActionResult CreateOrUpdate(string id)
         {
-            var review = db.Reviews.Find(id);
-            if (review == null) return HttpNotFound();
-            return View(review);
+            using (var db = new ApplicationDbContext())
+            {
+                var review = db.Reviews.Find(id);
+                if (review == null) return HttpNotFound();
+                return View(review);
+            }
         }
 
         [HttpPost]
         public ActionResult CreateOrUpdate(Review review)
         {
-            if (ModelState.IsValid)
+            using (var db = new ApplicationDbContext())
             {
-                db.Entry(review).State = EntityState.Modified;
-                db.SaveChanges();
-                TempData["SuccessMessage"] = "Відгук збережено";
-                return RedirectToAction("CreateOrUpdate", new {id = review.Id});
-            }
+                if (ModelState.IsValid)
+                {
+                    db.Entry(review).State = EntityState.Modified;
+                    db.SaveChanges();
+                    TempData["SuccessMessage"] = "Відгук збережено";
+                    return RedirectToAction("CreateOrUpdate", new { id = review.Id });
+                }
 
-            return View(review);
+                return View(review);
+            }
         }
     }
 }

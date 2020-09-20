@@ -20,13 +20,12 @@ namespace Benefit.Services.Admin
     public class ScheduleService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private static readonly ApplicationDbContext db = new ApplicationDbContext();
         public ScheduleService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
         }
         public ScheduleService()
-            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db)))
+            : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
         }
         public void ProcessRozetkaOrders()
@@ -426,125 +425,128 @@ namespace Benefit.Services.Admin
             return result;
         }
 
-        public byte[] TerminateNonActivePartners()
-        {
-            var filesExportService = new FilesExportService();
-            var period = DateTime.Now.AddMonths(-6);
-            var usersToTerminate =
-                db.Users
-                .Include(entry => entry.Referal)
-                .Include(entry => entry.Partners)
-                .Include(entry => entry.Orders)
-                .Include(entry => entry.Transactions)
-                .Include(entry => entry.BenefitCards)
-                .Include(entry => entry.Addresses)
-                .Include(entry => entry.Messages)
-                .Include(entry => entry.NotificationChannels)
-                .Include(entry => entry.Personnels)
-                .Include(entry => entry.OwnedSellers)
-                .Include(entry => entry.ReferedBenefitCardSellers)
-                .Include(entry => entry.ReferedWebSiteSellers)
-                    .Where(
-                        entry =>
-                            entry.BonusAccount <= 0 &&
-                            entry.CurrentBonusAccount <= 0 &&
-                            entry.HangingBonusAccount <= 0 &&
-                            (entry.Status == null || entry.Status == 0) &&
-                            !entry.Personnels.Any() &&
-                            !entry.OwnedSellers.Any() &&
-                            entry.RegisteredOn < period &&
-                            !entry.Orders.Any(ord => ord.Time > period)).ToList();
+        //public byte[] TerminateNonActivePartners()
+        //{
+        //    var filesExportService = new FilesExportService();
+        //    var period = DateTime.Now.AddMonths(-6);
+        //    var usersToTerminate =
+        //        db.Users
+        //        .Include(entry => entry.Referal)
+        //        .Include(entry => entry.Partners)
+        //        .Include(entry => entry.Orders)
+        //        .Include(entry => entry.Transactions)
+        //        .Include(entry => entry.BenefitCards)
+        //        .Include(entry => entry.Addresses)
+        //        .Include(entry => entry.Messages)
+        //        .Include(entry => entry.NotificationChannels)
+        //        .Include(entry => entry.Personnels)
+        //        .Include(entry => entry.OwnedSellers)
+        //        .Include(entry => entry.ReferedBenefitCardSellers)
+        //        .Include(entry => entry.ReferedWebSiteSellers)
+        //            .Where(
+        //                entry =>
+        //                    entry.BonusAccount <= 0 &&
+        //                    entry.CurrentBonusAccount <= 0 &&
+        //                    entry.HangingBonusAccount <= 0 &&
+        //                    (entry.Status == null || entry.Status == 0) &&
+        //                    !entry.Personnels.Any() &&
+        //                    !entry.OwnedSellers.Any() &&
+        //                    entry.RegisteredOn < period &&
+        //                    !entry.Orders.Any(ord => ord.Time > period)).ToList();
 
-            var userIds = usersToTerminate.Select(entry => entry.Id).ToList();
-            var csvUsers = filesExportService.CreateCSVFromGenericList(usersToTerminate);
-            var benefitCards = new List<BenefitCard>();
-            var referedBenefitCardSellers = new List<Seller>();
-            var referedWebSiteSellers = new List<Seller>();
-            var addresses = new List<Address>();
-            var messages = new List<Message>();
-            var channels = new List<NotificationChannel>();
-            var transactions = new List<Transaction>();
-            var orders = new List<Order>();
+        //    var userIds = usersToTerminate.Select(entry => entry.Id).ToList();
+        //    var csvUsers = filesExportService.CreateCSVFromGenericList(usersToTerminate);
+        //    var benefitCards = new List<BenefitCard>();
+        //    var referedBenefitCardSellers = new List<Seller>();
+        //    var referedWebSiteSellers = new List<Seller>();
+        //    var addresses = new List<Address>();
+        //    var messages = new List<Message>();
+        //    var channels = new List<NotificationChannel>();
+        //    var transactions = new List<Transaction>();
+        //    var orders = new List<Order>();
 
-            object sync = new object();
-            Parallel.ForEach(usersToTerminate, (terminatedUser) =>
-            {
-                //foreach (var terminatedUser in usersToTerminate)
-                //{
-                benefitCards.AddRange(terminatedUser.BenefitCards);
-                referedBenefitCardSellers.AddRange(terminatedUser.ReferedBenefitCardSellers);
-                referedWebSiteSellers.AddRange(terminatedUser.ReferedWebSiteSellers);
+        //    object sync = new object();
+        //    Parallel.ForEach(usersToTerminate, (terminatedUser) =>
+        //    {
+        //        //foreach (var terminatedUser in usersToTerminate)
+        //        //{
+        //        benefitCards.AddRange(terminatedUser.BenefitCards);
+        //        referedBenefitCardSellers.AddRange(terminatedUser.ReferedBenefitCardSellers);
+        //        referedWebSiteSellers.AddRange(terminatedUser.ReferedWebSiteSellers);
 
-                //partners
-                var partners = terminatedUser.Partners.ToList();
-                foreach (var partner in partners)
-                {
-                    if (partner.ReferalId != null)
-                    {
-                        lock (sync)
-                        {
-                            partner.ReferalId = terminatedUser.ReferalId;
-                            db.Entry(partner).State = EntityState.Modified;
-                        }
-                    }
-                }
-                addresses.AddRange(terminatedUser.Addresses);
+        //        //partners
+        //        var partners = terminatedUser.Partners.ToList();
+        //        foreach (var partner in partners)
+        //        {
+        //            if (partner.ReferalId != null)
+        //            {
+        //                lock (sync)
+        //                {
+        //                    partner.ReferalId = terminatedUser.ReferalId;
+        //                    db.Entry(partner).State = EntityState.Modified;
+        //                }
+        //            }
+        //        }
+        //        addresses.AddRange(terminatedUser.Addresses);
 
-                //messages
-                messages.AddRange(terminatedUser.Messages);
+        //        //messages
+        //        messages.AddRange(terminatedUser.Messages);
 
-                //notifications
-                channels.AddRange(terminatedUser.NotificationChannels);
-                orders.AddRange(terminatedUser.Orders);
-            });
-            transactions.AddRange(db.Transactions.Where(entry => userIds.Contains(entry.PayerId) || userIds.Contains(entry.PayeeId)));
+        //        //notifications
+        //        channels.AddRange(terminatedUser.NotificationChannels);
+        //        orders.AddRange(terminatedUser.Orders);
+        //    });
+        //    transactions.AddRange(db.Transactions.Where(entry => userIds.Contains(entry.PayerId) || userIds.Contains(entry.PayeeId)));
 
-            foreach (var benefitCard in benefitCards)
-            {
-                benefitCard.UserId = null;
-                db.Entry(benefitCard).State = EntityState.Modified;
-            }
-            foreach (var seller in referedBenefitCardSellers)
-            {
-                seller.BenefitCardReferalId = null;
-                db.Entry(seller).State = EntityState.Modified;
-            }
-            foreach (var seller in referedWebSiteSellers)
-            {
-                seller.WebSiteReferalId = null;
-                db.Entry(seller).State = EntityState.Modified;
-            }
-            db.Addresses.RemoveRange(addresses);
-            db.Messages.RemoveRange(messages);
-            db.NotificationChannels.RemoveRange(channels);
-            db.Transactions.RemoveRange(transactions);
-            db.Orders.RemoveRange(orders);
-            db.SaveChanges();
+        //    foreach (var benefitCard in benefitCards)
+        //    {
+        //        benefitCard.UserId = null;
+        //        db.Entry(benefitCard).State = EntityState.Modified;
+        //    }
+        //    foreach (var seller in referedBenefitCardSellers)
+        //    {
+        //        seller.BenefitCardReferalId = null;
+        //        db.Entry(seller).State = EntityState.Modified;
+        //    }
+        //    foreach (var seller in referedWebSiteSellers)
+        //    {
+        //        seller.WebSiteReferalId = null;
+        //        db.Entry(seller).State = EntityState.Modified;
+        //    }
+        //    db.Addresses.RemoveRange(addresses);
+        //    db.Messages.RemoveRange(messages);
+        //    db.NotificationChannels.RemoveRange(channels);
+        //    db.Transactions.RemoveRange(transactions);
+        //    db.Orders.RemoveRange(orders);
+        //    db.SaveChanges();
 
-            usersToTerminate.ForEach(entry =>
-            {
-                _userManager.Delete(entry);
-            });
+        //    usersToTerminate.ForEach(entry =>
+        //    {
+        //        _userManager.Delete(entry);
+        //    });
 
-            return csvUsers;
-        }
+        //    return csvUsers;
+        //}
 
         public async Task UpdateCurrencies()
         {
-            var client = new HttpClientService();
-            var currencies = await client.GetObectFromService<List<PrivatBankCurrency>>(SettingsService.PrivatBank.CurrenciesApiUrl).ConfigureAwait(false);
-            foreach (var currency in currencies)
+            using (var db = new ApplicationDbContext())
             {
-                var dbCurrency =
-                    db.Currencies.FirstOrDefault(
-                        entry => entry.Name == currency.ccy && entry.Provider == CurrencyProvider.PrivatBank);
-                if (dbCurrency != null)
+                var client = new HttpClientService();
+                var currencies = await client.GetObectFromService<List<PrivatBankCurrency>>(SettingsService.PrivatBank.CurrenciesApiUrl).ConfigureAwait(false);
+                foreach (var currency in currencies)
                 {
-                    dbCurrency.Rate = currency.sale;
-                    db.Entry(dbCurrency).State = EntityState.Modified;
+                    var dbCurrency =
+                        db.Currencies.FirstOrDefault(
+                            entry => entry.Name == currency.ccy && entry.Provider == CurrencyProvider.PrivatBank);
+                    if (dbCurrency != null)
+                    {
+                        dbCurrency.Rate = currency.sale;
+                        db.Entry(dbCurrency).State = EntityState.Modified;
+                    }
                 }
+                db.SaveChanges();
             }
-            db.SaveChanges();
         }
     }
 }

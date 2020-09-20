@@ -16,78 +16,80 @@ namespace Benefit.Services.Import
 {
     public class GbsImportService
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private ImportExportService ImportExportService = new ImportExportService();
         object lockObj = new object();
 
         public void Import(string importTaskId)
         {
-            var importTask = db.ExportImports
-                .Include(entry => entry.Seller)
-                .FirstOrDefault(entry => entry.Id == importTaskId);
-            if (importTask.IsImport == true) return;
-            //show that import task is processing
-            importTask.IsImport = true;
-            db.SaveChanges();
-            _logger.Info(string.Format("Gbs Import started at {0} {1}", importTask.Seller.Id, importTask.Seller.UrlName));
-
-            XDocument xml = null;
-            try
+            using (var db = new ApplicationDbContext())
             {
-                xml = XDocument.Load(importTask.FileUrl);
-            }
-            catch (Exception ex)
-            {
-                importTask.LastUpdateStatus = false;
-                importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
-                importTask.LastSync = DateTime.UtcNow;
-                db.Entry(importTask).State = EntityState.Modified;
+                var importTask = db.ExportImports
+                   .Include(entry => entry.Seller)
+                   .FirstOrDefault(entry => entry.Id == importTaskId);
+                if (importTask.IsImport == true) return;
+                //show that import task is processing
+                importTask.IsImport = true;
                 db.SaveChanges();
-                return;
-            }
+                _logger.Info(string.Format("Gbs Import started at {0} {1}", importTask.Seller.Id, importTask.Seller.UrlName));
 
-            try
-            {
-                var root = xml.Element("gbsmarket");
-                var xmlCategories = root.Descendants("GoodsCategories").ToList();
-                var xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
-                CreateAndUpdateGbsCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
-                db.SaveChanges();
-                ImportExportService.DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Gbs);
-                db.SaveChanges();
+                XDocument xml = null;
+                try
+                {
+                    xml = XDocument.Load(importTask.FileUrl);
+                }
+                catch (Exception ex)
+                {
+                    importTask.LastUpdateStatus = false;
+                    importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
+                    importTask.LastSync = DateTime.UtcNow;
+                    db.Entry(importTask).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return;
+                }
 
-                var xmlProducts = root.Descendants("goods").ToList();
-                AddAndUpdateGbsProducts(xmlProducts, importTask.SellerId, xmlCategoryIds);
-                db.SaveChanges();
-                DeleteGbsProducts(xmlProducts, importTask.SellerId);
-                db.SaveChanges();
+                try
+                {
+                    var root = xml.Element("gbsmarket");
+                    var xmlCategories = root.Descendants("GoodsCategories").ToList();
+                    var xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
+                    CreateAndUpdateGbsCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id, db);
+                    db.SaveChanges();
+                    ImportExportService.DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Gbs, db);
+                    db.SaveChanges();
 
-                //todo:handle exceptions
+                    var xmlProducts = root.Descendants("goods").ToList();
+                    AddAndUpdateGbsProducts(xmlProducts, importTask.SellerId, xmlCategoryIds, db);
+                    db.SaveChanges();
+                    DeleteGbsProducts(xmlProducts, importTask.SellerId, db);
+                    db.SaveChanges();
 
-                importTask.LastUpdateStatus = true;
-                importTask.LastUpdateMessage = null;
-                _logger.Info(string.Format("Yml Import success at {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-                importTask.LastUpdateStatus = false;
-                importTask.LastUpdateMessage =
-                    "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
-            }
-            finally
-            {
-                importTask.IsImport = false;
-                importTask.LastSync = DateTime.UtcNow;
-                db.Entry(importTask).State = EntityState.Modified;
-                db.SaveChanges();
-                _logger.Info(string.Format("Yml results saved {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
+                    //todo:handle exceptions
+
+                    importTask.LastUpdateStatus = true;
+                    importTask.LastUpdateMessage = null;
+                    _logger.Info(string.Format("Yml Import success at {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    importTask.LastUpdateStatus = false;
+                    importTask.LastUpdateMessage =
+                        "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
+                }
+                finally
+                {
+                    importTask.IsImport = false;
+                    importTask.LastSync = DateTime.UtcNow;
+                    db.Entry(importTask).State = EntityState.Modified;
+                    db.SaveChanges();
+                    _logger.Info(string.Format("Yml results saved {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
+                }
             }
         }
 
         private void CreateAndUpdateGbsCategories(List<XElement> xmlCategories, string sellerUrlName,
-            string sellerId, Category parent = null)
+            string sellerId, ApplicationDbContext db, Category parent = null)
         {
             var hasNewContent = false;
             List<XElement> xmlCats = null;
@@ -142,7 +144,7 @@ namespace Benefit.Services.Import
                     db.Entry(dbCategory).State = EntityState.Modified;
                 }
 
-                CreateAndUpdateGbsCategories(xmlCategories, sellerUrlName, sellerId, dbCategory);
+                CreateAndUpdateGbsCategories(xmlCategories, sellerUrlName, sellerId, db, dbCategory);
             }
             if (hasNewContent)
             {
@@ -151,87 +153,85 @@ namespace Benefit.Services.Import
             }
         }
 
-        private void AddAndUpdateGbsProducts(List<XElement> xmlProducts, string sellerId, IEnumerable<string> categoryIds)
+        private void AddAndUpdateGbsProducts(List<XElement> xmlProducts, string sellerId, IEnumerable<string> categoryIds, ApplicationDbContext db)
         {
-            using (var db = new ApplicationDbContext())
+
+            var maxSku = db.Products.Max(entry => entry.SKU) + 1;
+            var xmlProductIds = xmlProducts.Select(entry => entry.Element("id").Value).ToList();
+            var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
+            var dbProductIds = dbProducts.Select(entry => entry.ExternalId).ToList();
+            var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
+            var xmlProductsToAdd = xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Element("id").Value)).ToList();
+            var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
+            var xmlCategoryIds = xmlProducts.Select(pr => pr.Element("group_id").Value).Distinct().ToList();
+            var categories = db.Categories
+                .Where(entry => xmlCategoryIds.Contains(entry.ExternalIds) && entry.SellerId == sellerId).ToList();
+            var productsToAddList = new List<Product>();
+            var categryIds = categories.Select(pr => pr.Id).ToList();
+
+            Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
             {
-                var maxSku = db.Products.Max(entry => entry.SKU) + 1;
-                var xmlProductIds = xmlProducts.Select(entry => entry.Element("id").Value).ToList();
-                var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
-                var dbProductIds = dbProducts.Select(entry => entry.ExternalId).ToList();
-                var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
-                var xmlProductsToAdd = xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Element("id").Value)).ToList();
-                var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
-                var xmlCategoryIds = xmlProducts.Select(pr => pr.Element("group_id").Value).Distinct().ToList();
-                var categories = db.Categories
-                    .Where(entry => xmlCategoryIds.Contains(entry.ExternalIds) && entry.SellerId == sellerId).ToList();
-                var productsToAddList = new List<Product>();
-                var categryIds = categories.Select(pr => pr.Id).ToList();
-
-                Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
+                var xmlProduct = xmlProducts.First(entry => entry.Element("id").Value == productIdToAdd);
+                var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
+                var urlName = name.Translit().Truncate(128);
+                var category =
+                    categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("group_id").Value);
+                if (category == null)
                 {
-                    var xmlProduct = xmlProducts.First(entry => entry.Element("id").Value == productIdToAdd);
-                    var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
-                    var urlName = name.Translit().Truncate(128);
-                    var category =
-                        categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("group_id").Value);
-                    if (category == null)
-                    {
-                        return;
-                    }
-                    var product = new Product()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ExternalId = xmlProduct.Element("id").Value,
-                        Name = name,
-                        Description = name,
-                        UrlName = urlName,
-                        CategoryId = category.Id,
-                        SellerId = sellerId,
-                        IsWeightProduct = false,
-                        Price = double.Parse(xmlProduct.Element("price").Value),
-                        AvailableAmount = int.Parse(xmlProduct.Element("stock").Value),
-                        IsActive = true,
-                        IsImported = true,
-                        DoesCountForShipping = true,
-                        LastModified = DateTime.UtcNow,
-                        AltText = name.Truncate(100),
-                        ShortDescription = name,
-                        ModerationStatus = ModerationStatus.IsModerating
-                    };
-                    lock (lockObj)
-                    {
-                        productsToAddList.Add(product);
-                    }
-                });
-
-                Parallel.ForEach(productIdsToUpdate, (productIdToUpdate) =>
-                {
-                    var product = dbProducts.FirstOrDefault(entry => entry.ExternalId == productIdToUpdate);
-                    var xmlProduct = xmlProducts.First(entry => entry.Element("id").Value == productIdToUpdate);
-                    var category =
-                        categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("group_id").Value);
-                    if (category == null)
-                    {
-                        return;
-                    }
-                    product.Price = double.Parse(xmlProduct.Element("price").Value);
-                    product.AvailabilityState = ProductAvailabilityState.Available;
-                    product.AvailableAmount = int.Parse(xmlProduct.Element("stock").Value);
-                    product.LastModified = DateTime.UtcNow;
-                });
-
-                foreach (var product in productsToAddList)
-                {
-                    product.SKU = maxSku;
-                    product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
+                    return;
                 }
-                productsToAddList = productsToAddList.Distinct(new ProductComparer()).ToList();
-                db.InsertIntoMembers(productsToAddList);
-                db.SaveChanges();
+                var product = new Product()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ExternalId = xmlProduct.Element("id").Value,
+                    Name = name,
+                    Description = name,
+                    UrlName = urlName,
+                    CategoryId = category.Id,
+                    SellerId = sellerId,
+                    IsWeightProduct = false,
+                    Price = double.Parse(xmlProduct.Element("price").Value),
+                    AvailableAmount = int.Parse(xmlProduct.Element("stock").Value),
+                    IsActive = true,
+                    IsImported = true,
+                    DoesCountForShipping = true,
+                    LastModified = DateTime.UtcNow,
+                    AltText = name.Truncate(100),
+                    ShortDescription = name,
+                    ModerationStatus = ModerationStatus.IsModerating
+                };
+                lock (lockObj)
+                {
+                    productsToAddList.Add(product);
+                }
+            });
+
+            Parallel.ForEach(productIdsToUpdate, (productIdToUpdate) =>
+            {
+                var product = dbProducts.FirstOrDefault(entry => entry.ExternalId == productIdToUpdate);
+                var xmlProduct = xmlProducts.First(entry => entry.Element("id").Value == productIdToUpdate);
+                var category =
+                    categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("group_id").Value);
+                if (category == null)
+                {
+                    return;
+                }
+                product.Price = double.Parse(xmlProduct.Element("price").Value);
+                product.AvailabilityState = ProductAvailabilityState.Available;
+                product.AvailableAmount = int.Parse(xmlProduct.Element("stock").Value);
+                product.LastModified = DateTime.UtcNow;
+            });
+
+            foreach (var product in productsToAddList)
+            {
+                product.SKU = maxSku;
+                product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
             }
+            productsToAddList = productsToAddList.Distinct(new ProductComparer()).ToList();
+            db.InsertIntoMembers(productsToAddList);
+            db.SaveChanges();
         }
-        private void DeleteGbsProducts(List<XElement> xmlProducts, string sellerId)
+        private void DeleteGbsProducts(List<XElement> xmlProducts, string sellerId, ApplicationDbContext db)
         {
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
                 .Select(entry => entry.ExternalId).Distinct().ToList();

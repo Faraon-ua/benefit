@@ -9,78 +9,79 @@ namespace Benefit.Web.Areas.Admin.Controllers
 {
     public class CurrenciesController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
         public ActionResult Index()
         {
-            return View(db.Currencies.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId || entry.Provider == CurrencyProvider.PrivatBank).ToList());
+            using (var db = new ApplicationDbContext())
+            {
+                return View(db.Currencies.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId || entry.Provider == CurrencyProvider.PrivatBank).ToList());
+            }
         }
 
         [HttpGet]
         public ActionResult CreateOrUpdate(string id)
         {
-            var currency = db.Currencies.FirstOrDefault(entry => entry.Id == id) ?? new Currency();
-            var seller =
-                db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category))
-                    .Include(entry => entry.MappedCategories)
-                    .FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
+            using (var db = new ApplicationDbContext())
+            {
+                var currency = db.Currencies.FirstOrDefault(entry => entry.Id == id) ?? new Currency();
+                var seller =
+                    db.Sellers.Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                        .Include(entry => entry.MappedCategories)
+                        .FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
 
-            return View(currency);
+                return View(currency);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CreateOrUpdate(Currency currency)
         {
-            currency.Provider = CurrencyProvider.Custom;
-            if (currency.Id == null)
+            using (var db = new ApplicationDbContext())
             {
-                currency.Id = Guid.NewGuid().ToString();
-                currency.SellerId = Seller.CurrentAuthorizedSellerId;
-            }
-            if (ModelState.IsValid)
-            {
-                if (db.Currencies.Any(entry => entry.Id == currency.Id))
+                currency.Provider = CurrencyProvider.Custom;
+                if (currency.Id == null)
                 {
-                    db.Entry(currency).State = EntityState.Modified;
+                    currency.Id = Guid.NewGuid().ToString();
+                    currency.SellerId = Seller.CurrentAuthorizedSellerId;
                 }
-                else
+                if (ModelState.IsValid)
                 {
-                    db.Currencies.Add(currency);
+                    if (db.Currencies.Any(entry => entry.Id == currency.Id))
+                    {
+                        db.Entry(currency).State = EntityState.Modified;
+                    }
+                    else
+                    {
+                        db.Currencies.Add(currency);
+                    }
+                    db.SaveChanges();
+                    TempData["SuccessMessage"] = "Курс/індекс збережено";
+                    return RedirectToAction("Index");
                 }
-                db.SaveChanges();
-                TempData["SuccessMessage"] = "Курс/індекс збережено";
-                return RedirectToAction("Index");
+                return View(currency);
             }
-            return View(currency);
         }
 
         public ActionResult Delete(string id)
         {
-            var products = db.Products.Where(entry => entry.CurrencyId == id).ToList();
-            if (products.Any())
+            using (var db = new ApplicationDbContext())
             {
-                var defaultCurrency =
-                    db.Currencies.First(entry => entry.Provider == CurrencyProvider.PrivatBank && entry.Name == "UAH");
-                foreach (var product in products)
+                var products = db.Products.Where(entry => entry.CurrencyId == id).ToList();
+                if (products.Any())
                 {
-                    product.CurrencyId = defaultCurrency.Id;
+                    var defaultCurrency =
+                        db.Currencies.First(entry => entry.Provider == CurrencyProvider.PrivatBank && entry.Name == "UAH");
+                    foreach (var product in products)
+                    {
+                        product.CurrencyId = defaultCurrency.Id;
+                    }
                 }
+                var currency = db.Currencies.Find(id);
+                db.Currencies.Remove(currency);
+                db.SaveChanges();
+                TempData["SuccessMessage"] = "Курс/індекс видалено";
+                return RedirectToAction("Index");
             }
-            var currency = db.Currencies.Find(id);
-            db.Currencies.Remove(currency);
-            db.SaveChanges();
-            TempData["SuccessMessage"] = "Курс/індекс видалено";
-            return RedirectToAction("Index");
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

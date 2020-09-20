@@ -21,29 +21,29 @@ using Benefit.Services.ExternalApi;
 using Benefit.Common.Extensions;
 using Benefit.DataTransfer.JSON;
 using System.Threading.Tasks;
-using System.Diagnostics;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
     [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName + ", " + DomainConstants.SellerOperatorRoleName)]
     public class OrdersController : Controller
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
         private OrderService OrderService = new OrderService();
         private TransactionsService TransactionsService = new TransactionsService();
         private Logger _logger = LogManager.GetCurrentClassLogger();
 
         private void UpdateOrderDetails(Order order)
         {
-            //update bonuses and points
-            var seller = db.Sellers.Include(entry => entry.ShippingMethods).FirstOrDefault(entry => entry.Id == order.SellerId);
-            var shipping = seller.ShippingMethods.FirstOrDefault(entry => entry.Name == order.ShippingName);
-            order.Sum = order.GetOrderSum();
-            order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree.HasValue ? shipping.CostBeforeFree.Value : 0) : 0);
-            order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
-            order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
+            using (var db = new ApplicationDbContext())
+            {
+                //update bonuses and points
+                var seller = db.Sellers.Include(entry => entry.ShippingMethods).FirstOrDefault(entry => entry.Id == order.SellerId);
+                var shipping = seller.ShippingMethods.FirstOrDefault(entry => entry.Name == order.ShippingName);
+                order.Sum = order.GetOrderSum();
+                order.ShippingCost = (double)(order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree.HasValue ? shipping.CostBeforeFree.Value : 0) : 0);
+                order.PersonalBonusesSum = order.Sum * seller.UserDiscount / 100;
+                order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
+            }
         }
-
         public ActionResult SearchProduct(string query, string sellerId)
         {
             SearchService SearchService = new SearchService();
@@ -73,142 +73,192 @@ namespace Benefit.Web.Areas.Admin.Controllers
         // GET: /Admin/Orders/
         public ActionResult Index(AdminOrdersFilters ordersFilters, int page = 0)
         {
-            var takePerPage = 16;
-
-            var orders =
-                db.Orders
-                .Include(o => o.User)
-                .Include(o => o.OrderStatusStamps)
-                .Include(o => o.OrderProducts);
-
-            if (Seller.CurrentAuthorizedSellerId != null)
+            using (var db = new ApplicationDbContext())
             {
-                orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
-                var seller = db.Sellers.Find(Seller.CurrentAuthorizedSellerId);
-                if (seller.RepeatingTransactionInterval != null)
+                var takePerPage = 16;
+
+                var orders =
+                    db.Orders
+                    .Include(o => o.User)
+                    .Include(o => o.OrderStatusStamps)
+                    .Include(o => o.OrderProducts);
+
+                if (Seller.CurrentAuthorizedSellerId != null)
                 {
-                    orders.Where(
-                        entry =>
-                            orders.Any(
-                                o => o.Id != entry.Id &&
-                                    o.UserId == entry.UserId &&
-                                     DbFunctions.DiffHours(o.Time, entry.Time) < seller.RepeatingTransactionInterval)).ToList().ForEach(entry => entry.IsRepeating = true);
-                }
-            }
-
-            if (ordersFilters.Status == null)
-            {
-                ordersFilters.Status = 0;
-            }
-            switch (ordersFilters.Status)
-            {
-                case 0:
-                    orders = orders.Where(entry => entry.Status == OrderStatus.Created ||
-                                                   entry.Status == OrderStatus.PassedToDelivery ||
-                                                   entry.Status == OrderStatus.Processed ||
-                                                   entry.Status == OrderStatus.AwaitingDelivery ||
-                                                   entry.Status == OrderStatus.IsDelivering ||
-                                                   entry.Status == OrderStatus.AwaitingDelivery ||
-                                                   entry.Status == OrderStatus.ContactFail1 ||
-                                                   entry.Status == OrderStatus.ContactFail2 ||
-                                                   entry.Status == OrderStatus.WaitingInSelfPickup);
-                    break;
-                case 1:
-                    orders = orders.Where(entry => entry.Status == OrderStatus.Finished);
-                    break;
-                case 2:
-                    orders = orders.Where(entry => entry.Status != OrderStatus.Created &&
-                                                   entry.Status != OrderStatus.PassedToDelivery &&
-                                                   entry.Status != OrderStatus.Processed &&
-                                                   entry.Status != OrderStatus.AwaitingDelivery &&
-                                                   entry.Status != OrderStatus.IsDelivering &&
-                                                   entry.Status != OrderStatus.Finished &&
-                                                   entry.Status != OrderStatus.AwaitingDelivery &&
-                                                   entry.Status != OrderStatus.ContactFail1 &&
-                                                   entry.Status != OrderStatus.ContactFail2 &&
-                                                   entry.Status != OrderStatus.WaitingInSelfPickup);
-                    break;
-            }
-
-            if (ordersFilters.OrderNumber.HasValue)
-            {
-                orders = orders.Where(entry => entry.OrderNumber == ordersFilters.OrderNumber);
-            }
-            if (!string.IsNullOrEmpty(ordersFilters.ProductName))
-            {
-                orders = orders.Where(entry => entry.OrderProducts.Select(op => op.ProductName).Any(pn => pn.ToLower().Contains(ordersFilters.ProductName.ToLower())) ||
-                entry.OrderProducts.Select(op => op.ProductSku.ToString()).Contains(ordersFilters.ProductName));
-            }
-            if (!string.IsNullOrEmpty(ordersFilters.DateRange))
-            {
-                var dateRangeValues = ordersFilters.DateRange.Split('-');
-                var startDate = DateTime.Parse(dateRangeValues.First());
-                var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
-                orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
-            }
-
-            if (!string.IsNullOrEmpty(ordersFilters.Phone))
-            {
-                orders = orders.Where(entry => entry.User.PhoneNumber.Contains(ordersFilters.Phone));
-            }
-            if (!string.IsNullOrEmpty(ordersFilters.ClientName))
-            {
-                orders = orders.Where(entry => entry.User.FullName.ToLower().Contains(ordersFilters.ClientName.ToLower()));
-            }
-            if (!string.IsNullOrEmpty(ordersFilters.Comment))
-            {
-                orders = orders.Where(entry => entry.OrderStatusStamps.Select(s => s.Comment).Any(st => st.ToLower().Contains(ordersFilters.Comment.ToLower())));
-            }
-            if (ordersFilters.SellerId != null)
-            {
-                orders = orders.Where(entry => entry.SellerId == ordersFilters.SellerId);
-            }
-
-            if (ordersFilters.ClientGrouping)
-            {
-                var groupedOrders =
-                    orders.GroupBy(entry => entry.UserId).OrderByDescending(entry => entry.Count()).ToList();
-                orders = groupedOrders.SelectMany(entry => entry.OrderByDescending(grp => grp.Time)).AsQueryable();
-            }
-            else
-            {
-                switch (ordersFilters.Sort)
-                {
-                    case OrderSortOption.DateAsc:
-                        orders = orders.OrderBy(entry => entry.Time);
-                        break;
-                    case OrderSortOption.DateDesc:
-                        orders = orders.OrderByDescending(entry => entry.Time);
-                        break;
-                    case OrderSortOption.SumAsc:
-                        orders = orders.OrderBy(entry => entry.Sum);
-                        break;
-                    case OrderSortOption.SumDesc:
-                        orders = orders.OrderByDescending(entry => entry.Sum);
-                        break;
-                }
-            }
-            var ordersTotal = orders.Count();
-            ordersFilters.Number = orders.Count();
-            orders = orders.Skip(page * takePerPage).Take(takePerPage);
-            ordersFilters.Orders = new PaginatedList<Order>
-            {
-                Items = orders.ToList(),
-                Pages = ordersTotal / takePerPage + 1,
-                ActivePage = page
-            };
-            var productIdsInOrders = ordersFilters.Orders.Items.SelectMany(entry => entry.OrderProducts).Select(entry => entry.ProductId).Distinct().ToList();
-            var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
-            ordersFilters.Orders.Items.ForEach(order =>
-            {
-                if (order.User == null)
-                {
-                    order.User = new ApplicationUser
+                    orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+                    var seller = db.Sellers.Find(Seller.CurrentAuthorizedSellerId);
+                    if (seller.RepeatingTransactionInterval != null)
                     {
-                        FullName = order.UserName,
-                        PhoneNumber = order.UserPhone
-                    };
+                        orders.Where(
+                            entry =>
+                                orders.Any(
+                                    o => o.Id != entry.Id &&
+                                        o.UserId == entry.UserId &&
+                                         DbFunctions.DiffHours(o.Time, entry.Time) < seller.RepeatingTransactionInterval)).ToList().ForEach(entry => entry.IsRepeating = true);
+                    }
                 }
+
+                if (ordersFilters.Status == null)
+                {
+                    ordersFilters.Status = 0;
+                }
+                switch (ordersFilters.Status)
+                {
+                    case 0:
+                        orders = orders.Where(entry => entry.Status == OrderStatus.Created ||
+                                                       entry.Status == OrderStatus.PassedToDelivery ||
+                                                       entry.Status == OrderStatus.Processed ||
+                                                       entry.Status == OrderStatus.AwaitingDelivery ||
+                                                       entry.Status == OrderStatus.IsDelivering ||
+                                                       entry.Status == OrderStatus.AwaitingDelivery ||
+                                                       entry.Status == OrderStatus.ContactFail1 ||
+                                                       entry.Status == OrderStatus.ContactFail2 ||
+                                                       entry.Status == OrderStatus.WaitingInSelfPickup);
+                        break;
+                    case 1:
+                        orders = orders.Where(entry => entry.Status == OrderStatus.Finished);
+                        break;
+                    case 2:
+                        orders = orders.Where(entry => entry.Status != OrderStatus.Created &&
+                                                       entry.Status != OrderStatus.PassedToDelivery &&
+                                                       entry.Status != OrderStatus.Processed &&
+                                                       entry.Status != OrderStatus.AwaitingDelivery &&
+                                                       entry.Status != OrderStatus.IsDelivering &&
+                                                       entry.Status != OrderStatus.Finished &&
+                                                       entry.Status != OrderStatus.AwaitingDelivery &&
+                                                       entry.Status != OrderStatus.ContactFail1 &&
+                                                       entry.Status != OrderStatus.ContactFail2 &&
+                                                       entry.Status != OrderStatus.WaitingInSelfPickup);
+                        break;
+                }
+
+                if (ordersFilters.OrderNumber.HasValue)
+                {
+                    orders = orders.Where(entry => entry.OrderNumber == ordersFilters.OrderNumber);
+                }
+                if (!string.IsNullOrEmpty(ordersFilters.ProductName))
+                {
+                    orders = orders.Where(entry => entry.OrderProducts.Select(op => op.ProductName).Any(pn => pn.ToLower().Contains(ordersFilters.ProductName.ToLower())) ||
+                    entry.OrderProducts.Select(op => op.ProductSku.ToString()).Contains(ordersFilters.ProductName));
+                }
+                if (!string.IsNullOrEmpty(ordersFilters.DateRange))
+                {
+                    var dateRangeValues = ordersFilters.DateRange.Split('-');
+                    var startDate = DateTime.Parse(dateRangeValues.First());
+                    var endDate = DateTime.Parse(dateRangeValues.Last()).AddTicks(-1).AddDays(1);
+                    orders = orders.Where(entry => entry.Time >= startDate && entry.Time <= endDate);
+                }
+
+                if (!string.IsNullOrEmpty(ordersFilters.Phone))
+                {
+                    orders = orders.Where(entry => entry.User.PhoneNumber.Contains(ordersFilters.Phone));
+                }
+                if (!string.IsNullOrEmpty(ordersFilters.ClientName))
+                {
+                    orders = orders.Where(entry => entry.User.FullName.ToLower().Contains(ordersFilters.ClientName.ToLower()));
+                }
+                if (!string.IsNullOrEmpty(ordersFilters.Comment))
+                {
+                    orders = orders.Where(entry => entry.OrderStatusStamps.Select(s => s.Comment).Any(st => st.ToLower().Contains(ordersFilters.Comment.ToLower())));
+                }
+                if (ordersFilters.SellerId != null)
+                {
+                    orders = orders.Where(entry => entry.SellerId == ordersFilters.SellerId);
+                }
+
+                if (ordersFilters.ClientGrouping)
+                {
+                    var groupedOrders =
+                        orders.GroupBy(entry => entry.UserId).OrderByDescending(entry => entry.Count()).ToList();
+                    orders = groupedOrders.SelectMany(entry => entry.OrderByDescending(grp => grp.Time)).AsQueryable();
+                }
+                else
+                {
+                    switch (ordersFilters.Sort)
+                    {
+                        case OrderSortOption.DateAsc:
+                            orders = orders.OrderBy(entry => entry.Time);
+                            break;
+                        case OrderSortOption.DateDesc:
+                            orders = orders.OrderByDescending(entry => entry.Time);
+                            break;
+                        case OrderSortOption.SumAsc:
+                            orders = orders.OrderBy(entry => entry.Sum);
+                            break;
+                        case OrderSortOption.SumDesc:
+                            orders = orders.OrderByDescending(entry => entry.Sum);
+                            break;
+                    }
+                }
+                var ordersTotal = orders.Count();
+                ordersFilters.Number = orders.Count();
+                orders = orders.Skip(page * takePerPage).Take(takePerPage);
+                ordersFilters.Orders = new PaginatedList<Order>
+                {
+                    Items = orders.ToList(),
+                    Pages = ordersTotal / takePerPage + 1,
+                    ActivePage = page
+                };
+                var productIdsInOrders = ordersFilters.Orders.Items.SelectMany(entry => entry.OrderProducts).Select(entry => entry.ProductId).Distinct().ToList();
+                var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
+                ordersFilters.Orders.Items.ForEach(order =>
+                {
+                    if (order.User == null)
+                    {
+                        order.User = new ApplicationUser
+                        {
+                            FullName = order.UserName,
+                            PhoneNumber = order.UserPhone
+                        };
+                    }
+                    foreach (var orderProduct in order.OrderProducts)
+                    {
+                        var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                        if (product != null)
+                        {
+                            orderProduct.ProductSku = product.SKU;
+                            orderProduct.IsWeightProduct = product.IsWeightProduct;
+                            var productImg = product.Images.FirstOrDefault();
+                            if (productImg != null)
+                            {
+                                if (productImg.IsAbsoluteUrl)
+                                {
+                                    orderProduct.ProductImageUrl = productImg.ImageUrl;
+                                }
+                                else
+                                {
+                                    orderProduct.ProductImageUrl = string.Format("/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
+                                }
+                            }
+                        }
+                    }
+                });
+                ordersFilters.Sorting = (from OrderSortOption sortOption in Enum.GetValues(typeof(OrderSortOption))
+                                         select
+                                             new SelectListItem()
+                                             {
+                                                 Text = Enumerations.GetEnumDescription(sortOption),
+                                                 Value = sortOption.ToString(),
+                                                 Selected = sortOption == ordersFilters.Sort
+                                             }).ToList();
+                ordersFilters.Sellers =
+                    db.Sellers.OrderBy(entry => entry.Name)
+                        .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
+                return View(ordersFilters);
+            }
+        }
+
+        public ActionResult GetOrderPartial(string id, bool expanded = true)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var order = db.Orders
+                .Include(entry => entry.OrderStatusStamps)
+                .Include(entry => entry.OrderProducts)
+                .FirstOrDefault(entry => entry.OrderNumber.ToString() == id || entry.Id == id);
+
+                var productIdsInOrders = order.OrderProducts.Select(entry => entry.ProductId).Distinct().ToList();
+                var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
                 foreach (var orderProduct in order.OrderProducts)
                 {
                     var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
@@ -225,373 +275,353 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             }
                             else
                             {
-                                orderProduct.ProductImageUrl = string.Format("/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
+                                orderProduct.ProductImageUrl = string.Format("~/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
                             }
                         }
                     }
                 }
-            });
-            ordersFilters.Sorting = (from OrderSortOption sortOption in Enum.GetValues(typeof(OrderSortOption))
-                                     select
-                                         new SelectListItem()
-                                         {
-                                             Text = Enumerations.GetEnumDescription(sortOption),
-                                             Value = sortOption.ToString(),
-                                             Selected = sortOption == ordersFilters.Sort
-                                         }).ToList();
-            ordersFilters.Sellers =
-                db.Sellers.OrderBy(entry => entry.Name)
-                    .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
-            return View(ordersFilters);
-        }
-
-        public ActionResult GetOrderPartial(string id, bool expanded = true)
-        {
-            var order = db.Orders
-                .Include(entry => entry.OrderStatusStamps)
-                .Include(entry => entry.OrderProducts)
-                .FirstOrDefault(entry => entry.OrderNumber.ToString() == id || entry.Id == id);
-
-            var productIdsInOrders = order.OrderProducts.Select(entry => entry.ProductId).Distinct().ToList();
-            var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
-            foreach (var orderProduct in order.OrderProducts)
-            {
-                var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
-                if (product != null)
-                {
-                    orderProduct.ProductSku = product.SKU;
-                    orderProduct.IsWeightProduct = product.IsWeightProduct;
-                    var productImg = product.Images.FirstOrDefault();
-                    if (productImg != null)
-                    {
-                        if (productImg.IsAbsoluteUrl)
-                        {
-                            orderProduct.ProductImageUrl = productImg.ImageUrl;
-                        }
-                        else
-                        {
-                            orderProduct.ProductImageUrl = string.Format("~/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
-                        }
-                    }
-                }
+                ViewBag.ExternalRequest = expanded;
+                return PartialView("_OrderPartial", order);
             }
-            ViewBag.ExternalRequest = expanded;
-            return PartialView("_OrderPartial", order);
         }
 
         public ActionResult GetStatus(string orderId)
         {
-            var order = db.Orders.Find(orderId);
-            return PartialView("_OrderStatusPartial", order);
+            using (var db = new ApplicationDbContext())
+            {
+                var order = db.Orders.Find(orderId);
+                return PartialView("_OrderStatusPartial", order);
+            }
         }
 
         public ActionResult GetProcessed()
         {
-
             return View();
         }
 
         public ActionResult Print(string id)
         {
-            if (id == null)
+            using (var db = new ApplicationDbContext())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == id);
+                if (order == null)
+                {
+                    return HttpNotFound();
+                }
+                order.OrderProducts = order.OrderProducts.OrderBy(entry => entry.Index).ToList();
+                return View(order);
             }
-            var order = db.Orders.Include(entry => entry.User).Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == id);
-            if (order == null)
-            {
-                return HttpNotFound();
-            }
-            order.OrderProducts = order.OrderProducts.OrderBy(entry => entry.Index).ToList();
-            return View(order);
         }
 
         [HttpPost]
         public ActionResult AddComment(string orderId, OrderStatus status, string comment)
         {
-            var statusStamp = new OrderStatusStamp()
+            using (var db = new ApplicationDbContext())
             {
-                Id = Guid.NewGuid().ToString(),
-                OrderId = orderId,
-                OrderStatus = status,
-                Time = DateTime.UtcNow,
-                Comment = comment,
-                UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
-            };
-            db.OrderStatusStamps.Add(statusStamp);
-            db.SaveChanges();
-            var order = db.Orders.Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == orderId);
-            var partialHtml = ControllerContext.RenderPartialToString("_OrderStatusPartial", order);
-            return Json(new { statusPartial = partialHtml });
-
+                var statusStamp = new OrderStatusStamp()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    OrderId = orderId,
+                    OrderStatus = status,
+                    Time = DateTime.UtcNow,
+                    Comment = comment,
+                    UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                };
+                db.OrderStatusStamps.Add(statusStamp);
+                db.SaveChanges();
+                var order = db.Orders.Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == orderId);
+                var partialHtml = ControllerContext.RenderPartialToString("_OrderStatusPartial", order);
+                return Json(new { statusPartial = partialHtml });
+            }
         }
         [HttpPost]
         public ActionResult UpdateStatus(OrderStatus orderStatus, string statusComment, string orderId, string delieveryType, string delieveryTracking, string delieveryAddress)
         {
-            using (var dbTransaction = db.Database.BeginTransaction())
+            using (var db = new ApplicationDbContext())
             {
-                try
+                using (var dbTransaction = db.Database.BeginTransaction())
                 {
-                    var order = db.Orders.Find(orderId);
-                    var oldStatus = order.Status;
-                    order.Status = orderStatus;
-                    if (delieveryType != null)
+                    try
                     {
-                        order.ShippingName = delieveryType;
-                    }
-                    if (delieveryTracking != null)
-                    {
-                        order.ShippingTrackingNumber = delieveryTracking;
-                    }
-                    if (delieveryAddress != null)
-                    {
-                        order.ShippingAddress = delieveryAddress;
-                    }
-
-                    var statusStamp = new OrderStatusStamp()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        OrderId = orderId,
-                        OrderStatus = orderStatus,
-                        Time = DateTime.UtcNow,
-                        Comment = statusComment,
-                        UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
-                    };
-                    db.OrderStatusStamps.Add(statusStamp);
-
-
-                    if (orderStatus == OrderStatus.Abandoned)
-                    {
-                        if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
+                        var order = db.Orders.Find(orderId);
+                        var oldStatus = order.Status;
+                        order.Status = orderStatus;
+                        if (delieveryType != null)
                         {
-                            var rozetkaService = new RozetkaApiService();
-                            rozetkaService.RemoveOrderPurchases(order);
+                            order.ShippingName = delieveryType;
                         }
-                    }
-                    else if (orderStatus == OrderStatus.PassedToDelivery)
-                    {
-                        var smsService = new SmsService();
-                        var phone = order.UserPhone.ToPhoneFormat();
-                        smsService.Send(phone, string.Format(SmsService.npTtnSmsFormat, order.ShippingAddress.Translit(), order.ShippingTrackingNumber, order.Sum));
-                    }
-                    //add points and bonuses if order finished and is not bonuses
-                    else if (orderStatus == OrderStatus.Finished)
-                    {
-                        if (order.OrderType == OrderType.Rozetka && order.ExternalId != null)
+                        if (delieveryTracking != null)
                         {
-                            var rozetkaOrders = db.Orders.Where(entry => entry.ExternalId == order.ExternalId).ToList();
-                            if (rozetkaOrders.All(entry => entry.Status == OrderStatus.Finished || entry.Status == OrderStatus.Abandoned))
+                            order.ShippingTrackingNumber = delieveryTracking;
+                        }
+                        if (delieveryAddress != null)
+                        {
+                            order.ShippingAddress = delieveryAddress;
+                        }
+
+                        var statusStamp = new OrderStatusStamp()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            OrderId = orderId,
+                            OrderStatus = orderStatus,
+                            Time = DateTime.UtcNow,
+                            Comment = statusComment,
+                            UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                        };
+                        db.OrderStatusStamps.Add(statusStamp);
+
+
+                        if (orderStatus == OrderStatus.Abandoned)
+                        {
+                            if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
+                            {
+                                var rozetkaService = new RozetkaApiService();
+                                rozetkaService.RemoveOrderPurchases(order);
+                            }
+                        }
+                        else if (orderStatus == OrderStatus.PassedToDelivery)
+                        {
+                            var smsService = new SmsService();
+                            var phone = order.UserPhone.ToPhoneFormat();
+                            smsService.Send(phone, string.Format(SmsService.npTtnSmsFormat, order.ShippingAddress.Translit(), order.ShippingTrackingNumber, order.Sum));
+                        }
+                        //add points and bonuses if order finished and is not bonuses
+                        else if (orderStatus == OrderStatus.Finished)
+                        {
+                            if (order.OrderType == OrderType.Rozetka && order.ExternalId != null)
+                            {
+                                var rozetkaOrders = db.Orders.Where(entry => entry.ExternalId == order.ExternalId).ToList();
+                                if (rozetkaOrders.All(entry => entry.Status == OrderStatus.Finished || entry.Status == OrderStatus.Abandoned))
+                                {
+                                    var rozetkaService = new RozetkaApiService();
+                                    Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null));
+                                }
+                            }
+                            TransactionsService.AddOrderFinishedTransaction(order, db);
+                            TransactionsService.AddOrderFinishedSellerTransaction(order, db);
+                            //update available amount
+                            foreach (var orderProduct in order.OrderProducts)
+                            {
+                                var product = db.Products.Find(orderProduct.ProductId);
+                                if (product == null) continue;
+                                if (product.AvailableAmount != null && product.AvailableAmount > 0)
+                                {
+                                    product.AvailableAmount = product.AvailableAmount - (int)orderProduct.Amount;
+                                    if (product.AvailabilityState == ProductAvailabilityState.Available && product.AvailableAmount <= ProductConstants.EndingNumber)
+                                    {
+                                        product.AvailabilityState = ProductAvailabilityState.Ending;
+                                    }
+                                }
+                                db.Entry(product).State = EntityState.Modified;
+                            }
+                            var PromotionService = new PromotionService();
+                            PromotionService.ProcessPromotions(order);
+                        }
+                        else
+                        {
+                            if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
                             {
                                 var rozetkaService = new RozetkaApiService();
                                 Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null));
                             }
                         }
-                        TransactionsService.AddOrderFinishedTransaction(order, db);
-                        TransactionsService.AddOrderFinishedSellerTransaction(order, db);
-                        //update available amount
-                        foreach (var orderProduct in order.OrderProducts)
+                        if (orderStatus == OrderStatus.Abandoned ||
+                            orderStatus == OrderStatus.NotProcessedBySeller ||
+                            orderStatus == OrderStatus.OverduedDelivery ||
+                            orderStatus == OrderStatus.PackageNotAquired ||
+                            orderStatus == OrderStatus.RefusedFromProducts ||
+                            orderStatus == OrderStatus.Defect ||
+                            orderStatus == OrderStatus.UnsuitedPayment ||
+                            orderStatus == OrderStatus.NoncontactCustomer ||
+                            orderStatus == OrderStatus.Returning ||
+                            orderStatus == OrderStatus.UnacceptableProduct ||
+                            orderStatus == OrderStatus.UnacceptableShipping ||
+                            orderStatus == OrderStatus.WrongContactInfo ||
+                            orderStatus == OrderStatus.WrongSitePrice ||
+                            orderStatus == OrderStatus.ReserveTimeOver ||
+                            orderStatus == OrderStatus.OrderRestored ||
+                            orderStatus == OrderStatus.UnacceptableOrderGrouping ||
+                            orderStatus == OrderStatus.UnacceptableShippingPrice ||
+                            orderStatus == OrderStatus.UnacceptableShippingTime ||
+                            orderStatus == OrderStatus.UnacceptableNoncashPayment ||
+                            orderStatus == OrderStatus.UnacceptablePrePayment ||
+                            orderStatus == OrderStatus.UnacceptableProductQuality ||
+                            orderStatus == OrderStatus.UnacceptableProductOptions ||
+                            orderStatus == OrderStatus.CustomerRefused ||
+                            orderStatus == OrderStatus.AnotherSiteBought ||
+                            orderStatus == OrderStatus.NotAvailable ||
+                            orderStatus == OrderStatus.Fake ||
+                            orderStatus == OrderStatus.CustomerAbolished ||
+                            orderStatus == OrderStatus.Test)
                         {
-                            var product = db.Products.Find(orderProduct.ProductId);
-                            if (product == null) continue;
-                            if (product.AvailableAmount != null && product.AvailableAmount > 0)
+                            TransactionsService.AddOrderAbandonedSellerTransaction(order, db);
+                            if (order.PaymentType == PaymentType.Bonuses)
                             {
-                                product.AvailableAmount = product.AvailableAmount - (int)orderProduct.Amount;
-                                if (product.AvailabilityState == ProductAvailabilityState.Available && product.AvailableAmount <= ProductConstants.EndingNumber)
-                                {
-                                    product.AvailabilityState = ProductAvailabilityState.Ending;
-                                }
+                                TransactionsService.AddBonusesOrderAbandonedTransaction(order, db);
                             }
-                            db.Entry(product).State = EntityState.Modified;
                         }
-                        var PromotionService = new PromotionService(db);
-                        PromotionService.ProcessPromotions(order);
-                    }
-                    else
-                    {
-                        if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
-                        {
-                            var rozetkaService = new RozetkaApiService();
-                            Task.Run(()=> rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null));
-                        }
-                    }
-                    if (orderStatus == OrderStatus.Abandoned ||
-                        orderStatus == OrderStatus.NotProcessedBySeller ||
-                        orderStatus == OrderStatus.OverduedDelivery ||
-                        orderStatus == OrderStatus.PackageNotAquired ||
-                        orderStatus == OrderStatus.RefusedFromProducts ||
-                        orderStatus == OrderStatus.Defect ||
-                        orderStatus == OrderStatus.UnsuitedPayment ||
-                        orderStatus == OrderStatus.NoncontactCustomer ||
-                        orderStatus == OrderStatus.Returning ||
-                        orderStatus == OrderStatus.UnacceptableProduct ||
-                        orderStatus == OrderStatus.UnacceptableShipping ||
-                        orderStatus == OrderStatus.WrongContactInfo ||
-                        orderStatus == OrderStatus.WrongSitePrice ||
-                        orderStatus == OrderStatus.ReserveTimeOver ||
-                        orderStatus == OrderStatus.OrderRestored ||
-                        orderStatus == OrderStatus.UnacceptableOrderGrouping ||
-                        orderStatus == OrderStatus.UnacceptableShippingPrice ||
-                        orderStatus == OrderStatus.UnacceptableShippingTime ||
-                        orderStatus == OrderStatus.UnacceptableNoncashPayment ||
-                        orderStatus == OrderStatus.UnacceptablePrePayment ||
-                        orderStatus == OrderStatus.UnacceptableProductQuality ||
-                        orderStatus == OrderStatus.UnacceptableProductOptions ||
-                        orderStatus == OrderStatus.CustomerRefused ||
-                        orderStatus == OrderStatus.AnotherSiteBought ||
-                        orderStatus == OrderStatus.NotAvailable ||
-                        orderStatus == OrderStatus.Fake ||
-                        orderStatus == OrderStatus.CustomerAbolished ||
-                        orderStatus == OrderStatus.Test)
-                    {
-                        TransactionsService.AddOrderAbandonedSellerTransaction(order, db);
-                        if (order.PaymentType == PaymentType.Bonuses)
-                        {
-                            TransactionsService.AddBonusesOrderAbandonedTransaction(order, db);
-                        }
-                    }
 
-                    db.Entry(order).State = EntityState.Modified;
-                    db.SaveChanges();
-                    dbTransaction.Commit();
-                    var partialHtml = ControllerContext.RenderPartialToString("_OrderStatusPartial", order);
-                    var statusPreviewHtml = ControllerContext.RenderPartialToString("_OrderStatusPreviewPartial", order);
-                    return Json(new { statusPartial = partialHtml, statusPreview = statusPreviewHtml });
-                }
-                catch (Exception ex)
-                {
-                    dbTransaction.Rollback();
-                    _logger.Fatal(ex);
-                    return Json(new { error = "Серверна помилка" });
+                        db.Entry(order).State = EntityState.Modified;
+                        db.SaveChanges();
+                        dbTransaction.Commit();
+                        var partialHtml = ControllerContext.RenderPartialToString("_OrderStatusPartial", order);
+                        var statusPreviewHtml = ControllerContext.RenderPartialToString("_OrderStatusPreviewPartial", order);
+                        return Json(new { statusPartial = partialHtml, statusPreview = statusPreviewHtml });
+                    }
+                    catch (Exception ex)
+                    {
+                        dbTransaction.Rollback();
+                        _logger.Fatal(ex);
+                        return Json(new { error = "Серверна помилка" });
+                    }
                 }
             }
         }
 
         public ActionResult CheckNewOrder()
         {
-            var newOrders =
-                db.Orders.Where(entry => entry.OrderType == OrderType.BenefitSite && entry.Status == OrderStatus.Created);
-            if (Seller.CurrentAuthorizedSellerId != null)
+            using (var db = new ApplicationDbContext())
             {
-                newOrders = newOrders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+                var newOrders =
+                db.Orders.Where(entry => entry.OrderType == OrderType.BenefitSite && entry.Status == OrderStatus.Created);
+                if (Seller.CurrentAuthorizedSellerId != null)
+                {
+                    newOrders = newOrders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+                }
+                var orderIds = newOrders.Select(entry => entry.Id).ToList();
+                return Json(orderIds, JsonRequestBehavior.AllowGet);
             }
-            var orderIds = newOrders.Select(entry => entry.Id).ToList();
-            return Json(orderIds, JsonRequestBehavior.AllowGet);
         }
-
         public ActionResult GetOrdersList(OrderType orderType, int page = 0)
         {
-            var takePerPage = 50;
-
-            var orders =
-                db.Orders.Include(o => o.User)
-                    .OrderByDescending(entry => entry.Time)
-                    .Where(entry => entry.OrderType == orderType);
-
-            if (Seller.CurrentAuthorizedSellerId != null)
+            using (var db = new ApplicationDbContext())
             {
-                orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+                var takePerPage = 50;
+
+                var orders =
+                    db.Orders.Include(o => o.User)
+                        .OrderByDescending(entry => entry.Time)
+                        .Where(entry => entry.OrderType == orderType);
+
+                if (Seller.CurrentAuthorizedSellerId != null)
+                {
+                    orders = orders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+                }
+                var ordersTotal = orders.Count();
+                page = page - 1;
+                orders = orders.Skip(page * takePerPage).Take(takePerPage);
+                var ordersHtml = ControllerContext.RenderPartialToString("_OrdersListPartial", new PaginatedList<Order>
+                {
+                    Items = orders.ToList(),
+                    Pages = ordersTotal / takePerPage + 1,
+                    ActivePage = page
+                });
+                return Json(new
+                {
+                    html = ordersHtml,
+                    hasNewOrder = db.Orders.Any(entry => entry.Status == OrderStatus.Created)
+                }, JsonRequestBehavior.AllowGet);
             }
-            var ordersTotal = orders.Count();
-            page = page - 1;
-            orders = orders.Skip(page * takePerPage).Take(takePerPage);
-            var ordersHtml = ControllerContext.RenderPartialToString("_OrdersListPartial", new PaginatedList<Order>
-            {
-                Items = orders.ToList(),
-                Pages = ordersTotal / takePerPage + 1,
-                ActivePage = page
-            });
-            return Json(new
-            {
-                html = ordersHtml,
-                hasNewOrder = db.Orders.Any(entry => entry.Status == OrderStatus.Created)
-            }, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult BulkUpdateOrderProducts(string orderId, List<OrderProduct> orderProducts, List<OrderProductOption> orderProductOptions)
         {
-            var order = db.Orders.Include(entry => entry.OrderProducts).FirstOrDefault(entry => entry.Id == orderId);
-            if (orderProducts != null)
+            using (var db = new ApplicationDbContext())
             {
-                foreach (var orderProduct in orderProducts)
+                var order = db.Orders.Include(entry => entry.OrderProducts).FirstOrDefault(entry => entry.Id == orderId);
+                if (orderProducts != null)
                 {
-                    var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
-                    if (product == null)
+                    foreach (var orderProduct in orderProducts)
                     {
-                        var pr = db.Products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
-                        if (pr != null)
+                        var product = order.OrderProducts.FirstOrDefault(entry => entry.ProductId == orderProduct.ProductId);
+                        if (product == null)
                         {
-                            product = new OrderProduct
+                            var pr = db.Products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                            if (pr != null)
                             {
-                                Id = Guid.NewGuid().ToString(),
-                                ProductId = orderProduct.ProductId,
-                                ProductName = pr.Name,
-                                OrderId = order.Id,
-                                ProductSku = pr.SKU,
-                                ProductPrice = pr.Price,
-                                Amount = orderProduct.Amount
-                            };
-                            db.OrderProducts.Add(product);
+                                product = new OrderProduct
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    ProductId = orderProduct.ProductId,
+                                    ProductName = pr.Name,
+                                    OrderId = order.Id,
+                                    ProductSku = pr.SKU,
+                                    ProductPrice = pr.Price,
+                                    Amount = orderProduct.Amount
+                                };
+                                db.OrderProducts.Add(product);
+                            }
+                        }
+                        else
+                        {
+                            product.Amount = orderProduct.Amount;
+                            db.Entry(product).State = EntityState.Modified;
                         }
                     }
-                    else
+                    var productIds = orderProducts.Select(entry => entry.ProductId).ToList();
+                    var existingProductIds = order.OrderProducts.Select(entry => entry.ProductId).ToList();
+                    var productIdsToDelete = existingProductIds.Except(productIds).ToList();
+                    db.OrderProducts.RemoveRange(db.OrderProducts.Where(entry => entry.OrderId == orderId && productIdsToDelete.Contains(entry.ProductId)));
+                }
+                if (orderProductOptions != null)
+                {
+                    var productOptions = order.OrderProducts.SelectMany(entry => entry.OrderProductOptions).ToList();
+                    foreach (var orderProductOption in orderProductOptions)
                     {
-                        product.Amount = orderProduct.Amount;
-                        db.Entry(product).State = EntityState.Modified;
+                        var productOption =
+                            productOptions.FirstOrDefault(
+                                entry =>
+                                    entry.ProductOptionId == orderProductOption.ProductOptionId &&
+                                    entry.OrderProductId == orderProductOption.OrderProductId);
+                        productOption.ProductOptionName = orderProductOption.ProductOptionName;
+                        productOption.Amount = orderProductOption.Amount;
+                        productOption.ProductOptionPriceGrowth = orderProductOption.ProductOptionPriceGrowth;
+                        db.Entry(productOption).State = EntityState.Modified;
                     }
                 }
-                var productIds = orderProducts.Select(entry => entry.ProductId).ToList();
-                var existingProductIds = order.OrderProducts.Select(entry => entry.ProductId).ToList();
-                var productIdsToDelete = existingProductIds.Except(productIds).ToList();
-                db.OrderProducts.RemoveRange(db.OrderProducts.Where(entry => entry.OrderId == orderId && productIdsToDelete.Contains(entry.ProductId)));
-            }
-            if (orderProductOptions != null)
-            {
-                var productOptions = order.OrderProducts.SelectMany(entry => entry.OrderProductOptions).ToList();
-                foreach (var orderProductOption in orderProductOptions)
-                {
-                    var productOption =
-                        productOptions.FirstOrDefault(
-                            entry =>
-                                entry.ProductOptionId == orderProductOption.ProductOptionId &&
-                                entry.OrderProductId == orderProductOption.OrderProductId);
-                    productOption.ProductOptionName = orderProductOption.ProductOptionName;
-                    productOption.Amount = orderProductOption.Amount;
-                    productOption.ProductOptionPriceGrowth = orderProductOption.ProductOptionPriceGrowth;
-                    db.Entry(productOption).State = EntityState.Modified;
-                }
-            }
-            //save products and options
-            db.SaveChanges();
+                //save products and options
+                db.SaveChanges();
 
-            //update order itself
-            UpdateOrderDetails(order);
-            db.Entry(order).State = EntityState.Modified;
-            db.SaveChanges();
-            return Json(Url.Action("Details", new { id = orderId }));
+                //update order itself
+                UpdateOrderDetails(order);
+                db.Entry(order).State = EntityState.Modified;
+                db.SaveChanges();
+                return Json(Url.Action("Details", new { id = orderId }));
+            }
         }
 
         public ActionResult DeleteOrderProduct(string orderId, string productId)
         {
-            var product =
-                db.OrderProducts.FirstOrDefault(entry => entry.OrderId == orderId && entry.ProductId == productId);
-            db.OrderProductOptions.RemoveRange(product.DbOrderProductOptions);
-            db.OrderProducts.Remove(product);
-            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
-            UpdateOrderDetails(order);
-            db.SaveChanges();
-            return RedirectToAction("Details", new { id = orderId });
+            using (var db = new ApplicationDbContext())
+            {
+                var product =
+                    db.OrderProducts.FirstOrDefault(entry => entry.OrderId == orderId && entry.ProductId == productId);
+                db.OrderProductOptions.RemoveRange(product.DbOrderProductOptions);
+                db.OrderProducts.Remove(product);
+                var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
+                UpdateOrderDetails(order);
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = orderId });
+            }
         }
 
         public ActionResult DeleteOrderProductOption(string orderId, string orderProductId, string productOptionId)
         {
-            var productOption =
+            using (var db = new ApplicationDbContext())
+            {
+                var productOption =
                 db.OrderProductOptions.FirstOrDefault(entry => entry.OrderProductId == orderProductId && entry.ProductOptionId == productOptionId);
-            db.OrderProductOptions.Remove(productOption);
-            db.SaveChanges();
-            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
-            UpdateOrderDetails(order);
-            db.SaveChanges();
-            return RedirectToAction("Details", new { id = orderId });
+                db.OrderProductOptions.Remove(productOption);
+                db.SaveChanges();
+                var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderId);
+                UpdateOrderDetails(order);
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = orderId });
+            }
         }
 
         public ActionResult AddProductForm(string orderId)
@@ -605,79 +635,91 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult AddOrderProduct(OrderProduct orderProduct)
         {
-            orderProduct.Id = Guid.NewGuid().ToString();
-            orderProduct.ProductId = Guid.NewGuid().ToString();
-            db.OrderProducts.Add(orderProduct);
-            var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);
-            UpdateOrderDetails(order);
-            orderProduct.Index = order.OrderProducts.Max(entry => entry.Index) + 1;
-            db.Entry(order).State = EntityState.Modified;
-            db.SaveChanges();
-            return RedirectToAction("Details", new { id = orderProduct.OrderId });
+            using (var db = new ApplicationDbContext())
+            {
+                orderProduct.Id = Guid.NewGuid().ToString();
+                orderProduct.ProductId = Guid.NewGuid().ToString();
+                db.OrderProducts.Add(orderProduct);
+                var order = db.Orders.Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).FirstOrDefault(entry => entry.Id == orderProduct.OrderId);
+                UpdateOrderDetails(order);
+                orderProduct.Index = order.OrderProducts.Max(entry => entry.Index) + 1;
+                db.Entry(order).State = EntityState.Modified;
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = orderProduct.OrderId });
+            }
         }
 
         public ActionResult GetEditForm(string id)
         {
-            var order = db.Orders.Include(entry => entry.OrderProducts).FirstOrDefault(entry => entry.Id == id);
-            var productIdsInOrders = order.OrderProducts.Select(entry => entry.ProductId).Distinct().ToList();
-            var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
-            foreach (var orderProduct in order.OrderProducts)
+            using (var db = new ApplicationDbContext())
             {
-                var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
-                if (product != null)
+                var order = db.Orders.Include(entry => entry.OrderProducts).FirstOrDefault(entry => entry.Id == id);
+                var productIdsInOrders = order.OrderProducts.Select(entry => entry.ProductId).Distinct().ToList();
+                var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
+                foreach (var orderProduct in order.OrderProducts)
                 {
-                    orderProduct.ProductSku = product.SKU;
-                    orderProduct.IsWeightProduct = product.IsWeightProduct;
-                    var productImg = product.Images.FirstOrDefault();
-                    if (productImg != null)
+                    var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                    if (product != null)
                     {
-                        if (productImg.IsAbsoluteUrl)
+                        orderProduct.ProductSku = product.SKU;
+                        orderProduct.IsWeightProduct = product.IsWeightProduct;
+                        var productImg = product.Images.FirstOrDefault();
+                        if (productImg != null)
                         {
-                            orderProduct.ProductImageUrl = productImg.ImageUrl;
-                        }
-                        else
-                        {
-                            orderProduct.ProductImageUrl = string.Format("~/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
+                            if (productImg.IsAbsoluteUrl)
+                            {
+                                orderProduct.ProductImageUrl = productImg.ImageUrl;
+                            }
+                            else
+                            {
+                                orderProduct.ProductImageUrl = string.Format("~/Images/ProductGallery/{0}/{1}", product.Id, productImg.ImageUrl);
+                            }
                         }
                     }
                 }
+                return PartialView("_EditPartial", order);
             }
-            return PartialView("_EditPartial", order);
         }
         // GET: /Admin/Orders/Details/5
         public ActionResult Details(string id)
         {
-            if (id == null)
+            using (var db = new ApplicationDbContext())
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var order = db.Orders.Include(entry => entry.Transactions).Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
-            if (order == null)
-            {
-                return HttpNotFound();
-            }
-            order.OrderProducts = order.OrderProducts.OrderBy(entry => entry.Index).ToList();
-            var productIds = order.OrderProducts.Select(entry => entry.ProductId).ToList();
-            var products = db.Products.Where(entry => productIds.Contains(entry.Id)).ToList();
-            foreach (var orderProduct in order.OrderProducts)
-            {
-                var product = products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
-                if (product != null)
+                if (id == null)
                 {
-                    orderProduct.ProductSku = product.SKU;
-                    orderProduct.ProductUrlName = product.UrlName;
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
                 }
+                var order = db.Orders.Include(entry => entry.Transactions).Include(entry => entry.OrderProducts.Select(op => op.OrderProductOptions)).Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == id);
+                if (order == null)
+                {
+                    return HttpNotFound();
+                }
+                order.OrderProducts = order.OrderProducts.OrderBy(entry => entry.Index).ToList();
+                var productIds = order.OrderProducts.Select(entry => entry.ProductId).ToList();
+                var products = db.Products.Where(entry => productIds.Contains(entry.Id)).ToList();
+                foreach (var orderProduct in order.OrderProducts)
+                {
+                    var product = products.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
+                    if (product != null)
+                    {
+                        orderProduct.ProductSku = product.SKU;
+                        orderProduct.ProductUrlName = product.UrlName;
+                    }
+                }
+                var orderSeller = db.Sellers.Find(order.SellerId);
+                order.SellerPhone = orderSeller == null ? null : orderSeller.OnlineOrdersPhone;
+                return View(order);
             }
-            var orderSeller = db.Sellers.Find(order.SellerId);
-            order.SellerPhone = orderSeller == null ? null : orderSeller.OnlineOrdersPhone;
-            return View(order);
         }
 
         // GET: /Admin/Orders/Create
         public ActionResult Create()
         {
-            ViewBag.UserId = new SelectList(db.Users, "Id", "FullName");
-            return View();
+            using (var db = new ApplicationDbContext())
+            {
+                ViewBag.UserId = new SelectList(db.Users, "Id", "FullName");
+                return View();
+            }
         }
 
         [Authorize(Roles = DomainConstants.SuperAdminRoleName)]
@@ -690,28 +732,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [Authorize(Roles = DomainConstants.AdminRoleName)]
         public ActionResult DeleteOrderTransaction(string orderId, string transactionId)
         {
-            var tr = db.Transactions.Include(entry => entry.Payee).FirstOrDefault(entry => entry.Id == transactionId);
-            if (tr.Type == TransactionType.PersonalSiteBonus)
+            using (var db = new ApplicationDbContext())
             {
-                tr.Payee.CurrentBonusAccount = tr.Payee.CurrentBonusAccount - tr.Bonuses;
+                var tr = db.Transactions.Include(entry => entry.Payee).FirstOrDefault(entry => entry.Id == transactionId);
+                if (tr.Type == TransactionType.PersonalSiteBonus)
+                {
+                    tr.Payee.CurrentBonusAccount = tr.Payee.CurrentBonusAccount - tr.Bonuses;
+                }
+                if (tr.Type == TransactionType.OrderRefund)
+                {
+                    tr.Payee.BonusAccount = tr.Payee.BonusAccount - tr.Bonuses;
+                }
+                db.Entry(tr.Payee).State = EntityState.Modified;
+                db.Transactions.Remove(tr);
+                db.SaveChanges();
+                return RedirectToAction("Details", new { id = orderId });
             }
-            if (tr.Type == TransactionType.OrderRefund)
-            {
-                tr.Payee.BonusAccount = tr.Payee.BonusAccount - tr.Bonuses;
-            }
-            db.Entry(tr.Payee).State = EntityState.Modified;
-            db.Transactions.Remove(tr);
-            db.SaveChanges();
-            return RedirectToAction("Details", new { id = orderId });
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

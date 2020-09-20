@@ -17,125 +17,130 @@ namespace Benefit.Web.Controllers
 {
     public class SellerController : BaseController
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
         private SellerService SellerService = new SellerService();
 
         [FetchCategories(Order = 1)]
         public ActionResult Index(string id, string category = null, string options = null)
         {
-            var viewModel = new NavigationEntitiesViewModel<Product>();
-            var seller = db.Sellers
-                .Include(entry => entry.Images)
-                .Include(entry => entry.SellerCategories)
-                .FirstOrDefault(entry => entry.UrlName == id);
-            if (seller == null)
+            using (var db = new ApplicationDbContext())
             {
-                throw new HttpException(404, "Not found");
-            }
-            ViewBag.Seller = seller;
-            var sellerCats = SellerService.GetAllSellerCategories(seller.UrlName);
-            var categories = sellerCats.Where(entry => entry.ParentCategoryId == null).ToList().MapToVM();
-            ViewBag.SellerCategories = categories;
-            if (string.IsNullOrEmpty(category))
-            {
-                viewModel = new ProductsViewModel();
-                var productIds = db.Orders
-                    .Where(entry => entry.SellerId == seller.Id)
-                    .SelectMany(entry => entry.OrderProducts)
-                    .Select(entry => entry.ProductId)
-                    .GroupBy(entry => entry)
-                    .OrderByDescending(s => s.Count())
-                    .Select(entry => entry.Key)
-                    .Take(ListConstants.DefaultTakePerPage * 2).ToList();
-                viewModel.Items.AddRange(db.Products
-                    .Include(entry => entry.Category.SellerCategories)
-                    .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
-                    .Include(entry => entry.Currency)
+                var viewModel = new NavigationEntitiesViewModel<Product>();
+                var seller = db.Sellers
                     .Include(entry => entry.Images)
-                    .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
-                    .Where(entry =>
-                        (!entry.Category.IsSellerCategory || (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)) &&
-                        productIds.Contains(entry.Id) &&
-                        (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable ||
-                         entry.AvailabilityState == ProductAvailabilityState.Available) && entry.Images.Any())
-                    .ToList().OrderBy(entry => productIds.IndexOf(entry.Id))
-                    .Take(ListConstants.DefaultTakePerPage + 1));
-                if (productIds.Count < ListConstants.DefaultTakePerPage)
+                    .Include(entry => entry.SellerCategories)
+                    .FirstOrDefault(entry => entry.UrlName == id);
+                if (seller == null)
                 {
-                    viewModel.Items.AddRange(
-                        db.Products
-                            .Include(entry => entry.Currency)
-                            .Include(entry => entry.Images)
-                            .Include(entry => entry.Category.SellerCategories)
-                            .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
-                            .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
-                            .Where(entry => entry.SellerId == seller.Id && entry.IsActive && entry.Category.IsActive &&
-                                            (!entry.Category.IsSellerCategory || entry.Category.IsSellerCategory &&
-                                             entry.Category.MappedParentCategory != null))
-                            .OrderBy(entry => entry.AvailabilityState)
-                            .ThenByDescending(entry => entry.Images.Any())
-                            .Take(ListConstants.DefaultTakePerPage + 1).ToList());
+                    throw new HttpException(404, "Not found");
                 }
-                viewModel.Items.ForEach(entry =>
+                ViewBag.Seller = seller;
+                var sellerCats = SellerService.GetAllSellerCategories(seller.UrlName);
+                var categories = sellerCats.Where(entry => entry.ParentCategoryId == null).ToList().MapToVM();
+                ViewBag.SellerCategories = categories;
+                if (string.IsNullOrEmpty(category))
                 {
-                    var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;
-
-                    var sellerCategory = produCat.SellerCategories.FirstOrDefault(sc => sc.CategoryId == produCat.Id && sc.SellerId == entry.SellerId);
-                    if (sellerCategory != null)
+                    viewModel = new ProductsViewModel();
+                    var productIds = db.Orders
+                        .Where(entry => entry.SellerId == seller.Id)
+                        .SelectMany(entry => entry.OrderProducts)
+                        .Select(entry => entry.ProductId)
+                        .GroupBy(entry => entry)
+                        .OrderByDescending(s => s.Count())
+                        .Select(entry => entry.Key)
+                        .Take(ListConstants.DefaultTakePerPage * 2).ToList();
+                    viewModel.Items.AddRange(db.Products
+                        .Include(entry => entry.Category.SellerCategories)
+                        .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
+                        .Include(entry => entry.Currency)
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
+                        .Where(entry =>
+                            (!entry.Category.IsSellerCategory || (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)) &&
+                            productIds.Contains(entry.Id) &&
+                            (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable ||
+                             entry.AvailabilityState == ProductAvailabilityState.Available) && entry.Images.Any())
+                        .ToList().OrderBy(entry => productIds.IndexOf(entry.Id))
+                        .Take(ListConstants.DefaultTakePerPage + 1));
+                    if (productIds.Count < ListConstants.DefaultTakePerPage)
                     {
-                        if (sellerCategory.CustomMargin.HasValue)
+                        viewModel.Items.AddRange(
+                            db.Products
+                                .Include(entry => entry.Currency)
+                                .Include(entry => entry.Images)
+                                .Include(entry => entry.Category.SellerCategories)
+                                .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
+                                .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
+                                .Where(entry => entry.SellerId == seller.Id && entry.IsActive && entry.Category.IsActive &&
+                                                (!entry.Category.IsSellerCategory || entry.Category.IsSellerCategory &&
+                                                 entry.Category.MappedParentCategory != null))
+                                .OrderBy(entry => entry.AvailabilityState)
+                                .ThenByDescending(entry => entry.Images.Any())
+                                .Take(ListConstants.DefaultTakePerPage + 1).ToList());
+                    }
+
+                    viewModel.Items.ForEach(entry =>
+                    {
+                        var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;
+
+                        var sellerCategory = produCat.SellerCategories.FirstOrDefault(sc => sc.CategoryId == produCat.Id && sc.SellerId == entry.SellerId);
+                        if (sellerCategory != null)
+                        {
+                            if (sellerCategory.CustomMargin.HasValue)
+                            {
+                                if (entry.OldPrice.HasValue)
+                                {
+                                    entry.OldPrice += entry.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                                }
+                                entry.Price += entry.Price * sellerCategory.CustomMargin.Value / 100;
+                            }
+                        }
+                        if (entry.Currency != null)
                         {
                             if (entry.OldPrice.HasValue)
                             {
-                                entry.OldPrice += entry.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                                entry.OldPrice = (double)(entry.OldPrice * entry.Currency.Rate);
                             }
-                            entry.Price += entry.Price * sellerCategory.CustomMargin.Value / 100;
+                            entry.Price = (double)(entry.Price * entry.Currency.Rate);
                         }
-                    }
-                    if (entry.Currency != null)
-                    {
-                        if (entry.OldPrice.HasValue)
-                        {
-                            entry.OldPrice = (double)(entry.OldPrice * entry.Currency.Rate);
-                        }
-                        entry.Price = (double)(entry.Price * entry.Currency.Rate);
-                    }
-                });
-            }
-            else
-            {
-                var selectedCat = categories.FindByUrlIdRecursively(category, null);
-                if (selectedCat == null)
-                {
-                    throw new HttpException(404, "Not Found");
+                    });
                 }
-                var catalogService = new CatalogService();
-                viewModel = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, selectedCat.Id, User.Identity.GetUserId(), options);
-                viewModel.Category = selectedCat;
-                viewModel.Breadcrumbs = new BreadCrumbsViewModel()
+                else
                 {
-                    Seller = seller,
-                    Categories = catalogService.GetBreadcrumbs(categories, selectedCat == null ? null : selectedCat.Id)
-                };
-                //viewModel.Category = selectedCat;
-                //viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
-            }
+                    var selectedCat = categories.FindByUrlIdRecursively(category, null);
+                    if (selectedCat == null)
+                    {
+                        throw new HttpException(404, "Not Found");
+                    }
+                    var catalogService = new CatalogService();
+                    viewModel = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, selectedCat.Id, User.Identity.GetUserId(), options);
+                    viewModel.Category = selectedCat;
+                    viewModel.Breadcrumbs = new BreadCrumbsViewModel()
+                    {
+                        Seller = seller,
+                        Categories = catalogService.GetBreadcrumbs(categories, selectedCat == null ? null : selectedCat.Id)
+                    };
+                    //viewModel.Category = selectedCat;
+                    //viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
+                }
 
-            viewModel.Breadcrumbs = null;
-            viewModel.Seller = seller;
-            return View("~/Views/Catalog/ProductsCatalog.cshtml", viewModel);
+                viewModel.Breadcrumbs = null;
+                viewModel.Seller = seller;
+                return View("~/Views/Catalog/ProductsCatalog.cshtml", viewModel);
+            }
         }
 
         [FetchCategories(Order = 1)]
         public ActionResult Reviews(string id)
         {
-            var seller = db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.UrlName == id);
-            if (seller == null)
+            using (var db = new ApplicationDbContext())
             {
-                throw new HttpException(404, "Not Found");
+                var seller = db.Sellers.Include(entry => entry.Reviews).FirstOrDefault(entry => entry.UrlName == id);
+                if (seller == null)
+                {
+                    throw new HttpException(404, "Not Found");
+                }
+                return View(seller);
             }
-
-            return View(seller);
         }
     }
 }

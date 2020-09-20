@@ -17,8 +17,6 @@ namespace Benefit.Services.Domain
 {
     public class CategoriesService
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-        private SellerService SellerService = new SellerService();
         private ProductsService ProductsService = new ProductsService();
 
         public Category GetByUrlWithChildren(string urlName)

@@ -14,31 +14,33 @@ namespace Benefit.Services.ExternalApi
     public class FacebookService
     {
         private readonly HttpClientService _clientService = new HttpClientService();
-        private readonly ApplicationDbContext db = new ApplicationDbContext();
 
         public void ReceiveMessage(string msg, string fbmsgId)
         {
-            var seller = db.Sellers.Include(entry => entry.NotificationChannels).FirstOrDefault(entry => entry.Id == msg);
-            if (seller != null)
+            using (var db = new ApplicationDbContext())
             {
-                if (!seller.NotificationChannels.Any(
-                    entry => entry.ChannelType == NotificationChannelType.Facebook && entry.Address == fbmsgId))
+                var seller = db.Sellers.Include(entry => entry.NotificationChannels).FirstOrDefault(entry => entry.Id == msg);
+                if (seller != null)
                 {
-                    var notificationChannel = new NotificationChannel()
+                    if (!seller.NotificationChannels.Any(
+                        entry => entry.ChannelType == NotificationChannelType.Facebook && entry.Address == fbmsgId))
                     {
-                        Id = Guid.NewGuid().ToString(),
-                        ChannelType = NotificationChannelType.Facebook,
-                        Address = fbmsgId,
-                        SellerId = seller.Id
-                    };
-                    db.NotificationChannels.Add(notificationChannel);
-                    db.SaveChanges();
+                        var notificationChannel = new NotificationChannel()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            ChannelType = NotificationChannelType.Facebook,
+                            Address = fbmsgId,
+                            SellerId = seller.Id
+                        };
+                        db.NotificationChannels.Add(notificationChannel);
+                        db.SaveChanges();
 
+                    }
+                    SendMessage(fbmsgId,
+                        string.Format(
+                            "Ваш фейсбук акаунт був успішно підв’язаний до автоматичних сповіщень про нові замовлення зроблені у постачальника {0} на сайті benefit-company.com",
+                            seller.Name));
                 }
-                SendMessage(fbmsgId,
-                    string.Format(
-                        "Ваш фейсбук акаунт був успішно підв’язаний до автоматичних сповіщень про нові замовлення зроблені у постачальника {0} на сайті benefit-company.com",
-                        seller.Name));
             }
         }
 

@@ -22,7 +22,6 @@ namespace Benefit.Services.Domain
 {
     public class ImportExportService : IDisposable
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
         private SellerService SellerService = new SellerService();
         private CategoriesService categoriesService = new CategoriesService();
         private ProductsService productsService = new ProductsService();
@@ -113,192 +112,195 @@ namespace Benefit.Services.Domain
         }
         public string Export(string exportId, string savePath = null)
         {
-            var Request = HttpContext.Current.Request;
-            var exportTask = db.ExportImports
-                .Include(entry => entry.ExportProducts)
-                .FirstOrDefault(entry => entry.Id == exportId);
-            if (exportTask == null || !exportTask.IsActive)
+            using (var db = new ApplicationDbContext())
             {
-                return null;
-            }
-
-            var productIds = exportTask.ExportProducts.Select(entry => entry.ProductId).ToList();
-            var products = db.Products.AsNoTracking()
-                .Include(entry => entry.Seller.ShippingMethods)
-                .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
-                .Include(entry => entry.ProductOptions.Select(op => op.ChildProductOptions))
-                .Include(entry => entry.Images)
-                .Include(entry => entry.Currency)
-                .Include(entry => entry.Category.ExportCategories)
-                .Include(entry => entry.Category.SellerCategories)
-                .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
-                .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
-                .Where(entry => productIds.Contains(entry.Id)).ToList();
-
-            #region Categories
-            var dbcategories = products.Select(entry => entry.Category).ToList();
-            for (var i = 0; i < dbcategories.Count; i++)
-            {
-                if (dbcategories[i].MappedParentCategory != null)
+                var Request = HttpContext.Current.Request;
+                var exportTask = db.ExportImports
+                    .Include(entry => entry.ExportProducts)
+                    .FirstOrDefault(entry => entry.Id == exportId);
+                if (exportTask == null || !exportTask.IsActive)
                 {
-                    foreach (var product in products.Where(entry => entry.CategoryId == dbcategories[i].Id))
+                    return null;
+                }
+
+                var productIds = exportTask.ExportProducts.Select(entry => entry.ProductId).ToList();
+                var products = db.Products.AsNoTracking()
+                    .Include(entry => entry.Seller.ShippingMethods)
+                    .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
+                    .Include(entry => entry.ProductOptions.Select(op => op.ChildProductOptions))
+                    .Include(entry => entry.Images)
+                    .Include(entry => entry.Currency)
+                    .Include(entry => entry.Category.ExportCategories)
+                    .Include(entry => entry.Category.SellerCategories)
+                    .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
+                    .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
+                    .Where(entry => productIds.Contains(entry.Id)).ToList();
+
+                #region Categories
+                var dbcategories = products.Select(entry => entry.Category).ToList();
+                for (var i = 0; i < dbcategories.Count; i++)
+                {
+                    if (dbcategories[i].MappedParentCategory != null)
                     {
-                        product.CategoryId = dbcategories[i].MappedParentCategoryId;
-                        product.Category = dbcategories[i].MappedParentCategory;
+                        foreach (var product in products.Where(entry => entry.CategoryId == dbcategories[i].Id))
+                        {
+                            product.CategoryId = dbcategories[i].MappedParentCategoryId;
+                            product.Category = dbcategories[i].MappedParentCategory;
+                        }
+                        dbcategories[i] = dbcategories[i].MappedParentCategory;
                     }
-                    dbcategories[i] = dbcategories[i].MappedParentCategory;
                 }
-            }
-            dbcategories = dbcategories.Where(entry => entry != null).ToList();
-            var exportCategories = new Dictionary<int, string>();
-            foreach (var dbCat in dbcategories)
-            {
-                var id = Math.Abs(dbCat.Id.GetHashCode());
-                if (!exportCategories.ContainsKey(id))
+                dbcategories = dbcategories.Where(entry => entry != null).ToList();
+                var exportCategories = new Dictionary<int, string>();
+                foreach (var dbCat in dbcategories)
                 {
-                    var catExport = dbCat.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId);
-                    var catName = catExport == null ? "Не задано мапінг " + dbCat.Id : catExport.Name;
-                    exportCategories.Add(id, catName);
-                }
-            }
-            var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
-            var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
-            var yml_catalog = new XElement(ns + "yml_catalog", new XAttribute("date", DateTime.Now.ToLocalDateTimeWithFormat()));
-            var shop = new XElement("shop");
-            var domain = Request.Url.Host;
-            domain = domain.Substring(0, domain.IndexOf(".") > 0 ? domain.IndexOf(".") : domain.Length);
-            var seller = db.Sellers.FirstOrDefault(entry => entry.Domain == domain || entry.UrlName == domain);
-            var name = new XElement("name", "Интернет магазин " + (seller == null ? "Benefit-Company" : seller.Name));
-            var company = new XElement("company", seller == null ? "Benefit-Company" : seller.Name);
-            var url = new XElement("url", string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host));
-            //var email = new XElement("email", "info.benefitcompany@gmail.com");
-            var currencies = new XElement("currencies");
-            var uah = new XElement("currency", new XAttribute("id", "UAH"), new XAttribute("rate", "1"));
-            currencies.Add(uah);
-            var categories = new XElement("categories");
-            foreach (var category in exportCategories)
-            {
-                var cat = new XElement("category") { Value = category.Value };
-                cat.Add(new XAttribute("id", category.Key));
-                categories.Add(cat);
-            }
-            #endregion
-
-            var offers = new XElement("offers");
-            List<XElement> offersList = new List<XElement>();
-            foreach (var product in products)
-            {
-                var variantGroups = product.ProductOptions.Where(entry => entry.IsVariant).ToList();
-                if (variantGroups.Any())
-                {
-                    FetchOffers(offersList, product, variantGroups, variantGroups[0], string.Empty, 0, Request);
-                }
-                else
-                {
-                    var prod = new XElement("offer", new XAttribute("id", product.Id));
-                    var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
-                    prod.Add(new XAttribute("available", available));
-                    prod.Add(new XElement("name", product.Name));
-                    prod.Add(new XElement("vendor", product.Vendor));
-                    prod.Add(new XElement("vendorCode", product.SKU));
-                    if (product.Currency != null)
+                    var id = Math.Abs(dbCat.Id.GetHashCode());
+                    if (!exportCategories.ContainsKey(id))
                     {
-                        product.Price *= product.Currency.Rate;
+                        var catExport = dbCat.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId);
+                        var catName = catExport == null ? "Не задано мапінг " + dbCat.Id : catExport.Name;
+                        exportCategories.Add(id, catName);
                     }
-                    var sellerCategory = product.Category.SellerCategories.FirstOrDefault(sc => sc.CategoryId == product.CategoryId && sc.SellerId == product.SellerId);
-                    if (sellerCategory != null && sellerCategory.CustomMargin.HasValue)
+                }
+                var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
+                var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
+                var yml_catalog = new XElement(ns + "yml_catalog", new XAttribute("date", DateTime.Now.ToLocalDateTimeWithFormat()));
+                var shop = new XElement("shop");
+                var domain = Request.Url.Host;
+                domain = domain.Substring(0, domain.IndexOf(".") > 0 ? domain.IndexOf(".") : domain.Length);
+                var seller = db.Sellers.FirstOrDefault(entry => entry.Domain == domain || entry.UrlName == domain);
+                var name = new XElement("name", "Интернет магазин " + (seller == null ? "Benefit-Company" : seller.Name));
+                var company = new XElement("company", seller == null ? "Benefit-Company" : seller.Name);
+                var url = new XElement("url", string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host));
+                //var email = new XElement("email", "info.benefitcompany@gmail.com");
+                var currencies = new XElement("currencies");
+                var uah = new XElement("currency", new XAttribute("id", "UAH"), new XAttribute("rate", "1"));
+                currencies.Add(uah);
+                var categories = new XElement("categories");
+                foreach (var category in exportCategories)
+                {
+                    var cat = new XElement("category") { Value = category.Value };
+                    cat.Add(new XAttribute("id", category.Key));
+                    categories.Add(cat);
+                }
+                #endregion
+
+                var offers = new XElement("offers");
+                List<XElement> offersList = new List<XElement>();
+                foreach (var product in products)
+                {
+                    var variantGroups = product.ProductOptions.Where(entry => entry.IsVariant).ToList();
+                    if (variantGroups.Any())
                     {
+                        FetchOffers(offersList, product, variantGroups, variantGroups[0], string.Empty, 0, Request);
+                    }
+                    else
+                    {
+                        var prod = new XElement("offer", new XAttribute("id", product.Id));
+                        var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
+                        prod.Add(new XAttribute("available", available));
+                        prod.Add(new XElement("name", product.Name));
+                        prod.Add(new XElement("vendor", product.Vendor));
+                        prod.Add(new XElement("vendorCode", product.SKU));
+                        if (product.Currency != null)
+                        {
+                            product.Price *= product.Currency.Rate;
+                        }
+                        var sellerCategory = product.Category.SellerCategories.FirstOrDefault(sc => sc.CategoryId == product.CategoryId && sc.SellerId == product.SellerId);
+                        if (sellerCategory != null && sellerCategory.CustomMargin.HasValue)
+                        {
+                            if (product.OldPrice.HasValue)
+                            {
+                                product.OldPrice += product.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                            }
+                            product.Price += product.Price * sellerCategory.CustomMargin.Value / 100;
+                        }
                         if (product.OldPrice.HasValue)
                         {
-                            product.OldPrice += product.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                            if (product.Currency != null)
+                            {
+                                product.OldPrice *= product.Currency.Rate;
+                            }
+                            prod.Add(new XElement("price_old", product.OldPrice));
                         }
-                        product.Price += product.Price * sellerCategory.CustomMargin.Value / 100;
-                    }
-                    if (product.OldPrice.HasValue)
-                    {
-                        if (product.Currency != null)
+                        if (product.PromoPrice.HasValue)
                         {
-                            product.OldPrice *= product.Currency.Rate;
+                            if (product.Currency != null)
+                            {
+                                product.PromoPrice *= product.Currency.Rate;
+                            }
+                            prod.Add(new XElement("price_promo", product.PromoPrice));
                         }
-                        prod.Add(new XElement("price_old", product.OldPrice));
-                    }
-                    if (product.PromoPrice.HasValue)
-                    {
-                        if (product.Currency != null)
+                        prod.Add(new XElement("price", product.Price));
+                        prod.Add(new XElement("currencyId", "UAH"));
+                        prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
+
+                        prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
+                        var categoryId = Math.Abs(product.CategoryId.GetHashCode());
+                        if (product.Category.MappedParentCategory != null)
                         {
-                            product.PromoPrice *= product.Currency.Rate;
+                            categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
                         }
-                        prod.Add(new XElement("price_promo", product.PromoPrice));
-                    }
-                    prod.Add(new XElement("price", product.Price));
-                    prod.Add(new XElement("currencyId", "UAH"));
-                    prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
+                        prod.Add(new XElement("categoryId", categoryId));
+                        foreach (var picture in product.Images.OrderBy(entry => entry.Order))
+                        {
+                            var pictureUrl = picture.IsAbsoluteUrl
+                                ? picture.ImageUrl
+                                : string.Format("{0}://{1}/Images/ProductGallery/{2}/{3}", Request.Url.Scheme, Request.Url.Host, product.Id,
+                                    picture.ImageUrl);
+                            prod.Add(new XElement("picture", pictureUrl));
+                        }
 
-                    prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
-                    var categoryId = Math.Abs(product.CategoryId.GetHashCode());
-                    if (product.Category.MappedParentCategory != null)
-                    {
-                        categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
-                    }
-                    prod.Add(new XElement("categoryId", categoryId));
-                    foreach (var picture in product.Images.OrderBy(entry => entry.Order))
-                    {
-                        var pictureUrl = picture.IsAbsoluteUrl
-                            ? picture.ImageUrl
-                            : string.Format("{0}://{1}/Images/ProductGallery/{2}/{3}", Request.Url.Scheme, Request.Url.Host, product.Id,
-                                picture.ImageUrl);
-                        prod.Add(new XElement("picture", pictureUrl));
-                    }
+                        prod.Add(new XElement("description", new XCData(product.Description)));
+                        prod.Add(new XElement("country_of_origin", product.OriginCountry));
+                        foreach (var parameterProduct in product.ProductParameterProducts)
+                        {
+                            prod.Add(new XElement("param", new XAttribute("name", parameterProduct.ProductParameter.Name), parameterProduct.StartText));
+                        }
 
-                    prod.Add(new XElement("description", new XCData(product.Description)));
-                    prod.Add(new XElement("country_of_origin", product.OriginCountry));
-                    foreach (var parameterProduct in product.ProductParameterProducts)
-                    {
-                        prod.Add(new XElement("param", new XAttribute("name", parameterProduct.ProductParameter.Name), parameterProduct.StartText));
+                        prod.Add(new XElement("param", new XAttribute("name", "Доставка"),
+                            string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Name))));
+                        var paymentSB = new StringBuilder();
+                        if (product.Seller.IsCashPaymentActive)
+                        {
+                            paymentSB.Append("Наличными");
+                        }
+
+                        if (product.Seller.IsAcquiringActive)
+                        {
+                            paymentSB.Append("Картой Visa/MasterCard");
+                        }
+
+                        prod.Add(new XElement("param", new XAttribute("name", "Оплата"), paymentSB.ToString()));
+                        prod.Add(new XElement("param", new XAttribute("name", "Гарантия"), "Обмен/возврат товара в течение 14 дней"));
+
+                        offersList.Add(prod);
                     }
-
-                    prod.Add(new XElement("param", new XAttribute("name", "Доставка"),
-                        string.Join(",", product.Seller.ShippingMethods.Select(entry => entry.Name))));
-                    var paymentSB = new StringBuilder();
-                    if (product.Seller.IsCashPaymentActive)
-                    {
-                        paymentSB.Append("Наличными");
-                    }
-
-                    if (product.Seller.IsAcquiringActive)
-                    {
-                        paymentSB.Append("Картой Visa/MasterCard");
-                    }
-
-                    prod.Add(new XElement("param", new XAttribute("name", "Оплата"), paymentSB.ToString()));
-                    prod.Add(new XElement("param", new XAttribute("name", "Гарантия"), "Обмен/возврат товара в течение 14 дней"));
-
-                    offersList.Add(prod);
                 }
-            }
-            foreach (var o in offersList)
-            {
-                offers.Add(o);
-            }
-
-            shop.Add(name);
-            shop.Add(company);
-            shop.Add(url);
-            //shop.Add(email);
-            shop.Add(currencies);
-            shop.Add(categories);
-            shop.Add(offers);
-            yml_catalog.Add(shop);
-            doc.Add(yml_catalog);
-            if (savePath != null)
-            {
-                if (File.Exists(savePath))
+                foreach (var o in offersList)
                 {
-                    File.Delete(savePath);
+                    offers.Add(o);
                 }
-                doc.Save(savePath);
+
+                shop.Add(name);
+                shop.Add(company);
+                shop.Add(url);
+                //shop.Add(email);
+                shop.Add(currencies);
+                shop.Add(categories);
+                shop.Add(offers);
+                yml_catalog.Add(shop);
+                doc.Add(yml_catalog);
+                if (savePath != null)
+                {
+                    if (File.Exists(savePath))
+                    {
+                        File.Delete(savePath);
+                    }
+                    doc.Save(savePath);
+                }
+                return doc.ToString();
             }
-            return doc.ToString();
         }
 
         #endregion
@@ -313,22 +315,24 @@ namespace Benefit.Services.Domain
                 var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
                 var resultXmlCategories = GetAllFiniteCategories(rawXmlCategories);
                 var resultXmlCategoryIds = resultXmlCategories.Select(entry => entry.Element("Ид").Value);
+                using (var db = new ApplicationDbContext())
+                {
+                    CreateAndUpdate1CCategories(resultXmlCategories, seller.Id, db);
+                    db.SaveChanges();
+                    DeleteImportCategories(seller, resultXmlCategories, SyncType.OneCCommerceMl, db);
+                    db.SaveChanges();
 
-                CreateAndUpdate1CCategories(resultXmlCategories, seller.Id);
-                db.SaveChanges();
-                DeleteImportCategories(seller, resultXmlCategories, SyncType.OneCCommerceMl);
-                db.SaveChanges();
-
-                var xmlProducts = xml.Descendants("Товары").First().Elements()
-                    .Where(entry => entry.Element("Группы") != null)
-                    .Where(entry => resultXmlCategoryIds.Contains(entry.Element("Группы").Element("Ид").Value)).ToList();
-                var ids = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
-                var xmlProductsSkipped = xml.Descendants("Товары").First().Elements()
-                    .Where(entry => !ids.Contains(entry.Element("Ид").Value)).ToList();
-                AddAndUpdate1СProducts(xmlProducts, seller.Id, seller.UrlName);
-                db.SaveChanges();
-                DeletePromUaProducts(xmlProducts, seller.Id, SyncType.OneCCommerceMl);
-                db.SaveChanges();
+                    var xmlProducts = xml.Descendants("Товары").First().Elements()
+                        .Where(entry => entry.Element("Группы") != null)
+                        .Where(entry => resultXmlCategoryIds.Contains(entry.Element("Группы").Element("Ид").Value)).ToList();
+                    var ids = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
+                    var xmlProductsSkipped = xml.Descendants("Товары").First().Elements()
+                        .Where(entry => !ids.Contains(entry.Element("Ид").Value)).ToList();
+                    AddAndUpdate1СProducts(xmlProducts, seller.Id, seller.UrlName, db);
+                    db.SaveChanges();
+                    DeletePromUaProducts(xmlProducts, seller.Id, SyncType.OneCCommerceMl, db);
+                    db.SaveChanges();
+                }
             }
             catch (Exception ex)
             {
@@ -338,7 +342,7 @@ namespace Benefit.Services.Domain
             return true;
         }
 
-        private void AddAndUpdate1СProducts(List<XElement> xmlProducts, string sellerId, string sellerUrl)
+        private void AddAndUpdate1СProducts(List<XElement> xmlProducts, string sellerId, string sellerUrl, ApplicationDbContext db)
         {
             var maxSku = db.Products.Max(entry => entry.SKU) + 1;
             var xmlProductIds = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
@@ -471,7 +475,7 @@ namespace Benefit.Services.Domain
             return resultXmlCategories;
         }
 
-        private void CreateAndUpdate1CCategories(List<XElement> xmlCategories, string sellerId)
+        private void CreateAndUpdate1CCategories(List<XElement> xmlCategories, string sellerId, ApplicationDbContext db)
         {
             var hasNewContent = false;
             var sellerCats = new List<SellerCategory>();
@@ -543,7 +547,7 @@ namespace Benefit.Services.Domain
         #region PromUa
 
         private void CreateAndUpdateYmlCategories(List<XElement> xmlCategories, string sellerUrlName,
-            string sellerId, Category parent = null)
+            string sellerId, ApplicationDbContext db, Category parent = null)
         {
             var hasNewContent = false;
             List<XElement> xmlCats = null;
@@ -598,7 +602,7 @@ namespace Benefit.Services.Domain
                     db.Entry(dbCategory).State = EntityState.Modified;
                 }
 
-                CreateAndUpdateYmlCategories(xmlCategories, sellerUrlName, sellerId, dbCategory);
+                CreateAndUpdateYmlCategories(xmlCategories, sellerUrlName, sellerId, db, dbCategory);
             }
             if (hasNewContent)
             {
@@ -607,7 +611,7 @@ namespace Benefit.Services.Domain
             }
         }
 
-        public void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories, SyncType importType)
+        public void DeleteImportCategories(Seller seller, IEnumerable<XElement> xmlCategories, SyncType importType, ApplicationDbContext db)
         {
             var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.ExternalIds).Distinct().ToList();
             List<string> xmlCategoryIds = null;
@@ -949,7 +953,7 @@ namespace Benefit.Services.Domain
             }
         }
 
-        private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId, SyncType importType)
+        private void DeletePromUaProducts(List<XElement> xmlProducts, string sellerId, SyncType importType, ApplicationDbContext db)
         {
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
                 .Select(entry => entry.Id).ToList();
@@ -972,89 +976,95 @@ namespace Benefit.Services.Domain
 
         public void ImportFromYml(string importTaskId)
         {
-            var importTask = db.ExportImports
+            using (var db = new ApplicationDbContext())
+            {
+                var importTask = db.ExportImports
                 .Include(entry => entry.Seller)
                 .FirstOrDefault(entry => entry.Id == importTaskId);
-            if (importTask.IsImport == true) return;
-            //show that import task is processing
-            importTask.IsImport = true;
-            db.SaveChanges();
-            _logger.Info(string.Format("Yml Import started at {0} {1}", importTask.Seller.Id, importTask.Seller.UrlName));
+                if (importTask.IsImport == true) return;
+                //show that import task is processing
+                importTask.IsImport = true;
+                db.SaveChanges();
+                _logger.Info(string.Format("Yml Import started at {0} {1}", importTask.Seller.Id, importTask.Seller.UrlName));
 
-            XDocument xml = null;
-            try
-            {
-                xml = XDocument.Load(importTask.FileUrl);
-            }
-            catch (Exception ex)
-            {
-                importTask.LastUpdateStatus = false;
-                importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
-                importTask.LastSync = DateTime.UtcNow;
-                db.Entry(importTask).State = EntityState.Modified;
-                db.SaveChanges();
-                return;
-            }
+                XDocument xml = null;
+                try
+                {
+                    xml = XDocument.Load(importTask.FileUrl);
+                }
+                catch (Exception ex)
+                {
+                    importTask.LastUpdateStatus = false;
+                    importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
+                    importTask.LastSync = DateTime.UtcNow;
+                    db.Entry(importTask).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return;
+                }
 
-            try
-            {
-                var root = xml.Element("yml_catalog").Element("shop");
-                var xmlCategories = root.Descendants("categories").First().Elements().ToList();
-                var xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
-                CreateAndUpdateYmlCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id);
-                db.SaveChanges();
-                DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Yml);
-                db.SaveChanges();
+                try
+                {
+                    var root = xml.Element("yml_catalog").Element("shop");
+                    var xmlCategories = root.Descendants("categories").First().Elements().ToList();
+                    var xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
+                    CreateAndUpdateYmlCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id, db);
+                    db.SaveChanges();
+                    DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Yml, db);
+                    db.SaveChanges();
 
-                var xmlProducts = root.Descendants("offers").First().Elements().ToList();
-                AddAndUpdateYmlProducts(xmlProducts, importTask.SellerId, xmlCategoryIds);
-                db.SaveChanges();
-                DeletePromUaProducts(xmlProducts, importTask.SellerId, SyncType.Yml);
-                db.SaveChanges();
+                    var xmlProducts = root.Descendants("offers").First().Elements().ToList();
+                    AddAndUpdateYmlProducts(xmlProducts, importTask.SellerId, xmlCategoryIds);
+                    db.SaveChanges();
+                    DeletePromUaProducts(xmlProducts, importTask.SellerId, SyncType.Yml, db);
+                    db.SaveChanges();
 
-                //todo:handle exceptions
+                    //todo:handle exceptions
 
-                importTask.LastUpdateStatus = true;
-                importTask.LastUpdateMessage = null;
-                _logger.Info(string.Format("Yml Import success at {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex);
-                importTask.LastUpdateStatus = false;
-                importTask.LastUpdateMessage =
-                    "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
-            }
-            finally
-            {
-                importTask.IsImport = false;
-                importTask.LastSync = DateTime.UtcNow;
-                db.Entry(importTask).State = EntityState.Modified;
-                db.SaveChanges();
-                _logger.Info(string.Format("Yml results saved {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
+                    importTask.LastUpdateStatus = true;
+                    importTask.LastUpdateMessage = null;
+                    _logger.Info(string.Format("Yml Import success at {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
+                }
+                catch (Exception ex)
+                {
+                    _logger.Error(ex);
+                    importTask.LastUpdateStatus = false;
+                    importTask.LastUpdateMessage =
+                        "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
+                }
+                finally
+                {
+                    importTask.IsImport = false;
+                    importTask.LastSync = DateTime.UtcNow;
+                    db.Entry(importTask).State = EntityState.Modified;
+                    db.SaveChanges();
+                    _logger.Info(string.Format("Yml results saved {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
+                }
             }
         }
 
         public void ProcessImportTasks()
         {
-            var importTasks =
+            using (var db = new ApplicationDbContext())
+            {
+                var importTasks =
                 db.ExportImports.Include(entry => entry.Seller.MappedCategories).Where(
                     entry => entry.IsActive && (entry.SyncType == SyncType.Yml || entry.SyncType == SyncType.Gbs)).ToList();
-            foreach (var importTask in importTasks)
-            {
-                if (importTask.LastSync.HasValue &&
-                    (DateTime.UtcNow - importTask.LastSync.Value).TotalDays < importTask.SyncPeriod)
+                foreach (var importTask in importTasks)
                 {
-                    continue;
-                }
-                if (importTask.SyncType == SyncType.Yml)
-                {
-                    ImportFromYml(importTask.Id);
-                }
-                if (importTask.SyncType == SyncType.Gbs)
-                {
-                    var gbsService = new GbsImportService();
-                    gbsService.Import(importTask.Id);
+                    if (importTask.LastSync.HasValue &&
+                        (DateTime.UtcNow - importTask.LastSync.Value).TotalDays < importTask.SyncPeriod)
+                    {
+                        continue;
+                    }
+                    if (importTask.SyncType == SyncType.Yml)
+                    {
+                        ImportFromYml(importTask.Id);
+                    }
+                    if (importTask.SyncType == SyncType.Gbs)
+                    {
+                        var gbsService = new GbsImportService();
+                        gbsService.Import(importTask.Id);
+                    }
                 }
             }
         }

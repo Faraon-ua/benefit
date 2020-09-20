@@ -232,38 +232,42 @@ namespace Benefit.Domain.DataAccess
         private List<Product> FetchProducts()
         {
             List<Product> returnList = new List<Product>();
-            var adapter = new SqlDataAdapter(cmd);
-            var result = new DataSet();
-            adapter.Fill(result);
-            foreach (DataRow drwRow in result.Tables[0].Rows)
+            using (var adapter = new SqlDataAdapter(cmd))
             {
-                var product = drwRow.ToObject<Product>();
-                product.Seller = new Seller
+                var result = new DataSet();
+                adapter.Fill(result);
+                foreach (DataRow drwRow in result.Tables[0].Rows)
                 {
-                    Id = (String)drwRow["SellerId"],
-                    IsActive = (bool)drwRow["SellerIsActive"],
-                    Name = (String)drwRow["SellerName"],
-                    SafePurchase = (bool)drwRow["SellerSafePurchase"],
-                    UrlName = (String)drwRow["SellerUrlName"],
-                    UserDiscount = (double)drwRow["SellerUserDiscount"]
-                };
-                product.Category = new Category
-                {
-                    IsActive = (bool)drwRow["CategoryIsActive"],
-                    Name = (String)drwRow["CategoryName"],
-                };
-                if (drwRow["ImageUrl"] != DBNull.Value)
-                {
-                    product.DefaultImage = new Image
+                    var product = drwRow.ToObject<Product>();
+                    product.Seller = new Seller
                     {
-                        ImageUrl = (string)drwRow["ImageUrl"],
-                        IsAbsoluteUrl = (bool)drwRow["ImageIsAbsoluteUrl"],
+                        Id = (String)drwRow["SellerId"],
+                        IsActive = (bool)drwRow["SellerIsActive"],
+                        Name = (String)drwRow["SellerName"],
+                        SafePurchase = (bool)drwRow["SellerSafePurchase"],
+                        UrlName = (String)drwRow["SellerUrlName"],
+                        UserDiscount = (double)drwRow["SellerUserDiscount"]
                     };
-                }
+                    product.Category = new Category
+                    {
+                        IsActive = (bool)drwRow["CategoryIsActive"],
+                        Name = (String)drwRow["CategoryName"],
+                    };
+                    if (drwRow["ImageUrl"] != DBNull.Value)
+                    {
+                        product.DefaultImage = new Image
+                        {
+                            ImageUrl = (string)drwRow["ImageUrl"],
+                            IsAbsoluteUrl = (bool)drwRow["ImageIsAbsoluteUrl"],
+                        };
+                    }
 
-                returnList.Add(product);
+                    returnList.Add(product);
+                }
+                result.Dispose();
+                cmd.Dispose();
+                return returnList;
             }
-            return returnList;
         }
     }
 }

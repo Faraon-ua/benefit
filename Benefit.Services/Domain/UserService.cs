@@ -15,24 +15,28 @@ namespace Benefit.Services.Domain
 {
     public class UserService
     {
-        ApplicationDbContext db = new ApplicationDbContext();
-
         public ApplicationUser GetUser(string id)
         {
-            return db.Users.Find(id);
+            using (var db = new ApplicationDbContext())
+            {
+                return db.Users.Find(id);
+            }
         }
 
         public string GetVipReferalCode()
         {
-            var completedVips =
+            using (var db = new ApplicationDbContext())
+            {
+                var completedVips =
                 db.Users.Where(entry => entry.StatusCompletionMonths != null && entry.StatusCompletionMonths > 0)
                     .ToList();
-            if (!completedVips.Any())
-            {
-                return "53214e23-bfef-11e6-a542-c48508062b41";
+                if (!completedVips.Any())
+                {
+                    return "53214e23-bfef-11e6-a542-c48508062b41";
+                }
+                var random = new Random();
+                return completedVips[random.Next(completedVips.Count)].Id;
             }
-            var random = new Random();
-            return completedVips[random.Next(completedVips.Count)].Id;
         }
 
         public async Task SubscribeSendPulse(string email)
@@ -59,29 +63,37 @@ namespace Benefit.Services.Domain
 
         public string SetUserPic(string id, string fileExt)
         {
-            var user = db.Users.Find(id);
-            if (!string.IsNullOrEmpty(user.Avatar))
+            using (var db = new ApplicationDbContext())
             {
-                var ImagesService = new ImagesService();
-                ImagesService.DeleteFile(user.Avatar, "", ImageType.UserAvatar);
+                var user = db.Users.Find(id);
+                if (!string.IsNullOrEmpty(user.Avatar))
+                {
+                    var ImagesService = new ImagesService();
+                    ImagesService.DeleteFile(user.Avatar, "", ImageType.UserAvatar);
+                }
+                if (user != null)
+                {
+                    user.Avatar = user.Id + DateTime.Now.ToShortTimeString().Replace(" ", "").Replace(":", "") + fileExt;
+                    db.Entry(user).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+                return user.Avatar;
             }
-            if (user != null)
-            {
-                user.Avatar = user.Id + DateTime.Now.ToShortTimeString().Replace(" ", "").Replace(":", "") + fileExt;
-                db.Entry(user).State = EntityState.Modified;
-            }
-            db.SaveChanges();
-            return user.Avatar;
         }
         public ApplicationUser GetUserInfoWithPartners(string id)
         {
-            var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Partners.Select(part => part.Region)).Include(entry => entry.Referal).FirstOrDefault(entry => entry.Id == id);
-            user.Partners = user.Partners.OrderByDescending(entry => entry.RegisteredOn).ToList();
-            return user;
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Include(entry => entry.Region).Include(entry => entry.Partners.Select(part => part.Region)).Include(entry => entry.Referal).FirstOrDefault(entry => entry.Id == id);
+                user.Partners = user.Partners.OrderByDescending(entry => entry.RegisteredOn).ToList();
+                return user;
+            }
         }
         public ApplicationUser GetUserInfoWithRegions(string id)
         {
-            var user = db.Users
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users
                 .Include(entry => entry.Region)
                 .Include(entry => entry.Addresses)
                 .Include(entry => entry.Addresses.Select(addr => addr.Region))
@@ -91,12 +103,15 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.OwnedSellers)
                 .Include(entry => entry.Personnels)
                 .FirstOrDefault(entry => entry.Id == id);
-            return user;
+                return user;
+            }
         }
         
         public ApplicationUser GetUserInfoWithRegionsAndSellers(string id)
         {
-            var user =
+            using (var db = new ApplicationDbContext())
+            {
+                var user =
                 db.Users.Include(entry => entry.Region)
                     .Include(entry => entry.Addresses)
                     .Include(entry => entry.Addresses.Select(addr => addr.Region))
@@ -104,43 +119,53 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.ReferedBenefitCardSellers)
                     .Include(entry => entry.ReferedWebSiteSellers)
                     .FirstOrDefault(entry => entry.Id == id);
-            var moderatedSellers = db.Sellers.Include(entry => entry.Personnels)
-                                    .Where(entry => entry.Personnels.Select(pers => pers.UserId).Contains(id)).ToList();
-            foreach (var moderatedSeller in moderatedSellers)
-            {
-                user.OwnedSellers.Add(moderatedSeller);
+                var moderatedSellers = db.Sellers.Include(entry => entry.Personnels)
+                                        .Where(entry => entry.Personnels.Select(pers => pers.UserId).Contains(id)).ToList();
+                foreach (var moderatedSeller in moderatedSellers)
+                {
+                    user.OwnedSellers.Add(moderatedSeller);
+                }
+                return user;
             }
-            return user;
         }
 
         public Dictionary<string, List<ApplicationUser>> GetPartnersByReferalIds(string[] userIds)
         {
-            var allPartners = db.Users.Include(entry => entry.Region).Where(entry => userIds.Contains(entry.ReferalId)).ToList();
-            return userIds.ToDictionary(userId => userId, userId => allPartners.Where(entry => entry.ReferalId == userId).ToList());
+            using (var db = new ApplicationDbContext())
+            {
+                var allPartners = db.Users.Include(entry => entry.Region).Where(entry => userIds.Contains(entry.ReferalId)).ToList();
+                return userIds.ToDictionary(userId => userId, userId => allPartners.Where(entry => entry.ReferalId == userId).ToList());
+            }
         }
         public List<ApplicationUser> GetPartnersInDepth(string userId, int skip, int take = UserConstants.DefaultPartnersTakeCount)
         {
-            var partners =
-                db.Users.Include(entry => entry.Region).Where(entry => entry.ReferalId == userId).OrderByDescending(entry => entry.RegisteredOn);
-            if (skip > 0)
-                partners = partners.Skip(skip).OrderByDescending(entry => entry.RegisteredOn);
-            if (take > 0)
-                partners = partners.Take(take).OrderByDescending(entry => entry.RegisteredOn);
-            foreach (var partner in partners)
+            using (var db = new ApplicationDbContext())
             {
-                partner.Partners = new List<ApplicationUser>(GetPartnersInDepth(partner.Id, -1, -1));
+                var partners =
+                db.Users.Include(entry => entry.Region).Where(entry => entry.ReferalId == userId).OrderByDescending(entry => entry.RegisteredOn);
+                if (skip > 0)
+                    partners = partners.Skip(skip).OrderByDescending(entry => entry.RegisteredOn);
+                if (take > 0)
+                    partners = partners.Take(take).OrderByDescending(entry => entry.RegisteredOn);
+                foreach (var partner in partners)
+                {
+                    partner.Partners = new List<ApplicationUser>(GetPartnersInDepth(partner.Id, -1, -1));
+                }
+                return partners.ToList();
             }
-            return partners.ToList();
         }
 
         public void RemoveCard(string userId)
         {
-            var user = db.Users.Find(userId);
-            user.CardNumber = null;
-            user.NFCCardNumber = null;
-            user.IsCardVerified = false;
-            db.Entry(user).State = EntityState.Modified;
-            db.SaveChanges();
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.Find(userId);
+                user.CardNumber = null;
+                user.NFCCardNumber = null;
+                user.IsCardVerified = false;
+                db.Entry(user).State = EntityState.Modified;
+                db.SaveChanges();
+            }
         }
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Configuration;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -9,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Collections.Generic;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -21,7 +19,6 @@ using Benefit.Web.Helpers;
 using Benefit.Web.Models;
 using Benefit.Web.Models.ViewModels;
 using NLog;
-using Benefit.Common.Constants;
 
 namespace Benefit.Web.Controllers
 {
@@ -94,8 +91,6 @@ namespace Benefit.Web.Controllers
                 return View("~/views/sellerareabc/home.cshtml", seller);
             }
             var mainPageViewModel = new MainPageViewModel();
-            //using (var db = new ApplicationDbContext())
-            //{
             var products = productsDbContext.GetMainPageProducts();
             var banners = bannersDbContext.Get("BannerType != 1 and SellerId is null");
             var pages = infoPagesDBContext.GetMainPagesNews();
@@ -272,31 +267,6 @@ namespace Benefit.Web.Controllers
         [FetchCategories(Order = 1)]
         public ActionResult Map()
         {
-            /*
-                        using (var db = new ApplicationDbContext())
-                        {
-                            var regionId = RegionService.GetRegionId();
-                            var cats =
-                                db.Sellers
-                                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                                    .Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId))
-                                    .Select(entry => entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category)
-                                     .OrderBy(
-                                        entry =>
-                                            entry.ParentCategory == null
-                                                ? 1000
-                                                : entry.ParentCategory.ParentCategory == null
-                                                    ? 1000
-                                                    : entry.ParentCategory.ParentCategory.Order)
-                                    .ThenBy(
-                                        entry => entry.ParentCategory == null ? 1000 : entry.ParentCategory.Order)
-                                    .ThenBy(entry => entry.Order)
-                                    .Where(entry => entry != null)
-                                    .Distinct()
-                                    .ToList();
-                            return View(cats);
-                        }
-            */
             return View();
         }
 

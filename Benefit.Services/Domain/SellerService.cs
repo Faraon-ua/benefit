@@ -17,34 +17,35 @@ namespace Benefit.Services.Domain
 {
     public class SellerService
     {
-        ApplicationDbContext db = new ApplicationDbContext();
-
         public string AddNotificationChannel(string sellerId, string channelAddress, NotificationChannelType channelType)
         {
-            var seller = db.Sellers.Find(sellerId);
-            if (seller == null)
+            using (var db = new ApplicationDbContext())
             {
-                return null;
-            }
+                var seller = db.Sellers.Find(sellerId);
+                if (seller == null)
+                {
+                    return null;
+                }
 
-            var existingNotification =
-                db.NotificationChannels.FirstOrDefault(
-                    entry => entry.SellerId == sellerId && entry.Address == channelAddress);
-            if (existingNotification != null)
-            {
+                var existingNotification =
+                    db.NotificationChannels.FirstOrDefault(
+                        entry => entry.SellerId == sellerId && entry.Address == channelAddress);
+                if (existingNotification != null)
+                {
+                    return seller.Name;
+                }
+
+                var notificationCHannel = new NotificationChannel()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    SellerId = sellerId,
+                    ChannelType = channelType,
+                    Address = channelAddress
+                };
+                db.NotificationChannels.Add(notificationCHannel);
+                db.SaveChanges();
                 return seller.Name;
             }
-
-            var notificationCHannel = new NotificationChannel()
-            {
-                Id = Guid.NewGuid().ToString(),
-                SellerId = sellerId,
-                ChannelType = channelType,
-                Address = channelAddress
-            };
-            db.NotificationChannels.Add(notificationCHannel);
-            db.SaveChanges();
-            return seller.Name;
         }
         public byte[] GenerateIntelHexFile(string password)
         {
@@ -85,260 +86,284 @@ namespace Benefit.Services.Domain
 
         public SellersViewModel GetAllSellers()
         {
-            var regionId = RegionService.GetRegionId();
+            using (var db = new ApplicationDbContext())
+            {
+                var regionId = RegionService.GetRegionId();
 
-            var sellers =
-                db.Sellers
-                 .Include(entry => entry.Images)
-                    .Include(entry => entry.Addresses)
-                    .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
-                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                     .Where(entry => entry.IsActive);
-            if (regionId != RegionConstants.AllUkraineRegionId)
-            {
-                sellers = sellers.Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId) ||
-                                                 entry.ShippingMethods.Select(sm => sm.Region.Id)
-                                                     .Contains(RegionConstants.AllUkraineRegionId) ||
-                                                 entry.ShippingMethods.Select(sm => sm.Region.Id).Contains(regionId));
+                var sellers =
+                    db.Sellers
+                     .Include(entry => entry.Images)
+                        .Include(entry => entry.Addresses)
+                        .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
+                        .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                         .Where(entry => entry.IsActive);
+                if (regionId != RegionConstants.AllUkraineRegionId)
+                {
+                    sellers = sellers.Where(entry => entry.Addresses.Any(addr => addr.RegionId == regionId) ||
+                                                     entry.ShippingMethods.Select(sm => sm.Region.Id)
+                                                         .Contains(RegionConstants.AllUkraineRegionId) ||
+                                                     entry.ShippingMethods.Select(sm => sm.Region.Id).Contains(regionId));
+                }
+                return new SellersViewModel()
+                {
+                    Items = sellers.OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry => entry.UserDiscount).ToList()
+                };
             }
-            return new SellersViewModel()
-            {
-                Items = sellers.OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.Addresses.Any(addr => addr.RegionId == regionId)).ThenByDescending(entry => entry.UserDiscount).ToList()
-            };
         }
 
         public SellersViewModel GetSellersCatalog(string options)
         {
-            var result = new SellersViewModel() { Page = 1 };
-            var sellers = db.Sellers
-                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                .Include(entry => entry.Addresses.Select(addr => addr.Region))
-                .Where(entry => entry.IsActive);
-
-            var sort = SellerSortOption.Rating;
-
-            if (options != null)
+            using (var db = new ApplicationDbContext())
             {
-                var optionSegments = options.Split(';').OrderBy(entry => entry.Contains("page=")).ToList();
-                foreach (var optionSegment in optionSegments)
-                {
-                    if (optionSegment == string.Empty)
-                    {
-                        continue;
-                    }
+                var result = new SellersViewModel() { Page = 1 };
+                var sellers = db.Sellers
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                    .Include(entry => entry.Addresses.Select(addr => addr.Region))
+                    .Where(entry => entry.IsActive);
 
-                    var optionKeyValue = optionSegment.Split('=');
-                    var optionKey = optionKeyValue.First();
-                    var optionValues = optionKeyValue.Last().Split(',');
-                    switch (optionKey)
+                var sort = SellerSortOption.Rating;
+
+                if (options != null)
+                {
+                    var optionSegments = options.Split(';').OrderBy(entry => entry.Contains("page=")).ToList();
+                    foreach (var optionSegment in optionSegments)
                     {
-                        case "sort":
-                            sort = (SellerSortOption)Enum.Parse(typeof(SellerSortOption), optionValues.First());
-                            break;
-                        case "page":
-                            switch (sort)
-                            {
-                                case SellerSortOption.Rating:
-                                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry => entry.Status).ThenByDescending(entry => entry.Reviews.Count);
-                                    break;
-                                case SellerSortOption.NameAsc:
-                                    sellers = sellers.OrderBy(entry => entry.Name);
-                                    break;
-                                case SellerSortOption.NameDesc:
-                                    sellers = sellers.OrderByDescending(entry => entry.Name);
-                                    break;
-                                case SellerSortOption.BonusAsc:
-                                    sellers = sellers.OrderBy(entry => entry.UserDiscount);
-                                    break;
-                                case SellerSortOption.BonusDesc:
-                                    sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
-                                    break;
-                            }
-                            result.Page = int.Parse(optionValues[0]);
-                            break;
-                        case "filter":
-                            if (optionValues.Contains("mycity"))
-                            {
-                                var regionId = RegionService.GetRegionId();
-                                sellers = sellers.Where(entry =>
-                                    entry.Addresses.Select(addr => addr.RegionId).Contains(regionId));
-                            }
-                            if (optionValues.Contains("paymentcard"))
-                            {
-                                sellers = sellers.Where(entry => entry.IsAcquiringActive);
-                            }
-                            if (optionValues.Contains("paymentbonuses"))
-                            {
-                                sellers = sellers.Where(entry => entry.IsBonusesPaymentActive || entry.TerminalBonusesPaymentActive);
-                            }
-                            if (optionValues.Contains("freeshipping"))
-                            {
-                                sellers = sellers.Where(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom.HasValue));
-                            }
-                            if (optionValues.Contains("benefitcard"))
-                            {
-                                sellers = sellers.Where(entry => entry.IsBenefitCardActive);
-                            }
-                            if (optionValues.Contains("benefitonline"))
-                            {
-                                sellers = sellers.Where(entry => entry.HasEcommerce);
-                            }
-                            break;
-                        case "category":
-                            //var categories = db.Categories.Where(entry => optionValues.Contains(entry.UrlName));
-                            //var catIds = categories.Select(entry => entry.Id).Distinct().ToList();
-                            //sellers = sellers.Where(entry =>
-                            //    entry.SellerCategories.Select(sc => sc.Category.Id).Intersect(catIds).Any()
-                            //    ||
-                            //    entry.SellerCategories.Select(sc => sc.Category.ParentCategory.Id).Intersect(catIds)
-                            //        .Any());
-                            var catNames = optionValues.ToList().Select(entry => entry.Replace("_", " ")).ToList();
-                            sellers = sellers.Where(entry => catNames.Contains(entry.CategoryName));
-                            break;
+                        if (optionSegment == string.Empty)
+                        {
+                            continue;
+                        }
+
+                        var optionKeyValue = optionSegment.Split('=');
+                        var optionKey = optionKeyValue.First();
+                        var optionValues = optionKeyValue.Last().Split(',');
+                        switch (optionKey)
+                        {
+                            case "sort":
+                                sort = (SellerSortOption)Enum.Parse(typeof(SellerSortOption), optionValues.First());
+                                break;
+                            case "page":
+                                switch (sort)
+                                {
+                                    case SellerSortOption.Rating:
+                                        sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry => entry.Status).ThenByDescending(entry => entry.Reviews.Count);
+                                        break;
+                                    case SellerSortOption.NameAsc:
+                                        sellers = sellers.OrderBy(entry => entry.Name);
+                                        break;
+                                    case SellerSortOption.NameDesc:
+                                        sellers = sellers.OrderByDescending(entry => entry.Name);
+                                        break;
+                                    case SellerSortOption.BonusAsc:
+                                        sellers = sellers.OrderBy(entry => entry.UserDiscount);
+                                        break;
+                                    case SellerSortOption.BonusDesc:
+                                        sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
+                                        break;
+                                }
+                                result.Page = int.Parse(optionValues[0]);
+                                break;
+                            case "filter":
+                                if (optionValues.Contains("mycity"))
+                                {
+                                    var regionId = RegionService.GetRegionId();
+                                    sellers = sellers.Where(entry =>
+                                        entry.Addresses.Select(addr => addr.RegionId).Contains(regionId));
+                                }
+                                if (optionValues.Contains("paymentcard"))
+                                {
+                                    sellers = sellers.Where(entry => entry.IsAcquiringActive);
+                                }
+                                if (optionValues.Contains("paymentbonuses"))
+                                {
+                                    sellers = sellers.Where(entry => entry.IsBonusesPaymentActive || entry.TerminalBonusesPaymentActive);
+                                }
+                                if (optionValues.Contains("freeshipping"))
+                                {
+                                    sellers = sellers.Where(entry => entry.ShippingMethods.Any(sh => sh.FreeStartsFrom.HasValue));
+                                }
+                                if (optionValues.Contains("benefitcard"))
+                                {
+                                    sellers = sellers.Where(entry => entry.IsBenefitCardActive);
+                                }
+                                if (optionValues.Contains("benefitonline"))
+                                {
+                                    sellers = sellers.Where(entry => entry.HasEcommerce);
+                                }
+                                break;
+                            case "category":
+                                //var categories = db.Categories.Where(entry => optionValues.Contains(entry.UrlName));
+                                //var catIds = categories.Select(entry => entry.Id).Distinct().ToList();
+                                //sellers = sellers.Where(entry =>
+                                //    entry.SellerCategories.Select(sc => sc.Category.Id).Intersect(catIds).Any()
+                                //    ||
+                                //    entry.SellerCategories.Select(sc => sc.Category.ParentCategory.Id).Intersect(catIds)
+                                //        .Any());
+                                var catNames = optionValues.ToList().Select(entry => entry.Replace("_", " ")).ToList();
+                                sellers = sellers.Where(entry => catNames.Contains(entry.CategoryName));
+                                break;
+                        }
                     }
                 }
+                switch (sort)
+                {
+                    case SellerSortOption.Rating:
+                        sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry => entry.Status).ThenByDescending(entry => entry.Reviews.Count);
+                        break;
+                    case SellerSortOption.NameAsc:
+                        sellers = sellers.OrderBy(entry => entry.Name);
+                        break;
+                    case SellerSortOption.NameDesc:
+                        sellers = sellers.OrderByDescending(entry => entry.Name);
+                        break;
+                    case SellerSortOption.BonusAsc:
+                        sellers = sellers.OrderBy(entry => entry.UserDiscount);
+                        break;
+                    case SellerSortOption.BonusDesc:
+                        sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
+                        break;
+                }
+                result.PagesCount = (sellers.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
+                result.Items = sellers.Skip(ListConstants.DefaultTakePerPage * (result.Page - 1)).Take(ListConstants.DefaultTakePerPage + 1).ToList();
+                result.Category = new CategoryVM()
+                {
+                    UrlName = "postachalnuky",
+                    Name = "Каталог постачальників",
+                    ChildAsFilters = true,
+                    //ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
+                    ChildCategories = db.Sellers.Where(entry => entry.CategoryName != null).Select(entry => entry.CategoryName).Distinct().Select(entry => new CategoryVM() { Name = entry }).ToList(),
+                };
+                return result;
             }
-            switch (sort)
-            {
-                case SellerSortOption.Rating:
-                    sellers = sellers.OrderByDescending(entry => entry.AvarageRating).ThenByDescending(entry => entry.Status).ThenByDescending(entry => entry.Reviews.Count);
-                    break;
-                case SellerSortOption.NameAsc:
-                    sellers = sellers.OrderBy(entry => entry.Name);
-                    break;
-                case SellerSortOption.NameDesc:
-                    sellers = sellers.OrderByDescending(entry => entry.Name);
-                    break;
-                case SellerSortOption.BonusAsc:
-                    sellers = sellers.OrderBy(entry => entry.UserDiscount);
-                    break;
-                case SellerSortOption.BonusDesc:
-                    sellers = sellers.OrderByDescending(entry => entry.UserDiscount);
-                    break;
-            }
-            result.PagesCount = (sellers.Count() - 1) / ListConstants.DefaultTakePerPage + 1;
-            result.Items = sellers.Skip(ListConstants.DefaultTakePerPage * (result.Page - 1)).Take(ListConstants.DefaultTakePerPage + 1).ToList();
-            result.Category = new CategoryVM()
-            {
-                UrlName = "postachalnuky",
-                Name = "Каталог постачальників",
-                ChildAsFilters = true,
-                //ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
-                ChildCategories = db.Sellers.Where(entry => entry.CategoryName != null).Select(entry => entry.CategoryName).Distinct().Select(entry => new CategoryVM() { Name = entry }).ToList(),
-            };
-            return result;
         }
 
         public Seller GetSellerWithShippingMethods(string urlName)
         {
-            return db.Sellers.Include(entry => entry.ShippingMethods.Select(sh => sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
+            using (var db = new ApplicationDbContext())
+            {
+                return db.Sellers.Include(entry => entry.ShippingMethods.Select(sh => sh.Region)).FirstOrDefault(entry => entry.UrlName == urlName);
+            }
         }
 
         public Seller GetSeller(string urlName)
         {
-            var seller = db.Sellers
+            using (var db = new ApplicationDbContext())
+            {
+                var seller = db.Sellers
                 .Include(entry => entry.InfoPages)
                 .Include(entry => entry.Banners)
                 .Include(entry => entry.Images)
                 .Include(entry => entry.SellerCategories)
                 .Include(entry => entry.Schedules)
-                .Include(entry => entry.Addresses.Select(a=>a.Region))
+                .Include(entry => entry.Addresses.Select(a => a.Region))
                 .Include(entry => entry.Reviews.Select(review => review.ChildReviews))
                 .FirstOrDefault(entry => entry.Domain == urlName || entry.UrlName == urlName);
-            return seller;
+                return seller;
+            }
         }
 
         public List<Category> GetAllSellerCategories(string sellerUrl)
         {
-            var seller =
+            using (var db = new ApplicationDbContext())
+            {
+                var seller =
                 db.Sellers
                 .Include(entry => entry.SellerCategories.Select(sc => sc.Category.Products))
                 .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
                 .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory.Products))
                     .FirstOrDefault(entry => entry.UrlName == sellerUrl);
-            var all = new List<Category>();
-            var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).Where(entry=>entry.Products.Any()).ToList();
-            var sellerRootCats = seller.SellerCategories.Where(entry => entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
-            var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null && entry.IsActive).Select(entry => entry.MappedParentCategory).Where(entry => entry.Products.Any()).ToList();
-            all.AddRange(sellerCats);
-            all.AddRange(sellerMappedCats);
-            foreach (var sellerRootCat in sellerRootCats)
-            {
-                sellerRootCat.ParentCategory = null;
-                sellerRootCat.ParentCategoryId = null;
-            }
-            all.AddRange(sellerRootCats);
-            foreach (var sellerCat in sellerCats)
-            {
-                var parent = sellerCat.ParentCategory;
-                while (parent != null)
+                var all = new List<Category>();
+                var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
+                var sellerRootCats = seller.SellerCategories.Where(entry => entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
+                var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null && entry.IsActive).Select(entry => entry.MappedParentCategory).Where(entry => entry.Products.Any()).ToList();
+                all.AddRange(sellerCats);
+                all.AddRange(sellerMappedCats);
+                foreach (var sellerRootCat in sellerRootCats)
                 {
-                    all.Add(parent);
-                    parent = parent.ParentCategory;
+                    sellerRootCat.ParentCategory = null;
+                    sellerRootCat.ParentCategoryId = null;
                 }
-            }
-            foreach (var sellerCat in sellerMappedCats)
-            {
-                var parent = sellerCat.ParentCategory;
-                while (parent != null)
+                all.AddRange(sellerRootCats);
+                foreach (var sellerCat in sellerCats)
                 {
-                    all.Add(parent);
-                    parent = parent.ParentCategory;
+                    var parent = sellerCat.ParentCategory;
+                    while (parent != null)
+                    {
+                        all.Add(parent);
+                        parent = parent.ParentCategory;
+                    }
                 }
+                foreach (var sellerCat in sellerMappedCats)
+                {
+                    var parent = sellerCat.ParentCategory;
+                    while (parent != null)
+                    {
+                        all.Add(parent);
+                        parent = parent.ParentCategory;
+                    }
+                }
+                return all.Distinct(new CategoryComparer()).ToList();
             }
-            return all.Distinct(new CategoryComparer()).ToList();
         }
 
         public void ProcessCategories(List<SellerCategory> categories, string sellerId)
         {
-            var toRemove = db.SellerCategories.Where(entry => entry.SellerId == sellerId).ToList();
-            db.SellerCategories.RemoveRange(toRemove);
-            if (!categories.Any())
+            using (var db = new ApplicationDbContext())
             {
+                var toRemove = db.SellerCategories.Where(entry => entry.SellerId == sellerId).ToList();
+                db.SellerCategories.RemoveRange(toRemove);
+                if (!categories.Any())
+                {
+                    db.SaveChanges();
+                    return;
+                }
+                categories.ForEach(entry =>
+                {
+                    entry.SellerId = sellerId;
+                });
+                db.SellerCategories.AddRange(categories);
                 db.SaveChanges();
-                return;
             }
-            categories.ForEach(entry =>
-            {
-                entry.SellerId = sellerId;
-            });
-            db.SellerCategories.AddRange(categories);
-            db.SaveChanges();
         }
 
         public void ProcessAddresses(List<Address> addresses, string sellerId)
         {
-            var toRemove = db.Addresses.Where(entry => entry.SellerId == sellerId).ToList();
-            db.Addresses.RemoveRange(toRemove);
-            if (!addresses.Any())
+            using (var db = new ApplicationDbContext())
             {
+                var toRemove = db.Addresses.Where(entry => entry.SellerId == sellerId).ToList();
+                db.Addresses.RemoveRange(toRemove);
+                if (!addresses.Any())
+                {
+                    db.SaveChanges();
+                    return;
+                }
+                addresses.ForEach(entry =>
+                {
+                    entry.Id = Guid.NewGuid().ToString();
+                    entry.SellerId = sellerId;
+                });
+                db.Addresses.AddRange(addresses);
                 db.SaveChanges();
-                return;
             }
-            addresses.ForEach(entry =>
-            {
-                entry.Id = Guid.NewGuid().ToString();
-                entry.SellerId = sellerId;
-            });
-            db.Addresses.AddRange(addresses);
-            db.SaveChanges();
         }
         public void ProcessShippingMethods(List<ShippingMethod> shippingMethods, string sellerId)
         {
-            var toRemove = db.ShippingMethods.Where(entry => entry.SellerId == sellerId).ToList();
-            db.ShippingMethods.RemoveRange(toRemove);
-            if (!shippingMethods.Any())
+            using (var db = new ApplicationDbContext())
             {
+                var toRemove = db.ShippingMethods.Where(entry => entry.SellerId == sellerId).ToList();
+                db.ShippingMethods.RemoveRange(toRemove);
+                if (!shippingMethods.Any())
+                {
+                    db.SaveChanges();
+                    return;
+                }
+                shippingMethods.ForEach(entry =>
+                {
+                    entry.Id = Guid.NewGuid().ToString();
+                    entry.SellerId = sellerId;
+                });
+                db.ShippingMethods.AddRange(shippingMethods);
                 db.SaveChanges();
-                return;
             }
-            shippingMethods.ForEach(entry =>
-            {
-                entry.Id = Guid.NewGuid().ToString();
-                entry.SellerId = sellerId;
-            });
-            db.ShippingMethods.AddRange(shippingMethods);
-            db.SaveChanges();
         }
     }
 }

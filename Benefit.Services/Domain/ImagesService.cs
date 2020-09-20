@@ -16,29 +16,30 @@ namespace Benefit.Services
 {
     public class ImagesService
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
         public string AddProductDefaultImage(Image img, ImageFormat format)
         {
-            if (img.IsAbsoluteUrl)
-                return img.Id;
-            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-            var pathString = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), img.ProductId);
-            var imgId = Guid.NewGuid().ToString();
-            var defaultImgName = imgId + ".webp";
-            File.Copy(Path.Combine(pathString, img.ImageUrl), Path.Combine(pathString, defaultImgName));
-            var image = new Image()
+            using (var db = new ApplicationDbContext())
             {
-                Id = imgId,
-                ImageUrl = defaultImgName,
-                IsAbsoluteUrl = false,
-                ProductId = img.ProductId,
-                ImageType = ImageType.ProductDefault
-            };
-            db.Images.Add(image);
-            db.SaveChanges();
-            ResizeToSiteRatio(Path.Combine(pathString, defaultImgName), ImageType.ProductDefault, imageFormat: format);
-            return imgId;
+                if (img.IsAbsoluteUrl)
+                    return img.Id;
+                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+                var pathString = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), img.ProductId);
+                var imgId = Guid.NewGuid().ToString();
+                var defaultImgName = imgId + ".webp";
+                File.Copy(Path.Combine(pathString, img.ImageUrl), Path.Combine(pathString, defaultImgName));
+                var image = new Image()
+                {
+                    Id = imgId,
+                    ImageUrl = defaultImgName,
+                    IsAbsoluteUrl = false,
+                    ProductId = img.ProductId,
+                    ImageType = ImageType.ProductDefault
+                };
+                db.Images.Add(image);
+                db.SaveChanges();
+                ResizeToSiteRatio(Path.Combine(pathString, defaultImgName), ImageType.ProductDefault, imageFormat: format);
+                return imgId;
+            }
         }
         public ImageFormat GetImageFormatByExtension(string imagePath)
         {
@@ -79,23 +80,26 @@ namespace Benefit.Services
 
         public void AddImage(string entityId, string fileName, ImageType type, int order = 0)
         {
-            var image = new Benefit.Domain.Models.Image()
+            using (var db = new ApplicationDbContext())
             {
-                Id = Guid.NewGuid().ToString(),
-                ImageType = type,
-                ImageUrl = fileName,
-                Order = order
-            };
-            if (type == ImageType.SellerGallery || type == ImageType.SellerGallery || type == ImageType.SellerCatalog)
-            {
-                image.SellerId = entityId;
+                var image = new Image()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ImageType = type,
+                    ImageUrl = fileName,
+                    Order = order
+                };
+                if (type == ImageType.SellerGallery || type == ImageType.SellerGallery || type == ImageType.SellerCatalog)
+                {
+                    image.SellerId = entityId;
+                }
+                if (type == ImageType.ProductGallery)
+                {
+                    image.ProductId = entityId;
+                }
+                db.Images.Add(image);
+                db.SaveChanges();
             }
-            if (type == ImageType.ProductGallery)
-            {
-                image.ProductId = entityId;
-            }
-            db.Images.Add(image);
-            db.SaveChanges();
         }
 
         public void ResizeToSiteRatio(string imagePath, ImageType imageType, BannerType? bannerType = null, ImageFormat imageFormat = null)
@@ -219,7 +223,7 @@ namespace Benefit.Services
                 }
             }
         }
-        public void DeleteAll(IEnumerable<Benefit.Domain.Models.Image> images, string parentId, ImageType type, bool deleteFolder = false, bool deleteFromDb = true)
+        public void DeleteAll(IEnumerable<Image> images, string parentId, ImageType type, bool deleteFolder = false, bool deleteFromDb = true)
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var pathString = Path.Combine(originalDirectory, "Images", type.ToString(), parentId);
@@ -240,48 +244,60 @@ namespace Benefit.Services
             }
             if (deleteFromDb)
             {
-                var imgIds = images.Select(img => img.Id).ToList();
-                db.Images.RemoveRange(db.Images.Where(entry => imgIds.Contains(entry.Id)));
-                db.SaveChanges();
+                using (var db = new ApplicationDbContext())
+                {
+                    var imgIds = images.Select(img => img.Id).ToList();
+                    db.Images.RemoveRange(db.Images.Where(entry => imgIds.Contains(entry.Id)));
+                    db.SaveChanges();
+                }
             }
         }
 
         public void Delete(string imageId, string parentId, ImageType type)
         {
-            Image image = null;
-            if (type == ImageType.ProductGallery)
+            using (var db = new ApplicationDbContext())
             {
-                image = db.Images.FirstOrDefault(entry => entry.Id == imageId && entry.ProductId == parentId);
+                Image image = null;
+                if (type == ImageType.ProductGallery)
+                {
+                    image = db.Images.FirstOrDefault(entry => entry.Id == imageId && entry.ProductId == parentId);
+                }
+                else
+                {
+                    image = db.Images.Find(imageId);
+                }
+                if (image == null) return;
+                DeleteFile(image.ImageUrl, parentId, type);
             }
-            else
-            {
-                image = db.Images.Find(imageId);
-            }
-            if (image == null) return;
-            DeleteFile(image.ImageUrl, parentId, type);
         }
 
         public void DeleteByFileName(string imageFileName, string parentId, ImageType type)
         {
-            Benefit.Domain.Models.Image image = null;
-            if (type == ImageType.ProductGallery)
+            using (var db = new ApplicationDbContext())
             {
-                image = db.Images.FirstOrDefault(entry => entry.ImageUrl == imageFileName && entry.ProductId == parentId);
+                Image image = null;
+                if (type == ImageType.ProductGallery)
+                {
+                    image = db.Images.FirstOrDefault(entry => entry.ImageUrl == imageFileName && entry.ProductId == parentId);
+                }
+                else
+                {
+                    image = db.Images.FirstOrDefault(entry => entry.ImageUrl == imageFileName);
+                }
+                if (image == null) return;
+                DeleteFile(image.Id, parentId, type);
             }
-            else
-            {
-                image = db.Images.FirstOrDefault(entry => entry.ImageUrl == imageFileName);
-            }
-            if (image == null) return;
-            DeleteFile(image.Id, parentId, type);
         }
 
         public void DeleteAbsoluteUrlImage(string url, string productId)
         {
-            var image = db.Images.FirstOrDefault(entry => entry.ImageUrl == url && entry.ProductId == productId);
-            if (image == null) return;
-            db.Images.Remove(image);
-            db.SaveChanges();
+            using (var db = new ApplicationDbContext())
+            {
+                var image = db.Images.FirstOrDefault(entry => entry.ImageUrl == url && entry.ProductId == productId);
+                if (image == null) return;
+                db.Images.Remove(image);
+                db.SaveChanges();
+            }
         }
 
         public void DeleteFile(string fileName, string parentId, ImageType type)

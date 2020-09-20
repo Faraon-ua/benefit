@@ -16,161 +16,169 @@ namespace Benefit.Web.Areas.Admin.Controllers
 {
     public class ProductOptionsController : AdminController
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
         // GET: /Admin/ProductParameters/
         public ActionResult Index(string categoryId = null, string sellerId = null, string productId = null)
         {
-            if (sellerId == null && User.IsInRole(DomainConstants.SellerRoleName))
+            using (var db = new ApplicationDbContext())
             {
-                sellerId = Seller.CurrentAuthorizedSellerId;
-            }
-            List<ProductOption> productOptions;
-            Product product = null;
-            var category = db.Categories.FirstOrDefault(entry => entry.Id == categoryId);
-            if (!string.IsNullOrEmpty(productId))
-            {
-                product =
-                    db.Products
-                        .Include(entry => entry.ProductOptions)
-                        .Include(entry => entry.ProductOptions.Select(cd => cd.BindedProductOptions))
-                        .Include(entry => entry.Category)
-                        .FirstOrDefault(entry => entry.Id == productId);
-                productOptions = product.ProductOptions.Where(entry => entry.ParentProductOptionId == null).ToList();
-                productOptions.ForEach(entry => entry.Editable = true);
-                var categoryProductOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(
-                    entry =>
-                        entry.CategoryId == product.CategoryId && entry.SellerId == sellerId &&
-                        entry.ParentProductOptionId == null).ToList();
-                productOptions.InsertRange(0, categoryProductOptions);
-            }
-            else
-            {
-                productOptions = db.ProductOptions
-                    .Include(entry => entry.ChildProductOptions)
-                    .Include(entry => entry.BindedProductOptions)
-                    .Where(
+                if (sellerId == null && User.IsInRole(DomainConstants.SellerRoleName))
+                {
+                    sellerId = Seller.CurrentAuthorizedSellerId;
+                }
+                List<ProductOption> productOptions;
+                Product product = null;
+                var category = db.Categories.FirstOrDefault(entry => entry.Id == categoryId);
+                if (!string.IsNullOrEmpty(productId))
+                {
+                    product =
+                        db.Products
+                            .Include(entry => entry.ProductOptions)
+                            .Include(entry => entry.ProductOptions.Select(cd => cd.BindedProductOptions))
+                            .Include(entry => entry.Category)
+                            .FirstOrDefault(entry => entry.Id == productId);
+                    productOptions = product.ProductOptions.Where(entry => entry.ParentProductOptionId == null).ToList();
+                    productOptions.ForEach(entry => entry.Editable = true);
+                    var categoryProductOptions = db.ProductOptions.Include(entry => entry.ChildProductOptions).Where(
                         entry =>
-                            entry.CategoryId == categoryId && entry.SellerId == sellerId &&
+                            entry.CategoryId == product.CategoryId && entry.SellerId == sellerId &&
                             entry.ParentProductOptionId == null).ToList();
-                productOptions.ForEach(entry => entry.Editable = true);
+                    productOptions.InsertRange(0, categoryProductOptions);
+                }
+                else
+                {
+                    productOptions = db.ProductOptions
+                        .Include(entry => entry.ChildProductOptions)
+                        .Include(entry => entry.BindedProductOptions)
+                        .Where(
+                            entry =>
+                                entry.CategoryId == categoryId && entry.SellerId == sellerId &&
+                                entry.ParentProductOptionId == null).ToList();
+                    productOptions.ForEach(entry => entry.Editable = true);
+                }
+                return View(new ProductOptionsViewModel
+                {
+                    Product = product,
+                    ProductId = productId,
+                    CategoryId = categoryId,
+                    CategoryName = category == null ? null : category.Name,
+                    SellerId = sellerId,
+                    Sellers = db.Sellers.Select(entry => new SelectListItem() { Text = entry.Name, Value = entry.Id }).ToList(),
+                    ProductOptions = productOptions
+                });
             }
-            return View(new ProductOptionsViewModel
-            {
-                Product = product,
-                ProductId = productId,
-                CategoryId = categoryId,
-                CategoryName = category == null ? null : category.Name,
-                SellerId = sellerId,
-                Sellers = db.Sellers.Select(entry => new SelectListItem() { Text = entry.Name, Value = entry.Id }).ToList(),
-                ProductOptions = productOptions
-            });
         }
 
         public ActionResult ProductOptionGroup(string id = null, string categoryId = null, string sellerId = null, string productId = null)
         {
-            var productParameter = db.ProductOptions.Find(id) ?? new ProductOption() { CategoryId = categoryId, SellerId = sellerId, ProductId = productId };
-            return PartialView("_ProductOptionGroup", productParameter);
+            using (var db = new ApplicationDbContext())
+            {
+                var productParameter = db.ProductOptions.Find(id) ?? new ProductOption() { CategoryId = categoryId, SellerId = sellerId, ProductId = productId };
+                return PartialView("_ProductOptionGroup", productParameter);
+            }
         }
 
         public ActionResult ProductOptionValue(string parentId, string categoryId = null, string sellerId = null, string productId = null)
         {
-            var productParameter = new ProductOption() { ParentProductOptionId = parentId, CategoryId = categoryId, SellerId = sellerId, ProductId = productId, EditableAmount = true };
-            return PartialView("_ProductOptionValue", productParameter);
+            using (var db = new ApplicationDbContext())
+            {
+                var productParameter = new ProductOption() { ParentProductOptionId = parentId, CategoryId = categoryId, SellerId = sellerId, ProductId = productId, EditableAmount = true };
+                return PartialView("_ProductOptionValue", productParameter);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult CreateOrUpdate(ProductOption productparameter, HttpPostedFileBase image)
         {
-            if (ModelState.IsValid)
+            using (var db = new ApplicationDbContext())
             {
-                if (!db.ProductOptions.Any(entry => entry.Id == productparameter.Id))
+                if (ModelState.IsValid)
                 {
-                    productparameter.Id = Guid.NewGuid().ToString();
-                    db.ProductOptions.Add(productparameter);
-                }
-                else
-                {
-                    db.Entry(productparameter).State = EntityState.Modified;
-                }
-
-                if (image != null && image.ContentLength != 0)
-                {
-                    var fileName = Path.GetFileName(image.FileName);
-                    var dotIndex = fileName.IndexOf('.');
-                    var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
-                    var dir = 
-                        Server.MapPath("~/Images/ProductGallery/" + productparameter.ProductId + "/");
-                    var path = Path.Combine(dir, productparameter.Id + fileExt);
-                    if (!Directory.Exists(dir))
+                    if (!db.ProductOptions.Any(entry => entry.Id == productparameter.Id))
                     {
-                        Directory.CreateDirectory(dir);
+                        productparameter.Id = Guid.NewGuid().ToString();
+                        db.ProductOptions.Add(productparameter);
                     }
-                    productparameter.Image= productparameter.Id + fileExt;
-                    image.SaveAs(path);
-                    var imageService = new ImagesService();
-                    imageService.ResizeToSiteRatio(path, ImageType.ProductGallery);
+                    else
+                    {
+                        db.Entry(productparameter).State = EntityState.Modified;
+                    }
+
+                    if (image != null && image.ContentLength != 0)
+                    {
+                        var fileName = Path.GetFileName(image.FileName);
+                        var dotIndex = fileName.IndexOf('.');
+                        var fileExt = fileName.Substring(dotIndex, fileName.Length - dotIndex);
+                        var dir =
+                            Server.MapPath("~/Images/ProductGallery/" + productparameter.ProductId + "/");
+                        var path = Path.Combine(dir, productparameter.Id + fileExt);
+                        if (!Directory.Exists(dir))
+                        {
+                            Directory.CreateDirectory(dir);
+                        }
+                        productparameter.Image = productparameter.Id + fileExt;
+                        image.SaveAs(path);
+                        var imageService = new ImagesService();
+                        imageService.ResizeToSiteRatio(path, ImageType.ProductGallery);
+                    }
+                    db.SaveChanges();
+                    return RedirectToAction("Index", new { categoryId = productparameter.CategoryId, sellerId = productparameter.SellerId, productId = productparameter.ProductId });
                 }
-                db.SaveChanges();
-                return RedirectToAction("Index", new { categoryId = productparameter.CategoryId, sellerId = productparameter.SellerId, productId = productparameter.ProductId });
+                return View(productparameter);
             }
-            return View(productparameter);
         }
 
         [HttpPost]
         public ActionResult Index(List<string> sortedOptions)
         {
-            var options = db.ProductOptions.Where(entry => sortedOptions.Contains(entry.Id)).ToList();
-            for (var i = 0; i < sortedOptions.Count; i++)
+            using (var db = new ApplicationDbContext())
             {
-                var option = options.FirstOrDefault(entry => entry.Id == sortedOptions[i]);
-                option.Order = i;
-                db.Entry(option).State = EntityState.Modified;
+                var options = db.ProductOptions.Where(entry => sortedOptions.Contains(entry.Id)).ToList();
+                for (var i = 0; i < sortedOptions.Count; i++)
+                {
+                    var option = options.FirstOrDefault(entry => entry.Id == sortedOptions[i]);
+                    option.Order = i;
+                    db.Entry(option).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+                return Json("Сортування опцій збережено");
             }
-            db.SaveChanges();
-            return Json("Сортування опцій збережено");
         }
 
         public ActionResult Delete(string id, string categoryId = null, string sellerId = null, string productId = null)
         {
-            var productOption = db.ProductOptions.Include("ChildProductOptions").FirstOrDefault(entry => entry.Id == id);
-            db.ProductOptions.RemoveRange(productOption.ChildProductOptions);
-            db.ProductOptions.Remove(productOption);
-            foreach (var option in db.ProductOptions.Where(entry=>entry.BindedProductOptionId == id))
+            using (var db = new ApplicationDbContext())
             {
-                option.BindedProductOptionId = null;
-            }
+                var productOption = db.ProductOptions.Include("ChildProductOptions").FirstOrDefault(entry => entry.Id == id);
+                db.ProductOptions.RemoveRange(productOption.ChildProductOptions);
+                db.ProductOptions.Remove(productOption);
+                foreach (var option in db.ProductOptions.Where(entry => entry.BindedProductOptionId == id))
+                {
+                    option.BindedProductOptionId = null;
+                }
 
-            var imagePath =
-                Server.MapPath("~/Images/ProductGallery/" + productOption.ProductId + "/" + productOption.Image);
-            if (System.IO.File.Exists(imagePath))
-            {
-                System.IO.File.Delete(imagePath);
+                var imagePath =
+                    Server.MapPath("~/Images/ProductGallery/" + productOption.ProductId + "/" + productOption.Image);
+                if (System.IO.File.Exists(imagePath))
+                {
+                    System.IO.File.Delete(imagePath);
+                }
+                db.SaveChanges();
+                return RedirectToAction("Index", new { categoryId, sellerId, productId });
             }
-            db.SaveChanges();
-            return RedirectToAction("Index", new { categoryId, sellerId, productId });
         }
         public ActionResult Connect(string optionId, string connectToOptionId)
         {
-            var option = db.ProductOptions.Find(optionId);
-            if (option != null)
+            using (var db = new ApplicationDbContext())
             {
-                option.BindedProductOptionId = string.IsNullOrEmpty(connectToOptionId)? null : connectToOptionId;
+                var option = db.ProductOptions.Find(optionId);
+                if (option != null)
+                {
+                    option.BindedProductOptionId = string.IsNullOrEmpty(connectToOptionId) ? null : connectToOptionId;
+                }
+                db.SaveChanges();
+                return new HttpStatusCodeResult(200);
             }
-            db.SaveChanges();
-            return new HttpStatusCodeResult(200);
         }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-
     }
 }

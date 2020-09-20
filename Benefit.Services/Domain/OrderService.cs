@@ -15,8 +15,6 @@ namespace Benefit.Services.Domain
 {
     public class OrderService
     {
-        private ApplicationDbContext db = new ApplicationDbContext();
-
         //public List<Order> GetOrders(OrdersFilters ordersFilters, int page = 0)
         //{
         //    var takePerPage = 50;
@@ -133,156 +131,162 @@ namespace Benefit.Services.Domain
 
         public string AddOrder(CompleteOrder model)
         {
-            var seller = db.Sellers.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.Id == model.Order.SellerId);
-            var order = model.Order;
-            order.Id = Guid.NewGuid().ToString();
-            var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
-            order.OrderNumber = orderNumber + 1;
-
-            order.Sum = order.GetOrderSum();
-            order.Description =
-                string.Format("{0}<br/>--------------------------------------------<br/> Заказ створено на {1}",
-                    model.Comment, HttpContext.Current.Request.Url.Host);
-            //order.PersonalBonusesSum = order.SumWithDiscount * seller.UserDiscount / 100;
-            order.PersonalBonusesSum = order.OrderProducts.Sum(entry => entry.BonusesAcquired * entry.Amount);
-
-            order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.SumWithDiscount / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
-            order.SellerName = seller.Name;
-
-            var shipping = db.ShippingMethods.FirstOrDefault(entry => entry.Id == model.ShippingMethodId);
-            order.ShippingCost = order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree ?? default(double)) : 0;
-            order.ShippingName = shipping.Name;
-            if (string.IsNullOrEmpty(order.ShippingAddress))
+            using (var db = new ApplicationDbContext())
             {
-                var address = db.Addresses.FirstOrDefault(entry => entry.Id == model.AddressId);
-                if (address != null)
-                {
-                    order.ShippingAddress = string.Format("{0}; {1}; {2}, {3}", address.FullName, address.Phone,
-                        address.Region.Name_ua, address.AddressLine);
-                }
-            }
-            order.Time = DateTime.UtcNow;
-            order.OrderType = OrderType.BenefitSite;
-            order.PaymentType = model.PaymentType.Value;
+                var seller = db.Sellers.Include(entry => entry.SellerCategories).FirstOrDefault(entry => entry.Id == model.Order.SellerId);
+                var order = model.Order;
+                order.Id = Guid.NewGuid().ToString();
+                var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
+                order.OrderNumber = orderNumber + 1;
 
-            //add order to DB
-            db.Orders.Add(order);
-            var i = 0;
-            //handle wholesale prices
-            foreach (var product in order.OrderProducts)
-            {
-                product.Id = Guid.NewGuid().ToString();
-                product.ProductPrice = product.ActualPrice;
-                product.OrderId = order.Id;
-                product.Index = i++;
-                db.OrderProducts.Add(product);
-                foreach (var orderProductOption in product.OrderProductOptions)
-                {
-                    orderProductOption.OrderProductId = product.Id;
-                    db.OrderProductOptions.Add(orderProductOption);
-                }
-                //add seller transaction
-                var dbProduct = db.Products.Include(entry => entry.Seller.SellerCategories).FirstOrDefault(entry => entry.Id == product.ProductId);
-                var sellerCategory =
-                   seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == dbProduct.CategoryId) ??
-                   seller.SellerCategories.FirstOrDefault(entry =>
-                       entry.CategoryId == dbProduct.Category.MappedParentCategoryId);
-                var comissionPercent = sellerCategory == null ? dbProduct.Seller.TotalDiscount : sellerCategory.CustomDiscount ?? dbProduct.Seller.TotalDiscount;
-                var sellerTransaction = new SellerTransaction()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Number = db.SellerTransactions.Select(entry => entry.Number).DefaultIfEmpty(10000).Max() + 1,
-                    SellerId = model.Order.SellerId,
-                    Time = DateTime.UtcNow,
-                    ProductSKU = product.ProductSku.Value,
-                    ProductUrlName = product.ProductUrlName,
-                    Amount = product.Amount,
-                    Price = product.ActualPrice,
-                    TotalPrice = product.ActualPrice * product.Amount,
-                    Type = SellerTransactionType.Reserve,
-                    OrderNumber = model.Order.OrderNumber,
-                    FeePercent = comissionPercent,
-                    Charge = null,
-                    Writeoff = (product.ActualPrice * product.Amount) * comissionPercent / 100,
-                    Balance = seller.CurrentBill,
-                    GreyZoneBalance = seller.GreyZone + (product.ActualPrice * product.Amount) * comissionPercent / 100
-                };
-                seller.GreyZone = sellerTransaction.GreyZoneBalance;
-                db.SellerTransactions.Add(sellerTransaction);
-                if (seller.CurrentBill - seller.GreyZone < 0)
-                {
-                    seller.BlockOn = DateTime.UtcNow.AddDays(5);
-                }
-            }
-            db.SaveChanges();
+                order.Sum = order.GetOrderSum();
+                order.Description =
+                    string.Format("{0}<br/>--------------------------------------------<br/> Заказ створено на {1}",
+                        model.Comment, HttpContext.Current.Request.Url.Host);
+                //order.PersonalBonusesSum = order.SumWithDiscount * seller.UserDiscount / 100;
+                order.PersonalBonusesSum = order.OrderProducts.Sum(entry => entry.BonusesAcquired * entry.Amount);
 
-            //add transaction to reduce bonuses account
-            if (order.PaymentType == PaymentType.Bonuses)
-            {
-                var TransactionsService = new TransactionsService();
-                TransactionsService.AddBonusesOrderTransaction(order);
-            }
+                order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.SumWithDiscount / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
+                order.SellerName = seller.Name;
 
-            Cart.Cart.CurrentInstance.ClearSellerOrder(model.Order.SellerId);
-            var cartNumberCookie = HttpContext.Current.Response.Cookies["cartNumber"];
-            var cartPriceCookie = HttpContext.Current.Response.Cookies["cartPrice"];
-            if (cartNumberCookie != null)
-                if (Cart.Cart.CurrentInstance.Orders.Count == 0)
+                var shipping = db.ShippingMethods.FirstOrDefault(entry => entry.Id == model.ShippingMethodId);
+                order.ShippingCost = order.Sum < shipping.FreeStartsFrom ? (shipping.CostBeforeFree ?? default(double)) : 0;
+                order.ShippingName = shipping.Name;
+                if (string.IsNullOrEmpty(order.ShippingAddress))
                 {
-                    cartNumberCookie.Expires = DateTime.UtcNow.AddDays(-1);
-                    cartPriceCookie.Expires = DateTime.UtcNow.AddDays(-1);
+                    var address = db.Addresses.FirstOrDefault(entry => entry.Id == model.AddressId);
+                    if (address != null)
+                    {
+                        order.ShippingAddress = string.Format("{0}; {1}; {2}, {3}", address.FullName, address.Phone,
+                            address.Region.Name_ua, address.AddressLine);
+                    }
                 }
-                else
+                order.Time = DateTime.UtcNow;
+                order.OrderType = OrderType.BenefitSite;
+                order.PaymentType = model.PaymentType.Value;
+
+                //add order to DB
+                db.Orders.Add(order);
+                var i = 0;
+                //handle wholesale prices
+                foreach (var product in order.OrderProducts)
                 {
-                    cartNumberCookie.Value = Cart.Cart.CurrentInstance.GetOrderProductsCountAndPrice().ProductsNumber.ToString();
-                    cartPriceCookie.Value = Cart.Cart.CurrentInstance.GetOrderProductsCountAndPrice().Price.ToString();
+                    product.Id = Guid.NewGuid().ToString();
+                    product.ProductPrice = product.ActualPrice;
+                    product.OrderId = order.Id;
+                    product.Index = i++;
+                    db.OrderProducts.Add(product);
+                    foreach (var orderProductOption in product.OrderProductOptions)
+                    {
+                        orderProductOption.OrderProductId = product.Id;
+                        db.OrderProductOptions.Add(orderProductOption);
+                    }
+                    //add seller transaction
+                    var dbProduct = db.Products.Include(entry => entry.Seller.SellerCategories).FirstOrDefault(entry => entry.Id == product.ProductId);
+                    var sellerCategory =
+                       seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == dbProduct.CategoryId) ??
+                       seller.SellerCategories.FirstOrDefault(entry =>
+                           entry.CategoryId == dbProduct.Category.MappedParentCategoryId);
+                    var comissionPercent = sellerCategory == null ? dbProduct.Seller.TotalDiscount : sellerCategory.CustomDiscount ?? dbProduct.Seller.TotalDiscount;
+                    var sellerTransaction = new SellerTransaction()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Number = db.SellerTransactions.Select(entry => entry.Number).DefaultIfEmpty(10000).Max() + 1,
+                        SellerId = model.Order.SellerId,
+                        Time = DateTime.UtcNow,
+                        ProductSKU = product.ProductSku.Value,
+                        ProductUrlName = product.ProductUrlName,
+                        Amount = product.Amount,
+                        Price = product.ActualPrice,
+                        TotalPrice = product.ActualPrice * product.Amount,
+                        Type = SellerTransactionType.Reserve,
+                        OrderNumber = model.Order.OrderNumber,
+                        FeePercent = comissionPercent,
+                        Charge = null,
+                        Writeoff = (product.ActualPrice * product.Amount) * comissionPercent / 100,
+                        Balance = seller.CurrentBill,
+                        GreyZoneBalance = seller.GreyZone + (product.ActualPrice * product.Amount) * comissionPercent / 100
+                    };
+                    seller.GreyZone = sellerTransaction.GreyZoneBalance;
+                    db.SellerTransactions.Add(sellerTransaction);
+                    if (seller.CurrentBill - seller.GreyZone < 0)
+                    {
+                        seller.BlockOn = DateTime.UtcNow.AddDays(5);
+                    }
                 }
-            return order.OrderNumber.ToString();
+                db.SaveChanges();
+
+                //add transaction to reduce bonuses account
+                if (order.PaymentType == PaymentType.Bonuses)
+                {
+                    var TransactionsService = new TransactionsService();
+                    TransactionsService.AddBonusesOrderTransaction(order);
+                }
+
+                Cart.Cart.CurrentInstance.ClearSellerOrder(model.Order.SellerId);
+                var cartNumberCookie = HttpContext.Current.Response.Cookies["cartNumber"];
+                var cartPriceCookie = HttpContext.Current.Response.Cookies["cartPrice"];
+                if (cartNumberCookie != null)
+                    if (Cart.Cart.CurrentInstance.Orders.Count == 0)
+                    {
+                        cartNumberCookie.Expires = DateTime.UtcNow.AddDays(-1);
+                        cartPriceCookie.Expires = DateTime.UtcNow.AddDays(-1);
+                    }
+                    else
+                    {
+                        cartNumberCookie.Value = Cart.Cart.CurrentInstance.GetOrderProductsCountAndPrice().ProductsNumber.ToString();
+                        cartPriceCookie.Value = Cart.Cart.CurrentInstance.GetOrderProductsCountAndPrice().Price.ToString();
+                    }
+                return order.OrderNumber.ToString();
+            }
         }
 
         public void DeleteOrder(string orderId)
         {
-            var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.User)
-                .Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == orderId);
-            var now = DateTime.UtcNow;
-            var seller = db.Sellers.FirstOrDefault(entry => entry.Id == order.SellerId);
-            if (seller != null)
+            using (var db = new ApplicationDbContext())
             {
+                var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.User)
+                .Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == orderId);
+                var now = DateTime.UtcNow;
+                var seller = db.Sellers.FirstOrDefault(entry => entry.Id == order.SellerId);
+                if (seller != null)
+                {
+                    if (order.Time > now.StartOfMonth() && order.Time < now.EndOfMonth())
+                    {
+                        seller.PointsAccount = seller.PointsAccount - order.PointsSum;
+                    }
+                    if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
+                    {
+                        seller.HangingPointsAccount = seller.HangingPointsAccount - order.PointsSum;
+                    }
+                    db.Entry(seller).State = EntityState.Modified;
+                }
                 if (order.Time > now.StartOfMonth() && order.Time < now.EndOfMonth())
                 {
-                    seller.PointsAccount = seller.PointsAccount - order.PointsSum;
+                    order.User.PointsAccount = order.User.PointsAccount - order.PointsSum;
+                    order.User.CurrentBonusAccount = order.User.CurrentBonusAccount - order.PersonalBonusesSum;
+                    if (order.PaymentType == PaymentType.Bonuses)
+                    {
+                        order.User.BonusAccount = order.User.BonusAccount + order.Sum;
+                    }
                 }
                 if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
                 {
-                    seller.HangingPointsAccount = seller.HangingPointsAccount - order.PointsSum;
+                    order.User.HangingPointsAccount = order.User.HangingPointsAccount - order.PointsSum;
+                    order.User.HangingBonusAccount = order.User.HangingBonusAccount - order.PersonalBonusesSum;
+                    if (order.PaymentType == PaymentType.Bonuses)
+                    {
+                        order.User.BonusAccount = order.User.BonusAccount + order.Sum;
+                    }
                 }
-                db.Entry(seller).State = EntityState.Modified;
-            }
-            if (order.Time > now.StartOfMonth() && order.Time < now.EndOfMonth())
-            {
-                order.User.PointsAccount = order.User.PointsAccount - order.PointsSum;
-                order.User.CurrentBonusAccount = order.User.CurrentBonusAccount - order.PersonalBonusesSum;
-                if (order.PaymentType == PaymentType.Bonuses)
-                {
-                    order.User.BonusAccount = order.User.BonusAccount + order.Sum;
-                }
-            }
-            if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
-            {
-                order.User.HangingPointsAccount = order.User.HangingPointsAccount - order.PointsSum;
-                order.User.HangingBonusAccount = order.User.HangingBonusAccount - order.PersonalBonusesSum;
-                if (order.PaymentType == PaymentType.Bonuses)
-                {
-                    order.User.BonusAccount = order.User.BonusAccount + order.Sum;
-                }
-            }
 
-            db.Transactions.RemoveRange(order.Transactions);
-            db.OrderProductOptions.RemoveRange(order.OrderProducts.SelectMany(op => op.OrderProductOptions));
-            db.OrderProducts.RemoveRange(order.OrderProducts);
-            db.Entry(order.User).State = EntityState.Modified;
-            db.Orders.Remove(order);
-            db.SaveChanges();
+                db.Transactions.RemoveRange(order.Transactions);
+                db.OrderProductOptions.RemoveRange(order.OrderProducts.SelectMany(op => op.OrderProductOptions));
+                db.OrderProducts.RemoveRange(order.OrderProducts);
+                db.Entry(order.User).State = EntityState.Modified;
+                db.Orders.Remove(order);
+                db.SaveChanges();
+            }
         }
     }
 }

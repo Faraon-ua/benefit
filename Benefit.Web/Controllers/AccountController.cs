@@ -265,7 +265,7 @@ namespace Benefit.Web.Controllers
                 if (referal == null)
                 {
                     var UserService = new UserService();
-                    user.ReferalId = UserService.GetVipReferalCode();
+                    //user.ReferalId = UserService.GetVipReferalCode();
                 }
                 else
                 {
