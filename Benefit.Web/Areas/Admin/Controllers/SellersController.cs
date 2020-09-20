@@ -29,8 +29,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public SellersController()
         {
-            var userStore = new UserStore<ApplicationUser>(db);
-            UserManager = new UserManager<ApplicationUser>(userStore);
+            using (var db = new ApplicationDbContext())
+            {
+                var userStore = new UserStore<ApplicationUser>(db);
+                UserManager = new UserManager<ApplicationUser>(userStore);
+            }
         }
         public ActionResult ClearCache(string id)
         {

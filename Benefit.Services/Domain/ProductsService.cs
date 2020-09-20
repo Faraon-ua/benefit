@@ -265,11 +265,10 @@ namespace Benefit.Services.Domain
             }
         }
 
-        public void Delete(string productId, ApplicationDbContext dbContext = null)
+        public void Delete(string productId)
         {
             using (var db = new ApplicationDbContext())
             {
-                db = dbContext ?? db;
                 var product =
                     db.Products.Include(entry => entry.Images)
                         .Include(entry => entry.ProductOptions)

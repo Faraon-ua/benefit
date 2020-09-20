@@ -21,31 +21,40 @@ namespace Benefit.Services.Domain
 
         public Category GetByUrlWithChildren(string urlName)
         {
-            var category =
+            using (var db = new ApplicationDbContext())
+            {
+                var category =
                 db.Categories.Include(entry => entry.ChildCategories).FirstOrDefault(entry => entry.UrlName == urlName);
-            return category;
+                return category;
+            }
         }
 
         public Category GetCategoryByFullName(string categoryFullPass)
         {
-            var parts = categoryFullPass.Split('/');
-            var catName = parts.Last();
-            var categories = db.Categories
-                .AsNoTracking()
-                .Include(entry => entry.ParentCategory)
-                .Include(entry => entry.ProductParameters.Select(pp => pp.ProductParameterValues))
-                .Where(entry => entry.Name == catName && !entry.IsSellerCategory).ToList();
-            if (!categories.Any())
-                return null;
-            if (categories.Count == 1) return categories.First();
-            var parentName = parts[parts.Length - 2];
-            var category = categories.First(entry => entry.ParentCategory.Name == parentName);
-            return category;
+            using (var db = new ApplicationDbContext())
+            {
+                var parts = categoryFullPass.Split('/');
+                var catName = parts.Last();
+                var categories = db.Categories
+                    .AsNoTracking()
+                    .Include(entry => entry.ParentCategory)
+                    .Include(entry => entry.ProductParameters.Select(pp => pp.ProductParameterValues))
+                    .Where(entry => entry.Name == catName && !entry.IsSellerCategory).ToList();
+                if (!categories.Any())
+                    return null;
+                if (categories.Count == 1) return categories.First();
+                var parentName = parts[parts.Length - 2];
+                var category = categories.First(entry => entry.ParentCategory.Name == parentName);
+                return category;
+            }
         }
 
         public List<Category> GetBaseCategories()
         {
-            return db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order).ToList();
+            using (var db = new ApplicationDbContext())
+            {
+                return db.Categories.Where(entry => entry.ParentCategoryId == null).OrderBy(entry => entry.Order).ToList();
+            }
         }
         public Dictionary<CategoryVM, List<CategoryVM>> GetBreadcrumbs(IEnumerable<CategoryVM> cachedCats, string categoryId = null, string urlName = null)
         {
@@ -70,48 +79,50 @@ namespace Benefit.Services.Domain
 
         public CategoriesViewModel GetCategoriesCatalog(IEnumerable<CategoryVM> cachedCats, string categoryUrl, string sellerUrl = null)
         {
-            //fetch childs so if no nested categories - fetch products
-            var parent = cachedCats.FindByUrlIdRecursively(categoryUrl, null);
-            if (!string.IsNullOrEmpty(categoryUrl) && parent == null)
+            using (var db = new ApplicationDbContext())
             {
-                return null;
-            }
-
-            if (parent == null)
-            {
-                var mainPage = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "golovna");
-                parent = new CategoryVM()
+                //fetch childs so if no nested categories - fetch products
+                var parent = cachedCats.FindByUrlIdRecursively(categoryUrl, null);
+                if (!string.IsNullOrEmpty(categoryUrl) && parent == null)
                 {
-                    Name = "Каталог",
-                    Title = "Каталог товарів та послуг" + (mainPage == null ? string.Empty : mainPage.Title),
-                    ChildCategories = cachedCats.ToList()
-                };
-            }
-
-            //if (sellerUrl != null)
-            //{
-            //    var sellerService = new SellerService();
-            //    var sellerCats = sellerService.GetAllSellerCategories(sellerUrl);
-            //    categories = categories.Intersect(sellerCats, new CategoryComparer()).ToList();
-            //}
-            //if (categories.Count == 1)
-            //{
-            //    categories = categories.SelectMany(entry => entry.ChildCategories).ToList();
-            //}
-            if (parent.BannerImageUrl == null && parent.ParentCategory != null)
-                parent.BannerImageUrl = parent.ParentCategory.BannerImageUrl;
-            var catsModel = new CategoriesViewModel()
-            {
-                Category = parent,
-                Items = parent.ChildCategories.ToList(),
-                Breadcrumbs = new BreadCrumbsViewModel()
-                {
-                    Categories = GetBreadcrumbs(cachedCats, parent.Id)
+                    return null;
                 }
-            };
-            return catsModel;
-        }
 
+                if (parent == null)
+                {
+                    var mainPage = db.InfoPages.FirstOrDefault(entry => entry.UrlName == "golovna");
+                    parent = new CategoryVM()
+                    {
+                        Name = "Каталог",
+                        Title = "Каталог товарів та послуг" + (mainPage == null ? string.Empty : mainPage.Title),
+                        ChildCategories = cachedCats.ToList()
+                    };
+                }
+
+                //if (sellerUrl != null)
+                //{
+                //    var sellerService = new SellerService();
+                //    var sellerCats = sellerService.GetAllSellerCategories(sellerUrl);
+                //    categories = categories.Intersect(sellerCats, new CategoryComparer()).ToList();
+                //}
+                //if (categories.Count == 1)
+                //{
+                //    categories = categories.SelectMany(entry => entry.ChildCategories).ToList();
+                //}
+                if (parent.BannerImageUrl == null && parent.ParentCategory != null)
+                    parent.BannerImageUrl = parent.ParentCategory.BannerImageUrl;
+                var catsModel = new CategoriesViewModel()
+                {
+                    Category = parent,
+                    Items = parent.ChildCategories.ToList(),
+                    Breadcrumbs = new BreadCrumbsViewModel()
+                    {
+                        Categories = GetBreadcrumbs(cachedCats, parent.Id)
+                    }
+                };
+                return catsModel;
+            }
+        }
         //public CategoriesViewModel GetSellerCategoriesCatalog(Category parent, string sellerUrl)
         //{
         //    var seller = db.Sellers.FirstOrDefault(entry => entry.UrlName.ToLower() == sellerUrl.ToLower());
@@ -160,119 +171,125 @@ namespace Benefit.Services.Domain
 
         public SellersViewModel GetCategorySellers(IEnumerable<CategoryVM> cachedCats, string urlName)
         {
-            //which sellers to display
-            var sellerIds = new List<string>();
-            //get selected category with child categories and sellers
-            var category =
-                db.Categories.Include(entry => entry.ChildCategories)
-                    .Include(entry => entry.SellerCategories)
-                    .Include(entry => entry.MappedCategories)
-                    .FirstOrDefault(entry => entry.UrlName == urlName);
-            if (category == null) return null;
-            var sellersDto = new SellersViewModel()
+            using (var db = new ApplicationDbContext())
             {
-                Category = category.MapToVM()
-            };
-            var allChildCategories = category.GetAllChildrenRecursively().ToList();
-            //add all sellers categories except default
-            sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
-            sellerIds.AddRange(category.MappedCategories.Select(entry => entry.SellerId));
-            sellerIds.AddRange(allChildCategories.SelectMany(entry => entry.SellerCategories).Select(entry => entry.SellerId));
-            sellerIds.AddRange(allChildCategories.SelectMany(entry => entry.MappedCategories).Select(entry => entry.SellerId));
+                //which sellers to display
+                var sellerIds = new List<string>();
+                //get selected category with child categories and sellers
+                var category =
+                    db.Categories.Include(entry => entry.ChildCategories)
+                        .Include(entry => entry.SellerCategories)
+                        .Include(entry => entry.MappedCategories)
+                        .FirstOrDefault(entry => entry.UrlName == urlName);
+                if (category == null) return null;
+                var sellersDto = new SellersViewModel()
+                {
+                    Category = category.MapToVM()
+                };
+                var allChildCategories = category.GetAllChildrenRecursively().ToList();
+                //add all sellers categories except default
+                sellerIds.AddRange(category.SellerCategories.Select(entry => entry.SellerId));
+                sellerIds.AddRange(category.MappedCategories.Select(entry => entry.SellerId));
+                sellerIds.AddRange(allChildCategories.SelectMany(entry => entry.SellerCategories).Select(entry => entry.SellerId));
+                sellerIds.AddRange(allChildCategories.SelectMany(entry => entry.MappedCategories).Select(entry => entry.SellerId));
 
-            //filter by region and shippings
-            var regionId = RegionService.GetRegionId();
+                //filter by region and shippings
+                var regionId = RegionService.GetRegionId();
 
-            var items =
-                db.Sellers
-                    .Include(entry => entry.Images)
-                    .Include(entry => entry.Addresses)
-                    .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
-                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                    .Where(
-                        entry =>
-                            sellerIds.Contains(entry.Id) &&
-                            entry.IsActive);
+                var items =
+                    db.Sellers
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Addresses)
+                        .Include(entry => entry.ShippingMethods.Select(sm => sm.Region))
+                        .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                        .Where(
+                            entry =>
+                                sellerIds.Contains(entry.Id) &&
+                                entry.IsActive);
 
-            if (regionId != RegionConstants.AllUkraineRegionId)
-            {
-                sellersDto.CurrentRegionItems =
-                    items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
+                if (regionId != RegionConstants.AllUkraineRegionId)
+                {
+                    sellersDto.CurrentRegionItems =
+                        items.Where(entry => entry.Addresses.Select(addr => addr.RegionId).Contains(regionId)).ToList();
+                }
+                var currentRegionItemsIds = sellersDto.CurrentRegionItems.Select(sc => sc.Id).ToList();
+                sellersDto.Items = items.Where(entry => !currentRegionItemsIds.Contains(entry.Id)).
+                    OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
+
+                sellersDto.Items.ForEach(entry =>
+                {
+                    var tempAddresses = new List<Address>(entry.Addresses.ToList());
+                    entry.Addresses = new Collection<Address>();
+                    foreach (var address in tempAddresses.Where(addr => addr.RegionId == regionId))
+                    {
+                        entry.Addresses.Add(address);
+                    }
+                    foreach (var address in tempAddresses.Where(addr => addr.RegionId != regionId))
+                    {
+                        entry.Addresses.Add(address);
+                    }
+                    entry.ShippingMethods =
+                        entry.ShippingMethods.Where(sh => sh.RegionId == entry.ShippingMethods.Min(shm => shm.RegionId))
+                            .ToList();
+                });
+                sellersDto.Breadcrumbs = new BreadCrumbsViewModel { Categories = GetBreadcrumbs(cachedCats, category.Id) };
+                return sellersDto;
             }
-            var currentRegionItemsIds = sellersDto.CurrentRegionItems.Select(sc => sc.Id).ToList();
-            sellersDto.Items = items.Where(entry => !currentRegionItemsIds.Contains(entry.Id)).
-                OrderByDescending(entry => entry.Status).ThenByDescending(entry => entry.UserDiscount).ToList();
-
-            sellersDto.Items.ForEach(entry =>
-            {
-                var tempAddresses = new List<Address>(entry.Addresses.ToList());
-                entry.Addresses = new Collection<Address>();
-                foreach (var address in tempAddresses.Where(addr => addr.RegionId == regionId))
-                {
-                    entry.Addresses.Add(address);
-                }
-                foreach (var address in tempAddresses.Where(addr => addr.RegionId != regionId))
-                {
-                    entry.Addresses.Add(address);
-                }
-                entry.ShippingMethods =
-                    entry.ShippingMethods.Where(sh => sh.RegionId == entry.ShippingMethods.Min(shm => shm.RegionId))
-                        .ToList();
-            });
-            sellersDto.Breadcrumbs = new BreadCrumbsViewModel { Categories = GetBreadcrumbs(cachedCats, category.Id) };
-            return sellersDto;
         }
 
         public void Delete(string id)
         {
-            var category = db.Categories
+            using (var db = new ApplicationDbContext())
+            {
+                var category = db.Categories
                 .Include(entry => entry.MappedCategories)
                 .Include(entry => entry.SellerCategories)
                 .Include(entry => entry.ProductParameters)
                 .Include(entry => entry.ProductOptions)
                 .Include(entry => entry.ExportCategories)
                 .FirstOrDefault(entry => entry.Id == id);
-            if (category == null) return;
-            var mappedCatsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
-            foreach (var mappedCategoryId in mappedCatsIds)
-            {
-                Delete(mappedCategoryId);
-            }
-            db.SellerCategories.RemoveRange(category.SellerCategories);
+                if (category == null) return;
+                var mappedCatsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
+                foreach (var mappedCategoryId in mappedCatsIds)
+                {
+                    Delete(mappedCategoryId);
+                }
+                db.SellerCategories.RemoveRange(category.SellerCategories);
 
-            var productParameters = category.ProductParameters.ToList();
-            var productParameterIds = productParameters.Select(entry => entry.Id).ToList();
-            var productParameterValues =
-                db.ProductParameterValues.Where(
-                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
-            var productParameterProducts = db.ProductParameterProducts.Where(
-                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+                var productParameters = category.ProductParameters.ToList();
+                var productParameterIds = productParameters.Select(entry => entry.Id).ToList();
+                var productParameterValues =
+                    db.ProductParameterValues.Where(
+                        entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+                var productParameterProducts = db.ProductParameterProducts.Where(
+                        entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
 
-            db.ExportCategories.RemoveRange(category.ExportCategories);
-            db.ProductParameterProducts.RemoveRange(productParameterProducts);
-            db.ProductParameterValues.RemoveRange(productParameterValues);
-            db.ProductParameters.RemoveRange(productParameters);
-            db.ProductOptions.RemoveRange(category.ProductOptions.ToList());
-            db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
-            if (category.ImageUrl != null)
-            {
-                var image = new FileInfo(Path.Combine(HttpContext.Current.Server.MapPath("~/Images/"), category.ImageUrl));
-                if (image.Exists)
-                    image.Delete();
+                db.ExportCategories.RemoveRange(category.ExportCategories);
+                db.ProductParameterProducts.RemoveRange(productParameterProducts);
+                db.ProductParameterValues.RemoveRange(productParameterValues);
+                db.ProductParameters.RemoveRange(productParameters);
+                db.ProductOptions.RemoveRange(category.ProductOptions.ToList());
+                db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
+                if (category.ImageUrl != null)
+                {
+                    var image = new FileInfo(Path.Combine(HttpContext.Current.Server.MapPath("~/Images/"), category.ImageUrl));
+                    if (image.Exists)
+                        image.Delete();
+                }
+                db.SaveChanges();
+                var products = db.Products.AsNoTracking().Where(entry => entry.CategoryId == id).Select(entry => entry.Id).ToList();
+                foreach (var productId in products)
+                {
+                    ProductsService.Delete(productId);
+                }
+                var childCatIds = db.Categories.AsNoTracking().Where(entry => entry.ParentCategoryId == id).Select(entry => entry.Id).ToList();
+                foreach (var childCategoryId in childCatIds)
+                {
+                    Delete(childCategoryId);
+                }
+                db.Categories.Remove(category);
+                db.SaveChanges();
             }
-            db.SaveChanges();
-            var products = db.Products.AsNoTracking().Where(entry => entry.CategoryId == id).Select(entry=>entry.Id).ToList();
-            foreach (var productId in products)
-            {
-                ProductsService.Delete(productId, db);
-            }
-            var childCatIds = db.Categories.AsNoTracking().Where(entry => entry.ParentCategoryId == id).Select(entry=>entry.Id).ToList();
-            foreach (var childCategoryId in childCatIds)
-            {
-                Delete(childCategoryId);
-            }
-            db.Categories.Remove(category);
-            db.SaveChanges();
         }
     }
 }
