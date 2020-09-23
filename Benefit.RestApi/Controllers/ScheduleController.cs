@@ -23,10 +23,8 @@ namespace Benefit.RestApi.Controllers
         {
             Task.Run(() =>
             {
-                using (var importService = new ImportExportService())
-                {
-                    importService.ProcessImportTasks();
-                }
+                var importService = new ImportExportService();
+                importService.ProcessImportTasks();
             });
             return Content("Ok");
         }

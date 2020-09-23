@@ -104,7 +104,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 int resultsCount = 0;
                 if (filters.HasValues || Seller.CurrentAuthorizedSellerId != null)
                 {
-                    var products = GetFilteredProducts(filters);
+                    var products = GetFilteredProducts(filters).ToList();
                     resultsCount = products.Count();
                     var skip = filters.Page > 0 ? filters.Take * (filters.Page - 1) : 0;
                     resultProducts = products.Skip(skip).Take(filters.Take).ToList();
