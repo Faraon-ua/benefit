@@ -1,4 +1,4 @@
-﻿//var apiUrl = "http://benefit-api.pp.ua/";
+﻿//var apiUrl = "https://benefit-api.pp.ua/";
 //var routePrefix = "";
 var apiUrl = "http://localhost/Benefit.RestApi/";
 var routePrefix = "/Benefit.Web";

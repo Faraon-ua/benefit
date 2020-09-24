@@ -88,12 +88,16 @@ namespace Benefit.Services.Domain
                 var sku = urlName.Substring(delimeterPos, urlName.Length - delimeterPos);
                 var product = db.Products
                     .Include(entry => entry.Category.MappedParentCategory)
+                    .Include(entry => entry.Seller.Images)
+                    .Include(entry => entry.Seller.Reviews)
                     .Include(entry => entry.Seller.ShippingMethods.Select(addr => addr.Region))
                     .Include(entry => entry.Seller.Addresses.Select(addr => addr.Region))
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Currency)
+                    .Include(entry => entry.ProductOptions)
                     .Include(entry => entry.ProductParameterProducts.Select(pr => pr.ProductParameter))
                     .Include(entry => entry.Reviews.Select(rev => rev.ChildReviews))
+                    .Include(entry => entry.Favorites)
                     .FirstOrDefault(entry => entry.SKU.ToString() == sku);
                 if (product == null)
                 {

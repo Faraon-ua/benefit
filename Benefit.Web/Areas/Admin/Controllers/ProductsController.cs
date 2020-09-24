@@ -104,7 +104,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 int resultsCount = 0;
                 if (filters.HasValues || Seller.CurrentAuthorizedSellerId != null)
                 {
-                    var products = GetFilteredProducts(filters).ToList();
+                    var products = GetFilteredProducts(filters);
                     resultsCount = products.Count();
                     var skip = filters.Page > 0 ? filters.Take * (filters.Page - 1) : 0;
                     resultProducts = products.Skip(skip).Take(filters.Take).ToList();
@@ -683,7 +683,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             .ThenByDescending(entry => entry.AvarageRating)
                             .ThenBy(entry => entry.SKU);
                 }
-                return products;
+                return products.ToList();
             }
         }
     }
