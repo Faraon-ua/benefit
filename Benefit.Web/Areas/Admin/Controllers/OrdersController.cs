@@ -243,7 +243,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                              }).ToList();
                 ordersFilters.Sellers =
                     db.Sellers.OrderBy(entry => entry.Name)
-                        .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
+                        .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id }).ToList();
                 return View(ordersFilters);
             }
         }

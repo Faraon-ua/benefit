@@ -142,7 +142,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     productsViewModel.ProductFilters.Sellers =
                        db.Sellers.OrderBy(entry => entry.Name)
-                           .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
+                           .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id }).ToList();
                     var cats = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList();
                     productsViewModel.ProductFilters.Categories = cats.Select(entry => new HierarchySelectItem() { Text = entry.Name, Value = entry.Id, Level = entry.HierarchicalLevel }).ToList();
                     productsViewModel.ProductFilters.Categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 1 });
