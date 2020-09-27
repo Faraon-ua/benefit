@@ -552,6 +552,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 IQueryable<Product> products =
                     db.Products
+                        .Include(entry => entry.Seller)
+                        .Include(entry => entry.Category)
                         .Include(entry => entry.Images)
                         .Include(entry => entry.ExportProducts.Select(ep => ep.Export))
                         .Include(entry => entry.ProductParameterProducts)
