@@ -232,7 +232,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         Level = entry.HierarchicalLevel
                     });
                 }
-                ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name", product.SellerId);
+                ViewBag.SellerId = new SelectList(db.Sellers.ToList(), "Id", "Name", product.SellerId);
                 var currencies =
                     db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank || entry.SellerId == product.SellerId)
                         .OrderBy(entry => entry.Id).ToList();
