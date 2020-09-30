@@ -21,7 +21,7 @@ namespace Benefit.RestApi.Controllers
         ProductsService ProductService = new ProductsService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
-        [HttpPost]
+        [HttpGet]
         public async Task<JsonResult> OneCCommerceMLImport(string id)
         {
             using (var db = new ApplicationDbContext())
@@ -53,7 +53,7 @@ namespace Benefit.RestApi.Controllers
                     return Json(new
                     {
                         message = "Імпорт 1C Commerce ML успішно виконаний"
-                    });
+                    }, JsonRequestBehavior.AllowGet);
 
                 }
                 catch (XmlException)

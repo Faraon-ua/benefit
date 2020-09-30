@@ -16,17 +16,13 @@
                 var btn = $(this);
                 btn.attr("disabled", "disabled");
                 $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
-                $.ajax({
-                    type: "POST",
-                    url: apiUrl + 'Import/OneCCommerceMLImport?id=@Model.Id',
-                    success: function (result) {
-                        if (result.error) {
-                            flashMessage(result.error, true, true);
-                        } else {
-                            flashMessage(result.message, false, true);
-                        }
-                        btn.removeAttr("disabled");
+                $.get(apiUrl + 'Import/OneCCommerceMLImport?id=@Model.Id', function (result) {
+                    if (result.error) {
+                        flashMessage(result.error, true, true);
+                    } else {
+                        flashMessage(result.message, false, true);
                     }
+                    btn.removeAttr("disabled");
                 });
             });
 
