@@ -1,4 +1,5 @@
-﻿using System.Xml.Linq;
+﻿using System.Globalization;
+using System.Xml.Linq;
 
 namespace Benefit.Domain.Models.XmlModels
 {
@@ -14,7 +15,7 @@ namespace Benefit.Domain.Models.XmlModels
 
             double amountValue = 0;
             Id = xmlProduct.Element("Ид").Value;
-            Price = double.Parse(priceValue.Value);
+            Price = double.Parse(priceValue.Value, CultureInfo.InvariantCulture);
             double.TryParse(xmlProduct.Element("Ид").Value, out amountValue);
             Amount = amountValue;
         }

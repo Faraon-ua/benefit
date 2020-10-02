@@ -8,22 +8,32 @@
 {
     <script>
         var launchImportUrl = apiUrl + 'Import/ProcessImport?sellerId=@Model.Id';
+        var importStatusUrl = apiUrl + 'Import/GetImportTaskStatus?sellerId=@Model.Id';
         var getImportStatusUrl = '@Url.Action("ImportStatus","ImportExport", new {sellerId = Model.Id})';
         var intervalId;
+        const ImportStatusEnum = { "error": 0, "success": 1, "pending": 2 };
+        Object.freeze(ImportStatusEnum)
 
-        $(function() {
-            $("#1CCommerceML").click(function() {
+        $(function () {
+            $("#1CCommerceML").click(function () {
                 var btn = $(this);
                 btn.attr("disabled", "disabled");
-                $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
-                $.get(apiUrl + 'Import/OneCCommerceMLImport?id=@Model.Id', function (result) {
-                    if (result.error) {
-                        flashMessage(result.error, true, true);
-                    } else {
-                        flashMessage(result.message, false, true);
-                    }
-                    btn.removeAttr("disabled");
-                });
+                flashMessage("Будь ласка зачекайте результатів імпорту", 3, true);
+                $.get(apiUrl + 'Import/OneCCommerceMLImport?id=@Model.Id');
+                var checkImportStatusId = setInterval(function () {
+                    $.get(importStatusUrl + '&type=OneCCommerceMl', function (result) {
+                        if (result.status == ImportStatusEnum.error) {
+                            flashMessage(result.error, true, true);
+                        }
+                        if (result.status == ImportStatusEnum.success) {
+                            flashMessage(result.message, false, true);
+                        }
+                        if (result.status != ImportStatusEnum.pending) {
+                            btn.removeAttr("disabled");
+                            clearInterval(checkImportStatusId);
+                        }
+                    });
+                }, 5000);
             });
 
             $("#ExcelImport").click(function () {
@@ -45,7 +55,6 @@
 
             $(".fn-launch-yml-import").click(function () {
                 $("#importing-process").show();
-                debugger;
                 $.get(launchImportUrl +"&type=Yml",
                     function(data) {
                         if (data.error) {
@@ -161,9 +170,6 @@
         <div id="1ccommerceml" class="tab-pane">
             <div id="importFiles">
                 <h3 class="red" id="warning-message">Імпорт з файлу зробить неактивними всі товари з бази, яких немає у файлі імпорту.</h3>
-                <h2 class="underlined">
-                    1C Commerce ML
-                </h2>
                 @Html.Action("GetImportForm", new { syncType = SyncType.OneCCommerceMl })
 
                 <p>1) Завантажте файли експортовані з 1С на наш FTP</p>

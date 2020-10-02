@@ -197,10 +197,24 @@ function CheckSearchLength() {
     }
 }
 
-function flashMessage(text, error, alwaysStayVisible) {
-    var status = "alert-success";
-    if (error) {
-        status = "alert-danger";
+function flashMessage(text, alertStatus, alwaysStayVisible) {
+    if (typeof alertStatus === "boolean") {
+        alertStatus = alertStatus ? 0 : 1;
+    }
+    var status;
+    switch (alertStatus) {
+        case 0:
+            status = "alert-danger";
+            break;
+        case 1:
+            status = "alert-success";
+            break;
+        case 2:
+            status = "alert-info";
+            break;
+        case 3:
+            status = "alert-warning";
+            break;
     }
     $("#flashMessage").html(
         "<p class='alert " + status + "'>" + text + "</p>"

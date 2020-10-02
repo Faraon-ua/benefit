@@ -5,6 +5,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
+    public enum ImportStatus
+    {
+        Error,
+        Success,
+        Pending
+    }
     public enum SyncType
     {
         OneCCommerceMl,

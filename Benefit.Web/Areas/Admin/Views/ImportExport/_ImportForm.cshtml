@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            if (Model.LastUpdateStatus.HasValue)
+            if (Model.LastUpdateStatus.HasValue && Model.LastSync != null)
             {
                 <div class="form-group">
                     <label class="control-label col-md-2">Статус останнього оновлення</label>

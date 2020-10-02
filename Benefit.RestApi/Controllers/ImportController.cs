@@ -22,50 +22,75 @@ namespace Benefit.RestApi.Controllers
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         [HttpGet]
-        public async Task<JsonResult> OneCCommerceMLImport(string id)
+        public ActionResult GetImportTaskStatus(string sellerId, SyncType type)
         {
             using (var db = new ApplicationDbContext())
             {
-                var seller = db.Sellers.Find(id);
-                var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == id && entry.SyncType == Domain.Models.SyncType.OneCCommerceMl);
-                if (seller == null || importTask == null)
+                var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId && entry.SyncType == SyncType.OneCCommerceMl);
+                if (importTask != null)
                 {
-                    Response.StatusCode = (int)HttpStatusCode.NotFound;
-                    return Json("Постачальника не знайдено");
-                }
-                try
-                {
-                    var xml = XDocument.Load(importTask.FileUrl);
-                    if (!ImportService.ImportFrom1C(xml, seller))
+                    if (importTask.IsImport)
                     {
-                        return Json(new { error = "Ошибка імпорту файлів" }, JsonRequestBehavior.AllowGet);
+                        return Json(new { status = (int)ImportStatus.Pending }, JsonRequestBehavior.AllowGet);
                     }
-
-                    //Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
-
-                    //images
-                    xml = XDocument.Load(importTask.FileUrl.Replace("import", "offers"));
-
-                    var xmlProductPrices = xml.Descendants("Предложение");
-                    var poductPrices = xmlProductPrices.Select(entry => new XmlProductPrice(entry)).ToList();
-                    var pricesResult = ProductService.ProcessImportedProductPrices(poductPrices);
-
-                    return Json(new
-                    {
-                        message = "Імпорт 1C Commerce ML успішно виконаний"
-                    }, JsonRequestBehavior.AllowGet);
-
+                    return Json(new { status = (importTask.LastUpdateStatus.Value ? 1 : 0), message = importTask.LastUpdateMessage }, JsonRequestBehavior.AllowGet);
                 }
-                catch (XmlException)
-                {
-                    return Json(new { errror = "Завантажений файл має невірну структуру" }, JsonRequestBehavior.AllowGet);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex);
-                    return Json(new { error = "Помилка імпорту файлу: " + ex }, JsonRequestBehavior.AllowGet);
-                }
+                return new HttpNotFoundResult();
             }
+        }
+
+        [HttpGet]
+        public async Task OneCCommerceMLImport(string id)
+        {
+            await Task.Run(() =>
+            {
+                using (var db = new ApplicationDbContext())
+                {
+                    var seller = db.Sellers.Find(id);
+                    var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == id && entry.SyncType == SyncType.OneCCommerceMl);
+                    importTask.LastUpdateStatus = false;
+                    importTask.IsImport = true;
+                    db.SaveChanges();
+                    if (seller == null || importTask == null)
+                    {
+                        importTask.LastUpdateMessage = "Постачальника не знайдено";
+                    }
+                    try
+                    {
+                        var xml = XDocument.Load(importTask.FileUrl);
+                        //if (!ImportService.ImportFrom1C(xml, seller))
+                        //{
+                        //    importTask.LastUpdateMessage = "Ошибка імпорту файлів";
+                        //}
+
+                        //Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
+
+                        //images
+                        xml = XDocument.Load(importTask.FileUrl.Replace("import", "offers"));
+
+                        var xmlProductPrices = xml.Descendants("Предложение");
+                        var poductPrices = xmlProductPrices.Select(entry => new XmlProductPrice(entry)).ToList();
+                        var pricesResult = ProductService.ProcessImportedProductPrices(poductPrices);
+
+                        importTask.LastUpdateStatus = true;
+                        importTask.LastUpdateMessage = "Імпорт 1C Commerce ML успішно виконаний";
+                    }
+                    catch (XmlException)
+                    {
+                        importTask.LastUpdateMessage = "Завантажений файл має невірну структуру";
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex);
+                        importTask.LastUpdateMessage = "Помилка імпорту файлу: " + ex.ToString();
+                    }
+                    finally
+                    {
+                        importTask.IsImport = false;
+                        db.SaveChanges();
+                    }
+                }
+            });
         }
 
         public ActionResult ProcessImport(string sellerId, SyncType type)

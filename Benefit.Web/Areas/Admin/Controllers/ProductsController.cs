@@ -33,7 +33,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var product = db.Products.Find(id);
                 if (product != null)
                 {
-                    return Json(product.Images.Select(entry => new { entry.ImageUrl, entry.IsAbsoluteUrl }), JsonRequestBehavior.AllowGet);
+                    return Json(product.Images.Where(entry=>entry.ImageType == ImageType.ProductGallery).Select(entry => new { entry.ImageUrl, entry.IsAbsoluteUrl }), JsonRequestBehavior.AllowGet);
                 }
 
                 return Json(null);
@@ -191,6 +191,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 //todo: add check for seller role
                 var product = db.Products
+                              .Include(entry => entry.Images)
+                              .Include(entry => entry.ProductParameterProducts)
                               .Include(entry => entry.Category)
                               .Include(entry => entry.Category.ProductParameters)
                               .Include(entry => entry.Category.MappedParentCategory.ProductParameters)
@@ -357,7 +359,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         Level = entry.HierarchicalLevel
                     });
                 }
-                ViewBag.SellerId = new SelectList(db.Sellers, "Id", "Name");
+                ViewBag.SellerId = new SelectList(db.Sellers.ToList(), "Id", "Name");
                 product.Category = db.Categories
                     .Include(entry => entry.ProductParameters)
                     .Include(entry => entry.MappedParentCategory.ProductParameters)

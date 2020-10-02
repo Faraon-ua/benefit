@@ -1591,6 +1591,7 @@
     <Content Include="Views\SellerArea\MegaShop\ForgotPasswordConfirmation.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\ResetPassword.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\Shared\_essentialStyles.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -40,15 +40,15 @@ namespace Benefit.Web.Controllers
             {
                 throw new HttpException(404, "Not found");
             }
-            var viewedProducts = Session[DomainConstants.ViewedProductsSessionKey] as List<Product> ??
-                                 new List<Product>();
-            if (!viewedProducts.Contains(productResult.Product, new ProductComparer()))
-            {
-                viewedProducts.Insert(0, productResult.Product);
-                viewedProducts = viewedProducts.Take(10).ToList();
-                Session[DomainConstants.ViewedProductsSessionKey] = viewedProducts;
-            }
-            productResult.ViewedProducts = viewedProducts;
+            //var viewedProducts = Session[DomainConstants.ViewedProductsSessionKey] as List<Product> ??
+            //                     new List<Product>();
+            //if (!viewedProducts.Contains(productResult.Product, new ProductComparer()))
+            //{
+            //    viewedProducts.Insert(0, productResult.Product);
+            //    viewedProducts = viewedProducts.Take(10).ToList();
+            //    Session[DomainConstants.ViewedProductsSessionKey] = viewedProducts;
+            //}
+            //productResult.ViewedProducts = viewedProducts;
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {
