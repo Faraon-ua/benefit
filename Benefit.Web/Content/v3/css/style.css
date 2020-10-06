@@ -1,4 +1,4 @@
-﻿.catalog-category {
+﻿    .catalog-category {
     padding: 5px;
     clear: both;
 }
@@ -12928,6 +12928,25 @@ div.blog-comment-hidden .blog-comment-cont-white, div.blog-comment-hidden .blog-
     margin: 0 auto
 }
 
+.wrapper_inner, .maxwidth-theme {
+    padding: 0 30px;
+    margin: 0 auto;
+    background: #fff;
+    float: none
+}
+
+    .maxwidth-theme:before, .maxwidth-theme:after {
+        content: "";
+        display: block;
+        clear: both
+    }
+
+    .maxwidth-theme > .inner-theme {
+        padding: 0 30px;
+        background: #fff;
+        margin: 0 -30px
+    }
+
 .tab-pane .maxwidth-theme {
     padding: 0
 }
@@ -13569,6 +13588,35 @@ a:hover .svg.svg-basket:not(.lg), a:hover .svg.svg-compare:not(.lg), a:hover .sv
         text-decoration: none
     }
 
+#header {
+    margin: -1px 0 7px;
+    padding: 16px 0 18px;
+    z-index: 100;
+    right: 0;
+    left: 0
+}
+
+.header_wrap #header {
+    padding: 0 !important;
+    margin: -1px 0 0 !important
+}
+
+.basket_fly .header_wrap #header > .wrapper_inner {
+    z-index: 9
+}
+
+.has_menu #header {
+    margin-bottom: 0;
+    padding-bottom: 16px
+}
+
+.has_menu.m_color_colored #header {
+    padding-bottom: 15px
+}
+
+.head_type_1 #header {
+    border-bottom: 1px solid #f2f2f2
+}
 
 .middle:not(.menu) {
     position: relative;
@@ -15641,7 +15689,32 @@ body .top-block .info-text .search-block {
     display: block
 }
 
+.logo_and_menu-row {
+    position: relative;
+    z-index: 12
+}
 
+    .logo_and_menu-row .wrap_icon {
+        display: table-cell;
+        padding: 0 20px;
+        height: 61px;
+        vertical-align: middle
+    }
+
+    .logo_and_menu-row .basket-link {
+        position: relative
+    }
+
+        .logo_and_menu-row .basket-link:not(.basket) {
+            padding-right: 32px
+        }
+
+        .logo_and_menu-row .basket-link .count {
+            position: absolute;
+            top: -7px;
+            left: 16px;
+            box-shadow: 0 0 0 2px #fff
+        }
 
 .basket-link .count {
     font-size: 11px;
@@ -21928,7 +22001,7 @@ body .tabs_slider .catalog_item:hover {
 
 .stickers {
     width: 200px;
-    height: 30px;
+    height:30px;
     left: 0;
     padding-top: 5px;
     z-index: 3;
@@ -22431,7 +22504,7 @@ hr.bottoms {
 }
 
 .cost.prices .price {
-    height: 40px;
+    height:40px;
     margin-bottom: 8px;
 }
 
