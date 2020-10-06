@@ -58,10 +58,10 @@ namespace Benefit.RestApi.Controllers
                     try
                     {
                         var xml = XDocument.Load(importTask.FileUrl);
-                        //if (!ImportService.ImportFrom1C(xml, seller))
-                        //{
-                        //    importTask.LastUpdateMessage = "Ошибка імпорту файлів";
-                        //}
+                        if (!ImportService.ImportFrom1C(xml, seller))
+                        {
+                            importTask.LastUpdateMessage = "Ошибка імпорту файлів";
+                        }
 
                         //Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
 
