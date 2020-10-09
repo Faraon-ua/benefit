@@ -35,7 +35,7 @@ namespace Benefit.Domain.DataAccess
                 (SELECT p.Id, 
 	                (Select STRING_AGG(cast(StartValue as NVARCHAR(MAX)), ',') from ProductParameterProducts pp where pp.ProductId = p.Id) as ProductParameters,
 	                p.Vendor,
-	                (p.Price *  ISNULL(c.Rate, 1)) as Price,
+	                (p.Price * ISNULL(c.Rate, 1)) as Price,
 	                s.Name as SellerName,
 	                s.UrlName as SellerUrl,
 	                p.OriginCountry
@@ -53,7 +53,7 @@ namespace Benefit.Domain.DataAccess
                 ) 
                 select 
                 (select STRING_AGG(cast(sub.Vendor as NVARCHAR(MAX)), ',') from (select distinct(Vendor) from result) as sub) as Vendors
-                ,(select STRING_AGG(cast(sub.ProductParameters as NVARCHAR(MAX)), ',') from (select distinct(ProductParameters) from result) as sub) as ProductParameters
+                --,(select STRING_AGG(cast(sub.ProductParameters as NVARCHAR(MAX)), ',') from (select distinct(ProductParameters) from result) as sub) as ProductParameters
                 ,(select STRING_AGG(cast(sub.SellerName as NVARCHAR(MAX)), ',') from (select distinct(SellerName) from result) as sub) as SellerNames
                 ,(select STRING_AGG(cast(sub.SellerUrl as NVARCHAR(MAX)), ',') from (select distinct(SellerUrl) from result) as sub) as SellerUrls
                 ,(select STRING_AGG(cast(sub.OriginCountry as NVARCHAR(MAX)), ',') from (select distinct(OriginCountry) from result) as sub) as OriginCountries

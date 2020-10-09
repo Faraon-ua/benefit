@@ -1,17 +1,14 @@
 ﻿using Benefit.Common.Constants;
-using Benefit.DataTransfer.ViewModels.Base;
 using Benefit.DataTransfer.ViewModels.NavigationEntities;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Benefit.Services.Domain
 {
@@ -27,6 +24,7 @@ namespace Benefit.Services.Domain
             var ppContext = new ProductParametersDBContext();
             var catalogParams = productsDBContext.GetCatalogParams(categoryId, sellerId);
             var productParameters = ppContext.Get(categoryId, sellerId);
+
             var generalParams = FetchGeneralProductParameters(catalogParams, sellerId == null);
             var productParametersInItems = catalogParams.ProductParameters.Split(',').Distinct().Select(entry => entry.ToLower().Replace("&", string.Empty)).ToList();
             productParametersInItems.AddRange(generalParams.SelectMany(entry => entry.ProductParameterValues).Select(entry => entry.ParameterValueUrl).ToList());

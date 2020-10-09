@@ -22,8 +22,8 @@ namespace Benefit.Domain.DataAccess
             var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
             cmd.CommandText = string.Format(@"select distinct pp.*
             from ProductParameters pp
-            join ProductParameterProducts ppp on ppp.ProductParameterId = pp.Id
-            join Products p on p.Id = ppp.ProductId
+            --join ProductParameterProducts ppp on ppp.ProductParameterId = pp.Id
+            --join Products p on p.Id = ppp.ProductId
             where (pp.CategoryId = @categoryId or pp.CategoryId in (Select Id from Categories where MappedParentCategoryId = pp.CategoryId)) and 
                 {0}
 	            DisplayInFilters = 1", sellerWhere);
