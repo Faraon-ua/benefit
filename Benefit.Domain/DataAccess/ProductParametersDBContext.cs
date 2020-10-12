@@ -19,14 +19,19 @@ namespace Benefit.Domain.DataAccess
 
         public List<ProductParameter> Get(string categoryId, string sellerId)
         {
-            var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
+            var productsJoin = string.Empty;
+            var sellerWhere = string.Empty;
+            if(!string.IsNullOrEmpty(sellerId))
+            {
+                productsJoin = " join ProductParameterProducts ppp on ppp.ProductParameterId = pp.Id join Products p on p.Id = ppp.ProductId ";
+                sellerWhere = "p.SellerId = @sellerId and";
+            }
             cmd.CommandText = string.Format(@"select distinct pp.*
             from ProductParameters pp
-            --join ProductParameterProducts ppp on ppp.ProductParameterId = pp.Id
-            --join Products p on p.Id = ppp.ProductId
+            {0}
             where (pp.CategoryId = @categoryId or pp.CategoryId in (Select Id from Categories where MappedParentCategoryId = pp.CategoryId)) and 
-                {0}
-	            DisplayInFilters = 1", sellerWhere);
+                {1}
+	            DisplayInFilters = 1", productsJoin, sellerWhere);
             if (sellerId != null)
             {
                 var sellerIdParam = new SqlParameter
