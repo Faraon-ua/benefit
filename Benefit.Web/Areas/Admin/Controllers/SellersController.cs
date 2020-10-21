@@ -22,6 +22,7 @@ using System.Collections;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = DomainConstants.AdminRoleName)]
     public class SellersController : AdminController
     {
         private UserManager<ApplicationUser> UserManager { get; set; }
@@ -148,7 +149,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                IQueryable<Seller> sellers = db.Sellers.Include("Owner").AsQueryable();
+                IQueryable<Seller> sellers = db.Sellers
+                    .Include(entry=>entry.Owner)
+                    .AsQueryable();
                 if (filters.CategoryId == "all")
                 {
                     return PartialView("_SellersSearch", sellers);
@@ -185,7 +188,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     sellers = sellers.Where(entry => entry.HasEcommerce == filters.Ecommerce);
                 }
 
-                return PartialView("_SellersSearch", sellers);
+                return PartialView("_SellersSearch", sellers.ToList());
             }
         }
         // GET: /Admin/Sellers/
@@ -227,6 +230,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var existingSeller =
                 db.Sellers.Include(entry => entry.BusinessLevelIndexes)
+                    .Include(entry => entry.Images)
+                    .Include(entry => entry.Addresses)
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Personnels)
                     .Include(entry => entry.Schedules)

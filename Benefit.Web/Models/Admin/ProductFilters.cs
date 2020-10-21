@@ -25,6 +25,7 @@ namespace Benefit.Web.Models.Admin
         public bool? HasVendor { get; set; }
         public bool? HasOriginCountry { get; set; }
         public ModerationStatus? ModerationStatus { get; set; }
+        public string ModeratorId { get; set; }
         public int Take { get; set; }
         public bool HasValues
         {
@@ -43,6 +44,7 @@ namespace Benefit.Web.Models.Admin
         public IEnumerable<SelectListItem> HasOriginCountry { get; set; }
         public IEnumerable<SelectListItem> IsAvailable { get; set; }
         public IEnumerable<SelectListItem> ModerationStatuses { get; set; }
+        public IEnumerable<SelectListItem> Moderators { get; set; }
         public bool IsActive{ get; set; }
         public bool HasImage { get; set; }
         public string Search { get; set; }

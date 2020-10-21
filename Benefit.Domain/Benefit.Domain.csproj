@@ -686,6 +686,10 @@
     <Compile Include="Migrations\202009041225224_AddPromoPrice.Designer.cs">
       <DependentUpon>202009041225224_AddPromoPrice.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202010191434426_AddModeratorAsignee.cs" />
+    <Compile Include="Migrations\202010191434426_AddModeratorAsignee.Designer.cs">
+      <DependentUpon>202010191434426_AddModeratorAsignee.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1190,6 +1194,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202009041225224_AddPromoPrice.resx">
       <DependentUpon>202009041225224_AddPromoPrice.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202010191434426_AddModeratorAsignee.resx">
+      <DependentUpon>202010191434426_AddModeratorAsignee.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

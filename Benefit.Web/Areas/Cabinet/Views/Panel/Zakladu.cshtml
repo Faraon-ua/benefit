@@ -1,4 +1,5 @@
-﻿@model Benefit.Domain.Models.ApplicationUser
+﻿@using Benefit.Common.Constants
+@model Benefit.Domain.Models.ApplicationUser
 @{
     ViewBag.Title = "Заклади";
     ViewBag.CabinetProfileClass = "kabinet_profile";    
@@ -11,9 +12,16 @@
         <ul>
             @foreach (var seller in Model.OwnedSellers)
             {
-                <li>
+            <li>
+                @if (User.IsInRole(DomainConstants.ProductsModeratorRoleName))
+                {
+                    @Html.ActionLink(seller.Name, "Index", "Products", new { area = "Admin", SellerId = seller.Id }, null)
+                }
+                else
+                {
                     @Html.ActionLink(seller.Name, "Index", "Orders", new { area = "Admin", SellerId = seller.Id }, null)
-                </li>
+                }
+            </li>
             }
         </ul>
     }

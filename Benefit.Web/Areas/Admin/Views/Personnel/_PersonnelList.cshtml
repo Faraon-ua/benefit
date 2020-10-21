@@ -35,12 +35,12 @@
     <div class="col-sm-2">Роль</div>
     <div class="col-sm-1"></div>
 </div>
-@foreach (var personnel in Model.Where(entry => entry.RoleName == DomainConstants.SellerModeratorRoleName || entry.RoleName == DomainConstants.SellerOperatorRoleName))
+@foreach (var personnel in Model.Where(entry => entry.RoleName == DomainConstants.SellerModeratorRoleName || entry.RoleName == DomainConstants.SellerOperatorRoleName || entry.RoleName == DomainConstants.ProductsModeratorRoleName))
 {
     <div class="row">
         <div class="col-sm-2">@personnel.Name</div>
         <div class="col-sm-2">@personnel.Phone</div>
-        <div class="col-sm-1">@personnel.RoleName</div>
+        <div class="col-sm-2">@personnel.RoleName</div>
         <div class="col-sm-1">
             <a href="@Url.Action("Delete", "Personnel", new { id = personnel.Id })" class="remove-personnel">
                 <i class="icon-remove red"></i>

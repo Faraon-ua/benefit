@@ -50,7 +50,9 @@ namespace Benefit.Domain.Models
         [Display(Name = "Невалідний контент")]
         UnappropriateContent,
         [Display(Name = "Корзина")]
-        Trash
+        Trash,
+        [Display(Name = "До перевірки")]
+        ToCheck
     }
 
     public enum ComputedProductAvailabilityState
@@ -131,6 +133,9 @@ namespace Benefit.Domain.Models
         [MaxLength(250)]
         public string Comment { get; set; }
         public ModerationStatus ModerationStatus { get; set; }
+        [MaxLength(128)]
+        public string ModerationAssigneeId { get; set; }
+        public ApplicationUser ModerationAssignee { get; set; }
         #endregion 
         [MaxLength(160)]
         [Index]

@@ -30,18 +30,27 @@ else
                     <th>
                         Наявність
                     </th>
-                    <th>
-                        Модерація
-                    </th>
-                    <th>
-                        Ціна
-                    </th>
-                    <th>
-                        Експорти
-                    </th>
-                    <th>
-                        Дії
-                    </th>
+                    @if (User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.ProductsModeratorRoleName))
+                    {
+                        <th>
+                            Статус модерації
+                        </th>
+                    }
+                    else
+                    {
+                        <th>
+                            Модерація
+                        </th>
+                        <th>
+                            Ціна
+                        </th>
+                        <th>
+                            Експорти
+                        </th>
+                        <th>
+                            Дії
+                        </th>
+                    }
                 </tr>
             </thead>
             <tbody>

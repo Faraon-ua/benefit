@@ -1,0 +1,334 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Extensions
+@using Benefit.Web.Helpers
+@model Benefit.Domain.Models.Product
+
+@{
+    ViewBag.Title = "Товар " + Model.Name;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles{
+    <style>
+        #container {
+            width: 100%;
+            height: 500px;
+            margin: auto;
+        }
+
+        #outerdiv {
+            width: 100%;
+            height: 500px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        #innerdiv {
+            position: absolute;
+            top: -90px;
+            left: -200px;
+            width: 1280px;
+            height: 1200px;
+        }
+    </style>
+    <link href="~/Areas/Admin/assets/css/chosen.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/assets/css/dropzone.css" rel="stylesheet" />
+    <link href="~/Content/css/hierarchy-select.min.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/styles/autocomplete.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/Areas/Admin/assets/js/jquery.mask.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="~/Scripts/ckeditor/ckeditor.js"></script>
+    <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
+    <script src="~/Scripts/hierarchy-select.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/dropzone.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/bootstrap-tag.min.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+
+    <script>
+        $(function () {
+            var tag_input = $('#SearchTags');
+            if (!(/msie\s*(8|7|6)/.test(navigator.userAgent.toLowerCase()))) {
+                tag_input.tag(
+                    {
+                        placeholder: tag_input.attr('placeholder'),
+                        source: ace.variable_US_STATES, //defined in ace.js >> ace.enable_search_ahead
+                    }
+                );
+            } else {
+                tag_input.after('<textarea id="' + tag_input.attr('id') + '" name="' + tag_input.attr('name') + '" rows="3">' + tag_input.val() + '</textarea>').remove();
+            }
+
+            var getNewFeatureUrl = '@Url.Action("NewFeature", "ProductParameters")';
+            var getFeatureValuesUrl = '@Url.Action("FeatureValues", "ProductParameters")';
+            var removeFeatureUrl = '@Url.Action("Delete", "ProductParameters")';
+            $(".feature_input").each(function () {
+                var featureValue = $(this);
+                var featureId = featureValue.attr("data-parameter-id");
+                $.get(getFeatureValuesUrl + "?featureId=" + featureId, function (data) {
+                    featureValue.devbridgeAutocomplete({
+                        minChars: 0,
+                        lookup: data
+                    });
+                });
+            });
+
+            var removeReviewUrl = '@Url.Action("RemoveReview","Reviews")';
+
+            $(".remove-review").click(function () {
+                if (!confirm("Видалити відгук?")) {
+                    return;
+                }
+                var id = $(this).attr("data-review-id");
+                var row = $(this).parent().parent();
+                $.post(removeReviewUrl,
+                    { reviewId: id },
+                    function (data) {
+                        if (!data.error) {
+                            row.remove();
+                            flashMessage("Відгук видалено", true);
+                        }
+                    }
+                );
+            });
+
+            $("body").on("change", "select.product-option-value", function () {
+                var selectedText = $(this).find("option:selected").text();
+                $(this).next().val(selectedText);
+            });
+
+            $('form').submit(function () {
+                $(".feature-row").each(function (index) {
+                    $(this).find("input").each(function () {
+                        if ($(this).attr("name") != undefined) {
+                            $(this).attr("name", $(this).attr("name").replace("{n}", index));
+                        }
+                    });
+                });
+            });
+            var startLoad = true;
+            $("input[name=CategoryId]").change(function () {
+                if (!startLoad) {
+                    alert("При зміні категорії товару буде втрачено його характеристики");
+                }
+                startLoad = false;
+            });
+
+            $(".fn-add-product-option-value").click(function () {
+                var parameterId = $(this).attr("data-parameter-id");
+                var parameterType = $(this).attr("data-parameter-type");
+                var valuesContainer = $(this).parent().parent();
+                    $.get(routePrefix + "/Admin/ProductParameters/GetProductParameterDefinedValues?parameterId=" + parameterId,
+                        function (data) {
+                            valuesContainer.after(data.html);
+                        });
+            });
+            $(".fn-remove-parameter").click(function () {
+                var btn = $(this);
+                if (confirm("Ця дія видалить характеристику зі всіх товарів категорії, ви впевнені?")) {
+                    var parameterId = btn.attr("data-parameter-id");
+                    var categoryId = btn.attr("data-category-id");
+                    $.post(removeFeatureUrl, { "id": parameterId, "categoryId": categoryId }, function (data) {
+                        $(".feature-row[data-parameter-id=" + parameterId + "]").remove();
+                    });
+                }
+            });
+            $("#add-feature").click(function () {
+                var btn = $(this);
+                var orders =
+                    $(".feature-row[data-order]").map(function () {
+                    return parseInt($(this).attr("data-order"));
+                    }).get();
+                var maxOrder = orders.length == 0 ? 0 : Math.max(...orders);
+                $.get(getNewFeatureUrl+"?order="+maxOrder, function (data) {
+                    btn.before(data);
+                });
+            });
+            $("body").on("click", ".fn-remove-product-option", function () {
+                $(this).parent().parent().remove();
+            });
+
+            $("#imagesOrder").sortable({
+                change: function (event, ui) {
+                    $("#imagesOrder li").eq(0).find(".dd-list").append('<div style="padding:3px; background-color:rgb(209,91,71); position:absolute;bottom:10px;left:5px; color:#FFF;">Головне</div>');
+                }
+            });
+            $("#imagesOrder").disableSelection();
+
+            var saveImagesOrderUrl = '@Url.Action("SaveImagesOrder", "Products")';
+            $("#saveImagesOrder").click(function () {
+                $("#saveImagesOrder").prop("disabled", true);
+                var currentListContaner = $("#imagesOrder");
+                var sortedImgs = [];
+                currentListContaner.find("li").each(function () {
+                    var imgId = $(this).attr("data-image-id");
+                    sortedImgs.push(imgId);
+                });
+                $.ajax({
+                    type: 'Post',
+                    dataType: 'json',
+                    url: saveImagesOrderUrl,
+                    data: JSON.stringify({ sortedImages: sortedImgs }),
+                    contentType: 'application/json; charset=utf-8',
+                    async: true,
+                    success: function (data) {
+                        $("#DefaultImageId").val(data.defaultImageId);
+                        flashMessage(data.message);
+                        $("#saveImagesOrder").removeAttr("disabled");
+                    },
+                    error: function (data) {
+                        console.debug(data);
+                    }
+                });
+            });
+
+            $(".chosen-select").chosen({
+                search_contains: true
+            });
+            $('.hierarchy-select').hierarchySelect({
+                width: 170
+            });
+            $('#Price, #WholesalePrice').mask("#0.00", { reverse: true });
+            $('#SKU, #WholesaleFrom').mask("#");
+            $('#Amount').mask("#");
+
+            CKEDITOR.replace('Description', {
+                //                filebrowserImageBrowseUrl: '/home/uploadPartial',
+                //                filebrowserImageUploadUrl: '/home/uploadnow'
+                filebrowserImageUploadUrl: '/home/UploadImage'
+            });
+
+            try {
+                Dropzone.autoDiscover = false;
+                var fileList = new Array;
+                var i = 0;
+                $(".dropzone").dropzone({
+                    url: routePrefix + "/Admin/Products/SaveUploadedFile?type=ProductGallery&parentId=@Model.Id",
+                    maxFilesize: 12, // MB
+                    addRemoveLinks: true,
+                    dictDefaultMessage:
+                        '<span class="bigger-150 bolder"><i class="icon-caret-right red"></i> Drop files</span> to upload \
+				    <span class="smaller-80 grey">(or click)</span> <br /> \
+				    <i class="upload-icon icon-cloud-upload blue icon-3x"></i> \
+                    <div class="dz-default dz-message"></div>',
+                    dictResponseError: 'Error while uploading file!',
+
+                    //change the previewTemplate to use Bootstrap progress bars
+                    previewTemplate: "<div class=\"dz-preview dz-file-preview\">\n  <div class=\"dz-details\">\n    <div class=\"dz-filename\"><span data-dz-name></span></div>\n    <div class=\"dz-size\" data-dz-size></div>\n    <img data-dz-thumbnail />\n  </div>\n  <div class=\"progress progress-small progress-striped active\"><div class=\"progress-bar progress-bar-success\" data-dz-uploadprogress></div></div>\n  <div class=\"dz-success-mark\"><span></span></div>\n  <div class=\"dz-error-mark\"><span></span></div>\n  <div class=\"dz-error-message\"><span data-dz-errormessage></span></div>\n</div>",
+                    maxFiles: 40,
+                    parallelUploads: 5,
+                    dictMaxFilesExceeded: "You can only upload upto 40 images",
+                    dictRemoveFile: "Delete",
+                    dictCancelUploadConfirmation: "Are you sure to cancel upload?",
+                    accept: function (file, done) {
+                        if ((file.type).toLowerCase() != "image/jpg" &&
+                            (file.type).toLowerCase() != "image/gif" &&
+                            (file.type).toLowerCase() != "image/jpeg" &&
+                            (file.type).toLowerCase() != "image/png"
+                        ) {
+                            done("Invalid file");
+                        } else {
+                            done();
+                        }
+                    },
+                    init: function () {
+                        var thisDropzone = this;
+                        $.get(routePrefix + "/Admin/Products/GetProductGallery?id=@Model.Id", function (data) {
+                            $.each(data, function (key, value) {
+                                var mockFile = { name: value.ImageUrl, size: 100000 };
+                                thisDropzone.options.addedfile.call(thisDropzone, mockFile);
+                                var imageUrl = value.ImageUrl;
+                                if (!value.IsAbsoluteUrl) {
+                                    imageUrl = routePrefix + "/Images/ProductGallery/@Model.Id/" + value.ImageUrl;
+                                }
+                                thisDropzone.options.thumbnail.call(thisDropzone, mockFile, imageUrl);
+                            });
+
+                        });
+
+                        this.on("success", function (file, serverFileName) {
+                            fileList[i] = { "serverFileName": serverFileName, "fileName": file.name, "fileId": i };
+                            console.log(fileList);
+                            i++;
+
+                        });
+                        this.on("removedfile", function (file) {
+                            var rmvFile = "";
+                            for (f = 0; f < fileList.length; f++) {
+                                if (fileList[f].fileName == file.name) {
+                                    rmvFile = fileList[f].serverFileName.Message;
+                                }
+                            }
+                            if (!rmvFile) {
+                                rmvFile = file.name;
+                            }
+                            $.ajax({
+                                url: routePrefix + "/Admin/Products/DeleteUploadedFile?fileName=" + rmvFile + "&parentId=@Model.Id" + "&type=ProductGallery",
+                                type: "POST",
+                            });
+                        });
+                    },
+                });
+            } catch (e) {
+                alert('Dropzone.js does not support older browsers!');
+            }
+        });
+    </script>
+}
+
+@using (Html.BeginForm("Moderation","Products"))
+{
+    @Html.ValidationSummary()
+    @Html.AntiForgeryToken()
+
+    <div class="tabbable">
+        <ul class="nav nav-tabs">
+            <li class="active">
+                <a href="#home" data-toggle="tab">
+                    <i class="blue icon-info bigger-110"></i>
+                    Основна інфо
+                </a>
+            </li>
+            <li>
+                <a href="#images" data-toggle="tab">
+                    <i class="red icon-camera bigger-110"></i>
+                    Зображення
+                </a>
+            </li>
+            <li>
+                <a href="#parameters" data-toggle="tab">
+                    <i class="orange icon-check bigger-110"></i>
+                    Характеристики
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane in active" id="home">
+                @Html.Partial("_ModerationProductForm")
+            </div>
+            <div class="tab-pane" id="parameters">
+                @Html.Partial("_ProductParameters")
+            </div>
+            <div class="tab-pane" id="images">
+                @Html.Partial("_Images", Model)
+            </div>
+        </div>
+    </div>
+
+    <div class="clearfix form-actions">
+        <div class="col-md-offset-3 col-md-9">
+            <button type="submit" class="btn btn-info">
+                <i class="icon-ok bigger-110"></i>
+                Модерувати
+            </button>
+
+            &nbsp; &nbsp; &nbsp;
+            <a href="@Url.Action("Index", "Products")" class="btn">
+                <i class="icon-undo bigger-110"></i>
+                До списку
+            </a>
+        </div>
+    </div>
+}

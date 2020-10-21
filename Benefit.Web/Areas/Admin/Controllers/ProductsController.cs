@@ -20,10 +20,11 @@ using WebGrease.Css.Extensions;
 using System.Web.Mvc.Html;
 using Benefit.Common.Extensions;
 using System.IO;
+using Benefit.DataTransfer.ViewModels.Admin;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName)]
+    [Authorize(Roles = DomainConstants.ProductsModeratorRoleName + ", " + DomainConstants.OrdersManagerRoleName + ", " + DomainConstants.AdminRoleName + ", " + DomainConstants.SellerRoleName + ", " + DomainConstants.SellerModeratorRoleName)]
     public class ProductsController : AdminController
     {
         public ActionResult GetProductGallery(string id)
@@ -33,7 +34,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var product = db.Products.Find(id);
                 if (product != null)
                 {
-                    return Json(product.Images.Where(entry=>entry.ImageType == ImageType.ProductGallery).Select(entry => new { entry.ImageUrl, entry.IsAbsoluteUrl }), JsonRequestBehavior.AllowGet);
+                    return Json(product.Images.Where(entry => entry.ImageType == ImageType.ProductGallery).Select(entry => new { entry.ImageUrl, entry.IsAbsoluteUrl }), JsonRequestBehavior.AllowGet);
                 }
 
                 return Json(null);
@@ -160,6 +161,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         Text = string.Format("{0} ({1})", entry.Name, entry.Provider),
                         Value = entry.Id
                     }).ToList();
+
                 productsViewModel.ProductFilters.HasParameters = new List<SelectListItem>()
             {
                 new SelectListItem() {Text = "Мають", Value = "true"},
@@ -181,6 +183,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 new SelectListItem() {Text = "Немає в наявності", Value = "false"}
             };
                 productsViewModel.ProductFilters.ModerationStatuses = EnumHelper.GetSelectList(typeof(ModerationStatus));
+                if (!string.IsNullOrEmpty(filters.SellerId))
+                {
+                    productsViewModel.ProductFilters.Moderators = db.Personnels
+                    .Where(entry => entry.SellerId == filters.SellerId).ToList().Select(entry => new SelectListItem()
+                    {
+                        Text = string.Format("{0} {1}", entry.Name, entry.Phone),
+                        Value = entry.UserId
+                    }).ToList();
+                }
                 return PartialView(productsViewModel);
             }
         }
@@ -204,42 +215,124 @@ namespace Benefit.Web.Areas.Admin.Controllers
                               IsActive = true,
                               DoesCountForShipping = true
                           };
-                if (User.IsInRole(DomainConstants.AdminRoleName))
+                ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
                 {
-                    ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
-                    {
-                        Text = entry.IsSellerCategory ? string.Format("[seller]{0}", entry.Name) : entry.Name,
-                        Value = entry.Id,
-                        Level = entry.HierarchicalLevel
-                    });
-                }
-                else
-                {
-                    var categories = db.Categories.Include(entry => entry.SellerCategories).Where(
-                        entry =>
-                            entry.SellerCategories
-                                .Select(sc => sc.SellerId)
-                                .Contains(Seller.CurrentAuthorizedSellerId)).ToList();
-                    if (id != null)
-                    {
-                        categories =
-                            categories.Union(
-                                db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == product.SellerId)).ToList().SortByHierarchy().ToList();
-                    }
-
-                    ViewBag.Categories = categories.Select(entry => new HierarchySelectItem()
-                    {
-                        Text = entry.Name,
-                        Value = entry.Id,
-                        Level = entry.HierarchicalLevel
-                    });
-                }
+                    Text = entry.IsSellerCategory ? string.Format("[seller]{0}", entry.Name) : entry.Name,
+                    Value = entry.Id,
+                    Level = entry.HierarchicalLevel
+                });
                 ViewBag.SellerId = new SelectList(db.Sellers.ToList(), "Id", "Name", product.SellerId);
                 var currencies =
                     db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank || entry.SellerId == product.SellerId)
                         .OrderBy(entry => entry.Id).ToList();
                 ViewBag.CurrencyId = new SelectList(currencies, "Id", "ExpandedName", product.CurrencyId);
+                if (User.IsInRole(DomainConstants.ProductsModeratorRoleName))
+                {
+                    return View("Moderation", product);
+                }
                 return View(product);
+            }
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
+        public ActionResult Moderation(ModerationProduct product)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var dbProduct = db.Products
+                    .Include(entry => entry.Category)
+                    .Include(entry => entry.Images)
+                    .Include(entry => entry.ProductParameterProducts)
+                    .FirstOrDefault(entry => entry.Id == product.Id);
+                if (db.Products.Any(entry => entry.UrlName == product.UrlName && entry.Id != product.Id))
+                {
+                    ModelState.AddModelError("UrlName", "Товар з такою Url назвою вже існує");
+                }
+                if (product.AvailableAmount < 0)
+                {
+                    ModelState.AddModelError("AvailableAmount", "Доступна кількість не може бути негативного значення");
+                }
+                product.ProductParameterProducts = product.ProductParameterProducts.ToList().Where(entry => entry.StartText != null).ToArray();
+                product.ProductParameterProducts.ForEach(entry => entry.StartValue = entry.StartText.Translit());
+                var exceededParams = product.ProductParameterProducts.Where(entry => entry.StartValue.Length > ProductConstants.ParameterStartTextMaxLength);
+                if (exceededParams.Any())
+                {
+                    ModelState.AddModelError("ProductParameter", "Значення характеристики перевищує максимально допустиму довжину в " + ProductConstants.ParameterStartTextMaxLength + " символів");
+                }
+                product.ProductParameterProducts.ForEach(entry => entry.ProductId = product.Id);
+                db.ProductParameterProducts.RemoveRange(
+                   db.ProductParameterProducts.Where(entry => entry.ProductId == product.Id));
+                var newPPP = product.ProductParameterProducts.Where(entry => entry.ProductParameter != null).ToList();
+                for (var i = 0; i < newPPP.Count; i++)
+                {
+                    var ppp = newPPP[i];
+                    var pp = new ProductParameter()
+                    {
+                        Name = ppp.ProductParameter.Name,
+                        UrlName = ppp.ProductParameter.UrlName,
+                        Order = ppp.ProductParameter.Order,
+                        Id = Guid.NewGuid().ToString(),
+                        CategoryId = product.CategoryId
+                    };
+                    db.ProductParameters.Add(pp);
+                    ppp.ProductParameterId = pp.Id;
+                    ppp.ProductParameter = null;
+                }
+                db.SaveChanges();
+                product.ProductParameterProducts = product.ProductParameterProducts.ToList().Distinct(new ProductParameterProductComparer()).ToArray();
+                db.ProductParameterProducts.AddRange(product.ProductParameterProducts);
+                db.SaveChanges();
+
+                dbProduct.LastModified = DateTime.UtcNow;
+                dbProduct.LastModifiedBy = User.Identity.Name;
+                dbProduct.Name = product.Name;
+                dbProduct.UrlName = product.UrlName;
+                dbProduct.Title = product.Title;
+                dbProduct.Price = product.Price;
+                dbProduct.Vendor = product.Vendor;
+                dbProduct.OriginCountry = product.OriginCountry;
+                dbProduct.CategoryId = product.CategoryId;
+                dbProduct.ShortDescription = product.ShortDescription;
+                dbProduct.Description = product.Description;
+                dbProduct.ModerationStatus = ModerationStatus.ToCheck;
+
+                if (ModelState.IsValid)
+                {
+                    if (dbProduct.DefaultImageId == null)
+                    {
+                        var image = db.Images.Where(entry => entry.ProductId == product.Id).OrderBy(entry => entry.Order).FirstOrDefault();
+                        if (image != null)
+                        {
+                            ImagesService imagesService = new ImagesService();
+                            var format = imagesService.GetImageFormatByExtension(image.ImageUrl);
+                            dbProduct.DefaultImageId = imagesService.AddProductDefaultImage(image, format);
+                        }
+                    }
+                    db.SaveChanges();
+                    TempData["SuccessMessage"] = "Товар відмодеровано";
+                    return RedirectToAction("CreateOrUpdate", new { id = product.Id });
+                }
+                var categories = db.Categories.Include(entry => entry.SellerCategories).Where(
+                        entry =>
+                            entry.SellerCategories
+                                .Select(sc => sc.SellerId)
+                                .Contains(Seller.CurrentAuthorizedSellerId)).ToList();
+                categories =
+                    categories.Union(
+                        db.Categories.Where(entry => entry.IsSellerCategory && entry.SellerId == dbProduct.SellerId)).ToList().SortByHierarchy().ToList();
+
+                ViewBag.Categories = categories.Select(entry => new HierarchySelectItem()
+                {
+                    Text = entry.Name,
+                    Value = entry.Id,
+                    Level = entry.HierarchicalLevel
+                });
+                var currencies =
+                    db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank || entry.SellerId == dbProduct.SellerId)
+                        .OrderBy(entry => entry.Id).ToList();
+                ViewBag.CurrencyId = new SelectList(currencies, "Id", "ExpandedName", product.CurrencyId);
+                return View("Moderation", dbProduct);
             }
         }
 
@@ -442,7 +535,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string export_Id, string currency_Id, ModerationStatus moderate_status, ProductFilterValues filters = null)
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string export_Id, string currency_Id, ModerationStatus moderate_status, string moderator_id, ProductFilterValues filters = null)
         {
             using (var db = new ApplicationDbContext())
             {
@@ -541,6 +634,28 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             db.Entry(entry).State = EntityState.Modified;
                         });
                         break;
+                    case ProductsBulkAction.AssignModerator:
+                        db.Products.Where(entry => productIds.Contains(entry.Id))
+                           .ForEach(entry =>
+                           {
+                               if (entry.ModerationAssigneeId == null && entry.ModerationStatus == ModerationStatus.IsModerating)
+                               {
+                                   entry.ModerationAssigneeId = moderator_id;
+                                   db.Entry(entry).State = EntityState.Modified;
+                               }
+                           });
+                        break;
+                    case ProductsBulkAction.AssignModeratorAll:
+                        var moderateProducts = GetFilteredProducts(filters).ToList();
+                        moderateProducts.ForEach(entry =>
+                        {
+                            if (entry.ModerationAssigneeId == null && entry.ModerationStatus == ModerationStatus.IsModerating)
+                            {
+                                entry.ModerationAssigneeId = moderator_id;
+                                db.Entry(entry).State = EntityState.Modified;
+                            }
+                        });
+                        break;
                 }
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Товари успішно оброблено";
@@ -560,6 +675,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         .Include(entry => entry.ExportProducts.Select(ep => ep.Export))
                         .Include(entry => entry.ProductParameterProducts)
                         .AsQueryable();
+                if (User.IsInRole(DomainConstants.ProductsModeratorRoleName))
+                {
+                    var userId = User.Identity.GetUserId();
+                    products = products.Where(entry => entry.ModerationAssigneeId == userId);
+                }
                 if (!string.IsNullOrEmpty(filters.CategoryId))
                 {
                     var categoryIds = new List<string>();
@@ -575,6 +695,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (filters.ModerationStatus.HasValue)
                 {
                     products = products.Where(entry => entry.ModerationStatus == filters.ModerationStatus.Value);
+                }
+                if (!string.IsNullOrEmpty(filters.ModeratorId))
+                {
+                    products = products.Where(entry => entry.ModerationAssigneeId == filters.ModeratorId);
                 }
                 if (!string.IsNullOrEmpty(filters.SellerId))
                 {

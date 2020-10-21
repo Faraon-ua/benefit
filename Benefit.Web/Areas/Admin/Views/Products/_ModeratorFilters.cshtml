@@ -1,0 +1,15 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.Web.Models.Admin.ProductFilters
+<div>
+    Статус модерації
+    <div>
+        @Html.DropDownList("ModerationStatus", Model.ModerationStatuses, "Не обрано", new { @class = "width-90" })
+    </div>
+</div>
+<br />
+<div>
+    <button type="submit" class="btn btn-purple btn-sm">
+        Фільтрувати
+        <i class="icon-search icon-on-right bigger-110"></i>
+    </button>
+</div>

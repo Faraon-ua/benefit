@@ -1,6 +1,7 @@
 ﻿@using Benefit.Web.Models.Enumerations
 @using Benefit.Web.Models.ViewModels
 @using Benefit.Domain.Models
+@using Benefit.Common.Constants
 @model Benefit.Web.Models.Admin.ProductsViewModel
 @{
     ViewBag.Title = "Товари";
@@ -38,7 +39,7 @@
                     $(this).parent().parent().removeClass("selected");
                 }
             });
-            
+
             $("#products-table tbody").sortable({
                 //scroll: true,
                 //scrollSensitivity: 100,
@@ -130,6 +131,14 @@
                 } else {
                     $("#exportId").hide();
                 }
+                if ($(this).val() == "@((int)ProductsBulkAction.AssignModerator)" ||
+                    $(this).val() == "@((int)ProductsBulkAction.AssignModeratorAll)") {
+                    $("#moderatorId").show();
+                    $("#moderator-hint").show();
+                } else {
+                    $("#moderatorId").hide();
+                    $("#moderator-hint").hide();
+                }
                 if ($(this).val() == "@((int)ProductsBulkAction.ApplyCurrency)" ||
                     $(this).val() == "@((int)ProductsBulkAction.ApplyCurrencyAll)") {
                     $("#currencyId").show();
@@ -153,6 +162,7 @@
                 var exportId = $("[name=exportId]").val();
                 var currencyId = $("[name=currencyId]").val();
                 var moderateStatus = $("[name=moderateStatus]").val();
+                var moderatorId = $("[name=moderatorId]").val();
                 $.post(bulkProductsActionUrl + location.search,
                     {
                         "productIds": productIds,
@@ -160,6 +170,7 @@
                         "category_Id": categoryId,
                         "export_Id": exportId,
                         "currency_Id": currencyId,
+                        "moderator_Id": moderatorId,
                         "moderate_status": moderateStatus
                     }, function() {
                         window.location.reload();
@@ -253,28 +264,40 @@
 
 @using (Html.BeginForm("Index", "Products", FormMethod.Get))
 {
-    <div class="col-sm-2 border-right page-content">
-        <div class="row">
-            @Html.ActionLink("Створити товар", "CreateOrUpdate", "Products", null, new { @class = "btn btn-info" })
-        </div>
-        <br />
-        @Html.Partial("_Filters", Model.ProductFilters)
+    <div class="col-sm-2 border-right page-content no-padding-left">
+        @if (User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.ProductsModeratorRoleName))
+        {
+            @Html.Partial("_ModeratorFilters", Model.ProductFilters)
+        }
+        else
+        {
+            <div>
+                @Html.ActionLink("Створити товар", "CreateOrUpdate", "Products", null, new { @class = "btn btn-info" })
+            </div>
+            <br />
+            @Html.Partial("_Filters", Model.ProductFilters)
+        }
+
     </div>
     <div class="col-sm-10">
-        <div class="row right">
-            <div class="col-xs-12 col-sm-8">
-                <div class="input-group">
-                    <input name="search" id="searchText" type="text" placeholder="Введіть назву або код товару" class="form-control search-query" value="@Model.ProductFilters.Search">
-                    <span class="input-group-btn">
-                        <button class="btn btn-purple btn-sm" type="submit">
-                            Пошук
-                            <i class="icon-search icon-on-right bigger-110"></i>
-                        </button>
-                    </span>
+        @if (Model.Products.Any() && !(User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.ProductsModeratorRoleName)))
+        {
+            <div class="row right">
+                <div class="col-xs-12 col-sm-8">
+                    <div class="input-group">
+                        <input name="search" id="searchText" type="text" placeholder="Введіть назву або код товару" class="form-control search-query" value="@Model.ProductFilters.Search">
+                        <span class="input-group-btn">
+                            <button class="btn btn-purple btn-sm" type="submit">
+                                Пошук
+                                <i class="icon-search icon-on-right bigger-110"></i>
+                            </button>
+                        </span>
+                    </div>
                 </div>
             </div>
-        </div>
-        <br />
+            <br />
+        }
+
         <div id="searchResults">
             <div class="row alert alert-block alert-info" style="position:sticky; top:-1px;">
                 <div class="col-sm-6">
@@ -305,33 +328,43 @@
             </div>
 
             @Html.Partial("_ProductsSearch", Model.Products)
-            @if (Model.Products.Any())
+            @if (Model.Products.Any() && !(User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.ProductsModeratorRoleName)))
             {
-                <div class="row">
-                    <div class="col-md-2">
-                        <label id="select-all">Вибрати всі</label>
-                    </div>
-                    <div class="col-md-2">
-                        @Html.DropDownList("products-bulk-action", EnumHelper.GetSelectList(typeof(ProductsBulkAction)))
-                    </div>
-                    <div class="col-md-2">
-                        <div class="padding-left-19">
-                            @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
-                            {
-                                Name = "move-to-categoryId",
-                                Value = null,
-                                Items = Model.ProductFilters.Categories
-                            })
-
-                            @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style = "display:none;" })
-
-                            @Html.DropDownList("currencyId", Model.ProductFilters.Currencies, null, new { id = "currencyId", style = "display:none;" })
-
-                            @Html.DropDownList("moderateStatus", EnumHelper.GetSelectList(typeof(ModerationStatus)), new { id = "moderateStatus", style = "display: none;" })
+                <fieldset>
+                    <legend>Групові дії</legend>
+                    <div class="display-flex" style="justify-content: space-between;">
+                        <div>
+                            <label id="select-all">Обрати всі</label>
                         </div>
+                        <div>
+                            Дія:
+                            @Html.DropDownList("products-bulk-action", EnumHelper.GetSelectList(typeof(ProductsBulkAction)))
+                        </div>
+                        <div>
+                            <div class="padding-left-19">
+                                @Html.Partial("_HierarchySelect", new HierarchySelectViewModel
+                                {
+                                    Name = "move-to-categoryId",
+                                    Value = null,
+                                    Items = Model.ProductFilters.Categories
+                                })
+
+                                @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style = "display:none;" })
+
+                                @Html.DropDownList("currencyId", Model.ProductFilters.Currencies, null, new { id = "currencyId", style = "display:none;" })
+
+                                @Html.DropDownList("moderateStatus", EnumHelper.GetSelectList(typeof(ModerationStatus)), new { id = "moderateStatus", style = "display: none;" })
+
+                                <span id="moderator-hint" style="display:none;">* оберіть постачальника * </span>
+                                @if (Model.ProductFilters.Moderators != null)
+                                {
+                                    @Html.DropDownList("moderatorId", Model.ProductFilters.Moderators, null, new { id = "moderatorId", style = "display:none;" })
+                                }
+                            </div>
+                        </div>
+                        <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
                     </div>
-                    <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
-                </div>
+                </fieldset>
             }
             @if (Model.Products.Any())
             {

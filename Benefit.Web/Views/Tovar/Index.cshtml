@@ -1077,14 +1077,14 @@
     ViewBag.RelatedProductsHeading = "Покупці, які переглядали цей товар, також цікавляться";
     @Html.Partial("_RelatedProducts", Model.RelatedProducts)
 }
-@{
+@*@{
     var viewedProducts = Model.ViewedProducts.Where(entry => entry.Id != Model.Product.Id);
 }
 @if (viewedProducts.Any())
 {
     ViewBag.RelatedProductsHeading = "Переглянуті товари";
     @Html.Partial("_RelatedProducts", viewedProducts)
-}
+}*@
 @if (Model.ProductOptions.Any(entry => !entry.IsVariant))
 {
     @Html.Partial("_ProductOptions", Model)

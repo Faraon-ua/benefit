@@ -25,6 +25,10 @@ namespace Benefit.Web.Models.Enumerations
         [Display(Name="Модерувати обрані")]
         Moderate,
         [Display(Name = "Модерувати відсортовані")]
-        ModerateAll
+        ModerateAll,
+        [Display(Name = "Назначити модератора обраним товарам")]
+        AssignModerator,
+        [Display(Name = "Назначити модератора відсортованим товарам")]
+        AssignModeratorAll,
     }
 }

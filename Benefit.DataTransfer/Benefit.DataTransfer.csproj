@@ -72,6 +72,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="JSON\AutocompleteSearch.cs" />
     <Compile Include="Results\FavoritesResult.cs" />
+    <Compile Include="ViewModels\Admin\ModerationProduct.cs" />
     <Compile Include="ViewModels\Admin\OrdersFilters.cs" />
     <Compile Include="ViewModels\AnketaViewModel.cs" />
     <Compile Include="ViewModels\BalanceViewModel.cs" />

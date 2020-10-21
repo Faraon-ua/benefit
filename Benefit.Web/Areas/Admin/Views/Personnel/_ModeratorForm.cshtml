@@ -21,9 +21,15 @@
                 <p>
                     <label>Права доступа</label>
                     <select id="ModeratorForm_Role">
+                        <option value="@DomainConstants.SellerModeratorRoleName">Менеджер</option>
+                        <option value="@DomainConstants.ProductsModeratorRoleName">Модератор</option>
                         <option value="@DomainConstants.SellerOperatorRoleName">Оператор</option>
-                        <option value="@DomainConstants.SellerModeratorRoleName">Модератор</option>
                     </select>
+                </p>
+                <p>
+                    * Менеджер - корегує інфо постачальника, замовлення, товари<br />
+                    Оператор - обробляє замовлення <br />
+                    Модератор - модерує товари
                 </p>
                 <p>
                     <button type="button" class="btn btn-success" id="create-moderator" disabled>Створити модератора</button>

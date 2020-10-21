@@ -1,7 +1,33 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Web.Models.ViewModels
 @model Benefit.Web.Models.Admin.ProductFilters
-
+@if (User.IsInRole(DomainConstants.AdminRoleName))
+{
+    <p>
+        <label class="underlined" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false">
+            Модерація
+            <i class="icon-chevron-down"></i>
+        </label>
+    </p>
+    <div class="collapse" id="collapseExample">
+        <div>
+            Статус
+            <div>
+                @Html.DropDownList("ModerationStatus", Model.ModerationStatuses, "Не обрано", new { @class = "width-90" })
+            </div>
+        </div>
+        @if (Model.Moderators != null)
+        {
+            <div>
+                Модератор
+                <div>
+                    @Html.DropDownList("ModeratorId", Model.Moderators, "Не обрано", new { @class = "width-90" })
+                </div>
+            </div>
+        }
+        <hr />
+    </div>
+}
 <label>Категорія</label>
 <div class="row">
     <div class="col-xs-8 col-sm-11">
@@ -28,13 +54,6 @@
 <div class="row">
     <div class="col-xs-8 col-sm-11">
         @Html.DropDownList("HasParameters", Model.HasParameters, "Не обрано", new { @class = "width-90" })
-    </div>
-</div>
-<br />
-<label>Модерація</label>
-<div class="row">
-    <div class="col-xs-8 col-sm-11">
-        @Html.DropDownList("ModerationStatus", Model.ModerationStatuses, "Не обрано", new { @class = "width-90" })
     </div>
 </div>
 <br />

@@ -146,7 +146,7 @@
                     e.preventDefault();
                     var href = $(this).attr("href");
                     $.post(href, {}, function (data) {
-                        $("#personell").html(data);
+                        $("#personell-list").html(data);
                     });
                 }
             });
@@ -163,7 +163,7 @@
                         $(".personell-error").show();
                         $(".personell-error").html(data.error);
                     } else {
-                        $("#personell").html(data);
+                        $("#personell-list").html(data);
                         $(".personell-error").hide();
                         $("#personnel_modal").modal("hide");
                         $("#PersonnelForm_Name").val("");
@@ -198,7 +198,7 @@
                     SellerId: '@Model.Seller.Id'
                 };
                 $.post(createModeratorUrl, model, function (data) {
-                    $("#personell").html(data);
+                    $("#personell-list").html(data);
                     $("#moderator_modal").modal("hide");
                     $("#ModeratorForm_ExternalNumber").val("");
                     $("#ModeratorForm_UserId").val("");
@@ -399,7 +399,7 @@
             </a>
         </li>*@
             <li>
-                <a href="#personell" data-toggle="tab">
+                <a href="#personell-list" data-toggle="tab">
                     <i class="pink icon-group bigger-110"></i>
                     Персонал
                 </a>
@@ -478,7 +478,7 @@
             @*    <div class="tab-pane" id="currency">
             @Html.Partial("_Currencies", Model.Seller)
         </div>*@
-            <div class="tab-pane" id="personell">
+            <div class="tab-pane" id="personell-list">
                 @Html.Partial("~/Areas/Admin/Views/Personnel/_PersonnelList.cshtml", Model.Seller.Personnels)
             </div>
             <div class="tab-pane" id="reviews">
