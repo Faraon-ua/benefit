@@ -2,6 +2,7 @@
 using System.Web.Mvc;
 using Benefit.DataTransfer.JSON;
 using Benefit.Domain.DataAccess;
+using System.Data.Entity;
 
 namespace Benefit.Web.Controllers
 {
@@ -19,7 +20,9 @@ namespace Benefit.Web.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var regions =
-                    db.Regions.Where(
+                    db.Regions
+                    .Include(entry=>entry.Parent)
+                    .Where(
                             entry =>
                                 (entry.RegionLevel >= minLevel || entry.RegionLevel == 0) &&
                                 (entry.Name_ru.ToLower().Contains(query) || entry.Name_ua.ToLower().Contains(query)))

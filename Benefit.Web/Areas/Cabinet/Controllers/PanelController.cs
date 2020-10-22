@@ -144,7 +144,9 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
             var user = ViewBag.User as ApplicationUser;
             using (var db = new ApplicationDbContext())
             {
-                address = db.Addresses.FirstOrDefault(entry => entry.Id == id && entry.UserId == user.Id) ?? new Address();
+                address = db.Addresses
+                    .Include(entry=>entry.Region.Parent)
+                    .FirstOrDefault(entry => entry.Id == id && entry.UserId == user.Id) ?? new Address();
                 if (address.Region != null)
                 {
                     var expandedRegionName = address.Region.ExpandedName;

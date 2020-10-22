@@ -231,7 +231,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var existingSeller =
                 db.Sellers.Include(entry => entry.BusinessLevelIndexes)
                     .Include(entry => entry.Images)
-                    .Include(entry => entry.Addresses)
+                    .Include(entry => entry.Addresses.Select(add=>add.Region.Parent.Parent))
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Personnels)
                     .Include(entry => entry.Schedules)
