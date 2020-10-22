@@ -25,16 +25,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
     [Authorize(Roles = DomainConstants.AdminRoleName)]
     public class SellersController : AdminController
     {
-        private UserManager<ApplicationUser> UserManager { get; set; }
         SellerService SellerService = new SellerService();
 
         public SellersController()
         {
-            using (var db = new ApplicationDbContext())
-            {
-                var userStore = new UserStore<ApplicationUser>(db);
-                UserManager = new UserManager<ApplicationUser>(userStore);
-            }
         }
         public ActionResult ClearCache(string id)
         {
@@ -325,6 +319,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     var seller = sellervm.Seller;
                     if (seller.OwnerId != owner.Id)
                     {
+                        var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
                         //remove old owner a seller role if it was his only seller
                         var oldOwner = db.Users.AsNoTracking().Include(entry => entry.OwnedSellers).FirstOrDefault(entry => entry.Id == seller.OwnerId);
                         if (oldOwner != null && oldOwner.OwnedSellers.Count == 1)
