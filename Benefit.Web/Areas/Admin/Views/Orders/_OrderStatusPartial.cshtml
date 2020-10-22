@@ -1,10 +1,15 @@
 ﻿@using Benefit.Domain.Models
 @using Benefit.Common.Helpers
 @using Benefit.Common.Extensions
+@using Benefit.Common.Constants
 @model Order
 @{
     List<OrderStatus> availableStatuses = null;
-    if (Order.AvailableStatuses.Keys.Contains(Model.Status))
+    if (User.IsInRole(DomainConstants.SuperAdminRoleName))
+    {
+        availableStatuses = Enum.GetValues(typeof(OrderStatus)).Cast<OrderStatus>().Where(entry=> !Enum.GetName(typeof(OrderStatus), entry).Contains("miss")).ToList();
+    }
+    else if (Order.AvailableStatuses.Keys.Contains(Model.Status))
     {
         availableStatuses = Order.AvailableStatuses[Model.Status];
     }

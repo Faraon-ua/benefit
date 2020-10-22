@@ -43,7 +43,7 @@ namespace Benefit.Common.Helpers
 
             var descriptionAttributes = fieldInfo.GetCustomAttributes(
                 typeof(DisplayAttribute), false) as DisplayAttribute[];
-
+            if (descriptionAttributes.Length == 0) return null;
             if (descriptionAttributes[0].ResourceType != null)
                 return lookupResource(descriptionAttributes[0].ResourceType, descriptionAttributes[0].ShortName);
 

@@ -1,10 +1,6 @@
-﻿using System;
-using System.Data.Entity;
-using System.Web.Mvc;
-using Benefit.Common.Constants;
+﻿using Benefit.Common.Constants;
 using Benefit.Common.Extensions;
 using Benefit.Domain.DataAccess;
-using System.Linq;
 using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 using Benefit.Services.Domain;
@@ -12,6 +8,10 @@ using Benefit.Web.Areas.Admin.Controllers.Base;
 using Benefit.Web.Models.Admin;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Web.Mvc;
 using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
@@ -108,7 +108,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                var user = db.Users.Include("Referal").FirstOrDefault(entry => entry.Id == id);
+                var user = db.Users
+                    .Include(entry=>entry.Referal)
+                    .Include(entry=>entry.Addresses.Select(add=>add.Region.Parent.Parent))
+                    .FirstOrDefault(entry => entry.Id == id);
                 var userViewModel = new EditUserViewModel()
                 {
                     Id = user.Id,
