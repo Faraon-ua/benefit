@@ -183,10 +183,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 new SelectListItem() {Text = "Немає в наявності", Value = "false"}
             };
                 productsViewModel.ProductFilters.ModerationStatuses = EnumHelper.GetSelectList(typeof(ModerationStatus));
-                if (!string.IsNullOrEmpty(filters.SellerId))
+                if (!string.IsNullOrEmpty(filters.SellerId) || !string.IsNullOrEmpty(Seller.CurrentAuthorizedSellerId))
                 {
+                    var sellerId = Seller.CurrentAuthorizedSellerId ?? filters.SellerId;
                     productsViewModel.ProductFilters.Moderators = db.Personnels
-                    .Where(entry => entry.SellerId == filters.SellerId).ToList().Select(entry => new SelectListItem()
+                    .Where(entry => entry.SellerId == sellerId).ToList().Select(entry => new SelectListItem()
                     {
                         Text = string.Format("{0} {1}", entry.Name, entry.Phone),
                         Value = entry.UserId

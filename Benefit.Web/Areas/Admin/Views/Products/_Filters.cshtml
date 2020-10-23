@@ -1,7 +1,7 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Web.Models.ViewModels
 @model Benefit.Web.Models.Admin.ProductFilters
-@if (User.IsInRole(DomainConstants.AdminRoleName))
+@if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.SellerRoleName))
 {
     <p>
         <label class="underlined" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false">
