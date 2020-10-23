@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
+    [Authorize(Roles = DomainConstants.AdminRoleName + "," + DomainConstants.SellerRoleName)]
     public class PersonnelController : AdminController
     {
         private readonly UserManager<ApplicationUser> _userManager;
@@ -20,6 +21,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public PersonnelController()
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
+        }
+        public ActionResult GetUserByExternalNumber(int externalNumber)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var user = db.Users.FirstOrDefault(entry => entry.ExternalNumber == externalNumber);
+                if (user == null) return null;
+                return Json(new { user.Id, user.FullName, user.PhoneNumber }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         [HttpPost]

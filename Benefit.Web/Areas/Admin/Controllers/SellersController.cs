@@ -22,7 +22,7 @@ using System.Collections;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
-    [Authorize(Roles = DomainConstants.AdminRoleName)]
+    [Authorize(Roles = DomainConstants.AdminRoleName + "," + DomainConstants.SellerRoleName)]
     public class SellersController : AdminController
     {
         SellerService SellerService = new SellerService();

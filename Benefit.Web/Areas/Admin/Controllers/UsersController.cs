@@ -43,16 +43,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult GetUserByExternalNumber(int externalNumber)
-        {
-            using (var db = new ApplicationDbContext())
-            {
-                var user = db.Users.FirstOrDefault(entry => entry.ExternalNumber == externalNumber);
-                if (user == null) return null;
-                return Json(new { user.Id, user.FullName, user.PhoneNumber }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
         public ActionResult UsersSearch(UserFilterValues filters)
         {
             using (var db = new ApplicationDbContext())
