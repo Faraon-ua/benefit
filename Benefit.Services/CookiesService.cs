@@ -33,8 +33,9 @@ namespace Benefit.Services
             var cookie = HttpContext.Current.Request.Cookies[name];
             if (cookie != null)
             {
+                cookie.Secure = true;
                 cookie.Expires = DateTime.UtcNow.AddDays(-1);
-                HttpContext.Current.Response.Cookies.Add(cookie);
+                HttpContext.Current.Response.SetCookie(cookie);
             }
         }
     }

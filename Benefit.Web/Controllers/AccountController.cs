@@ -229,7 +229,7 @@ namespace Benefit.Web.Controllers
                 }
 
                 user = db.Users.FirstOrDefault(entry => entry.PhoneNumber == model.PhoneNumber);
-                if (user!=null)
+                if (user != null)
                 {
                     if (isAjaxRequest)
                     {
@@ -401,7 +401,7 @@ namespace Benefit.Web.Controllers
                     Id = userId
                 });
             }
-            return View("ResetPassword",new ResetPasswordViewModel
+            return View("ResetPassword", new ResetPasswordViewModel
             {
                 Id = userId
             });
@@ -705,22 +705,10 @@ namespace Benefit.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult LogOff()
         {
-            if (Request.Cookies[RouteConstants.FullNameCookieName] != null)
-            {
-                CookiesService.Instance.RemoveCookie(RouteConstants.FullNameCookieName);
-            }
-            if (Request.Cookies[RouteConstants.SelfReferalCookieName] != null)
-            {
-                CookiesService.Instance.RemoveCookie(RouteConstants.SelfReferalCookieName);
-            }
-            if (Session[DomainConstants.SellerSessionIdKey] != null)
-            {
-                CookiesService.Instance.RemoveCookie(DomainConstants.SellerSessionIdKey);
-            }
-            if (Request.Cookies["favoritesNumber"] != null)
-            {
-                CookiesService.Instance.RemoveCookie("favoritesNumber");
-            }
+            CookiesService.Instance.RemoveCookie(RouteConstants.FullNameCookieName);
+            CookiesService.Instance.RemoveCookie(RouteConstants.SelfReferalCookieName);
+            CookiesService.Instance.RemoveCookie(DomainConstants.SellerSessionIdKey);
+            CookiesService.Instance.RemoveCookie("favoritesNumber");
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }

@@ -76,7 +76,11 @@ namespace Benefit.Services.Domain
         {
             using (var db = new ApplicationDbContext())
             {
-                return db.Favorites.Include(entry => entry.Product).Where(entry => entry.UserId == userId).Select(entry => entry.Product).ToList(); 
+                var productIds = db.Favorites.Where(entry => entry.UserId == userId).Select(entry => entry.ProductId).ToList();
+                return db.Products
+                    .Include(entry => entry.Category)
+                    .Include(entry => entry.Seller.ShippingMethods)
+                    .Where(entry => productIds.Contains(entry.Id)).ToList(); 
             }
         }
 
