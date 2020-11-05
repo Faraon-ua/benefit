@@ -20,7 +20,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 .Include(entry => entry.ParentReview)
                 .Include(entry => entry.Product.Category)
                 .Include(entry => entry.Product.Seller)
-                .Include(entry => entry.Seller).Where(entry => !entry.IsActive).OrderByDescending(entry => entry.Stamp);
+                .Include(entry => entry.Seller).Where(entry => !entry.IsActive).OrderByDescending(entry => entry.Stamp).ToList();
                 return View(reviews);
             }
         }

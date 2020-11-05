@@ -119,6 +119,8 @@ namespace Benefit.Services.Domain
                 var sellers = db.Sellers
                     .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
                     .Include(entry => entry.Addresses.Select(addr => addr.Region))
+                    .Include(entry => entry.Schedules)
+                    .Include(entry => entry.Images)
                     .Where(entry => entry.IsActive);
 
                 var sort = SellerSortOption.Rating;
