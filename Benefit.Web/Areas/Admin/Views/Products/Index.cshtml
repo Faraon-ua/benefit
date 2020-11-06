@@ -280,7 +280,7 @@
 
     </div>
     <div class="col-sm-10">
-        @if (Model.Products.Any() && !(User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.ProductsModeratorRoleName)))
+        @if (!(User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.ProductsModeratorRoleName)))
         {
             <div class="row right">
                 <div class="col-xs-12 col-sm-8">

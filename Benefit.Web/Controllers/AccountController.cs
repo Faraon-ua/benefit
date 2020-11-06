@@ -709,6 +709,8 @@ namespace Benefit.Web.Controllers
             CookiesService.Instance.RemoveCookie(RouteConstants.SelfReferalCookieName);
             CookiesService.Instance.RemoveCookie(DomainConstants.SellerSessionIdKey);
             CookiesService.Instance.RemoveCookie("favoritesNumber");
+            Session.Remove(DomainConstants.SellerSessionIdKey);
+            Session.Remove(DomainConstants.SellerSessionNameKey);
             AuthenticationManager.SignOut();
             return RedirectToAction("Index", "Home");
         }
