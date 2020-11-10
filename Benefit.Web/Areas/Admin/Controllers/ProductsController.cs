@@ -103,7 +103,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var resultProducts = new List<Product>();
                 int resultsCount = 0;
-                if (filters.HasValues || Seller.CurrentAuthorizedSellerId != null)
+                if (filters.HasValues || Seller.CurrentAuthorizedSellerId != null || User.IsInRole(DomainConstants.ProductsModeratorRoleName))
                 {
                     var products = GetFilteredProducts(filters);
                     resultsCount = products.Count();

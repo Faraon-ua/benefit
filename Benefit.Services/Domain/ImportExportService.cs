@@ -757,7 +757,7 @@ namespace Benefit.Services.Domain
                     var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
                     var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
                     var currencyId = xmlProduct.Element("currencyId").Value;
-                    var urlName = name.Translit().Truncate(128);
+                    var urlName = name.Translit().Truncate(128).Replace(" ", "-");
                     var category =
                         categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value);
                     double? oldPrice = null;
@@ -924,7 +924,7 @@ namespace Benefit.Services.Domain
                 foreach (var product in productsToAddList)
                 {
                     product.SKU = maxSku;
-                    product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
+                    product.UrlName = product.UrlName.Insert(0, maxSku++ + "-").Truncate(128);
                 }
                 productsToAddList = productsToAddList.Distinct(new ProductComparer()).ToList();
                 db.InsertIntoMembers(productsToAddList);
@@ -1420,5 +1420,5 @@ namespace Benefit.Services.Domain
             }
             #endregion
         }
-    } 
+    }
 }

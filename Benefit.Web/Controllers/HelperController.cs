@@ -13,12 +13,17 @@ namespace Benefit.Web.Controllers
 {
     public class HelperController : Controller
     {
-        public ActionResult SetDefaultImage()
+        public ActionResult SetDefaultImage(string sellerId)
         {
             using (var db = new ApplicationDbContext())
             {
-                var products = db.Products.Include(enty => enty.DefaultImage).Include(enty => enty.Images)
-                .Where(entry => entry.IsActive && entry.Category.IsActive && entry.Seller.IsActive && entry.Images.Any() && entry.DefaultImageId == null).ToList();
+                var productsQuery = db.Products.Include(enty => enty.DefaultImage).Include(enty => enty.Images)
+                .Where(entry => entry.IsActive && entry.Category.IsActive && entry.Seller.IsActive && entry.Images.Any() && entry.DefaultImageId == null);
+                if(sellerId != null)
+                {
+                    productsQuery = productsQuery.Where(entry => entry.SellerId == sellerId);
+                }
+                var products = productsQuery.ToList();
                 foreach (var product in products)
                 {
                     var first = product.Images.OrderBy(entry => entry.Order).First();

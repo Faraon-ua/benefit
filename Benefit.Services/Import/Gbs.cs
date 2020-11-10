@@ -173,7 +173,7 @@ namespace Benefit.Services.Import
             {
                 var xmlProduct = xmlProducts.First(entry => entry.Element("id").Value == productIdToAdd);
                 var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
-                var urlName = name.Translit().Truncate(128);
+                var urlName = name.Translit().Truncate(128).Replace(" ", "-");
                 var category =
                     categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("group_id").Value);
                 if (category == null)
@@ -225,7 +225,7 @@ namespace Benefit.Services.Import
             foreach (var product in productsToAddList)
             {
                 product.SKU = maxSku;
-                product.UrlName = product.UrlName.Insert(0, maxSku++ + "_").Truncate(128);
+                product.UrlName = product.UrlName.Insert(0, maxSku++ + "-").Truncate(128);
             }
             productsToAddList = productsToAddList.Distinct(new ProductComparer()).ToList();
             db.InsertIntoMembers(productsToAddList);
