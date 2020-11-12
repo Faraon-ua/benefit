@@ -164,7 +164,13 @@
 <div class="wraps hover_shine" id="content">
     <div class="wrapper_inner front">
         <div class="left_block">
-            @Html.Partial("_CategoriesPartial", categories)
+            <div class="left_catalog">
+                <div class="col-catalog-menu">
+                    <div class="no-select mobile-hid" id="section-menu">
+                        @Html.Partial("_CategoriesPartial", categories)
+                    </div>
+                </div>
+            </div>
             @Html.Partial("_SocialGroups")
         </div>
         <div class="right_block wide_">
