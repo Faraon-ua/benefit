@@ -14,7 +14,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                var channels = db.NotificationChannels.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+                var channels = db.NotificationChannels.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId).ToList();
                 return View(channels);
             }
         }
