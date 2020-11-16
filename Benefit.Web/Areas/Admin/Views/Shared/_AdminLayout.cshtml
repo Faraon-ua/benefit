@@ -335,14 +335,24 @@
         var checkOrdersUrl = '@Url.Action("CheckNewOrder", "Orders")';
         var soundPath = '@Url.Content("~/Content/sounds/newOrder.mp3")';
         var audio = new Audio(soundPath);
+        var isAudioAllowed = false;
+
+        $("body").on("click", ".fn-allow-sound", function () {
+            isAudioAllowed = true;
+            CheckNewOrder();
+        });
 
         setInterval(function () {
             CheckNewOrder();
-        }, 30000);
+        }, 10000);
 
         function CheckNewOrder() {
             $.get(checkOrdersUrl, function (data) {
                 if (data.length > 0) {
+                    if (!isAudioAllowed) {
+                        $(".allow-sound-area").modal();
+                        return;
+                    }
                     audio.play();
                     if (typeof isNewOrdersPage !== 'undefined') {
                         if (isNewOrdersPage) {
@@ -361,8 +371,19 @@
                 }
             });
         }
-
         CheckNewOrder();
     </script>
+    <div class="modal allow-sound-area" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header" style="text-align:center;">
+                    <h2 class="modal-title">Дозволити програвання аудіо</h2>
+                </div>
+                <div class="modal-footer" style="text-align:center;">
+                    <button type="submit" class="btn btn-primary fn-allow-sound width-30" data-dismiss="modal">ОК</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
