@@ -49,38 +49,71 @@
 
             $("body").on("click",
                 ".login-link",
-                function() {
+                function () {
                     $(".login-tab").click();
                 });
 
             if ($(".nova-poshta").length > 0) {
+                var majorCities;
+                var searchFlag = true;;
                 $.post('@SettingsService.NovaPoshta.ApiUrl',
                     JSON.stringify(npCitiesRequestData),
                     function (res) {
-                        $.each(res.data,
-                            function(index, value) {
-                                $("#npCity").append($("<option></option>")
-                                    .attr("value", value.Ref)
-                                    .text(value.Description));
-                            });
-                        $("#npCity").select2().on('select2:select',
-                            function(e) {
-                                var data = e.params.data;
-                                $('#npWarehouse').children('option').remove();
-                                //fetch warehouses
-                                var strWarehouseData =
-                                    JSON.stringify(npWarehousesRequestData).replace("[cityref]", data.id);
-                                $.post('@SettingsService.NovaPoshta.ApiUrl',
-                                    strWarehouseData,
-                                    function(warRes) {
-                                        $.each(warRes.data,
-                                            function(index, warValue) {
-                                                $("#npWarehouse").append($("<option></option>")
-                                                    .attr("value", warValue.Ref)
-                                                    .text(warValue.Description));
-                                            });
-                                        $("#npWarehouse").select2();
+                        res.data = res.data.filter(function (entry) { return parseInt(entry.CityID) < 30 });
+                        majorCities = $.map(res.data, function (obj) {
+                            return { id: obj.Ref, text: obj.Description };
+                        });
+                    });
+
+                $("#npCity").select2({
+                    placeholder: "Оберіть місто",
+                    ajax: {
+                        url: '@SettingsService.NovaPoshta.ApiUrl',
+                        method: "POST",
+                        data: function (params) {
+                            if (typeof params.term !== 'undefined' && params.term.length >= 3) {
+                                npCitiesRequestData.methodProperties.FindByString = params.term;
+                                searchFlag = true;
+                                return JSON.stringify(npCitiesRequestData);
+                            }
+                            else {
+                                searchFlag = false;
+                            }
+                        },
+                        processResults: function (data) {
+                            var res;
+                            if (searchFlag) {
+                                res = $.map(data.data, function (obj) {
+                                    return { id: obj.Ref, text: obj.Description };
+                                });
+                            }
+                            else {
+                                res = majorCities;
+                            }
+                            return {
+                                results: res
+                            }
+                        }
+                    }
+                }).on('select2:select',
+                    function (e) {
+                        var data = e.params.data;
+                        $('#npWarehouse').children('option').remove();
+                        //fetch warehouses
+                        var strWarehouseData =
+                            JSON.stringify(npWarehousesRequestData).replace("[cityref]", data.id);
+                        $.post('@SettingsService.NovaPoshta.ApiUrl',
+                            strWarehouseData,
+                            function (warRes) {
+                                $.each(warRes.data,
+                                    function (index, warValue) {
+                                        $("#npWarehouse").append($("<option></option>")
+                                            .attr("value", warValue.Ref)
+                                            .text(warValue.Description));
                                     });
+                                $("#npWarehouse").select2({
+                                    placeholder: "Оберіть відділення",
+                                });
                             });
                     });
             }
@@ -103,8 +136,8 @@
                         $("#delivery input:checked").length > 0 &&
                         $("#payment input:checked").length > 0 &&
                         ($("#shippingAddresses").css('display') === 'none' ||
-                        ($("#shippingAddresses").css('display') === 'block' &&
-                            $("#shippingAddresses input:hasValue").length > 0))) {
+                            ($("#shippingAddresses").css('display') === 'block' &&
+                                $("#shippingAddresses input:hasValue").length > 0))) {
                         $("#save-order span").removeClass("btn-secondary");
                         $("#save-order span").addClass("btn-default");
                     }
