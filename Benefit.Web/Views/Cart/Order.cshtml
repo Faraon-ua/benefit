@@ -146,7 +146,8 @@
             $("#save-order").click(function() {
                 var btn = $(this);
                 if (btn.find("span").hasClass("btn-secondary")) {
-                    flashMessage("Будь ласка заповніть всі поля", true);
+                    flashMessage("Будь ласка заповніть всі поля", 0);
+                    $('html,body').animate({ scrollTop: 0 }, 'fast');
                     return;
                 }
                 btn.find(".btn").attr("disabled", "disabled");
@@ -180,6 +181,7 @@
                         function(data) {
                             if (data.error) {
                                 flashMessage(data.error, true, true);
+                                $('html,body').animate({ scrollTop: 0 }, 'fast');
                                 if (data.existingUserWarning) {
                                     getUserIdIfExist = true;
                                 }
@@ -188,7 +190,6 @@
                                 $("#UserId").val(data.userId);
                                 $("#order-form-wrap form").submit();
                             }
-                            $('html,body').animate({ scrollTop: 0 }, 'fast');
                             btn.find(".btn").removeAttr("disabled");
                             hideLoader();
                         });
