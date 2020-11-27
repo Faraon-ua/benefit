@@ -1403,6 +1403,7 @@
     <Content Include="Scripts\ckeditor\themes\default\theme.js" />
     <Content Include="Scripts\common.js" />
     <Content Include="Scripts\console.js" />
+    <Content Include="Scripts\essential.js" />
     <Content Include="Scripts\hierarchy-select.min.js" />
     <Content Include="Scripts\image-defer.min.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />

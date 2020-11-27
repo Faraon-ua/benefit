@@ -121,7 +121,7 @@ namespace Benefit.Web.Controllers
             }
             var seller = ViewBag.Seller as Seller;
             var catalogService = new CatalogService();
-            var catalog = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, categoryId, User.Identity.GetUserId(), options);
+            var catalog = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, categoryId, User.Identity.GetUserId(), options, false);
             products = catalog.Items;
             if (isFilterRequest)
             {

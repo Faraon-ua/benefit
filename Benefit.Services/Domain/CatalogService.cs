@@ -57,7 +57,7 @@ namespace Benefit.Services.Domain
             }
             return productParameters;
         }
-        public ProductsViewModel GetSellerProductsCatalog(string sellerId, string categoryId, string userId, string options)
+        public ProductsViewModel GetSellerProductsCatalog(string sellerId, string categoryId, string userId, string options, bool fetchPaging = true)
         {
             var result = new ProductsViewModel();
             var where = new StringBuilder();
@@ -234,11 +234,11 @@ namespace Benefit.Services.Domain
             //        .Where(entry => entry.DisplayInFilters).ToList();
             //    productParameters = productParameters.Union(mappedCategoriesParameters).ToList();
             //}
-            if (options == null || (options != null && result.Page == 1))
+            if (fetchPaging)
             {
                 result.PagesCount = (productsDBContext.GetCatalogCount(categoryId, sellerId, where.ToString(), sqlParams) - 1) / ListConstants.DefaultTakePerPage + 1;
             }
-            result.Items = productsDBContext.GetCatalog(categoryId, sellerId, userId, where.ToString(), orderby, ListConstants.DefaultTakePerPage * (result.Page - 1), ListConstants.DefaultTakePerPage, sqlParams);
+            result.Items = productsDBContext.GetCatalog(categoryId, sellerId, userId, where.ToString(), orderby, ListConstants.DefaultTakePerPage * (result.Page - 1), ListConstants.DefaultTakePerPage + 1, sqlParams);
             return result;
         }
 
