@@ -40,7 +40,7 @@ namespace Benefit.Services.ExternalApi
             return null;
         }
 
-        public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1)
+        public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1, string sellerComment = null)
         {
             var success = true;
             var updateOrderUrl = SettingsService.Rozetka.BaseUrl + "orders/" + id;
@@ -53,20 +53,14 @@ namespace Benefit.Services.ExternalApi
             {
                 var updateOrderIngest = new UpdateOrderIngest
                 {
-                    status = (int)newStatus + 1
+                    status = (int)newStatus + 1,
+                    seller_comment = sellerComment
                 };
                 var postData = JsonConvert.SerializeObject(updateOrderIngest);
                 var ordersResult = _httpClient.Post<BaseDto>(updateOrderUrl, postData, "application/json", authToken, "put");
                 if (ordersResult.StatusCode == HttpStatusCode.OK)
                 {
-                    if (!ordersResult.Data.success)
-                    {
-                        success = false;
-                    }
-                    else
-                    {
-                        success = false;
-                    }
+                    success = ordersResult.Data.success;
                 }
             }
             if (!success)
@@ -74,7 +68,7 @@ namespace Benefit.Services.ExternalApi
                 if (tryCount <= 3)
                 {
                     Thread.Sleep(3000);
-                    UpdateOrderStatus(id, oldStatus, newStatus, ttn, tryCount + 1);
+                    UpdateOrderStatus(id, oldStatus, newStatus, ttn, tryCount + 1, sellerComment);
                 }
                 else
                 {
@@ -165,7 +159,7 @@ namespace Benefit.Services.ExternalApi
                                 foreach (var rProduct in rOrder.purchases)
                                 {
                                     var suffix = orderSuffixRegex.Match(rProduct.item_name).Value.ToLower();
-                                    var product = products.FirstOrDefault(entry =>  entry.Name.ToLower().Contains(suffix));
+                                    var product = products.FirstOrDefault(entry => entry.Name.ToLower().Contains(suffix));
                                     if (product == null)
                                     {
                                         await _notificationService.NotifyApiFailRequest(rOrder.id, "Rozetka",
@@ -202,7 +196,7 @@ namespace Benefit.Services.ExternalApi
                         }
                         else if (type < 3)
                         {
-                            getOrdersUrl = getOrdersUrl.Replace("type=" + type, "type=" + (type + 1)).Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=1"); ;
+                            getOrdersUrl = getOrdersUrl.Replace("type=" + type, "type=" + (type + 1)).Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=1");
                             await ProcessOrders(getOrdersUrl, authToken, ++type);
                         }
                     }

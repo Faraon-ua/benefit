@@ -398,7 +398,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                 if (rozetkaOrders.All(entry => entry.Status == OrderStatus.Finished || entry.Status == OrderStatus.Abandoned))
                                 {
                                     var rozetkaService = new RozetkaApiService();
-                                    Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null));
+                                    Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null, sellerComment: statusComment));
                                 }
                             }
                             TransactionsService.AddOrderFinishedTransaction(order, db);
@@ -426,7 +426,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
                             {
                                 var rozetkaService = new RozetkaApiService();
-                                Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null));
+                                Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null, sellerComment: statusComment));
                             }
                         }
                         if (orderStatus == OrderStatus.Abandoned ||
