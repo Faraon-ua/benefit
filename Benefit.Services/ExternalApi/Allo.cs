@@ -13,6 +13,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Benefit.Services.ExternalApi
 {
@@ -104,7 +105,7 @@ namespace Benefit.Services.ExternalApi
         //    }
         //}
 
-        public void ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1)
+        public async Task ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1)
         {
             using (var db = new ApplicationDbContext())
             {

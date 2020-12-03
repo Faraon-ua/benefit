@@ -13,6 +13,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace Benefit.Services.ExternalApi
 {
@@ -20,6 +21,7 @@ namespace Benefit.Services.ExternalApi
     {
         private BenefitHttpClient _httpClient = new BenefitHttpClient();
         private Logger _logger = LogManager.GetCurrentClassLogger();
+        private NotificationsService _notificationService = new NotificationsService();
 
         public string GetAccessToken(string userName, string password)
         {
@@ -76,8 +78,7 @@ namespace Benefit.Services.ExternalApi
                 }
                 else
                 {
-                    var notificationService = new NotificationsService();
-                    notificationService.NotifyApiFailRequest(id, "Rozetka", oldStatus, newStatus);
+                    _notificationService.NotifyApiFailRequest(id, "Rozetka", oldStatus, newStatus);
                 }
             }
         }
@@ -104,7 +105,7 @@ namespace Benefit.Services.ExternalApi
             }
         }
 
-        public void ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1)
+        public async Task ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1)
         {
             using (var db = new ApplicationDbContext())
             {
@@ -163,8 +164,14 @@ namespace Benefit.Services.ExternalApi
                                 };
                                 foreach (var rProduct in rOrder.purchases)
                                 {
-                                    var product = products.FirstOrDefault(entry => entry.Name == rProduct.item_name);
-                                    if (product != null)
+                                    var suffix = orderSuffixRegex.Match(rProduct.item_name).Value.ToLower();
+                                    var product = products.FirstOrDefault(entry =>  entry.Name.ToLower().Contains(suffix));
+                                    if (product == null)
+                                    {
+                                        await _notificationService.NotifyApiFailRequest(rOrder.id, "Rozetka",
+                                            string.Format("Не знайдено товару в локальній базі даних. № замовлення в Benefit: {0}, № Замовлення на Rozetka: {1}, назва товару: {2}", order.OrderNumber, rOrder.id, rProduct.item_name));
+                                    }
+                                    else
                                     {
                                         var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
                                         var orderProduct = new OrderProduct()
@@ -191,12 +198,12 @@ namespace Benefit.Services.ExternalApi
                         if (ordersResult.Data.content._meta.currentPage != ordersResult.Data.content._meta.pageCount && ordersResult.Data.content._meta.pageCount != 0)
                         {
                             getOrdersUrl = getOrdersUrl.Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=" + (ordersResult.Data.content._meta.currentPage + 1));
-                            ProcessOrders(getOrdersUrl, authToken);
+                            await ProcessOrders(getOrdersUrl, authToken);
                         }
                         else if (type < 3)
                         {
-                            getOrdersUrl = getOrdersUrl.Replace("type=" + type, "type=" + (type + 1));
-                            ProcessOrders(getOrdersUrl, authToken, ++type);
+                            getOrdersUrl = getOrdersUrl.Replace("type=" + type, "type=" + (type + 1)).Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=1"); ;
+                            await ProcessOrders(getOrdersUrl, authToken, ++type);
                         }
                     }
                     else

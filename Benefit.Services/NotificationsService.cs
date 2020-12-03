@@ -50,6 +50,18 @@ namespace Benefit.Services
                 }
             }
         }
+        public async Task NotifyApiFailRequest(string orderNumber, string marketPlaceName, string message)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var notificationChannels = db.NotificationChannels.Where(entry => entry.ChannelType == NotificationChannelType.TelegramApiFail && entry.Name == marketPlaceName).ToList();
+                foreach (var notificationChannel in notificationChannels)
+                {
+                    var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
+                    var result = await telegram.SendTextMessageAsync(notificationChannel.Address, message);
+                }
+            }
+        }
         public void NotifySeller(int orderNumber, string orderUrl, string sellerId)
         {
             using (var db = new ApplicationDbContext())
