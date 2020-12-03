@@ -1,6 +1,4 @@
-﻿using Benefit.Common.Extensions;
-using Benefit.Common.Helpers;
-using Benefit.DataTransfer.ApiDto.Allo;
+﻿using Benefit.DataTransfer.ApiDto.Allo;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.HttpClient;
@@ -10,9 +8,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace Benefit.Services.ExternalApi
@@ -234,7 +229,7 @@ namespace Benefit.Services.ExternalApi
             }
         }
 
-        public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1)
+        public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount, string sellerComment)
         {
             throw new NotImplementedException();
         }
