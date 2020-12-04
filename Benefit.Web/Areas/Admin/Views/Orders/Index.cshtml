@@ -149,7 +149,7 @@
         var isAudioAllowed = false;
 
         $(function () {
-            if (!isAudioAllowed) {
+            if (!isAudioAllowed && isNewOrdersPage) {
                 $(".allow-sound-area").modal();
             }
         });
