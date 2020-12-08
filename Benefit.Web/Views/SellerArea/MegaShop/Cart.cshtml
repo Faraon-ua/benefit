@@ -16,6 +16,7 @@
 }
 @section scripts
 {
+    <script src="~/Scripts/jquery.mask.min.js"></script>
     <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/jquery.autocomplete.min.js"></script>
     <script src="~/Scripts/address.js"></script>
@@ -142,7 +143,7 @@
                                         </div>
                                         <div class="row">
                                             <div class="form_group col-sm-6">
-                                                @Html.TextBox("PhoneNumber", null, new { @class = "form_input", placeholder = "Номер телефону *", type = "tel" })
+                                                @Html.TextBox("PhoneNumber", null, new { @class = "form_input phone-input", placeholder = "Номер телефону *", type = "tel" })
                                                 @Html.ValidationMessage("PhoneNumber")
                                             </div>
                                             <div class="form_group col-sm-6">
