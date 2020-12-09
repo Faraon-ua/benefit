@@ -29,7 +29,7 @@
                     .Where(entry => !string.IsNullOrEmpty(entry.Comment))
                     .OrderBy(entry => entry.Time)
                     .Select(entry => string.Format("<p>{0} <b>{1}</b><br /><i class='icon icon-circle' style='color:#4ebf42; margin-right:5px;'></i> {2}</p>", entry.Time.ToLocalDateTimeWithFormat(), entry.UpdatedBy, entry.Comment)));
-                <i class="fas fa-file" style="color:#8b0000;  margin-left: 5px;" data-rel="hoverpopover" title="" data-content="@comments" data-html="true" data-original-title="Коментар менеджера" data-trigger="hover"></i>
+                <i class="fas fa-file seller-comments" style="color:#8b0000;  margin-left: 5px;" data-rel="hoverpopover" title="" data-content="@comments" data-html="true" data-original-title="Коментар менеджера" data-trigger="hover"></i>
 
             }
         </div>

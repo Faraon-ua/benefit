@@ -333,7 +333,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 };
                 db.OrderStatusStamps.Add(statusStamp);
                 db.SaveChanges();
+                var rozetkaService = new RozetkaApiService();
                 var order = db.Orders.Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == orderId);
+                Task.Run(() =>
+                   rozetkaService.UpdateOrderStatus(order.ExternalId, order.Status, status, order.ShippingTrackingNumber, sellerComment: comment)
+                );
                 var partialHtml = ControllerContext.RenderPartialToString("_OrderStatusPartial", order);
                 return Json(new { statusPartial = partialHtml });
             }

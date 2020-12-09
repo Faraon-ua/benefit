@@ -65,6 +65,9 @@
                     $(".fn-add-comment-submit").prop("disabled", "disabled");
                 }
             });
+            $("body").on("click", ".fn-show-comments", function () {
+                $(this).parents(".order-wrap").find(".seller-comments").popover('show');
+            });
             $("body").on("click", ".fn-add-comment-submit", function () {
                 var orderId = $(this).attr("data-order-id");
                 $.post(addCommentUrl, {
