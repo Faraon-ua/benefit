@@ -51,11 +51,6 @@
             </div>
         }
     </div>
-    <div class="display-flex padding-15 font-bigger">
-        <div style="flex-grow:1; text-align:right; margin-right: 100px;">Всього за товари</div>
-        <span class="total" style="width:100px;">@(Model.OrderProducts.Sum(entry => entry.Amount * entry.ActualPrice).ToString("F"))</span> грн
-    </div>
-
 </div>
 
 @*@foreach (var product in Model.OrderProducts)
@@ -90,7 +85,14 @@
             </td>
         </tr>
     }*@
-<div class="modal-footer" style="border:0; background:none;">
-    <button type="button" class="btn btn-primary fn-update-order-products" data-order-id="@Model.Id">Застосувати</button>
-    <button type="button" class="btn btn-secondary" data-dismiss="modal">Відміна</button>
+<div class="modal-footer" style="border:0; background:none;padding-bottom:0px;">
+    <div class="display-flex padding-15 font-bigger">
+        <div>
+            <button type="button" class="btn btn-primary fn-update-order-products" data-order-id="@Model.Id">Застосувати</button>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Відміна</button>
+        </div>
+        <div style="flex-grow:1; text-align:right; margin-right: 100px;">Всього за товари</div>
+        <span class="total" style="width:100px;">@(Model.OrderProducts.Sum(entry => entry.Amount * entry.ActualPrice).ToString("F"))</span> грн
+    </div>
+   
 </div>
