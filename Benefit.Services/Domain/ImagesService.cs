@@ -295,6 +295,16 @@ namespace Benefit.Services
             {
                 var image = db.Images.FirstOrDefault(entry => entry.ImageUrl == url && entry.ProductId == productId);
                 if (image == null) return;
+                var defaultImgProduct = db.Products.FirstOrDefault(entry => entry.DefaultImageId == image.Id);
+                if(defaultImgProduct != null)
+                {
+                    var otherImage = db.Images.FirstOrDefault(entry => entry.Id != image.Id && entry.ProductId == productId);
+                    if(otherImage != null)
+                    {
+                        defaultImgProduct.DefaultImageId = otherImage.Id;
+                    }
+                    db.SaveChanges();
+                }
                 db.Images.Remove(image);
                 db.SaveChanges();
             }
