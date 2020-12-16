@@ -32,7 +32,19 @@ namespace Benefit.RestApi.Controllers
         public ActionResult ProcessRozetkaOrders()
         {
             var rozetkaService = new RozetkaApiService();
-            rozetkaService.ProcessOrders();
+            if(HttpContext.Application["IsRozetkaProcessing"] == null)
+            {
+                HttpContext.Application["IsRozetkaProcessing"] = false;
+            }
+            if ((bool)HttpContext.Application["IsRozetkaProcessing"] == false)
+            {
+                HttpContext.Application["IsRozetkaProcessing"] = true;
+                rozetkaService.ProcessOrders();
+            }
+            else
+            {
+                return Content("Синхронізація замовленнь з Розетка в процесі...");
+            }
             return Content("Замовлення з Розетка успішно синхронізовані");
         }
 

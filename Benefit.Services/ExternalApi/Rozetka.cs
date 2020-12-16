@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Benefit.Services.ExternalApi
 {
@@ -192,7 +193,7 @@ namespace Benefit.Services.ExternalApi
                         if (ordersResult.Data.content._meta.currentPage != ordersResult.Data.content._meta.pageCount && ordersResult.Data.content._meta.pageCount != 0)
                         {
                             getOrdersUrl = getOrdersUrl.Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=" + (ordersResult.Data.content._meta.currentPage + 1));
-                            await ProcessOrders(getOrdersUrl, authToken);
+                            await ProcessOrders(getOrdersUrl, authToken, type);
                         }
                         else if (type < 3)
                         {
@@ -210,6 +211,7 @@ namespace Benefit.Services.ExternalApi
                     _logger.Error("Rozetka auth token is null");
                 }
             }
+            HttpContext.Current.Application["IsRozetkaProcessing"] = false;
         }
     }
 }

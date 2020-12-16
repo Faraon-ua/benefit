@@ -11,12 +11,5 @@ namespace Benefit.RestApi.Controllers
 
             return View();
         }
-
-        public ActionResult ProcessRozetkaOrders()
-        {
-            var rozetkaService = new RozetkaApiService();
-            rozetkaService.ProcessOrders();
-            return Content("Замовлення з Розетка успішно синхронізовані");
-        }
     }
 }
