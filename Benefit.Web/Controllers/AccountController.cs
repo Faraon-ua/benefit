@@ -567,6 +567,7 @@ namespace Benefit.Web.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ExternalLogin(string provider, string returnUrl)
         {
+            HttpContext.Session.RemoveAll();
             Session["Workaround"] = 0;
             // Request a redirect to the external login provider
             return new ChallengeResult(provider, Url.Action("ExternalLoginCallback", "Account", new { ReturnUrl = returnUrl }));
@@ -575,6 +576,7 @@ namespace Benefit.Web.Controllers
         //
         // GET: /Account/ExternalLoginCallback
         [AllowAnonymous]
+        [FetchCategories]
         public async Task<ActionResult> ExternalLoginCallback(string returnUrl)
         {
             var loginInfo = await AuthenticationManager.GetExternalLoginInfoAsync();
@@ -592,6 +594,16 @@ namespace Benefit.Web.Controllers
             }
             else
             {
+                user = await UserManager.FindByNameAsync(loginInfo.Email);
+                if (user != null)
+                {
+                    var addLoginResult = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
+                    if (addLoginResult.Succeeded)
+                    {
+                        await SignInAsync(user, isPersistent: false);
+                        return RedirectToLocal(returnUrl);
+                    }
+                }
                 // If the user does not have an account, then prompt the user to create an account
                 ViewBag.ReturnUrl = returnUrl;
                 ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
@@ -606,7 +618,7 @@ namespace Benefit.Web.Controllers
                 {
                     int.TryParse(referalCookie.Value, out referalNumber);
                 }
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { UserName = facebookUser.email, FullName = facebookUser.name, ReferalNumber = referalNumber });
+                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = facebookUser.email, FullName = facebookUser.name, ReferalNumber = referalNumber });
             }
         }
 
@@ -615,6 +627,7 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
+        [FetchCategories]
         public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
@@ -628,7 +641,7 @@ namespace Benefit.Web.Controllers
                 externalNumber = db.Users.Max(entry => entry.ExternalNumber);
                 referal = db.Users.FirstOrDefault(entry => entry.ExternalNumber == model.ReferalNumber);
             }
-            if (referal == null)
+            if (model.ReferalNumber != null && referal == null)
             {
                 ModelState.AddModelError("ReferalNumber", "Користувача з таким реферальним кодом не знайдено");
             }
@@ -643,18 +656,18 @@ namespace Benefit.Web.Controllers
                 }
                 var user = new ApplicationUser()
                 {
-                    ReferalId = referal.Id,
-                    UserName = model.UserName,
-                    Email = model.UserName,
-                    IsActive = false,
+                    ReferalId = referal == null ? null: referal.Id,
+                    UserName = model.Email,
+                    Email = model.Email,
+                    IsActive = true,
                     ExternalNumber = ++externalNumber,
-                    CardNumber = model.CardNumber,
                     FullName = model.FullName,
                     PhoneNumber = model.PhoneNumber,
                     RegisteredOn = DateTime.UtcNow,
+                    RegionId = model.RegionId.Value
                 };
 
-                var result = await UserManager.CreateAsync(user);
+                var result = await UserManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
                 {

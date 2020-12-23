@@ -4,7 +4,6 @@ namespace Benefit.Web.Models
 {
     public class ExternalLoginConfirmationViewModel
     {
-        [Required]
         public int? ReferalNumber { get; set; }
         [Required]
         [MaxLength(64)]
@@ -15,11 +14,9 @@ namespace Benefit.Web.Models
         public string PhoneNumber { get; set; }
         [Required]
         [MaxLength(64)]
-        public string UserName { get; set; }
-        [Required]
-        [MaxLength(64)]
         public string Email { get; set; }
-        public string CardNumber { get; set; }
+        [Required]
+        public string Password { get; set; }
     }
     
     public class RegisterViewModel

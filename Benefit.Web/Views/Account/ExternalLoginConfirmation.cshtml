@@ -1,64 +1,97 @@
 ﻿@model Benefit.Web.Models.ExternalLoginConfirmationViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Реєстрація";
 }
-<h2>@ViewBag.Title.</h2>
-<h3>Associate your @ViewBag.LoginProvider account.</h3>
-
-@using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@section styles
 {
-    @Html.AntiForgeryToken()
-
-    <h4>Association Form</h4>
-    <hr />
-    @Html.ValidationSummary(true)
-    <p class="text-info">
-        You've successfully authenticated with <strong>@ViewBag.LoginProvider</strong>.
-        Please enter a user name for this site below and click the Register button to finish
-        logging in.
-    </p>
-    <div class="form-group">
-        <label class="col-md-2 control-label">Реферальний код</label>
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.ReferalNumber, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.ReferalNumber)
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.FullName, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.FullName)
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="UserName" class="col-md-2 control-label">Email</label>
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.UserName)
-        </div>
-    </div>
-    <div class="form-group">
-        <label for="PhoneNumber" class="col-md-2 control-label">Phone</label>
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.PhoneNumber)
-        </div>
-    </div>
-     <div class="form-group">
-        <label for="CardNumber" class="col-md-2 control-label">Card No</label>
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.CardNumber, new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.CardNumber)
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
+    <link href="~/Content/css/validation-errors.css" rel="stylesheet" />
+    <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
+    <link href="~/Content/css/address.css" rel="stylesheet" />
 }
+@section scripts
+{
+    <script src="~/Scripts/common.js" defer></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js" defer></script>
+    <script src="~/Scripts/address.js" defer></script>
+    <script>
+        var referalUserUrl = '@Url.Action("GetReferalName")';
+        var registeredCardUrl = '@Url.Action("CheckRegisteredCard")';
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+        $(function () {
+            SetRegionsAutocomplete();
+        })
+    </script>
 }
+<div class="wraps hover_shine" id="content">
+    <section class="page-top maxwidth-theme">
+        <h1 id="pagetitle" style="padding: 30px 0 0 30px;">Авторизація</h1>
+    </section>
+    <div class="wrapper_inner wide_page">
+        <div class="middle ">
+            <div class="container">
+                <div class="maxwidth-theme">
+                    <div class="head-block top">
+                        <div class="bottom_border"></div>
+                    </div>
+                    <div class="wrapper_inner">
+                        <div class="col-md-12 col-sm-12" style="padding: 0;">
+                            @Html.ValidationSummary()
+                            <p>
+                                Ви успішно авторизувались у <strong class="font-site-red">@ViewBag.LoginProvider</strong>.
+                                Будь ласка введіть свої дані і натисність кнопку Реєстрація для входу на сайт.
+                            </p>
+                            @using (Html.BeginForm("ExternalLoginConfirmation", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label> Ім'я та прізвище*</label>
+                                        @Html.TextBoxFor(m => m.FullName)
+                                        @Html.ValidationMessageFor(m => m.FullName)
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label> Номер телефону *</label>
+                                        @Html.TextBoxFor(m => m.PhoneNumber, new { type = "tel", @class = "phone-input", placeholder = "+38(___)___-__-__" })
+                                        @Html.ValidationMessageFor(m => m.PhoneNumber)
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label> E-mail *</label>
+                                        @Html.TextBoxFor(m => m.Email, new { type = "email" })
+                                        @Html.ValidationMessageFor(m => m.Email)
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label> Місто *</label>
+                                        @Html.TextBox("RegionName", null, new { @class = "regionSearch", autocomplete = "on" })
+                                        @Html.Hidden("RegionId")
+                                        @Html.ValidationMessage("RegionId")
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <label> Пароль *</label>
+                                        @Html.TextBoxFor(m => m.Password, new { type = "password" })
+                                        @Html.ValidationMessageFor(m => m.Password)
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        Реєструючись, ви погоджуєтесь з
+                                        <a href="@Url.RouteUrl("pagesRoute", new {id = "ugoda-korustuvacha"})">угодою користувача</a>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <input type="submit" class="btn btn-default btn-lg btn-order-save" value="Зареєструватися" />
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

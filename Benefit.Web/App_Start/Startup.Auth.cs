@@ -32,24 +32,22 @@ namespace Benefit.Web
             //   consumerSecret: "");
 
             var faceBookSettings = new FacebookAuthenticationOptions();
-            faceBookSettings.Scope.Add("email");
-            faceBookSettings.Scope.Add("public_profile");
             faceBookSettings.AppId = "635571649935665";
             faceBookSettings.AppSecret = "9e41686d14adae5ff26550c70f837229";
-            //faceBookSettings.Provider = new FacebookAuthenticationProvider()
-            //{
-            //    OnAuthenticated = async context =>
-            //    {
-            //        context.Identity.AddClaim(new System.Security.Claims.Claim("FacebookAccessToken", context.AccessToken));
-            //        foreach (var claim in context.User)
-            //        {
-            //            var claimType = string.Format("urn:facebook:{0}", claim.Key);
-            //            string claimValue = claim.Value.ToString();
-            //            if (!context.Identity.HasClaim(claimType, claimValue))
-            //                context.Identity.AddClaim(new System.Security.Claims.Claim(claimType, claimValue, "XmlSchemaString", "Facebook"));
-            //        }
-            //    }
-            //};
+            faceBookSettings.Provider = new FacebookAuthenticationProvider()
+            {
+                OnAuthenticated = async context =>
+                {
+                    context.Identity.AddClaim(new System.Security.Claims.Claim("FacebookAccessToken", context.AccessToken));
+                    foreach (var claim in context.User)
+                    {
+                        var claimType = string.Format("urn:facebook:{0}", claim.Key);
+                        string claimValue = claim.Value.ToString();
+                        if (!context.Identity.HasClaim(claimType, claimValue))
+                            context.Identity.AddClaim(new System.Security.Claims.Claim(claimType, claimValue, "XmlSchemaString", "Facebook"));
+                    }
+                }
+            };
 
             //faceBookSettings.SignInAsAuthenticationType = DefaultAuthenticationTypes.ExternalCookie;
             app.UseFacebookAuthentication(faceBookSettings);
