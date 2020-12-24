@@ -594,7 +594,10 @@ namespace Benefit.Web.Controllers
             }
             else
             {
-                user = await UserManager.FindByNameAsync(loginInfo.Email);
+                if (loginInfo.Email != null)
+                {
+                    user = await UserManager.FindByNameAsync(loginInfo.Email);
+                }
                 if (user != null)
                 {
                     try
