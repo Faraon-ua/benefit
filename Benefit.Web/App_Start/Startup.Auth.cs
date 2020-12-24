@@ -3,6 +3,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Facebook;
+using Microsoft.Owin.Security.Google;
 using Owin;
 
 namespace Benefit.Web
@@ -51,8 +52,13 @@ namespace Benefit.Web
 
             //faceBookSettings.SignInAsAuthenticationType = DefaultAuthenticationTypes.ExternalCookie;
             app.UseFacebookAuthentication(faceBookSettings);
-           
-            //app.UseGoogleAuthentication();
+
+            var googleOAuth2AuthenticationOptions = new GoogleOAuth2AuthenticationOptions
+            {
+                ClientId = "900878758633-uem4cnnqhk8htm0o8v85j20d4i3f8if7.apps.googleusercontent.com",
+                ClientSecret = "ygCjDbmHvIfxXV3ONqEZqTqT",
+            };
+            app.UseGoogleAuthentication(googleOAuth2AuthenticationOptions);
         }
     }
 }

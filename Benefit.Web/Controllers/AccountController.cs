@@ -608,21 +608,29 @@ namespace Benefit.Web.Controllers
                 ViewBag.ReturnUrl = returnUrl;
                 ViewBag.LoginProvider = loginInfo.Login.LoginProvider;
 
-                var authSession = loginInfo.ExternalIdentity.Claims.First(entry => entry.Type == "FacebookAccessToken");
-                var client = new FacebookClient(authSession.Value);
-                dynamic fbresult = client.Get("me?fields=id,email,name");
-                FacebookUserModel facebookUser = Newtonsoft.Json.JsonConvert.DeserializeObject<FacebookUserModel>(fbresult.ToString());
                 var referalCookie = System.Web.HttpContext.Current.Request.Cookies[RouteConstants.ReferalCookieName];
                 var referalNumber = 0;
+                ExternalLoginConfirmationViewModel model = null;
                 if (referalCookie != null)
                 {
                     int.TryParse(referalCookie.Value, out referalNumber);
                 }
-                return View("ExternalLoginConfirmation", new ExternalLoginConfirmationViewModel { Email = facebookUser.email, FullName = facebookUser.name, ReferalNumber = referalNumber });
+                if (loginInfo.Login.LoginProvider == "Facebook")
+                {
+                    var authSession = loginInfo.ExternalIdentity.Claims.First(entry => entry.Type == "FacebookAccessToken");
+                    var client = new FacebookClient(authSession.Value);
+                    dynamic fbresult = client.Get("me?fields=id,email,name");
+                    FacebookUserModel facebookUser = JsonConvert.DeserializeObject<FacebookUserModel>(fbresult.ToString());
+                    model = new ExternalLoginConfirmationViewModel { Email = facebookUser.email, FullName = facebookUser.name, ReferalNumber = referalNumber };
+                }
+                if (loginInfo.Login.LoginProvider == "Google")
+                {
+                    model = new ExternalLoginConfirmationViewModel { Email = loginInfo.Email, FullName = loginInfo.ExternalIdentity.Name, ReferalNumber = referalNumber };
+                }
+                return View("ExternalLoginConfirmation", model);
             }
         }
 
-        //
         // POST: /Account/ExternalLoginConfirmation
         [HttpPost]
         [AllowAnonymous]
