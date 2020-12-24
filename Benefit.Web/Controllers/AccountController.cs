@@ -597,8 +597,16 @@ namespace Benefit.Web.Controllers
                 user = await UserManager.FindByNameAsync(loginInfo.Email);
                 if (user != null)
                 {
-                    var addLoginResult = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
-                    if (addLoginResult.Succeeded)
+                    try
+                    {
+                        var addLoginResult = await UserManager.AddLoginAsync(user.Id, loginInfo.Login);
+                        if (addLoginResult.Succeeded)
+                        {
+                            await SignInAsync(user, isPersistent: false);
+                            return RedirectToLocal(returnUrl);
+                        }
+                    }
+                    catch
                     {
                         await SignInAsync(user, isPersistent: false);
                         return RedirectToLocal(returnUrl);
