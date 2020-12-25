@@ -11,12 +11,18 @@
     color: #3e77aa;
 }
 
+@media (max-width:600px) {
+    .button-sc {
+        width: 90% !important;
+        margin: 5px !important;
+    }
+}
+
 .button-sc {
+    width: 50%;
     position: relative;
     display: inline-block;
     margin: 0;
-    padding-left: 36px;
-    padding-right: 56px;
     text-align: center;
     border: none;
     outline: none;
