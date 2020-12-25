@@ -69,9 +69,6 @@
 
     <div class="fn_ajax_content margin-top-10">
         <div class="block">
-            <h1 class="h1">
-                <span data-page="3">Авторизація</span>
-            </h1>
             <div class="padding">
                 @Html.ValidationSummary()
                 <div class="tabs clearfix">
@@ -151,7 +148,7 @@
                                 </p>
                             }
                             <hr style="border: 1px solid #e5e5e5;"/>
-                            <p>Увійти як користувач</p>
+                            <p>Увійти через акаунт</p>
                             @using (Html.BeginForm("ExternalLogin", "Account"))
                             {
                                 @Html.AntiForgeryToken()

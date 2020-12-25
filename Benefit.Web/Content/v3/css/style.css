@@ -13,7 +13,7 @@
 
 @media (max-width:600px) {
     .button-sc {
-        width: 90% !important;
+        width: 95% !important;
         margin: 5px !important;
     }
 }
@@ -38,7 +38,7 @@
 .button-large {
     height: 48px;
     line-height: 48px;
-    font-size: 18px;
+    font-size: 22px;
 }
 
 .catalog-category {
