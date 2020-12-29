@@ -76,11 +76,15 @@
             });
 
             $(".fn-launch-gbs-import").click(function () {
+                var btn = $(this);
+                $(this).attr("disabled", "disabled");
                 $("#importing-process").show();
                 $.get(launchImportUrl + "&type=Gbs",
                     function (data) {
+                        btn.removeAttr("disabled");
                         if (data.error) {
                             flashMessage(data.error, true, true);
+                            $("#importing-process").hide();
                         } else {
                             flashMessage(data.message, false, true);
                             intervalId = setInterval(function f() {

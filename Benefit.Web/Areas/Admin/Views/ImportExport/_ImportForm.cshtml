@@ -9,13 +9,18 @@
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)
         @Html.HiddenFor(model => model.SellerId)
-        @Html.HiddenFor(model => model.IsImport)
         @Html.HiddenFor(model => model.SyncType)
 
         <div class="form-group">
             <label class="control-label col-md-2" for="IsActive">Статус</label>
             <div class="col-md-10">
                 @Html.CheckBoxFor(m => m.IsActive)
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="control-label col-md-2" for="IsImport">В процессі обробки</label>
+            <div class="col-md-10">
+                @Html.CheckBoxFor(m => m.IsImport) (має бути неактивно)
             </div>
         </div>
         <div class="form-group">

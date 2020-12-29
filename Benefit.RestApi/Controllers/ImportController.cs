@@ -105,6 +105,10 @@ namespace Benefit.RestApi.Controllers
                 {
                     return Json(new { error = "Дані іморту ще не задано" }, JsonRequestBehavior.AllowGet);
                 }
+                if (importTask.IsImport)
+                {
+                    return Json(new { error = "Імпорт вже в процессі обробки" }, JsonRequestBehavior.AllowGet);
+                }
 
                 if (type == SyncType.Yml)
                 {

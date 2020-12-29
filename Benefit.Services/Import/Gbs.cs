@@ -155,7 +155,6 @@ namespace Benefit.Services.Import
 
         private void AddAndUpdateGbsProducts(List<XElement> xmlProducts, string sellerId, IEnumerable<string> categoryIds, ApplicationDbContext db)
         {
-
             var maxSku = db.Products.Max(entry => entry.SKU) + 1;
             var xmlProductIds = xmlProducts.Select(entry => entry.Element("id").Value).ToList();
             var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();

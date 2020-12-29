@@ -168,6 +168,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         db.Entry(import).State = EntityState.Modified;
                     }
+                    import.IsImport = exportImport.IsImport;
                     import.IsActive = exportImport.IsActive;
                     import.FileUrl = exportImport.FileUrl;
                     import.SyncPeriod = exportImport.SyncPeriod;
