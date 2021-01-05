@@ -147,9 +147,9 @@
                                     <a href="@Url.Action("forgotpassword","account")">Забули пароль?</a>
                                 </p>
                             }
-                            <hr style="border: 1px solid #e5e5e5;"/>
+                            <hr style="border: 1px solid #e5e5e5;" />
                             <p>Увійти через акаунт</p>
-                            @using (Html.BeginForm("ExternalLogin", "Account"))
+                            @using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }))
                             {
                                 @Html.AntiForgeryToken()
                                 <div id="socialLoginList" class="row">

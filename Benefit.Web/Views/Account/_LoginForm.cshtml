@@ -44,7 +44,7 @@
             }
             <hr />
             <p>Увійти через акаунт</p>
-            @using (Html.BeginForm("ExternalLogin", "Account"))
+            @using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }))
             {
                 @Html.AntiForgeryToken()
                 <div id="socialLoginList" class="row">

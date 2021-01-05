@@ -350,9 +350,8 @@
 
     .account_switch {
         float: right;
-        padding: 0 10px;
-        height: 42px;
-        line-height: 40px;
+        padding: 10px;
+        line-height: 20px;
         background: #f9f9f9;
         border: 1px solid #ddd;
         font-size: 0;

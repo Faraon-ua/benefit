@@ -1,5 +1,6 @@
-﻿<div class="top-description">
-    <div class="region_wrapper">
+﻿@model bool
+<div class="top-description">
+    <div class="region_wrapper @(Model ? "no-popover" : "")">
         <div class="city_title">Ваше місто</div>
         <div class="js_city_chooser colored select_place_container">
             <span class="inside">

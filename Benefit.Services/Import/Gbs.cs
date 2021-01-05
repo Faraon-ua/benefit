@@ -6,6 +6,7 @@ using NLog;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,7 +69,7 @@ namespace Benefit.Services.Import
 
                     importTask.LastUpdateStatus = true;
                     importTask.LastUpdateMessage = null;
-                    _logger.Info(string.Format("Yml Import success at {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
+                    _logger.Info(string.Format("GBS Import success at {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
                 }
                 catch (Exception ex)
                 {
@@ -83,7 +84,7 @@ namespace Benefit.Services.Import
                     importTask.LastSync = DateTime.UtcNow;
                     db.Entry(importTask).State = EntityState.Modified;
                     db.SaveChanges();
-                    _logger.Info(string.Format("Yml results saved {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
+                    _logger.Info(string.Format("GBS results saved {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
                 }
             }
         }
@@ -215,7 +216,7 @@ namespace Benefit.Services.Import
                 {
                     return;
                 }
-                product.Price = double.Parse(xmlProduct.Element("price").Value);
+                product.Price = double.Parse(xmlProduct.Element("price").Value, CultureInfo.InvariantCulture);
                 product.AvailabilityState = ProductAvailabilityState.Available;
                 product.AvailableAmount = int.Parse(xmlProduct.Element("stock").Value);
                 product.LastModified = DateTime.UtcNow;
