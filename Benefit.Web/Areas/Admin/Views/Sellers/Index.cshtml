@@ -37,7 +37,7 @@
         function LockUnlock(id) {
             $.post(routePrefix + "/Admin/Sellers/LockUnlock?id=" + id,
                 function (data) {
-                    flashMessage("Статус постачальника змінено");
+                    flashMessage("Статус постачальника змінено", 1, 0);
                     $(".lockUser-" + id).removeClass("icon-lock");
                     $(".lockUser-" + id).removeClass("icon-unlock");
                     if (data) {

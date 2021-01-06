@@ -97,7 +97,7 @@ namespace Benefit.Web.Controllers
             };
             if (seller != null)
             {
-                if (!seller.IsActive || !seller.HasEcommerce) return Content("Seller is not active or has no eCommerce");
+                if (!seller.HasEcommerce) return Content("Seller is not active or has no eCommerce");
                 var viewPath = string.Format("~/views/sellerarea/{0}/productscatalog.cshtml",
                     seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default)
                     .ToString());
