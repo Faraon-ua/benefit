@@ -93,8 +93,8 @@
                         <form id="fn_search" class="search" action="all-products"></form>
                     </div>
 
-                    <div class="col-md-4 mobile-hidden display-flex" style="justify-content:space-between;">
-                        <div id="selectRegionWrap" class="inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
+                    <div class="col-md-4 display-flex" style="justify-content:space-between;">
+                        <div id="selectRegionWrap" class="inline-block pull-left mobile-hidden" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
                             @Html.Partial("_SelectRegionPartial", true)
                         </div>
                         <a class="fn_account account_switch mobile-hidden" href="@Url.Action("index", "Panel", new {area = "Cabinet"})" style="background-color: @seller.CabinetColor">
@@ -195,7 +195,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4 col-xl-3">
-                    <nav class="categories_nav">
+                    <nav class="categories_nav mobile-hidden">
                         <ul class="level_1 categories_menu">
                             @foreach (var cat in categories)
                             {

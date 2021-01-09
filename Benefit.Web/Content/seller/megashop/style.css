@@ -797,7 +797,7 @@ td.visible-xs {
 
 @media (max-width: 767px) {
     .mobile-hidden {
-        display: none !important;
+        display: none;
     }
 
     .purchase_amount {
