@@ -157,11 +157,11 @@ namespace Benefit.Services.Import
         private void AddAndUpdateGbsProducts(List<XElement> xmlProducts, string sellerId, IEnumerable<string> categoryIds, ApplicationDbContext db)
         {
             var maxSku = db.Products.Max(entry => entry.SKU) + 1;
-            var xmlProductIds = xmlProducts.Select(entry => entry.Element("id").Value).ToList();
+            var xmlProductIds = xmlProducts.Select(entry => entry.Element("barcode").Value).ToList();
             var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
             var dbProductIds = dbProducts.Select(entry => entry.ExternalId).ToList();
             var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
-            var xmlProductsToAdd = xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Element("id").Value)).ToList();
+            var xmlProductsToAdd = xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Element("barcode").Value)).ToList();
             var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
             var xmlCategoryIds = xmlProducts.Select(pr => pr.Element("group_id").Value).Distinct().ToList();
             var categories = db.Categories
@@ -171,7 +171,7 @@ namespace Benefit.Services.Import
 
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
             {
-                var xmlProduct = xmlProducts.First(entry => entry.Element("id").Value == productIdToAdd);
+                var xmlProduct = xmlProducts.First(entry => entry.Element("barcode").Value == productIdToAdd);
                 var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
                 var urlName = name.Translit().Truncate(128).Replace(" ", "-");
                 var category =
@@ -183,7 +183,7 @@ namespace Benefit.Services.Import
                 var product = new Product()
                 {
                     Id = Guid.NewGuid().ToString(),
-                    ExternalId = xmlProduct.Element("id").Value,
+                    ExternalId = xmlProduct.Element("barcode").Value,
                     Name = name,
                     Description = name,
                     UrlName = urlName,
@@ -209,7 +209,7 @@ namespace Benefit.Services.Import
             Parallel.ForEach(productIdsToUpdate, (productIdToUpdate) =>
             {
                 var product = dbProducts.FirstOrDefault(entry => entry.ExternalId == productIdToUpdate);
-                var xmlProduct = xmlProducts.First(entry => entry.Element("id").Value == productIdToUpdate);
+                var xmlProduct = xmlProducts.First(entry => entry.Element("barcode").Value == productIdToUpdate);
                 var category =
                     categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("group_id").Value);
                 if (category == null)
@@ -236,7 +236,7 @@ namespace Benefit.Services.Import
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
                 .Select(entry => entry.ExternalId).Distinct().ToList();
             List<string> xmlProductIds = null;
-            xmlProductIds = xmlProducts.Select(entry => entry.Element("id").Value).Distinct().ToList();
+            xmlProductIds = xmlProducts.Select(entry => entry.Element("barcode").Value).Distinct().ToList();
             var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).Where(entry => entry != null).ToList();
             var productsToRemove = db.Products.Where(entry => entry.SellerId == sellerId && productIdsToRemove.Contains(entry.ExternalId)).ToList();
             Parallel.ForEach(productsToRemove, (dbProduct) =>

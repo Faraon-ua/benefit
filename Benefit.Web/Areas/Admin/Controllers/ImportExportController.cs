@@ -112,13 +112,20 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
+        public ActionResult GetImportLinkForm(int number, string value)
+        {
+            return PartialView("_LinkForm", new KeyValuePair<int, string>(number, value));
+        }
+
         public ActionResult GetImportForm(SyncType syncType)
         {
             using (var db = new ApplicationDbContext())
             {
                 var newId = Guid.NewGuid().ToString();
                 var importTask =
-                    db.ExportImports.FirstOrDefault(
+                    db.ExportImports
+                    .Include(entry=>entry.Links)
+                    .FirstOrDefault(
                         entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == syncType) ?? new ExportImport()
                         {
                             Id = newId,
@@ -126,7 +133,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             IsImport = false,
                             SyncType = syncType,
                             FileUrl = string.Format("https://benefit.ua/export?id={0}", newId),
-                            SellerId = Seller.CurrentAuthorizedSellerId
+                            SellerId = Seller.CurrentAuthorizedSellerId,
+                            Links = new List<Link>()
                         };
 
                 var updateFrequency = new List<SelectListItem>()
@@ -172,6 +180,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     import.IsActive = exportImport.IsActive;
                     import.FileUrl = exportImport.FileUrl;
                     import.SyncPeriod = exportImport.SyncPeriod;
+                    if (exportImport.Links !=null && exportImport.Links.Any())
+                    {
+                        db.Links.RemoveRange(db.Links.Where(entry => entry.ExportImportId == import.Id));
+                        db.SaveChanges();
+                        foreach(var link in exportImport.Links)
+                        {
+                            link.Id = Guid.NewGuid().ToString();
+                            link.ExportImportId = import.Id;
+                            db.Links.Add(link);
+                        }
+                    }
                 }
                 db.SaveChanges();
                 TempData["SuccessMessage"] = "Дані імпорту/експорту оновлено";

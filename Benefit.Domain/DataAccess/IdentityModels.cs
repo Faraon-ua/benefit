@@ -92,6 +92,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<PaymentBill> PaymentBills { get; set; }
         public DbSet<SellerTransaction> SellerTransactions { get; set; }
         public DbSet<SellerReport> SellerReports { get; set; }
+        public DbSet<Link> Links { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

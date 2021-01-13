@@ -10,11 +10,30 @@
         var launchImportUrl = apiUrl + 'Import/ProcessImport?sellerId=@Model.Id';
         var importStatusUrl = apiUrl + 'Import/GetImportTaskStatus?sellerId=@Model.Id';
         var getImportStatusUrl = '@Url.Action("ImportStatus","ImportExport", new {sellerId = Model.Id})';
+        var getLinkFormUrl = '@Url.Action("GetImportLinkForm", "ImportExport")';
         var intervalId;
         const ImportStatusEnum = { "error": 0, "success": 1, "pending": 2 };
         Object.freeze(ImportStatusEnum)
 
         $(function () {
+            $(".fn-add-import-file").click(function (e) {
+                e.preventDefault();
+                var btn = $(this);
+                btn.attr("disabled", "disabled");
+                var number = parseInt($(this).attr("data-link-count"));
+                var url = getLinkFormUrl + "?number=" + number;
+                $.get(url, function (data) {
+                    btn.before(data);
+                    btn.attr("data-link-count", ++number);
+                    btn.removeAttr("disabled");
+                });
+            });
+
+            $("body").on("click", ".fn-remove-link-form", function (e) {
+                e.preventDefault();
+                $(this).parents(".form-group").remove();
+            });
+
             $("#1CCommerceML").click(function () {
                 var btn = $(this);
                 btn.attr("disabled", "disabled");

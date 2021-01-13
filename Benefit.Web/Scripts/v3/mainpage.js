@@ -22,7 +22,7 @@
             });
     });
 
-    $(".region_wrapper, .burger").popover({
+    $(".region_wrapper, .burger").not(".no-popover").popover({
         content: $(".region-popover").html(),
         html: true,
         placement: "bottom",

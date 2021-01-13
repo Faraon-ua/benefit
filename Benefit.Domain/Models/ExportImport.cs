@@ -50,6 +50,7 @@ namespace Benefit.Domain.Models
 
         public ICollection<ExportProduct> ExportProducts { get; set; }
         public ICollection<ExportCategory> ExportCategories { get; set; }
+        public ICollection<Link> Links { get; set; }
 
         //for color mapping in statistic
         [NotMapped]

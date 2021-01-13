@@ -37,7 +37,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         parentCategoryId = seller.SellerCategories.First().CategoryId;
                     }
                 }
-                var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId && !entry.IsSellerCategory).OrderBy(entry => entry.Order);
+                var cats = db.Categories.Where(entry => entry.ParentCategoryId == parentCategoryId && !entry.IsSellerCategory).OrderBy(entry => entry.Order).ToList();
                 var viewModel = new KeyValuePair<string, IEnumerable<Category>>(parentCategoryId, cats);
                 return PartialView("_CategoriesList", viewModel);
             }

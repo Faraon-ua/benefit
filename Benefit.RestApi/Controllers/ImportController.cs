@@ -107,7 +107,7 @@ namespace Benefit.RestApi.Controllers
                 }
                 if (importTask.IsImport)
                 {
-                    return Json(new { error = "Імпорт вже в процессі обробки" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { error = "Імпорт знаходиться в процессі обробки" }, JsonRequestBehavior.AllowGet);
                 }
 
                 if (type == SyncType.Yml)

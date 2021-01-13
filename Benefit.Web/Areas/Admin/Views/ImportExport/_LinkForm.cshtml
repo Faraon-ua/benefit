@@ -1,0 +1,10 @@
+﻿@model KeyValuePair<int, string>
+<div class="form-group">
+    <div class="col-md-2"></div>
+    <div class="col-md-10 offset-md-2">
+        @Html.TextBox(string.Format("Links[{0}].Url", Model.Key), Model.Value, new { @class = "width-90" })
+        <a href="#" class="fn-remove-link-form font-bigger no-underline red">
+            <i class="icon-minus"></i>
+        </a>
+    </div>
+</div>

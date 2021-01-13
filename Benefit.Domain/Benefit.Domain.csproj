@@ -689,6 +689,10 @@
     <Compile Include="Migrations\202010191434426_AddModeratorAsignee.Designer.cs">
       <DependentUpon>202010191434426_AddModeratorAsignee.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202101121024347_AddLinks.cs" />
+    <Compile Include="Migrations\202101121024347_AddLinks.Designer.cs">
+      <DependentUpon>202101121024347_AddLinks.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -701,6 +705,7 @@
     <Compile Include="Models\ExportCategory.cs" />
     <Compile Include="Models\ExportProduct.cs" />
     <Compile Include="Models\Favorite.cs" />
+    <Compile Include="Models\Link.cs" />
     <Compile Include="Models\MappedProductParameter.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\ModelExtensions\CategoryExt.cs" />
@@ -1196,6 +1201,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202010191434426_AddModeratorAsignee.resx">
       <DependentUpon>202010191434426_AddModeratorAsignee.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202101121024347_AddLinks.resx">
+      <DependentUpon>202101121024347_AddLinks.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
