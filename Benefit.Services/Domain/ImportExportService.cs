@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -787,7 +788,7 @@ namespace Benefit.Services.Domain
                         SellerId = sellerId,
                         Description = string.IsNullOrEmpty(descr) ? name : descr,
                         IsWeightProduct = false,
-                        Price = double.Parse(xmlProduct.Element("price").Value),
+                        Price = double.Parse(xmlProduct.Element("price").Value, CultureInfo.InvariantCulture),
                         OldPrice = oldPrice,
                         CurrencyId = currencies.First(entry => entry.Name == currencyId).Id,
                         AvailabilityState = xmlProduct.Attribute("available").Value == "true"
