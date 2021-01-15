@@ -35,6 +35,7 @@
             });
 
             $("#1CCommerceML").click(function () {
+                $("#importing-process").show();
                 var btn = $(this);
                 btn.attr("disabled", "disabled");
                 flashMessage("Будь ласка зачекайте результатів імпорту", 3, true);
@@ -50,6 +51,7 @@
                         if (result.status != ImportStatusEnum.pending) {
                             btn.removeAttr("disabled");
                             clearInterval(checkImportStatusId);
+                            $("#importing-process").hide();
                         }
                     });
                 }, 5000);

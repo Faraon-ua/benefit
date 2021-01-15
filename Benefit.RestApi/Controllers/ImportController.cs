@@ -64,7 +64,6 @@ namespace Benefit.RestApi.Controllers
                         }
 
                         //Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
-
                         //images
                         xml = XDocument.Load(importTask.FileUrl.Replace("import", "offers"));
 
@@ -81,11 +80,13 @@ namespace Benefit.RestApi.Controllers
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error(ex);
+                        importTask.LastUpdateStatus = false;
                         importTask.LastUpdateMessage = "Помилка імпорту файлу: " + ex.ToString();
+                        _logger.Error(ex);
                     }
                     finally
                     {
+                        importTask.LastSync = DateTime.UtcNow;
                         importTask.IsImport = false;
                         db.SaveChanges();
                     }

@@ -872,7 +872,7 @@ namespace Benefit.Services.Domain
                     //product.UrlName = name.Translit().Truncate(128);
                     //product.CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id;
                     //product.Description = string.IsNullOrEmpty(descr) ? name : descr;
-                    product.Price = double.Parse(xmlProduct.Element("price").Value);
+                    product.Price = double.Parse(xmlProduct.Element("price").Value, CultureInfo.InvariantCulture);
                     product.OldPrice = oldPrice;
                     //product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
 
