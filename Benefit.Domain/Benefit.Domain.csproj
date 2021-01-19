@@ -98,6 +98,7 @@
   <ItemGroup>
     <Compile Include="DataAccess\AdoDbContext.cs" />
     <Compile Include="DataAccess\CategoriesDBContext.cs" />
+    <Compile Include="DataAccess\ImagesDBContext.cs" />
     <Compile Include="DataAccess\ProductParametersDBContext.cs" />
     <Compile Include="DataAccess\SellersDBContext.cs" />
     <Compile Include="DataAccess\InfoPagesDBContext.cs" />

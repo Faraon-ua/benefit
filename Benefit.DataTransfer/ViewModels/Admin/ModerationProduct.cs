@@ -1,6 +1,5 @@
 ﻿using Benefit.Domain.Models;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace Benefit.DataTransfer.ViewModels.Admin
@@ -9,6 +8,7 @@ namespace Benefit.DataTransfer.ViewModels.Admin
     {
         public ModerationProduct()
         {
+            ProductParameterProducts = new List<ProductParameterProduct>();
         }
 
         [Key]
@@ -41,6 +41,6 @@ namespace Benefit.DataTransfer.ViewModels.Admin
         [Required]
         [MaxLength(128)]
         public string CurrencyId { get; set; }
-        public ProductParameterProduct[] ProductParameterProducts { get; set; }
+        public ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
     }
 }

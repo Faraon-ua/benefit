@@ -1,10 +1,8 @@
 ﻿using Benefit.Common.Constants;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
-using Benefit.Domain.Models.XmlModels;
 using Benefit.Services;
 using Benefit.Services.Domain;
-using Benefit.Services.Import;
 using NLog;
 using System;
 using System.Collections.Generic;
@@ -12,12 +10,8 @@ using System.Data.Entity;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Xml;
-using System.Xml.Linq;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -27,7 +21,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
         ProductsService ProductService = new ProductsService();
         EmailService EmailService = new EmailService();
         ImagesService ImagesService = new ImagesService();
-        ImportExportService ImportService = new ImportExportService();
+        ExportService ImportService = new ExportService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ActionResult Index()
@@ -36,6 +30,24 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var seller = db.Sellers.FirstOrDefault(entry => entry.Id == Seller.CurrentAuthorizedSellerId);
                 return View(seller);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult GetImportTaskStatus(string sellerId, SyncType type)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId && entry.SyncType == type);
+                if (importTask != null)
+                {
+                    if (importTask.IsImport)
+                    {
+                        return Json(new { status = (int)ImportStatus.Pending }, JsonRequestBehavior.AllowGet);
+                    }
+                    return Json(new { status = (importTask.LastUpdateStatus.Value ? 1 : 0), message = importTask.LastUpdateMessage }, JsonRequestBehavior.AllowGet);
+                }
+                return new HttpNotFoundResult();
             }
         }
 
@@ -198,40 +210,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<JsonResult> ExceleImport(string id)
-        {
-            using (var db = new ApplicationDbContext())
-            {
-                try
-                {
-                    var seller = db.Sellers.Find(id);
-                    var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                    var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
-                    var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", seller.UrlName);
-                    var importFile = new DirectoryInfo(sellerPath).GetFiles("import.xls", SearchOption.AllDirectories).FirstOrDefault();
-
-                    if (importFile == null || importFile.Length == 0)
-                    {
-                        return Json(new { error = "Файл import.xml не знайдено" }, JsonRequestBehavior.AllowGet);
-                    }
-                    var result = await ImportService.ImportFromExcel(id, importFile.FullName);
-
-                    Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, result));
-                }
-                catch (Exception ex)
-                {
-                    _logger.Fatal("[Excele Import] " + ex);
-                    return Json(new { error = "Файл імпорту має невірну структуру" });
-                }
-
-                return Json(new
-                {
-                    message = "Імпорт з файлу Excel успішно виконаний"
-                });
-            }
-        }
-
         public ActionResult UploadExcelFile(string sellerUrlName, HttpPostedFileBase import, HttpPostedFileBase images)
         {
             using (var db = new ApplicationDbContext())
@@ -279,15 +257,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 TempData["SuccessMessage"] = "Файли успішно завантажено, тепер можна застосувати імпорт";
 
                 return RedirectToAction("Index");
-            }
-        }
-
-        public ActionResult ImportStatus(string sellerId, SyncType type)
-        {
-            using (var db = new ApplicationDbContext())
-            {
-                var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId && entry.SyncType == type);
-                return Json(new { status = (importTask != null && importTask.IsImport) }, JsonRequestBehavior.AllowGet);
             }
         }
     }

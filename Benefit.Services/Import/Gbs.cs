@@ -15,78 +15,26 @@ using System.Xml.Linq;
 
 namespace Benefit.Services.Import
 {
-    public class GbsImportService
+    public class GbsImportService : BaseImportService
     {
-        private Logger _logger = LogManager.GetCurrentClassLogger();
-        private ImportExportService ImportExportService = new ImportExportService();
         object lockObj = new object();
-
-        public void Import(string importTaskId)
+        protected override void ProcessImport(ExportImport importTask, ApplicationDbContext db)
         {
-            using (var db = new ApplicationDbContext())
-            {
-                var importTask = db.ExportImports
-                   .Include(entry => entry.Seller)
-                   .FirstOrDefault(entry => entry.Id == importTaskId);
-                if (importTask.IsImport == true) return;
-                //show that import task is processing
-                importTask.IsImport = true;
-                db.SaveChanges();
-                _logger.Info(string.Format("Gbs Import started at {0} {1}", importTask.Seller.Id, importTask.Seller.UrlName));
+            XDocument xml = null;
+            xml = XDocument.Load(importTask.FileUrl);
+            var root = xml.Element("gbsmarket");
+            var xmlCategories = root.Descendants("GoodsCategories").ToList();
+            var xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
+            CreateAndUpdateGbsCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id, db);
+            db.SaveChanges();
+            DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Gbs, db);
+            db.SaveChanges();
 
-                XDocument xml = null;
-                try
-                {
-                    xml = XDocument.Load(importTask.FileUrl);
-                }
-                catch (Exception ex)
-                {
-                    importTask.LastUpdateStatus = false;
-                    importTask.LastUpdateMessage = "Неможливо обробити файл, перевірте правильність посилання на файл";
-                    importTask.LastSync = DateTime.UtcNow;
-                    db.Entry(importTask).State = EntityState.Modified;
-                    db.SaveChanges();
-                    return;
-                }
-
-                try
-                {
-                    var root = xml.Element("gbsmarket");
-                    var xmlCategories = root.Descendants("GoodsCategories").ToList();
-                    var xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
-                    CreateAndUpdateGbsCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id, db);
-                    db.SaveChanges();
-                    ImportExportService.DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Gbs, db);
-                    db.SaveChanges();
-
-                    var xmlProducts = root.Descendants("goods").ToList();
-                    AddAndUpdateGbsProducts(xmlProducts, importTask.SellerId, xmlCategoryIds, db);
-                    db.SaveChanges();
-                    DeleteGbsProducts(xmlProducts, importTask.SellerId, db);
-                    db.SaveChanges();
-
-                    //todo:handle exceptions
-
-                    importTask.LastUpdateStatus = true;
-                    importTask.LastUpdateMessage = null;
-                    _logger.Info(string.Format("GBS Import success at {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error(ex);
-                    importTask.LastUpdateStatus = false;
-                    importTask.LastUpdateMessage =
-                        "У ході обробки файлу виникли помилки, будь ласка зверніться до служби підтримки";
-                }
-                finally
-                {
-                    importTask.IsImport = false;
-                    importTask.LastSync = DateTime.UtcNow;
-                    db.Entry(importTask).State = EntityState.Modified;
-                    db.SaveChanges();
-                    _logger.Info(string.Format("GBS results saved {0} {1}", importTask.Seller.Id, importTask.Seller.Name));
-                }
-            }
+            var xmlProducts = root.Descendants("goods").ToList();
+            AddAndUpdateGbsProducts(xmlProducts, importTask.SellerId, xmlCategoryIds, db);
+            db.SaveChanges();
+            DeleteGbsProducts(xmlProducts, importTask.SellerId, db);
+            db.SaveChanges();
         }
 
         private void CreateAndUpdateGbsCategories(List<XElement> xmlCategories, string sellerUrlName,
@@ -153,7 +101,6 @@ namespace Benefit.Services.Import
                 importTask.HasNewContent = true;
             }
         }
-
         private void AddAndUpdateGbsProducts(List<XElement> xmlProducts, string sellerId, IEnumerable<string> categoryIds, ApplicationDbContext db)
         {
             var maxSku = db.Products.Max(entry => entry.SKU) + 1;

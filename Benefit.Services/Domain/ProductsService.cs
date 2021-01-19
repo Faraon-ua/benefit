@@ -208,27 +208,6 @@ namespace Benefit.Services.Domain
                 return productOptions.OrderBy(entry => entry.Order).ToList();
             }
         }
-
-        public int ProcessImportedProductPrices(IEnumerable<XmlProductPrice> xmlProductPrices)
-        {
-            using (var db = new ApplicationDbContext())
-            {
-                int productPricesUpdated = 0;
-                var productIds = xmlProductPrices.Select(entry => entry.Id).ToList();
-                var products = db.Products.Where(entry => productIds.Contains(entry.Id));
-                Parallel.ForEach(products, (product) =>
-                {
-                    var xmlProductPrice = xmlProductPrices.First(entry => entry.Id == product.Id);
-                    product.Price = xmlProductPrice.Price;
-                    product.AvailableAmount = (int)xmlProductPrice.Amount;
-                    productPricesUpdated++;
-                });
-
-                db.SaveChanges();
-                return productPricesUpdated;
-            }
-        }
-
         private void RemoveDuplicates(IEnumerable<Product> collection, string sellerId, string sellerUrlName, bool isIdding)
         {
             using (var db = new ApplicationDbContext())

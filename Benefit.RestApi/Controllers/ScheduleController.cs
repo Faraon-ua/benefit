@@ -4,8 +4,8 @@ using Benefit.Domain.Models;
 using Benefit.RestApi.Filters;
 using Benefit.Services;
 using Benefit.Services.Admin;
-using Benefit.Services.Domain;
 using Benefit.Services.ExternalApi;
+using Benefit.Services.Import;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -21,18 +21,32 @@ namespace Benefit.RestApi.Controllers
 
         public ActionResult ProcessImportTasks()
         {
-            Task.Run(() =>
+            using (var db = new ApplicationDbContext())
             {
-                var importService = new ImportExportService();
-                importService.ProcessImportTasks();
-            });
+                var importTasks =
+                db.ExportImports
+                .Include(entry => entry.Seller)
+                .Include(entry => entry.Seller.MappedCategories)
+                .Where(entry => entry.IsActive).ToList();
+                Task.Run(() =>
+                {
+                    foreach (var importTask in importTasks)
+                    {
+                        if (importTask.LastSync.HasValue && (DateTime.UtcNow - importTask.LastSync.Value).TotalDays < importTask.SyncPeriod)
+                        {
+                            continue;
+                        }
+                        ImportServiceFactory.GetImportServiceInstance(importTask.SyncType).Import(importTask.Id);
+                    }
+                });
+            }
             return Content("Ok");
         }
 
         public ActionResult ProcessRozetkaOrders()
         {
             var rozetkaService = new RozetkaApiService();
-            if(HttpContext.Application["IsRozetkaProcessing"] == null)
+            if (HttpContext.Application["IsRozetkaProcessing"] == null)
             {
                 HttpContext.Application["IsRozetkaProcessing"] = false;
             }

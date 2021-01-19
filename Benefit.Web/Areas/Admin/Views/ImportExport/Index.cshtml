@@ -7,9 +7,8 @@
 @section scripts
 {
     <script>
-        var launchImportUrl = apiUrl + 'Import/ProcessImport?sellerId=@Model.Id';
-        var importStatusUrl = apiUrl + 'Import/GetImportTaskStatus?sellerId=@Model.Id';
-        var getImportStatusUrl = '@Url.Action("ImportStatus","ImportExport", new {sellerId = Model.Id})';
+        var launchImportUrl = apiUrl + '@Url.Action("ProcessImport", "Import", new {sellerId = Model.Id, area = string.Empty})'.replace("Benefit.Web","");
+        var importStatusUrl = '@Url.Action("GetImportTaskStatus", "ImportExport", new {sellerId = Model.Id })';
         var getLinkFormUrl = '@Url.Action("GetImportLinkForm", "ImportExport")';
         var intervalId;
         const ImportStatusEnum = { "error": 0, "success": 1, "pending": 2 };
@@ -17,7 +16,6 @@
 
         $(function () {
             $(".fn-add-import-file").click(function (e) {
-                e.preventDefault();
                 var btn = $(this);
                 btn.attr("disabled", "disabled");
                 var number = parseInt($(this).attr("data-link-count"));
@@ -34,90 +32,29 @@
                 $(this).parents(".form-group").remove();
             });
 
-            $("#1CCommerceML").click(function () {
-                $("#importing-process").show();
+            $(".fn-launch-import").click(function () {
                 var btn = $(this);
-                btn.attr("disabled", "disabled");
-                flashMessage("Будь ласка зачекайте результатів імпорту", 3, true);
-                $.get(apiUrl + 'Import/OneCCommerceMLImport?id=@Model.Id');
-                var checkImportStatusId = setInterval(function () {
-                    $.get(importStatusUrl + '&type=OneCCommerceMl', function (result) {
-                        if (result.status == ImportStatusEnum.error) {
-                            flashMessage(result.error, true, true);
-                        }
-                        if (result.status == ImportStatusEnum.success) {
-                            flashMessage(result.message, false, true);
-                        }
-                        if (result.status != ImportStatusEnum.pending) {
-                            btn.removeAttr("disabled");
-                            clearInterval(checkImportStatusId);
-                            $("#importing-process").hide();
-                        }
-                    });
-                }, 5000);
-            });
-
-            $("#ExcelImport").click(function () {
-                $("#importing-process").show();
-                $("#warning-message").text("Будь ласка зачекайте результатів імпорту, не клацайте нічого!");
-                $.ajax({
-                    type: "POST",
-                    url: routePrefix + '/Admin/ImportExport/ExceleImport?id=@Model.Id',
-                    success: function(result) {
-                        if (result.error) {
-                            flashMessage(result.error, true, true);
-                        } else {
-                            flashMessage(result.message, false, true);
-                        }
-                        $("#importing-process").hide();
-                    }
-                });
-            });
-
-            $(".fn-launch-yml-import").click(function () {
-                $("#importing-process").show();
-                $.get(launchImportUrl +"&type=Yml",
-                    function(data) {
-                        if (data.error) {
-                            flashMessage(data.error, true, true);
-                        } else {
-                            flashMessage(data.message, false, true);
-                            intervalId = setInterval(function f() {
-                                $.get(getImportStatusUrl+"&type=Yml",
-                                    function (data) {
-                                        if (!data.status) {
-                                            $("#importing-process").hide();
-                                            clearInterval(intervalId);
-                                            location.reload();
-                                        }
-                                    });
-                            }, 5000);
-                        }
-                    });
-            });
-
-            $(".fn-launch-gbs-import").click(function () {
-                var btn = $(this);
+                var importType = btn.attr("data-import-type");
                 $(this).attr("disabled", "disabled");
                 $("#importing-process").show();
-                $.get(launchImportUrl + "&type=Gbs",
+                $.get(launchImportUrl + "&type=" + importType,
                     function (data) {
-                        btn.removeAttr("disabled");
                         if (data.error) {
+                            btn.removeAttr("disabled");
                             flashMessage(data.error, true, true);
                             $("#importing-process").hide();
                         } else {
                             flashMessage(data.message, false, true);
                             intervalId = setInterval(function f() {
-                                $.get(getImportStatusUrl+"&type=Gbs",
+                                $.get(importStatusUrl + "&type=" + importType,
                                     function (data) {
-                                        if (!data.status) {
+                                        if (data.status != ImportStatusEnum.pending) {
                                             $("#importing-process").hide();
                                             clearInterval(intervalId);
                                             location.reload();
                                         }
                                     });
-                            }, 5000);
+                            }, 10000);
                         }
                     });
             });
@@ -133,7 +70,7 @@
     <ul class="nav nav-tabs" id="myTab">
         <li class="active">
             <a data-toggle="tab" href="#prom">
-                Prom.ua/Yandex market
+                Yml
             </a>
         </li>
         <li>
@@ -151,11 +88,6 @@
                 GBS Market
             </a>
         </li>
-        @*<li>
-            <a data-toggle="tab" href="#ymlexport">
-                YML Export
-            </a>
-        </li>*@
     </ul>
     <div class="tab-content">
         <div id="prom" class="tab-pane in active">
@@ -164,9 +96,6 @@
         <div id="gbs" class="tab-pane">
             @Html.Action("GetImportForm", new { syncType = SyncType.Gbs })
         </div>
-        @*<div id="ymlexport" class="tab-pane">
-            @Html.Action("GetImportForm", new { syncType = SyncType.YmlExport })
-        </div>*@
         <div id="excel" class="tab-pane">
             <div>
                 <h3 class="red" id="warning-message">Імпорт з файлу зробить неактивними всі товари з бази, яких немає у файлі імпорту.</h3>
@@ -188,21 +117,12 @@
                 }
                 <p>
                     2) Натисніть кнопку
-                    <button type="button" class="btn btn-success" id="ExcelImport">Excel Import</button>
+                    <button type="button" class="btn btn-success fn-launch-import" data-import-type="Excel">Excel Import</button>
                 </p>
             </div>
         </div>
         <div id="1ccommerceml" class="tab-pane">
-            <div id="importFiles">
-                <h3 class="red" id="warning-message">Імпорт з файлу зробить неактивними всі товари з бази, яких немає у файлі імпорту.</h3>
-                @Html.Action("GetImportForm", new { syncType = SyncType.OneCCommerceMl })
-
-                <p>1) Завантажте файли експортовані з 1С на наш FTP</p>
-                <p>
-                    2) Натисніть кнопку
-                    <button type="button" class="btn btn-success" id="1CCommerceML">Завантажити</button>
-                </p>
-            </div>
+            @Html.Action("GetImportForm", new { syncType = SyncType.OneCCommerceMl })
         </div>
     </div>
 </div>

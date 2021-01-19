@@ -58,7 +58,7 @@ namespace Benefit.Web.Controllers
         }
         public ActionResult GenerateExportFiles(string exportId = null)
         {
-            var exportService = new ImportExportService();
+            var exportService = new ExportService();
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             using (var db = new ApplicationDbContext())
             {

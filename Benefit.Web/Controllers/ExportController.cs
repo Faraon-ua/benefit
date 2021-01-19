@@ -11,7 +11,7 @@ namespace Benefit.Web.Controllers
 {
     public class ExportController : Controller
     {
-        ImportExportService ImportExportService = new ImportExportService();
+        ExportService ImportExportService = new ExportService();
 
         //public ActionResult Index(string id)
         //{
