@@ -107,6 +107,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var category = db.Categories
                                .Include(entry => entry.ExportCategories.Select(ec => ec.Export))
                                .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
+                               .Include(entry => entry.SellerCategories.Select(sc => sc.Seller))
                                .FirstOrDefault(entry => entry.Id == id) ??
                            new Category()
                            {
