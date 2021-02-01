@@ -6,18 +6,44 @@ using Benefit.Web.Helpers;
 using System;
 using System.IO;
 using System.Linq;
+using System.Data.Entity;
+using System.Threading.Tasks;
 using System.Web.Mvc;
+using Benefit.Services.Import;
 
 namespace Benefit.Web.Controllers
 {
     [CustomKeyAuth]
     public class ScheduleController : Controller
     {
+        public ActionResult ProcessImportTasks()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var importTasks =
+                db.ExportImports
+                    .Include(entry => entry.Seller)
+                    .Include(entry => entry.Seller.MappedCategories)
+                    .Where(entry => entry.IsActive).ToList();
+                Task.Run(() =>
+                {
+                    foreach (var importTask in importTasks)
+                    {
+                        if (importTask.LastSync.HasValue && (DateTime.UtcNow - importTask.LastSync.Value).TotalDays < importTask.SyncPeriod)
+                        {
+                            continue;
+                        }
+                        ImportServiceFactory.GetImportServiceInstance(importTask.SyncType).Import(importTask.Id);
+                    }
+                });
+            }
+            return Content("Ok");
+        }
         public ActionResult GenerateSellerReport(int? year = null, int? month = null, string sellerId = null)
         {
             var sellerReportService = new SellerReportService();
             year = year ?? DateTime.Now.Year;
-            month = month ?? DateTime.Now.Month - 1;
+            month = month ?? (DateTime.Now.Month - 1 == 0 ? 12 : DateTime.Now.Month - 1);
             var startDate = new DateTime(year.Value, month.Value, 1, 0, 0, 0);
             var endDate = new DateTime(year.Value, month.Value, DateTime.DaysInMonth(year.Value, month.Value), 23, 59, 59);
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);

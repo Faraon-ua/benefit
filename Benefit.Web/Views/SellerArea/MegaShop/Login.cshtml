@@ -1,7 +1,7 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.DataTransfer.ViewModels
 @using Benefit.Domain.Models
-
+@using Benefit.Web.Helpers;
 @{
     ViewBag.Title = "Авторизація";
     Layout = "_SellerLayout.cshtml";
@@ -63,7 +63,6 @@
     </script>
 }
 
-
 <div class="col-md-8 col-xl-9 content">
     @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Авторизація" } })
 
@@ -73,8 +72,8 @@
                 @Html.ValidationSummary()
                 <div class="tabs clearfix">
                     <div class="tab_navigation">
-                        <a href="#login" data-language="product_description" class="selected">Постійний клієнт</a>
-                        <a href="#registration" data-language="product_description">Новий клієнт</a>
+                        <a href="#login" data-language="product_description" class='@(RouteDataHelper.ActionName == "login" ? "selected" : "")'>Постійний клієнт</a>
+                        <a href="#registration" data-language="product_description" class='@(RouteDataHelper.ActionName == "register" ? "selected" : "")'>Новий клієнт</a>
                     </div>
 
                     <div class="tab_container">

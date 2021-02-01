@@ -78,7 +78,7 @@
                     </div>
                 </div>
             }
-            else if (Model.Id != null)
+            else if (Model.Id != null && Model.IsActive)
             {
                 <div class="col-md-offset-2">
                     Наступне оновлення відбудеться: @DateTime.UtcNow.ToLocalTime().EndOfDay().AddHours(3).ToLocalDateTimeWithFormat()
@@ -89,7 +89,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Зберегти" class="btn btn-info" />
-                <button type="button" class="margin-left-30 btn btn-success fn-launch-import" data-import-type="@Model.SyncType.ToString()">Запустити</button>
+                @*<button type="button" class="margin-left-30 btn btn-success fn-launch-import" data-import-type="@Model.SyncType.ToString()">Запустити</button>*@
             </div>
         </div>
     </div>

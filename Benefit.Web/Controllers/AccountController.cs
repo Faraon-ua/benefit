@@ -185,7 +185,7 @@ namespace Benefit.Web.Controllers
                 ModelState.Remove("model.Password");
                 model.Password = StringHelper.RandomString(8);
             }
-            if (model.FullName.Trim().Split(' ').Length < 2)
+            if (model.FullName != null && model.FullName.Trim().Split(' ').Length < 2)
             {
                 ModelState.AddModelError("FullName", "Ім'я та прізвище є обов'язковими для заповнення");
             }
