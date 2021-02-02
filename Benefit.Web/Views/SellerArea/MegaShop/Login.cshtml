@@ -77,7 +77,7 @@
                     </div>
 
                     <div class="tab_container">
-                        <div id="registration" class="tab product_description" itemprop="description">
+                        <div id="registration" class="tab product_description" itemprop="description" style="@(RouteDataHelper.ActionName == "register" ? "display: block;" : "display: none;")">
                             @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))
                             {
                                 @Html.AntiForgeryToken()
@@ -127,7 +127,7 @@
                                 <button class="button btn-ajax-login" name="register" data-language="login_sign_in" type="submit">Реєстрація</button>
                             }
                         </div>
-                        <div id="login" class="tab product_description" itemprop="description" style="display: block;">
+                        <div id="login" class="tab product_description" itemprop="description" style="@(RouteDataHelper.ActionName == "login" ? "display: block;" : "display: none;")">
                             @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
                             {
                                 @Html.AntiForgeryToken()
