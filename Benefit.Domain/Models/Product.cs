@@ -189,7 +189,7 @@ namespace Benefit.Domain.Models
             {
                 return _availableForPurchase;
             }
-            if (!Seller.IsActive || !Category.IsActive || ModerationStatus != ModerationStatus.Moderated)
+            if (!IsActive || !Seller.IsActive || !Category.IsActive || ModerationStatus != ModerationStatus.Moderated)
             {
                 AvailabilityState = ProductAvailabilityState.NotInStock;
             }

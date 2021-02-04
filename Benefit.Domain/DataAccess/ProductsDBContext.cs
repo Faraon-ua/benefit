@@ -149,6 +149,7 @@ namespace Benefit.Domain.DataAccess
                     ,img.IsAbsoluteUrl as ImageIsAbsoluteUrl
                     ,cat.IsActive as CategoryIsActive
                     ,cat.Name as CategoryName
+                  ,p.IsActive
                   ,p.Name
                   ,p.UrlName
                   ,p.SKU
