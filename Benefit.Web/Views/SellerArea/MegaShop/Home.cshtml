@@ -72,7 +72,7 @@
 
         @if (Model.FeaturedProducts.Any())
         {
-            <div class="featured_products block">
+            <div class="featured_products block products">
                 <div class="h1 slidehead">
                     <span data-language="main_recommended_products">Хіти продажу</span>
                 </div>
@@ -87,7 +87,7 @@
         }
         @if (Model.NewProducts.Any())
         {
-            <div class="discounted_products block">
+            <div class="discounted_products block products">
                 <div class="h1 slidehead">
                     <span data-language="main_discount_products">Новинки</span>
                 </div>
@@ -101,7 +101,7 @@
         }
         @if (Model.PromotionProducts.Any())
         {
-            <div class="discounted_products block">
+            <div class="discounted_products block products">
                 <div class="h1 slidehead">
                     <span data-language="main_discount_products">Акційні товари</span>
                 </div>

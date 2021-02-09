@@ -99,7 +99,7 @@ namespace Benefit.RestApi.Controllers
                     product.IsNewProduct = false;
                 }
 
-                foreach (var seller in db.Sellers.Where(entry => entry.GenerateFeaturedProducts))
+                foreach (var seller in db.Sellers.Where(entry => entry.IsActive && entry.GenerateFeaturedProducts))
                 {
                     var featuredProducts =
                         db.Products
@@ -107,6 +107,9 @@ namespace Benefit.RestApi.Controllers
                             .Include(entry => entry.Category)
                             .Where(entry =>
                                 entry.IsActive &&
+                                entry.Category.IsActive &&
+                                entry.ModerationStatus == ModerationStatus.Moderated &&
+                                entry.AvailableAmount > 0 &&
                                 (entry.AvailabilityState == ProductAvailabilityState.Available ||
                                  entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
                                 entry.Images.Any() && entry.SellerId == seller.Id &&
@@ -121,8 +124,12 @@ namespace Benefit.RestApi.Controllers
                     var newProducts =
                         db.Products
                             .Include(entry => entry.Images)
+                            .Include(entry => entry.Category)
                             .Where(entry =>
                                 entry.IsActive &&
+                                entry.Category.IsActive &&
+                                entry.ModerationStatus == ModerationStatus.Moderated &&
+                                entry.AvailableAmount > 0 &&
                                 (entry.AvailabilityState == ProductAvailabilityState.Available ||
                                  entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
                                 entry.Images.Any() && entry.SellerId == seller.Id &&

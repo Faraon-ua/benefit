@@ -421,7 +421,7 @@
                                         }
                                     </div>
                                 }
-                                @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+                                @if (availableForPurchase.State != ComputedProductAvailabilityState.NotAvailable)
                                 {
                                     if (Model.ProductOptions.Any(entry => !entry.IsVariant))
                                     {

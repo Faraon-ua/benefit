@@ -64,7 +64,13 @@ namespace Benefit.Web.Controllers
                         .Include(entry => entry.Seller)
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
-                            entry.IsActive && entry.SellerId == seller.Id && entry.OldPrice != null).Take(8).ToList();
+                            entry.IsActive &&
+                            entry.ModerationStatus == ModerationStatus.Moderated &&
+                            entry.AvailableAmount > 0 &&
+                            (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || entry.AvailabilityState == ProductAvailabilityState.Available) && 
+                            entry.Category.IsActive && 
+                            entry.SellerId == seller.Id && 
+                            entry.OldPrice != null).Take(8).ToList();
                     foreach (var featuredProduct in seller.FeaturedProducts)
                     {
                         if (featuredProduct.Currency != null)

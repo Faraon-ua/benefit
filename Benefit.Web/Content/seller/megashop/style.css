@@ -4150,6 +4150,7 @@ a {
 .preview_details {
     padding: 15px 15px 20px;
     text-align: center;
+    height: 170px;
 }
 
 .product_name {
