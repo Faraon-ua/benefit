@@ -969,7 +969,6 @@
     <Content Include="Areas\Cabinet\Views\Panel\_FinanceMentorPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Users\_AdditionalPaymentsPartial.cshtml" />
     <Content Include="Areas\Admin\Views\Users\_FinanceUserForm.cshtml" />
-    <Content Include="Areas\Admin\Views\Banners\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Banners\CreateOrUpdate.cshtml" />
     <Content Include="Areas\Admin\Views\Banners\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Personnel\_ModeratorForm.cshtml" />

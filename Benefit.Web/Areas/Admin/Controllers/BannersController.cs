@@ -74,6 +74,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var pathString = Path.Combine(originalDirectory, "Images", banner.BannerType.ToString());
                         banner.ImageUrl = banner.Id + ".webp";
                         var path = Path.Combine(pathString, banner.ImageUrl);
+                        if (System.IO.File.Exists(path))
+                        {
+                            System.IO.File.Delete(path);
+                        }
                         logo.SaveAs(path);
                         imageService.ResizeToSiteRatio(path, ImageType.Banner, banner.BannerType, imageFormat: format);
                     }

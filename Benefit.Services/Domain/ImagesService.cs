@@ -150,8 +150,16 @@ namespace Benefit.Services
                     }
                     if(bannerType == BannerType.PrimaryMainPage)
                     {
-                        maxWidth = 724;
-                        maxHeight = 433;
+                        if(Seller.CurrentAuthorizedSellerId == null)
+                        {
+                            maxWidth = 724;
+                            maxHeight = 433;
+                        }
+                        else
+                        {
+                            maxWidth = 994;
+                            maxHeight = 487;
+                        }
                     }
                     if (bannerType == BannerType.SideTopMainPage || bannerType == BannerType.SideBottomMainPage)
                     {
@@ -201,6 +209,7 @@ namespace Benefit.Services
                     {
                         var format = GetImageFormatByExtension(imagePath);
                         if (format == null) return;
+                        newImage.SetResolution(300, 300);
                         newImage.Save(memory, format);
                         byte[] bytes = memory.ToArray();
                         fs.Write(bytes, 0, bytes.Length);

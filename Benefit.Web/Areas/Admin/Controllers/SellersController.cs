@@ -401,12 +401,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             SellerId = seller.Id
                         };
                         img.ImageUrl = img.Id + fileExt;
-
-                        db.Images.RemoveRange(
-                            db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerLogo));
+                        var imagesService = new ImagesService();
+                        var images = db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerLogo).ToList();
+                        imagesService.DeleteAll(images, null, ImageType.SellerLogo);
                         db.Images.Add(img);
                         sellerLogo.SaveAs(Path.Combine(pathString, img.ImageUrl));
-                        var imagesService = new ImagesService();
                         imagesService.ResizeToSiteRatio(Path.Combine(pathString, img.ImageUrl), ImageType.SellerLogo);
                     }
                     if (sellerFavicon != null && sellerFavicon.ContentLength != 0)
