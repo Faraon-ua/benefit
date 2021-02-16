@@ -225,7 +225,7 @@ namespace Benefit.Services.Domain
                             categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
                         }
                         prod.Add(new XElement("categoryId", categoryId));
-                        foreach (var picture in product.Images.OrderBy(entry => entry.Order))
+                        foreach (var picture in product.Images.Where(entry=>entry.ImageType == ImageType.ProductGallery).OrderBy(entry => entry.Order))
                         {
                             var pictureUrl = picture.IsAbsoluteUrl
                                 ? picture.ImageUrl
