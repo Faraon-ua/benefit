@@ -15,6 +15,13 @@ namespace Benefit.Services
                 return ConfigurationManager.AppSettings["BaseHostName"];
             }
         }
+        public static string BaseApiHostName
+        {
+            get
+            {
+                return ConfigurationManager.AppSettings["BaseApiHostName"];
+            }
+        }
         public static string ScheduleKey
         {
             get

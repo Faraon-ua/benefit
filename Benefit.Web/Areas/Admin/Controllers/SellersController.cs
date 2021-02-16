@@ -386,7 +386,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             db.Entry(businessLevel).State = EntityState.Modified;
                         }
                     }
-
+                    var imagesService = new ImagesService();
                     var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                     if (sellerLogo != null && sellerLogo.ContentLength != 0)
                     {
@@ -401,9 +401,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             SellerId = seller.Id
                         };
                         img.ImageUrl = img.Id + fileExt;
-                        var imagesService = new ImagesService();
                         var images = db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerLogo).ToList();
-                        imagesService.DeleteAll(images, null, ImageType.SellerLogo);
+                        foreach(var logo in images)
+                        {
+                            imagesService.DeleteWithFile(logo, db);
+                        }
                         db.Images.Add(img);
                         sellerLogo.SaveAs(Path.Combine(pathString, img.ImageUrl));
                         imagesService.ResizeToSiteRatio(Path.Combine(pathString, img.ImageUrl), ImageType.SellerLogo);
@@ -422,8 +424,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         };
                         img.ImageUrl = img.Id + fileExt;
 
-                        db.Images.RemoveRange(
-                            db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerFavicon));
+                        var images = db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerFavicon).ToList();
+                        foreach (var fav in images)
+                        {
+                            imagesService.DeleteWithFile(fav, db);
+                        }
                         db.Images.Add(img);
                         sellerFavicon.SaveAs(Path.Combine(pathString, img.ImageUrl));
                     }

@@ -50,13 +50,13 @@
     <legend>
         Згенерувати рекомендовані та нові товари
     </legend>
-    <a class="btn btn-info" target="_blank" href="@Url.Action("FetchFeaturedProducts", "Schedule", new {key=SettingsService.ScheduleKey, area=string.Empty})">Згенерувати</a>
+    <a class="btn btn-info" target="_blank" href="@string.Format("{0}/Schedule/FetchFeaturedProducts?key={1}", SettingsService.BaseApiHostName, SettingsService.ScheduleKey)">Згенерувати</a>
 </fieldset>
 <fieldset>
     <legend>
         Синхронізувати замовлення з Розетка
     </legend>
-    <a class="btn btn-info" target="_blank" href="@Url.Action("ProcessRozetkaOrders", "Schedule", new {key=SettingsService.ScheduleKey, area=string.Empty})">Синхронізувати</a>
+    <a class="btn btn-info" target="_blank" href="@string.Format("{0}/Schedule/ProcessRozetkaOrders?key={1}", SettingsService.BaseApiHostName, SettingsService.ScheduleKey)">Синхронізувати</a>
 </fieldset>
 @*<fieldset>
         <legend>

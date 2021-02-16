@@ -24,6 +24,9 @@ namespace Benefit.Services
                     return img.Id;
                 var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                 var pathString = Path.Combine(originalDirectory, "Images", ImageType.ProductGallery.ToString(), img.ProductId);
+                var path = Path.Combine(pathString, img.ImageUrl);
+                if (!File.Exists(path))
+                    return img.Id;
                 var imgId = Guid.NewGuid().ToString();
                 var defaultImgName = imgId + ".webp";
                 File.Copy(Path.Combine(pathString, img.ImageUrl), Path.Combine(pathString, defaultImgName));
@@ -71,8 +74,8 @@ namespace Benefit.Services
                     return ImageFormat.Tiff;
 
                 case @".wmf":
-                    return ImageFormat.Wmf; 
-                
+                    return ImageFormat.Wmf;
+
                 default:
                     return null;
             }
@@ -148,9 +151,9 @@ namespace Benefit.Services
                         maxWidth = 1400;
                         maxHeight = 200;
                     }
-                    if(bannerType == BannerType.PrimaryMainPage)
+                    if (bannerType == BannerType.PrimaryMainPage)
                     {
-                        if(Seller.CurrentAuthorizedSellerId == null)
+                        if (Seller.CurrentAuthorizedSellerId == null)
                         {
                             maxWidth = 724;
                             maxHeight = 433;
@@ -235,7 +238,7 @@ namespace Benefit.Services
         public void DeleteAll(IEnumerable<Image> images, string parentId, ImageType type, bool deleteFolder = false, bool deleteFromDb = true)
         {
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-            var pathString = Path.Combine(originalDirectory, "Images", type.ToString(), parentId);
+            var pathString = Path.Combine(originalDirectory, "Images", type.ToString(), parentId == null ? string.Empty : parentId);
             var productImagesDir = new DirectoryInfo(pathString);
             if (productImagesDir.Exists)
             {
@@ -305,10 +308,10 @@ namespace Benefit.Services
                 var image = db.Images.FirstOrDefault(entry => entry.ImageUrl == url && entry.ProductId == productId);
                 if (image == null) return;
                 var defaultImgProduct = db.Products.FirstOrDefault(entry => entry.DefaultImageId == image.Id);
-                if(defaultImgProduct != null)
+                if (defaultImgProduct != null)
                 {
                     var otherImage = db.Images.FirstOrDefault(entry => entry.Id != image.Id && entry.ProductId == productId);
-                    if(otherImage != null)
+                    if (otherImage != null)
                     {
                         defaultImgProduct.DefaultImageId = otherImage.Id;
                     }
@@ -348,6 +351,28 @@ namespace Benefit.Services
                     db.SaveChanges();
                 }
             }
+        }
+
+        public void DeleteWithFile(Image img, ApplicationDbContext db)
+        {
+            var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
+            var pathString = Path.Combine(originalDirectory, "Images", img.ImageType.ToString());
+            var fullPath = Path.Combine(pathString, img.ImageUrl);
+            try
+            {
+                var file = new FileInfo(fullPath);
+                if (file.Exists)
+                {
+                    File.SetAttributes(fullPath, FileAttributes.Normal);
+                    file.Delete();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.Message);
+            }
+            db.Images.Remove(img);
+            db.SaveChanges();
         }
     }
 }
