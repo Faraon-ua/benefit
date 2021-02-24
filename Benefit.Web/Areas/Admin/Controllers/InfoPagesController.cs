@@ -80,11 +80,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         return RedirectToAction("Index");
                     }
                 }
-                if (infopage.UrlName == null)
-                {
-                    infopage.UrlName = infopage.Name.Translit();
-                    ModelState.Remove("UrlName");
-                }
+                infopage.UrlName = infopage.Name.Translit();
                 if (ModelState.IsValid)
                 {
                     if (Seller.CurrentAuthorizedSellerId != null)

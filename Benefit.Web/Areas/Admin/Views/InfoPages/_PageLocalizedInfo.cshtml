@@ -30,7 +30,7 @@
                     @Html.ValidationMessageFor(model => model.Name)
                 </div>
             </div>
-            <div class="form-group @(isSellerMode ? "hidden":"")">
+            <div class="form-group">
                 <label class="control-label col-md-1" for="UrlName">Url назва</label>
                 <div class="col-md-10">
                     @Html.TextBoxFor(model => model.UrlName, new { @class = "urlName" })

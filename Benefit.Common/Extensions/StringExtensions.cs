@@ -50,6 +50,7 @@ namespace Benefit.Common.Extensions
         {
             if (value == null) return null;
             var words = new Dictionary<string, string>();
+            words.Add("!", "");
             words.Add(":", "");
             words.Add("%", "proc");
             words.Add("(", "");
@@ -65,7 +66,7 @@ namespace Benefit.Common.Extensions
             words.Add("'", "");
             words.Add(".", "");
             words.Add(",", "");
-            words.Add(" ", " ");
+            words.Add(" ", "-");
             words.Add("\t", "-");
             words.Add("\n", "");
             words.Add("а", "a");

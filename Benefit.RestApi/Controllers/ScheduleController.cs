@@ -109,14 +109,14 @@ namespace Benefit.RestApi.Controllers
                                 entry.IsActive &&
                                 entry.Category.IsActive &&
                                 entry.ModerationStatus == ModerationStatus.Moderated &&
-                                entry.AvailableAmount > 0 &&
-                                (entry.AvailabilityState == ProductAvailabilityState.Available ||
+                                ((entry.AvailableAmount > 0 &&
+                                entry.AvailabilityState == ProductAvailabilityState.Available) ||
                                  entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
                                 entry.Images.Any() && entry.SellerId == seller.Id &&
                                 (!entry.Category.IsSellerCategory ||
                                  (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)))
                             .OrderBy(entry => Guid.NewGuid())
-                            .Take(ListConstants.FeaturedProductsPerSellerNumber);
+                            .Take(ListConstants.FeaturedProductsPerSellerNumber).ToList();
                     foreach (var featuredProduct in featuredProducts)
                     {
                         featuredProduct.IsFeatured = true;
@@ -129,8 +129,8 @@ namespace Benefit.RestApi.Controllers
                                 entry.IsActive &&
                                 entry.Category.IsActive &&
                                 entry.ModerationStatus == ModerationStatus.Moderated &&
-                                entry.AvailableAmount > 0 &&
-                                (entry.AvailabilityState == ProductAvailabilityState.Available ||
+                               ((entry.AvailableAmount > 0 &&
+                                entry.AvailabilityState == ProductAvailabilityState.Available) ||
                                  entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
                                 entry.Images.Any() && entry.SellerId == seller.Id &&
                                 (!entry.Category.IsSellerCategory ||

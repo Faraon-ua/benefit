@@ -79,7 +79,7 @@ namespace Benefit.Web.Controllers
                                 .ThenByDescending(entry => entry.Images.Any())
                                 .Take(ListConstants.DefaultTakePerPage + 1).ToList());
                     }
-
+                    viewModel.Items = viewModel.Items.Distinct(new ProductComparer()).ToList();
                     viewModel.Items.ForEach(entry =>
                     {
                         var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;

@@ -111,11 +111,11 @@ namespace Benefit.Web.Controllers
             mainPageViewModel.FeaturedProducts = (from element in products.Where(entry => entry.IsFeatured)
                                                   group element by element.SellerId
                                                   into groups
-                                                  select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
+                                                  select groups.OrderBy(p => Guid.NewGuid()).Take(4)).SelectMany(entry=>entry).ToList();
             mainPageViewModel.NewProducts = (from element in products.Where(entry => entry.IsNewProduct)
                                              group element by element.SellerId
                                                  into groups
-                                             select groups.OrderBy(p => Guid.NewGuid()).FirstOrDefault()).ToList();
+                                             select groups.OrderBy(p => Guid.NewGuid()).Take(4)).SelectMany(entry => entry).ToList();
 
             mainPageViewModel.PrimaryBanners = banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage)
                     .OrderBy(entry => entry.Order)
