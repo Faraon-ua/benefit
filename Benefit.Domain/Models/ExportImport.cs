@@ -54,6 +54,6 @@ namespace Benefit.Domain.Models
 
         //for color mapping in statistic
         [NotMapped]
-        public int Status { get; set; }
+        public ImportStatus? Status { get; set; }
     }
 }

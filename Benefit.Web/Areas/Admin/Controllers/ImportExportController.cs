@@ -55,19 +55,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                var importTasks = db.ExportImports.Include(entry => entry.Seller).Where(entry => entry.SellerId != null).ToList();
+                var importTasks = db.ExportImports
+                    .Include(entry => entry.Seller)
+                    .Where(entry => entry.SellerId != null)
+                    .OrderByDescending(entry => entry.IsActive)
+                    .ThenByDescending(entry => entry.LastSync).ToList();
                 foreach (var task in importTasks)
                 {
-                    if (DateTime.Now - task.LastSync > TimeSpan.FromDays(7))
+                    if (DateTime.Now - task.LastSync > TimeSpan.FromDays(3) && task.IsActive)
                     {
-                        task.Status = 2;
+                        task.Status = ImportStatus.Error;
                     }
-                    if (DateTime.Now - task.LastSync > TimeSpan.FromDays(1) && DateTime.Now - task.LastSync < TimeSpan.FromDays(7))
+                    if (DateTime.Now - task.LastSync < TimeSpan.FromDays(3) && task.IsActive)
                     {
-                        task.Status = 1;
+                        task.Status = ImportStatus.Success;
                     }
                 }
-                importTasks = importTasks.OrderByDescending(entry => entry.Status).ThenBy(entry => entry.LastSync).ToList();
                 return View(importTasks);
             }
         }
