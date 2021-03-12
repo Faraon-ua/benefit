@@ -1046,6 +1046,7 @@
     <Content Include="Areas\Admin\Views\Products\Moderation.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ModerationProductForm.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\_LinkForm.cshtml" />
+    <Content Include="Areas\Admin\Views\Products\_ProductLocalization.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

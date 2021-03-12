@@ -303,6 +303,12 @@
                 </a>
             </li>
             <li>
+                <a href="#localization" data-toggle="tab">
+                    <i class="purple icon-flag bigger-110"></i>
+                    Русский
+                </a>
+            </li>
+            <li>
                 <a href="#parameters" data-toggle="tab">
                     <i class="orange icon-check bigger-110"></i>
                     Характеристики
@@ -341,6 +347,9 @@
             </div>
             <div class="tab-pane" id="options">
                 @Html.Partial("_ProductOptions")
+            </div>
+            <div class="tab-pane" id="localization">
+                @Html.Partial("_ProductLocalization")
             </div>
             @if (User.IsInRole(DomainConstants.AdminRoleName))
             {

@@ -180,7 +180,7 @@ namespace Benefit.Domain.Models
         }
 
         [NotMapped]
-        public ICollection<Localization> Localizations { get; set; }
+        public List<Localization> Localizations { get; set; }
 
         private ProductAvailability _availableForPurchase = null;
         public ProductAvailability AvailableForPurchase(int regionId)

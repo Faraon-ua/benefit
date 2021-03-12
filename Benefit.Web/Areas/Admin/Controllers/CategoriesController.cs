@@ -15,7 +15,6 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Benefit.Domain.Models.ModelExtensions;
-using WebGrease.Css.Extensions;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -123,7 +122,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 0 });
                 ViewBag.Categories = categories;
                 ViewBag.Exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
-                category.Localizations = LocalizationService.Get(category, new[] { "Name", "Description" });
+                category.Localizations = LocalizationService.Get(category,
+                    entry => entry.Name,
+                    entry => entry.Description,
+                    entry => entry.MetaDescription,
+                    entry => entry.Title);
                 return View(category);
             }
         }
@@ -136,13 +139,33 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
+                for (var i = 0; i < category.ExportCategories.Count; i++)
+                {
+                    if (category.ExportCategories.ElementAt(i).Name == null)
+                    {
+                        foreach (var key in ModelState.Keys.Where(entry => entry.Contains(string.Format("ExportCategories[{0}]", i))))
+                        {
+                            ModelState[key].Errors.Clear();
+                        }
+                    }
+                }
+                for (var i = 0; i < category.Localizations.Count; i++)
+                {
+                    if (category.Localizations[i].ResourceValue == null)
+                    {
+                        foreach (var key in ModelState.Keys.Where(entry => entry.Contains(string.Format("Localizations[{0}]", i))))
+                        {
+                            ModelState[key].Errors.Clear();
+                        }
+                    }
+                }
                 if (db.Categories.Any(entry => entry.UrlName == category.UrlName && entry.Id != category.Id))
                 {
                     ModelState.AddModelError("UrlName", "Категорія з таким Url вже існує");
                 }
                 if (ModelState.IsValid)
                 {
-                    var exportCategories = category.ExportCategories.ToList();
+                    var exportCategories = category.ExportCategories.Where(entry => entry != null).ToList();
                     category.LastModified = DateTime.UtcNow;
                     category.LastModifiedBy = User.Identity.Name;
 
@@ -152,21 +175,21 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var existingCategoryExports = db.ExportCategories.Where(entry => entry.CategoryId == category.Id).ToList();
                         db.ExportCategories.RemoveRange(existingCategoryExports);
                         db.SaveChanges();
-                        db.ExportCategories.AddRange(exportCategories);
+                        db.ExportCategories.AddRange(exportCategories.Where(entry=>entry.Name != null));
                         var existingCat = db.Categories.Find(category.Id);
                         var children = existingCat.GetAllChildrenRecursively().Distinct(new CategoryComparer()).ToList();
                         children.ForEach(entry =>
-                        {
-                            var local = db.Set<Category>()
-                                .Local
-                                .FirstOrDefault(f => f.Id == entry.Id);
-                            if (local != null)
-                            {
-                                db.Entry(local).State = EntityState.Detached;
-                            }
-                            entry.ShowCartOnOrder = category.ShowCartOnOrder;
-                            db.Entry(entry).State = EntityState.Modified;
-                        });
+                                            {
+                                                var local = db.Set<Category>()
+                                                    .Local
+                                                    .FirstOrDefault(f => f.Id == entry.Id);
+                                                if (local != null)
+                                                {
+                                                    db.Entry(local).State = EntityState.Detached;
+                                                }
+                                                entry.ShowCartOnOrder = category.ShowCartOnOrder;
+                                                db.Entry(entry).State = EntityState.Modified;
+                                            });
                         var childernIds = children.Select(entry => entry.Id).ToList();
                         var mappedCats = db.Categories.Where(entry => childernIds.Contains(entry.MappedParentCategoryId) || entry.MappedParentCategoryId == existingCat.Id).ToList();
                         mappedCats.ForEach(entry =>
@@ -179,7 +202,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         category.Order = db.Categories.Max(entry => entry.Order) + 1;
                         db.Categories.Add(category);
-                        LocalizationService.Save(category.Localizations);
                     }
                     if (categoryImage != null && categoryImage.ContentLength > 0)
                     {
@@ -209,6 +231,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     {
                         db.Entry(category).Property(entry => entry.BannerImageUrl).IsModified = false;
                     }
+                    LocalizationService.Save(category.Localizations);
                     db.SaveChanges();
                     TempData["SuccessMessage"] = "Категорію було збережено";
                     return RedirectToAction("CreateOrUpdate", new { id = category.Id });

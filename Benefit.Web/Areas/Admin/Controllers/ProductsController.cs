@@ -216,6 +216,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
                               IsActive = true,
                               DoesCountForShipping = true
                           };
+                var LocalizationService = new LocalizationService();
+                product.Localizations = LocalizationService.Get(product,
+                            entry => entry.Name,
+                            entry => entry.Description,
+                            entry => entry.ShortDescription,
+                            entry => entry.AltText,
+                            entry => entry.Title);
                 ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
                 {
                     Text = entry.IsSellerCategory ? string.Format("[seller]{0}", entry.Name) : entry.Name,
@@ -356,6 +363,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("ShortDescription", "Короткий опис обовязковий для заповнення");
                 }
+                for (var i = 0; i < product.Localizations.Count; i++)
+                {
+                    if (product.Localizations[i].ResourceValue == null)
+                    {
+                        foreach (var key in ModelState.Keys.Where(entry => entry.Contains(string.Format("Localizations[{0}]", i))))
+                        {
+                            ModelState[key].Errors.Clear();
+                        }
+                    }
+                }
                 product.ProductParameterProducts = product.ProductParameterProducts.Where(entry => entry.StartText != null).ToList();
                 product.ProductParameterProducts.ForEach(entry => entry.StartValue = entry.StartText.Translit());
                 var exceededParams = product.ProductParameterProducts.Where(entry => entry.StartValue.Length > ProductConstants.ParameterStartTextMaxLength);
@@ -420,6 +437,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         }
                     }
                     db.SaveChanges();
+                    var LocalizationService = new LocalizationService();
+                    LocalizationService.Save(product.Localizations);
                     TempData["SuccessMessage"] = "Товар збережено";
                     return RedirectToAction("CreateOrUpdate", new { id = product.Id });
                 }

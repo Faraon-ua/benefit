@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Data.Entity.Core.Objects;
 using System.Linq;
+using System.Linq.Expressions;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.Services.Files;
@@ -10,6 +11,15 @@ namespace Benefit.Services
 {
     public class LocalizationService
     {
+        public List<Localization> Get<T>(T obj, params Expression<Func<T, string>>[] entries) {
+            var members = new List<string>();
+            foreach (var entry in entries)
+            {
+                var expression = (MemberExpression)entry.Body;
+                members.Add(expression.Member.Name);
+            }
+            return Get(obj, members.ToArray());
+        }
         public List<Localization> Get<T>(T obj, string[] fields)
         {
             using (var db = new ApplicationDbContext())
@@ -33,7 +43,7 @@ namespace Benefit.Services
                                 LanguageCode = supportedLocalization,
                                 ResourceField = field,
                                 ResourceId = id,
-                                ResourceType = obj.GetType().ToString()
+                                ResourceType = type
                             };
                         localizations.Add(localization);
                     }
@@ -53,7 +63,7 @@ namespace Benefit.Services
                     entry.ResourceType == resourceType);
                 db.Localizations.RemoveRange(existingLocalizations);
                 db.SaveChanges();
-                db.Localizations.AddRange(localizations);
+                db.Localizations.AddRange(localizations.Where(entry=>entry.ResourceValue != null));
                 db.SaveChanges();
             }
         }

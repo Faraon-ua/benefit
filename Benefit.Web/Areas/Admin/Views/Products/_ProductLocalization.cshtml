@@ -1,0 +1,21 @@
+﻿@model Benefit.Domain.Models.Product
+@using System.Globalization;
+
+<div class="form-horizontal">
+    @for (var i = 0; i < Model.Localizations.Count; i++)
+    {
+        <div class="form-group">
+            @Html.HiddenFor(m => m.Localizations[i].Id)
+            @Html.HiddenFor(m => m.Localizations[i].LanguageCode)
+            @Html.HiddenFor(m => m.Localizations[i].ResourceField)
+            @Html.HiddenFor(m => m.Localizations[i].ResourceId)
+            @Html.HiddenFor(m => m.Localizations[i].ResourceType)
+            <label class="control-label col-md-1" for="Name">
+                @HttpContext.GetGlobalResourceObject("Resources", Model.Localizations[i].ResourceField, new CultureInfo("ru-RU"))
+            </label>
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Localizations[i].ResourceValue)
+            </div>
+        </div>
+    }
+</div>

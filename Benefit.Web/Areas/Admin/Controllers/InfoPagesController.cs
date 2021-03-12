@@ -41,7 +41,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     infoPages = infoPages.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
                 }
                 var infoPage = infoPages.FirstOrDefault() ?? new InfoPage() { Id = Guid.NewGuid().ToString() };
-                infoPage.Localizations = LocalizationService.Get(infoPage, new[] { "Name", "Content" });
+                infoPage.Localizations = LocalizationService.Get(infoPage, 
+                    entry=>entry.Name, 
+                    entry=>entry.ShortContent, 
+                    entry => entry.Content);
                 return View(infoPage);
             }
         }
@@ -80,6 +83,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         return RedirectToAction("Index");
                     }
                 }
+                for (var i = 0; i < infopage.Localizations.Count; i++)
+                {
+                    if (infopage.Localizations[i].ResourceValue == null)
+                    {
+                        foreach (var key in ModelState.Keys.Where(entry => entry.Contains(string.Format("Localizations[{0}]", i))))
+                        {
+                            ModelState[key].Errors.Clear();
+                        }
+                    }
+                }
                 infopage.UrlName = infopage.Name.Translit();
                 if (ModelState.IsValid)
                 {
@@ -113,7 +126,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         infopage.CreatedOn = DateTime.UtcNow;
                         db.InfoPages.Add(infopage);
                     }
-                    //LocalizationService.Save(infopage.Localizations);
+                    LocalizationService.Save(infopage.Localizations);
                     db.SaveChanges();
                     TempData["SuccessMessage"] = "Сторінку збережено";
                     return RedirectToAction("CreateOrUpdate", new { id = infopage.Id });

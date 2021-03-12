@@ -27,7 +27,7 @@ namespace Benefit.RestApi.Controllers
                 db.ExportImports
                 .Include(entry => entry.Seller)
                 .Include(entry => entry.Seller.MappedCategories)
-                .Where(entry => entry.IsActive).ToList();
+                .Where(entry => entry.IsActive && entry.SyncType != SyncType.YmlExport).ToList();
                 Task.Run(() =>
                 {
                     foreach (var importTask in importTasks)

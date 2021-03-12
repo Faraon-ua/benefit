@@ -117,13 +117,28 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AltText" xml:space="preserve">
+    <value>Alt Text</value>
+  </data>
   <data name="Content" xml:space="preserve">
     <value>Контент</value>
   </data>
   <data name="Description" xml:space="preserve">
     <value>Описание</value>
   </data>
+  <data name="MetaDescription" xml:space="preserve">
+    <value>Meta Description</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Название</value>
+  </data>
+  <data name="ShortContent" xml:space="preserve">
+    <value>Meta Description</value>
+  </data>
+  <data name="ShortDescription" xml:space="preserve">
+    <value>Meta Description</value>
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value>Title</value>
   </data>
 </root>
