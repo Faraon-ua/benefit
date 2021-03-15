@@ -10,6 +10,10 @@ namespace Benefit.Services.Import
             {
                 return new GbsImportService();
             }
+            if (importSyncType == SyncType.FirebirdSql)
+            {
+                return new FirebirdImportService();
+            }
             if (importSyncType == SyncType.Yml)
             {
                 return new YmlImportService();

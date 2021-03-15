@@ -88,10 +88,18 @@
                 GBS Market
             </a>
         </li>
+        <li>
+            <a data-toggle="tab" href="#firebird">
+                Firebird SQL
+            </a>
+        </li>
     </ul>
     <div class="tab-content">
         <div id="prom" class="tab-pane in active">
             @Html.Action("GetImportForm", new { syncType = SyncType.Yml })
+        </div>
+        <div id="firebird" class="tab-pane">
+            @Html.Action("GetImportForm", new { syncType = SyncType.FirebirdSql })
         </div>
         <div id="gbs" class="tab-pane">
             @Html.Action("GetImportForm", new { syncType = SyncType.Gbs })

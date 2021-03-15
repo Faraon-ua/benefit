@@ -67,7 +67,7 @@ namespace Benefit.Services.Import
             if (importType == SyncType.Gbs)
             {
                 xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
-            }
+            } 
             var catIdsToRemove = currentSellercategoyIds.Except(xmlCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {

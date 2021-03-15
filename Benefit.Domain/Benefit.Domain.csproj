@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Benefit.Domain</RootNamespace>
     <AssemblyName>Benefit.Domain</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -43,6 +44,9 @@
     <Reference Include="EntityFramework.SqlServer">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="FirebirdSql.Data.FirebirdClient, Version=7.10.1.0, Culture=neutral, PublicKeyToken=3750abcc3150b00c, processorArchitecture=MSIL">
+      <HintPath>..\packages\FirebirdSql.Data.FirebirdClient.7.10.1\lib\net452\FirebirdSql.Data.FirebirdClient.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
@@ -64,6 +68,7 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
@@ -98,6 +103,7 @@
   <ItemGroup>
     <Compile Include="DataAccess\AdoDbContext.cs" />
     <Compile Include="DataAccess\CategoriesDBContext.cs" />
+    <Compile Include="DataAccess\Firebird\FirebirdDbContext.cs" />
     <Compile Include="DataAccess\ImagesDBContext.cs" />
     <Compile Include="DataAccess\ProductParametersDBContext.cs" />
     <Compile Include="DataAccess\SellersDBContext.cs" />
@@ -706,6 +712,7 @@
     <Compile Include="Models\ExportCategory.cs" />
     <Compile Include="Models\ExportProduct.cs" />
     <Compile Include="Models\Favorite.cs" />
+    <Compile Include="Models\Firebird\FirebirdProduct.cs" />
     <Compile Include="Models\Link.cs" />
     <Compile Include="Models\MappedProductParameter.cs" />
     <Compile Include="Models\Message.cs" />

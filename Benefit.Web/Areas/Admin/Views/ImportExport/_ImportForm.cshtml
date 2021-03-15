@@ -24,7 +24,14 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="control-label col-md-2" for="FileUrl">URL</label>
+            @if (Model.SyncType != SyncType.FirebirdSql)
+            {
+                <label class="control-label col-md-2" for="FileUrl">Connection String</label>
+            }
+            else
+            {
+                <label class="control-label col-md-2" for="FileUrl">URL</label>
+            }
             <div class="col-md-10">
                 @if (Model.SyncType != SyncType.YmlExport)
                 {

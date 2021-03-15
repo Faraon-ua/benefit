@@ -133,6 +133,7 @@
     <Compile Include="Files\FilesExportService.cs" />
     <Compile Include="HttpClientService.cs" />
     <Compile Include="Import\BaseImportService.cs" />
+    <Compile Include="Import\Firebird.cs" />
     <Compile Include="Import\OneC.cs" />
     <Compile Include="Import\Excel.cs" />
     <Compile Include="Import\Yml.cs" />
