@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Benefit.Domain.Models.Firebird;
 using FirebirdSql.Data.FirebirdClient;
 
@@ -17,10 +18,19 @@ namespace Benefit.Domain.DataAccess.Firebird
 												Sum(Rem.quantity_rem) as Quantity
 												from commodity com
 												left join Remainder_quick rem on rem.idcommodity = com.idkey
-												inner join commoditytree gr on gr.idkey= com.idcommoditytree
-												group by 1,2,3,4,5,6
-												having Sum(Rem.quantity_rem) > 0";
-
+												inner join commoditytree gr on gr.idkey = com.idcommoditytree
+												group by 1,2,3,4,5,6";
+        protected T ConvertFromDBVal<T>(object obj)
+        {
+            if (obj == null || obj == DBNull.Value)
+            {
+                return default(T);
+            }
+            else
+            {
+                return (T)obj;
+            }
+        }
         public List<FirebirdProduct> GetProducts(string connectionString)
         {
             var result = new List<FirebirdProduct>();
@@ -37,17 +47,19 @@ namespace Benefit.Domain.DataAccess.Firebird
                             {
                                 var values = new object[reader.FieldCount];
                                 reader.GetValues(values);
+
                                 var fbProduct = new FirebirdProduct()
                                 {
-                                    Id = values[0].ToString(),
-                                    CategoryName = values[1].ToString(),
-                                    CategoryId = values[2].ToString(),
-                                    Name = values[3].ToString(),
-                                    Price = System.Convert.ToDouble(values[4]),
-                                    Barcode = values[5].ToString(),
-                                    Quantity = System.Convert.ToInt32(values[6])
+                                    Id = ConvertFromDBVal<Int32>(values[0]).ToString(),
+                                    CategoryName = ConvertFromDBVal<String>(values[1]),
+                                    CategoryId = ConvertFromDBVal<Int32>(values[2]).ToString(),
+                                    Name = ConvertFromDBVal<String>(values[3]),
+                                    Price = ConvertFromDBVal<Decimal>(values[4]),
+                                    Barcode = ConvertFromDBVal<String>(values[5]),
+                                    Quantity = ConvertFromDBVal<Decimal>(values[6])
                                 };
                                 result.Add(fbProduct);
+
                             }
                         }
                     }

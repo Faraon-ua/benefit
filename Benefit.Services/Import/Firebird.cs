@@ -25,6 +25,7 @@ namespace Benefit.Services.Import
         {
             firebirdDb = new FirebirdDbContext();
         }
+
         protected override void ProcessImport(ExportImport importTask, ApplicationDbContext db)
         {
             var fbProducts = firebirdDb.GetProducts(importTask.FileUrl);
@@ -94,8 +95,12 @@ namespace Benefit.Services.Import
             var catIdsToRemove = currentSellercategoyIds.Except(fbCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {
-                var removeCatId = seller.MappedCategories.FirstOrDefault(entry => entry.ExternalIds == catId).Id;
-                CatService.Delete(removeCatId);
+                var dbCategories = db.Categories.Where(entry => entry.SellerId == seller.Id && entry.ExternalIds == catId).ToList();
+                dbCategories.ForEach(entry =>
+                {
+                    entry.IsActive = false;
+                    db.Entry(entry).State = EntityState.Modified;
+                });
             }
         }
         private void AddAndUpdateFirebirdProducts(List<FirebirdProduct> fbProducts, string sellerId, IEnumerable<string> categoryIds, ApplicationDbContext db)
@@ -134,8 +139,8 @@ namespace Benefit.Services.Import
                     CategoryId = category.Id,
                     SellerId = sellerId,
                     IsWeightProduct = false,
-                    Price = fbProduct.Price,
-                    AvailableAmount = fbProduct.Quantity,
+                    Price = Decimal.ToDouble(fbProduct.Price),
+                    AvailableAmount = Decimal.ToInt32(fbProduct.Quantity),
                     IsActive = true,
                     IsImported = true,
                     DoesCountForShipping = true,
@@ -160,9 +165,9 @@ namespace Benefit.Services.Import
                 {
                     return;
                 }
-                product.Price = fbProduct.Price;
+                product.Price = Decimal.ToDouble(fbProduct.Price);
                 product.AvailabilityState = ProductAvailabilityState.Available;
-                product.AvailableAmount = fbProduct.Quantity;
+                product.AvailableAmount = Decimal.ToInt32(fbProduct.Quantity);
                 product.LastModified = DateTime.UtcNow;
             });
 

@@ -12,7 +12,7 @@
         public string CategoryName { get; set; }
         public string CategoryId { get; set; }
         public string Barcode { get; set; }
-        public double Price { get; set; }
-        public int Quantity { get; set; }
+        public decimal Price { get; set; }
+        public decimal Quantity { get; set; }
     }
 }
