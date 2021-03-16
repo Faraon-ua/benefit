@@ -41,10 +41,9 @@ namespace Benefit.Services.Import
         }
 
         private void CreateAndUpdateFirebirdCategories(List<FirebirdCategory> fbCategories, string sellerUrlName,
-            string sellerId, ApplicationDbContext db, Category parent = null)
+            string sellerId, ApplicationDbContext db)
         {
             var hasNewContent = false;
-
             foreach (var fbCategory in fbCategories)
             {
                 var dbCategory =
@@ -59,7 +58,6 @@ namespace Benefit.Services.Import
                     {
                         Id = Guid.NewGuid().ToString(),
                         ExternalIds = fbCategory.Id,
-                        ParentCategoryId = parent == null ? null : parent.Id,
                         IsSellerCategory = true,
                         SellerId = sellerId,
                         Name = fbCategory.Name.Truncate(64),
@@ -76,14 +74,11 @@ namespace Benefit.Services.Import
                 {
                     dbCategory.IsActive = true;
                     dbCategory.ExternalIds = fbCategory.Id;
-                    dbCategory.ParentCategoryId = parent == null ? null : parent.Id;
                     dbCategory.Name = fbCategory.Name.Truncate(64);
                     dbCategory.UrlName =
                         string.Format("{0}-{1}-{2}", sellerId, fbCategory.Id, fbCategory.Name.Translit()).Truncate(128);
                     db.Entry(dbCategory).State = EntityState.Modified;
                 }
-
-                CreateAndUpdateFirebirdCategories(fbCategories, sellerUrlName, sellerId, db, dbCategory);
             }
             if (hasNewContent)
             {
@@ -99,7 +94,8 @@ namespace Benefit.Services.Import
             var catIdsToRemove = currentSellercategoyIds.Except(fbCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {
-                CatService.Delete(catId);
+                var removeCatId = seller.MappedCategories.FirstOrDefault(entry => entry.ExternalIds == catId).Id;
+                CatService.Delete(removeCatId);
             }
         }
         private void AddAndUpdateFirebirdProducts(List<FirebirdProduct> fbProducts, string sellerId, IEnumerable<string> categoryIds, ApplicationDbContext db)
