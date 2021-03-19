@@ -35,7 +35,7 @@ namespace Benefit.Services.Import
             DeleteFirebirdCategories(importTask.Seller, cats, db);
             db.SaveChanges();
 
-            AddAndUpdateFirebirdProducts(fbProducts, importTask.SellerId, cats.Select(entry=>entry.Id), db);
+            AddAndUpdateFirebirdProducts(fbProducts, importTask.SellerId, cats.Select(entry => entry.Id), db);
             db.SaveChanges();
             DeleteFirebirdProducts(fbProducts, importTask.SellerId, db);
             db.SaveChanges();
@@ -67,7 +67,7 @@ namespace Benefit.Services.Import
                         MetaDescription = fbCategory.Name,
                         IsActive = true,
                         LastModified = DateTime.UtcNow,
-                        LastModifiedBy = "ImportFromFirebird"
+                        LastModifiedBy = "FirebirdImport"
                     };
                     db.Categories.Add(dbCategory);
                 }
@@ -78,6 +78,8 @@ namespace Benefit.Services.Import
                     dbCategory.Name = fbCategory.Name.Truncate(64);
                     dbCategory.UrlName =
                         string.Format("{0}-{1}-{2}", sellerId, fbCategory.Id, fbCategory.Name.Translit()).Truncate(128);
+                    dbCategory.LastModified = DateTime.UtcNow;
+                    dbCategory.LastModifiedBy = "FirebirdImport";
                     db.Entry(dbCategory).State = EntityState.Modified;
                 }
             }
@@ -91,7 +93,7 @@ namespace Benefit.Services.Import
         {
             var CatService = new CategoriesService();
             var currentSellercategoyIds = seller.MappedCategories.Select(entry => entry.ExternalIds).Distinct().ToList();
-            List<string> fbCategoryIds = fbCategories.Select(entry=>entry.Id).ToList();
+            List<string> fbCategoryIds = fbCategories.Select(entry => entry.Id).ToList();
             var catIdsToRemove = currentSellercategoyIds.Except(fbCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {
@@ -106,7 +108,7 @@ namespace Benefit.Services.Import
         private void AddAndUpdateFirebirdProducts(List<FirebirdProduct> fbProducts, string sellerId, IEnumerable<string> categoryIds, ApplicationDbContext db)
         {
             var maxSku = db.Products.Max(entry => entry.SKU) + 1;
-            var fbProductIds = fbProducts.Select(entry => entry.Barcode).ToList();
+            var fbProductIds = fbProducts.Select(entry => entry.Barcode).Where(entry => entry != null).ToList();
             var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
             var dbProductIds = dbProducts.Select(entry => entry.ExternalId).ToList();
             var productIdsToAdd = fbProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
@@ -144,10 +146,11 @@ namespace Benefit.Services.Import
                     IsActive = true,
                     IsImported = true,
                     DoesCountForShipping = true,
-                    LastModified = DateTime.UtcNow,
                     AltText = name.Truncate(100),
                     ShortDescription = name,
-                    ModerationStatus = ModerationStatus.IsModerating
+                    ModerationStatus = ModerationStatus.IsModerating,
+                    LastModifiedBy = "FirebirdImport",
+                    LastModified = DateTime.UtcNow
                 };
                 lock (lockObj)
                 {
@@ -169,6 +172,7 @@ namespace Benefit.Services.Import
                 product.AvailabilityState = ProductAvailabilityState.Available;
                 product.AvailableAmount = Decimal.ToInt32(fbProduct.Quantity);
                 product.LastModified = DateTime.UtcNow;
+                product.LastModifiedBy = "FirebirdImport";
             });
 
             foreach (var product in productsToAddList)

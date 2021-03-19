@@ -175,7 +175,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var existingCategoryExports = db.ExportCategories.Where(entry => entry.CategoryId == category.Id).ToList();
                         db.ExportCategories.RemoveRange(existingCategoryExports);
                         db.SaveChanges();
-                        db.ExportCategories.AddRange(exportCategories.Where(entry=>entry.Name != null));
+                        db.ExportCategories.AddRange(exportCategories.Where(entry => entry.Name != null));
                         var existingCat = db.Categories.Find(category.Id);
                         var children = existingCat.GetAllChildrenRecursively().Distinct(new CategoryComparer()).ToList();
                         children.ForEach(entry =>
@@ -260,15 +260,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             return Json(true);
         }
 
-        private void SetMappedCategories(List<Category> categories)
+        private void SetMappedCategories(List<Category> categories, ApplicationDbContext db)
         {
-            using (var db = new ApplicationDbContext())
+            categories.ForEach(entry => entry.MappedParentCategory = db.Categories.Find(entry.MappedParentCategoryId));
+            foreach (var cat in categories)
             {
-                categories.ForEach(entry => entry.MappedParentCategory = db.Categories.Find(entry.MappedParentCategoryId));
-                foreach (var cat in categories)
-                {
-                    SetMappedCategories(cat.ChildCategories.ToList());
-                }
+                SetMappedCategories(cat.ChildCategories.ToList(), db);
             }
         }
 
@@ -291,12 +288,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var sellerId = selectedSellerId ?? Seller.CurrentAuthorizedSellerId;
-                var categoriesToMap = db.Categories
+                var categoriesToMap = db.Categories.AsNoTracking()
                     .Include(entry => entry.ChildCategories.Select(ch =>
                         ch.ChildCategories.Select(sub => sub.ChildCategories.Select(chsub => chsub.ChildCategories))))
                     .Where(entry => entry.SellerId == sellerId && entry.IsSellerCategory && entry.ParentCategoryId == null)
                     .ToList();
-                SetMappedCategories(categoriesToMap);
+                SetMappedCategories(categoriesToMap, db);
                 ViewBag.RootCategories = db.Categories.Where(entry => entry.IsActive && !entry.IsSellerCategory && entry.ParentCategoryId == null && entry.Order > 0).OrderBy(entry => entry.Order).ToList();
                 var importTask = db.ExportImports.FirstOrDefault(entry => entry.SellerId == sellerId);
                 if (importTask != null)
