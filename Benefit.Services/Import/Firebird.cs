@@ -168,6 +168,7 @@ namespace Benefit.Services.Import
                 {
                     return;
                 }
+                product.CategoryId = category.Id;
                 product.Price = Decimal.ToDouble(fbProduct.Price);
                 product.AvailabilityState = ProductAvailabilityState.Available;
                 product.AvailableAmount = Decimal.ToInt32(fbProduct.Quantity);
