@@ -31,6 +31,7 @@ namespace Benefit.Web.Models
         public string ShippingAddress { get; set; }
         [Required(ErrorMessage = "Номер телефону є обов'язковим для заповнення")]
         [MaxLength(20)]
+        [MinLength(17, ErrorMessage = "Номер телефону є обов'язковим для заповнення")]
         public string PhoneNumber { get; set; }
         [Required(ErrorMessage = "Email є обов'язковим для заповнення")]
         [MaxLength(64)]
