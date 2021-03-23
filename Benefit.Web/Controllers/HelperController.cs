@@ -134,9 +134,30 @@ namespace Benefit.Web.Controllers
             }
             return Content("Ok");
         }
-        public ActionResult Chat()
+        public ActionResult MoveProductParameters()
         {
-            return PartialView();
+            using (var db = new ApplicationDbContext())
+            {
+                var gbsCats = db.Categories
+                    .Include(entry => entry.ProductParameters)
+                    .Where(entry => entry.SellerId == "8ce2d034-6902-4501-b083-f7cf773c5086" && entry.LastModifiedBy == "ImportFromGbs").ToList();
+                foreach (var gbsCat in gbsCats)
+                {
+                    var firebirdCat = db.Categories
+                        .FirstOrDefault(entry => entry.SellerId == "8ce2d034-6902-4501-b083-f7cf773c5086" && entry.LastModifiedBy == "FirebirdImport" && entry.Name == gbsCat.Name);
+                    if(firebirdCat != null)
+                    {
+                        var parameters = gbsCat.ProductParameters.ToList();
+                        foreach (var productParameter in parameters)
+                        {
+                            productParameter.CategoryId = firebirdCat.Id;
+                            db.Entry(productParameter).State = EntityState.Modified;
+                        }
+                    }
+                }
+                db.SaveChanges();
+            }
+            return Content("Ok");
         }
     }
 }
