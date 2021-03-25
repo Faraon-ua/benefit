@@ -25,7 +25,7 @@ namespace Benefit.Services.Domain
                 var newSuffix = suffix + string.Format("{0} {1} ", currentVariant.Name, variant.Name);
                 priceChange += variant.PriceGrowth;
 
-                var prod = new XElement("offer", new XAttribute("id", product.Id));
+                var prod = new XElement("offer", new XAttribute("id", product.Id + variant.Id));
                 var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
                 prod.Add(new XAttribute("available", available));
                 prod.Add(new XAttribute("group_id", groups.Count()));
@@ -123,7 +123,7 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.Category.SellerCategories)
                     .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
                     .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
-                    .Where(entry => productIds.Contains(entry.Id)).ToList();
+                    .Where(entry => productIds.Contains(entry.Id) && entry.SKU == 343190).ToList();
 
                 #region Categories
                 var dbcategories = products.Select(entry => entry.Category).ToList();
