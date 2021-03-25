@@ -15,8 +15,11 @@ namespace Benefit.Services.Domain
 {
     public class ExportService
     {
-        public void FetchOffers(List<XElement> offers, Product product, List<ProductOption> variants, ProductOption currentVariant, string suffix, double priceChange, HttpRequest Request)
+        public void FetchOffers(List<XElement> offers, List<XElement> groups, Product product, List<ProductOption> variants, ProductOption currentVariant, string suffix, double priceChange, HttpRequest Request)
         {
+            var group = new XElement("group", product.Name);
+            group.Add(new XAttribute("id", groups.Count()));
+            group.Add(new XAttribute("var_param_id", currentVariant.Id));
             foreach (var variant in currentVariant.ChildProductOptions)
             {
                 var newSuffix = suffix + string.Format("{0} {1} ", currentVariant.Name, variant.Name);
@@ -25,6 +28,7 @@ namespace Benefit.Services.Domain
                 var prod = new XElement("offer", new XAttribute("id", product.Id));
                 var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
                 prod.Add(new XAttribute("available", available));
+                prod.Add(new XAttribute("group_id", groups.Count()));
                 prod.Add(new XElement("name", string.Format("{0} {1}", product.Name, newSuffix)));
                 prod.Add(new XElement("vendor", product.Vendor));
                 prod.Add(new XElement("vendorCode", product.SKU));
@@ -63,6 +67,8 @@ namespace Benefit.Services.Domain
 
                 prod.Add(new XElement("description", product.Description));
                 prod.Add(new XElement("country_of_origin", product.OriginCountry));
+                //add group param (variant)
+                prod.Add(new XElement("param", new XAttribute("name", currentVariant.Name), new XAttribute("paramid", currentVariant.Id), variant.Name));
                 foreach (var parameterProduct in product.ProductParameterProducts)
                 {
                     prod.Add(new XElement("param", new XAttribute("name", parameterProduct.ProductParameter.Name), parameterProduct.StartText));
@@ -85,13 +91,13 @@ namespace Benefit.Services.Domain
                 prod.Add(new XElement("param", new XAttribute("name", "Гарантия"), "Обмен/возврат товара в течение 14 дней"));
 
                 offers.Add(prod);
-
                 var currentVariantPosition = variants.IndexOf(currentVariant);
                 if (variants.Count() > currentVariantPosition + 1)
                 {
-                    FetchOffers(offers, product, variants, variants.ElementAt(currentVariantPosition + 1), newSuffix, priceChange, Request);
+                    FetchOffers(offers, groups, product, variants, variants.ElementAt(currentVariantPosition + 1), newSuffix, priceChange, Request);
                 }
             }
+            groups.Add(group);
         }
         public string Export(string exportId, string savePath = null)
         {
@@ -170,12 +176,13 @@ namespace Benefit.Services.Domain
 
                 var offers = new XElement("offers");
                 List<XElement> offersList = new List<XElement>();
+                List<XElement> groupsList = new List<XElement>();
                 foreach (var product in products)
                 {
                     var variantGroups = product.ProductOptions.Where(entry => entry.IsVariant).ToList();
                     if (variantGroups.Any())
                     {
-                        FetchOffers(offersList, product, variantGroups, variantGroups[0], string.Empty, 0, Request);
+                        FetchOffers(offersList, groupsList, product, variantGroups, variantGroups[0], string.Empty, 0, Request);
                     }
                     else
                     {
@@ -271,6 +278,15 @@ namespace Benefit.Services.Domain
                 //shop.Add(email);
                 shop.Add(currencies);
                 shop.Add(categories);
+                if (groupsList.Any())
+                {
+                    var groups = new XElement("groups");
+                    foreach (var g in groupsList)
+                    {
+                        groups.Add(g);
+                    }
+                    shop.Add(groups);
+                }
                 shop.Add(offers);
                 yml_catalog.Add(shop);
                 doc.Add(yml_catalog);
