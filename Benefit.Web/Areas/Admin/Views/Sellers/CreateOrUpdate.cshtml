@@ -76,7 +76,7 @@
         }
 
         function UpdateCategoriesNumber() {
-            //$("html, body").animate({ scrollTop: $(document).height() }, 500);
+            $("html, body").animate({ scrollTop: $(document).height() }, 500);
             var maxNumber = parseInt(GetMaxAttributeValue('.category-id', 'data-number'));
             var href = $("#addNewCategory").attr("href");
             href = href.replace(/[0-9]/g, "");

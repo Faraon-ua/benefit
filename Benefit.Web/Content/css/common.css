@@ -1,4 +1,7 @@
-﻿.opacity07{
+﻿.clearboth, .clear, .clearfix {
+    clear: both
+}
+.opacity07{
     opacity: 0.7;
 }
 

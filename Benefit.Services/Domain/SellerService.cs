@@ -274,8 +274,8 @@ namespace Benefit.Services.Domain
                 .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory.Products))
                     .FirstOrDefault(entry => entry.UrlName == sellerUrl);
                 var all = new List<Category>();
-                var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
-                var sellerRootCats = seller.SellerCategories.Where(entry => entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
+                var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any() || entry.MappedCategories.Any()).ToList();
+                var sellerRootCats = seller.SellerCategories.Where(entry => entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any() || entry.MappedCategories.Any()).ToList();
                 var sellerMappedCats = seller.MappedCategories.Where(entry => entry.MappedParentCategory != null && entry.IsActive).Select(entry => entry.MappedParentCategory).Where(entry => entry.Products.Any()).ToList();
                 all.AddRange(sellerCats);
                 all.AddRange(sellerMappedCats);

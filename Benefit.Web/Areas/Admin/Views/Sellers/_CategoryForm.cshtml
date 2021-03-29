@@ -11,23 +11,26 @@
             <span>@Model.Value.Category.ExpandedName</span>
             @Html.Hidden(string.Format("Seller.SellerCategories[{0}].CategoryId", Model.Key), Model.Value.CategoryId, new { @class = "category-id", data_number = Model.Key })
         }
-            
+
     </div>
-    <div class="col-sm-1">
+    <div class="col-sm-2">
         @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomDiscount", Model.Key), Model.Value.CustomDiscount, new { @class = "number-input width-80", placeholder = "Загальний відсоток знижки" }) %
-    </div>  
-    <div class="col-sm-1">
+    </div>
+    <div class="col-sm-2">
         @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomMargin", Model.Key), Model.Value.CustomMargin, new { @class = "number-input width-80", placeholder = "Націнка" }) %
     </div>
     <div class="col-sm-2">
-        <label for="@string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key)">Батьківська категорія</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key), Model.Value.RootDisplay)
+        <label for="@string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key)">Основне меню</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key), Model.Value.RootDisplay)
     </div>
     <div class="col-sm-2">
-        <label for="@string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key)">Головна категорія</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key), Model.Value.IsDefault, new {@class= "main-cat" })
+        <label for="@string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key)">Головна категорія</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key), Model.Value.IsDefault, new { @class = "main-cat" })
     </div>
     <div class="col-sm-1">
         <a href="#" onclick="$(this).parent().parent().remove(); ReAssignIndexesToChildren('categories', 'belong-category');">
             <i class="icon-remove red"></i>
         </a>
+    </div>
+    <div class="clearfix">
+        <hr />
     </div>
 </div>

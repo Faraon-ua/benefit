@@ -123,7 +123,7 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.Category.SellerCategories)
                     .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
                     .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
-                    .Where(entry => productIds.Contains(entry.Id) && entry.SKU == 343190).ToList();
+                    .Where(entry => productIds.Contains(entry.Id)).ToList();
 
                 #region Categories
                 var dbcategories = products.Select(entry => entry.Category).ToList();
