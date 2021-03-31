@@ -40,6 +40,71 @@
 
 <div class="row">
     <div class="col-sm-5">
+        <h3 class="row header smaller lighter red">
+            <span class="col-sm-8">
+                <i class="fa fa-telegram"></i>
+                Telegram
+            </span>
+            <span class="col-sm-4">
+                <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Telegram">
+                    <i class="icon-plus bigger-110 icon-only"></i>
+                </a>
+            </span>
+        </h3>
+        <div>
+            <p>
+                Для того, щоб підключити Telegram повідомлення про нові замовлення пройдіть таку нескладну процедуру
+            </p>
+            <p>
+                1) Відправте повідомлення чат боту <a href="tg://resolve?domain=BenefitCompanyBot">BenefitCompanyBot</a>
+                з текстом /start
+            </p>
+            <p>
+                2) 1 - для сповіщень про замовлення
+            </p>
+            <p>
+                3) ідентифікатор постачальника @Seller.CurrentAuthorizedSellerId
+            </p>
+            @if (Model.Where(entry => entry.ChannelType == NotificationChannelType.Telegram).Any())
+            {
+                <div id="accordion" class="accordion-style1 panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
+                                    <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+                                    &nbsp;Підключені чати сповіщення
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div class="panel-collapse collapse" id="collapseOne">
+                            <div class="panel-body">
+                                @foreach (var telegram in Model.Where(entry => entry.ChannelType == NotificationChannelType.Telegram))
+                                {
+                                    <div class="well well-sm clearfix">
+                                        <span class="col-sm-11">
+                                            @if (!string.IsNullOrEmpty(telegram.Name))
+                                            {
+                                                <span>@telegram.Name -</span>
+                                            }
+                                            <span>@telegram.Address</span>
+                                        </span>
+                                        <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = telegram.Id })" class="pull-right">
+                                            <i class="icon-remove red"></i>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-sm-2">
+    </div>
+    <div class="col-sm-5">
         <h3 class="row header smaller lighter blue">
             <span class="col-sm-8">
                 <i class="icon-facebook-sign"></i>
@@ -75,134 +140,116 @@
                     </div>
                 </div>
             </p>
-            @* <p>
-                    2. Відправити нам посилання на свій Facebook акаунт <br/>
-                    <input type="text" id="facebook-account" class="col-md-6"/>
-                    <button type="button" class="btn btn-info btn-sm" id="send-fb-acc">Відправити</button>
-                </p>*@
             <p>
-                2. Відправте повідомлення на нашу Facebook сторінку
+                2. Відправити нам посилання на свій Facebook акаунт <br />
+                <input type="text" id="facebook-account" class="col-md-6" />
+                <button type="button" class="btn btn-info btn-sm" id="send-fb-acc">Відправити</button>
+            </p>
+            <p>
+                3. Відправте повідомлення на нашу Facebook сторінку
                 <a href="https://www.facebook.com/https.benefit.ua/" target="_blank">https://www.facebook.com/https.benefit.ua/</a>
                 з цим текстом: @Seller.CurrentAuthorizedSellerId
             </p>
-            @foreach (var fb in Model.Where(entry => entry.ChannelType == NotificationChannelType.Facebook))
+            @if (Model.Where(entry => entry.ChannelType == NotificationChannelType.Facebook).Any())
             {
-                <div class="well well-sm clearfix">
-                    <span class="col-sm-11">
-                        @if (!string.IsNullOrEmpty(fb.Name))
-                        {
-                            <span>@fb.Name -</span>
-                        }
-                        <span>@fb.Address</span>
-                    </span>
-                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = fb.Id})" class="pull-right">
-                        <i class="icon-remove red"></i>
-                    </a>
-                </div>
-            }
-        </div>
-    </div>
-    <div class="col-sm-2">
-    </div>
-    <div class="col-sm-5">
-        <h3 class="row header smaller lighter orange">
-            <span class="col-sm-8">
-                <i class="icon-envelope-alt"></i>
-                Email
-            </span>
-            <span class="col-sm-4">
-                <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Email">
-                    <i class="icon-plus bigger-110 icon-only"></i>
-                </a>
-            </span>
-        </h3>
-        <div>
-            @foreach (var email in Model.Where(entry => entry.ChannelType == NotificationChannelType.Email))
-            {
-                <div class="well well-sm clearfix">
-                    <span class="col-sm-11">
-                        @if (!string.IsNullOrEmpty(email.Name))
-                        {
-                            <span>@email.Name -</span>
-                        }
-                        <span>@email.Address</span>
-                    </span>
-                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = email.Id })" class="pull-right">
-                        <i class="icon-remove red"></i>
-                    </a>
+                <div id="accordion2" class="accordion-style1 panel-group">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4 class="panel-title">
+                                <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapse2">
+                                    <i class="ace-icon fa fa-angle-down bigger-110" data-icon-hide="ace-icon fa fa-angle-down" data-icon-show="ace-icon fa fa-angle-right"></i>
+                                    &nbsp;Підключені чати сповіщення
+                                </a>
+                            </h4>
+                        </div>
+
+                        <div class="panel-collapse collapse" id="collapse2">
+                            <div class="panel-body">
+                                @foreach (var fb in Model.Where(entry => entry.ChannelType == NotificationChannelType.Facebook))
+                                {
+                                    <div class="well well-sm clearfix">
+                                        <span class="col-sm-11">
+                                            @if (!string.IsNullOrEmpty(fb.Name))
+                                            {
+                                                <span>@fb.Name -</span>
+                                            }
+                                            <span>@fb.Address</span>
+                                        </span>
+                                        <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = fb.Id })" class="pull-right">
+                                            <i class="icon-remove red"></i>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
             }
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="col-sm-5">
-        <h3 class="row header smaller lighter purple">
-            <span class="col-sm-8">
-                <i class="icon-phone-sign"></i>
-                SMS
-            </span>
-            <span class="col-sm-4">
-                <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Phone">
-                    <i class="icon-plus bigger-110 icon-only"></i>
-                </a>
-            </span>
-        </h3>
-        <div>
-            @foreach (var phone in Model.Where(entry => entry.ChannelType == NotificationChannelType.Phone))
-            {
-                <div class="well well-sm clearfix">
-                    <span class="col-sm-11">
-                        @if (!string.IsNullOrEmpty(phone.Name))
-                        {
-                            <span>@phone.Name -</span>
-                        }
-                        <span>@phone.Address</span>
-                    </span>
-                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = phone.Id})" class="pull-right">
-                        <i class="icon-remove red"></i>
+@*<div class="row">
+        <div class="col-sm-5">
+            <h3 class="row header smaller lighter purple">
+                <span class="col-sm-8">
+                    <i class="icon-phone-sign"></i>
+                    SMS
+                </span>
+                <span class="col-sm-4">
+                    <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Phone">
+                        <i class="icon-plus bigger-110 icon-only"></i>
                     </a>
-                </div>
-            }
+                </span>
+            </h3>
+            <div>
+                @foreach (var phone in Model.Where(entry => entry.ChannelType == NotificationChannelType.Phone))
+                {
+                    <div class="well well-sm clearfix">
+                        <span class="col-sm-11">
+                            @if (!string.IsNullOrEmpty(phone.Name))
+                            {
+                                <span>@phone.Name -</span>
+                            }
+                            <span>@phone.Address</span>
+                        </span>
+                        <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new {id = phone.Id})" class="pull-right">
+                            <i class="icon-remove red"></i>
+                        </a>
+                    </div>
+                }
+            </div>
         </div>
-    </div>
-    <div class="col-sm-2">
-    </div>
-    <div class="col-sm-5">
-        <h3 class="row header smaller lighter red">
-            <span class="col-sm-8">
-                <i class="fa fa-telegram"></i>
-                Telegram
-            </span>
-            <span class="col-sm-4">
-                <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Telegram">
-                    <i class="icon-plus bigger-110 icon-only"></i>
-                </a>
-            </span>
-        </h3>
-        <div>
-            <p>
-                Для того, щоб підключити Telegram повідомлення про нові замовлення пройдіть таку нескладну процедуру
-            </p>
-            <p>
-                Відправте повідомлення чат боту <a href="tg://resolve?domain=BenefitCompanyBot">BenefitCompanyBot</a>
-                з цим текстом: @Seller.CurrentAuthorizedSellerId
-            </p>
-            @foreach (var telegram in Model.Where(entry => entry.ChannelType == NotificationChannelType.Telegram))
-            {
-                <div class="well well-sm clearfix">
-                    <span class="col-sm-11">
-                        @if (!string.IsNullOrEmpty(telegram.Name))
-                        {
-                            <span>@telegram.Name -</span>
-                        }
-                        <span>@telegram.Address</span>
-                    </span>
-                    <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = telegram.Id })" class="pull-right">
-                        <i class="icon-remove red"></i>
+        <div class="col-sm-2">
+        </div>
+        <div class="col-sm-5">
+            <h3 class="row header smaller lighter orange">
+                <span class="col-sm-8">
+                    <i class="icon-envelope-alt"></i>
+                    Email
+                </span>
+                <span class="col-sm-4">
+                    <a class="btn btn-success btn-xs pull-right add-notification" data-channel-type="Email">
+                        <i class="icon-plus bigger-110 icon-only"></i>
                     </a>
-                </div>
-            }
+                </span>
+            </h3>
+            <div>
+                @foreach (var email in Model.Where(entry => entry.ChannelType == NotificationChannelType.Email))
+                {
+                    <div class="well well-sm clearfix">
+                        <span class="col-sm-11">
+                            @if (!string.IsNullOrEmpty(email.Name))
+                            {
+                                <span>@email.Name -</span>
+                            }
+                            <span>@email.Address</span>
+                        </span>
+                        <a onclick="return confirm('Ви впевненні?')" href="@Url.Action("Delete", new { id = email.Id })" class="pull-right">
+                            <i class="icon-remove red"></i>
+                        </a>
+                    </div>
+                }
+            </div>
         </div>
-    </div>
-</div>
+
+    </div>*@
