@@ -302,6 +302,12 @@
                     Характеристики
                 </a>
             </li>
+            <li>
+                <a href="#localization" data-toggle="tab">
+                    <i class="purple icon-flag bigger-110"></i>
+                    Русский
+                </a>
+            </li>
         </ul>
 
         <div class="tab-content">
@@ -313,6 +319,9 @@
             </div>
             <div class="tab-pane" id="images">
                 @Html.Partial("_Images", Model)
+            </div>
+            <div class="tab-pane" id="localization">
+                @Html.Partial("_ProductLocalization")
             </div>
         </div>
     </div>

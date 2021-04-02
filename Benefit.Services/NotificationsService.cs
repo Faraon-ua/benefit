@@ -67,7 +67,7 @@ namespace Benefit.Services
             using (var db = new ApplicationDbContext())
             {
                 var message = string.Format(
-                "Доброго дня. Ви отримали замовлення №{0} на сайті benefit.ua. Щоб обробити його перейдіть за посиланням {1}",
+                "Вітаємо! Ви отримали замовлення №{0} з торгової площадки benefit.ua. Щоб обробити його перейдіть за посиланням {1}",
                 orderNumber, orderUrl);
                 var seller = db.Sellers.Include(entry => entry.NotificationChannels).FirstOrDefault(entry => entry.Id == sellerId);
                 if (seller != null)
@@ -95,7 +95,7 @@ namespace Benefit.Services
                         if (notificationChannel.ChannelType == NotificationChannelType.Email)
                         {
                             var emailMessage = string.Format(
-                                "Доброго дня. Ви отримали замовлення №{0} на сайті benefit.ua. Щоб обробити його перейдіть за посиланням <a href='{1}'>{1}</a>.",
+                                "Вітаємо! Ви отримали замовлення №{0} з торгової площадки benefit.ua. Щоб обробити його перейдіть за посиланням <a href='{1}'>{1}</a>",
                                 orderNumber, orderUrl);
                             var mailService = new EmailService();
                             mailService.SendEmail(notificationChannel.Address, emailMessage, "Нове замовлення на сайті benefit-company.com");
