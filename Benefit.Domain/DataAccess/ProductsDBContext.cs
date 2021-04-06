@@ -154,7 +154,17 @@ namespace Benefit.Domain.DataAccess
                   ,p.UrlName
                   ,p.SKU
                   ,p.IsWeightProduct
-                  ,p.AvailabilityState
+                  ,[AvailableAmount] 
+	              ,(SELECT CASE WHEN 
+	              ((p.AvailabilityState = 0 and p.AvailableAmount > 0)
+	                  or 
+	                  p.AvailabilityState = 1)
+	                  and p.ModerationStatus = 0 
+	                  and p.IsActive = 1
+	                  and s.IsActive = 1
+	                  and cat.IsActive = 1
+                        THEN 0
+                        ELSE 2 END) as AvailabilityState
                   ,(p.Price * ISNULL(c.Rate, 1)) as Price
                   ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{1}')
                         THEN CAST(1 AS BIT)

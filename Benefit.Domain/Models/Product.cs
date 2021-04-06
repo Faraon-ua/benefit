@@ -182,45 +182,29 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public List<Localization> Localizations { get; set; }
 
-        private ProductAvailability _availableForPurchase = null;
         public ProductAvailability AvailableForPurchase(int regionId)
         {
-            if (_availableForPurchase != null)
-            {
-                return _availableForPurchase;
-            }
-            if (!IsActive || !Seller.IsActive || !Category.IsActive || ModerationStatus != ModerationStatus.Moderated)
-            {
-                AvailabilityState = ProductAvailabilityState.NotInStock;
-            }
             var result = new ProductAvailability();
-            if (AvailabilityState == ProductAvailabilityState.NotInStock ||
-                (AvailabilityState == ProductAvailabilityState.Available && AvailableAmount == 0))
+
+            var isAvailable =
+                Seller.ShippingMethods.Any(
+                    entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
+            if (!isAvailable)
             {
-                result.State = ComputedProductAvailabilityState.NotAvailable;
+                result.Regions =
+                    Seller.ShippingMethods.Select(entry => entry.Region).Distinct(new RegionComparer()).ToDictionary(entry => entry.Id.ToString(),
+                        entry => entry.Name_ua);
+                result.State = ComputedProductAvailabilityState.AvailableInOtherRegion;
             }
             else
             {
-                var isAvailable =
-                    Seller.ShippingMethods.Any(
-                        entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
-                if (!isAvailable)
-                {
-                    result.Regions =
-                        Seller.ShippingMethods.Select(entry => entry.Region).Distinct(new RegionComparer()).ToDictionary(entry => entry.Id.ToString(),
-                            entry => entry.Name_ua);
-                    result.State = ComputedProductAvailabilityState.AvailableInOtherRegion;
-                }
-                else
-                {
-                    result.State = ComputedProductAvailabilityState.Available;
-                }
+                result.State = ComputedProductAvailabilityState.Available;
             }
             return result;
         }
         [NotMapped]
-        public int ReviewsCount { get; set; }  
+        public int ReviewsCount { get; set; }
         [NotMapped]
-        public bool IsFavorite{ get; set; }
+        public bool IsFavorite { get; set; }
     }
 }
