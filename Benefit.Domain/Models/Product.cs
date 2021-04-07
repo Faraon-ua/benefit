@@ -185,20 +185,26 @@ namespace Benefit.Domain.Models
         public ProductAvailability AvailableForPurchase(int regionId)
         {
             var result = new ProductAvailability();
-
-            var isAvailable =
-                Seller.ShippingMethods.Any(
-                    entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
-            if (!isAvailable)
+            if (AvailabilityState == ProductAvailabilityState.NotInStock)
             {
-                result.Regions =
-                    Seller.ShippingMethods.Select(entry => entry.Region).Distinct(new RegionComparer()).ToDictionary(entry => entry.Id.ToString(),
-                        entry => entry.Name_ua);
-                result.State = ComputedProductAvailabilityState.AvailableInOtherRegion;
+                result.State = ComputedProductAvailabilityState.NotAvailable;
             }
             else
             {
-                result.State = ComputedProductAvailabilityState.Available;
+                var isAvailable =
+                    Seller.ShippingMethods.Any(
+                        entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);
+                if (!isAvailable)
+                {
+                    result.Regions =
+                        Seller.ShippingMethods.Select(entry => entry.Region).Distinct(new RegionComparer()).ToDictionary(entry => entry.Id.ToString(),
+                            entry => entry.Name_ua);
+                    result.State = ComputedProductAvailabilityState.AvailableInOtherRegion;
+                }
+                else
+                {
+                    result.State = ComputedProductAvailabilityState.Available;
+                }
             }
             return result;
         }

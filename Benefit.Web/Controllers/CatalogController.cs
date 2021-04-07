@@ -83,7 +83,7 @@ namespace Benefit.Web.Controllers
             {
                 Response.StatusCode = 301;
                 var location =
-                    Request.Url.AbsoluteUri.Replace("page=1;", string.Empty).Replace("page=1", string.Empty);
+                    Request.Url.AbsoluteUri.Replace("/page=1;", string.Empty).Replace("/page=1", string.Empty).Replace("page=1;", string.Empty).Replace("page=1", string.Empty);
                 Response.AddHeader("Location", location);
                 Response.End();
             }
@@ -121,7 +121,7 @@ namespace Benefit.Web.Controllers
             }
             var seller = ViewBag.Seller as Seller;
             var catalogService = new CatalogService();
-            var catalog = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, categoryId, User.Identity.GetUserId(), options, false);
+            var catalog = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, categoryId, User.Identity.GetUserId(), options, page == 1 ? true : false);
             products = catalog.Items;
             if (isFilterRequest)
             {
