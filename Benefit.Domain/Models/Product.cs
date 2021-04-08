@@ -182,20 +182,10 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public List<Localization> Localizations { get; set; }
 
-        private ProductAvailability _availableForPurchase = null;
         public ProductAvailability AvailableForPurchase(int regionId)
         {
-            if (_availableForPurchase != null)
-            {
-                return _availableForPurchase;
-            }
-            if (!IsActive || !Seller.IsActive || !Category.IsActive || ModerationStatus != ModerationStatus.Moderated)
-            {
-                AvailabilityState = ProductAvailabilityState.NotInStock;
-            }
             var result = new ProductAvailability();
-            if (AvailabilityState == ProductAvailabilityState.NotInStock ||
-                (AvailabilityState == ProductAvailabilityState.Available && AvailableAmount == 0))
+            if (AvailabilityState == ProductAvailabilityState.NotInStock)
             {
                 result.State = ComputedProductAvailabilityState.NotAvailable;
             }
@@ -219,8 +209,8 @@ namespace Benefit.Domain.Models
             return result;
         }
         [NotMapped]
-        public int ReviewsCount { get; set; }  
+        public int ReviewsCount { get; set; }
         [NotMapped]
-        public bool IsFavorite{ get; set; }
+        public bool IsFavorite { get; set; }
     }
 }

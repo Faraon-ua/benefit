@@ -6185,7 +6185,7 @@ div[class^=bx-] button, div[class^=bx-] input[type=button], div[class^=bx-] inpu
     padding-left: 0
 }
 
-.clearboth {
+.clearboth, .clear, .clearfix {
     clear: both
 }
 

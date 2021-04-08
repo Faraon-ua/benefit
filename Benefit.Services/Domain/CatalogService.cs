@@ -205,19 +205,19 @@ namespace Benefit.Services.Domain
                     orderby = "p.[Order], IsNewProduct desc, AvailabilityState, HasImages desc, p.AddedOn, p.AvarageRating, p.SKU";
                     break;
                 case ProductSortOption.Order:
-                    orderby = "HasImages desc, p.SKU";
+                    orderby = "AvailabilityState, HasImages desc, p.SKU";
                     break;
                 case ProductSortOption.NameAsc:
-                    orderby = "p.Name, p.SKU";
+                    orderby = "AvailabilityState, HasImages desc, p.Name, p.SKU";
                     break;
                 case ProductSortOption.NameDesc:
-                    orderby = "p.Name desc, p.SKU";
+                    orderby = "AvailabilityState, HasImages desc, p.Name desc, p.SKU";
                     break;
                 case ProductSortOption.PriceAsc:
-                    orderby = "Price, p.SKU";
+                    orderby = "AvailabilityState, Price, p.SKU";
                     break;
                 case ProductSortOption.PriceDesc:
-                    orderby = "Price desc, p.SKU";
+                    orderby = "AvailabilityState, Price desc, p.SKU";
                     break;
             }
 

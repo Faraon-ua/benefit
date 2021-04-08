@@ -27,6 +27,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var productparameters = db.ProductParameters
                     .Include(p => p.Category)
                     .Include(p => p.MappedProductParameters)
+                    .Include(p => p.ProductParameterValues)
                     .Where(entry => entry.CategoryId == categoryId).OrderBy(entry => entry.Order).ToList();
                 ViewBag.Category = category;
                 var model = new Dictionary<Seller, IEnumerable<ProductParameter>>

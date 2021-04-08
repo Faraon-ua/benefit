@@ -263,7 +263,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 product.ProductParameterProducts = product.ProductParameterProducts.ToList().Where(entry => entry.StartText != null).ToArray();
                 product.ProductParameterProducts.ForEach(entry => entry.StartValue = entry.StartText.Translit());
-                var exceededParams = product.ProductParameterProducts.Where(entry => entry.StartValue.Length > ProductConstants.ParameterStartTextMaxLength);
+                var exceededParams = product.ProductParameterProducts.Where(entry => entry.StartValue.Length >= ProductConstants.ParameterStartTextMaxLength);
                 if (exceededParams.Any())
                 {
                     ModelState.AddModelError("ProductParameter", "Значення характеристики перевищує максимально допустиму довжину в " + ProductConstants.ParameterStartTextMaxLength + " символів");
@@ -788,7 +788,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {
-                    filters.Search = filters.Search.ToLower();
+                    filters.Search = filters.Search.ToLower().Trim();
                     products = products.Where(entry => entry.SKU.ToString().Contains(filters.Search) ||
                                                        entry.Name.ToString().Contains(filters.Search));
                 }

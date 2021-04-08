@@ -120,7 +120,7 @@
                             <div style="max-height: 215px; overflow: hidden;">
                                 @if (filter.Type == typeof(string).ToString())
                                 {
-                                    foreach (var filterValue in filter.ProductParameterValues.OrderByDescending(entry => entry.Enabled).ThenBy(entry => entry.Order))
+                                    foreach (var filterValue in filter.ProductParameterValues.OrderByDescending(entry => entry.Enabled).ThenBy(entry => entry.Order).ThenBy(entry=>entry.ParameterValue))
                                     {
                                         var name = filterValue.ParameterValueUrl == null ? string.Empty : filterValue.ParameterValueUrl.Replace(" ", string.Empty);
                                         var disClass = filterValue.Enabled ? string.Empty : "disabled";
