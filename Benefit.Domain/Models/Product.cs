@@ -191,7 +191,7 @@ namespace Benefit.Domain.Models
             }
             else
             {
-                if (AvailableAmount <= 3)
+                if (AvailabilityState == ProductAvailabilityState.Available && AvailableAmount <= 3)
                 {
                     AvailabilityState = ProductAvailabilityState.Ending;
                 }

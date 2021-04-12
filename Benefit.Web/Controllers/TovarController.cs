@@ -42,13 +42,13 @@ namespace Benefit.Web.Controllers
                 throw new HttpException(404, "Not found");
             }
             //переглянуті товари
-            var viewedProducts = HttpRuntime.Cache[DomainConstants.ViewedProductsSessionKey] as List<Product> ??
+            var viewedProducts = HttpRuntime.Cache[DomainConstants.ViewedProductsSessionKey + Session.SessionID] as List<Product> ??
                                  new List<Product>();
             if (!viewedProducts.Contains(productResult.Product, new ProductComparer()))
             {
                 viewedProducts.Insert(0, productResult.Product);
                 viewedProducts = viewedProducts.Take(10).ToList();
-                HttpRuntime.Cache.Insert(DomainConstants.ViewedProductsSessionKey, viewedProducts, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
+                HttpRuntime.Cache.Insert(DomainConstants.ViewedProductsSessionKey + Session.SessionID, viewedProducts, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
             }
             productResult.ViewedProducts = viewedProducts;
             ///////////////////////
