@@ -82,6 +82,10 @@ namespace Benefit.Web.Controllers
                     viewModel.Items = viewModel.Items.Distinct(new ProductComparer()).ToList();
                     viewModel.Items.ForEach(entry =>
                     {
+                        if (entry.AvailabilityState == ProductAvailabilityState.Available && (entry.AvailableAmount == null || entry.AvailableAmount == 0))
+                        {
+                            entry.AvailabilityState = ProductAvailabilityState.NotInStock;
+                        }
                         var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;
 
                         var sellerCategory = produCat.SellerCategories.FirstOrDefault(sc => sc.CategoryId == produCat.Id && sc.SellerId == entry.SellerId);
