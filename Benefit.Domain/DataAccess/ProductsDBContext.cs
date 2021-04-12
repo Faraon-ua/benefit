@@ -166,6 +166,7 @@ namespace Benefit.Domain.DataAccess
                         THEN 0
                         ELSE 2 END) as AvailabilityState
                   ,(p.Price * ISNULL(c.Rate, 1)) as Price
+                  ,(p.OldPrice * ISNULL(c.Rate, 1)) as OldPrice
                   ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{1}')
                         THEN CAST(1 AS BIT)
                         ELSE CAST(0 AS BIT) END) as IsFavorite

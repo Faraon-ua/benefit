@@ -96,7 +96,7 @@
                 <div class="item-stock">
                     <i class="fa @Enumerations.GetDisplayDescriptionValue(Model.AvailabilityState)" style="color: @Enumerations.GetEnumDescription(Model.AvailabilityState); font-size: 1.2em;"></i>
                     <span class="value" style="color: @Enumerations.GetEnumDescription(Model.AvailabilityState);">
-                        @Enumerations.GetDisplayNameValue(Model.AvailabilityState)
+                        @Enumerations.GetDisplayShortNameValue(Model.AvailabilityState)
                     </span>
                 </div>
                 <div class="article_block"></div>
@@ -131,7 +131,7 @@
             <div class="cost prices clearfix">
                 <div class="price_matrix_block">
                     <div class="price_matrix_wrapper ">
-                        <div class="price">
+                        <div class="price height-40px">
                             @if (Model.OldPrice.HasValue)
                             {
                                 <span style="font-size: 14px; color: grey; text-decoration: line-through; margin-right: 10px;">@Model.OldPrice.Value.ToString("F") грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span>

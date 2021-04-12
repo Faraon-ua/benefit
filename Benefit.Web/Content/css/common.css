@@ -1,4 +1,7 @@
-﻿.clearboth, .clear, .clearfix {
+﻿.text-line, .text-strike {
+    text-decoration: line-through !important
+}
+.clearboth, .clear, .clearfix {
     clear: both
 }
 .opacity07{
@@ -501,6 +504,9 @@
 
 .height-30px {
     height: 30px !important;
+}
+.height-40px {
+    height: 40px !important;
 }
 
 .height-50px {

@@ -123,7 +123,7 @@ namespace Benefit.Services.Domain
                 {
                     categoryId = product.Category.MappedParentCategoryId;
                 }
-                if (product.AvailabilityState == ProductAvailabilityState.Available && product.AvailableAmount == 0)
+                if (product.AvailabilityState == ProductAvailabilityState.Available && (product.AvailableAmount == null || product.AvailableAmount == 0))
                 {
                     product.AvailabilityState = ProductAvailabilityState.NotInStock;
                 }

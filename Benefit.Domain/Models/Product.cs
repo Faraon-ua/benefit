@@ -25,18 +25,18 @@ namespace Benefit.Domain.Models
     public enum ProductAvailabilityState
     {
         [Description("#73d36a")]
-        [Display(Name = "В наявності", Description = "fa-check")]
+        [Display(Name = "В наявності (з урахуванням доступної кількості)", Description = "fa-check", ShortName = "В наявності")]
         Available,
-        [Display(Name = "Завжди в наявності", Description = "fa-check")]
+        [Display(Name = "В наявності (без урахування доступної кількості)", Description = "fa-check", ShortName = "В наявності")]
         [Description("#73d36a")]
         AlwaysAvailable,
-        [Display(Name = "Немає в наявності", Description = "fa-times")]
+        [Display(Name = "Немає в наявності", Description = "fa-times", ShortName = "Немає в наявності")]
         [Description("#333333")]
         NotInStock,
-        [Display(Name = "Під замовлення", Description = "fa-check")]
+        [Display(Name = "Під замовлення", Description = "fa-check", ShortName = "Під замовлення")]
         [Description("#fe6600")]
         OnDemand,
-        [Display(Name = "Закінчується", Description = "fa-exclamation-circle")]
+        [Display(Name = "Закінчується", Description = "fa-exclamation-circle", ShortName = "Закінчується")]
         [Description("#fe6600")]
         Ending
     }
@@ -191,6 +191,10 @@ namespace Benefit.Domain.Models
             }
             else
             {
+                if (AvailableAmount <= 3)
+                {
+                    AvailabilityState = ProductAvailabilityState.Ending;
+                }
                 var isAvailable =
                     Seller.ShippingMethods.Any(
                         entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);

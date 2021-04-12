@@ -329,7 +329,8 @@
                                             <div class="x-product-presence" data-qaid="product_presence">
                                                 <div class="item-stock" style="width: 50%; float: left;">
                                                     <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
-                                                        @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+                                                        <i class="fa @Enumerations.GetDisplayDescriptionValue(Model.Product.AvailabilityState)"></i>
+                                                        @Enumerations.GetDisplayShortNameValue(Model.Product.AvailabilityState)
                                                     </span>
                                                     @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
                                                     {
@@ -376,12 +377,8 @@
                                         </div>
                                     </div>
                                     <div class="x-product-info__item" data-qaid="product-labels"></div>
-                                    <div class="x-product-info__item" style="width: 50%; margin-top: 30px;">
+                                    <div class="x-product-info__item" style="width: 50%; margin-top: 15px;">
                                         <div class="x-product-price">
-                                            <div class="x-product-price__value" data-qaid="product_price">
-                                                <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span>
-                                                <span class="font-smaller">грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
-                                            </div>
                                             @if (Model.Product.OldPrice.HasValue)
                                             {
                                                 <div class="x-product-price__discount">
@@ -390,6 +387,11 @@
                                                     </div>
                                                 </div>
                                             }
+                                            <div class="x-product-price__value" data-qaid="product_price">
+                                                <span class="product-price" data-original-price="@Model.Product.Price">@Model.Product.Price.ToString("F")</span>
+                                                <span class="font-smaller">грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                                            </div>
+
                                             @if (Model.Product.WholesalePrice.HasValue && Model.Product.WholesaleFrom.HasValue)
                                             {
                                                 <div class="x-product-price__discount-info">
@@ -775,6 +777,12 @@
                                                 </div>
                                                 <div class="price_matrix_block">
                                                     <div class="price_matrix_wrapper ">
+                                                        @if (Model.Product.OldPrice.HasValue)
+                                                        {
+                                                            <div class="discount text-strike" style="font-size: 24px;">
+                                                                <span class="values_wrapper">@Model.Product.OldPrice<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
+                                                            </div>
+                                                        }
                                                         <div class="price" style="font-size: 26px;">
                                                             <span class="values_wrapper">
                                                                 <span class="product-price">
@@ -783,15 +791,10 @@
                                                                 <span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
                                                             </span>
                                                         </div>
-                                                        @if (Model.Product.OldPrice.HasValue)
-                                                        {
-                                                            <div class="price discount" style="font-size: 24px;">
-                                                                <span class="values_wrapper">@Model.Product.OldPrice<span class="price_currency"> грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span></span>
-                                                            </div>
-                                                        }
                                                         <div class="item-stock" style="width: 50%; float: left;">
                                                             <span class="value" style="color: @Enumerations.GetEnumDescription(Model.Product.AvailabilityState);">
-                                                                @Enumerations.GetDisplayNameValue(Model.Product.AvailabilityState)
+                                                                <i class="fa @Enumerations.GetDisplayDescriptionValue(Model.Product.AvailabilityState)"></i>
+                                                                @Enumerations.GetDisplayShortNameValue(Model.Product.AvailabilityState)
                                                             </span>
                                                             @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
                                                             {
@@ -799,7 +802,7 @@
                                                                 @(@Model.Product.IsWeightProduct ? "кг" : "шт")
                                                             }
                                                         </div>
-                                                        <div class="x-product-info__inline">
+                                                        <div class="x-product-info__inline margin-top-10">
                                                             @if (Model.Product.AvarageRating.HasValue)
                                                             {
                                                                 <div class="x-product-info__inline" itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
@@ -817,7 +820,7 @@
                                                             }
                                                             else
                                                             {
-                                                                <div class="x-product-info__inline">
+                                                                <div class="x-product-info__inline margin-top-5">
                                                                     @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
                                                                     {
                                                                         SmallStars = true,
@@ -928,9 +931,9 @@
                                             <br class="clear" />
                                         }
                                         <div style="padding-top: 20px; text-align: left;">
-                                            <a href="#" class="dark_link">@Model.Product.Seller.Name</a>
+                                            <a href="#">@Model.Product.Seller.Name</a>
                                             <br>@Model.Product.Seller.PrimaryRegionName<br>
-                                            <a href="@sellerUrl" class="dark_link" itemprop="brand">Всі товари постачальника</a>
+                                            <a href="@sellerUrl" itemprop="brand">Всі товари постачальника</a>
                                         </div>
                                         <div class="x-company-info__parts">
                                             <div class="x-company-info__title">Рейтинг постачальника</div>
@@ -1078,13 +1081,13 @@
     @Html.Partial("_RelatedProducts", Model.RelatedProducts)
 }
 @*@{
-    var viewedProducts = Model.ViewedProducts.Where(entry => entry.Id != Model.Product.Id);
-}
-@if (viewedProducts.Any())
-{
-    ViewBag.RelatedProductsHeading = "Переглянуті товари";
-    @Html.Partial("_RelatedProducts", viewedProducts)
-}*@
+        var viewedProducts = Model.ViewedProducts.Where(entry => entry.Id != Model.Product.Id);
+    }
+    @if (viewedProducts.Any())
+    {
+        ViewBag.RelatedProductsHeading = "Переглянуті товари";
+        @Html.Partial("_RelatedProducts", viewedProducts)
+    }*@
 @if (Model.ProductOptions.Any(entry => !entry.IsVariant))
 {
     @Html.Partial("_ProductOptions", Model)
