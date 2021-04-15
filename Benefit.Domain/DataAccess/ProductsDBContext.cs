@@ -212,7 +212,18 @@ namespace Benefit.Domain.DataAccess
 
         public List<Product> GetMainPageProducts()
         {
-            cmd.CommandText = @"select distinct(p.Id), p.Name, p.UrlName, p.IsActive, p.SKU, p.Title, p.AvailabilityState, (p.Price * c.Rate) as Price, p.SellerId, p.IsNewProduct, p.IsFeatured,
+            cmd.CommandText = @"select distinct(p.Id), 
+                    p.Name, 
+                    p.UrlName, 
+                    p.IsActive, 
+                    p.SKU, 
+                    p.Title, 
+                    p.AvailabilityState, 
+                    (p.Price * ISNULL(c.Rate, 1)) as Price,
+                    (p.OldPrice * ISNULL(c.Rate, 1)) as OldPrice,
+                    p.SellerId, 
+                    p.IsNewProduct, 
+                    p.IsFeatured,
                 /*=Seller=*/
 	            s.IsActive as SellerIsActive, 
 	            s.Name as SellerName, 

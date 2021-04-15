@@ -1,14 +1,23 @@
-﻿.counter .minus, .counter .plus {
-    color: #3e77aa;
-    width: 35px;
-    height: 34px;
-    line-height: 32px !important;
-    display: inline-block;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    text-align:center;
-    font-size: 1.5em;
+﻿#imagesOrder li{
+    position: relative;
 }
+    #imagesOrder li .js-main-badge {
+        padding: 3px;
+        position: absolute;
+        bottom: 10px;
+        left: 5px;
+    }
+    .counter .minus, .counter .plus {
+        color: #3e77aa;
+        width: 35px;
+        height: 34px;
+        line-height: 32px !important;
+        display: inline-block;
+        border: 1px solid transparent;
+        border-radius: 3px;
+        text-align: center;
+        font-size: 1.5em;
+    }
 
     .counter .minus:hover, .counter .plus:hover {
         border: 1px solid #fb3f4c;

@@ -18,7 +18,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             var returnImgId = string.Empty;
             using (var db = new ApplicationDbContext())
             {
-                var images = db.Images.Where(entry => sortedImages.Contains(entry.Id)).ToList();
+                var images = db.Images.Where(entry => sortedImages.Contains(entry.Id)).ToList().OrderBy(entry => sortedImages.IndexOf(entry.Id)).ToList();
                 var first = images.First();
                 if (first.ProductId != null)
                 {
@@ -31,7 +31,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
                     db.SaveChanges();
                     if (oldImageId != null)
                     {
-                        imagesService.Delete(oldImageId, product.Id, ImageType.ProductDefault);
+                        imagesService.Delete(oldImageId, product.Id, ImageType.ProductGallery);
                     }
                 }
                 for (var i = 0; i < sortedImages.Count; i++)

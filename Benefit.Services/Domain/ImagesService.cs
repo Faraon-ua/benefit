@@ -297,7 +297,7 @@ namespace Benefit.Services
                     image = db.Images.FirstOrDefault(entry => entry.ImageUrl == imageFileName);
                 }
                 if (image == null) return;
-                DeleteFile(image.Id, parentId, type);
+                DeleteFile(image.ImageUrl, parentId, type);
             }
         }
 
