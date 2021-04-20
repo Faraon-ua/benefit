@@ -606,6 +606,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             .Where(entry => productIds.Contains(entry.ProductId) && entry.ExportId == export_Id)
                             .Select(entry => entry.ProductId).ToList();
                         productIds = productIds.Except(existingExportProducts).ToArray();
+                        db.Products.Where(entry => productIds.Contains(entry.Id))
+                          .ForEach(entry =>
+                          {
+                              if (!entry.Name.Contains("(bc-"))
+                              {
+                                  entry.Name += string.Format(" (bc-{0})", entry.SKU);
+                              }
+                              db.Entry(entry).State = EntityState.Modified;
+                          });
                         foreach (var productId in productIds)
                         {
                             var exportProduct = new ExportProduct()
@@ -622,6 +631,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             .Where(entry => products.Contains(entry.ProductId) && entry.ExportId == export_Id)
                             .Select(entry => entry.ProductId).ToList();
                         productIds = products.Except(existingExportProducts).ToArray();
+                        db.Products.Where(entry => productIds.Contains(entry.Id))
+                         .ForEach(entry =>
+                         {
+                             if (!entry.Name.Contains("(bc-"))
+                             {
+                                 entry.Name += string.Format(" (bc-{0})", entry.SKU);
+                             }
+                             db.Entry(entry).State = EntityState.Modified;
+                         });
                         var exportProducts = productIds.Select(entry => new ExportProduct
                         {
                             ProductId = entry,

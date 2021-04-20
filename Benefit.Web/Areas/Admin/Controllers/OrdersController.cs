@@ -489,7 +489,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult CheckNewOrder()
+        public ActionResult CheckNewOrder(DateTime? time)
         {
             using (var db = new ApplicationDbContext())
             {
@@ -498,6 +498,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (Seller.CurrentAuthorizedSellerId != null)
                 {
                     newOrders = newOrders.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId);
+                }
+                if (time.HasValue)
+                {
+                    newOrders = newOrders.Where(entry => entry.Time > time);
                 }
                 var orderIds = newOrders.Select(entry => entry.Id).ToList();
                 return Json(orderIds, JsonRequestBehavior.AllowGet);

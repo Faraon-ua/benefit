@@ -13,13 +13,27 @@ namespace Benefit.Web.Controllers
 {
     public class HelperController : Controller
     {
+        public ActionResult AssignSuffix()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var eps = db.ExportProducts.Include(entry => entry.Product).Where(entry => !entry.Product.Name.Contains("(bc-")).ToList();
+                foreach (var ep in eps)
+                {
+                    ep.Product.Name += string.Format(" (bc-{0})", ep.Product.SKU);
+                    db.Entry(ep.Product).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+            }
+            return Content("Suffixes assigned");
+        }
         public ActionResult SetDefaultImage(string sellerId)
         {
             using (var db = new ApplicationDbContext())
             {
                 var productsQuery = db.Products.Include(enty => enty.DefaultImage).Include(enty => enty.Images)
                 .Where(entry => entry.IsActive && entry.Category.IsActive && entry.Seller.IsActive && entry.Images.Any() && entry.DefaultImageId == null);
-                if(sellerId != null)
+                if (sellerId != null)
                 {
                     productsQuery = productsQuery.Where(entry => entry.SellerId == sellerId);
                 }
@@ -145,7 +159,7 @@ namespace Benefit.Web.Controllers
                 {
                     var firebirdCat = db.Categories
                         .FirstOrDefault(entry => entry.SellerId == "8ce2d034-6902-4501-b083-f7cf773c5086" && entry.LastModifiedBy == "FirebirdImport" && entry.Name == gbsCat.Name);
-                    if(firebirdCat != null)
+                    if (firebirdCat != null)
                     {
                         var parameters = gbsCat.ProductParameters.ToList();
                         foreach (var productParameter in parameters)
