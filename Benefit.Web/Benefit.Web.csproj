@@ -1587,7 +1587,6 @@
     <Content Include="Views\Shared\_Layout.mobile.cshtml" />
     <Content Include="Views\Shared\_head.mobile.cshtml" />
     <Content Include="Views\Home\_ImageSlider.mobile.cshtml" />
-    <Content Include="Views\Tovar\Index.mobile.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\_ProductListPartial.cshtml" />
     <Content Include="Views\Seller\_SellerHead.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\ForgotPassword.cshtml" />

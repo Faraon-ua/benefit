@@ -150,8 +150,9 @@
             });
 
             $("#imagesOrder").sortable({
-                change: function (event, ui) {
-                    $("#imagesOrder li").eq(0).find(".dd-list").append('<div style="padding:3px; background-color:rgb(209,91,71); position:absolute;bottom:10px;left:5px; color:#FFF;">Головне</div>');
+                update: function (event, ui) {
+                    $("#imagesOrder .js-main-badge").remove();
+                    $("#imagesOrder li").eq(0).find(".js-image-wrap").append('<div class="js-main-badge badge badge-danger">Головне</div>');
                 }
             });
             $("#imagesOrder").disableSelection();
@@ -170,11 +171,12 @@
                     dataType: 'json',
                     url: saveImagesOrderUrl,
                     data: JSON.stringify({ sortedImages: sortedImgs }),
-                    contentType: 'application/json; charset=utf-8',
+                    contentType: 'application/json',
                     async: true,
                     success: function (data) {
                         $("#DefaultImageId").val(data.defaultImageId);
-                        flashMessage(data.message);
+                        flashMessage(data.message, 1, false);
+                        $("html, body").animate({ scrollTop: 0 }, "fast");
                         $("#saveImagesOrder").removeAttr("disabled");
                     },
                     error: function (data) {

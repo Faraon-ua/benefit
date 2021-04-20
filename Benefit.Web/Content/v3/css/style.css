@@ -22547,7 +22547,6 @@ hr.bottoms {
 }
 
 .cost.prices .price {
-    height: 40px;
     margin-bottom: 8px;
 }
 
@@ -25334,7 +25333,6 @@ div.item-title {
     line-height: 15px;
     margin: 6px 0 2px;
     white-space: nowrap;
-    height: 40px;
 }
 
     .item-stock > span {
@@ -28429,7 +28427,7 @@ div[id^=smartFilterDropDown] {
 }
 
 .info_item .top_info, .info_item .middle_info {
-    padding: 24px 0 3px;
+    padding: 10px 0 3px;
     overflow: hidden
 }
 

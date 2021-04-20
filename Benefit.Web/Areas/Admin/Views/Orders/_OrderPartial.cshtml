@@ -10,7 +10,7 @@
         isExternalRequest = true;
     }
 }
-<div class="order-wrap" data-collapsed="true" @(isExternalRequest ? "style=height:auto" : "") data-order-id="@Model.Id">
+<div class="order-wrap" data-collapsed="true" @(isExternalRequest ? "style=height:auto" : "") data-order-id="@Model.Id" data-order-time="@Model.Time">
     <div class="order-preview">
         <div class="col text-left border-bottom order-number-wrap" style="width: 190px;">
             <a href="#" class="order-number">

@@ -166,6 +166,7 @@ namespace Benefit.Domain.DataAccess
                         THEN 0
                         ELSE 2 END) as AvailabilityState
                   ,(p.Price * ISNULL(c.Rate, 1)) as Price
+                  ,(p.OldPrice * ISNULL(c.Rate, 1)) as OldPrice
                   ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{1}')
                         THEN CAST(1 AS BIT)
                         ELSE CAST(0 AS BIT) END) as IsFavorite
@@ -211,7 +212,18 @@ namespace Benefit.Domain.DataAccess
 
         public List<Product> GetMainPageProducts()
         {
-            cmd.CommandText = @"select distinct(p.Id), p.Name, p.UrlName, p.IsActive, p.SKU, p.Title, p.AvailabilityState, (p.Price * c.Rate) as Price, p.SellerId, p.IsNewProduct, p.IsFeatured,
+            cmd.CommandText = @"select distinct(p.Id), 
+                    p.Name, 
+                    p.UrlName, 
+                    p.IsActive, 
+                    p.SKU, 
+                    p.Title, 
+                    p.AvailabilityState, 
+                    (p.Price * ISNULL(c.Rate, 1)) as Price,
+                    (p.OldPrice * ISNULL(c.Rate, 1)) as OldPrice,
+                    p.SellerId, 
+                    p.IsNewProduct, 
+                    p.IsFeatured,
                 /*=Seller=*/
 	            s.IsActive as SellerIsActive, 
 	            s.Name as SellerName, 

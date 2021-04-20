@@ -166,7 +166,11 @@
         }, 10000);
 
         function CheckNewOrder() {
-            $.get(checkOrdersUrl, function (data) {
+            var url = checkOrdersUrl;
+            if ($(".orders-list").length > 0) {
+                url += "?time=" + $(".orders-list .order-wrap").eq(1).attr("data-order-time");
+            }
+            $.get(url, function (data) {
                 if (data.length > 0) {
                     if (!isAudioAllowed) {
                         return;

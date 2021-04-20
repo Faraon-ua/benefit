@@ -14,7 +14,7 @@
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
     @*    <script src="~/Scripts/sorting-filtering.js"></script>*@
 
-    <script>
+<script>
         var updateWeightProductUrl = '@Url.Action("UpdateWeightProduct")';
         var moderateProductUrl = '@Url.Action("Moderate")';
         var bulkProductsActionUrl = '@Url.Action("BulkProductsAction")';
@@ -125,6 +125,12 @@
                 } else {
                     $("#move-to-categoryId").hide();
                 }
+                if ($(this).val() == "@((int)ProductsBulkAction.SetAvailability)" ||
+                    $(this).val() == "@((int)ProductsBulkAction.SetAvailabilityAll)") {
+                    $("#availabilityId").show();
+                } else {
+                    $("#availabilityId").hide();
+                }
                 if ($(this).val() == "@((int)ProductsBulkAction.ExportAll)" ||
                     $(this).val() == "@((int)ProductsBulkAction.ExportSelected)") {
                     $("#exportId").show();
@@ -159,6 +165,7 @@
                 }).get();
                 var action = $("#products-bulk-action").val();
                 var categoryId = $("[name=move-to-categoryId]").val();
+                var availabilityId = $("[name=availabilityId]").val();
                 var exportId = $("[name=exportId]").val();
                 var currencyId = $("[name=currencyId]").val();
                 var moderateStatus = $("[name=moderateStatus]").val();
@@ -168,6 +175,7 @@
                         "productIds": productIds,
                         "action": action,
                         "category_Id": categoryId,
+                        "availability_Id": availabilityId,
                         "export_Id": exportId,
                         "currency_Id": currencyId,
                         "moderator_Id": moderatorId,
@@ -238,7 +246,7 @@
                     });
             }
         }
-    </script>
+</script>
 }
 
 @section styles{
@@ -348,12 +356,14 @@
                                     Value = null,
                                     Items = Model.ProductFilters.Categories
                                 })
-
+                               
                                 @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style = "display:none;" })
 
                                 @Html.DropDownList("currencyId", Model.ProductFilters.Currencies, null, new { id = "currencyId", style = "display:none;" })
 
                                 @Html.DropDownList("moderateStatus", EnumHelper.GetSelectList(typeof(ModerationStatus)), new { id = "moderateStatus", style = "display: none;" })
+
+                                @Html.DropDownList("availabilityId", EnumHelper.GetSelectList(typeof(ProductAvailabilityState)), new { id = "availabilityId", style = "display: none;" })
 
                                 <span id="moderator-hint" style="display:none;">* оберіть постачальника * </span>
                                 @if (Model.ProductFilters.Moderators != null)
