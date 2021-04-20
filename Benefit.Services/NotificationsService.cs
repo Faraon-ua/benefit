@@ -7,11 +7,14 @@ using Benefit.Domain.Models;
 using Telegram.Bot;
 using Benefit.Common.Helpers;
 using System;
+using NLog;
 
 namespace Benefit.Services
 {
     public class NotificationsService
     {
+        private Logger _logger = LogManager.GetCurrentClassLogger();
+
         public string AddApiFailNotification(string apiName, string channelAddress, NotificationChannelType channelType)
         {
             using (var db = new ApplicationDbContext())
@@ -50,15 +53,22 @@ namespace Benefit.Services
                 }
             }
         }
-        public async Task NotifyApiFailRequest(string orderNumber, string marketPlaceName, string message)
+        public async Task NotifyApiFailRequest(string message)
         {
             using (var db = new ApplicationDbContext())
             {
-                var notificationChannels = db.NotificationChannels.Where(entry => entry.ChannelType == NotificationChannelType.TelegramApiFail && entry.Name == marketPlaceName).ToList();
+                var notificationChannels = db.NotificationChannels.Where(entry => entry.ChannelType == NotificationChannelType.TelegramApiFail).ToList();
                 foreach (var notificationChannel in notificationChannels)
                 {
                     var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
-                    var result = await telegram.SendTextMessageAsync(notificationChannel.Address, message);
+                    try
+                    {
+                        await telegram.SendTextMessageAsync(notificationChannel.Address, message).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Fatal("Telegram send message fail " + ex.ToString());
+                    }
                 }
             }
         }

@@ -81,7 +81,7 @@ namespace Benefit.HttpClient
             return result;
         }
 
-        public ResponseResult<T> Post<T>(string url, string ingestData, string contentType, string authorizationToken = null, string method = "post")
+        public ResponseResult<T> Post<T>(string url, string ingestData, string contentType, string authorizationToken = null, string method = "post", System.Collections.Generic.Dictionary<string,string> customHeaders = null)
         {
             var result = new ResponseResult<T>();
             string response = null;
@@ -92,6 +92,13 @@ namespace Benefit.HttpClient
                     client.Headers.Add("Authorization", string.Format("Bearer {0}", authorizationToken));
                 }
                 client.Headers[HttpRequestHeader.ContentType] = contentType;
+                if(customHeaders!= null)
+                {
+                    foreach (var header in customHeaders)
+                    {
+                        client.Headers.Add(header.Key, header.Value);
+                    }
+                }
                 response = client.UploadString(url, method, ingestData);
                 result.StatusCode = HttpStatusCode.OK;
             }

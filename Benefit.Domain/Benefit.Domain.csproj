@@ -700,6 +700,10 @@
     <Compile Include="Migrations\202101121024347_AddLinks.Designer.cs">
       <DependentUpon>202101121024347_AddLinks.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202104132058050_ExtendOrderStampComment.cs" />
+    <Compile Include="Migrations\202104132058050_ExtendOrderStampComment.Designer.cs">
+      <DependentUpon>202104132058050_ExtendOrderStampComment.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1212,6 +1216,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202101121024347_AddLinks.resx">
       <DependentUpon>202101121024347_AddLinks.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202104132058050_ExtendOrderStampComment.resx">
+      <DependentUpon>202104132058050_ExtendOrderStampComment.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

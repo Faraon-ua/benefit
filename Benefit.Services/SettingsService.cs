@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Linq;
 using System.Runtime.Remoting;
+using Benefit.Domain.Models;
 using Benefit.Domain.Models.Enums;
 
 namespace Benefit.Services
@@ -28,7 +29,7 @@ namespace Benefit.Services
             {
                 return ConfigurationManager.AppSettings["ScheduleKey"];
             }
-        } 
+        }
         public static List<string> SupportedLocalizations
         {
             get
@@ -156,8 +157,18 @@ namespace Benefit.Services
                 }
             }
         }
-
-        public class Rozetka {
+        public class MarketplaceApi
+        {
+            public static string OrderSuffixRegex
+            {
+                get
+                {
+                    return @"\(bc-(\w{2}-)?\d+\){1}";
+                }
+            }
+        }
+        public class Rozetka
+        {
             public static string BaseUrl
             {
                 get
@@ -180,7 +191,8 @@ namespace Benefit.Services
                 }
             }
         }
-        public class Allo {
+        public class Allo
+        {
             public static string BaseUrl
             {
                 get
@@ -202,6 +214,20 @@ namespace Benefit.Services
                     return ConfigurationManager.AppSettings["AlloApiKey"];
                 }
             }
+            public static Dictionary<int, OrderStatus> OrderStatusMapping
+            {
+                get
+                {
+                    return new Dictionary<int, OrderStatus>()
+                    {
+                        {1, OrderStatus.AwaitingDelivery},
+                        {2, OrderStatus.IsDelivering},
+                        {3, OrderStatus.WaitingInSelfPickup},
+                        {4, OrderStatus.Finished},
+                        {5, OrderStatus.CustomerAbolished}
+                    };
+                }
+            }
         }
         public class Facebook
         {
@@ -219,7 +245,7 @@ namespace Benefit.Services
                     return ConfigurationManager.AppSettings["FacebookMessengerAPIUrl"];
                 }
             }
-            public static string PageAccessToken 
+            public static string PageAccessToken
             {
                 get
                 {

@@ -4,7 +4,10 @@ namespace Benefit.DataTransfer.ApiDto.Allo
 {
     public class OrderDto
     {
+        public const int limit = 50;
+
         public string id { get; set; }
+        public string note { get; set; }
         public string created_date { get; set; }
         public string payment_type { get; set; }
         public string payment_type_id { get; set; }
@@ -20,6 +23,7 @@ namespace Benefit.DataTransfer.ApiDto.Allo
     public class OrderProductDto
     {
         public string name { get; set; }
+        public string sku { get; set; }
         public double quantity { get; set; }
         public double price { get; set; }
         public double amount { get; set; }
@@ -55,5 +59,6 @@ namespace Benefit.DataTransfer.ApiDto.Allo
     public class OrdersDto
     {
         public ICollection<OrderDto> orders { get; set; }
+        public int total_records { get; set; }
     }
 }

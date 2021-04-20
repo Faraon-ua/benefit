@@ -8,6 +8,7 @@ namespace Benefit.DataTransfer.ApiDto.Allo
 {
     public class OrdersIngestArgs
     {
+        public string orderId { get; set; }
         public string accepted_from { get; set; }
         public int offset { get; set; }
         public int limit { get; set; }

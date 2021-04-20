@@ -18,13 +18,13 @@ using System.Web;
 
 namespace Benefit.Services.ExternalApi
 {
-    public class RozetkaApiService : IMarketPlaceApi
+    public class RozetkaApiService : BaseMarketPlaceApi
     {
         private BenefitHttpClient _httpClient = new BenefitHttpClient();
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private NotificationsService _notificationService = new NotificationsService();
 
-        public string GetAccessToken(string userName, string password)
+        public override string GetAccessToken(string userName, string password)
         {
             var auth = new AuthIngest
             {
@@ -41,7 +41,7 @@ namespace Benefit.Services.ExternalApi
             return null;
         }
 
-        public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1, string sellerComment = null)
+        public override void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1, string sellerComment = null)
         {
             var success = true;
             var updateOrderUrl = SettingsService.Rozetka.BaseUrl + "orders/" + id;
@@ -100,11 +100,11 @@ namespace Benefit.Services.ExternalApi
             }
         }
 
-        public async Task ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1)
+        public override async Task ProcessOrders(string getOrdersUrl = null, string authToken = null, int type = 1, int offset = 0)
         {
             using (var db = new ApplicationDbContext())
             {
-                var orderSuffixRegex = new Regex(@"\(\b(\w*.?(bc|BC).+\d\w*)\b\)", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                var orderSuffixRegex = new Regex(SettingsService.MarketplaceApi.OrderSuffixRegex, RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 var orders = new List<Order>();
                 if (getOrdersUrl == null)
                 {
@@ -129,7 +129,7 @@ namespace Benefit.Services.ExternalApi
                     if (ordersResult.StatusCode == HttpStatusCode.OK)
                     {
                         var maxOrderNumber = db.Orders.Max(entry => entry.OrderNumber);
-                        var rOrders = ordersResult.Data.content.orders.Where(entry => !db.Orders.Any(or => or.ExternalId == entry.id)).ToList();
+                        var rOrders = ordersResult.Data.content.orders.Where(entry => !db.Orders.Any(or => or.ExternalId == entry.id && or.OrderType == OrderType.Rozetka)).ToList();
                         foreach (var rOrder in rOrders)
                         {
                             var productNames = rOrder.purchases.Select(entry => orderSuffixRegex.Match(entry.item_name).Value.ToLower()).ToList();
@@ -163,8 +163,7 @@ namespace Benefit.Services.ExternalApi
                                     var product = products.FirstOrDefault(entry => entry.Name.ToLower().Contains(suffix));
                                     if (product == null)
                                     {
-                                        await _notificationService.NotifyApiFailRequest(rOrder.id, "Rozetka",
-                                            string.Format("Не знайдено товару в локальній базі даних. № замовлення в Benefit: {0}, № Замовлення на Rozetka: {1}, назва товару: {2}", order.OrderNumber, rOrder.id, rProduct.item_name));
+                                        Task.Run(() => _notificationService.NotifyApiFailRequest(string.Format("Не знайдено товару в локальній базі даних. № замовлення в Benefit: {0}, № Замовлення на Rozetka: {1}, назва товару: {2}", order.OrderNumber, rOrder.id, rProduct.item_name)));
                                     }
                                     else
                                     {
@@ -193,12 +192,12 @@ namespace Benefit.Services.ExternalApi
                         if (ordersResult.Data.content._meta.currentPage != ordersResult.Data.content._meta.pageCount && ordersResult.Data.content._meta.pageCount != 0)
                         {
                             getOrdersUrl = getOrdersUrl.Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=" + (ordersResult.Data.content._meta.currentPage + 1));
-                            await ProcessOrders(getOrdersUrl, authToken, type);
+                            ProcessOrders(getOrdersUrl, authToken, type);
                         }
                         else if (type < 3)
                         {
                             getOrdersUrl = getOrdersUrl.Replace("type=" + type, "type=" + (type + 1)).Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=1");
-                            await ProcessOrders(getOrdersUrl, authToken, ++type);
+                            ProcessOrders(getOrdersUrl, authToken, ++type);
                         }
                     }
                     else
