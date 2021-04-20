@@ -36,7 +36,7 @@ namespace Benefit.Services.Import
                 .Where(entry => !ids.Contains(entry.Element("Ид").Value)).ToList();
             AddAndUpdate1СProducts(xmlProducts.ToList(), importTask.SellerId, importTask.Seller.UrlName, db);
             db.SaveChanges();
-            DeleteProducts(xmlProducts, importTask.SellerId, SyncType.OneCCommerceMl, db);
+            DeleteProducts(xmlProducts, importTask.SellerId, db);
             db.SaveChanges();
             //Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
             //images
@@ -65,19 +65,12 @@ namespace Benefit.Services.Import
                 return productPricesUpdated;
             }
         }
-        private void DeleteProducts(List<XElement> xmlProducts, string sellerId, SyncType importType, ApplicationDbContext db)
+        private void DeleteProducts(List<XElement> xmlProducts, string sellerId, ApplicationDbContext db)
         {
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
                 .Select(entry => entry.Id).ToList();
             List<string> xmlProductIds = null;
-            if (importType == SyncType.OneCCommerceMl)
-            {
-                xmlProductIds = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
-            }
-            if (importType == SyncType.Yml)
-            {
-                xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
-            }
+            xmlProductIds = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
             var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).Where(entry => entry != null).ToList();
             var productsToRemove = db.Products.Where(entry => entry.SellerId == sellerId && productIdsToRemove.Contains(entry.Id)).ToList();
             Parallel.ForEach(productsToRemove, (dbProduct) =>
@@ -105,6 +98,7 @@ namespace Benefit.Services.Import
                 new DeleteInModel { ColumnName = "ProductId", IncludeIn = true, Ids = dbProductIds },
                 new DeleteInModel { ColumnName = "Id", IncludeIn = false, Ids = defaultImageIds });
 
+            var affectedProducts = new List<Product>();
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
             {
                 var xmlProduct = xmlProducts.First(entry => entry.Element("Ид").Value == productIdToAdd);
@@ -132,14 +126,11 @@ namespace Benefit.Services.Import
                     ShortDescription = name
                 };
 
-                lock (lockObj)
-                {
-                    productsToAddList.Add(product);
-                }
-
                 var order = 0;
                 lock (lockObj)
                 {
+                    productsToAddList.Add(product);
+
                     imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Where(entry => !string.IsNullOrEmpty(entry.Value)).Select(xmlImage => new Image()
                     {
                         Id = Guid.NewGuid().ToString(),
@@ -168,6 +159,8 @@ namespace Benefit.Services.Import
                 var order = 0;
                 lock (lockObj)
                 {
+                    affectedProducts.Add(product);
+
                     imagesToAddList.AddRange(xmlProduct.Elements("Картинка").Where(entry => !string.IsNullOrEmpty(entry.Value)).Select(xmlImage => new Image()
                     {
                         Id = Guid.NewGuid().ToString(),
@@ -185,10 +178,14 @@ namespace Benefit.Services.Import
                 product.SKU = maxSku;
                 product.UrlName = product.UrlName.Insert(0, maxSku++ + "-").Truncate(128);
             }
-
+            affectedProducts.AddRange(productsToAddList);
             db.InsertIntoMembers(productsToAddList);
             db.SaveChanges();
             db.InsertIntoMembers(imagesToAddList);
+            foreach(var product in affectedProducts)
+            {
+                product.DefaultImageId = imagesToAddList.FirstOrDefault(entry => entry.ProductId == product.Id && entry.Order == 0).Id;
+            }
             foreach (var image in imagesToAddList)
             {
                 var uri = new Uri(image.ImageUrl);

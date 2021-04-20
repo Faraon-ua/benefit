@@ -32,7 +32,7 @@ namespace Benefit.Services.Import
             var xmlProducts = root.Descendants("offers").First().Elements().ToList();
             AddAndUpdateYmlProducts(xmlProducts, importTask.SellerId, xmlCategoryIds);
             db.SaveChanges();
-            DeleteYmlProducts(xmlProducts, importTask.SellerId, SyncType.Yml, db);
+            DeleteYmlProducts(xmlProducts, importTask.SellerId, db);
             db.SaveChanges();
         }
 
@@ -415,19 +415,12 @@ namespace Benefit.Services.Import
             }
         }
 
-        private void DeleteYmlProducts(List<XElement> xmlProducts, string sellerId, SyncType importType, ApplicationDbContext db)
+        private void DeleteYmlProducts(List<XElement> xmlProducts, string sellerId, ApplicationDbContext db)
         {
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
                 .Select(entry => entry.Id).ToList();
             List<string> xmlProductIds = null;
-            if (importType == SyncType.OneCCommerceMl)
-            {
-                xmlProductIds = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
-            }
-            if (importType == SyncType.Yml)
-            {
-                xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
-            }
+            xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
             var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).Where(entry => entry != null).ToList();
             var productsToRemove = db.Products.Where(entry => entry.SellerId == sellerId && productIdsToRemove.Contains(entry.Id)).ToList();
             Parallel.ForEach(productsToRemove, (dbProduct) =>

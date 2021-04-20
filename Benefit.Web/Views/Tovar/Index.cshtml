@@ -332,7 +332,7 @@
                                                         <i class="fa @Enumerations.GetDisplayDescriptionValue(Model.Product.AvailabilityState)"></i>
                                                         @Enumerations.GetDisplayShortNameValue(Model.Product.AvailabilityState)
                                                     </span>
-                                                    @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
+                                                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.Ending && Model.Product.AvailableAmount != null)
                                                     {
                                                         <span id="available-amount">@Model.Product.AvailableAmount</span>
                                                         @(Model.Product.IsWeightProduct ? "кг" : "шт")
@@ -796,7 +796,7 @@
                                                                 <i class="fa @Enumerations.GetDisplayDescriptionValue(Model.Product.AvailabilityState)"></i>
                                                                 @Enumerations.GetDisplayShortNameValue(Model.Product.AvailabilityState)
                                                             </span>
-                                                            @if ((Model.Product.AvailabilityState == ProductAvailabilityState.Available || Model.Product.AvailabilityState == ProductAvailabilityState.Ending) && Model.Product.AvailableAmount != null)
+                                                            @if (Model.Product.AvailabilityState == ProductAvailabilityState.Ending && Model.Product.AvailableAmount != null)
                                                             {
                                                                 <span id="available-amount">@Model.Product.AvailableAmount</span>
                                                                 @(@Model.Product.IsWeightProduct ? "кг" : "шт")

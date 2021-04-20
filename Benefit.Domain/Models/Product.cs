@@ -195,6 +195,10 @@ namespace Benefit.Domain.Models
                 {
                     AvailabilityState = ProductAvailabilityState.Ending;
                 }
+                if(AvailabilityState == ProductAvailabilityState.AlwaysAvailable)
+                {
+                    AvailabilityState = ProductAvailabilityState.Available;
+                }
                 var isAvailable =
                     Seller.ShippingMethods.Any(
                         entry => entry.RegionId == RegionConstants.AllUkraineRegionId || entry.RegionId == regionId);

@@ -155,15 +155,21 @@ namespace Benefit.Domain.DataAccess
                   ,p.SKU
                   ,p.IsWeightProduct
                   ,[AvailableAmount] 
-	              ,(SELECT CASE WHEN 
-	              ((p.AvailabilityState = 0 and p.AvailableAmount > 0)
-	                  or 
-	                  p.AvailabilityState = 1)
-	                  and p.ModerationStatus = 0 
-	                  and p.IsActive = 1
-	                  and s.IsActive = 1
-	                  and cat.IsActive = 1
+	              ,(SELECT CASE 
+                  WHEN 
+	                p.AvailabilityState = 0 and p.AvailableAmount > 0
+	                and p.ModerationStatus = 0 
+	                and p.IsActive = 1
+	                and s.IsActive = 1
+	                and cat.IsActive = 1
                         THEN 0
+                  WHEN 
+	                p.AvailabilityState = 1
+                    and p.ModerationStatus = 0 
+	                and p.IsActive = 1
+	                and s.IsActive = 1
+	                and cat.IsActive = 1
+                        THEN 1
                         ELSE 2 END) as AvailabilityState
                   ,(p.Price * ISNULL(c.Rate, 1)) as Price
                   ,(p.OldPrice * ISNULL(c.Rate, 1)) as OldPrice
