@@ -17,15 +17,32 @@ namespace Benefit.Web.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                var eps = db.ExportProducts.Include(entry => entry.Product).Where(entry => !entry.Product.Name.Contains("(bc-")).ToList();
-                foreach (var ep in eps)
+                var products = db.ExportProducts.Include(entry => entry.Product).Select(entry=>entry.Product).Distinct(new ProductComparer()).Where(entry => !entry.Name.Contains("(bc-")).ToList();
+                foreach (var product in products)
                 {
-                    ep.Product.Name += string.Format(" (bc-{0})", ep.Product.SKU);
-                    db.Entry(ep.Product).State = EntityState.Modified;
+                    product.Name += string.Format(" (bc-{0})", product.SKU);
+                    db.Entry(product).State = EntityState.Modified;
                 }
                 db.SaveChanges();
             }
             return Content("Suffixes assigned");
+        }
+        public ActionResult CleanSuffix()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var products = db.ExportProducts.Include(entry => entry.Product).Select(entry => entry.Product)
+                    .Where(x => DbFunctions.Like(x.Name, "%(bc-%(bc-%")).ToList().Distinct(new ProductComparer()).ToList();
+                foreach (var product in products)
+                {
+                    var indexOfBc = product.Name.IndexOf("(bc-");
+                    var lastIndexOfBc = product.Name.IndexOf(")", indexOfBc);
+                    product.Name = product.Name.Substring(0, lastIndexOfBc + 1);
+                    db.Entry(product).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+            }
+            return Content("Suffixes cleaned");
         }
         public ActionResult SetDefaultImage(string sellerId)
         {
