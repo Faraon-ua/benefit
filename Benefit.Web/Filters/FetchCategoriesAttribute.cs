@@ -35,15 +35,10 @@ namespace Benefit.Web.Filters
                         categories = categories.SelectMany(entry => entry.ChildCategories)
                             .Where(entry => entry.IsActive && !entry.IsSellerCategory).ToList();
                     }
-
-                    categoriesVM = categories.MapToVM().OrderByDescending(entry => entry.ChildCategories.Any()).ToList();
+                    categories = categories
+                        .OrderBy(entry => entry.SellerCategories.FirstOrDefault() == null ? 1000 : entry.SellerCategories.FirstOrDefault().Order == null ? 1000: entry.SellerCategories.FirstOrDefault().Order).ToList();
+                    categoriesVM = categories.MapToVM().ToList();
                     HttpRuntime.Cache.Insert("Categories" + seller.Id, categoriesVM, null, Cache.NoAbsoluteExpiration, TimeSpan.FromHours(6));
-
-                    //using (var db = new ApplicationDbContext())
-                    //{
-                    //    categories = db.SellerCategories.Include(entry => entry.Category.Products)
-                    //       .Where(entry => entry.SellerId == seller.Id).Select(entry => entry.Category).Where(entry => entry.Products.Any()).ToList();
-                    //}
                 }
             }
             else

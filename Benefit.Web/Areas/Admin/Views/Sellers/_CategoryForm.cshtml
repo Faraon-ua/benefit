@@ -1,7 +1,7 @@
 ﻿@model  KeyValuePair<int, Benefit.Domain.Models.SellerCategory>
 
-<div class="row belong-category">
-    <div class="col-sm-3">
+<div class="display-flex belong-category">
+    <div class="flex-grow-2">
         @if (Model.Value.CategoryId == null)
         {
             @Html.DropDownList(string.Format("Seller.SellerCategories[{0}].CategoryId", Model.Key), ViewBag.Categories as IEnumerable<SelectListItem>, "Не обрано", new { @class = "chosen-select category-id", data_number = Model.Key })
@@ -11,26 +11,32 @@
             <span>@Model.Value.Category.ExpandedName</span>
             @Html.Hidden(string.Format("Seller.SellerCategories[{0}].CategoryId", Model.Key), Model.Value.CategoryId, new { @class = "category-id", data_number = Model.Key })
         }
-
     </div>
-    <div class="col-sm-2">
-        @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomDiscount", Model.Key), Model.Value.CustomDiscount, new { @class = "number-input width-80", placeholder = "Загальний відсоток знижки" }) %
+    <div class="flex-grow-1">
+        <p>Загальний % знижки</p>
+        @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomDiscount", Model.Key), Model.Value.CustomDiscount, new { @class = "number-input width-90" })
     </div>
-    <div class="col-sm-2">
-        @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomMargin", Model.Key), Model.Value.CustomMargin, new { @class = "number-input width-80", placeholder = "Націнка" }) %
+    <div class="flex-grow-1">
+        <p>
+            Націнка, %
+        </p>
+        @Html.TextBox(string.Format("Seller.SellerCategories[{0}].CustomMargin", Model.Key), Model.Value.CustomMargin, new { @class = "number-input width-90" })
     </div>
-    <div class="col-sm-2">
+    <div class="flex-grow-1">
+        <p>
+            Порядковий №
+        </p>
+        @Html.TextBox(string.Format("Seller.SellerCategories[{0}].Order", Model.Key), Model.Value.Order, new { @class = "number-input width-90" })
+    </div>
+    <div class="flex-grow-1">
         <label for="@string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key)">Основне меню</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key), Model.Value.RootDisplay)
-    </div>
-    <div class="col-sm-2">
+        <br />
         <label for="@string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key)">Головна категорія</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key), Model.Value.IsDefault, new { @class = "main-cat" })
     </div>
-    <div class="col-sm-1">
+    <div>
         <a href="#" onclick="$(this).parent().parent().remove(); ReAssignIndexesToChildren('categories', 'belong-category');">
             <i class="icon-remove red"></i>
         </a>
     </div>
-    <div class="clearfix">
-        <hr />
-    </div>
+    <br />
 </div>

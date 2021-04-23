@@ -6,6 +6,7 @@ namespace Benefit.Domain.Models
 {
     public class SellerCategory
     {
+        public int? Order { get; set; }
         public int? CustomMargin { get; set; }
         public double? CustomDiscount { get; set; }
         public bool RootDisplay { get; set; }

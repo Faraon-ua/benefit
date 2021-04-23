@@ -13,6 +13,7 @@
     <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
     <link href="~/Content/css/input-icon-left.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/datepicker.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
 }
 @section scripts{
     <script src="~/Scripts/jquery.unobtrusive-ajax.min.js"></script>
@@ -76,7 +77,6 @@
         }
 
         function UpdateCategoriesNumber() {
-            $("html, body").animate({ scrollTop: $(document).height() }, 500);
             var maxNumber = parseInt(GetMaxAttributeValue('.category-id', 'data-number'));
             var href = $("#addNewCategory").attr("href");
             href = href.replace(/[0-9]/g, "");
@@ -109,7 +109,7 @@
 
         $(function () {
             SetRegionsAutocomplete();
-            
+
             $('.number-float-input').mask("#0.000000");
 
             $("#imagesOrder").sortable();
@@ -393,11 +393,11 @@
                 </a>
             </li>
             @*<li>
-            <a href="#currency" data-toggle="tab">
-                <i class="blue icon-money bigger-110"></i>
-                Курси валют
-            </a>
-        </li>*@
+                    <a href="#currency" data-toggle="tab">
+                        <i class="blue icon-money bigger-110"></i>
+                        Курси валют
+                    </a>
+                </li>*@
             <li>
                 <a href="#personell-list" data-toggle="tab">
                     <i class="pink icon-group bigger-110"></i>
@@ -476,8 +476,8 @@
                 @Html.Partial("_Schedules", Model.Seller.Schedules.ToList())
             </div>
             @*    <div class="tab-pane" id="currency">
-            @Html.Partial("_Currencies", Model.Seller)
-        </div>*@
+                    @Html.Partial("_Currencies", Model.Seller)
+                </div>*@
             <div class="tab-pane" id="personell-list">
                 @Html.Partial("~/Areas/Admin/Views/Personnel/_PersonnelList.cshtml", Model.Seller.Personnels)
             </div>

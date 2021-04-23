@@ -1,4 +1,10 @@
-﻿#imagesOrder li{
+﻿.belong-category {
+    border-bottom: solid 1px rgb(229, 229, 229);
+}
+    .belong-category div {
+        padding: 7px 0;
+    }
+#imagesOrder li {
     position: relative;
 }
     #imagesOrder li .js-main-badge {

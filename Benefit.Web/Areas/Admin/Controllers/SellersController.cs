@@ -259,7 +259,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 seller.Seller.Schedules = seller.Seller.Schedules.OrderBy(entry => entry.Day).ToList();
                 if (existingSeller != null)
                 {
-                    existingSeller.SellerCategories = existingSeller.SellerCategories.OrderBy(entry => entry.Category.Order).ToList();
+                    existingSeller.SellerCategories = existingSeller.SellerCategories.ToList().OrderBy(entry=>entry.Order).ThenBy(entry => entry.Category.ExpandedName).OrderBy(entry => entry.Category.ExpandedName).ToList();
                     seller.OwnerExternalId = existingSeller.Owner.ExternalNumber;
                     if (existingSeller.BenefitCardReferal != null)
                         seller.BenefitCardReferaExternalId = existingSeller.BenefitCardReferal.ExternalNumber;

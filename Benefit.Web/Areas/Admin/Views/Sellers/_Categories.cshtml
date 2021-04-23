@@ -8,7 +8,7 @@
             new { number = Model.SellerCategories.Count },
             new AjaxOptions
             {
-                OnBegin = "$('#addNewCategory').attr('disabled','disabled');",
+                OnBegin = "$('#addNewCategory').attr('disabled','disabled');$('html,body').animate({ scrollTop: $(document).height() }, 500);",
                 UpdateTargetId = "belongCategories",
                 InsertionMode = InsertionMode.InsertAfter,
                 OnComplete = "UpdateCategoriesNumber"
