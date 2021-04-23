@@ -128,7 +128,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     var categories = db.Categories.Where(
                         entry =>
-                            entry.SellerCategories.Where(sc => !sc.IsDefault)
+                            entry.SellerCategories
                                 .Select(sc => sc.SellerId)
                                 .Contains(Seller.CurrentAuthorizedSellerId))
                         .ToList();

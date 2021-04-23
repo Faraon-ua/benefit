@@ -200,29 +200,6 @@ namespace Benefit.Domain.Models
         public ICollection<Product> NewProducts { get; set; }
 
         [NotMapped]
-        public virtual string Specialization
-        {
-            get
-            {
-                if (SellerCategories == null)
-                {
-                    return null;
-                }
-
-                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault) == null)
-                {
-                    return null;
-                }
-
-                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category == null)
-                {
-                    return null;
-                }
-
-                return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.Name;
-            }
-        } 
-        [NotMapped]
         public virtual string LogoUrl
         {
             get
@@ -233,30 +210,6 @@ namespace Benefit.Domain.Models
                     return logo == null ? string.Empty : logo.ImageUrl;
                 }
                 return null;
-            }
-        }
-
-        [NotMapped]
-        public virtual string SpecializationUrl
-        {
-            get
-            {
-                if (SellerCategories == null)
-                {
-                    return null;
-                }
-
-                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault) == null)
-                {
-                    return null;
-                }
-
-                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category == null)
-                {
-                    return null;
-                }
-
-                return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.UrlName;
             }
         }
 

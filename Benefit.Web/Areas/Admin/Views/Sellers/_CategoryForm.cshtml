@@ -30,8 +30,6 @@
     </div>
     <div class="flex-grow-1">
         <label for="@string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key)">Основне меню</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].RootDisplay", Model.Key), Model.Value.RootDisplay)
-        <br />
-        <label for="@string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key)">Головна категорія</label> @Html.CheckBox(string.Format("Seller.SellerCategories[{0}].IsDefault", Model.Key), Model.Value.IsDefault, new { @class = "main-cat" })
     </div>
     <div>
         <a href="#" onclick="$(this).parent().parent().remove(); ReAssignIndexesToChildren('categories', 'belong-category');">

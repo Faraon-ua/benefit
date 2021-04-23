@@ -231,7 +231,6 @@ namespace Benefit.Services.Domain
                     UrlName = "postachalnuky",
                     Name = "Каталог постачальників",
                     ChildAsFilters = true,
-                    //ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
                     ChildCategories = db.Sellers.Where(entry => entry.CategoryName != null).Select(entry => entry.CategoryName).Distinct().Select(entry => new CategoryVM() { Name = entry }).ToList(),
                 };
                 return result;

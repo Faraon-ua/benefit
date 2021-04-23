@@ -297,7 +297,7 @@ namespace Benefit.Web.Controllers
                 {
                     Name = entry.Name,
                     Url = Url.SubdomainAction(entry.UrlName, "Index", "Home"),
-                    Specialization = entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault) == null ? "" : entry.SellerCategories.FirstOrDefault(cat => cat.IsDefault).Category.Name,
+                    Specialization = entry.CategoryName,
                     UserDiscount = entry.UserDiscount,
                     Latitude = entry.Latitude.Value,
                     Longitude = entry.Longitude.Value

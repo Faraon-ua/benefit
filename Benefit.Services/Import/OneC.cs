@@ -225,7 +225,7 @@ namespace Benefit.Services.Import
                 .FirstOrDefault(entry => entry.Id == sellerId);
             var sellerCatsDiscount = seller.SellerCategories.Where(entry => entry.CustomDiscount.HasValue)
                 .ToDictionary(entry => entry.CategoryId, entry => entry.CustomDiscount.Value);
-            db.SellerCategories.RemoveRange(seller.SellerCategories.Where(entry => !entry.IsDefault));
+            db.SellerCategories.RemoveRange(seller.SellerCategories);
             foreach (var xmlCategory in xmlCategories)
             {
                 var catId = xmlCategory.Element("Ид").Value;
