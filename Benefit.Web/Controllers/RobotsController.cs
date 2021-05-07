@@ -27,6 +27,7 @@ Disallow: /account";
             return Content(robotsResult, "text/plain");
         }
 
+        //only for sellers, for benefit.ua sitemap_index is used
         [FetchSeller]
         public ActionResult Sitemap()
         {
