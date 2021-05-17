@@ -208,6 +208,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                               .Include(entry => entry.Category)
                               .Include(entry => entry.Category.ProductParameters)
                               .Include(entry => entry.Category.MappedParentCategory.ProductParameters)
+                              .Include(entry => entry.Currency)
                               .Include(entry => entry.Reviews)
                               .FirstOrDefault(entry => entry.Id == id) ??
                           new Product()
@@ -241,9 +242,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return View(product);
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
+
         public ActionResult Moderation(ModerationProduct product)
         {
             using (var db = new ApplicationDbContext())
@@ -723,6 +726,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 IQueryable<Product> products =
                     db.Products
+                        .Include(entry => entry.Currency)
                         .Include(entry => entry.Seller)
                         .Include(entry => entry.Category)
                         .Include(entry => entry.Images)

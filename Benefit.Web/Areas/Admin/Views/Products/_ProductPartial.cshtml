@@ -63,11 +63,19 @@
                 @if (Model.ModerationStatus == ModerationStatus.UnappropriateContent)
                 {
                     <i class="icon-ban-circle red opacity07"></i>
+                    <a onclick="alert('@Model.Comment')" href="#">
+                        @Enumerations.GetDisplayNameValue(Model.ModerationStatus)
+                    </a>
                 }
             </div>
         </td>
         <td>
             @Model.Price
+            @if (Model.CurrencyId != null)
+            {
+                @Model.Currency.Name
+                <div class="pull-left padding-5">(@((Model.Price*Model.Currency.Rate).ToString("F")))</div>
+            }
         </td>
         <td>
             @if (Model.ExportProducts.Any())
