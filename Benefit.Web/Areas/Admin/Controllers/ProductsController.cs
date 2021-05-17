@@ -186,12 +186,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (!string.IsNullOrEmpty(filters.SellerId) || !string.IsNullOrEmpty(Seller.CurrentAuthorizedSellerId))
                 {
                     var sellerId = Seller.CurrentAuthorizedSellerId ?? filters.SellerId;
-                    productsViewModel.ProductFilters.Moderators = db.Personnels
+                    var moderatorsList = db.Personnels
                     .Where(entry => entry.SellerId == sellerId).ToList().Select(entry => new SelectListItem()
                     {
                         Text = string.Format("{0} {1}", entry.Name, entry.Phone),
                         Value = entry.UserId
                     }).ToList();
+                    moderatorsList.Insert(0, new SelectListItem { Text = "Не назначено", Value = "notassigned" });
+                    productsViewModel.ProductFilters.Moderators = moderatorsList;
                 }
                 return PartialView(productsViewModel);
             }
@@ -756,7 +758,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (!string.IsNullOrEmpty(filters.ModeratorId))
                 {
-                    products = products.Where(entry => entry.ModerationAssigneeId == filters.ModeratorId);
+                    var moderatorId = filters.ModeratorId == "notassigned" ? null : filters.ModeratorId;
+                    products = products.Where(entry => entry.ModerationAssigneeId == moderatorId);
                 }
                 if (!string.IsNullOrEmpty(filters.SellerId))
                 {
