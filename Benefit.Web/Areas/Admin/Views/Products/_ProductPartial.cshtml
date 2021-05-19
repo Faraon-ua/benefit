@@ -74,7 +74,7 @@
             @if (Model.CurrencyId != null)
             {
                 @Model.Currency.Name
-                <div class="pull-left padding-5">(@((Model.Price*Model.Currency.Rate).ToString("F")))</div>
+                <div class="pull-left padding-5">(@((int)(Model.Price*Model.Currency.Rate)))</div>
             }
         </td>
         <td>
