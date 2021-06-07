@@ -47,6 +47,15 @@
                 Основний
             </a>
         </li>
+        @if (Seller.CurrentAuthorizedSellerId != null)
+        {
+            <li>
+                <a data-toggle="tab" href="#mainPageTopSide">
+                    <i class="green icon-desktop bigger-110"></i>
+                    Додаткові
+                </a>
+            </li>
+        }
         @if (Seller.CurrentAuthorizedSellerId == null)
         {
             <li>
@@ -107,28 +116,28 @@
                 }
             </ol>
         </div>
+        <div id="mainPageTopSide" class="tab-pane">
+            <ol id="banners">
+                @foreach (var banner in Model.Where(entry => entry.BannerType == BannerType.SideTopMainPage))
+                {
+                    <li class="dd-item cursor-move" data-banner-id="@banner.Id">
+                        <div class="dd-handle">
+                            <img src="~/Images/@banner.BannerType.ToString()/@banner.ImageUrl" height="100" />
+
+                            <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = banner.Id })" onclick="return confirm('Видалити банер?');">
+                                <i class="icon-trash"></i>
+                            </a>
+                            <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = banner.Id })">
+                                <i class="icon-edit"></i>
+                            </a>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </li>
+                }
+            </ol>
+        </div>
         @if (Seller.CurrentAuthorizedSellerId == null)
         {
-            <div id="mainPageTopSide" class="tab-pane">
-                <ol id="banners">
-                    @foreach (var banner in Model.Where(entry => entry.BannerType == BannerType.SideTopMainPage))
-                    {
-                        <li class="dd-item cursor-move" data-banner-id="@banner.Id">
-                            <div class="dd-handle">
-                                <img src="~/Images/@banner.BannerType.ToString()/@banner.ImageUrl" height="100" />
-
-                                <a class="pull-right btn btn-danger btn-sm cursor" href="@Url.Action("Delete", new { id = banner.Id })" onclick="return confirm('Видалити банер?');">
-                                    <i class="icon-trash"></i>
-                                </a>
-                                <a class="pull-right btn btn-primary btn-sm margin-right-10" href="@Url.Action("CreateOrUpdate", new { id = banner.Id })">
-                                    <i class="icon-edit"></i>
-                                </a>
-                                <div style="clear: both;"></div>
-                            </div>
-                        </li>
-                    }
-                </ol>
-            </div>
             <div id="mainPageBottomSide" class="tab-pane">
                 <ol id="banners">
                     @foreach (var banner in Model.Where(entry => entry.BannerType == BannerType.SideBottomMainPage))

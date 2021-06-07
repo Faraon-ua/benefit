@@ -1,0 +1,517 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@using Benefit.Services.Domain
+@using Microsoft.AspNet.Identity
+@using Benefit.Web.Helpers
+@model ProductDetailsViewModel
+
+@{
+    ViewBag.Title = Model.Product.Name;
+    Layout = "_SellerLayout.cshtml";
+    var image_src = Model.Product.Images.OrderBy(entry => entry.Order).FirstOrDefault(entry => entry.ImageType == ImageType.ProductGallery);
+    var img_src = image_src == null ? "default_product_picture.png" : image_src.ImageUrl;
+    var image_src_str = string.Empty;
+    if (image_src != null)
+    {
+        image_src_str = image_src.IsAbsoluteUrl ? image_src.ImageUrl : string.Format("/Images/ProductGallery/{0}/{1}", Model.Product.Id, image_src.ImageUrl);
+    }
+    var seller = Model.Product.Seller;
+    var paymentTypes = new List<PaymentType>();
+    if (seller.IsPrePaidPaymentActive)
+    {
+        paymentTypes.Add(PaymentType.PrePaid);
+    }
+    if (seller.IsPostPaidPaymentActive)
+    {
+        paymentTypes.Add(PaymentType.PostPaid);
+    }
+    if (seller.IsCashPaymentActive)
+    {
+        paymentTypes.Add(PaymentType.Cash);
+    }
+    if (seller.IsAcquiringActive)
+    {
+        paymentTypes.Add(PaymentType.Acquiring);
+    }
+    if (seller.IsBonusesPaymentActive)
+    {
+        paymentTypes.Add(PaymentType.Bonuses);
+    }
+
+    var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
+    var productVariants = Model.Product.ProductOptions.Where(entry => entry.IsVariant).OrderBy(entry => entry.Order).ToList();
+    var availableForPurchase = Model.Product.AvailableForPurchase(RegionService.GetRegionId());
+}
+@section meta{
+    <meta name="description" content="@Model.Product.ShortDescription">
+}
+@section scripts
+{
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
+    <script type="text/javascript" src="~/@Html.IncludeVersionedFile("Scripts/v3/products.js")" defer></script>
+    <script>
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
+        var sellerId = '@Model.Product.SellerId';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup","Home")';
+        var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new { returnUrl = Request.Url.PathAndQuery}))';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
+        $(function () {
+            $(".add-product-options").click(function () {
+                $("#product_modal").modal("show");
+                if ($(this).hasClass("mobile")) {
+                    $("#buy-product-with-options").addClass("mobile");
+                }
+            });
+
+            $(".variants .variant-item").click(function() {
+                $(this).siblings().removeClass("active");
+                $(this).addClass("active");
+                var imageId = $(this).attr("data-image-id");
+                if (imageId) {
+                    $(".ubislider li[data-image-id=" + imageId + "]").click();
+                }
+                var sufix = "";
+                var priceGrowth = 0;
+                $(".variants .variant-item.active").each(function() {
+                    sufix += " " +
+                        $(this).attr("data-option-title") +
+                        " " +
+                        $(this).attr("data-option-name");
+                    priceGrowth += parseFloat($(this).attr("data-price-growth"));
+                    $(".x-title").text('@Model.Product.Name ' + sufix);
+                    $(".product-price").text((parseFloat('@Model.Product.Price') + priceGrowth).toFixed(2));
+                });
+            });
+
+            $("#buy-product, #buy-product-with-options").click(function () {
+                //var buttonId = $(this).attr("id");
+                //     if (buttonId == "buy-product") {
+                //         //if there are options to show
+                //         if ($("#product_modal").length > 0) {
+                //             //show options
+                //             $("#product_modal").modal("show");
+                //             return;
+                //         }
+                //     }
+                var productNameSufix = "";
+                var productPriceGrowth = 0;
+                var buttonId = $(this).attr("id");
+                if ($(".variants").length > 0) {
+                    var variantsWrap = $(".variants").eq(0);
+                    if ($(this).hasClass("mobile")) {
+                        variantsWrap = $(".variants.mobile").eq(0);
+                    }
+                    var variantsSelected = true;
+                    variantsWrap.find(".row").each(function () {
+                        if ($(this).find(".active").length == 0) {
+                            $(this).prev(".validation").show();
+                            $("#product_modal").modal("hide");
+                            variantsSelected = false;
+                        } else {
+                            $(this).prev(".validation").hide();
+                        }
+                    });
+                    if (!variantsSelected) {
+                        return;
+                    }
+
+                    $(".variants .variant-item.active").each(function () {
+                        productNameSufix += " " +
+                            $(this).attr("data-option-title") +
+                            " " +
+                            $(this).attr("data-option-name");
+                        productPriceGrowth += parseFloat($(this).attr("data-price-growth"));
+                    });
+                }
+                $(this).attr("disabled", "disabled");
+                $("#buy-product, #buy-product-with-options").attr('disabled', 'disabled');
+                $(".product_info_wrap,.item_main_info").css("opacity", 0.3);
+
+                var productAmount = $(".quantity").val();
+                var productOptions = $(".product_modal_form input[type=checkbox]:checked, .product_modal_form input[type=radio]:checked").map(function () {
+                    var id = $(this).attr("id");
+                    var amount = $(this).parent().find(".quantity").val();
+                    if (!amount) {
+                        amount = 1;
+                    }
+                    return {
+                        ProductOptionId: id,
+                        Amount: amount
+                    };
+                }).get();
+
+                var available = $("#available-amount");
+                var amount = $(".quantity").val();
+
+                if (available.length > 0) {
+                    available = parseFloat(available.text());
+                    var amount = parseFloat(amount);
+                    if (amount > available) {
+                        alert("Не можливо замовити більше товарів, ніж є в наявності");
+                        $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                        $(".product_info_wrap").css("opacity", 1);
+                        return;
+                    }
+                } else {
+                    available = "";
+                }
+
+                var product = {
+                    ProductId: '@Model.Product.Id',
+                    IsWeightProduct: '@Model.Product.IsWeightProduct',
+                    NameSuffix: productNameSufix,
+                    PriceGrowth: productPriceGrowth,
+                    Amount: amount,
+                    AvailableAmount: available,
+                    OrderProductOptions: productOptions
+                };
+
+                var order = {
+                    product: product,
+                    amount: productAmount,
+                };
+                $.post(addToCartUrl,
+                    order,
+                    function (data) {
+                        //$('#product_modal').modal('hide');
+                        setTimeout(function f() {
+                            $("#buy-product, #buy-product-with-options").removeAttr('disabled');
+                            $(".product_info_wrap,.item_main_info").css("opacity", 1);
+                            $(".button_block  ").removeClass("loadings");
+                            $(".modal").modal('hide');
+                            setCartSummary(data);
+                        }, 1000);
+                    });
+            });
+        })
+    </script>
+}
+@section styles{
+    <link href="~/Content/seller/css/jquery.fancybox.min.css" rel="stylesheet" />
+    <link href="~/Content/seller/megashop/jquery.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
+}
+<!-- микроразметка -->
+<div class="catalog_detail detail" itemscope itemtype="http://schema.org/Product">
+    <meta itemprop="name" content="@Model.Product.Name" />
+    <meta itemprop="productID" content="@Model.Product.SKU" />
+    <meta itemprop="sku" content="@Model.Product.SKU" />
+    <meta itemprop="category" content="@Model.Product.Category.Name" />
+    <meta itemprop="description" content="@Model.Product.ShortDescription" />
+    <meta itemprop="image" content="@string.Format("{0}://{1}/{2}", Request.Url.Scheme, Request.Url.Host, image_src_str)" />
+    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+        <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
+        <meta itemprop="price" content="@Model.Product.Price" />
+        <meta itemprop="priceCurrency" content="UAH" />
+        @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+        {
+            <link itemprop="availability" href="http://schema.org/InStock" />
+        }
+    </div>
+    @if (Model.Product.AvarageRating.HasValue)
+    {
+        <div itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+            <meta itemprop="ratingValue" content="@Model.Product.AvarageRating" />
+            <meta itemprop="reviewCount" content="@Model.Product.Reviews.Count" />
+            <meta itemprop="bestRating" content="5" />
+            <meta itemprop="worstRating" content="0" />
+            @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel
+            {
+                SmallStars = true,
+                IsActive = true,
+                Rating = Model.Product.AvarageRating
+            })
+        </div>
+    }
+</div>
+<!-- микроразметка -->
+
+<div class="col-md-8 col-xl-9 content">
+    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+    <div class="fn_ajax_content">
+        <div class="block padding">
+            <div class="fn_product product product_info_wrap">
+                <h1 class="h2">
+                    <span itemprop="name" class="x-title">@Model.Product.Name</span>
+                </h1>
+
+                <div class="fn_transfer row">
+                    <div class="col-xl-6">
+                        <div class="product_image">
+                            @if (image_src == null)
+                            {
+                                <img class="fn_img product_img" itemprop="image" src="~/Images/ProductGallery/default_product_picture.png" alt="@Model.Product.AltText" title="@Model.Product.Title">
+                            }
+                            else
+                            {
+                                if (image_src.IsAbsoluteUrl)
+                                {
+                                    <a href="@img_src" data-fancybox="group" data-caption="@Model.Product.Name">
+                                        <img class="fn_img product_img" itemprop="image" src="@img_src" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="~/Images/ProductGallery/@Model.Product.Id/@img_src" data-fancybox="group" data-caption="@Model.Product.Name">
+                                        <img class="fn_img product_img" itemprop="image" src="~/Images/ProductGallery/@Model.Product.Id/@img_src" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
+                                    </a>
+                                }
+                            }
+                        </div>
+                        @if (Model.Product.Images.Count > 1)
+                        {
+                            <div class="fn_images images clearfix">
+                                @foreach (var img in Model.Product.Images.OrderBy(entry => entry.Order).Skip(1))
+                                {
+                                    <div class="images_item">
+                                        @if (img.IsAbsoluteUrl)
+                                        {
+                                            <a class="images_link" href="@img.ImageUrl" data-fancybox="group" data-caption="@Model.Product.Name">
+                                                <img src="@img.ImageUrl" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a class="images_link" href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox="group" data-caption="@Model.Product.Name">
+                                                <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                    <div class="col-xl-6">
+                        <div class="product_details">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel() { IsActive = false, Rating = Model.Product.AvarageRating, SmallStars = true })
+                                    @*<div id="product_22" class="product_rating">
+                                            <span class="details_label" data-language="product_rating">Рейтинг:</span>
+                                            <span class="rating_starOff" style="cursor: pointer;">
+                                                <span class="rating_starOn" style="width: 0px; cursor: pointer;"></span>
+                                            </span>
+                                            <span class="rating_text"></span>
+                                            <span class="hidden">(0.0)</span>
+                                        </div>*@
+                                </div>
+
+
+                                <div class="available col-sm-6">
+                                    <span class="details_label" data-language="available">Наявність:</span>
+
+                                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+                                    {
+                                        <span class="in_stock" data-language="product_in_stock">В наявності</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="no_stock" data-language="product_out_of_stock">Немає</span>
+                                    }
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
+                                    {
+                                        <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" style="display: none;" data-product-id="@Model.Product.Id">
+                                            <i class="wish_icon"></i>
+                                        </a>
+
+                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" data-product-id="@Model.Product.Id">
+                                            <i class="no_stock" style="top: -12px;"></i>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" data-product-id="@Model.Product.Id">
+                                            <i class="wish_icon"></i>
+                                        </a>
+
+                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" style="display: none;" data-product-id="@Model.Product.Id">
+                                            <i class="no_stock" style="top: -12px;"></i>
+                                        </a>
+                                    }
+                                </div>
+
+                                @*<div class="col-sm-6">
+                                        <a class="fn_comparison product_compare" href="#" data-id="22" title="В сравнение" data-result-text="Из сравнения" data-language="product_add_comparison"><i class="compare_icon"></i></a>
+                                    </div>*@
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="sku">
+                                        <span class="details_label" data-language="product_sku">Номер товару:</span>
+                                        <span class="fn_sku sku_nubmer">@Model.Product.SKU</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="sku">
+                                        @if (Model.DiscountPercent > 0)
+                                        {
+                                            <span style="color: white; background: red; padding: 5px;">Кешбек @Model.DiscountPercent%</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
+                            <form class="fn_variants" action="/cart">
+                                <div class="row">
+                                    <div class="col-sm-6 amount_wrap">
+                                        <span class="details_label quontity_label" data-language="product_quantity">Кількість<span class="fn_units"></span>:</span>
+
+                                        <div class="amount fn_product_amount" data-weight-product="@Model.Product.IsWeightProduct">
+                                            <input class="input_amount quantity" name="amount" value="1" data-max="50" type="text">
+                                            <span class="plus"></span>
+                                            <span class="minus"></span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="price_wrap">
+                                    <span class="price ">
+                                        <span class="fn_price product-price" itemprop="price" content="@Model.Product.Price">@Model.Product.Price.ToString("F")</span>
+                                        <span itemprop="priceCurrency" content="UAH">грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                                    </span>
+
+                                    @if (Model.Product.OldPrice.HasValue)
+                                    {
+                                        <span class="old_price">
+                                            <span class="fn_old_price">@Model.Product.OldPrice.Value.ToString("F")</span> грн
+                                        </span>
+                                    }
+                                </div>
+                                @if (productVariants.Any())
+                                {
+                                    <div class="variants">
+                                        @foreach (var group in productVariants)
+                                        {
+                                            <div>
+                                                <p class="margin-top-10 validation alert alert-warning width-50" style="display: none;">
+                                                    Будь ласка оберіть @group.Name
+                                                </p>
+                                                <div class="row">
+                                                    <div class="col-sm-2 title">@group.Name:</div>
+                                                    <div class="col-sm-10">
+                                                        @foreach (var option in group.ChildProductOptions.OrderBy(entry => entry.Order))
+                                                        {
+                                                            if (option.Image != null)
+                                                            {
+                                                                <div class="variant-item" data-image-id="@option.Id" data-option-title="@group.Name" data-option-name="@option.Name" data-price-growth="@option.PriceGrowth">
+                                                                    <img src="~/Images/ProductGallery/@option.ProductId/@option.Image" />
+                                                                </div>
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="variant-item" data-option-name="@option.Name" data-option-title="@group.Name" data-price-growth="@option.PriceGrowth">
+                                                                    @option.Name
+                                                                </div>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                }
+                                @if (availableForPurchase.State != ComputedProductAvailabilityState.NotAvailable)
+                                {
+                                    if (Model.ProductOptions.Any(entry => !entry.IsVariant))
+                                    {
+                                        <a href="#" class="add-product-options">+ Додати інгредієнти</a>
+                                        <br />
+                                        <br />
+                                    }
+                                    <button id="buy-product" class="fn_is_stock button" type="submit" data-language="product_add_cart">Купити</button>
+                                }
+                            </form>
+
+                            <div class="product_share">
+                                <div class="addthis_inline_share_toolbox"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @Html.Partial("_FlashMessage")
+                <div class="tabs clearfix">
+                    <div class="tab_navigation">
+                        <a href="#description" data-language="product_description" class="selected">Опис</a>
+                        <a href="#reviews" data-language="product_description">Відгуки</a>
+                        <a href="#features" data-language="product_features">Характеристики</a>
+                        <a href="#comments" data-language="product_comments">Доставка та оплата</a>
+                    </div>
+
+                    <div class="tab_container">
+                        <div id="description" class="tab product_description" itemprop="description" style="display: block;">
+                            @Html.Raw(Model.Product.Description)
+                        </div>
+                        <div id="reviews" class="tab product_description" itemprop="reviews" style="display: block;">
+                            <div class="col-xl-6">
+                                @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                                {
+                                    CanReview = Model.CanReview,
+                                    ProductId = Model.Product.Id,
+                                    TargetName = Model.Product.Name,
+                                    Reviews = Model.Product.ApprovedReviews
+                                })
+                            </div>
+                            <div class="col-xl-6">
+                                @Html.Partial("_ReviewFormPartial", new ReviewsViewModel()
+                                {
+                                    CanReview = Model.CanReview,
+                                    ProductId = Model.Product.Id,
+                                    TargetName = Model.Product.Name,
+                                })
+                            </div>
+                        </div>
+
+                        <div id="features" class="tab">
+                            <ul class="features">
+                                @foreach (var productParameter in parameters)
+                                {
+                                    <li>
+                                        <span class="features_name"><span>@productParameter.ProductParameter.Name</span></span>
+                                        <span class="features_value">
+                                            @if (productParameter.Amount.HasValue)
+                                            {
+                                                <span>@(productParameter.Amount.Value)x</span>
+                                            }
+                                            @(productParameter.StartText ?? productParameter.StartValue)
+                                            @if (!string.IsNullOrEmpty(productParameter.EndValue))
+                                            {
+                                                <span>- @productParameter.EndValue</span>
+                                            }
+                                            @if (!string.IsNullOrEmpty(productParameter.ProductParameter.MeasureUnit))
+                                            {
+                                                <span>@productParameter.ProductParameter.MeasureUnit</span>
+                                            }
+                                        </span>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div id="comments" class="tab">
+                            @Html.Raw(Model.Product.Seller.ShippingDescription)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-container"></div>
+<div id="product-purchase-wrap">
+    @Html.Partial("~/Views/Tovar/_PurchaseRegion.cshtml", new Dictionary<string, string>() { { "0", string.Empty } })
+</div>
+@if (Model.ProductOptions.Any(entry => !entry.IsVariant))
+{
+    @Html.Partial("_ProductOptions", Model)
+}

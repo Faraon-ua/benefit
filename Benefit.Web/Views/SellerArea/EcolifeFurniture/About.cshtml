@@ -1,0 +1,24 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+
+@{
+    ViewBag.Title = "Про нас";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+@section meta
+{
+    <meta name="description" content="Про нас @seller.SeoSuffix">
+}
+<div class="content">
+
+    @Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Про нас" } })
+
+    <div class="container">
+        <div class="block">
+            <div class="padding">
+                @Html.Raw(seller.Description)
+            </div>
+        </div>
+    </div>
+</div>

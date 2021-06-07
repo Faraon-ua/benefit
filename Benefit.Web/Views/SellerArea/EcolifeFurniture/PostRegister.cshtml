@@ -1,0 +1,25 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+
+@{
+    ViewBag.Title = "Успішна реєстрація";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+
+<div class="col-md-8 col-xl-9 content">
+    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Успішна реєстрація" } })
+
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <h1 class="h1">
+                <span data-page="3">
+                    Дякуємо за реєстрацію на нашому ресурсі!
+                </span>
+            </h1>
+            <div class="padding">
+                На вказану вами електрону адресу було відправлено лист із активацією акаунту. Будь ласка перевірте вашу електрону пошту та перейдіть за посиланням, щоб активувати свій акаунт.
+            </div>
+        </div>
+    </div>
+</div>

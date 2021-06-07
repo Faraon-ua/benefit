@@ -1,0 +1,35 @@
+﻿@using Benefit.Common.Constants
+@model IEnumerable<Benefit.Domain.Models.Product>
+@if (Model != null && Model.Any())
+{
+    <div class="block">
+        <div class="h1">Ви переглядали</div>
+        <div class="browsed">
+            @foreach (var product in Model)
+            {
+                var productDetailsUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.UrlName, product.SKU) });
+                var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                <div class="browsed_item clearfix">
+                    <a class="browsed_image" href="@productDetailsUrl">
+                        @if (image == null)
+                        {
+                            <img src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@product.Title" title="@product.Title">
+                        }
+                        else
+                        {
+                            if (image.IsAbsoluteUrl)
+                            {
+                                <img src="@image.ImageUrl" alt="@product.Title" title="@product.Title">
+                            }
+                            else
+                            {
+                                <img src="~/Images/ProductGallery/@product.Id/@image.ImageUrl" alt="@product.Title" title="@product.Title">
+                            }
+                        }
+                    </a>
+                    <a class="browsed_name" href="@productDetailsUrl">@product.Name</a>
+                </div>
+            }
+        </div>
+    </div>
+}

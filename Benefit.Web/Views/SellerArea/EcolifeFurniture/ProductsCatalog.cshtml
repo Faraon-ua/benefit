@@ -1,0 +1,174 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
+
+@{
+    ViewBag.Title = Model.Category.Name;
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+    var isFavorites = (Model.Category != null && Model.Category.UrlName == "favorites");
+    ViewBag.IsFavorites = isFavorites;
+    Model.Breadcrumbs.Page = new InfoPage
+    {
+        Name = Model.Category.Name
+    };
+}
+@section meta
+{
+    <meta name="description" content="@(Model.Category == null ? seller.ShortDescription : Model.Category.MetaDescription) @seller.SeoSuffix">
+}
+@section styles
+{
+    <link href="~/Content/seller/megashop/bootstrap-slider.css" rel="stylesheet" />
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
+    <script src="~/Scripts/bootstrap-slider.min.js"></script>
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var productVariantsUrl = '@Url.Action("GetProductVariants", "Tovar")';
+        var reloadOnProductAdd = false;
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+        var getProductsUrl =
+            '@(RouteDataHelper.ControllerName == "search" ? Url.Action("GetProducts", "Search") : Url.Action("GetProducts", "Catalog"))';
+        var addToFavoritesUrl =
+            '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
+        var hasCategory = "@((Model.Category == null).ToString().ToLower())" === 'false';
+        var categoryId = '@Model.Category.Id';
+        var categoryUrlName = '@Model.Category.UrlName.ToLower()';
+        var sellerId = '@seller.Id';
+        var pagesCount = parseInt('@Model.PagesCount');
+        var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
+        var productTemplateLayout = 1;
+        var term = "@Request.QueryString["term"]";
+        var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category.Id, area = string.Empty })';
+        
+        $(function () {
+            @if(!isFavorites)
+            {
+                <text>
+                    $.get(getProductParameters, function (data) {
+                        $(".area-product-filters").html(data);
+                        $.getScript(routePrefix +"/Scripts/v3/product-filters.js")
+                    });
+                </text>
+            }
+            else
+            {
+                <text>
+                    $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
+                </text>
+            }
+        })
+    </script>
+    <script src="~/Scripts/v3/products.js"></script>
+}
+@Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+
+<div class="shop-category-area">
+    <div class="container">
+        @if (Model.IsFavorites)
+        {
+            <div class="padding-15">
+                @*<button id="remove-all" type="button" class="button btn-danger no-border">Видалити всі</button>
+                    <button id="remove-selected" type="button" class="button no-border margin-left-30">Видалити обрані</button>*@
+                <button id="buy-all" type="button" class="button btn-success no-border">Купити всі</button>
+                <button id="buy-selected" type="button" class="button no-border margin-left-30">Купити обрані</button>
+            </div>
+        }
+        <div class="row">
+            <div class="col-lg-9 order-lg-last col-md-12 order-md-first">
+                <!-- Shop Top Area Start -->
+                <div class="shop-top-bar">
+                    <!-- Left Side start -->
+                    @*<div class="shop-tab nav mb-res-sm-15">
+                        <a href="#shop-1" data-toggle="tab">
+                            <i class="fa fa-th show_grid"></i>
+                        </a>
+                        <a class="active" href="#shop-2" data-toggle="tab">
+                            <i class="fa fa-list-ul"></i>
+                        </a>
+                    </div>*@
+                    <!-- Left Side End -->
+                    <!-- Right Side Start -->
+                    <div class="select-shoing-wrap">
+                        <div class="shot-product">
+                            <p>Показати спочатку:</p>
+                        </div>
+                        <div class="shop-select">
+                            @if (RouteDataHelper.ControllerName.ToLower() != "search" && !Model.IsFavorites)
+                            {
+                                <div class="fn_products_sort clearfix sort_header margin-top-10 visible-lg">
+                                    <div class="sort_filter visible-lg filter-section" data-filter-name="sort" style="padding-top: 3px;">
+                                        <a href="" data-sort-value="Rating" class="sort_btn text-black-50 mx-2 text-underline" rel="nofollow">
+                                            <span class="padding-10">По рейтингу</span>
+                                        </a>
+                                        <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                                            <span class="padding-10">По алфавіту</span>
+                                        </a>
+                                        <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
+                                            <span class="padding-10">Дешеві</span>
+                                        </a>
+                                        <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
+                                            <span class="padding-10">Дорогі</span>
+                                        </a>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <!-- Right Side End -->
+                </div>
+                <!-- Shop Top Area End -->
+                <!-- Shop Bottom Area Start -->
+                <div class="shop-bottom-area mt-35">
+                    <!-- Shop Tab Content Start -->
+                    <div class="tab-content jump">
+                        <!-- Tab One Start -->
+                        <div id="shop-1" class="tab-pane active">
+                            @Html.Partial("~/Views/SellerArea/ecolifefurniture/_ProductListPartial.cshtml", Model)
+                        </div>
+                        <!-- Tab One End -->
+                    </div>
+                    <!-- Shop Tab Content End -->
+                </div>
+                <!-- Shop Bottom Area End -->
+            </div>
+            <!-- Sidebar Area Start -->
+            <div class="col-lg-3 order-lg-first col-md-12 order-md-last mb-res-md-60px mb-res-sm-60px">
+                <div class="left-sidebar">
+                    <div class="sidebar-heading">
+                        <div class="main-heading">
+                            <h2>Фільтри</h2>
+                        </div>
+
+                    </div>
+                    <div class="filters_block">
+                        <div class="filters_heading fn_switch md-hidden">
+                            <i class="angle_icon"></i>
+                        </div>
+                        <div class="area-product-filters filters mobile-hidden product-filters">
+                            <div style="width:100%; text-align:center;">
+                                <img src="~/Content/img/loading.gif" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Sidebar Area End -->
+        </div>
+    </div>
+</div>
+
+<div class="modal-container"></div>
+<div id="product-purchase-wrap">
+    @Html.Partial("~/Views/Tovar/_PurchaseRegion.cshtml", new Dictionary<string, string>() { { "0", string.Empty } })
+</div>
+<div id="product-options-wrap"></div>
+<div id="product-variants-wrap"></div>

@@ -219,6 +219,8 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public int ReviewsCount { get; set; }
         [NotMapped]
-        public bool IsFavorite { get; set; }
+        public bool IsFavorite { get; set; } 
+        [NotMapped]
+        public bool IsPromotion { get; set; }
     }
 }

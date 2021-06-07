@@ -220,7 +220,7 @@ namespace Benefit.Domain.DataAccess
                         bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
                     }
 
-                    bulkCopy.BulkCopyTimeout = 600;
+                    bulkCopy.BulkCopyTimeout = 1200;
                     bulkCopy.DestinationTableName = destinationTableName;
                     bulkCopy.WriteToServer(dataTable);
                 }

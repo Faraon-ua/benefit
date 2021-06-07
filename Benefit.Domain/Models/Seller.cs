@@ -16,7 +16,8 @@ namespace Benefit.Domain.Models
     public enum SellerEcommerceTemplate
     {
         Default,
-        MegaShop
+        MegaShop,
+        EcolifeFurniture
     }
 
     public class Seller : BaseDomainModel
@@ -192,6 +193,8 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<PaymentBill> PaymentBills { get; set; }
 
+        [NotMapped]
+        public ICollection<Category> FeaturedCategories { get; set; } 
         [NotMapped]
         public ICollection<Product> FeaturedProducts { get; set; }
         [NotMapped]

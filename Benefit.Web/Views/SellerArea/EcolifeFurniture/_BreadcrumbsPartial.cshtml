@@ -1,0 +1,58 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.BreadCrumbsViewModel
+
+<section class="breadcrumb-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="breadcrumb-content">
+                    @if (Model.Page != null)
+                    {
+                        <h1 class="breadcrumb-hrading">@Model.Page.Name</h1>
+                    }
+                    <ul class="breadcrumb-links">
+                        <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                            <a itemprop="url" href="/" data-language="breadcrumb_home">
+                                <span itemprop="title">Головна</span>
+                            </a>
+                        </li>
+
+                        @if (Model.Page != null)
+                        {
+                            <li>
+                                @Model.Page.Name
+                            </li>
+                        }
+
+                        @if (Model.Categories != null)
+                        {
+                            foreach (var breadCrumb in Model.Categories)
+                            {
+                                if (Model.Categories.Last().Key.Id == breadCrumb.Key.Id && Model.Product == null)
+                                {
+                                    <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                                        @breadCrumb.Key.Name
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li itemscope="" itemtype="http://data-vocabulary.org/Breadcrumb">
+                                        <a itemprop="url" href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new {categoryUrl = breadCrumb.Key.UrlName})">@breadCrumb.Key.Name</a>
+                                    </li>
+                                }
+                            }
+                        }
+
+                        @if (Model.Product != null)
+                        {
+                            <li>
+                                @Model.Product.Name
+                            </li>
+
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
