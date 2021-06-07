@@ -1,0 +1,281 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers;
+@{
+    ViewBag.Title = "Авторизація";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+@section styles
+{
+    <link href="~/Content/css/validation-errors.css" rel="stylesheet" />
+    <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
+    <link href="~/Content/css/address.css" rel="stylesheet" />
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+    <script src="~/Scripts/address.js"></script>
+    <script>
+        var referalUserUrl = '@Url.Action("GetReferalName","Account")';
+        var registeredCardUrl = '@Url.Action("CheckRegisteredCard", "Account")';
+
+        function GetReferalName() {
+            var externalId = $("#ReferalNumber").val();
+            $.get(referalUserUrl + "?id=" + externalId, function (data) {
+                if (data) {
+                    $("#referal-name").text("Наставник: " + data);
+                } else {
+                    $("#referal-name").text("Даний реєстраційний номер не існує");
+                }
+            });
+        }
+
+        $(function () {
+            //$('[data-toggle="tooltip"]').tooltip();
+            SetRegionsAutocomplete();
+
+            if ($("#ReferalNumber").val()) {
+                GetReferalName();
+            }
+
+            $("#ReferalNumber").focusout(function () {
+                GetReferalName();
+            });
+
+            $("#CardNumber").focusout(function () {
+                var cardNumber = $("#CardNumber").val();
+                if (cardNumber !== "") {
+                    $.get(registeredCardUrl + "?id=" + cardNumber, function (data) {
+                        if (data) {
+                            $("#ReferalNumber").val(data.ExternalNumber);
+                            $("#ReferalNumber").attr("readonly", "readonly");
+                            $("#referal-name").text("Наставник: " + data.FullName);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+
+@Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Авторизація" } })
+
+@*<div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <div class="padding">
+                @Html.ValidationSummary()
+                <div class="tabs clearfix">
+                    <div class="tab_navigation">
+                        <a href="#login" data-language="product_description" class='@(RouteDataHelper.ActionName == "login" ? "selected" : "")'>Постійний клієнт</a>
+                        <a href="#registration" data-language="product_description" class='@(RouteDataHelper.ActionName == "register" ? "selected" : "")'>Новий клієнт</a>
+                    </div>
+
+                    <div class="tab_container">
+                        <div id="registration" class="tab product_description" itemprop="description" style="@(RouteDataHelper.ActionName == "register" ? "display: block;" : "display: none;")">
+                            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("FullName", null, new { @class = "form_input", placeholder = "Ім'я та прізвище*" })
+                                        @Html.ValidationMessage("FullName")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("PhoneNumber", null, new { @class = "form_input phone-input", placeholder = "Номер телефону *", type = "tel" })
+                                        @Html.ValidationMessage("PhoneNumber")
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("Email", null, new { @class = "form_input", placeholder = "Email *", type = "email" })
+                                        @Html.ValidationMessage("Email")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @{
+                                            var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
+                                            var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
+                                            var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
+                                            var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
+                                        }
+                                        @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "form_input regionSearch", placeholder = "Місто *" })
+                                        @Html.Hidden("RegionId", regionIdCookieVal)
+                                        @Html.ValidationMessage("RegionId")
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("Password", null, new { @class = "form_input", placeholder = "Пароль *", type = "password" })
+                                        @Html.ValidationMessage("Password")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("CardNumber", null, new { @class = "form_input", placeholder = "Номер картки (за наявності)" })
+                                        @Html.ValidationMessage("CardNumber")
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("ReferalNumber", null, new { @class = "form_input", placeholder = "Реєстраційний код (за наявності)" })
+                                        @Html.ValidationMessage("ReferalNumber")
+                                    </div>
+                                </div>
+                                <button class="button btn-ajax-login" name="register" data-language="login_sign_in" type="submit">Реєстрація</button>
+                            }
+                        </div>
+                        <div id="login" class="tab product_description" itemprop="description" style="@(RouteDataHelper.ActionName == "login" ? "display: block;" : "display: none;")">
+                            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="row">
+                                    <div class="form_group col-sm-6">
+                                        @Html.TextBox("UserName", null, new { @class = "form_input", type = "email", placeholder = "Логін" })
+                                        @Html.ValidationMessage("UserName")
+                                    </div>
+                                    <div class="form_group col-sm-6">
+                                        @Html.Password("Password", null, new { @class = "form_input", placeholder = "Пароль" })
+                                        @Html.ValidationMessage("Password")
+                                    </div>
+                                </div>
+                                <button class="button btn-ajax-login" name="login" data-language="login_sign_in" type="submit">Увійти</button>
+                                <p class="margin-top-10">
+                                    <a href="@Url.Action("forgotpassword","account")">Забули пароль?</a>
+                                </p>
+                            }
+                            <hr style="border: 1px solid #e5e5e5;" />
+                            <p>Увійти через акаунт</p>
+                            @using (Html.BeginForm("ExternalLogin", "Account", new { ReturnUrl = ViewBag.ReturnUrl }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div id="socialLoginList" class="row">
+                                    <div class="col-sm-6">
+                                        <button type="submit" class="button-sc button-large button-gray" id="Facebook" name="provider" value="Facebook" title="Log in using your Facebook account">
+                                            <i class="fa fa-facebook"></i>
+                                            Facebook
+                                        </button>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <button type="submit" class="button-sc button-large button-gray" id="Google" name="provider" value="Google" title="Log in using your Google account">
+                                            <svg height="18" width="18" class="margin-right-10">
+                                                <svg viewBox="0 0 512 512" id="icon-google-colored">
+                                                    <path style="fill:#FBBB00;" d="M113.47,309.408L95.648,375.94l-65.139,1.378C11.042,341.211,0,299.9,0,256  c0-42.451,10.324-82.483,28.624-117.732h0.014l57.992,10.632l25.404,57.644c-5.317,15.501-8.215,32.141-8.215,49.456  C103.821,274.792,107.225,292.797,113.47,309.408z"></path>
+                                                    <path style="fill:#518EF8;" d="M507.527,208.176C510.467,223.662,512,239.655,512,256c0,18.328-1.927,36.206-5.598,53.451  c-12.462,58.683-45.025,109.925-90.134,146.187l-0.014-0.014l-73.044-3.727l-10.338-64.535  c29.932-17.554,53.324-45.025,65.646-77.911h-136.89V208.176h138.887L507.527,208.176L507.527,208.176z"></path>
+                                                    <path style="fill:#28B446;" d="M416.253,455.624l0.014,0.014C372.396,490.901,316.666,512,256,512  c-97.491,0-182.252-54.491-225.491-134.681l82.961-67.91c21.619,57.698,77.278,98.771,142.53,98.771  c28.047,0,54.323-7.582,76.87-20.818L416.253,455.624z"></path>
+                                                    <path style="fill:#F14336;" d="M419.404,58.936l-82.933,67.896c-23.335-14.586-50.919-23.012-80.471-23.012  c-66.729,0-123.429,42.957-143.965,102.724l-83.397-68.276h-0.014C71.23,56.123,157.06,0,256,0  C318.115,0,375.068,22.126,419.404,58.936z"></path>
+                                                </svg>
+                                            </svg>
+                                            <span>
+                                                Google
+                                            </span>
+                                        </button>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@
+<div class="login-register-area mb-60px">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 col-md-12 ml-auto mr-auto">
+                <div class="login-register-wrapper">
+                    <div class="login-register-tab-list nav">
+                        <a class="active" data-toggle="tab" href="#lg1">
+                            <h4>Постійний клієнт</h4>
+                        </a>
+                        <a data-toggle="tab" href="#lg2">
+                            <h4>Новий клієнт</h4>
+                        </a>
+                    </div>
+                    @Html.ValidationSummary()
+                    <div class="tab-content">
+                        <div id="lg1" class="tab-pane active">
+                            <div class="login-form-container">
+                                <div class="login-register-form">
+
+                                    @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "enter_left", role = "form" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        @Html.ValidationMessage("UserName")
+                                        @Html.TextBox("UserName", null, new { @class = "form_input", type = "email", placeholder = "Логін" })
+                                        @Html.ValidationMessage("Password")
+                                        @Html.Password("Password", null, new { @class = "form_input", placeholder = "Пароль" })
+                                        <div class="button-box">
+                                            <div class="login-toggle-btn">
+                                                <a href="@Url.Action("forgotpassword","account")">Забули пароль?</a>
+
+                                            </div>
+                                            <button class="button btn-ajax-login" name="login" data-language="login_sign_in" type="submit">Увійти</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div id="lg2" class="tab-pane">
+                            <div class="login-form-container">
+                                <div class="login-register-form">
+                                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "enter_left", role = "form" }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <div class="row">
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("FullName", null, new { @class = "form_input", placeholder = "Ім'я та прізвище*" })
+                                                @Html.ValidationMessage("FullName")
+                                            </div>
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("PhoneNumber", null, new { @class = "form_input phone-input", placeholder = "Номер телефону *", type = "tel" })
+                                                @Html.ValidationMessage("PhoneNumber")
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("Email", null, new { @class = "form_input", placeholder = "Email *", type = "email" })
+                                                @Html.ValidationMessage("Email")
+                                            </div>
+                                            <div class="form_group col-sm-6">
+                                                @{
+                                                    var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
+                                                    var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
+                                                    var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
+                                                    var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
+                                                }
+                                                @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "form_input regionSearch", placeholder = "Місто *" })
+                                                @Html.Hidden("RegionId", regionIdCookieVal)
+                                                @Html.ValidationMessage("RegionId")
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("Password", null, new { @class = "form_input", placeholder = "Пароль *", type = "password" })
+                                                @Html.ValidationMessage("Password")
+                                            </div>
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("CardNumber", null, new { @class = "form_input", placeholder = "Номер картки (за наявності)" })
+                                                @Html.ValidationMessage("CardNumber")
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("ReferalNumber", null, new { @class = "form_input", placeholder = "Реєстраційний код (за наявності)" })
+                                                @Html.ValidationMessage("ReferalNumber")
+                                            </div>
+                                        </div>
+                                        <div class="button-box">
+                                            <button class="button btn-ajax-login" name="register" data-language="login_sign_in" type="submit">Реєстрація</button>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

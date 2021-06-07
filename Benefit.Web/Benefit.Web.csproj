@@ -305,6 +305,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\EnumExtensions.cs" />
     <Compile Include="Helpers\ModelStateExt.cs" />
     <Compile Include="Helpers\PartialToString.cs" />
     <Compile Include="Helpers\RouteDataHelper.cs" />
@@ -726,6 +727,17 @@
     <Content Include="Content\css\media.css" />
     <Content Include="Content\seller\css\main.css" />
     <Content Include="Content\seller\css\style.css" />
+    <Content Include="Content\seller\ecolife\fonts\fa-brands-400.eot" />
+    <Content Include="Content\seller\ecolife\fonts\fa-brands-400.svg" />
+    <Content Include="Content\seller\ecolife\fonts\fa-brands-400.ttf" />
+    <Content Include="Content\seller\ecolife\fonts\fa-brands-400.woff2" />
+    <Content Include="Content\seller\ecolife\fonts\fa-regular-400.eot" />
+    <Content Include="Content\seller\ecolife\fonts\fa-regular-400.woff2" />
+    <Content Include="Content\seller\ecolife\fonts\fa-solid-900.eot" />
+    <Content Include="Content\seller\ecolife\fonts\fa-solid-900.woff2" />
+    <Content Include="Content\seller\ecolife\plugins.min.css" />
+    <Content Include="Content\seller\ecolife\responsive.min.css" />
+    <Content Include="Content\seller\ecolife\style.min.css" />
     <Content Include="Content\seller\megashop\bootstrap-slider.css" />
     <Content Include="Content\seller\megashop\images\11_4000x_1461673944.jpg" />
     <Content Include="Content\seller\megashop\images\1362382587_aluminium-radiator-global.jpg" />
@@ -1424,6 +1436,10 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\owl.carousel.min.js" />
     <Content Include="Scripts\select2.min.js" />
+    <Content Include="Scripts\seller\ecolife\jquery-3.5.1.min.js" />
+    <Content Include="Scripts\seller\ecolife\main.js" />
+    <Content Include="Scripts\seller\ecolife\modernizr-3.7.1.min.js" />
+    <Content Include="Scripts\seller\ecolife\plugins.min.js" />
     <Content Include="Scripts\seller\fileupload.js" />
     <Content Include="Scripts\v3\product-filters.js" />
     <Content Include="Scripts\scripts.js" />
@@ -1596,6 +1612,34 @@
     <Content Include="Views\SellerArea\MegaShop\ResetPassword.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\ResetPasswordConfirmation.cshtml" />
     <Content Include="Views\Shared\_essentialStyles.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_BreadcrumbsPartial.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_ProductListPartial.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_ProductPartial.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_SellerLayout.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_ViewedProducts.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\About.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Cart.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Catalog.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\CategoriesCatalog.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Contacts.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Delivery.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\ForgotPassword.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\ForgotPasswordConfirmation.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Gallery.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Home.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Login.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\News.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\NotFound.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\OrderCompleted.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Page.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\PostRegister.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Product.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\ProductsCatalog.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\ResetPassword.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\ResetPasswordConfirmation.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\Reviews.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_EcoReviewFormPartial.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_ProductFilters.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

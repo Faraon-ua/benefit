@@ -6,20 +6,19 @@ namespace Benefit.Web.Controllers
 {
     public class ErrorController : Controller
     {
-        [FetchSeller(Order=0)]
+        [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
         public ActionResult NotFound()
         {
-            var domainSeller = ViewBag.Seller as Seller;
-            if (domainSeller != null)
+            var seller = ViewBag.Seller as Seller;
+            if (seller != null && seller.HasEcommerce)
             {
-                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
-                    SellerEcommerceTemplate.MegaShop)
-                {
-                    return View("~/views/sellerarea/megashop/notfound.cshtml");
-                }
+                var viewName = string.Format("~/views/sellerarea/{0}/notfound.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(viewName, seller);
             }
             return View();
+
         }
-	}
+    }
 }

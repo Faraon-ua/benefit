@@ -1,0 +1,23 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@model InfoPage
+@{
+    ViewBag.Title = Model.Name;
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+@section meta{
+    <meta name="description" content="@Model.ShortContent">
+}
+@Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = Model.Name } })
+
+<div class="container">
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            
+            <div class="padding">
+                @Html.Raw(Model.Content)
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,9 +8,9 @@ namespace Benefit.Domain.Models
         PrimaryMainPage,
         [Display(Name = "Особистий кабінет")]
         PartnerPageBanners,
-        [Display(Name = "Головна сторінка - верхній правий")]
+        [Display(Name = "Додатковий (верхній)")]
         SideTopMainPage,
-        [Display(Name = "Головна сторінка - нижній правий")]
+        [Display(Name = "Додатковий (нижній)")]
         SideBottomMainPage,
         [Display(Name = "Головна сторінка - перша полоса")]
         FirstRowMainPage,

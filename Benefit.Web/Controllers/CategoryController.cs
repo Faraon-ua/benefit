@@ -22,6 +22,12 @@ namespace Benefit.Web.Controllers
             {
                 parameters = catalogService.GetProductParameters(categoryId, seller == null ? null : seller.Id);
             }
+            if (seller != null && seller.HasEcommerce)
+            {
+                var viewName = string.Format("~/views/sellerarea/{0}/_ProductFilters.cshtml",
+                    seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return PartialView(viewName, parameters);
+            }
             return PartialView("~/views/catalog/_ProductFilters.cshtml", parameters);
         }
     }

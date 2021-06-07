@@ -25,7 +25,7 @@ namespace Benefit.Web.Controllers
     public class HomeController : BaseController
     {
         private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
-        [FetchSeller(Order = 0, Include = "Banners")]
+        [FetchSeller(Order = 0, Include = "Banners,SellerCategories")]
         [FetchCategories(Order = 1)]
         //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByCustom = "IsMobile")]
         public async Task<ActionResult> Index()
@@ -40,6 +40,11 @@ namespace Benefit.Web.Controllers
             {
                 using (var db = new ApplicationDbContext())
                 {
+                    if (seller.SellerCategories.Any())
+                    {
+                        var catIds = seller.SellerCategories.Where(entry => entry.RootDisplay).Select(entry => entry.CategoryId).ToList();
+                        seller.FeaturedCategories = db.Categories.Where(entry => catIds.Contains(entry.Id)).ToList();
+                    }
                     seller.FeaturedProducts = db.Products
                         .Include(entry => entry.Favorites)
                         .Include(entry => entry.Images)
@@ -67,9 +72,9 @@ namespace Benefit.Web.Controllers
                             entry.IsActive &&
                             entry.ModerationStatus == ModerationStatus.Moderated &&
                             entry.AvailableAmount > 0 &&
-                            (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || entry.AvailabilityState == ProductAvailabilityState.Available) && 
-                            entry.Category.IsActive && 
-                            entry.SellerId == seller.Id && 
+                            (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || entry.AvailabilityState == ProductAvailabilityState.Available) &&
+                            entry.Category.IsActive &&
+                            entry.SellerId == seller.Id &&
                             entry.OldPrice != null).Take(8).ToList();
                     foreach (var featuredProduct in seller.FeaturedProducts)
                     {
@@ -111,7 +116,7 @@ namespace Benefit.Web.Controllers
             mainPageViewModel.FeaturedProducts = (from element in products.Where(entry => entry.IsFeatured)
                                                   group element by element.SellerId
                                                   into groups
-                                                  select groups.OrderBy(p => Guid.NewGuid()).Take(4)).SelectMany(entry=>entry).ToList();
+                                                  select groups.OrderBy(p => Guid.NewGuid()).Take(4)).SelectMany(entry => entry).ToList();
             mainPageViewModel.NewProducts = (from element in products.Where(entry => entry.IsNewProduct)
                                              group element by element.SellerId
                                                  into groups

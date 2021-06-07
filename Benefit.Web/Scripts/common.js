@@ -153,7 +153,7 @@ $(function () {
     }
     if ($.fn.mask) {
         $('.number-input').mask("#");
-        $('.phone-input').mask("+38(000)000-00-00", { placeholder: "+38(___)___-__-__" });
+        $('.phone-input').mask("+38(000)000-00-00", { placeholder: "Номер телефону *" });
     }
 
     $('body').on('click', ".show-more-options", function (e) {

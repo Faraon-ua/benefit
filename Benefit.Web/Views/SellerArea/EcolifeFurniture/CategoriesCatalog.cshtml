@@ -1,0 +1,47 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.CategoriesViewModel
+
+@{
+    ViewBag.Title = Model.Category.Name;
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+@section meta
+{
+    <meta name="description" content="@(Model.Category == null ? string.Empty : Model.Category.MetaDescription) @seller.SeoSuffix">
+}
+@Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+
+<div class="container">
+    <div class="fn_ajax_content">
+        <h1 class="h2">
+            <span data-page="8">
+                @Model.Category.Name
+            </span>
+        </h1>
+
+        <div class="category-slider-2 owl-carousel owl-nav-style-3">
+            <!-- Single item -->
+            @foreach (var cat in Model.Items)
+            {
+                <div class="category-item">
+                    <div class="category-list">
+                        <div class="category-thumb">
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })">
+                                <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Title" />
+                            </a>
+                        </div>
+                        <div class="desc-listcategoreis">
+                            <div class="name_categories">
+                                <h4>@cat.Name</h4>
+                            </div>
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })">До покупок<i class="ion-android-arrow-dropright-circle"></i></a>
+                        </div>
+                    </div>
+                </div>
+            }
+            <!-- Single item -->
+        </div>
+    </div>
+</div>

@@ -1,0 +1,576 @@
+﻿@using Benefit.Common.Extensions
+@using Benefit.Domain.Models
+@using Benefit.Common.Constants
+
+@model Seller
+@{
+    Layout = "_SellerLayout.cshtml";
+    ViewBag.Title = "Головна";
+    var seller = ViewBag.Seller as Seller;
+}
+@section meta
+{
+    <meta name="keywords" content="@seller.SearchTags">
+    <meta name="description" content="@seller.ShortDescription">
+}
+@section scripts
+{
+    <script src="~/Scripts/v3/products.js"></script>
+    <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
+    <script>
+        var productOptionsUrl = '@Url.Action("GetProductOptions", "Tovar")';
+        var productVariantsUrl = '@Url.Action("GetProductVariants", "Tovar")';
+        var addToCartUrl = '@Url.Action("AddProduct", "Cart")';
+        var addToFavoritesUrl =
+            '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new {returnUrl = Request.Url.PathAndQuery}))';
+        var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
+    </script>
+}
+<div class="slider-area">
+    <div class="slider-active-3 owl-carousel slider-hm8 owl-dot-style">
+        @foreach (var image in Model.Banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage).OrderBy(entry => entry.Order))
+        {
+            <div class="slider-height-10 d-flex align-items-start justify-content-start bg-img" style="background-image: url(Images/PrimaryMainPage/@image.ImageUrl);">
+                <div class="container">
+                    <div class="slider-content-13 slider-animated-1 text-left">
+                        <span class="animated">@image.Description</span>
+                        <h1 class="animated">
+                            @image.Title
+                        </h1>
+                        <a href="@image.NavigationUrl" class="shop-btn animated">Детальніше</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Category Area Start -->
+<section class="categorie-area categorie-area-2 ptb-100px">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <!-- Section Title -->
+                <div class="section-title mt-res-sx-30px mt-res-md-30px underline-shape">
+                    <h2>Популярні категорії</h2>
+                </div>
+                <!-- Section Title -->
+            </div>
+        </div>
+        <!-- Category Slider Start -->
+        <div class="category-slider-2 owl-carousel owl-nav-style-3">
+            <!-- Single item -->
+            @foreach (var cat in Model.FeaturedCategories)
+            {
+                <div class="category-item">
+                    <div class="category-list">
+                        <div class="category-thumb">
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })">
+                                <img src="~/Images/CategoryLogo/@cat.ImageUrl" alt="@cat.Title" />
+                            </a>
+                        </div>
+                        <div class="desc-listcategoreis">
+                            <div class="name_categories">
+                                <h4>@cat.Name</h4>
+                            </div>
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })">До покупок<i class="ion-android-arrow-dropright-circle"></i></a>
+                        </div>
+                    </div>
+                </div>
+            }
+            <!-- Single item -->
+        </div>
+    </div>
+</section>
+<!-- Category Area End  -->
+<!-- Banner Area Start -->
+<div class="banner-3-area mt-0px mb-100px">
+    <div class="container">
+        <div class="row">
+            @foreach (var banner in Model.Banners.Where(entry => entry.BannerType == BannerType.SideTopMainPage).OrderBy(entry => entry.Order))
+            {
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 mb-res-xs-30 mb-res-sm-30">
+                    <div class="banner-wrapper banner-box">
+                        <a href="@banner.NavigationUrl">
+                            <img src="~/Images/SideTopMainPage/@banner.ImageUrl" alt="@banner.Title" />
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- Banner Area End -->
+<!-- Recent Add Product Area Start -->
+@if (Model.FeaturedProducts.Any())
+{
+    <section class="recent-add-area mb-70px">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <!-- Section Title -->
+                    <div class="section-title underline-shape">
+                        <h2>Хіти продажу</h2>
+                    </div>
+                    <!-- Section Title -->
+                </div>
+            </div>
+            <div class="row">
+                @foreach (var product in Model.FeaturedProducts)
+                {
+                    @Html.Partial("~/views/sellerarea/ecolifefurniture/_ProductPartial.cshtml", product)
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@{
+    var sellerNews = seller.InfoPages.Where(entry => entry.IsActive && entry.IsNews).OrderByDescending(entry => entry.CreatedOn).Take(3).ToList();
+}
+@if (sellerNews.Any())
+{
+    <!-- Blog area Start -->
+    <section class="blog-area mb-30px">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <!-- Section title -->
+                    <div class="section-title underline-shape">
+                        <h2>Останні Новини</h2>
+                    </div>
+                    <!-- Section title -->
+                </div>
+            </div>
+            <!-- Blog Slider Start -->
+            <div class="blog-slider-active owl-carousel owl-nav-style-3">
+                <!-- single item -->
+                @foreach (var news in sellerNews)
+                {
+                    <article class="blog-post">
+                        <div class="blog-post-top">
+                            <div class="blog-img banner-wrapper">
+                                <a href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})"><img src="~/Images/NewsLogo/@news.ImageUrl" alt="@news.Name" /></a>
+                            </div>
+                            <a href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})" class="blog-meta">@news.CreatedOn.ToLocalTimeWithDateFormat()</a>
+                        </div>
+                        <div class="blog-post-content">
+                            <h4 class="blog-post-heading"><a href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})">@news.Name</a></h4>
+                            <p class="blog-text">
+                                @news.ShortContent
+                            </p>
+                            <a class="read-more-btn" href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})"> Детальніше <i class="ion-android-arrow-dropright-circle"></i></a>
+                        </div>
+                    </article>
+                }
+            </div>
+            <!-- Blog Slider Start -->
+        </div>
+    </section>
+    <!-- Blog Area End -->
+}
+
+<!-- Brand area start -->
+<div class="brand-area">
+    <div class="container">
+        <div class="brand-slider owl-carousel owl-nav-style owl-nav-style-2">
+            <div class="brand-slider-item">
+                <a href="#"><img src="https://htmldemo.hasthemes.com/ecolife-preview/ecolife/assets/images/brand-logo/1.jpg" alt="" /></a>
+            </div>
+            <div class="brand-slider-item">
+                <a href="#"><img src="https://htmldemo.hasthemes.com/ecolife-preview/ecolife/assets/images/brand-logo/2.jpg" alt="" /></a>
+            </div>
+            <div class="brand-slider-item">
+                <a href="#"><img src="https://htmldemo.hasthemes.com/ecolife-preview/ecolife/assets/images/brand-logo/3.jpg" alt="" /></a>
+            </div>
+            <div class="brand-slider-item">
+                <a href="#"><img src="https://htmldemo.hasthemes.com/ecolife-preview/ecolife/assets/images/brand-logo/4.jpg" alt="" /></a>
+            </div>
+            <div class="brand-slider-item">
+                <a href="#"><img src="https://htmldemo.hasthemes.com/ecolife-preview/ecolife/assets/images/brand-logo/5.jpg" alt="" /></a>
+            </div>
+            <div class="brand-slider-item">
+                <a href="#"><img src="https://htmldemo.hasthemes.com/ecolife-preview/ecolife/assets/images/brand-logo/1.jpg" alt="" /></a>
+            </div>
+            <div class="brand-slider-item">
+                <a href="#"><img src="https://htmldemo.hasthemes.com/ecolife-preview/ecolife/assets/images/brand-logo/2.jpg" alt="" /></a>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Brand area end -->
+<!-- Category Product  Area start-->
+<section class="category-product-area home-10 mt-40px mb-70px">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-md-12 col-lg-12 col-xl-9">
+                <div class="row">
+                    @if (Model.NewProducts.Any())
+                    {
+                        <div class="col-xs-12 col-md-12 col-lg-4">
+                            <!-- Section Title -->
+                            <div class="section-title underline-shape underline-shape-left">
+                                <h2>Новинки</h2>
+                            </div>
+                            <!-- Section Title -->
+                            <div class="category-product-slider owl-carousel responsive-owl-nav-style owl-nav-style owl-nav-style-4">
+                                <!-- Single Item -->
+                                @for (var i = 0; i < Model.NewProducts.Count; i++)
+                                {
+                                    <div>
+                                        <article>
+                                            @Html.Partial("~/views/sellerarea/ecolifefurniture/_ProductPartial.cshtml", Model.NewProducts.ElementAt(i))
+                                        </article>
+                                        @{
+                                            i++;
+                                        }
+                                        @if (i < Model.NewProducts.Count)
+                                        {
+                                            <article>
+                                                @Html.Partial("~/views/sellerarea/ecolifefurniture/_ProductPartial.cshtml", Model.NewProducts.ElementAt(i))
+                                            </article>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.PromotionProducts.Any())
+                    {
+                        <div class="col-xs-12 col-md-12 col-lg-4">
+                            <!-- Section Title -->
+                            <div class="section-title mt-res-sx-30px mt-res-md-30px underline-shape underline-shape-left">
+                                <h2>Акційні товари</h2>
+                            </div>
+                            <!-- Section Title -->
+                            <div class="category-product-slider owl-carousel responsive-owl-nav-style owl-nav-style owl-nav-style-4">
+                                @for (var i = 0; i < Model.PromotionProducts.Count; i++)
+                                {
+                                    Model.PromotionProducts.ElementAt(i).IsPromotion = true;
+                                    <div>
+                                        <article>
+                                            @Html.Partial("~/views/sellerarea/ecolifefurniture/_ProductPartial.cshtml", Model.PromotionProducts.ElementAt(i))
+                                        </article>
+                                        @{
+                                            i++;
+                                        }
+                                        @if (i < Model.NewProducts.Count)
+                                        {
+                                            Model.PromotionProducts.ElementAt(i).IsPromotion = true;
+                                            <article>
+                                                @Html.Partial("~/views/sellerarea/ecolifefurniture/_ProductPartial.cshtml", Model.PromotionProducts.ElementAt(i))
+                                            </article>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                    <!--<div class="col-xs-12 col-md-12 col-lg-4">-->
+                        <!-- Section Title -->
+                        <!--<div class="section-title mt-res-sx-30px mt-res-md-30px underline-shape underline-shape-left">
+                            <h2>Outdoor Furniture</h2>
+                        </div>-->
+                        <!-- Section Title -->
+                        <!--<div class="category-product-slider owl-carousel responsive-owl-nav-style owl-nav-style owl-nav-style-4">-->
+                            <!-- Single Item -->
+                            <!--<div class="feature-slider-item">
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/17.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/18.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">Water and Wind...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price not-cut">€29.90</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/19.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/20.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">New Luxury Men's...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price">€19.90</li>
+                                                <li class="current-price">€15.51</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/21.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/22.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">Trans-Weight Ho...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price not-cut">€14.90</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>-->
+                            <!-- Single Item -->
+                            <!--<div class="feature-slider-item">
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/23.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/24.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">Juicy Couture Solid...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price">€12.90</li>
+                                                <li class="current-price">€11.51</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/25.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/26.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">New Luxury Slim...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price not-cut">€9.90</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/27.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/28.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">Trans-Weight Ho...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price">€29.90</li>
+                                                <li class="current-price">€21.51</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>-->
+                            <!-- Single Item -->
+                            <!--<div class="feature-slider-item">
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/29.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/30.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">Juicy Couture Solid...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price">€15.90</li>
+                                                <li class="current-price">€10.51</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/31.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/7.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">New Luxury Slim...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price not-cut">€9.90</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                                <article class="list-product">
+                                    <div class="img-block">
+                                        <a href="single-product.html" class="thumbnail">
+                                            <img class="first-img" src="assets/images/product-image/furniture/8.jpg" alt="" />
+                                            <img class="second-img" src="assets/images/product-image/furniture/9.jpg" alt="" />
+                                        </a>
+                                        <div class="quick-view">
+                                            <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                                                <i class="ion-ios-search-strong"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="product-decs">
+                                        <a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>
+                                        <h2><a href="single-product.html" class="product-link">Trans-Weight Ho...</a></h2>
+                                        <div class="rating-product">
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                            <i class="ion-android-star"></i>
+                                        </div>
+                                        <div class="pricing-meta">
+                                            <ul>
+                                                <li class="old-price">€25.90</li>
+                                                <li class="current-price">€21.51</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>-->
+                            <!-- Single Item -->
+                        <!--</div>
+                    </div>-->
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-12 col-lg-12 d-lg-none d-xl-block col-xl-3 mtb-res-sm-30 mtb-res-md-30">
+                <div class="banner-inner">
+                    @if (!string.IsNullOrEmpty(seller.Widget))
+                    {
+                        <div class="block hidden-xs">
+                            @Html.Raw(seller.Widget)
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<div class="modal-container"></div>
+<div id="product-purchase-wrap">
+    @Html.Partial("~/Views/Tovar/_PurchaseRegion.cshtml", new Dictionary<string, string>() { { "0", string.Empty } })
+</div>
+<div id="product-options-wrap"></div>
+<div id="product-variants-wrap"></div>

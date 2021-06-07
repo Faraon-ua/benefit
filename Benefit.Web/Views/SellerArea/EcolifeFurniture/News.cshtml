@@ -1,0 +1,43 @@
+﻿@using Benefit.Common.Extensions
+@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+@model IEnumerable<InfoPage>
+@{
+    ViewBag.Title = "Новини";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+@section meta
+{
+    <meta name="description" content="Новини @seller.SeoSuffix">
+}
+@Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Новини" } })
+<!-- Blog area Start -->
+<section class="blog-area mb-30px">
+    <div class="container">
+        <!-- Blog Slider Start -->
+        <div class="row">
+            <!-- single item -->
+            @foreach (var news in Model)
+            {
+                <article class="blog-post col-sm-4">
+                    <div class="blog-post-top">
+                        <div class="blog-img banner-wrapper">
+                            <a href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})"><img src="~/Images/NewsLogo/@news.ImageUrl" alt="@news.Name" /></a>
+                        </div>
+                        <a href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})" class="blog-meta">@news.CreatedOn.ToLocalTimeWithDateFormat()</a>
+                    </div>
+                    <div class="blog-post-content">
+                        <h4 class="blog-post-heading"><a href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})">@news.Name</a></h4>
+                        <p class="blog-text">
+                            @news.ShortContent
+                        </p>
+                        <a class="read-more-btn" href="@Url.RouteUrl("pagesRoute", new {id = news.UrlName})"> Детальніше <i class="ion-android-arrow-dropright-circle"></i></a>
+                    </div>
+                </article>
+            }
+        </div>
+        <!-- Blog Slider Start -->
+    </div>
+</section>
+<!-- Blog Area End -->

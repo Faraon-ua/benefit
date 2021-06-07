@@ -1,0 +1,432 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Common.Helpers
+@using Benefit.Domain.Models
+@model Benefit.DataTransfer.ViewModels.CompleteOrderViewModel
+
+@{
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+    ViewBag.Title = "Кошик";
+    var defaultAddress = Model.Addresses.FirstOrDefault(entry => entry.IsDefault) ?? Model.Addresses.FirstOrDefault();
+    var defaultAddressId = defaultAddress == null ? "" : defaultAddress.Id;
+}
+@section meta
+{
+    <meta name="description" content="Кошик @seller.SeoSuffix">
+}
+@section styles
+{
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+}
+@section scripts
+{
+    <script src="~/Scripts/jquery.mask.min.js"></script>
+    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/jquery.autocomplete.min.js"></script>
+    <script src="~/Scripts/address.js"></script>
+    <script>
+        var token = $('[name=__RequestVerificationToken]').val();
+        var isAuthenticated = ('@User.Identity.IsAuthenticated' === 'True');
+        var loginUrl = '@Url.Action("Login", "Account")' + '?returnUrl=@HttpUtility.UrlEncode(Url.Action("Order", "Cart"))&isAjaxRequest=true';
+
+        $(function () {
+            SetRegionsAutocomplete();
+
+            $(".delivery_address_item").click(function () {
+                var addressId = $(this).attr("data-address-id");
+                $("#AddressId").val(addressId);
+                $(".delivery_address_item").removeClass("active");
+                $(".delivery_address_item").hide();
+                $(this).addClass("active");
+                $(this).show();
+            });
+            $(".chose_new_address").click(function (e) {
+                e.preventDefault();
+                $(".delivery_address_item").show();
+            });
+
+            $("#save-order").click(function () {
+                var btn = $(this);
+                btn.find(".btn").attr("disabled", "disabled");
+                showLoader();
+                if (!isAuthenticated) {
+                    var registerForm = $("#register-form");
+                    var registerFormJson = getFormData(registerForm);
+                    $.post(registerForm.attr("action"),
+                        {
+                            "__RequestVerificationToken": token,
+                            "model": registerFormJson
+                        },
+                        function (data) {
+                            if (data.error) {
+                                flashMessage(data.error, true, true);
+                            } else {
+                                $("#UserId").val(data.userId);
+                                $("#AddressId").val(data.shippingAddressId);
+                                $("#order-form-wrap form").submit();
+                            }
+                            $('html,body').animate({ scrollTop: 0 }, 'fast');
+                            btn.find(".btn").removeAttr("disabled");
+                            hideLoader();
+                        });
+                }
+                else {
+                    $("#order-form-wrap form").submit();
+                }
+            });
+
+            $(".btn-ajax-login").click(function() {
+                var username = $("#UserName").val();
+                var password = $("#UserPassword").val();
+
+                $.post(loginUrl,
+                    {
+                        "__RequestVerificationToken": token,
+                        "model": {
+                            "UserName": username,
+                            "Password": password
+                        }
+                    },
+                    function(data) {
+                        if (data.error) {
+                            flashMessage(data.error, true, true);
+                        } else {
+                            location.href = data.returnUrl;
+                        }
+                    });
+            });
+        });
+    </script>
+}
+@Html.AntiForgeryToken()
+
+<div class="col-md-8 col-xl-9 content order-wrap" data-seller-id="@Model.SellerId" data-seller-userdiscount="@(Model.Order == null ? string.Empty : Model.Order.SellerUserDiscount.ToString())">
+    <div class="fn_ajax_content">
+
+        @Html.Partial("_FlashMessage")
+
+        @if (Model.Order == null || Model.Order != null && !Model.Order.OrderProducts.Any())
+        {
+            <div class="block">
+                <div class="padding">
+                    Кошик порожній
+                </div>
+            </div>
+        }
+        else
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                <div class="block">
+                    <div class="padding">
+                        <div class="tabs clearfix">
+                            <div class="tab_navigation">
+                                <a href="#login" data-language="product_description" class="selected">Постійний клієнт</a>
+                                <a href="#registration" data-language="product_description">Новий клієнт</a>
+                            </div>
+
+                            <div class="tab_container">
+                                <div id="login" class="tab product_description" itemprop="description">
+                                    <div class="row">
+                                        <div class="form_group col-sm-6">
+                                            @Html.TextBox("UserName", null, new { @class = "form_input", type = "email", placeholder = "Логін" })
+                                        </div>
+                                        <div class="form_group col-sm-6">
+                                            @Html.Password("UserPassword", null, new { @class = "form_input", placeholder = "Пароль" })
+                                        </div>
+                                    </div>
+                                    <button class="button btn-ajax-login" name="login" data-language="login_sign_in" type="button">Увійти</button>
+                                    <hr style="border: 1px solid #e5e5e5;" />
+                                    <p>Увійти через акаунт</p>
+                                    @using (Html.BeginForm("ExternalLogin", "Account", new { returnUrl = "/cart/order/" + Model.SellerId }))
+                                    {
+                                        @Html.AntiForgeryToken()
+                                        <div id="socialLoginList" class="row">
+                                            <div class="col-sm-6">
+                                                <button type="submit" class="button-sc button-large button-gray" id="Facebook" name="provider" value="Facebook" title="Log in using your Facebook account">
+                                                    <i class="fa fa-facebook"></i>
+                                                    Facebook
+                                                </button>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <button type="submit" class="button-sc button-large button-gray" id="Google" name="provider" value="Google" title="Log in using your Google account">
+                                                    <svg height="18" width="18" class="margin-right-10">
+                                                        <svg viewBox="0 0 512 512" id="icon-google-colored">
+                                                            <path style="fill:#FBBB00;" d="M113.47,309.408L95.648,375.94l-65.139,1.378C11.042,341.211,0,299.9,0,256  c0-42.451,10.324-82.483,28.624-117.732h0.014l57.992,10.632l25.404,57.644c-5.317,15.501-8.215,32.141-8.215,49.456  C103.821,274.792,107.225,292.797,113.47,309.408z"></path>
+                                                            <path style="fill:#518EF8;" d="M507.527,208.176C510.467,223.662,512,239.655,512,256c0,18.328-1.927,36.206-5.598,53.451  c-12.462,58.683-45.025,109.925-90.134,146.187l-0.014-0.014l-73.044-3.727l-10.338-64.535  c29.932-17.554,53.324-45.025,65.646-77.911h-136.89V208.176h138.887L507.527,208.176L507.527,208.176z"></path>
+                                                            <path style="fill:#28B446;" d="M416.253,455.624l0.014,0.014C372.396,490.901,316.666,512,256,512  c-97.491,0-182.252-54.491-225.491-134.681l82.961-67.91c21.619,57.698,77.278,98.771,142.53,98.771  c28.047,0,54.323-7.582,76.87-20.818L416.253,455.624z"></path>
+                                                            <path style="fill:#F14336;" d="M419.404,58.936l-82.933,67.896c-23.335-14.586-50.919-23.012-80.471-23.012  c-66.729,0-123.429,42.957-143.965,102.724l-83.397-68.276h-0.014C71.23,56.123,157.06,0,256,0  C318.115,0,375.068,22.126,419.404,58.936z"></path>
+                                                        </svg>
+                                                    </svg>
+                                                    <span>
+                                                        Google
+                                                    </span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                                <div id="registration" class="tab product_description" itemprop="description">
+                                    <form action="@Url.Action("Register", "Account")?isAjaxRequest=true&returnUrl=@Url.Action("Order", "Cart")" method="POST" id="register-form">
+                                        <div class="row">
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("FullName", null, new { @class = "form_input", placeholder = "Ім'я та прізвище*" })
+                                                @Html.ValidationMessage("FullName")
+                                            </div>
+                                            <div class="form_group col-sm-6">
+                                                @{
+                                                    var regionNameCookie = Request.Cookies[RouteConstants.RegionNameCookieName];
+                                                    var regionNameCookieVal = regionNameCookie == null ? null : HttpUtility.UrlDecode(regionNameCookie.Value);
+                                                    var regionIdCookie = Request.Cookies[RouteConstants.RegionIdCookieName];
+                                                    var regionIdCookieVal = regionIdCookie == null ? null : HttpUtility.UrlDecode(regionIdCookie.Value);
+                                                }
+                                                @Html.TextBox("RegionName", regionNameCookieVal, new { @class = "form_input regionSearch", placeholder = "Місто *" })
+                                                @Html.Hidden("RegionId", regionIdCookieVal)
+                                                @Html.ValidationMessage("RegionId")
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("PhoneNumber", null, new { @class = "form_input phone-input", placeholder = "Номер телефону *", type = "tel" })
+                                                @Html.ValidationMessage("PhoneNumber")
+                                            </div>
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("Email", null, new { @class = "form_input", placeholder = "Email *", type = "email" })
+                                                @Html.ValidationMessage("Email")
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("Password", null, new { @class = "form_input", placeholder = "Пароль *", type = "password" })
+                                                @Html.ValidationMessage("Password")
+                                            </div>
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("ShippingAddress", null, new { @class = "form_input", placeholder = "Адреса доставки" })
+                                                @Html.ValidationMessage("ShippingAddress")
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("CardNumber", null, new { @class = "form_input", placeholder = "Номер картки (за наявності)" })
+                                                @Html.ValidationMessage("CardNumber")
+                                            </div>
+                                            <div class="form_group col-sm-6">
+                                                @Html.TextBox("ReferalNumber", null, new { @class = "form_input", placeholder = "Реєстраційний код (за наявності)" })
+                                                @Html.ValidationMessage("ReferalNumber")
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <div id="order-form-wrap">
+                <form action="@Url.Action("order", "cart", new {id = Model.SellerId})" method="post">
+                    <input type="hidden" name="SellerId" value="@Model.SellerId" />
+                    @Html.Hidden("UserId")
+                    @Html.Hidden("AddressId", defaultAddressId)
+
+                    <div class="block">
+                        <h1 class="h1 no_border"><span data-language="cart_header">Кошик</span></h1>
+                        <div id="fn_purchases">
+                            <table class="purchase">
+                                <tbody>
+                                    @foreach (var product in Model.Order.OrderProducts)
+                                    {
+                                        var productUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) });
+                                        var hasWholesale = product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue;
+                                        var showWholesale = hasWholesale && product.Amount >= product.WholesaleFrom.Value;
+                                        var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+                                        var oldProductSum = product.ProductPrice * product.Amount;
+                                        var actualProductSum = (showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice) * product.Amount;
+                                        <tr class="basket_modal_table_row product purchase_tr" data-product-id="@product.ProductId" data-seller-id="@product.SellerId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
+                                            <td class="purchase_image">
+                                                <a href="@productUrl">
+                                                    @if (product.ProductImageUrl != null)
+                                                    {
+                                                        if (product.ProductImageUrl.Contains("http"))
+                                                        {
+                                                            <img src="@product.ProductImageUrl">
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl">
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Images/ProductGallery/default_product_thumbnail.png">
+                                                    }
+                                                </a>
+                                            </td>
+
+
+                                            <td class="text_left">
+                                                <a class="purchase_name" href="@productUrl">@product.ProductName</a>
+                                                <i></i>
+                                            </td>
+
+                                            <td class="purchase_price">
+                                                <span class="nowrap actual-product-price">
+                                                    @((showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice).ToString("F")) грн
+                                                </span>
+                                            </td>
+
+                                            <td class="purchase_amount basket_modal">
+                                                <div class="fn_is_preorder amount" data-weight-product="@product.IsWeightProduct">
+                                                    <input class="input_amount quantity" value="@product.Amount" data-max="50" type="text">
+                                                    <span class="plus"></span>
+                                                    <span class="minus"></span>
+                                                </div>
+                                            </td>
+
+
+                                            <td class="purchase_sum">
+                                                <del class="old-product-total" style="display: @(showWholesale ? "" : "none")">
+                                                    @((oldProductSum + productOptionsSum).ToString("F"))
+                                                </del>
+                                                <span class="actual-product-total">
+                                                    @((actualProductSum + productOptionsSum).ToString("F"))
+                                                </span>
+                                                грн
+                                            </td>
+
+                                            <td class="purchase_remove">
+                                                <a href="#" title="Видалити з корзини" class="delete_product" data-product-id="@product.ProductId">
+                                                    <svg class="remove_icon" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 20 20">
+                                                        <path fill="currentColor" d="M15.833 5.346l-1.179-1.179-4.654 4.654-4.654-4.654-1.179 1.179 4.654 4.654-4.654 4.654 1.179 1.179 4.654-4.654 4.654 4.654 1.179-1.179-4.654-4.654z"></path>
+                                                    </svg>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        if (product.OrderProductOptions.Any())
+                                        {
+                                            foreach (var orderProductOption in product.OrderProductOptions)
+                                            {
+                                                <tr class="basket_modal_table_row option" data-option-id="@orderProductOption.ProductOptionId" data-original-price="@orderProductOption.ProductOptionPriceGrowth">
+                                                    <td class="basket_modal_td">@orderProductOption.ProductOptionName</td>
+                                                    <td class="basket_modal_td">
+                                                    </td>
+                                                    <td class="basket_modal_td">@orderProductOption.ProductOptionPriceGrowth.ToString("F") грн</td>
+                                                    <td class="basket_modal_td">
+                                                        <input type="hidden" class="quantity" value="@orderProductOption.Amount" />
+                                                        @orderProductOption.Amount
+                                                    </td>
+                                                    <td class="basket_modal_td">
+                                                        <div class="delete-option" onclick="$(this).parent().parent().remove()"></div>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" class="coupon text_left"></td>
+
+                                        <td colspan="2" class="purchase_total">
+                                            @{
+                                                var bonuses = Model.Order.OrderProducts.Sum(entry => entry.BonusesAcquired * entry.Amount);
+                                            }
+                                            <div>
+                                                <span data-language="cart_total_price">Кешбек:</span>
+                                                <span class="total_sum nowrap pay-total basket_modal_bonus">
+                                                    <span>@(bonuses.ToString("F"))</span>
+                                                    грн
+                                                </span>
+                                            </div>
+                                            <div>
+                                                <span data-language="cart_total_price">Всього:</span>
+                                                <span class="total_sum nowrap pay-total basket_modal_price">
+                                                    <span>
+                                                        @Model.Order.GetOrderSum().ToString("F")
+                                                    </span>
+                                                    грн
+                                                </span>
+                                            </div>
+                                        </td>
+
+                                        <td></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+
+                        </div>
+                    </div>
+
+                    <div id="fn_ajax_deliveries">
+                        <div class="block">
+                            <div class="h1">
+                                <span data-language="cart_delivery">Способи доставки</span>
+                            </div>
+
+                            <div class="delivery">
+                                @foreach (var shipping in Model.ShippingMethods)
+                                {
+                                    <div class="delivery_item">
+                                        <input class="input_delivery" type="radio" id="@shipping.Id" name="ShippingMethodId" value="@shipping.Id" data-skip-address="@shipping.SkipOrderAddress">
+
+                                        <label class="delivery_label" for="@shipping.Id">
+                                            <span class="delivery_name">
+                                                @shipping.Name
+                                            </span>
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <div class="block">
+                                <div class="h1">
+                                    <span data-language="cart_delivery">Адреса доставки</span>
+                                </div>
+
+                                <div class="delivery">
+                                    @Html.Partial("~/Views/Cart/_ShippingAddresses.cshtml", Model)
+                                </div>
+                            </div>
+                        }
+
+                        <div class="fn_delivery_payment block" id="fn_delivery_payment_1">
+
+                            <div class="h1"><span data-language="cart_payment">Методи оплати</span></div>
+
+                            <div class="delivery">
+                                @foreach (var payment in Model.PaymentTypes)
+                                {
+                                    <div class="delivery_item">
+                                        <input class="input_delivery" type="radio" id="@payment.ToString()" name="PaymentType" value="@payment.ToString()">
+                                        <label class="delivery_label active" for="@payment.ToString()">
+                                            <span class="delivery_name">
+                                                @Enumerations.GetEnumDescription(payment)
+                                            </span>
+                                        </label>
+                                        @if (payment == PaymentType.Bonuses)
+                                        {
+                                            <a href="@Url.RouteUrl("pagesRoute", new {id = "faq"})#vukorustatu_bonysu" target="_blank">
+                                                <span class="label label-info label-as-badge" style="font-size: 1em; display: inline-block;">
+                                                    <strong>?</strong>
+                                                </span>
+                                            </a>
+                                        }
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="block">
+                            <div class="delivery" style="padding-bottom: 15px;">
+                                <div class="form_group">
+                                    <textarea class="form_textarea" rows="5" name="comment" data-language="cart_order_comment" placeholder="Коментар до замовлення"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+                <buton id="save-order" class="button" name="checkout" data-language="cart_checkout" style="margin-bottom: 10px;">Оформити замовлення</buton>
+            </div>
+        }
+    </div>
+</div>

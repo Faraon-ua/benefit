@@ -1,0 +1,44 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+
+@{
+    ViewBag.Title = "Відгуки";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+}
+@section meta
+{
+    <meta name="description" content="Відгуки @seller.SeoSuffix">
+}
+@Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Відгуки" } })
+
+<div class="container">
+
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <div class="row padding">
+                <div class="col-md-6">
+                    @Html.Partial("_ReviewsPartial", new ReviewsViewModel
+                    {
+                        CanReview = false,
+                        SellerId = seller.Id,
+                        TargetName = seller.Name,
+                        Reviews = seller.ApprovedReviews
+                    })
+                </div>
+                <div class="col-md-6">
+                    @Html.Partial("_FlashMessage")
+                    @Html.Partial("~/views/sellerarea/ecolifefurniture/_EcoReviewFormPartial.cshtml", new ReviewsViewModel()
+                    {
+                        CanReview = true,
+                        SellerId = seller.Id,
+                        TargetName = seller.Name,
+                    })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/Scripts/common.js"></script>
+}

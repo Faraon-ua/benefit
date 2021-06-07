@@ -1,0 +1,22 @@
+﻿@model string
+@{
+    ViewBag.Title = "Дякуємо за ваше замовлення";
+    Layout = "_SellerLayout.cshtml";
+}
+
+<div class="fn_ajax_content margin-top-10">
+    <div class="block">
+        <h1 class="h1">
+            <span data-page="3">Дякуємо за ваше замовлення №@Model!</span>
+        </h1>
+        <div class="padding">
+
+            <p>
+                Наш менеджер вже пляше від радості з цього приводу, зараз він заспокоїться і обов’язково Вам зателефонує!
+            </p>
+            <p>
+                <img src="~/Content/img/dance.gif" />
+            </p>
+        </div>
+    </div>
+</div>

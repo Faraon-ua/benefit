@@ -1,0 +1,133 @@
+﻿@using Benefit.DataTransfer.ViewModels
+@using Benefit.Domain.Models
+
+@{
+    ViewBag.Title = "Контакти";
+    Layout = "_SellerLayout.cshtml";
+    var seller = ViewBag.Seller as Seller;
+    var address = seller.Addresses.FirstOrDefault();
+}
+@section meta
+{
+    <meta name="description" content="Контакти @seller.SeoSuffix">
+}
+@Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", new BreadCrumbsViewModel() { Page = new InfoPage() { Name = "Контакти" } })
+
+<div class="container">
+    <div class="fn_ajax_content margin-top-10">
+        <div class="block">
+            <div class="padding">
+                <p>
+                    @if (address != null)
+                    {
+                        <div class="provider_address">
+                            <span>
+                                @address.Region.Name_ua
+                                @if (!string.IsNullOrEmpty(address.AddressLine))
+                                {
+                                    <br />
+                                    <span>@address.AddressLine</span>
+                                }
+                            </span>
+                        </div>
+                    }
+                </p>
+                <div class="organization_hours">
+                    @{
+                        //todo: refactor schedules
+                        var monSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Monday);
+                        var satSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Saturday);
+                        var sunSchedule = seller.Schedules.First(entry => entry.Day == DayOfWeek.Sunday);
+                    }
+                    Пн.-Пт.
+                    @if (monSchedule.StartHour == null)
+                    {
+                        <span>вихідний</span>
+                    }
+                    else
+                    {
+                        <span>@monSchedule.StartHour:@monSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @monSchedule.EndHour:@monSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
+                    }
+                    <br />
+                    Сб.
+                    @if (satSchedule.StartHour == null)
+                    {
+                        <span>вихідний</span>
+                    }
+                    else
+                    {
+                        <span>@satSchedule.StartHour:@satSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @satSchedule.EndHour:@satSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
+                    }
+                    <br />
+                    Нд.
+                    @if (sunSchedule.StartHour == null)
+                    {
+                        <span>вихідний</span>
+                    }
+                    else
+                    {
+                        <span>@sunSchedule.StartHour:@sunSchedule.StartMinutes.GetValueOrDefault(0).ToString("00") - @sunSchedule.EndHour:@sunSchedule.EndMinutes.GetValueOrDefault(0).ToString("00")</span>
+                    }
+                </div>
+
+                <div id="map" style="width: 100%; height:400px;"></div>
+                <script>
+        var map;
+        function initMap() {
+            map = new google.maps.Map(document.getElementById('map'), {
+                center: { lat: 50.127346, lng: 30.111094 },
+                zoom: 8
+            });
+
+            var geocoder = new google.maps.Geocoder();
+            var center;
+            @if (seller.Latitude != null && seller.Longitude != null)
+            {
+                <text>
+            center = @string.Format("{{lat: {0}, lng: {1}}};", seller.Latitude, seller.Longitude)
+            SetMarker(map, center);
+            </text>
+            }
+            else{
+
+                var mapAddress = seller.Addresses.FirstOrDefault();
+                var addressStr = string.Empty;
+                if (mapAddress != null)
+                {
+                    addressStr = mapAddress.Region.Name_ua + "," + mapAddress.AddressLine;
+                }
+                <text>
+            address = "@addressStr";
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    SetMarker(map, results[0].geometry.location)
+                }
+            });
+            </text>
+            }
+        }
+
+        function SetMarker(map, center) {
+            map.setCenter(center);
+            map.setZoom(18);
+            var content = "<strong>@seller.Name</strong><br/>" +
+                  "<a href='https://www.google.com/maps/dir/?api=1&destination=" + center.lat + "," + center.lng + "'>Прокласти маршрут</a><br/>";
+            var infowindow = new google.maps.InfoWindow();
+            var marker = new google.maps.Marker({
+                position: center,
+                map: map,
+                title: "@seller.Name"
+            });
+            google.maps.event.addListener(marker, 'click', (function (marker, content, infowindow) {
+                return function () {
+                    infowindow.setContent(content);
+                    infowindow.open(map, marker);
+                };
+            })(marker, content, infowindow));
+        }
+                </script>
+                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD0Ryf-Uk4SouHzTJPPuUXAVSmaAQ5X-oM&callback=initMap" async defer></script>
+            </div>
+        </div>
+    </div>
+</div>
