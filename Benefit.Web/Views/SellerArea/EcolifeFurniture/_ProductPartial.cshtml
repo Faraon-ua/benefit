@@ -17,7 +17,7 @@
     }
 }
 
-<div class="@className products_item product-item">
+<div class="@className products_item product-item" id="@Model.Id">
     <article class="list-product">
         <div class="img-block">
             <a href="@productDetailsUrl" class="thumbnail">
@@ -73,7 +73,14 @@
         </div>
         <div class="add-to-link">
             <ul>
-                <li class="cart flex-grow-2"><a class="cart-btn" href="#"><i class="ion-android-cart"></i> В кошик</a></li>
+                <li class="cart flex-grow-2">
+                    <a class="cart-btn product_buy" href="#" data-product-id="@Model.Id" data-seller-id="@Model.SellerId" data-is-weight-product="@Model.IsWeightProduct">
+                        <i class="ion-android-cart"></i> Купити
+                    </a>
+                    <div class="counter">
+                        <input type="hidden" class="quantity" value="1" />
+                    </div>
+                </li>
                 <li class="flex-grow-1">
                     <a href="wishlist.html"><i class="ion-android-favorite-outline"></i></a>
                 </li>
@@ -84,6 +91,8 @@
         </div>
     </article>
 </div>
+
+
 
 <!--<div class="col-sm-6 col-xl-3 col-xs-6 products_item product-item" id="@Model.Id">
     @if (isFavorites.GetValueOrDefault(false))

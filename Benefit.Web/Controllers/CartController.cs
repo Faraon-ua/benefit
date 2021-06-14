@@ -93,14 +93,16 @@ namespace Benefit.Web.Controllers
                 Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == id)
             };
             var domainSeller = ViewBag.Seller as Seller;
-            var view = View(model);
+            ViewResult view = null;
             if (domainSeller != null)
             {
-                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
-                    SellerEcommerceTemplate.MegaShop)
-                {
-                    view = View("~/views/sellerarea/megashop/cart.cshtml", model);
-                }
+                var layoutName = string.Format("~/Views/SellerArea/{0}/Cart.cshtml",
+                    domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                view = View(layoutName, model);
+            }
+            else
+            {
+                view = View(model);
             }
             if (model.Order == null)
             {
@@ -253,7 +255,7 @@ namespace Benefit.Web.Controllers
         public ActionResult Order(CompleteOrder completeOrder)
         {
             var order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
-            completeOrder.Order = AutoMapper.Mapper.Map<Order>(order); 
+            completeOrder.Order = AutoMapper.Mapper.Map<Order>(order);
             var user = UserService.GetUser(User.Identity.GetUserId() ?? completeOrder.UserId);
             ModelState.Remove("Order.UserId");
             if (completeOrder.Order == null)
