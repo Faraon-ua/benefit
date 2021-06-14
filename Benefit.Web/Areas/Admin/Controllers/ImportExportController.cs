@@ -139,7 +139,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var newId = Guid.NewGuid().ToString();
                 var importTask =
                     db.ExportImports
-                    .Include(entry=>entry.Links)
+                    .Include(entry => entry.Links)
                     .FirstOrDefault(
                         entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == syncType) ?? new ExportImport()
                         {
@@ -195,11 +195,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     import.IsActive = exportImport.IsActive;
                     import.FileUrl = exportImport.FileUrl;
                     import.SyncPeriod = exportImport.SyncPeriod;
-                    if (exportImport.Links !=null && exportImport.Links.Any())
+
+                    db.Links.RemoveRange(db.Links.Where(entry => entry.ExportImportId == import.Id));
+                    db.SaveChanges();
+                    if (exportImport.Links != null && exportImport.Links.Any())
                     {
-                        db.Links.RemoveRange(db.Links.Where(entry => entry.ExportImportId == import.Id));
-                        db.SaveChanges();
-                        foreach(var link in exportImport.Links)
+                        foreach (var link in exportImport.Links)
                         {
                             link.Id = Guid.NewGuid().ToString();
                             link.ExportImportId = import.Id;
