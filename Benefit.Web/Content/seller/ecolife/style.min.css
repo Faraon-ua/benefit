@@ -829,7 +829,7 @@ button {
     font-size: 14px;
     display: block;
     padding: 0;
-    line-height: 27px
+    line-height: 27px;
 }
 
 .vertical-menu ul li ul.mega-menu-wrap > li ul li a {
@@ -845,7 +845,11 @@ button {
     -ms-transition: all 300ms linear;
     -o-transition: all 300ms linear;
     transition: all 300ms linear;
-    border: 0
+    border: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
 }
 
 .main-navigation ul li ul.mega-menu-wrap > li ul li a:hover {
@@ -1699,7 +1703,7 @@ li.menu-dropdown.position-static:hover .sub-menu.sub-menu-2 {
     color: #0bbfbd
 }
 
-.home-medical .count-cart:after {
+.home-medical .count-cart .after {
     background: #0bbfbd !important;
     color: #fff !important
 }
@@ -2532,10 +2536,6 @@ ul.dropdown-nav > li > a {
     box-shadow: 0 0 3.76px .24px rgba(0,0,0,.15)
 }
 
-.menu-dropdown {
-    position: relative
-}
-
 .main-navigation ul li .sub-menu > li > a {
     position: relative;
     overflow: hidden;
@@ -2941,14 +2941,14 @@ ul.dropdown-nav > li > a {
     font-weight: 700
 }
 
-    .count-cart:after {
+    .count-cart .after {
         position: absolute;
-        top: 9px;
-        left: -26px;
+        top: 13px;
+        left: -14px;
         right: auto;
         width: 18px;
         height: 18px;
-        content: "2";
+        content: "0";
         background: #4fb68d;
         color: #fff;
         line-height: 18px;
@@ -2957,11 +2957,11 @@ ul.dropdown-nav > li > a {
         float: right
     }
 
-.home-cosmatics .count-cart:after {
+.home-cosmatics .count-cart .after {
     background-color: #c0b07d
 }
 
-.home-furniture .count-cart:after {
+.home-furniture .count-cart .after {
     background-color: #ef1e1e
 }
 
@@ -2984,20 +2984,12 @@ ul.dropdown-nav > li > a {
     content: '\f387'
 }
 
-.count-cart.random:after {
-    content: '0'
-}
-
-.count-cart.heart:after {
-    content: '0'
-}
-
 .home-9 .count-cart {
     display: inline-flex;
     margin-left: 10px
 }
 
-    .home-9 .count-cart:after {
+    .home-9 .count-cart .after {
         left: 16px;
         background: #fff;
         color: #253237
@@ -3011,7 +3003,7 @@ ul.dropdown-nav > li > a {
     left: 16px
 }
 
-.home-10 .count-cart:after {
+.home-10 .count-cart .after {
     color: #fff;
     background-color: #0090f0
 }
@@ -3020,7 +3012,7 @@ ul.dropdown-nav > li > a {
     color: #fff
 }
 
-.home-furniture .home-14 .count-cart:after {
+.home-furniture .home-14 .count-cart .after {
     background-color: #ef1e1e
 }
 
@@ -3028,7 +3020,7 @@ ul.dropdown-nav > li > a {
     color: #fff
 }
 
-.home-medical.home-19 .count-cart:after {
+.home-medical.home-19 .count-cart .after {
     background: #fff !important;
     color: #253237 !important
 }
@@ -3095,15 +3087,15 @@ ul.dropdown-nav > li > a {
 }
 
 .home-electronic .phone:before {
-    background-image: url(img/icon_contact.png)
+    background-image: url(images/icon_contact.png)
 }
 
 .home-19 .phone:before {
-    background-image: url(img/icon_contact.png)
+    background-image: url(images/icon_contact.png)
 }
 
 .home-furniture .phone:before {
-    background-image: url(img/icon_contact.png)
+    background-image: url(images/icon_contact.png)
 }
 
 .home-11.home-electronic .phone:before {
@@ -5913,21 +5905,22 @@ a.read-more-btn i {
     margin-top: 0;
     line-height: 22px
 }
+
     .sidebar-widget .sidebar-widget-list ul li label:hover {
         color: #4fb68d;
     }
 
-    .sidebar-widget .sidebar-widget-list ul li .sidebar-widget-list-left .checkmark {
-        position: absolute;
-        top: 5px;
-        left: 0;
-        height: 15px;
-        width: 15px;
-        background-color: #fff;
-        border: 1px solid #dfdfdf;
-        border-radius: 3px;
-        transition: all 300ms linear
-    }
+.sidebar-widget .sidebar-widget-list ul li .sidebar-widget-list-left .checkmark {
+    position: absolute;
+    top: 5px;
+    left: 0;
+    height: 15px;
+    width: 15px;
+    background-color: #fff;
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+    transition: all 300ms linear
+}
 
 .sidebar-widget .sidebar-widget-list ul li:hover a {
     color: #4fb68d
@@ -6364,11 +6357,9 @@ a.read-more-btn i {
 
 .mini-cart-content {
     margin: 0;
-    width: 350px;
     top: 50px;
     left: auto;
     right: 0;
-    position: absolute;
     opacity: 0;
     visibility: hidden;
     z-index: 1001;
@@ -6496,7 +6487,8 @@ a.read-more-btn i {
 .single-shopping-cart {
     padding: 30px 0;
     border-bottom: 1px solid #ebebeb;
-    overflow: hidden
+    overflow: hidden;
+    position: relative;
 }
 
 .shopping-cart-total h4 {
@@ -9178,15 +9170,18 @@ span.title {
 .text-underline {
     text-decoration: underline !important
 }
+
 .ajax_load_btn:hover {
     border: 1px solid #ccc;
 }
+
 .ajax_load_btn {
     text-align: center;
     margin: 0 0 20px;
     border: 1px solid #f2f2f2;
     cursor: pointer
 }
+
     .ajax_load_btn i {
         color: #ef1e1e;
         font-size: 1.5em;
@@ -9202,6 +9197,86 @@ span.title {
     padding: 15px 0 15px 34px;
     color: #333;
 }
-.text-center{
-    text-align:center;
+
+.text-center {
+    text-align: center;
+}
+
+.purchase {
+    vertical-align: middle;
+    border-top: 1px solid #e8e8e1;
+    padding: 8px;
+}
+
+.purchase_remove,
+.purchase_image {
+    font-size: 0;
+}
+
+    .purchase_image img {
+        max-width: 50px;
+        max-height: 50px;
+    }
+
+    .purchase_remove a {
+        text-decoration: none;
+    }
+
+.purchase_preorder,
+.purchase_sum {
+    color: #F13340;
+}
+
+.remove_icon {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+}
+
+.amount {
+    width: 72px;
+    display: inline-block;
+    vertical-align: middle;
+    border: 1px solid #e1e1e1;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.plus,
+.minus {
+    float: right;
+    width: 22px;
+    height: 20px;
+    text-align: center;
+    cursor: pointer;
+    background: #fff url(images/amount.png) no-repeat 5px 6px;
+}
+
+.minus {
+    background-position: 5px -16px;
+    border-top: 1px solid #ddd;
+}
+
+.plus:hover {
+    background-position: -18px 6px;
+}
+
+.minus:hover {
+    background-position: -18px -16px;
+}
+
+.input_amount {
+    display: block;
+    float: left;
+    font-size: 13px;
+    text-align: center;
+    background-color: #fff;
+    border-top: none;
+    border-bottom: none;
+    border-left: none;
+    border-right: 1px solid #ddd;
+    padding: 0;
+    margin: 0;
+    height: 40px;
+    width: 48px;
 }

@@ -38,7 +38,7 @@ function deleteCookie(name) {
 function CalculateCartSum(sellerId) {
     var wrap = $(".order-wrap[data-seller-id=" + sellerId + "]");
     var userDiscount = parseFloat(wrap.attr("data-seller-userdiscount"));
-    var products = wrap.find("tr.basket_modal_table_row.product").map(function () {
+    var products = wrap.find(".basket_modal_table_row.product").map(function () {
         var actualPrice = parseFloat($(this).find(".actual-product-price").text());
         var oldPrice = parseFloat($(this).attr("data-original-price"));
         var amount = parseFloat($(this).find(".quantity").val());
@@ -217,7 +217,7 @@ $(function () {
     $('body').on('click focusout', '.basket_modal .plus, .basket_modal .minus, .basket_modal .quantity', function () {
         var completeOrderBtn = $(this).parents(".order-wrap").find(".save-order");
         completeOrderBtn.attr("disabled", "disabled");
-        var tr = $(this).parents("tr");
+        var tr = $(this).parents("tr, li");
         var productId = tr.attr("data-product-id");
         var sellerId = tr.attr("data-seller-id");
         var productAmount = $(this).parent().children('.quantity');
