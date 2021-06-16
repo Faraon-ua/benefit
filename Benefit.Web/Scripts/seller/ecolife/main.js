@@ -3,7 +3,40 @@
     "use strict";
     /*--document ready functions--*/
     jQuery(document).ready(function ($) {
+        //catalog menu workaround
         $(".mega-menu-wrap").css("min-height", $(".vertical-menu-wrap").height());
+        //dynamic cart workaround
+        $(".cart-btn").click(function () {
+            var parent = $(this).parents(".product-item");
+            var id = parent.attr("id");
+            var sellerId = parent.attr("data-seller-id");
+            var url = parent.find(".js-product-url").attr("href");
+            var name = parent.find(".js-product-name").text();
+            var price = parseFloat(parent.find(".js-product-price").text());
+            var imageUrl = parent.find(".js-product-image").attr("src");
+            if ($(".mini-cart-content ul li[data-product-id=" + id + "]").length > 0) {
+                var q = $(".mini-cart-content ul li[data-product-id=" + id + "]").find(".product-quantity").text();
+                var qInt = parseInt(q);
+                $(".mini-cart-content ul li[data-product-id=" + id + "]").find(".product-quantity").text((qInt + 1) + "x");
+            }
+            else {
+                $(".mini-cart-content ul").append(`
+                    <li class="single-shopping-cart basket_modal_table_row" data-product-id="`+ id + `" data-seller-id="` + sellerId + `">
+                            <div class="shopping-cart-img">
+                                <a href="`+ url + `">
+                                    <img alt="" src="`+ imageUrl + `"></a>
+                                    <span class="product-quantity">1x</span>
+                             </div>
+                            <div class="shopping-cart-title">
+                                <h4><a href="`+ url + `">` + name + `</a></h4>
+                                <span>`+ price + ` грн</span>
+                                <div class="shopping-cart-delete delete_product" data-product-id="`+ id + `">
+                                    <a href="#"><i class="ion-android-cancel"></i></a>
+                                </div>
+                            </div>
+                    </li>`);
+            }
+        });
 
         /*---------------------
             Nice Select
@@ -13,9 +46,19 @@
         /*---------------------
             Cart Dropdown 
         --------------------- */
-        var iconCart = $('.mini-cart-warp');
+        var iconCart = $('.mini-cart-warp a');
         iconCart.on('click', function () {
-            $('.mini-cart-content').toggleClass('cart-visible');
+            var cart = $(this).next(".mini-cart-content");
+            if (cart.find("ul li").length > 0) {
+                cart.toggleClass('cart-visible');
+            }
+            else {
+                cart.load(cartUrl,
+                    function (data) {
+                        debugger;
+                        cart.toggleClass('cart-visible');
+                    });
+            }
         });
         /*---------------------
             Toggle Search Bar

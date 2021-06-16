@@ -17,23 +17,23 @@
     }
 }
 
-<div class="@className products_item product-item" id="@Model.Id">
+<div class="@className products_item product-item" id="@Model.Id" data-seller-id="@Model.SellerId">
     <article class="list-product">
         <div class="img-block">
-            <a href="@productDetailsUrl" class="thumbnail">
+            <a href="@productDetailsUrl" class="thumbnail js-product-url">
                 @if (Model.DefaultImage == null)
                 {
-                    <img class="first-img width-100" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
+                    <img class="first-img width-100 js-product-image" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
                 }
                 else
                 {
                     if (Model.DefaultImage.IsAbsoluteUrl)
                     {
-                        <img class="first-img width-100" src="@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
+                        <img class="first-img width-100 js-product-image" src="@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
                     }
                     else
                     {
-                        <img class="first-img width-100" src="~/Images/ProductGallery/@Model.Id/@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
+                        <img class="first-img width-100 js-product-image" src="~/Images/ProductGallery/@Model.Id/@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
                     }
                 }
             </a>
@@ -48,7 +48,7 @@
             </ul>*@
         <div class="product-decs">
             @*<a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>*@
-            <h2><a href="@productDetailsUrl" class="product-link">@Model.Name</a></h2>
+            <h2><a href="@productDetailsUrl" class="product-link js-product-name">@Model.Name</a></h2>
             @*<div class="rating-product">
                     <i class="ion-android-star"></i>
                     <i class="ion-android-star"></i>
@@ -62,7 +62,7 @@
                     {
                         <li class="old-price fn_old_price">@Model.OldPrice.Value.ToString("F") грн</li>
                     }
-                    <li class="current-price fn_price">@Model.Price.ToString("F")<span> грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span></li>
+                    <li class="current-price fn_price js-product-price">@Model.Price.ToString("F")<span> грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span></li>
                     @if (Model.OldPrice.HasValue)
                     {
                         var perc = (int)(100 - Model.Price * 100 / Model.OldPrice.Value);

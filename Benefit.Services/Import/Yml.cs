@@ -252,6 +252,7 @@ namespace Benefit.Services.Import
                         Price = double.Parse(xmlProduct.Element("price").Value, CultureInfo.InvariantCulture),
                         OldPrice = oldPrice,
                         CurrencyId = currencies.First(entry => entry.Name == currencyId).Id,
+
                         AvailabilityState = xmlProduct.Attribute("available").Value == "true"
                             ? ProductAvailabilityState.Available
                             : ProductAvailabilityState.NotInStock,

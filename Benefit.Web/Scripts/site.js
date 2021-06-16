@@ -294,7 +294,7 @@ $(function () {
     var deleteProductFromCartUrl = routePrefix + '/Cart/RemoveProduct';
     $('body').on('click', '.delete_product', function (e) {
         e.preventDefault();
-        var sellerId = $(this).parents("tr").attr("data-seller-id");
+        var sellerId = $(this).parents("tr, li").attr("data-seller-id");
         var parentRow = $(this).parents('.basket_modal_table_row');
         if (parentRow.hasClass("product")) {
             var productOptions = parentRow.nextUntil(".product");

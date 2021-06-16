@@ -1,0 +1,45 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Web.Helpers
+@model List<Benefit.Domain.Models.OrderVM>
+
+<ul>
+    @foreach (var product in Model.First().OrderProducts)
+    {
+        var productUrl = Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", product.ProductUrlName, product.ProductSku) });
+        var hasWholesale = product.WholesaleProductPrice.HasValue && product.WholesaleFrom.HasValue;
+        var showWholesale = hasWholesale && product.Amount >= product.WholesaleFrom.Value;
+        var productOptionsSum = product.OrderProductOptions.Sum(entry => entry.ProductOptionPriceGrowth * entry.Amount);
+        var oldProductSum = product.ProductPrice * product.Amount;
+        var actualProductSum = (showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice) * product.Amount;
+        <li class="single-shopping-cart basket_modal_table_row product purchase_tr" data-product-id="@product.ProductId" data-seller-id="@product.SellerId" data-original-price="@product.ProductPrice" data-available-amount="@product.AvailableAmount" data-wholesale-price="@product.WholesaleProductPrice.GetValueOrDefault(product.ProductPrice)" data-wholesale-from="@product.WholesaleFrom.GetValueOrDefault(0)">
+            <div class="shopping-cart-img">
+                <a href="@productUrl">
+                    @if (product.ProductImageUrl != null)
+                    {
+                        if (product.ProductImageUrl.Contains("http"))
+                        {
+                            <img src="@product.ProductImageUrl">
+                        }
+                        else
+                        {
+                            <img src="~/Images/ProductGallery/@product.ProductId/@product.ProductImageUrl">
+                        }
+                    }
+                    else
+                    {
+                        <img src="~/Images/ProductGallery/default_product_thumbnail.png">
+                    }
+            </div>
+            <div class="shopping-cart-title">
+                <h4><a href="@productUrl">@product.ProductName</a></h4>
+                <span class="actual-product-price">@((showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice).ToString("F")) грн</span>
+                <div class="shopping-cart-delete delete_product" data-product-id="@product.ProductId">
+                    <a href="#"><i class="ion-android-cancel"></i></a>
+                </div>
+            </div>
+        </li>
+    }
+</ul>
+<div class="shopping-cart-btn text-center">
+    <a class="default-btn" href="@Url.Action("order", "cart", new { id=Model.First().SellerId })">Оформити замовлення</a>
+</div>

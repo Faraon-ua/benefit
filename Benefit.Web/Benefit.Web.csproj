@@ -1641,6 +1641,7 @@
     <Content Include="Views\SellerArea\EcolifeFurniture\_EcoReviewFormPartial.cshtml" />
     <Content Include="Views\SellerArea\EcolifeFurniture\_ProductFilters.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\_ProductFilters.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_CartPartial.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

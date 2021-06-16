@@ -45,6 +45,7 @@
     <link rel="stylesheet" href="~/Content/seller/ecolife/responsive.min.css">
     <script>
         var reloadOnProductAdd = false;
+        var cartUrl = '@Url.Action("GetCart", "Cart", new { area = string.Empty })';
     </script>
     @RenderSection("styles", false)
 </head>
@@ -130,10 +131,23 @@
                                         <span class="after favorites-number">0</span>
                                     </a>
                                     <div class="mini-cart-warp">
-                                        <a href="@Url.Action("order", "cart", new { id=seller.Id })" class="count-cart">
+                                        <a href="#" class="count-cart">
                                             <span class="after cart-items-number">0</span>
                                             <span id="cart-items-price">порожній</span>
                                         </a>
+                                        <div class="mini-cart-content" style="width: 350px;position: absolute;">
+                                            <ul>
+                                            </ul>
+                                            @*<div class="shopping-cart-total">
+                                                <h4>Subtotal : <span>$20.00</span></h4>
+                                                <h4>Shipping : <span>$7.00</span></h4>
+                                                <h4>Taxes : <span>$0.00</span></h4>
+                                                <h4 class="shop-total">Total : <span>$27.00</span></h4>
+                                            </div>*@
+                                            <div class="shopping-cart-btn text-center">
+                                                <a class="default-btn" href="@Url.Action("order", "cart", new { id=seller.Id })">Оформити замовлення</a>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <!--Cart info End -->
@@ -274,41 +288,9 @@
                                         <a href="#" class="count-cart"><span>$20.00</span></a>
                                         <div class="mini-cart-content">
                                             <ul>
-                                                <li class="single-shopping-cart">
-                                                    <div class="shopping-cart-img">
-                                                        <a href="single-product.html"><img alt="" src="assets/images/product-image/mini-cart/1.jpg" /></a>
-                                                        <span class="product-quantity">1x</span>
-                                                    </div>
-                                                    <div class="shopping-cart-title">
-                                                        <h4><a href="single-product.html">Juicy Couture...</a></h4>
-                                                        <span>$9.00</span>
-                                                        <div class="shopping-cart-delete">
-                                                            <a href="#"><i class="ion-android-cancel"></i></a>
-                                                        </div>
-                                                    </div>
-                                                </li>
-                                                <li class="single-shopping-cart">
-                                                    <div class="shopping-cart-img">
-                                                        <a href="single-product.html"><img alt="" src="assets/images/product-image/mini-cart/2.jpg" /></a>
-                                                        <span class="product-quantity">1x</span>
-                                                    </div>
-                                                    <div class="shopping-cart-title">
-                                                        <h4><a href="single-product.html">Water and Wind...</a></h4>
-                                                        <span>$11.00</span>
-                                                        <div class="shopping-cart-delete">
-                                                            <a href="#"><i class="ion-android-cancel"></i></a>
-                                                        </div>
-                                                    </div>
-                                                </li>
                                             </ul>
-                                            <div class="shopping-cart-total">
-                                                <h4>Subtotal : <span>$20.00</span></h4>
-                                                <h4>Shipping : <span>$7.00</span></h4>
-                                                <h4>Taxes : <span>$0.00</span></h4>
-                                                <h4 class="shop-total">Total : <span>$27.00</span></h4>
-                                            </div>
                                             <div class="shopping-cart-btn text-center">
-                                                <a class="default-btn" href="checkout.html">checkout</a>
+                                                <a class="default-btn" href="@Url.Action("order", "cart", new { id = seller.Id })">Оформити замовлення</a>
                                             </div>
                                         </div>
                                     </div>
