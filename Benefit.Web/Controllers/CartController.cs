@@ -357,18 +357,25 @@ namespace Benefit.Web.Controllers
             var domainSeller = ViewBag.Seller as Seller;
             if (domainSeller != null)
             {
-                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
-                    SellerEcommerceTemplate.MegaShop)
-                {
-                    return View("~/views/sellerarea/megashop/cart.cshtml", vm);
-                }
+                var layoutName = string.Format("~/Views/SellerArea/{0}/Cart.cshtml",
+                    domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(layoutName, vm);
             }
             return View(vm);
         }
 
+        [FetchSeller]
         public ActionResult GetCart()
         {
             var cart = Cart.CurrentInstance.Orders;
+            var domainSeller = ViewBag.Seller as Seller;
+            if (domainSeller != null)
+            {
+                cart = cart.Where(entry => entry.SellerId == domainSeller.Id).ToList();
+                var layoutName = string.Format("~/Views/SellerArea/{0}/_CartPartial.cshtml",
+                    domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return PartialView(layoutName, cart);
+            }
             return PartialView("_CartPartial", cart);
         }
     }

@@ -174,11 +174,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Url має бути заповнено";
                     return RedirectToAction("Index");
                 }
-                if (db.ExportImports.Any(entry => entry.FileUrl == exportImport.FileUrl && entry.Id != exportImport.Id))
-                {
-                    TempData["ErrorMessage"] = "Такий файл вже зареєстровано";
-                    return RedirectToAction("Index");
-                }
                 else
                 {
                     var import = db.ExportImports.Find(exportImport.Id);
