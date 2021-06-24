@@ -55,7 +55,6 @@
             else {
                 cart.load(cartUrl,
                     function (data) {
-                        debugger;
                         cart.toggleClass('cart-visible');
                     });
             }
