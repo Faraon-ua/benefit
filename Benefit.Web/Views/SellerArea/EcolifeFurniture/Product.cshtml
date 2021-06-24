@@ -48,9 +48,10 @@
 @section scripts
 {
     <script src="~/Scripts/jquery.mask.min.js"></script>
+    @* fancybox *@
+    <script src="~/Scripts/seller/megashop/fancybox.js"></script>
     <script src="~/Scripts/common.js"></script>
     <script src="~/Scripts/bootstrap.min.js"></script>
-    <script src="~/Scripts/seller/megashop/jquery-ui.js"></script>
     <script type="text/javascript" src="~/@Html.IncludeVersionedFile("Scripts/v3/products.js")" defer></script>
     <script>
         var addToCartUrl = '@Url.Action("AddProduct", "Cart", new {sellerId = Model.Product.SellerId})';
@@ -59,6 +60,12 @@
         var addToFavoritesUrl = '@Html.Raw(Url.Action("AddToFavorites", "Tovar", new { returnUrl = Request.Url.PathAndQuery}))';
         var removeFromFavoritesUrl = '@Url.Action("RemoveFromFavorites", "Tovar")';
         $(function () {
+            $('[data-fancybox]').fancybox({
+                image: {
+                    protect: true
+                }
+            });
+
             $(".add-product-options").click(function () {
                 $("#product_modal").modal("show");
                 if ($(this).hasClass("mobile")) {
@@ -190,9 +197,7 @@
     </script>
 }
 @section styles{
-    <link href="~/Content/seller/css/jquery.fancybox.min.css" rel="stylesheet" />
     <link href="~/Content/seller/megashop/jquery.css" rel="stylesheet" />
-    <link href="~/Content/css/bootstrap.modal.css" rel="stylesheet" />
 }
 <!-- микроразметка -->
 <div class="catalog_detail detail" itemscope itemtype="http://schema.org/Product">
@@ -229,8 +234,138 @@
 </div>
 <!-- микроразметка -->
 
-<div class="col-md-8 col-xl-9 content">
-    @Html.Partial("~/views/sellerarea/Megashop/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+@Html.Partial("~/views/sellerarea/ecolifefurniture/_BreadcrumbsPartial.cshtml", Model.Breadcrumbs)
+<section class="product-details-area mt-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="product_image">
+                    @if (image_src == null)
+                    {
+                        <img class="fn_img product_img" itemprop="image" src="~/Images/ProductGallery/default_product_picture.png" alt="@Model.Product.AltText" title="@Model.Product.Title">
+                    }
+                    else
+                    {
+                        if (image_src.IsAbsoluteUrl)
+                        {
+                            <a href="@img_src" data-fancybox="group" data-caption="@Model.Product.Name">
+                                <img class="fn_img product_img" itemprop="image" src="@img_src" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="~/Images/ProductGallery/@Model.Product.Id/@img_src" data-fancybox="group" data-caption="@Model.Product.Name">
+                                <img class="fn_img product_img" itemprop="image" src="~/Images/ProductGallery/@Model.Product.Id/@img_src" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
+                            </a>
+                        }
+                    }
+                </div>
+                @if (Model.Product.Images.Count > 1)
+                {
+                    <div class="fn_images images clearfix">
+                        @foreach (var img in Model.Product.Images.OrderBy(entry => entry.Order).Skip(1))
+                        {
+                            <div class="images_item">
+                                @if (img.IsAbsoluteUrl)
+                                {
+                                    <a class="images_link" href="@img.ImageUrl" data-fancybox="group" data-caption="@Model.Product.Name">
+                                        <img src="@img.ImageUrl" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a class="images_link" href="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" data-fancybox="group" data-caption="@Model.Product.Name">
+                                        <img src="~/Images/ProductGallery/@Model.Product.Id/@img.ImageUrl" alt="Фото @Model.Product.Name" title="Купить @Model.Product.Name" />
+                                    </a>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            <div class="col-xl-6 col-lg-6 col-md-12">
+                <div class="product-details-content">
+                    <h2 itemprop="name">@Model.Product.Name</h2>
+                    <p class="reference">Код товару:<span> @Model.Product.SKU</span></p>
+                    <div class="pro-details-rating-wrap">
+                        @if (Model.Product.AvarageRating.HasValue)
+                        {
+                            <div class="rating-product">
+                                @for (var i = 0; i < Model.Product.AvarageRating.Value; i++)
+                                {
+                                    <i class="ion-android-star"></i>
+                                }
+                            </div>
+                            <span class="read-review"><a class="reviews" href="#">Читати відгуки (@Model.Product.ReviewsCount)</a></span>
+                        }
+                    </div>
+                    <div class="pricing-meta">
+                        <ul>
+                            @if (Model.Product.OldPrice.HasValue)
+                            {
+                                <li class="old-price">
+                                    @Model.Product.Price.ToString("F")
+                                    <span>грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                                </li>
+                            }
+                            <li class="old-price not-cut" itemprop="price" content="@Model.Product.Price">
+                                @Model.Product.Price.ToString("F")
+                                <span itemprop="priceCurrency" content="UAH">грн/@(@Model.Product.IsWeightProduct ? "кг" : "шт")</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <p itemprop="description">
+                        @Html.Raw(Model.Product.Description)
+                    </p>
+                    <div class="pro-details-list">
+                        <ul>
+                        </ul>
+                    </div>
+                    <div class="pro-details-quality mt-0px">
+                        <div class="cart-plus-minus">
+                            <div class="dec qtybutton">-</div>
+                            <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1">
+                            <div class="inc qtybutton">+</div>
+                        </div>
+                        <div class="pro-details-cart btn-hover">
+                            <a href="#"> + Купити</a>
+                        </div>
+                    </div>
+                    <div class="pro-details-wish-com">
+                        <div class="pro-details-wishlist">
+                            <a href="#"><i class="ion-android-favorite-outline"></i>Add to wishlist</a>
+                        </div>
+                        <div class="pro-details-compare">
+                            <a href="#"><i class="ion-ios-shuffle-strong"></i>Add to compare</a>
+                        </div>
+                    </div>
+                    <div class="pro-details-social-info">
+                        <span>Share</span>
+                        <div class="social-info">
+                            <ul>
+                                <li>
+                                    <a href="#"><i class="ion-social-facebook"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="ion-social-twitter"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="ion-social-google"></i></a>
+                                </li>
+                                <li>
+                                    <a href="#"><i class="ion-social-instagram"></i></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!--<div class="col-md-8 col-xl-9 content">
     <div class="fn_ajax_content">
         <div class="block padding">
             <div class="fn_product product product_info_wrap">
@@ -288,60 +423,59 @@
                         <div class="product_details">
                             <div class="row">
                                 <div class="col-sm-6">
-                                    @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel() { IsActive = false, Rating = Model.Product.AvarageRating, SmallStars = true })
-                                    @*<div id="product_22" class="product_rating">
-                                            <span class="details_label" data-language="product_rating">Рейтинг:</span>
-                                            <span class="rating_starOff" style="cursor: pointer;">
-                                                <span class="rating_starOn" style="width: 0px; cursor: pointer;"></span>
-                                            </span>
-                                            <span class="rating_text"></span>
-                                            <span class="hidden">(0.0)</span>
-                                        </div>*@
-                                </div>
+                                    @Html.Partial("_StarsRatingPartial", new ReviewStarsViewModel() { IsActive = false, Rating = Model.Product.AvarageRating, SmallStars = true })-->
+@*<div id="product_22" class="product_rating">
+        <span class="details_label" data-language="product_rating">Рейтинг:</span>
+        <span class="rating_starOff" style="cursor: pointer;">
+            <span class="rating_starOn" style="width: 0px; cursor: pointer;"></span>
+        </span>
+        <span class="rating_text"></span>
+        <span class="hidden">(0.0)</span>
+    </div>*@
+<!--</div>
 
 
-                                <div class="available col-sm-6">
-                                    <span class="details_label" data-language="available">Наявність:</span>
+    <div class="available col-sm-6">
+        <span class="details_label" data-language="available">Наявність:</span>
 
-                                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
-                                    {
-                                        <span class="in_stock" data-language="product_in_stock">В наявності</span>
-                                    }
-                                    else
-                                    {
-                                        <span class="no_stock" data-language="product_out_of_stock">Немає</span>
-                                    }
-                                </div>
-                            </div>
+        @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+        {
+            <span class="in_stock" data-language="product_in_stock">В наявності</span>
+        }
+        else
+        {
+            <span class="no_stock" data-language="product_out_of_stock">Немає</span>
+        }
+    </div>
+</div>
 
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
-                                    {
-                                        <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" style="display: none;" data-product-id="@Model.Product.Id">
-                                            <i class="wish_icon"></i>
-                                        </a>
+<div class="row">
+    <div class="col-sm-6">
+        @if (User.Identity.IsAuthenticated && Model.Product.Favorites.Any(entry => entry.UserId == User.Identity.GetUserId()))
+        {
+            <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" style="display: none;" data-product-id="@Model.Product.Id">
+                <i class="wish_icon"></i>
+            </a>
 
-                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" data-product-id="@Model.Product.Id">
-                                            <i class="no_stock" style="top: -12px;"></i>
-                                        </a>
-                                    }
-                                    else
-                                    {
-                                        <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" data-product-id="@Model.Product.Id">
-                                            <i class="wish_icon"></i>
-                                        </a>
+            <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" data-product-id="@Model.Product.Id">
+                <i class="no_stock" style="top: -12px;"></i>
+            </a>
+        }
+        else
+        {
+            <a href="#" class="product_wish add-to-favorites fn_wishlist product_wish" title="Додати до улюблених" data-product-id="@Model.Product.Id">
+                <i class="wish_icon"></i>
+            </a>
 
-                                        <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" style="display: none;" data-product-id="@Model.Product.Id">
-                                            <i class="no_stock" style="top: -12px;"></i>
-                                        </a>
-                                    }
-                                </div>
-
-                                @*<div class="col-sm-6">
-                                        <a class="fn_comparison product_compare" href="#" data-id="22" title="В сравнение" data-result-text="Из сравнения" data-language="product_add_comparison"><i class="compare_icon"></i></a>
-                                    </div>*@
-                            </div>
+            <a href="#" class="product_wish remove-from-favorites" title="Видалити із улюблених" style="display: none;" data-product-id="@Model.Product.Id">
+                <i class="no_stock" style="top: -12px;"></i>
+            </a>
+        }
+    </div>-->
+@*<div class="col-sm-6">
+        <a class="fn_comparison product_compare" href="#" data-id="22" title="В сравнение" data-result-text="Из сравнения" data-language="product_add_comparison"><i class="compare_icon"></i></a>
+    </div>*@
+<!--</div>
 
                             <div class="row">
                                 <div class="col-sm-6">
@@ -506,7 +640,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>-->
 <div class="modal-container"></div>
 <div id="product-purchase-wrap">
     @Html.Partial("~/Views/Tovar/_PurchaseRegion.cshtml", new Dictionary<string, string>() { { "0", string.Empty } })

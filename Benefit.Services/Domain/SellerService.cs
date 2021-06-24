@@ -266,11 +266,10 @@ namespace Benefit.Services.Domain
         {
             using (var db = new ApplicationDbContext())
             {
-                var seller =
-                db.Sellers
-                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.Products))
-                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory.Products))
+                var seller = db.Sellers
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.Products))
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                    .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory.Products))
                     .FirstOrDefault(entry => entry.UrlName == sellerUrl);
                 var all = new List<Category>();
                 var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any() || entry.MappedCategories.Any()).ToList();

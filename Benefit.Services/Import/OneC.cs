@@ -182,9 +182,13 @@ namespace Benefit.Services.Import
             db.InsertIntoMembers(productsToAddList);
             db.SaveChanges();
             db.InsertIntoMembers(imagesToAddList);
-            foreach(var product in affectedProducts)
+            foreach (var product in affectedProducts)
             {
-                product.DefaultImageId = imagesToAddList.FirstOrDefault(entry => entry.ProductId == product.Id && entry.Order == 0).Id;
+                var img = imagesToAddList.FirstOrDefault(entry => entry.ProductId == product.Id && entry.Order == 0);
+                if (img != null)
+                {
+                    product.DefaultImageId = img.Id;
+                }
             }
             foreach (var image in imagesToAddList)
             {

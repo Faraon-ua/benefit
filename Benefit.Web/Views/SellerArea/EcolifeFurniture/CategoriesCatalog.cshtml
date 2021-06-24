@@ -15,13 +15,13 @@
 
 <div class="container">
     <div class="fn_ajax_content">
-        <h1 class="h2">
+        <h1 class="h4 mt-2">
             <span data-page="8">
                 @Model.Category.Name
             </span>
         </h1>
 
-        <div class="category-slider-2 owl-carousel owl-nav-style-3">
+        <div class="d-flex categories-wrap flex-wrap">
             <!-- Single item -->
             @foreach (var cat in Model.Items)
             {
@@ -36,7 +36,10 @@
                             <div class="name_categories">
                                 <h4>@cat.Name</h4>
                             </div>
-                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })">До покупок<i class="ion-android-arrow-dropright-circle"></i></a>
+                            @if (!cat.ChildCategories.Any())
+                            {
+                                <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })">До покупок<i class="ion-android-arrow-dropright-circle"></i></a>
+                            }
                         </div>
                     </div>
                 </div>

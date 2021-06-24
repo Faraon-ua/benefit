@@ -4190,19 +4190,21 @@ a.quick_view:hover {
     -o-transition: all 300ms linear;
     transition: all 300ms linear
 }
-    .product-decs h2{
+
+    .product-decs h2 {
         height: 53px;
+        overflow: hidden;
     }
 
-    .product-link {
-        line-height: 18px;
-        display: block;
-        margin-bottom: 10px;
-        font-weight: 700;
-        color: #253237;
-        font-size: 14px;
-        text-transform: capitalize
-    }
+.product-link {
+    line-height: 18px;
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 700;
+    color: #253237;
+    font-size: 14px;
+    text-transform: capitalize
+}
 
     .product-link:hover {
         color: #4fb68d
@@ -4447,14 +4449,7 @@ a.quick_view:hover {
 }
 
 .desc-listcategoreis {
-    position: absolute;
-    left: 40px;
-    top: 50%;
-    -moz-transform: translateY(-50%);
-    -webkit-transform: translateY(-50%);
-    -o-transform: translateY(-50%);
-    -ms-transform: translateY(-50%);
-    transform: translateY(-50%)
+    margin-top: 5px;
 }
 
 .category-list {
@@ -4465,9 +4460,10 @@ a.quick_view:hover {
 .desc-listcategoreis .name_categories h4 {
     font-size: 18px;
     font-weight: 600;
-    text-transform: capitalize;
     margin-bottom: 12px;
-    line-height: 1
+    line-height: 1;
+    height: 36px;
+    overflow: hidden;
 }
 
 .desc-listcategoreis .number_product {
@@ -4550,6 +4546,12 @@ a.quick_view:hover {
     border-radius: 5px;
     margin-bottom: 20px;
     height: 287px;
+}
+
+.category-thumb {
+    border: 1px solid #dedede;
+    border-radius: 6px;
+    margin-bottom: 8px;
 }
 
 .category-slider-2 .desc-listcategoreis .name_categories h4 {
@@ -9284,4 +9286,24 @@ span.title {
     margin: 0;
     height: 40px;
     width: 48px;
+}
+
+.categories-wrap .category-item {
+    width: 210px;
+    margin-right: 20px;
+    margin-top: 20px;
+}
+
+.product_image {
+    position: relative;
+    border: 1px solid #e5e5e5;
+    text-align: center;
+    height: 290px;
+    margin-bottom: 25px;
+}
+.product_img {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    max-height: 100%;
 }
