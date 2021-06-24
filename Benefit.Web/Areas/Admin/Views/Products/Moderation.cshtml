@@ -310,6 +310,12 @@
                 </a>
             </li>
             <li>
+                <a href="#moderation" data-toggle="tab">
+                    <i class="icon-check-sign green bigger-110"></i>
+                    Модерація
+                </a>
+            </li>
+            <li>
                 <a href="#images" data-toggle="tab">
                     <i class="red icon-camera bigger-110"></i>
                     Зображення
@@ -332,6 +338,16 @@
         <div class="tab-content">
             <div class="tab-pane in active" id="home">
                 @Html.Partial("_ModerationProductForm")
+            </div>
+            <div class="tab-pane" id="moderation">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Коментарій модерування (250 символів)</label>
+                        <div class="col-md-9">
+                            @Html.TextAreaFor(m => m.Comment, new { @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="tab-pane" id="parameters">
                 @Html.Partial("_ProductParameters")
