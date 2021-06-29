@@ -49,9 +49,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                 entry =>
                                     entry.SellerId == seller.Id && entry.OrderType == OrderType.BenefitSite &&
                                     entry.OrderStatusStamps.FirstOrDefault(
-                                        stamp => stamp.OrderStatus == OrderStatus.Finished).Time >= startDate &&
+                                        stamp => stamp.Status == (int)OrderStatus.Finished).Time >= startDate &&
                                     entry.OrderStatusStamps.FirstOrDefault(
-                                        stamp => stamp.OrderStatus == OrderStatus.Finished).Time <= endDate)
+                                        stamp => stamp.Status == (int)OrderStatus.Finished).Time <= endDate)
                                 .Select(entry => entry.Sum)
                                 .DefaultIfEmpty(0)
                                 .Sum(),
@@ -61,9 +61,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                     entry.SellerId == seller.Id && entry.OrderType == OrderType.BenefitSite &&
                                     entry.PaymentType != PaymentType.Bonuses &&
                                     entry.OrderStatusStamps.FirstOrDefault(
-                                        stamp => stamp.OrderStatus == OrderStatus.Finished).Time >= startDate &&
+                                        stamp => stamp.Status == (int)OrderStatus.Finished).Time >= startDate &&
                                     entry.OrderStatusStamps.FirstOrDefault(
-                                        stamp => stamp.OrderStatus == OrderStatus.Finished).Time <= endDate)
+                                        stamp => stamp.Status == (int)OrderStatus.Finished).Time <= endDate)
                                 .Select(entry => entry.Sum)
                                 .DefaultIfEmpty(0)
                                 .Sum(),
@@ -82,9 +82,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                     && entry.PaymentType == PaymentType.Bonuses
                                     && entry.OrderType == OrderType.BenefitSite
                                     && entry.OrderStatusStamps.FirstOrDefault(
-                                        stamp => stamp.OrderStatus == OrderStatus.Finished).Time >= startDate &&
+                                        stamp => stamp.Status == (int)OrderStatus.Finished).Time >= startDate &&
                                     entry.OrderStatusStamps.FirstOrDefault(
-                                        stamp => stamp.OrderStatus == OrderStatus.Finished).Time <= endDate)
+                                        stamp => stamp.Status == (int)OrderStatus.Finished).Time <= endDate)
                                 .SelectMany(entry => entry.Transactions.Where(tr => tr.Type == TransactionType.BonusesOrderPayment || tr.Type == TransactionType.OrderRefund).Select(tr => tr.Bonuses))
                                 .DefaultIfEmpty(0)
                                 .Sum()),

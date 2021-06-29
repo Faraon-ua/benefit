@@ -236,7 +236,7 @@ namespace Benefit.Domain.Models
         public string LastModifiedBy { get; set; }
         public virtual ICollection<Transaction> Transactions { get; set; }
         public virtual ICollection<OrderProduct> OrderProducts { get; set; }
-        public virtual ICollection<OrderStatusStamp> OrderStatusStamps { get; set; }
+        public virtual ICollection<StatusStamp> OrderStatusStamps { get; set; }
 
         [NotMapped]
         public Transaction BonusPaymentTransaction

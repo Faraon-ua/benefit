@@ -166,6 +166,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Promotion> Promotions { get; set; }
         public virtual ICollection<Favorite> Favorites { get; set; }
         public virtual ICollection<ExportProduct> ExportProducts { get; set; }
+        public virtual ICollection<StatusStamp> StatusStamps { get; set; }
 
         [NotMapped]
         public int SearchRank { get; set; }

@@ -134,8 +134,8 @@ namespace Benefit.Services.Admin
                                                     entry.UserId == partner.Id &&
                                                     promotionSellersWithReferalBusinessLevel.Contains(entry.SellerId) &&
                                                     entry.Status == OrderStatus.Finished &&
-                                                    entry.OrderStatusStamps.FirstOrDefault(stamp => stamp.OrderStatus == OrderStatus.Finished).Time > firstDayOfLastMonth &&
-                                                    entry.OrderStatusStamps.FirstOrDefault(stamp => stamp.OrderStatus == OrderStatus.Finished).Time < lastDayOfLastMonth)
+                                                    entry.OrderStatusStamps.FirstOrDefault(stamp => stamp.Status == (int)OrderStatus.Finished).Time > firstDayOfLastMonth &&
+                                                    entry.OrderStatusStamps.FirstOrDefault(stamp => stamp.Status == (int)OrderStatus.Finished).Time < lastDayOfLastMonth)
                                                 .Select(entry => entry.PointsSum)
                                                 .DefaultIfEmpty(0)
                                                 .Sum();

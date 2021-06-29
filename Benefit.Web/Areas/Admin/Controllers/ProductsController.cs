@@ -21,6 +21,8 @@ using System.Web.Mvc.Html;
 using Benefit.Common.Extensions;
 using System.IO;
 using Benefit.DataTransfer.ViewModels.Admin;
+using Benefit.Domain;
+using System.Web;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -212,6 +214,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                               .Include(entry => entry.Category.MappedParentCategory.ProductParameters)
                               .Include(entry => entry.Currency)
                               .Include(entry => entry.Reviews)
+                              .Include(entry => entry.StatusStamps)
                               .FirstOrDefault(entry => entry.Id == id) ??
                           new Product()
                           {
@@ -322,6 +325,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             dbProduct.DefaultImageId = imagesService.AddProductDefaultImage(image, format);
                         }
                     }
+                    var stamp = new StatusStamp
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProductId = product.Id,
+                        Time = DateTime.UtcNow,
+                        Status = (int)ModerationStatus.ToCheck,
+                        UpdatedBy = Request.Cookies[RouteConstants.FullNameCookieName].Value
+                    };
+                    db.StatusStamps.Add(stamp);
                     db.SaveChanges();
                     TempData["SuccessMessage"] = "Товар відмодеровано";
                     return RedirectToAction("CreateOrUpdate", new { id = product.Id });
@@ -416,9 +428,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                     product.LastModified = DateTime.UtcNow;
                     product.LastModifiedBy = User.Identity.Name;
-                    if (db.Products.Any(entry => entry.Id == product.Id))
+                    var existingProduct = db.Products.AsNoTracking().FirstOrDefault(entry=>entry.Id == product.Id);
+                    if (existingProduct!=null)
                     {
                         db.Entry(product).State = EntityState.Modified;
+                        if (product.ModerationStatus != existingProduct.ModerationStatus)
+                        {
+                            var stamp = new StatusStamp
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ProductId = product.Id,
+                                Time = DateTime.UtcNow,
+                                Status = (int)product.ModerationStatus,
+                                Comment = product.Comment,
+                                UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                            };
+                            db.StatusStamps.Add(stamp);
+                        }
                     }
                     else
                     {
