@@ -1128,25 +1128,13 @@
         $(".category-toggle").click(function () {
             $(".category-menu").slideToggle("slow");
         });
-        $(".menu-item-has-children-1").click(function () {
-            $(".category-mega-menu-1").slideToggle("slow");
-        });
-        $(".menu-item-has-children-2").click(function () {
-            $(".category-mega-menu-2").slideToggle("slow");
-        });
-        $(".menu-item-has-children-3").click(function () {
-            $(".category-mega-menu-3").slideToggle("slow");
-        });
-        $(".menu-item-has-children-4").click(function () {
-            $(".category-mega-menu-4").slideToggle("slow");
-        });
-        $(".menu-item-has-children-5").click(function () {
-            $(".category-mega-menu-5").slideToggle("slow");
-        });
-        $(".menu-item-has-children-6").click(function () {
-            $(".category-mega-menu-6").slideToggle("slow");
-        });
-
+        for (var i = 0; i < 100; i++) {
+            $(".menu-item-has-children-" + i).click(function (e) {
+                e.stopPropagation();
+                var number = $(this).attr("class").substr($(this).attr("class").length - 1, 1);
+                $(".category-mega-menu-" + number).slideToggle("slow");
+            });
+        }
 
         /*---------------------
             Countdown

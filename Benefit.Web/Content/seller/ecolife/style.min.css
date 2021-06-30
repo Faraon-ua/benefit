@@ -1366,8 +1366,7 @@ li.menu-dropdown.position-static:hover .sub-menu.sub-menu-2 {
     }
 
         .category-mega-menu > li > a {
-            padding: 10px 25px 10px 35px;
-            line-height: 30px;
+            padding: 5px 25px;
             font-size: 14px;
             font-weight: 400;
             color: #253237;

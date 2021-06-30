@@ -331,7 +331,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         ProductId = product.Id,
                         Time = DateTime.UtcNow,
                         Status = (int)ModerationStatus.ToCheck,
-                        UpdatedBy = Request.Cookies[RouteConstants.FullNameCookieName].Value
+                        UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
                     };
                     db.StatusStamps.Add(stamp);
                     db.SaveChanges();

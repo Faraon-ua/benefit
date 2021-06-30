@@ -139,11 +139,11 @@
                                             <ul>
                                             </ul>
                                             @*<div class="shopping-cart-total">
-                                                <h4>Subtotal : <span>$20.00</span></h4>
-                                                <h4>Shipping : <span>$7.00</span></h4>
-                                                <h4>Taxes : <span>$0.00</span></h4>
-                                                <h4 class="shop-total">Total : <span>$27.00</span></h4>
-                                            </div>*@
+                                                    <h4>Subtotal : <span>$20.00</span></h4>
+                                                    <h4>Shipping : <span>$7.00</span></h4>
+                                                    <h4>Taxes : <span>$0.00</span></h4>
+                                                    <h4 class="shop-total">Total : <span>$27.00</span></h4>
+                                                </div>*@
                                             <div class="shopping-cart-btn text-center">
                                                 <a class="default-btn" href="@Url.Action("order", "cart", new { id=seller.Id })">Оформити замовлення</a>
                                             </div>
@@ -253,7 +253,12 @@
                         <!-- Logo Start -->
                         <div class="col-md-2 col-sm-2">
                             <div class="logo">
-                                <a href="index.html"><img src="assets/images/logo/logo-electronic.jpg" alt="" /></a>
+                                <a href="~">
+                                    @if (sellerLogo != null)
+                                    {
+                                        <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" />
+                                    }
+                                </a>
                             </div>
                         </div>
                         <!-- Logo End -->
@@ -305,115 +310,43 @@
                             <nav id="mobile-menu-active">
                                 <ul class="menu-overflow">
                                     <li>
-                                        <a href="index.html">HOME</a>
-                                        <ul>
-                                            <li>
-                                                <a href="/">Головна</a>
-                                            </li>
-                                            @if (!string.IsNullOrEmpty(seller.Description))
-                                            {
-                                                <li class="menu_item">
-                                                    <a class="menu_link" href="@Url.Action("about", "home")">Про нас</a>
-                                                </li>
-                                            }
-                                            @if (seller.Images.Any(entry => entry.ImageType == ImageType.SellerGallery))
-                                            {
-                                                <li class="menu_item">
-                                                    <a class="menu_link" href="@Url.Action("gallery", "home")">Фотогалерея</a>
-                                                </li>
-                                            }
-                                            @if (!string.IsNullOrEmpty(seller.ShippingDescription))
-                                            {
-                                                <li class="menu_item">
-                                                    <a class="menu_link" href="@Url.Action("delivery", "home")">Доставка та оплата</a>
-                                                </li>
-                                            }
-                                            <li class="menu_item">
-                                                <a class="menu_link" href="@Url.Action("reviews", "home")">Відгуки</a>
-                                            </li>
-                                            @if (seller.InfoPages.Any(entry => entry.IsNews && entry.IsActive))
-                                            {
-                                                <li class="menu_item">
-                                                    <a class="menu_link" href="@Url.Action("Index", "News")">Новини</a>
-                                                </li>
-                                            }
-                                            <li class="menu_item">
-                                                <a class="menu_link" href="@Url.Action("contacts", "home")">Контакти</a>
-                                            </li>
-                                            <li class="menu_item visible-xs">
-                                                <div id="selectRegionWrap" class="margin-left-10 inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
-                                                    @Html.Partial("_SelectRegionPartial", false)
-                                                </div>
-                                            </li>
-                                        </ul>
+                                        <a href="/">Головна</a>
                                     </li>
-                                    <li>
-                                        <a href="#">Shop</a>
-                                        <ul>
-                                            <li>
-                                                <a href="#">Shop Grid</a>
-                                                <ul>
-                                                    <li><a href="shop-3-column.html">Shop Grid 3 Column</a></li>
-                                                    <li><a href="shop-4-column.html">Shop Grid 4 Column</a></li>
-                                                    <li><a href="shop-left-sidebar.html">Shop Grid Left Sidebar</a></li>
-                                                    <li><a href="shop-right-sidebar.html">Shop Grid Right Sidebar</a></li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Shop List</a>
-                                                <ul>
-                                                    <li><a href="shop-list.html">Shop List</a></li>
-                                                    <li><a href="shop-list-left-sidebar.html">Shop List Left Sidebar</a></li>
-                                                    <li><a href="shop-list-right-sidebar.html">Shop List Right Sidebar</a></li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Single Shop</a>
-                                                <ul>
-                                                    <li><a href="single-product.html">Shop Single</a></li>
-                                                    <li><a href="single-product-variable.html">Shop Variable</a></li>
-                                                    <li><a href="single-product-affiliate.html">Shop Affiliate</a></li>
-                                                    <li><a href="single-product-group.html">Shop Group</a></li>
-                                                    <li><a href="single-product-tabstyle-2.html">Shop Tab 2</a></li>
-                                                    <li><a href="single-product-tabstyle-3.html">Shop Tab 3</a></li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">Single Shop</a>
-                                                <ul>
-                                                    <li><a href="single-product-slider.html">Shop Slider</a></li>
-                                                    <li><a href="single-product-gallery-left.html">Shop Gallery Left</a></li>
-                                                    <li><a href="single-product-gallery-right.html">Shop Gallery Right</a></li>
-                                                    <li><a href="single-product-sticky-left.html">Shop Sticky Left</a></li>
-                                                    <li><a href="single-product-sticky-right.html">Shop Sticky Right</a></li>
-                                                </ul>
-                                            </li>
-                                        </ul>
+                                    @if (!string.IsNullOrEmpty(seller.Description))
+                                    {
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("about", "home")">Про нас</a>
+                                        </li>
+                                    }
+                                    @if (seller.Images.Any(entry => entry.ImageType == ImageType.SellerGallery))
+                                    {
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("gallery", "home")">Фотогалерея</a>
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(seller.ShippingDescription))
+                                    {
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("delivery", "home")">Доставка та оплата</a>
+                                        </li>
+                                    }
+                                    <li class="menu_item">
+                                        <a class="menu_link" href="@Url.Action("reviews", "home")">Відгуки</a>
                                     </li>
-                                    <li>
-                                        <a href="#">Pages</a>
-                                        <ul>
-                                            <li><a href="about.html">About Page</a></li>
-                                            <li><a href="cart.html">Cart Page</a></li>
-                                            <li><a href="checkout.html">Checkout Page</a></li>
-                                            <li><a href="compare.html">Compare Page</a></li>
-                                            <li><a href="login.html">Login & Regiter Page</a></li>
-                                            <li><a href="my-account.html">Account Page</a></li>
-                                            <li><a href="wishlist.html">Wishlist Page</a></li>
-                                        </ul>
+                                    @if (seller.InfoPages.Any(entry => entry.IsNews && entry.IsActive))
+                                    {
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("Index", "News")">Новини</a>
+                                        </li>
+                                    }
+                                    <li class="menu_item">
+                                        <a class="menu_link" href="@Url.Action("contacts", "home")">Контакти</a>
                                     </li>
-                                    <li>
-                                        <a href="#">Blog</a>
-                                        <ul>
-                                            <li><a href="blog-grid-left-sidebar.html">Blog Grid Left Sidebar</a></li>
-                                            <li><a href="blog-grid-right-sidebar.html">Blog Grid Right Sidebar</a></li>
-                                            <li><a href="blog-list-left-sidebar.html">Blog List Left Sidebar</a></li>
-                                            <li><a href="blog-list-right-sidebar.html">Blog List Right Sidebar</a></li>
-                                            <li><a href="blog-single-left-sidebar.html">Blog Single Left Sidebar</a></li>
-                                            <li><a href="blog-single-right-sidebar.html">Blog Single Right Sidebar</a></li>
-                                        </ul>
+                                    <li class="menu_item visible-xs">
+                                        <div id="selectRegionWrap" class="margin-left-10 inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
+                                            @Html.Partial("_SelectRegionPartial", false)
+                                        </div>
                                     </li>
-                                    <li><a href="contact.html">Contact Us</a></li>
                                 </ul>
                             </nav>
                         </div>
@@ -435,75 +368,51 @@
                     <!-- Category Menu -->
                     <nav class="category-menu">
                         <ul>
-                            <li class="menu-item-has-children menu-item-has-children-1">
-                                <a href="#">Furniture <i class="ion-ios-arrow-down"></i></a>
-                                <!-- category submenu -->
-                                <ul class="category-mega-menu category-mega-menu-1">
-                                    <li><a href="#">Home Furniture</a></li>
-                                    <li><a href="#">Office Furniture</a></li>
-                                    <li><a href="#">Outdoor Furniture</a></li>
-                                    <li><a href="#">Top Furniture Stores</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children menu-item-has-children-2">
-                                <a href="#">Household Items<i class="ion-ios-arrow-down"></i></a>
-                                <!-- category submenu -->
-                                <ul class="category-mega-menu category-mega-menu-2">
-                                    <li><a href="#">Umbrellas</a></li>
-                                    <li><a href="#">Bathroom Scales</a></li>
-                                    <li><a href="#">Sweepers & Mops</a></li>
-                                    <li><a href="#">Dust Covers</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children menu-item-has-children-3">
-                                <a href="#">Indoor Lighting <i class="ion-ios-arrow-down"></i></a>
-                                <!-- category submenu -->
-                                <ul class="category-mega-menu category-mega-menu-3">
-                                    <li><a href="#">Ceiling Lights</a></li>
-                                    <li><a href="#">Pendant Lights</a></li>
-                                    <li><a href="#">Downlights</a></li>
-                                    <li><a href="#">Wall Lamps</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children menu-item-has-children-4">
-                                <a href="#">Outdoor Lighting<i class="ion-ios-arrow-down"></i></a>
-                                <!-- category submenu -->
-                                <ul class="category-mega-menu category-mega-menu-4">
-                                    <li><a href="#">Flashlights</a></li>
-                                    <li><a href="#">Solar Lamps</a></li>
-                                    <li><a href="#">Floodlights</a></li>
-                                    <li><a href="#">Underwater Lights</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children menu-item-has-children-5">
-                                <a href="#">Home Decor <i class="ion-ios-arrow-down"></i></a>
-                                <!-- category submenu -->
-                                <ul class="category-mega-menu category-mega-menu-5">
-                                    <li><a href="#">Painting & Calligraphy</a></li>
-                                    <li><a href="#">Wall Stickers</a></li>
-                                    <li><a href="#">Figurines & Miniatures</a></li>
-                                    <li><a href="#">Wall Clocks</a></li>
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children menu-item-has-children-6">
-                                <a href="#">Kitchen <i class="ion-ios-arrow-down"></i></a>
-                                <!-- category submenu -->
-                                <ul class="category-mega-menu category-mega-menu-6">
-                                    <li><a href="#">Bakeware</a></li>
-                                    <li><a href="#">Drinkware</a></li>
-                                    <li><a href="#">Kitchen Tools & Gadgets</a></li>
-                                    <li><a href="#">Kitchen Knives </a></li>
-                                </ul>
-                            </li>
-                            <li><a href="#">Home Furniture</a></li>
-                            <li><a href="#">Office Furniture</a></li>
-                            <li><a href="#">Wall Clocks</a></li>
-                            <li><a href="#">Top Furniture Stores</a></li>
-                            <li><a href="#"> Wall Stickers</a></li>
-                            <li class="hidden"><a href="#">Flashlights</a></li>
-                            <li>
-                                <a href="#" id="more-btn"><i class="ion-ios-plus-empty" aria-hidden="true"></i> More Categories</a>
-                            </li>
+                            @{
+                                var i = 0;
+                            }
+                            @foreach (var cat in categories)
+                            {
+                                <li class="@(cat.ChildCategories.Any()? string.Format("menu-item-has-children menu-item-has-children-{0}", i) : "")">
+                                    <a href="@(cat.ChildCategories.Any()? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty }))">
+                                        @cat.Name
+                                        @if (cat.ChildCategories.Any())
+                                        {
+                                            <i class="ion-ios-arrow-down"></i>
+                                        }
+                                    </a>
+                                    @if (cat.ChildCategories.Any())
+                                    {
+                                        <ul class="category-mega-menu category-mega-menu-@i">
+                                            @{ i++;}
+                                            @foreach (var subCat in cat.ChildCategories)
+                                            {
+                                                <li class="@(subCat.ChildCategories.Any()?string.Format("menu-item-has-children menu-item-has-children-{0}", i) : "")">
+                                                    <a style="display: block; position:relative;" href="@(cat.ChildCategories.Any()? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty }))">
+                                                        @subCat.Name
+                                                        @if (subCat.ChildCategories.Any())
+                                                        {
+                                                            <i class="ion-ios-arrow-down" style="position:absolute; right: 30px;"></i>
+                                                        }
+                                                    </a>
+                                                    @if (subCat.ChildCategories.Any())
+                                                    {
+                                                        <ul class="category-mega-menu category-mega-menu-@i">
+                                                            @{ i++;}
+                                                            @foreach (var childCat in subCat.ChildCategories)
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, options = string.Empty })" data-category="3" title="@childCat.Name">@childCat.Name</a>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
                         </ul>
                     </nav>
                 </div>
