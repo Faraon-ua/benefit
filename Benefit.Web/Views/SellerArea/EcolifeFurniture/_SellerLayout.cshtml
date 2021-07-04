@@ -138,12 +138,6 @@
                                         <div class="mini-cart-content" style="width: 350px;position: absolute;">
                                             <ul>
                                             </ul>
-                                            @*<div class="shopping-cart-total">
-                                                    <h4>Subtotal : <span>$20.00</span></h4>
-                                                    <h4>Shipping : <span>$7.00</span></h4>
-                                                    <h4>Taxes : <span>$0.00</span></h4>
-                                                    <h4 class="shop-total">Total : <span>$27.00</span></h4>
-                                                </div>*@
                                             <div class="shopping-cart-btn text-center">
                                                 <a class="default-btn" href="@Url.Action("order", "cart", new { id=seller.Id })">Оформити замовлення</a>
                                             </div>
@@ -281,8 +275,8 @@
                                 <!--Contact info Start -->
                                 <div class="contact-link">
                                     <div class="phone">
-                                        <p>Call us:</p>
-                                        <a href="tel:(+800)345678">(+800)345678</a>
+                                        <p>Телефон:</p>
+                                        <a href="tel:@seller.OnlineOrdersPhone">@seller.OnlineOrdersPhone</a>
                                     </div>
                                 </div>
                                 <!--Contact info End -->
@@ -290,14 +284,9 @@
                                 <div class="cart-info d-flex">
                                     <a href="wishlist.html" class="count-cart heart d-xs-none"></a>
                                     <div class="mini-cart-warp">
-                                        <a href="#" class="count-cart"><span>$20.00</span></a>
-                                        <div class="mini-cart-content">
-                                            <ul>
-                                            </ul>
-                                            <div class="shopping-cart-btn text-center">
-                                                <a class="default-btn" href="@Url.Action("order", "cart", new { id = seller.Id })">Оформити замовлення</a>
-                                            </div>
-                                        </div>
+                                        <a href="@Url.Action("order", "cart", new { id = seller.Id })" class="count-cart">
+                                            <span class="after cart-items-number">0</span>
+                                        </a>
                                     </div>
                                 </div>
                                 <!--Cart info End -->

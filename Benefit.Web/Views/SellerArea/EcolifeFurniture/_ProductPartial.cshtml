@@ -19,78 +19,84 @@
 
 <div class="@className products_item product-item" id="@Model.Id" data-seller-id="@Model.SellerId">
     <article class="list-product">
-        <div class="img-block">
-            <a href="@productDetailsUrl" class="thumbnail js-product-url">
-                @if (Model.DefaultImage == null)
-                {
-                    <img class="first-img width-100 js-product-image" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
-                }
-                else
-                {
-                    if (Model.DefaultImage.IsAbsoluteUrl)
+        <div class="product-desc-wrap">
+            <div class="img-block">
+                <a href="@productDetailsUrl" class="thumbnail js-product-url">
+                    @if (Model.DefaultImage == null)
                     {
-                        <img class="first-img width-100 js-product-image" src="@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
+                        <img class="first-img js-product-image" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
                     }
                     else
                     {
-                        <img class="first-img width-100 js-product-image" src="~/Images/ProductGallery/@Model.Id/@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
+                        if (Model.DefaultImage.IsAbsoluteUrl)
+                        {
+                            <img class="first-img js-product-image" src="@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
+                        }
+                        else
+                        {
+                            <img class="first-img js-product-image" src="~/Images/ProductGallery/@Model.Id/@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
+                        }
                     }
-                }
-            </a>
-            @*<div class="quick-view">
-                    <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
-                        <i class="ion-ios-search-strong"></i>
-                    </a>
-                </div>*@
-        </div>
-        @*<ul class="product-flag">
-                <li class="new">New</li>
-            </ul>*@
-        <div class="product-decs">
-            @*<a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>*@
-            <h2><a href="@productDetailsUrl" class="product-link js-product-name">@Model.Name</a></h2>
-            @*<div class="rating-product">
-                    <i class="ion-android-star"></i>
-                    <i class="ion-android-star"></i>
-                    <i class="ion-android-star"></i>
-                    <i class="ion-android-star"></i>
-                    <i class="ion-android-star"></i>
-                </div>*@
-            <div class="pricing-meta">
+                </a>
+                @*<div class="quick-view">
+                        <a class="quick_view" href="#" data-link-action="quickview" title="Quick view" data-toggle="modal" data-target="#exampleModal">
+                            <i class="ion-ios-search-strong"></i>
+                        </a>
+                    </div>*@
+            </div>
+            @*<ul class="product-flag">
+                    <li class="new">New</li>
+                </ul>*@
+            <div class="product-decs">
+                @*<a class="inner-link" href="shop-4-column.html"><span>STUDIO DESIGN</span></a>*@
+                <h2><a href="@productDetailsUrl" class="product-link js-product-name">@Model.Name</a></h2>
+                @*<div class="rating-product">
+                        <i class="ion-android-star"></i>
+                        <i class="ion-android-star"></i>
+                        <i class="ion-android-star"></i>
+                        <i class="ion-android-star"></i>
+                        <i class="ion-android-star"></i>
+                    </div>*@
+                <div class="pricing-meta">
+                    <ul>
+                        @if (Model.OldPrice.HasValue)
+                        {
+                            <li class="old-price fn_old_price">@Model.OldPrice.Value.ToString("F") грн</li>
+                        }
+                        <li class="current-price fn_price js-product-price">@Model.Price.ToString("F")<span> грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span></li>
+                        @if (Model.OldPrice.HasValue)
+                        {
+                            var perc = (int)(100 - Model.Price * 100 / Model.OldPrice.Value);
+                            <li class="discount-price">-@perc%</li>
+                        }
+                    </ul>
+                </div>
+            </div>
+            <div class="add-to-link">
                 <ul>
-                    @if (Model.OldPrice.HasValue)
-                    {
-                        <li class="old-price fn_old_price">@Model.OldPrice.Value.ToString("F") грн</li>
-                    }
-                    <li class="current-price fn_price js-product-price">@Model.Price.ToString("F")<span> грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span></li>
-                    @if (Model.OldPrice.HasValue)
-                    {
-                        var perc = (int)(100 - Model.Price * 100 / Model.OldPrice.Value);
-                        <li class="discount-price">-@perc%</li>
-                    }
+                    <li class="cart flex-grow-2">
+                        <a class="cart-btn product_buy" href="#" data-product-id="@Model.Id" data-seller-id="@Model.SellerId" data-is-weight-product="@Model.IsWeightProduct">
+                            <i class="ion-android-cart"></i> Купити
+                        </a>
+                        <div class="counter">
+                            <input type="hidden" class="quantity" value="1" />
+                        </div>
+                    </li>
+                    <li class="flex-grow-1">
+                        <a href="wishlist.html"><i class="ion-android-favorite-outline"></i></a>
+                    </li>
+                    <li class="flex-grow-1">
+                        <a href="compare.html"><i class="ion-ios-shuffle-strong"></i></a>
+                    </li>
                 </ul>
             </div>
         </div>
-        <div class="add-to-link">
-            <ul>
-                <li class="cart flex-grow-2">
-                    <a class="cart-btn product_buy" href="#" data-product-id="@Model.Id" data-seller-id="@Model.SellerId" data-is-weight-product="@Model.IsWeightProduct">
-                        <i class="ion-android-cart"></i> Купити
-                    </a>
-                    <div class="counter">
-                        <input type="hidden" class="quantity" value="1" />
-                    </div>
-                </li>
-                <li class="flex-grow-1">
-                    <a href="wishlist.html"><i class="ion-android-favorite-outline"></i></a>
-                </li>
-                <li class="flex-grow-1">
-                    <a href="compare.html"><i class="ion-ios-shuffle-strong"></i></a>
-                </li>
-            </ul>
-        </div>
     </article>
 </div>
+
+
+
+
 
 
 
