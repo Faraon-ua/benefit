@@ -240,10 +240,11 @@ namespace Benefit.Web.Controllers
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {
-                if (seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
-                    SellerEcommerceTemplate.MegaShop)
+                if (seller != null)
                 {
-                    return View("~/views/sellerarea/megashop/OrderCompleted.cshtml", model: number);
+                    var layoutName = string.Format("~/Views/SellerArea/{0}/OrderCompleted.cshtml",
+                        seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                    return View(layoutName, model: number);
                 }
             }
             return View(model: number);
@@ -256,8 +257,12 @@ namespace Benefit.Web.Controllers
         {
             var order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
             completeOrder.Order = AutoMapper.Mapper.Map<Order>(order);
-            var user = UserService.GetUser(User.Identity.GetUserId() ?? completeOrder.UserId);
             ModelState.Remove("Order.UserId");
+            var user = UserService.GetUser(User.Identity.GetUserId() ?? completeOrder.UserId);
+            if(user == null)
+            {
+                ModelState.AddModelError("User", "Будь ласка увійдіть або зареєструйтесь");
+            }
             if (completeOrder.Order == null)
             {
                 throw new HttpException(404, "Not found");

@@ -138,6 +138,7 @@
                         ($("#shippingAddresses").css('display') === 'none' ||
                             ($("#shippingAddresses").css('display') === 'block' &&
                                 $("#shippingAddresses input:hasValue").length > 0))) {
+                        $("#save-order").data("validation", "true");
                         $("#save-order span").removeClass("btn-secondary");
                         $("#save-order span").addClass("btn-default");
                     }
@@ -145,7 +146,7 @@
 
             $("#save-order").click(function() {
                 var btn = $(this);
-                if (btn.find("span").hasClass("btn-secondary")) {
+                if (btn.data("validation") == false) {
                     flashMessage("Будь ласка заповніть всі поля", 0);
                     $('html,body').animate({ scrollTop: 0 }, 'fast');
                     return;
@@ -504,7 +505,7 @@
                 @*<h5 style="margin: 15px; padding-bottom: 10px; text-align: right;">Всього: 1 000,00 грн.</h5>*@
                 @Html.Partial("_PaymentSummary", Model)
             </div>
-            <div class="button_block col-sm-3 col-md-3 display-block-xs" id="save-order" style="text-align: center; float: none; padding: 0;">
+            <div class="button_block col-sm-3 col-md-3 display-block-xs" id="save-order" data-validation="false" style="text-align: center; float: none; padding: 0;">
                 <span class="btn btn-secondary bold height-50px" style="font-size: 17px; line-height: 2em;">
                     Оформити замовлення
                 </span>

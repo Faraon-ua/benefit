@@ -171,7 +171,7 @@ $(function () {
 
     setTimeout(function () {
         $("#flashMessage").html("");
-    }, 10000);
+    }, 15000);
 
 
     $("body").on('focus', '.urlName', function () {
@@ -237,7 +237,7 @@ function flashMessage(text, alertStatus, alwaysStayVisible) {
     if (!alwaysStayVisible) {
         setTimeout(function () {
             $("#flashMessage").html("");
-        }, 7000);
+        }, 15000);
     }
 }
 
