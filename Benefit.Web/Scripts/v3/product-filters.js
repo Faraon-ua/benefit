@@ -394,6 +394,7 @@ $(function () {
                     else {
                         pageUrl = options;
                     }
+
                     history.pushState("history", "options" + options, pageUrl);
                     if (isSellers) {
                         location.href = location.href;

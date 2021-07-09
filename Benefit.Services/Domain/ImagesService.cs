@@ -143,7 +143,7 @@ namespace Benefit.Services
                     break;
                 case ImageType.ProductDefault:
                     maxWidth = 290;
-                    maxHeight = 184;
+                    maxHeight = 238;
                     break;
                 case ImageType.Banner:
                     if (bannerType == BannerType.FirstRowMainPage || bannerType == BannerType.FirstRowMainPage)

@@ -6160,8 +6160,8 @@ a.read-more-btn i {
 }
 
 .select-shoing-wrap {
-    flex: 0 0 40%;
-    max-width: 40%;
+    flex: 0 0 60%;
+    max-width: 60%;
     display: -webkit-flex;
     display: -moz-flex;
     display: -ms-flex;
@@ -9427,4 +9427,26 @@ textarea {
 
 .x-rating_theme_bigl .x-rating__bar {
     background: #f55832
+}
+.badge {
+    font-weight: 700;
+    line-height: 1;
+    vertical-align: baseline;
+    white-space: nowrap;
+    text-align: center;
+}
+.badge {
+    display: inline-block;
+    min-width: 10px;
+    padding: 7px;
+    font-size: 12px;
+    color: #fff;
+    background-color: #999;
+    border-radius: 10px;
+}
+.sort_header .sort_filter a {
+    display: table-cell;
+    text-decoration: none;
+    color: #a5a3a3;
+    vertical-align: middle;
 }
