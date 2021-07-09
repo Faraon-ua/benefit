@@ -112,7 +112,7 @@
                     @foreach (var stamp in Model.OrderStatusStamps.OrderBy(entry => entry.Time))
                     {
                         <div>
-                            @stamp.Time.ToLocalDateTimeWithFormat() @Enumerations.GetEnumDescription(stamp.OrderStatus) @stamp.UpdatedBy
+                            @stamp.Time.ToLocalDateTimeWithFormat() @Enumerations.GetEnumDescription((OrderStatus)stamp.Status) @stamp.UpdatedBy
                             @if (!string.IsNullOrEmpty(stamp.Comment))
                             {
                                 <span>

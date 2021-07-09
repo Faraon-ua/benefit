@@ -28,8 +28,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
         public ActionResult GenerateSitemap()
         {
             var siteMapHelper = new SiteMapHelper();
-            var count = siteMapHelper.Generate(Url, Request.Url.Scheme + "://" + Request.Url.Host, true, (ViewBag.Seller as Seller));
-            TempData["SuccessMessage"] = "Файл sitemap.xml згенеровано. Кількість лінків: " + count;
+            siteMapHelper.Generate(Url, Request.Url.Scheme + "://" + Request.Url.Host, true, (ViewBag.Seller as Seller));
+            TempData["SuccessMessage"] = "Файл sitemap.xml згенеровано";
             return RedirectToAction("Index");
         }
 

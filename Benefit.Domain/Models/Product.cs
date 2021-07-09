@@ -166,6 +166,7 @@ namespace Benefit.Domain.Models
         public virtual ICollection<Promotion> Promotions { get; set; }
         public virtual ICollection<Favorite> Favorites { get; set; }
         public virtual ICollection<ExportProduct> ExportProducts { get; set; }
+        public virtual ICollection<StatusStamp> StatusStamps { get; set; }
 
         [NotMapped]
         public int SearchRank { get; set; }
@@ -219,6 +220,8 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public int ReviewsCount { get; set; }
         [NotMapped]
-        public bool IsFavorite { get; set; }
+        public bool IsFavorite { get; set; } 
+        [NotMapped]
+        public bool IsPromotion { get; set; }
     }
 }

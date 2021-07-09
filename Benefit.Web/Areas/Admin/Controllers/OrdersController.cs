@@ -322,16 +322,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                var statusStamp = new OrderStatusStamp()
+                var statusStamp = new StatusStamp()
                 {
                     Id = Guid.NewGuid().ToString(),
                     OrderId = orderId,
-                    OrderStatus = status,
+                    Status = (int)status,
                     Time = DateTime.UtcNow,
                     Comment = comment,
                     UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
                 };
-                db.OrderStatusStamps.Add(statusStamp);
+                db.StatusStamps.Add(statusStamp);
                 db.SaveChanges();
                 var rozetkaService = new RozetkaApiService();
                 var order = db.Orders.Include(entry => entry.OrderStatusStamps).FirstOrDefault(entry => entry.Id == orderId);
@@ -370,16 +370,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             order.ShippingAddress = delieveryAddress;
                         }
 
-                        var statusStamp = new OrderStatusStamp()
+                        var statusStamp = new StatusStamp()
                         {
                             Id = Guid.NewGuid().ToString(),
                             OrderId = orderId,
-                            OrderStatus = orderStatus,
+                            Status = (int)orderStatus,
                             Time = DateTime.UtcNow,
                             Comment = statusComment,
                             UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
                         };
-                        db.OrderStatusStamps.Add(statusStamp);
+                        db.StatusStamps.Add(statusStamp);
 
 
                         if (orderStatus == OrderStatus.Abandoned)

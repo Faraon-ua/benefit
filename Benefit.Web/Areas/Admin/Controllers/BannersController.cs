@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
+using Benefit.Web.Helpers;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -17,7 +18,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
         {
             using (var db = new ApplicationDbContext())
             {
-                return View(db.Banners.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId).OrderBy(entry => entry.Order).ToList());
+                var banners = db.Banners.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId).OrderBy(entry => entry.Order).ToList();
+                return View(banners);
             }
         }
 
@@ -43,6 +45,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var banner = db.Banners.Find(id) ?? new Banner() { Id = Guid.NewGuid().ToString(), Order = order ?? default(int), SellerId = Seller.CurrentAuthorizedSellerId };
+                var bannerTypes = new Banner().BannerType.ToSelectList();
+                if (Seller.CurrentAuthorizedSellerId != null)
+                {
+                    bannerTypes = new SelectList(bannerTypes.Items.OfType<SelectListItem>()
+                        .Where(entry=>entry.Value == BannerType.PrimaryMainPage.ToString() || entry.Value == BannerType.SideTopMainPage.ToString()).ToList(),
+                        "Value", "Text", banner.BannerType.ToString());
+                }
+                ViewBag.BannerType = bannerTypes;
                 return View(banner);
             }
         }
@@ -91,6 +101,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.SaveChanges();
                     return RedirectToAction("Index");
                 }
+                var bannerTypes = new Banner().BannerType.ToSelectList();
+                if (Seller.CurrentAuthorizedSellerId != null)
+                {
+                    bannerTypes = new SelectList(bannerTypes.Take(2));
+                }
+                ViewBag.BannerType = bannerTypes;
                 return View(banner);
             }
         }

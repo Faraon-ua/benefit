@@ -16,7 +16,8 @@ namespace Benefit.Domain.Models
     public enum SellerEcommerceTemplate
     {
         Default,
-        MegaShop
+        MegaShop,
+        EcolifeFurniture
     }
 
     public class Seller : BaseDomainModel
@@ -193,35 +194,14 @@ namespace Benefit.Domain.Models
         public virtual ICollection<PaymentBill> PaymentBills { get; set; }
 
         [NotMapped]
+        public ICollection<Category> FeaturedCategories { get; set; } 
+        [NotMapped]
         public ICollection<Product> FeaturedProducts { get; set; }
         [NotMapped]
         public ICollection<Product> PromotionProducts { get; set; }
         [NotMapped]
         public ICollection<Product> NewProducts { get; set; }
 
-        [NotMapped]
-        public virtual string Specialization
-        {
-            get
-            {
-                if (SellerCategories == null)
-                {
-                    return null;
-                }
-
-                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault) == null)
-                {
-                    return null;
-                }
-
-                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category == null)
-                {
-                    return null;
-                }
-
-                return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.Name;
-            }
-        } 
         [NotMapped]
         public virtual string LogoUrl
         {
@@ -233,30 +213,6 @@ namespace Benefit.Domain.Models
                     return logo == null ? string.Empty : logo.ImageUrl;
                 }
                 return null;
-            }
-        }
-
-        [NotMapped]
-        public virtual string SpecializationUrl
-        {
-            get
-            {
-                if (SellerCategories == null)
-                {
-                    return null;
-                }
-
-                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault) == null)
-                {
-                    return null;
-                }
-
-                if (SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category == null)
-                {
-                    return null;
-                }
-
-                return SellerCategories.FirstOrDefault(entry => entry.IsDefault).Category.UrlName;
             }
         }
 

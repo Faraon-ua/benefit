@@ -114,8 +114,8 @@ namespace Benefit.Web.Controllers
         public ActionResult GenerateSiteMap()
         {
             var siteMapHelper = new SiteMapHelper();
-            var count = siteMapHelper.Generate(Url, Request.Url.Scheme + "://" + Request.Url.Host);
-            return Content(count.ToString());
+            siteMapHelper.Generate(Url, Request.Url.Scheme + "://" + Request.Url.Host);
+            return Content("Ok");
         }
     }
 }

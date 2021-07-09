@@ -1,0 +1,571 @@
+﻿@using Benefit.Common.Constants
+@using Benefit.Domain.Models
+@using Benefit.Web.Helpers
+@{
+    var seller = ViewBag.Seller as Seller;
+    var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+    var sellerFavicon = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerFavicon);
+    var categories = ViewBag.Categories as List<CategoryVM>;
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>@ViewBag.Title @seller.Title</title>
+    @if (!string.IsNullOrEmpty(seller.GoogleSiteVerificationToken))
+    {
+        <meta name="google-site-verification" content="@seller.GoogleSiteVerificationToken" />
+    }
+    @RenderSection("meta", false)
+
+    <link rel="shortcut icon" href="~/Images/SellerFavicon/@(sellerFavicon == null ? "" : sellerFavicon.ImageUrl)">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i,800&display=swap" rel="stylesheet" />
+
+    <!-- All CSS Flies   -->
+    <!--===== Vendor CSS (Bootstrap & Icon Font) =====-->
+    <!-- <link rel="stylesheet" href="assets/css/plugins/bootstrap.min.css" />
+    <link rel="stylesheet" href="assets/css/plugins/font-awesome.min.css" />
+    <link rel="stylesheet" href="assets/css/plugins/ionicons.min.css" /> -->
+    <!--===== Plugins CSS (All Plugins Files) =====-->
+    <!-- <link rel="stylesheet" href="assets/css/plugins/jquery-ui.min.css" />
+    <link rel="stylesheet" href="assets/css/plugins/meanmenu.css" />
+    <link rel="stylesheet" href="assets/css/plugins/nice-select.css" />
+    <link rel="stylesheet" href="assets/css/plugins/owl-carousel.css" />
+    <link rel="stylesheet" href="assets/css/plugins/slick.css" /> -->
+    <!--===== Main Css Files =====-->
+    <!-- <link rel="stylesheet" href="assets/css/style.css" /> -->
+    <!-- ===== Responsive Css Files ===== -->
+    <!-- <link rel="stylesheet" href="assets/css/responsive.css" /> -->
+    <!--====== Use the minified version files listed below for better performance and remove the files listed above ======-->
+
+    <link rel="stylesheet" href="~/Content/seller/ecolife/plugins.min.css">
+    <link rel="stylesheet" href="~/Content/seller/ecolife/style.min.css">
+    <link rel="stylesheet" href="~/Content/seller/ecolife/responsive.min.css">
+    <script>
+        var reloadOnProductAdd = false;
+        var cartUrl = '@Url.Action("GetCart", "Cart", new { area = string.Empty })';
+    </script>
+    @RenderSection("styles", false)
+</head>
+
+<body class="home-5 home-6 home-8 home-9 home-furniture">
+    <!-- main layout start from here -->
+    <!--====== PRELOADER PART START ======-->
+    <!-- <div id="preloader">
+        <div class="preloader">
+            <span></span>
+            <span></span>
+        </div>
+    </div> -->
+    <!--====== PRELOADER PART ENDS ======-->
+    <div id="main">
+        <!-- Header Start -->
+        <header class="main-header home-10 home-14 responsive">
+            <!-- Header Buttom Start -->
+            <div class="header-navigation d-none d-lg-block sticky-nav">
+                <div class="container">
+                    <div class="row">
+                        <!-- Logo Start -->
+                        <a class="col-md-2 col-sm-2" href="/">
+                            <div class="logo">
+                                @if (sellerLogo != null)
+                                {
+                                    <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" style="width: 100%;" />
+                                }
+                            </div>
+                        </a>
+                        <!-- Logo End -->
+                        <div class="col-md-10 col-sm-10">
+                            <!--Header Bottom Account Start -->
+                            <div class="header_account_area">
+                                <!--Main Navigation Start -->
+                                <div class="main-navigation d-none d-lg-block">
+                                    <ul>
+                                        <li>
+                                            <a href="/">Головна</a>
+                                        </li>
+                                        @if (!string.IsNullOrEmpty(seller.Description))
+                                        {
+                                            <li class="menu_item">
+                                                <a class="menu_link" href="@Url.Action("about", "home")">Про нас</a>
+                                            </li>
+                                        }
+                                        @if (seller.Images.Any(entry => entry.ImageType == ImageType.SellerGallery))
+                                        {
+                                            <li class="menu_item">
+                                                <a class="menu_link" href="@Url.Action("gallery", "home")">Фотогалерея</a>
+                                            </li>
+                                        }
+                                        @if (!string.IsNullOrEmpty(seller.ShippingDescription))
+                                        {
+                                            <li class="menu_item">
+                                                <a class="menu_link" href="@Url.Action("delivery", "home")">Доставка та оплата</a>
+                                            </li>
+                                        }
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("reviews", "home")">Відгуки</a>
+                                        </li>
+                                        @if (seller.InfoPages.Any(entry => entry.IsNews && entry.IsActive))
+                                        {
+                                            <li class="menu_item">
+                                                <a class="menu_link" href="@Url.Action("Index", "News")">Новини</a>
+                                            </li>
+                                        }
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("contacts", "home")">Контакти</a>
+                                        </li>
+                                        <li class="menu_item visible-xs">
+                                            <div id="selectRegionWrap" class="margin-left-10 inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
+                                                @Html.Partial("_SelectRegionPartial", false)
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <!--Main Navigation End -->
+                                <!--Cart info Start -->
+                                <div class="cart-info d-flex">
+                                    <a href="@Url.Action("Index","Panel", new {area = "Cabinet"})" class="far fa-user mr-2 cart-zone" style="font-size:25px;"></a>
+                                    <a href="@Url.Action("favorites", "tovar")" class="count-cart heart">
+                                        <span class="after favorites-number">0</span>
+                                    </a>
+                                    <div class="mini-cart-warp">
+                                        <a href="#" class="count-cart">
+                                            <span class="after cart-items-number">0</span>
+                                            <span id="cart-items-price">порожній</span>
+                                        </a>
+                                        <div class="mini-cart-content" style="width: 350px;position: absolute;">
+                                            <ul>
+                                            </ul>
+                                            <div class="shopping-cart-btn text-center">
+                                                <a class="default-btn" href="@Url.Action("order", "cart", new { id=seller.Id })">Оформити замовлення</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--Cart info End -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Header Bottom Account End -->
+            <!-- Menu Content Start -->
+            <div class="header-buttom-nav">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 text-left d-none d-lg-block">
+                            <div class="d-flex align-items-start justify-content-start">
+                                <!-- Beauty Category -->
+                                <div class="beauty-category vertical-menu home-9 home-10">
+                                    <h3 class="vertical-menu-heading vertical-menu-toggle">Каталог товарів</h3>
+                                    <ul class="vertical-menu-wrap open-menu-toggle">
+                                        @foreach (var cat in categories)
+                                        {
+                                            <li class="@(cat.ChildCategories.Any()?"menu-dropdown" : "")">
+                                                <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty })" data-category="1">
+                                                    <span>@cat.Name</span>
+                                                    @if (cat.ChildCategories.Any())
+                                                    {
+                                                        <i class="ion-ios-arrow-down"></i>
+                                                    }
+                                                </a>
+                                                @if (cat.ChildCategories.Any())
+                                                {
+                                                    <ul class="mega-menu-wrap">
+                                                        @foreach (var subCat in cat.ChildCategories)
+                                                        {
+                                                            <li>
+                                                                @if (subCat.ChildCategories.Any())
+                                                                {
+                                                                    <ul class="mb-20px">
+                                                                        <li class="mega-menu-title">
+                                                                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty })" data-category="2">
+                                                                                <span>@subCat.Name</span>
+                                                                            </a>
+                                                                        </li>
+                                                                        @foreach (var childCat in subCat.ChildCategories.Take(5))
+                                                                        {
+                                                                            <li>
+                                                                                <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, options = string.Empty })" data-category="3" title="@childCat.Name">@childCat.Name</a>
+                                                                            </li>
+                                                                        }
+                                                                        @if (subCat.ChildCategories.Count() > 5)
+                                                                        {
+                                                                            <li>
+                                                                                <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty })" data-category="3" class="text-underline">Всі <i class="ion-android-arrow-dropdown-circle" style="right:160px;"></i></a>
+                                                                            </li>
+                                                                        }
+                                                                    </ul>
+                                                                }
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                }
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                                <!-- Beauty Category -->
+                                <!--Seach Area Start -->
+                                <div class="header_account_list search_list">
+                                    <a href="javascript:void(0)"><i class="ion-ios-search-strong"></i></a>
+                                    <div class="dropdown_search">
+                                        @using (Html.BeginForm("index", "search", new { area = string.Empty, options = string.Empty }, FormMethod.Get, new { @class = "search-form search", id = "fn-search" }))
+                                        {
+                                            <input class="fn_search search_input search-input" type="text" name="term" value="" placeholder="Пошук товарів" />
+                                            <input type="hidden" name="searchSellerId" value="@seller.Id" />
+                                            <button type="submit"><i class="ion-ios-search-strong"></i></button>
+                                        }
+                                    </div>
+                                </div>
+                                <!--Seach Area End -->
+                                <!--Contact info Start -->
+                                @if (!string.IsNullOrEmpty(seller.OnlineOrdersPhone))
+                                {
+                                    <div class="contact-link-wrap">
+                                        <div class="contact-link">
+                                            <div class="phone">
+                                                <p>Телефон:</p>
+                                                <a href="tel:@seller.OnlineOrdersPhone">@seller.OnlineOrdersPhone</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                <!--Contact info End -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Menu Content End -->
+            <!-- Header Buttom Start -->
+            <div class="header-navigation red-bg sticky-nav d-lg-none">
+                <div class="container position-relative">
+                    <div class="row">
+                        <!-- Logo Start -->
+                        <div class="col-md-2 col-sm-2">
+                            <div class="logo">
+                                <a href="~">
+                                    @if (sellerLogo != null)
+                                    {
+                                        <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" style="max-width: 100%;"/>
+                                    }
+                                </a>
+                            </div>
+                        </div>
+                        <!-- Logo End -->
+                        <!-- Navigation Start -->
+                        <div class="col-md-10 col-sm-10">
+                            <!--Main Navigation End -->
+                            <!--Header Bottom Account Start -->
+                            <div class="header_account_area">
+                                <!--Seach Area Start -->
+                                <div class="header_account_list search_list">
+                                    <a href="javascript:void(0)"><i class="ion-ios-search-strong"></i></a>
+                                    <div class="dropdown_search">
+                                        <form action="#">
+                                            <input placeholder="Пошук ..." type="text" />
+                                            <button type="submit"><i class="ion-ios-search-strong"></i></button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!--Seach Area End -->
+                                <!--Contact info Start -->
+                                <div class="contact-link">
+                                    <div class="phone">
+                                        <p>Телефон:</p>
+                                        <a href="tel:@seller.OnlineOrdersPhone">@seller.OnlineOrdersPhone</a>
+                                    </div>
+                                </div>
+                                <!--Contact info End -->
+                                <!--Cart info Start -->
+                                <div class="cart-info d-flex">
+                                    <a href="wishlist.html" class="count-cart heart d-xs-none"></a>
+                                    <div class="mini-cart-warp">
+                                        <a href="@Url.Action("order", "cart", new { id = seller.Id })" class="count-cart">
+                                            <span class="after cart-items-number">0</span>
+                                        </a>
+                                    </div>
+                                </div>
+                                <!--Cart info End -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- mobile menu -->
+                    <div class="mobile-menu-area">
+                        <div class="mobile-menu">
+                            <nav id="mobile-menu-active">
+                                <ul class="menu-overflow">
+                                    <li>
+                                        <a href="/">Головна</a>
+                                    </li>
+                                    @if (!string.IsNullOrEmpty(seller.Description))
+                                    {
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("about", "home")">Про нас</a>
+                                        </li>
+                                    }
+                                    @if (seller.Images.Any(entry => entry.ImageType == ImageType.SellerGallery))
+                                    {
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("gallery", "home")">Фотогалерея</a>
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(seller.ShippingDescription))
+                                    {
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("delivery", "home")">Доставка та оплата</a>
+                                        </li>
+                                    }
+                                    <li class="menu_item">
+                                        <a class="menu_link" href="@Url.Action("reviews", "home")">Відгуки</a>
+                                    </li>
+                                    @if (seller.InfoPages.Any(entry => entry.IsNews && entry.IsActive))
+                                    {
+                                        <li class="menu_item">
+                                            <a class="menu_link" href="@Url.Action("Index", "News")">Новини</a>
+                                        </li>
+                                    }
+                                    <li class="menu_item">
+                                        <a class="menu_link" href="@Url.Action("contacts", "home")">Контакти</a>
+                                    </li>
+                                    <li class="menu_item visible-xs">
+                                        <div id="selectRegionWrap" class="margin-left-10 inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
+                                            @Html.Partial("_SelectRegionPartial", false)
+                                        </div>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+                    </div>
+                    <!-- mobile menu end-->
+                </div>
+            </div>
+            <!--Header Bottom Account End -->
+            <!-- Beauty Category -->
+            <div class="container d-lg-none">
+                <!--=======  category menu  =======-->
+                <div class="hero-side-category">
+                    <!-- Category Toggle Wrap -->
+                    <div class="category-toggle-wrap">
+                        <!-- Category Toggle -->
+                        <button class="category-toggle"><i class="fa fa-bars"></i> Каталог товарів</button>
+                    </div>
+
+                    <!-- Category Menu -->
+                    <nav class="category-menu">
+                        <ul>
+                            @{
+                                var i = 0;
+                            }
+                            @foreach (var cat in categories)
+                            {
+                                <li class="@(cat.ChildCategories.Any()? string.Format("menu-item-has-children menu-item-has-children-{0}", i) : "")">
+                                    <a href="@(cat.ChildCategories.Any()? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = cat.UrlName, options = string.Empty }))">
+                                        @cat.Name
+                                        @if (cat.ChildCategories.Any())
+                                        {
+                                            <i class="ion-ios-arrow-down"></i>
+                                        }
+                                    </a>
+                                    @if (cat.ChildCategories.Any())
+                                    {
+                                        <ul class="category-mega-menu category-mega-menu-@i">
+                                            @{ i++;}
+                                            @foreach (var subCat in cat.ChildCategories)
+                                            {
+                                                <li class="@(subCat.ChildCategories.Any()?string.Format("menu-item-has-children menu-item-has-children-{0}", i) : "")">
+                                                    <a style="display: block; position:relative;" href="@(cat.ChildCategories.Any()? "#" : Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = subCat.UrlName, options = string.Empty }))">
+                                                        @subCat.Name
+                                                        @if (subCat.ChildCategories.Any())
+                                                        {
+                                                            <i class="ion-ios-arrow-down" style="position:absolute; right: 30px;"></i>
+                                                        }
+                                                    </a>
+                                                    @if (subCat.ChildCategories.Any())
+                                                    {
+                                                        <ul class="category-mega-menu category-mega-menu-@i">
+                                                            @{ i++;}
+                                                            @foreach (var childCat in subCat.ChildCategories)
+                                                            {
+                                                                <li>
+                                                                    <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = childCat.UrlName, options = string.Empty })" data-category="3" title="@childCat.Name">@childCat.Name</a>
+                                                                </li>
+                                                            }
+                                                        </ul>
+                                                    }
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+
+                <!--=======  End of category menu =======-->
+            </div>
+            <!-- Beauty Category -->
+        </header>
+        <!-- Header End -->
+        <!-- Slider Arae Start -->
+        @RenderBody()
+
+        <footer class="footer-area">
+            <div class="footer-bottom">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 text-center mt-5">
+                            <div class="copyright">
+                                <span>© 2018</span>
+                                Сайт створено на маркетплейсі
+                                <a href="https://benefit.ua" target="_blank">
+                                    <span data-language="index_copyright">Benefit</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">x</span></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-5 col-sm-12 col-xs-12">
+                            <div class="tab-content quickview-big-img">
+                                <div id="pro-1" class="tab-pane fade show active">
+                                    <img src="assets/images/product-image/furniture/1.jpg" alt="" />
+                                </div>
+                                <div id="pro-2" class="tab-pane fade">
+                                    <img src="assets/images/product-image/furniture/2.jpg" alt="" />
+                                </div>
+                                <div id="pro-3" class="tab-pane fade">
+                                    <img src="assets/images/product-image/furniture/3.jpg" alt="" />
+                                </div>
+                                <div id="pro-4" class="tab-pane fade">
+                                    <img src="assets/images/product-image/furniture/4.jpg" alt="" />
+                                </div>
+                            </div>
+                            <!-- Thumbnail Large Image End -->
+                            <!-- Thumbnail Image End -->
+                            <div class="quickview-wrap mt-15">
+                                <div class="quickview-slide-active owl-carousel nav owl-nav-style owl-nav-style-2" role="tablist">
+                                    <a class="active" data-toggle="tab" href="#pro-1"><img src="assets/images/product-image/furniture/1.jpg" alt="" /></a>
+                                    <a data-toggle="tab" href="#pro-2"><img src="assets/images/product-image/furniture/2.jpg" alt="" /></a>
+                                    <a data-toggle="tab" href="#pro-3"><img src="assets/images/product-image/furniture/3.jpg" alt="" /></a>
+                                    <a data-toggle="tab" href="#pro-4"><img src="assets/images/product-image/furniture/4.jpg" alt="" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-7 col-sm-12 col-xs-12">
+                            <div class="product-details-content quickview-content">
+                                <h2>Originals Kaval Windbr</h2>
+                                <p class="reference">Reference:<span> demo_17</span></p>
+                                <div class="pro-details-rating-wrap">
+                                    <div class="rating-product">
+                                        <i class="ion-android-star"></i>
+                                        <i class="ion-android-star"></i>
+                                        <i class="ion-android-star"></i>
+                                        <i class="ion-android-star"></i>
+                                        <i class="ion-android-star"></i>
+                                    </div>
+                                    <span class="read-review"><a class="reviews" href="#">Read reviews (1)</a></span>
+                                </div>
+                                <div class="pricing-meta">
+                                    <ul>
+                                        <li class="old-price not-cut">€18.90</li>
+                                    </ul>
+                                </div>
+                                <p>Lorem ipsum dolor sit amet, consectetur adipisic elit eiusm tempor incidid ut labore et dolore magna aliqua. Ut enim ad minim venialo quis nostrud exercitation ullamco</p>
+                                <div class="pro-details-size-color">
+                                    <div class="pro-details-color-wrap">
+                                        <span>Color</span>
+                                        <div class="pro-details-color-content">
+                                            <ul>
+                                                <li class="blue"></li>
+                                                <li class="maroon active"></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="pro-details-quality">
+                                    <div class="cart-plus-minus">
+                                        <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
+                                    </div>
+                                    <div class="pro-details-cart btn-hover">
+                                        <a href="#"> + Add To Cart</a>
+                                    </div>
+                                </div>
+                                <div class="pro-details-wish-com">
+                                    <div class="pro-details-wishlist">
+                                        <a href="#"><i class="ion-android-favorite-outline"></i>Add to wishlist</a>
+                                    </div>
+                                    <div class="pro-details-compare">
+                                        <a href="#"><i class="ion-ios-shuffle-strong"></i>Add to compare</a>
+                                    </div>
+                                </div>
+                                <div class="pro-details-social-info">
+                                    <span>Share</span>
+                                    <div class="social-info">
+                                        <ul>
+                                            <li>
+                                                <a href="#"><i class="ion-social-facebook"></i></a>
+                                            </li>
+                                            <li>
+                                                <a href="#"><i class="ion-social-twitter"></i></a>
+                                            </li>
+                                            <li>
+                                                <a href="#"><i class="ion-social-google"></i></a>
+                                            </li>
+                                            <li>
+                                                <a href="#"><i class="ion-social-instagram"></i></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal end -->
+
+    <script src="~/Scripts/seller/ecolife/jquery-3.5.1.min.js"></script>
+    <script src="~/Scripts/seller/ecolife/modernizr-3.7.1.min.js"></script>
+
+    <!--====== Plugins js ======-->
+    <!-- <script src="assets/js/plugins/bootstrap.min.js"></script>
+    <script src="assets/js/plugins/popper.min.js"></script>
+    <script src="assets/js/plugins/meanmenu.js"></script>
+    <script src="assets/js/plugins/owl-carousel.js"></script>
+    <script src="assets/js/plugins/jquery.nice-select.js"></script>
+    <script src="assets/js/plugins/countdown.js"></script>
+    <script src="assets/js/plugins/elevateZoom.js"></script>
+    <script src="assets/js/plugins/jquery-ui.min.js"></script>
+    <script src="assets/js/plugins/slick.js"></script>
+    <script src="assets/js/plugins/scrollup.js"></script>
+    <script src="assets/js/plugins/range-script.js"></script> -->
+    <!--====== Use the minified version files listed below for better performance and remove the files listed above ======-->
+
+    <script src="~/Scripts/seller/ecolife/plugins.min.js"></script>
+
+    <!-- Main Activation JS -->
+    <script src="~/Scripts/seller/ecolife/main.js"></script>
+    <script src="~/Scripts/essential.js"></script>
+    <script src="~/Scripts/site.js"></script>
+    @RenderSection("scripts", false)
+</body>
+</html>

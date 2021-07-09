@@ -93,14 +93,16 @@ namespace Benefit.Web.Controllers
                 Order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == id)
             };
             var domainSeller = ViewBag.Seller as Seller;
-            var view = View(model);
+            ViewResult view = null;
             if (domainSeller != null)
             {
-                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
-                    SellerEcommerceTemplate.MegaShop)
-                {
-                    view = View("~/views/sellerarea/megashop/cart.cshtml", model);
-                }
+                var layoutName = string.Format("~/Views/SellerArea/{0}/Cart.cshtml",
+                    domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                view = View(layoutName, model);
+            }
+            else
+            {
+                view = View(model);
             }
             if (model.Order == null)
             {
@@ -238,10 +240,11 @@ namespace Benefit.Web.Controllers
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {
-                if (seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
-                    SellerEcommerceTemplate.MegaShop)
+                if (seller != null)
                 {
-                    return View("~/views/sellerarea/megashop/OrderCompleted.cshtml", model: number);
+                    var layoutName = string.Format("~/Views/SellerArea/{0}/OrderCompleted.cshtml",
+                        seller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                    return View(layoutName, model: number);
                 }
             }
             return View(model: number);
@@ -253,9 +256,13 @@ namespace Benefit.Web.Controllers
         public ActionResult Order(CompleteOrder completeOrder)
         {
             var order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
-            completeOrder.Order = AutoMapper.Mapper.Map<Order>(order); 
-            var user = UserService.GetUser(User.Identity.GetUserId() ?? completeOrder.UserId);
+            completeOrder.Order = AutoMapper.Mapper.Map<Order>(order);
             ModelState.Remove("Order.UserId");
+            var user = UserService.GetUser(User.Identity.GetUserId() ?? completeOrder.UserId);
+            if(user == null)
+            {
+                ModelState.AddModelError("User", "Будь ласка увійдіть або зареєструйтесь");
+            }
             if (completeOrder.Order == null)
             {
                 throw new HttpException(404, "Not found");
@@ -355,18 +362,25 @@ namespace Benefit.Web.Controllers
             var domainSeller = ViewBag.Seller as Seller;
             if (domainSeller != null)
             {
-                if (domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default) ==
-                    SellerEcommerceTemplate.MegaShop)
-                {
-                    return View("~/views/sellerarea/megashop/cart.cshtml", vm);
-                }
+                var layoutName = string.Format("~/Views/SellerArea/{0}/Cart.cshtml",
+                    domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return View(layoutName, vm);
             }
             return View(vm);
         }
 
+        [FetchSeller]
         public ActionResult GetCart()
         {
             var cart = Cart.CurrentInstance.Orders;
+            var domainSeller = ViewBag.Seller as Seller;
+            if (domainSeller != null)
+            {
+                cart = cart.Where(entry => entry.SellerId == domainSeller.Id).ToList();
+                var layoutName = string.Format("~/Views/SellerArea/{0}/_CartPartial.cshtml",
+                    domainSeller.EcommerceTemplate.GetValueOrDefault(SellerEcommerceTemplate.Default));
+                return PartialView(layoutName, cart);
+            }
             return PartialView("_CartPartial", cart);
         }
     }

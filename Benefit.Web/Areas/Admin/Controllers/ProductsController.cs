@@ -21,6 +21,8 @@ using System.Web.Mvc.Html;
 using Benefit.Common.Extensions;
 using System.IO;
 using Benefit.DataTransfer.ViewModels.Admin;
+using Benefit.Domain;
+using System.Web;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -128,7 +130,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     var categories = db.Categories.Where(
                         entry =>
-                            entry.SellerCategories.Where(sc => !sc.IsDefault)
+                            entry.SellerCategories
                                 .Select(sc => sc.SellerId)
                                 .Contains(Seller.CurrentAuthorizedSellerId))
                         .ToList();
@@ -186,12 +188,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (!string.IsNullOrEmpty(filters.SellerId) || !string.IsNullOrEmpty(Seller.CurrentAuthorizedSellerId))
                 {
                     var sellerId = Seller.CurrentAuthorizedSellerId ?? filters.SellerId;
-                    productsViewModel.ProductFilters.Moderators = db.Personnels
+                    var moderatorsList = db.Personnels
                     .Where(entry => entry.SellerId == sellerId).ToList().Select(entry => new SelectListItem()
                     {
                         Text = string.Format("{0} {1}", entry.Name, entry.Phone),
                         Value = entry.UserId
                     }).ToList();
+                    moderatorsList.Insert(0, new SelectListItem { Text = "Не назначено", Value = "notassigned" });
+                    productsViewModel.ProductFilters.Moderators = moderatorsList;
                 }
                 return PartialView(productsViewModel);
             }
@@ -208,7 +212,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                               .Include(entry => entry.Category)
                               .Include(entry => entry.Category.ProductParameters)
                               .Include(entry => entry.Category.MappedParentCategory.ProductParameters)
+                              .Include(entry => entry.Currency)
                               .Include(entry => entry.Reviews)
+                              .Include(entry => entry.StatusStamps)
                               .FirstOrDefault(entry => entry.Id == id) ??
                           new Product()
                           {
@@ -241,9 +247,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 return View(product);
             }
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
+
         public ActionResult Moderation(ModerationProduct product)
         {
             using (var db = new ApplicationDbContext())
@@ -317,6 +325,15 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             dbProduct.DefaultImageId = imagesService.AddProductDefaultImage(image, format);
                         }
                     }
+                    var stamp = new StatusStamp
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProductId = product.Id,
+                        Time = DateTime.UtcNow,
+                        Status = (int)ModerationStatus.ToCheck,
+                        UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                    };
+                    db.StatusStamps.Add(stamp);
                     db.SaveChanges();
                     TempData["SuccessMessage"] = "Товар відмодеровано";
                     return RedirectToAction("CreateOrUpdate", new { id = product.Id });
@@ -411,9 +428,23 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                     product.LastModified = DateTime.UtcNow;
                     product.LastModifiedBy = User.Identity.Name;
-                    if (db.Products.Any(entry => entry.Id == product.Id))
+                    var existingProduct = db.Products.AsNoTracking().FirstOrDefault(entry=>entry.Id == product.Id);
+                    if (existingProduct!=null)
                     {
                         db.Entry(product).State = EntityState.Modified;
+                        if (product.ModerationStatus != existingProduct.ModerationStatus)
+                        {
+                            var stamp = new StatusStamp
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                ProductId = product.Id,
+                                Time = DateTime.UtcNow,
+                                Status = (int)product.ModerationStatus,
+                                Comment = product.Comment,
+                                UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                            };
+                            db.StatusStamps.Add(stamp);
+                        }
                     }
                     else
                     {
@@ -719,6 +750,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 IQueryable<Product> products =
                     db.Products
+                        .Include(entry => entry.Currency)
                         .Include(entry => entry.Seller)
                         .Include(entry => entry.Category)
                         .Include(entry => entry.Images)
@@ -748,7 +780,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (!string.IsNullOrEmpty(filters.ModeratorId))
                 {
-                    products = products.Where(entry => entry.ModerationAssigneeId == filters.ModeratorId);
+                    var moderatorId = filters.ModeratorId == "notassigned" ? null : filters.ModeratorId;
+                    products = products.Where(entry => entry.ModerationAssigneeId == moderatorId);
                 }
                 if (!string.IsNullOrEmpty(filters.SellerId))
                 {

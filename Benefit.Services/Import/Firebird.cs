@@ -1,4 +1,5 @@
 ﻿using Benefit.Common.Extensions;
+using Benefit.Domain;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.DataAccess.Firebird;
 using Benefit.Domain.Models;
@@ -121,6 +122,7 @@ namespace Benefit.Services.Import
             var categories = db.Categories
                 .Where(entry => fbCategoryIds.Contains(entry.ExternalIds) && entry.SellerId == sellerId).ToList();
             var productsToAddList = new List<Product>();
+            var statusStampsToAddList = new List<StatusStamp>();
             var categryIds = categories.Select(pr => pr.Id).ToList();
 
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
@@ -155,8 +157,17 @@ namespace Benefit.Services.Import
                     LastModifiedBy = "FirebirdImport",
                     LastModified = DateTime.UtcNow
                 };
+                var statusStamp = new StatusStamp()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    ProductId = product.Id,
+                    Status = (int)ModerationStatus.IsModerating,
+                    Time = DateTime.UtcNow,
+                    UpdatedBy = "FirebirdImport"
+                };
                 lock (lockObj)
                 {
+                    statusStampsToAddList.Add(statusStamp);
                     productsToAddList.Add(product);
                 }
             });
@@ -186,6 +197,7 @@ namespace Benefit.Services.Import
             }
             productsToAddList = productsToAddList.Distinct(new ProductComparer()).ToList();
             db.InsertIntoMembers(productsToAddList);
+            db.InsertIntoMembers(statusStampsToAddList);
             db.SaveChanges();
         }
         private void DeleteFirebirdProducts(List<FirebirdProduct> fbProducts, string sellerId, ApplicationDbContext db)

@@ -188,7 +188,15 @@
 .display-flex{
     display: flex;
 }
-
+.flex-grow-1{
+    flex: 1;
+}
+.flex-grow-2 {
+    flex: 2;
+}
+.flex-grow-3 {
+    flex: 3;
+}
 .position-relative {
     position: relative;
 }
@@ -378,7 +386,7 @@
     padding: 0px !important;
 }
 
-.padding_5 {
+.padding-5 {
     padding: 5px;
 }
 

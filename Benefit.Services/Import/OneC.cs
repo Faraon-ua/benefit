@@ -185,15 +185,12 @@ namespace Benefit.Services.Import
             db.InsertIntoMembers(productsToAddList);
             db.SaveChanges();
             db.InsertIntoMembers(imagesToAddList);
-            foreach(var product in affectedProducts)
+            foreach (var product in affectedProducts)
             {
-                if (product.DefaultImageId == null)
+                var img = imagesToAddList.FirstOrDefault(entry => entry.ProductId == product.Id && entry.Order == 0);
+                if (img != null)
                 {
-                    var img = imagesToAddList.FirstOrDefault(entry => entry.ProductId == product.Id && entry.Order == 0);
-                    if (img != null)
-                    {
-                        product.DefaultImageId = imagesToAddList.FirstOrDefault(entry => entry.ProductId == product.Id && entry.Order == 0).Id;
-                    }
+                    product.DefaultImageId = img.Id;
                 }
             }
             foreach (var image in imagesToAddList)
@@ -235,7 +232,7 @@ namespace Benefit.Services.Import
                 .FirstOrDefault(entry => entry.Id == sellerId);
             var sellerCatsDiscount = seller.SellerCategories.Where(entry => entry.CustomDiscount.HasValue)
                 .ToDictionary(entry => entry.CategoryId, entry => entry.CustomDiscount.Value);
-            db.SellerCategories.RemoveRange(seller.SellerCategories.Where(entry => !entry.IsDefault));
+            db.SellerCategories.RemoveRange(seller.SellerCategories);
             foreach (var xmlCategory in xmlCategories)
             {
                 var catId = xmlCategory.Element("Ид").Value;

@@ -60,9 +60,28 @@
                 tag_input.after('<textarea id="' + tag_input.attr('id') + '" name="' + tag_input.attr('name') + '" rows="3">' + tag_input.val() + '</textarea>').remove();
             }
 
+            var moderateProductUrl = '@Url.Action("Moderate")';
             var getNewFeatureUrl = '@Url.Action("NewFeature", "ProductParameters")';
             var getFeatureValuesUrl = '@Url.Action("FeatureValues", "ProductParameters")';
             var removeFeatureUrl = '@Url.Action("Delete", "ProductParameters")';
+
+            $(".js-invalid-content").click(function () {
+                var message = prompt("Коментар");
+                var id = '@Model.Id';
+                var accept = false;
+                var model = {
+                    "id": id,
+                    "accept": accept,
+                    "comment": message
+                };
+                $.post(moderateProductUrl,
+                    model,
+                    function () {
+                        $(window).scrollTop();
+                        flashMessage("Товар відмодеровано", 1, false)
+                    });
+            });
+
             $(".feature_input").each(function () {
                 var featureValue = $(this);
                 var featureId = featureValue.attr("data-parameter-id");
@@ -277,7 +296,7 @@
     </script>
 }
 
-@using (Html.BeginForm("Moderation","Products"))
+@using (Html.BeginForm("Moderation", "Products"))
 {
     @Html.ValidationSummary()
     @Html.AntiForgeryToken()
@@ -288,6 +307,12 @@
                 <a href="#home" data-toggle="tab">
                     <i class="blue icon-info bigger-110"></i>
                     Основна інфо
+                </a>
+            </li>
+            <li>
+                <a href="#moderation" data-toggle="tab">
+                    <i class="icon-check-sign green bigger-110"></i>
+                    Модерація
                 </a>
             </li>
             <li>
@@ -314,6 +339,16 @@
             <div class="tab-pane in active" id="home">
                 @Html.Partial("_ModerationProductForm")
             </div>
+            <div class="tab-pane" id="moderation">
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label no-padding-right">Коментарій модерування (250 символів)</label>
+                        <div class="col-md-9">
+                            @Html.TextAreaFor(m => m.Comment, new { @readonly = "readonly" })
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="tab-pane" id="parameters">
                 @Html.Partial("_ProductParameters")
             </div>
@@ -328,12 +363,15 @@
 
     <div class="clearfix form-actions">
         <div class="col-md-offset-3 col-md-9">
-            <button type="submit" class="btn btn-info">
+            <button type="submit" class="btn btn-info margin-right-10">
                 <i class="icon-ok bigger-110"></i>
                 Модерувати
             </button>
+            <button type="button" class="js-invalid-content btn btn-warning margin-right-10">
+                <i class="icon-exclamation bigger-110"></i>
+                Невалідний контент
+            </button>
 
-            &nbsp; &nbsp; &nbsp;
             <a href="@Url.Action("Index", "Products")" class="btn">
                 <i class="icon-undo bigger-110"></i>
                 До списку

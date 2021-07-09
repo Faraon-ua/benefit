@@ -78,7 +78,7 @@ namespace Benefit.Domain.DataAccess
         public DbSet<BenefitCard> BenefitCards { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Banner> Banners { get; set; }
-        public DbSet<OrderStatusStamp> OrderStatusStamps { get; set; }
+        public DbSet<StatusStamp> StatusStamps { get; set; }
         public DbSet<SellerBusinessLevelIndex> SellerBusinessLevelIndexes { get; set; }
         public DbSet<CompanyRevenue> CompanyRevenues { get; set; }
         public DbSet<Review> Reviews { get; set; }

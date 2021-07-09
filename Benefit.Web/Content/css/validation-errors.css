@@ -1,5 +1,5 @@
 ﻿.field-validation-error {
-    color: #b94a48;
+    color: #b94a48 !important;
 }
 
 .field-validation-valid {
@@ -7,7 +7,7 @@
 }
 
 input.input-validation-error {
-    border: 3px solid #b94a48;
+    border: 3px solid #b94a48 !important;
 }
 
 input[type="checkbox"].input-validation-error {
@@ -19,7 +19,7 @@ input[type="checkbox"].input-validation-error {
 }
 
 .validation-summary-errors {
-    color: #b94a48;
+    color: #b94a48 !important;
 }
 
 .validation-summary-valid {

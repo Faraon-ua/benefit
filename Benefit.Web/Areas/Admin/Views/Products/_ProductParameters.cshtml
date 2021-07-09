@@ -11,7 +11,7 @@
             parameters = Model.Category.MappedParentCategory.ProductParameters.OrderBy(entry => entry.Order).ToList();
         }
     }
-    var validationErrors = ViewData.ModelState.Values.Where(x => x.Errors.Count >= 1).Select(entry=>entry.Value == null ? null: entry.Value.AttemptedValue).ToList();
+    var validationErrors = ViewData.ModelState.Values.Where(x => x.Errors.Count >= 1).Select(entry => entry.Value == null ? null : entry.Value.AttemptedValue).ToList();
 }
 <div class="container">
     @if (Model.Category == null)
@@ -20,6 +20,10 @@
     }
     else
     {
+        <a href="@Url.Action("Index","ProductParameters", new { categoryId = Model.CategoryId })" target="_blank" class="margin-bottom-15" style="display: block;">
+            <i class="icon-pencil"></i>
+            Редагувати назви і значення характеристик
+        </a>
         var order = 0;
         foreach (var parameter in parameters)
         {
@@ -42,9 +46,9 @@
                     <button type="button" class="btn btn_mini btn-info feature_multi_values fn-add-product-option-value" data-parameter-id="@parameter.Id">
                         <i class="icon-plus"></i>
                     </button>
-                    <button type="button" class="btn btn_mini btn-danger feature_multi_values fn-remove-parameter" data-parameter-id="@parameter.Id" data-category-id="@parameter.CategoryId">
+                    @*<button type="button" class="btn btn_mini btn-danger feature_multi_values fn-remove-parameter" data-parameter-id="@parameter.Id" data-category-id="@parameter.CategoryId">
                         <i class="icon-trash"></i>
-                    </button>
+                    </button>*@
                 </div>
             </div>
             if (values.Count > 1)

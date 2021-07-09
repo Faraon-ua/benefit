@@ -85,8 +85,10 @@ namespace Benefit.Web.Helpers
                 IEnumerable<Product> products = null;
                 do
                 {
-                    products = db.Products.Include(entry => entry.Seller)
-                        .Where(entry => entry.Seller.IsActive && entry.IsActive && entry.ModerationStatus == ModerationStatus.Moderated);
+                    products = db.Products
+                        .Include(entry => entry.Seller)
+                        .Include(entry => entry.Category)
+                        .Where(entry => entry.Seller.IsActive && entry.Category.IsActive && entry.IsActive && entry.ModerationStatus == ModerationStatus.Moderated);
                     if (sellerId != null)
                     {
                         products = products.Where(entry => entry.SellerId == sellerId);

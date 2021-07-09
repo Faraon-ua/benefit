@@ -184,16 +184,16 @@ namespace Benefit.Services.ExternalApi
                                 };
                                 if (rOrder.note != null)
                                 {
-                                    var stamp = new OrderStatusStamp()
+                                    var stamp = new StatusStamp()
                                     {
                                         Id = Guid.NewGuid().ToString(),
                                         OrderId = order.Id,
-                                        OrderStatus = order.Status,
+                                        Status = (int)order.Status,
                                         Time = DateTime.UtcNow,
                                         Comment = rOrder.note.Truncate(256),
                                         UpdatedBy = "Allo"
                                     };
-                                    db.OrderStatusStamps.Add(stamp);
+                                    db.StatusStamps.Add(stamp);
                                 }
                                 double shippingPrice = 0;
                                 double.TryParse(rOrder.shipping.price, out shippingPrice);

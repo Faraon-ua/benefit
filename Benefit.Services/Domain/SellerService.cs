@@ -231,7 +231,6 @@ namespace Benefit.Services.Domain
                     UrlName = "postachalnuky",
                     Name = "Каталог постачальників",
                     ChildAsFilters = true,
-                    //ChildCategories = db.Categories.Where(entry => entry.ParentCategoryId == null && entry.IsActive && !entry.IsSellerCategory).ToList().MapToVM(),
                     ChildCategories = db.Sellers.Where(entry => entry.CategoryName != null).Select(entry => entry.CategoryName).Distinct().Select(entry => new CategoryVM() { Name = entry }).ToList(),
                 };
                 return result;
@@ -267,11 +266,10 @@ namespace Benefit.Services.Domain
         {
             using (var db = new ApplicationDbContext())
             {
-                var seller =
-                db.Sellers
-                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.Products))
-                .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
-                .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory.Products))
+                var seller = db.Sellers
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.Products))
+                    .Include(entry => entry.SellerCategories.Select(sc => sc.Category.ParentCategory))
+                    .Include(entry => entry.MappedCategories.Select(mc => mc.MappedParentCategory.Products))
                     .FirstOrDefault(entry => entry.UrlName == sellerUrl);
                 var all = new List<Category>();
                 var sellerCats = seller.SellerCategories.Where(entry => !entry.RootDisplay).Select(entry => entry.Category).Where(entry => entry.Products.Any() || entry.MappedCategories.Any()).ToList();

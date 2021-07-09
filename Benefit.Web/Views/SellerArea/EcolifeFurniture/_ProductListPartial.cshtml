@@ -1,0 +1,57 @@
+﻿@using Benefit.Common.Constants
+@model Benefit.DataTransfer.ViewModels.NavigationEntities.ProductsViewModel
+
+<div id="fn_products_content" class="fn_categories products row products-wrapper">
+    @{
+        var take = Model.IsFavorites ? Model.Items.Count : ListConstants.DefaultTakePerPage;
+    }
+    @foreach (var product in Model.Items.Take(take))
+    {
+        @Html.Partial("~/Views/SellerArea/ecolifefurniture/_ProductPartial.cshtml", product)
+    }
+</div>
+@if (!Model.IsFavorites)
+{
+    if (Model.Items.Count > ListConstants.DefaultTakePerPage)
+    {
+        <div class="ajax_load_btn" data-page="1">
+            <i class="ion-ios-loop"></i>
+            <span class="more_text_ajax">Показати ще</span>
+        </div>
+    }
+    if (Model.PagesCount > 1)
+    {
+        <div class="pro-pagination-style text-center">
+            <ul class="pagination">
+                <li class="page_item" data-page="0" style="display: none;">
+                    <a class="page_link paging prev" href="#" data-page="0"><i class="ion-ios-arrow-left"></i></a>
+                </li>
+                <li class="page_item" data-page="0">
+                    <a class="page_link paging active" href="#" data-page="0">1</a>
+                </li>
+                @for (int i = 2; i <= Model.PagesCount; i++)
+                {
+                    <li class="page_item">
+                        <a class="page_link paging" href="#" data-page="@(i - 1)">@i</a>
+                    </li>
+                }
+                <li class="page_item" data-page="1">
+                    <a class="page_link paging next" href="#" data-page="1"><i class="ion-ios-arrow-right"></i></a>
+                </li>
+            </ul>
+
+            @*<ul class="pagination">
+                    <li>
+                        <a class="prev" href="#"></a>
+                    </li>
+                    <li><a class="active" href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                    <li>
+                        <a class="next" href="#"><i class="ion-ios-arrow-right"></i></a>
+                    </li>
+                </ul>*@
+        </div>
+
+
+    }
+}

@@ -82,7 +82,10 @@ namespace Benefit.Web.Controllers
                     viewModel.Items = viewModel.Items.Distinct(new ProductComparer()).ToList();
                     viewModel.Items.ForEach(entry =>
                     {
-                        if (entry.AvailabilityState == ProductAvailabilityState.Available && (entry.AvailableAmount == null || entry.AvailableAmount == 0))
+                        if (entry.AvailabilityState == ProductAvailabilityState.Available && (entry.AvailableAmount == null || entry.AvailableAmount == 0)
+                        || !entry.IsActive
+                        || !entry.Seller.IsActive
+                        || !entry.Category.IsActive)
                         {
                             entry.AvailabilityState = ProductAvailabilityState.NotInStock;
                         }

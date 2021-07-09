@@ -5,7 +5,7 @@
 
 @{
     //var sellerUrl = Url.SubdomainAction(Model.UrlName, "Index", "Home", null);
-    var detailsUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new {id = Model.UrlName, category = string.Empty, options = string.Empty});
+    var detailsUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.UrlName, category = string.Empty, options = string.Empty });
     var isExternalLink = Model.RedirectUrl != null;
     var sellerUrl = isExternalLink ? Model.RedirectUrl : detailsUrl;
     var logo = Model.Images.FirstOrDefault(entry => entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo);
@@ -30,7 +30,7 @@
                 <div class="stickers">
                     <div class="sticker_sale_text">@Model.UserDiscount %</div>
                 </div>
-                <a href="@sellerUrl" class="thumb shine"  @(isExternalLink ? "rel=nofollow" : string.Empty) @(isExternalLink ? "target=_blank" : string.Empty)>
+                <a href="@sellerUrl" class="thumb shine" @(isExternalLink ? "rel=nofollow" : string.Empty) @(isExternalLink ? "target=_blank" : string.Empty)>
                     <img src="~/Images/SellerLogo/@logoUrl" alt="@Model.AltText" title="@Model.Title" style="max-width: 230px; max-height: 230px;" />
                 </a>
             </td>
@@ -42,7 +42,10 @@
                         {
                             <span>@string.Format("{0}, {1}", address.Region.Name_ua, address.AddressLine)</span>
                         }
-                        <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky", options = string.Empty })/category=@(Model.CategoryName ?? Model.Specialization);" class="dark_link" style="font-size: 12px">@(Model.CategoryName ?? Model.Specialization)</a>
+                        @if (Model.CategoryName != null)
+                        {
+                            <a href="@Url.RouteUrl(RouteConstants.CatalogRouteName, new { categoryUrl = "postachalnuky", options = string.Empty })/category=@Model.CategoryName;" class="dark_link" style="font-size: 12px">@Model.CategoryName</a>
+                        }
                     </div>
 
                     <div class="preview_text">@Model.ShortDescription</div>

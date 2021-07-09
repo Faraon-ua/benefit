@@ -1,45 +1,65 @@
 ﻿@using Benefit.Common.Extensions
+@using Benefit.Common.Helpers
+@using Benefit.Domain.Models
 @model  Benefit.Domain.Models.Product
 
 <div class="form-horizontal">
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Статус модерації</label>
-        <div class="col-md-9">
-            @Html.EnumDropDownListFor(m => m.ModerationStatus)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Коментарій модерування (250 символів)</label>
-        <div class="col-md-9">
-            @Html.TextAreaFor(m => m.Comment)
-        </div>
-    </div>
-    <div class="form-group">
-        <label class="col-sm-3 control-label no-padding-right">Зовнішній ID (в файлі)</label>
-        <div class="col-md-9">
-            @Html.TextBoxFor(m => m.ExternalId)
-        </div>
-    </div>
+    <div class="row">
+        <div class="col-md-6 col-xs-12">
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">Статус модерації</label>
+                <div class="col-md-9">
+                    @Html.EnumDropDownListFor(m => m.ModerationStatus)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">Коментарій модерування (250 символів)</label>
+                <div class="col-md-9">
+                    @Html.TextAreaFor(m => m.Comment)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label no-padding-right">Зовнішній ID (в файлі)</label>
+                <div class="col-md-9">
+                    @Html.TextBoxFor(m => m.ExternalId)
+                </div>
+            </div>
 
-    @if (Model.LastModified != null)
-    {
-        <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Коли створено</label>
-            <div class="col-md-9">
-                @Html.TextBox("AddedOn", Model.AddedOn.ToString(), new { @readonly = "readonly" })
-            </div>
+            @if (Model.LastModified != null)
+            {
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Коли створено</label>
+                    <div class="col-md-9">
+                        @Html.TextBox("AddedOn", Model.AddedOn.ToString(), new { @readonly = "readonly" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Коли останній раз редагувалось</label>
+                    <div class="col-md-9">
+                        @Html.TextBox("LastModified", Model.LastModified.ToLocalDateTimeWithFormat(), new { disabled = "true" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label no-padding-right">Ким останній раз редагувалось</label>
+                    <div class="col-md-9">
+                        @Html.TextBox("LastModifiedBy", Model.LastModifiedBy, new { disabled = "true" })
+                    </div>
+                </div>
+            }
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Коли останній раз редагувалось</label>
-            <div class="col-md-9">
-                @Html.TextBox("LastModified", Model.LastModified.ToLocalDateTimeWithFormat(), new { disabled = "true" })
-            </div>
+        <div class="col-md-6 col-xs-12">
+            @if (Model.LastModified != null)
+            {
+                <h3 class="header smaller lighter green no-margin-top">Історія статусів</h3>
+                foreach (var status in Model.StatusStamps.OrderBy(entry => entry.Time))
+                {
+                    <div class="well well-sm">
+                        @(Enumerations.GetDisplayNameValue((ModerationStatus)status.Status))
+                        @status.Time.ToString("dd.MM.yyyy hh:mm")
+                        @status.UpdatedBy
+                    </div>
+                }
+            }
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Ким останній раз редагувалось</label>
-            <div class="col-md-9">
-                @Html.TextBox("LastModifiedBy", Model.LastModifiedBy, new { disabled = "true" })
-            </div>
-        </div>
-    }
+    </div>
 </div>

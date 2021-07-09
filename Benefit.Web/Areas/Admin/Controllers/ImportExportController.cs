@@ -139,7 +139,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var newId = Guid.NewGuid().ToString();
                 var importTask =
                     db.ExportImports
-                    .Include(entry=>entry.Links)
+                    .Include(entry => entry.Links)
                     .FirstOrDefault(
                         entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.SyncType == syncType) ?? new ExportImport()
                         {
@@ -174,11 +174,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     TempData["ErrorMessage"] = "Url має бути заповнено";
                     return RedirectToAction("Index");
                 }
-                if (db.ExportImports.Any(entry => entry.FileUrl == exportImport.FileUrl && entry.Id != exportImport.Id))
-                {
-                    TempData["ErrorMessage"] = "Такий файл вже зареєстровано";
-                    return RedirectToAction("Index");
-                }
                 else
                 {
                     var import = db.ExportImports.Find(exportImport.Id);
@@ -195,11 +190,12 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     import.IsActive = exportImport.IsActive;
                     import.FileUrl = exportImport.FileUrl;
                     import.SyncPeriod = exportImport.SyncPeriod;
-                    if (exportImport.Links !=null && exportImport.Links.Any())
+
+                    db.Links.RemoveRange(db.Links.Where(entry => entry.ExportImportId == import.Id));
+                    db.SaveChanges();
+                    if (exportImport.Links != null && exportImport.Links.Any())
                     {
-                        db.Links.RemoveRange(db.Links.Where(entry => entry.ExportImportId == import.Id));
-                        db.SaveChanges();
-                        foreach(var link in exportImport.Links)
+                        foreach (var link in exportImport.Links)
                         {
                             link.Id = Guid.NewGuid().ToString();
                             link.ExportImportId = import.Id;

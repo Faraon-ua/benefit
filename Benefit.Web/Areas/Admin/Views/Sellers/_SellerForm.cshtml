@@ -29,7 +29,7 @@
             <label class="col-sm-3 control-label no-padding-right">Redirect Url</label>
 
             <div class="col-sm-9">
-                @Html.TextBoxFor(m => m.Seller.RedirectUrl, new { @class = "col-xs-10 col-sm-5" })
+                @Html.TextBoxFor(m => m.Seller.RedirectUrl, new { @class = "col-xs-10 col-sm-5 js-mask-url", placeholder="https://_____" })
             </div>
         </div>
         <div class="form-group hidden">
@@ -90,10 +90,13 @@
         </div>
 
         <div class="form-group">
-            <label class="col-sm-3 control-label no-padding-right">Назва категорії (для фільтру)</label>
+            <label class="col-sm-3 control-label no-padding-right">Назва головної категорії</label>
 
             <div class="col-sm-9">
-                @Html.TextBoxFor(m => m.Seller.CategoryName, new { @class = "col-xs-10 col-sm-5" })
+                @Html.TextBoxFor(m => m.Seller.CategoryName, new { @class = "col-xs-10 col-sm-5" }) 
+                <a href="#" onclick="alert('Вибрана категорія відображається в блоці постачальника і для фільтрів'); return false;" class="font-bigger margin-5">
+                    <i class="icon icon-question"></i>
+                </a>
             </div>
         </div>
 

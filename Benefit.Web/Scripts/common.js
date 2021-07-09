@@ -136,9 +136,24 @@ $(function () {
         e.preventDefault();
     });
 
+    if ($.fn.inputmask) {
+        $('.js-mask-url').inputmask("url", {
+            mask: "https://*{1,20}",
+            greedy: false,
+            clearMaskOnLostFocus: false,
+            clearIncomplete: false,
+            definitions: {
+                '*': {
+                    validator: "[0-9A-Za-z.!#$%&'*+/=?^_`{|}~\-]",
+                    cardinality: 1,
+                    casing: "lower"
+                }
+            }
+        });
+    }
     if ($.fn.mask) {
         $('.number-input').mask("#");
-        $('.phone-input').mask("+38(000)000-00-00", { placeholder: "+38(___)___-__-__" });
+        $('.phone-input').mask("+38(000)000-00-00", { placeholder: "Номер телефону *" });
     }
 
     $('body').on('click', ".show-more-options", function (e) {
@@ -156,7 +171,7 @@ $(function () {
 
     setTimeout(function () {
         $("#flashMessage").html("");
-    }, 10000);
+    }, 15000);
 
 
     $("body").on('focus', '.urlName', function () {
@@ -222,7 +237,7 @@ function flashMessage(text, alertStatus, alwaysStayVisible) {
     if (!alwaysStayVisible) {
         setTimeout(function () {
             $("#flashMessage").html("");
-        }, 7000);
+        }, 15000);
     }
 }
 

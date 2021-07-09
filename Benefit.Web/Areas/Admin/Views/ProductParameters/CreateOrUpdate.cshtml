@@ -1,7 +1,7 @@
 ﻿@model Benefit.Domain.Models.ProductParameter
 
 @{
-    ViewBag.Title = "Нова характеристика";
+    ViewBag.Title = Model.Name == null ? "Нова характеристика" : string.Format("Характеристика {0}", Model.Name);
     Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
 }
 
@@ -83,9 +83,9 @@
             </button>
 
             &nbsp; &nbsp; &nbsp;
-            <a href="@Url.Action("Index", "Products")" class="btn">
+            <a href="@Url.Action("Index", "ProductParameters", new { categoryId = Model.CategoryId })" class="btn">
                 <i class="icon-undo bigger-110"></i>
-                До пошуку
+                Назад
             </a>
         </div>
     </div>
