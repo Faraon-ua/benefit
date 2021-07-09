@@ -2,6 +2,16 @@
 
 namespace Benefit.DataTransfer.ApiDto.Allo
 {
+    public class UpdateOrderDto
+    {
+        public string id { get; set; }
+        public string status { get; set; }
+        public string message { get; set; }
+    }
+    public class UpdateOrdersDto
+    {
+        public List<UpdateOrderDto> orders { get; set; }
+    }
     public class OrderDto
     {
         public const int limit = 50;

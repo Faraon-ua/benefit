@@ -228,6 +228,20 @@ namespace Benefit.Services
                     };
                 }
             }
+            public static Dictionary<OrderStatus, int> ReverseOrderStatusMapping
+            {
+                get
+                {
+                    return new Dictionary<OrderStatus, int>()
+                    {
+                        {OrderStatus.AwaitingDelivery, 1},
+                        {OrderStatus.IsDelivering, 2},
+                        {OrderStatus.WaitingInSelfPickup, 3},
+                        {OrderStatus.Finished, 4},
+                        {OrderStatus.CustomerAbolished, 5}
+                    };
+                }
+            }
         }
         public class Facebook
         {

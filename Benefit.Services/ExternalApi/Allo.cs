@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -38,50 +39,55 @@ namespace Benefit.Services.ExternalApi
             }
             return null;
         }
-
-        //public void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1)
-        //{
-        //    var success = true;
-        //    var updateOrderUrl = SettingsService.Rozetka.BaseUrl + "orders/" + id;
-        //    var authToken = GetAccessToken(SettingsService.Rozetka.UserName, SettingsService.Rozetka.Password);
-        //    if (authToken == null)
-        //    {
-        //        success = false;
-        //    }
-        //    else
-        //    {
-        //        var updateOrderIngest = new UpdateOrderIngest
-        //        {
-        //            status = (int)newStatus + 1
-        //        };
-        //        var postData = JsonConvert.SerializeObject(updateOrderIngest);
-        //        var ordersResult = _httpClient.Post<BaseDto>(updateOrderUrl, postData, "application/json", authToken, "put");
-        //        if (ordersResult.StatusCode == HttpStatusCode.OK)
-        //        {
-        //            if (!ordersResult.Data.success)
-        //            {
-        //                success = false;
-        //            }
-        //            else
-        //            {
-        //                success = false;
-        //            }
-        //        }
-        //    }
-        //    if (!success)
-        //    {
-        //        if (tryCount <= 3)
-        //        {
-        //            Thread.Sleep(3000);
-        //            UpdateOrderStatus(id, oldStatus, newStatus, ttn, tryCount + 1);
-        //        }
-        //        else
-        //        {
-        //            var notificationService = new NotificationsService();
-        //            notificationService.NotifyApiFailRequest(id, "Rozetka", oldStatus, newStatus);
-        //        }
-        //    }
-        //}
+        public override void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount = 1, string sellerComment = null)
+        {
+            var success = true;
+            var updateOrderUrl = SettingsService.Allo.BaseUrl + "call?apiPath=orders.update";
+            var authToken = GetAccessToken(SettingsService.Allo.UserName, SettingsService.Allo.ApiKey);
+            var status = SettingsService.Allo.ReverseOrderStatusMapping[newStatus];
+            var updateOrderIngest = new UpdateOrderIngest
+            {
+                sessionId = authToken,
+                args = new UpdateOrderIngestArgs
+                {
+                    orders = new List<UpdateOrderIngestOrder>
+                    {
+                        new UpdateOrderIngestOrder
+                        {
+                            id = id,
+                            tracking_number = ttn,
+                            updated_date = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"),
+                            status = new UpdateOrderIngestStatus
+                            {
+                                main_status = status
+                            }
+                        }
+                    }
+                }
+            };
+            var postData = JsonConvert.SerializeObject(updateOrderIngest);
+            var ordersResult = _httpClient.Post<UpdateOrdersDto>(updateOrderUrl, postData, "application/json", authToken, "put");
+            if (ordersResult.StatusCode == HttpStatusCode.OK)
+            {
+                if (ordersResult.Data.orders[0].status != "success")
+                {
+                    success = false;
+                }
+            }
+            if (!success)
+            {
+                if (tryCount <= 3)
+                {
+                    Thread.Sleep(3000);
+                    UpdateOrderStatus(id, oldStatus, newStatus, ttn, tryCount + 1);
+                }
+                else
+                {
+                    var notificationService = new NotificationsService();
+                    notificationService.NotifyApiFailRequest(id, "Allo", oldStatus, newStatus);
+                }
+            }
+        }
 
         //public void RemoveOrderPurchases(Order order)
         //{
@@ -261,11 +267,6 @@ namespace Benefit.Services.ExternalApi
                 }
             }
             HttpRuntime.Cache["IsAlloProcessing"] = false;
-        }
-
-        public override void UpdateOrderStatus(string id, OrderStatus oldStatus, OrderStatus newStatus, string ttn, int tryCount, string sellerComment)
-        {
-            throw new NotImplementedException();
         }
     }
 }

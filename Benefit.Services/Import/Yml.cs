@@ -16,24 +16,27 @@ namespace Benefit.Services.Import
     {
         private ImagesService ImagesService = new ImagesService();
         object lockObj = new object();
-        protected override void ProcessImport(ExportImport importTask, ApplicationDbContext db)
+        protected override void ProcessImport(ExportImport importTask)
         {
-            XDocument xml = null;
-            xml = XDocument.Load(importTask.FileUrl);
+            using (var db = new ApplicationDbContext())
+            {
+                XDocument xml = null;
+                xml = XDocument.Load(importTask.FileUrl);
 
-            var root = xml.Element("yml_catalog").Element("shop");
-            var xmlCategories = root.Descendants("categories").First().Elements().ToList();
-            var xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
-            CreateAndUpdateYmlCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id, db);
-            db.SaveChanges();
-            DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Yml, db);
-            db.SaveChanges();
+                var root = xml.Element("yml_catalog").Element("shop");
+                var xmlCategories = root.Descendants("categories").First().Elements().ToList();
+                var xmlCategoryIds = xmlCategories.Select(entry => entry.Attribute("id").Value).ToList();
+                CreateAndUpdateYmlCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id, db);
+                db.SaveChanges();
+                DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Yml, db);
+                db.SaveChanges();
 
-            var xmlProducts = root.Descendants("offers").First().Elements().ToList();
-            AddAndUpdateYmlProducts(xmlProducts, importTask.SellerId, xmlCategoryIds);
-            db.SaveChanges();
-            DeleteYmlProducts(xmlProducts, importTask.SellerId, db);
-            db.SaveChanges();
+                var xmlProducts = root.Descendants("offers").First().Elements().ToList();
+                AddAndUpdateYmlProducts(xmlProducts, importTask.SellerId, xmlCategoryIds);
+                db.SaveChanges();
+                DeleteYmlProducts(xmlProducts, importTask.SellerId, db);
+                db.SaveChanges();
+            }
         }
 
         private void CreateAndUpdateYmlCategories(List<XElement> xmlCategories, string sellerUrlName,
@@ -218,7 +221,7 @@ namespace Benefit.Services.Import
                     var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToAdd);
                     var name = HttpUtility.HtmlDecode(xmlProduct.Element("name").Value.Replace("\n", "").Replace("\r", "").Trim()).Truncate(256);
                     var descr = xmlProduct.Element("description").GetValueOrDefault(string.Empty).Replace("\n", "<br/>");
-                    var currencyId = xmlProduct.Element("currencyId").Value;
+                    var currencyId = xmlProduct.Element("currencyId") == null ? "UAH" : xmlProduct.Element("currencyId").Value;
                     var urlName = name.Translit().Truncate(128).Replace(" ", "-");
                     var category =
                         categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value);

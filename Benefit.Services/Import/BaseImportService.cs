@@ -14,7 +14,7 @@ namespace Benefit.Services.Import
         private Logger _logger = LogManager.GetCurrentClassLogger();
         protected string originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
 
-        protected abstract void ProcessImport(ExportImport importTask, ApplicationDbContext db);
+        protected abstract void ProcessImport(ExportImport importTask);
         public void Import(string importTaskId)
         {
             using (var db = new ApplicationDbContext())
@@ -31,7 +31,7 @@ namespace Benefit.Services.Import
 
                 try
                 {
-                    ProcessImport(importTask, db);
+                    ProcessImport(importTask);
                     importTask.LastUpdateStatus = true;
                     importTask.LastUpdateMessage = string.Format("{0} імпорт успішно проведено", importTask.SyncType.ToString());
                 }
