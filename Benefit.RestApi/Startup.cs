@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using Microsoft.Owin;
 using Owin;
 
@@ -13,6 +14,7 @@ namespace Benefit.RestApi
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
         }
     }
 }

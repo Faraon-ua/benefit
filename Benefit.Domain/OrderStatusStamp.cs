@@ -17,7 +17,7 @@ namespace Benefit.Domain
         public DateTime Time { get; set; }
         [MaxLength(32)]
         public string UpdatedBy { get; set; }
-        [MaxLength(64)]
+        [MaxLength(256)]
         public string Comment { get; set; }
     }
 }

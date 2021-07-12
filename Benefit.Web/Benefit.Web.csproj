@@ -1682,10 +1682,6 @@
       <Project>{0fcf456f-ddc3-4a34-8942-7f88e9d2164f}</Project>
       <Name>Benefit.DataTransfer</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Benefit.Domain\Benefit.Domain.csproj">
-      <Project>{C187C6AD-93F5-457B-AA6E-2F43BA4374F3}</Project>
-      <Name>Benefit.Domain</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Benefit.Services\Benefit.Services.csproj">
       <Project>{599d76ea-2ff8-4fce-b1e5-821359c6b417}</Project>
       <Name>Benefit.Services</Name>

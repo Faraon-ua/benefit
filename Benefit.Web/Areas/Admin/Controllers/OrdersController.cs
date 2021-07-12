@@ -404,8 +404,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                 var rozetkaOrders = db.Orders.Where(entry => entry.ExternalId == order.ExternalId).ToList();
                                 if (rozetkaOrders.All(entry => entry.Status == OrderStatus.Finished || entry.Status == OrderStatus.Abandoned))
                                 {
-                                    var rozetkaService = new RozetkaApiService();
-                                    Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null, sellerComment: statusComment));
+                                    var marketplaceService = BaseMarketPlaceApi.GetMarketplaceServiceInstance(order.OrderType);
+                                    Task.Run(() => marketplaceService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null, sellerComment: statusComment));
                                 }
                             }
                             TransactionsService.AddOrderFinishedTransaction(order, db);
@@ -430,10 +430,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         }
                         else
                         {
-                            if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
+                            if (order.ExternalId != null)
                             {
-                                var rozetkaService = new RozetkaApiService();
-                                Task.Run(() => rozetkaService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null, sellerComment: statusComment));
+                                var marketplaceService = BaseMarketPlaceApi.GetMarketplaceServiceInstance(order.OrderType);
+                                Task.Run(() => marketplaceService.UpdateOrderStatus(order.ExternalId, oldStatus, orderStatus, null, sellerComment: statusComment));
                             }
                         }
                         if (orderStatus == OrderStatus.Abandoned ||

@@ -108,14 +108,14 @@
     <Compile Include="ViewModels\UpdateProfileViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="ApiDto\Request\" />
+    <Folder Include="ApiDto\Response\" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\Benefit.Domain\Benefit.Domain.csproj">
       <Project>{c187c6ad-93f5-457b-aa6e-2f43ba4374f3}</Project>
       <Name>Benefit.Domain</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ApiDto\Request\" />
-    <Folder Include="ApiDto\Response\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

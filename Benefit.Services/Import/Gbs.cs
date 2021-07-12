@@ -18,23 +18,26 @@ namespace Benefit.Services.Import
     public class GbsImportService : BaseImportService
     {
         object lockObj = new object();
-        protected override void ProcessImport(ExportImport importTask, ApplicationDbContext db)
+        protected override void ProcessImport(ExportImport importTask)
         {
-            XDocument xml = null;
-            xml = XDocument.Load(importTask.FileUrl);
-            var root = xml.Element("gbsmarket");
-            var xmlCategories = root.Descendants("GoodsCategories").ToList();
-            var xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
-            CreateAndUpdateGbsCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id, db);
-            db.SaveChanges();
-            DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Gbs, db);
-            db.SaveChanges();
+            using (var db = new ApplicationDbContext())
+            {
+                XDocument xml = null;
+                xml = XDocument.Load(importTask.FileUrl);
+                var root = xml.Element("gbsmarket");
+                var xmlCategories = root.Descendants("GoodsCategories").ToList();
+                var xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
+                CreateAndUpdateGbsCategories(xmlCategories, importTask.Seller.UrlName, importTask.Seller.Id, db);
+                db.SaveChanges();
+                DeleteImportCategories(importTask.Seller, xmlCategories, SyncType.Gbs, db);
+                db.SaveChanges();
 
-            var xmlProducts = root.Descendants("goods").ToList();
-            AddAndUpdateGbsProducts(xmlProducts, importTask.SellerId, xmlCategoryIds, db);
-            db.SaveChanges();
-            DeleteGbsProducts(xmlProducts, importTask.SellerId, db);
-            db.SaveChanges();
+                var xmlProducts = root.Descendants("goods").ToList();
+                AddAndUpdateGbsProducts(xmlProducts, importTask.SellerId, xmlCategoryIds, db);
+                db.SaveChanges();
+                DeleteGbsProducts(xmlProducts, importTask.SellerId, db);
+                db.SaveChanges();
+            }
         }
 
         private void CreateAndUpdateGbsCategories(List<XElement> xmlCategories, string sellerUrlName,

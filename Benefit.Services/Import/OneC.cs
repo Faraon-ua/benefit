@@ -17,33 +17,36 @@ namespace Benefit.Services.Import
     {
         private ImagesService ImagesService = new ImagesService();
         object lockObj = new object();
-        protected override void ProcessImport(ExportImport importTask, ApplicationDbContext db)
+        protected override void ProcessImport(ExportImport importTask)
         {
-            var xml = XDocument.Load(importTask.FileUrl);
-            var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
-            var resultXmlCategories = GetAllFiniteCategories(rawXmlCategories);
-            var resultXmlCategoryIds = resultXmlCategories.Select(entry => entry.Element("Ид").Value);
-            CreateAndUpdate1CCategories(resultXmlCategories, importTask.SellerId, db);
-            db.SaveChanges();
-            DeleteImportCategories(importTask.Seller, resultXmlCategories, SyncType.OneCCommerceMl, db);
-            db.SaveChanges();
+            using (var db = new ApplicationDbContext())
+            {
+                var xml = XDocument.Load(importTask.FileUrl);
+                var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
+                var resultXmlCategories = GetAllFiniteCategories(rawXmlCategories);
+                var resultXmlCategoryIds = resultXmlCategories.Select(entry => entry.Element("Ид").Value);
+                CreateAndUpdate1CCategories(resultXmlCategories, importTask.SellerId, db);
+                db.SaveChanges();
+                DeleteImportCategories(importTask.Seller, resultXmlCategories, SyncType.OneCCommerceMl, db);
+                db.SaveChanges();
 
-            var xmlProducts = xml.Descendants("Товары").First().Elements()
-                .Where(entry => entry.Element("Группы") != null)
-                .Where(entry => resultXmlCategoryIds.Contains(entry.Element("Группы").Element("Ид").Value)).ToList();
-            var ids = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
-            var xmlProductsSkipped = xml.Descendants("Товары").First().Elements()
-                .Where(entry => !ids.Contains(entry.Element("Ид").Value)).ToList();
-            AddAndUpdate1СProducts(xmlProducts.ToList(), importTask.SellerId, importTask.Seller.UrlName, db);
-            db.SaveChanges();
-            DeleteProducts(xmlProducts, importTask.SellerId, db);
-            db.SaveChanges();
-            //Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
-            //images
-            xml = XDocument.Load(importTask.FileUrl.Replace("import", "offers"));
-            var xmlProductPrices = xml.Descendants("Предложение");
-            var poductPrices = xmlProductPrices.Select(entry => new XmlProductPrice(entry)).ToList();
-            var pricesResult = ProcessImportedProductPrices(poductPrices);
+                var xmlProducts = xml.Descendants("Товары").First().Elements()
+                    .Where(entry => entry.Element("Группы") != null)
+                    .Where(entry => resultXmlCategoryIds.Contains(entry.Element("Группы").Element("Ид").Value)).ToList();
+                var ids = xmlProducts.Select(entry => entry.Element("Ид").Value).ToList();
+                var xmlProductsSkipped = xml.Descendants("Товары").First().Elements()
+                    .Where(entry => !ids.Contains(entry.Element("Ид").Value)).ToList();
+                AddAndUpdate1СProducts(xmlProducts.ToList(), importTask.SellerId, importTask.Seller.UrlName, db);
+                db.SaveChanges();
+                DeleteProducts(xmlProducts, importTask.SellerId, db);
+                db.SaveChanges();
+                //Task.Run(() => EmailService.SendImportResults(seller.Owner.Email, results));
+                //images
+                xml = XDocument.Load(importTask.FileUrl.Replace("import", "offers"));
+                var xmlProductPrices = xml.Descendants("Предложение");
+                var poductPrices = xmlProductPrices.Select(entry => new XmlProductPrice(entry)).ToList();
+                var pricesResult = ProcessImportedProductPrices(poductPrices);
+            }
         }
 
         public int ProcessImportedProductPrices(IEnumerable<XmlProductPrice> xmlProductPrices)

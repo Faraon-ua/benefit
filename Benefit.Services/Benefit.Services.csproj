@@ -129,7 +129,7 @@
     <Compile Include="Domain\LocalizationService.cs" />
     <Compile Include="EncodingService.cs" />
     <Compile Include="ExternalApi\Facebook.cs" />
-    <Compile Include="ExternalApi\IMarketPlaceApi.cs" />
+    <Compile Include="ExternalApi\BaseMarketPlaceApi.cs" />
     <Compile Include="ExternalApi\Allo.cs" />
     <Compile Include="ExternalApi\Rozetka.cs" />
     <Compile Include="ExternalApi\SmsService.cs" />

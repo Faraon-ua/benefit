@@ -27,19 +27,22 @@ namespace Benefit.Services.Import
             firebirdDb = new FirebirdDbContext();
         }
 
-        protected override void ProcessImport(ExportImport importTask, ApplicationDbContext db)
+        protected override void ProcessImport(ExportImport importTask)
         {
-            var fbProducts = firebirdDb.GetProducts(importTask.FileUrl);
-            var cats = fbProducts.GroupBy(entry => entry.CategoryId).Select(entry => new FirebirdCategory { Id = entry.Key, Name = entry.Select(fb => fb.CategoryName).First() }).ToList();
-            CreateAndUpdateFirebirdCategories(cats, importTask.Seller.UrlName, importTask.Seller.Id, db);
-            db.SaveChanges();
-            DeleteFirebirdCategories(importTask.Seller, cats, db);
-            db.SaveChanges();
+            using (var db = new ApplicationDbContext())
+            {
+                var fbProducts = firebirdDb.GetProducts(importTask.FileUrl);
+                var cats = fbProducts.GroupBy(entry => entry.CategoryId).Select(entry => new FirebirdCategory { Id = entry.Key, Name = entry.Select(fb => fb.CategoryName).First() }).ToList();
+                CreateAndUpdateFirebirdCategories(cats, importTask.Seller.UrlName, importTask.Seller.Id, db);
+                db.SaveChanges();
+                DeleteFirebirdCategories(importTask.Seller, cats, db);
+                db.SaveChanges();
 
-            AddAndUpdateFirebirdProducts(fbProducts, importTask.SellerId, cats.Select(entry => entry.Id), db);
-            db.SaveChanges();
-            DeleteFirebirdProducts(fbProducts, importTask.SellerId, db);
-            db.SaveChanges();
+                AddAndUpdateFirebirdProducts(fbProducts, importTask.SellerId, cats.Select(entry => entry.Id), db);
+                db.SaveChanges();
+                DeleteFirebirdProducts(fbProducts, importTask.SellerId, db);
+                db.SaveChanges();
+            }
         }
 
         private void CreateAndUpdateFirebirdCategories(List<FirebirdCategory> fbCategories, string sellerUrlName,
@@ -179,6 +182,7 @@ namespace Benefit.Services.Import
                 {
                     return;
                 }
+                product.CategoryId = category.Id;
                 product.Price = Decimal.ToDouble(fbProduct.Price);
                 product.AvailabilityState = ProductAvailabilityState.Available;
                 product.AvailableAmount = Decimal.ToInt32(fbProduct.Quantity);

@@ -9,7 +9,9 @@ using Benefit.Services.Import;
 using System;
 using System.Data.Entity;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace Benefit.RestApi.Controllers
@@ -25,9 +27,7 @@ namespace Benefit.RestApi.Controllers
             {
                 var importTasks =
                 db.ExportImports
-                .Include(entry => entry.Seller)
-                .Include(entry => entry.Seller.MappedCategories)
-                .Where(entry => entry.IsActive && entry.SyncType != SyncType.YmlExport).ToList();
+                .Where(entry => entry.SyncType != SyncType.YmlExport && entry.IsActive ).ToList();
                 Task.Run(() =>
                 {
                     foreach (var importTask in importTasks)
@@ -43,23 +43,29 @@ namespace Benefit.RestApi.Controllers
             return Content("Ok");
         }
 
-        public ActionResult ProcessRozetkaOrders()
+        public async Task<ActionResult> ProcessMarketplaceOrders()
         {
-            var rozetkaService = new RozetkaApiService();
-            if (HttpContext.Application["IsRozetkaProcessing"] == null)
+            var result = new StringBuilder();
+            foreach (MarketplaceType type in Enum.GetValues(typeof(MarketplaceType)))
             {
-                HttpContext.Application["IsRozetkaProcessing"] = false;
+                var key = string.Format("Is{0}Processing", type.ToString());
+                if (HttpRuntime.Cache[key] == null)
+                {
+                    HttpRuntime.Cache[key] = false;
+                }
+                if ((bool)HttpRuntime.Cache[key] == false)
+                {
+                    HttpRuntime.Cache[key] = true;
+                    var service = BaseMarketPlaceApi.GetMarketplaceServiceInstance(type);
+                    await service.ProcessOrders();
+                    result.AppendFormat("Замовлення з {0} успішно синхронізовані<br/>", type.ToString());
+                }
+                else
+                {
+                    result.AppendFormat("Синхронізація замовленнь з {0} в процесі...<br/>", type.ToString());
+                }
             }
-            if ((bool)HttpContext.Application["IsRozetkaProcessing"] == false)
-            {
-                HttpContext.Application["IsRozetkaProcessing"] = true;
-                rozetkaService.ProcessOrders();
-            }
-            else
-            {
-                return Content("Синхронізація замовленнь з Розетка в процесі...");
-            }
-            return Content("Замовлення з Розетка успішно синхронізовані");
+            return Content(result.ToString());
         }
 
         public ActionResult CheckSellersToBlock()

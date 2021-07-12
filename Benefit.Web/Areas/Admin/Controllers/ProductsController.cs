@@ -557,10 +557,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (accept)
                 {
                     product.ModerationStatus = ModerationStatus.Moderated;
-                    if (!product.Name.Contains("(bc-"))
-                    {
-                        product.Name += string.Format(" (bc-{0})", product.SKU);
-                    }
                 }
                 else
                 {

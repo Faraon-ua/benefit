@@ -28,11 +28,6 @@ namespace Benefit.Services.Admin
             : this(new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext())))
         {
         }
-        public void ProcessRozetkaOrders()
-        {
-            var rozetkaService = new RozetkaApiService();
-            rozetkaService.ProcessOrders();
-        }
         public void CloseQualificationPeriod()
         {
             using (var db = new ApplicationDbContext())
