@@ -49,7 +49,11 @@ namespace Benefit.Web.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var productsQuery = db.Products.Include(enty => enty.DefaultImage).Include(enty => enty.Images)
-                .Where(entry => entry.IsActive && entry.Category.IsActive && entry.Seller.IsActive && entry.Images.Any() && entry.DefaultImageId == null);
+                .Where(entry => entry.IsActive 
+                    && entry.Category.IsActive 
+                    && entry.Seller.IsActive 
+                    && entry.Images.Any() 
+                    && entry.DefaultImageId == null);
                 if (sellerId != null)
                 {
                     productsQuery = productsQuery.Where(entry => entry.SellerId == sellerId);
@@ -68,6 +72,10 @@ namespace Benefit.Web.Controllers
                     else if (System.IO.File.Exists(Path.Combine(pathString, first.ImageUrl)))
                     {
                         ImagesService imagesService = new ImagesService();
+                        if (product.DefaultImageId != null)
+                        {
+                            imagesService.DeleteFile(product.DefaultImage.ImageUrl, product.Id, ImageType.ProductGallery);
+                        }
                         var format = imagesService.GetImageFormatByExtension(first.ImageUrl);
                         product.DefaultImageId = imagesService.AddProductDefaultImage(first, format);
                         db.Entry(product).State = EntityState.Modified;

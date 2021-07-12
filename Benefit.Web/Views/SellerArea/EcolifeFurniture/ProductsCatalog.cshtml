@@ -45,7 +45,7 @@
         var sellerId = '@seller.Id';
         var pagesCount = parseInt('@Model.PagesCount');
         var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
-        var productTemplateLayout = 1;
+        var productTemplateLayout = 2;
         var term = "@Request.QueryString["term"]";
         var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category.Id, area = string.Empty })';
         
@@ -132,7 +132,9 @@
                     <div class="tab-content jump">
                         <!-- Tab One Start -->
                         <div id="shop-1" class="tab-pane active">
-                            @Html.Partial("~/Views/SellerArea/ecolifefurniture/_ProductListPartial.cshtml", Model)
+                            <div class="area-products-list">
+                                @Html.Partial("~/Views/SellerArea/ecolifefurniture/_ProductListPartial.cshtml", Model)
+                            </div>
                         </div>
                         <!-- Tab One End -->
                     </div>
