@@ -3,6 +3,8 @@
     "use strict";
     /*--document ready functions--*/
     jQuery(document).ready(function ($) {
+        //set cart height
+        $(".js-cart-preview").css("height", $(window).height() - 150);
         //catalog menu workaround
         $(".mega-menu-wrap").css("min-height", $(".vertical-menu-wrap").height());
         //dynamic cart workaround
