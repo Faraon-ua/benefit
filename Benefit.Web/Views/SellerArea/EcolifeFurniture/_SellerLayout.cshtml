@@ -39,10 +39,10 @@
     <!-- ===== Responsive Css Files ===== -->
     <!-- <link rel="stylesheet" href="assets/css/responsive.css" /> -->
     <!--====== Use the minified version files listed below for better performance and remove the files listed above ======-->
-
     <link rel="stylesheet" href="~/Content/seller/ecolife/plugins.min.css">
     <link rel="stylesheet" href="~/Content/seller/ecolife/style.min.css">
     <link rel="stylesheet" href="~/Content/seller/ecolife/responsive.min.css">
+    <link href="~/Content/css/autocomplete.css" rel="stylesheet" />
     <script>
         var reloadOnProductAdd = false;
         var cartUrl = '@Url.Action("GetCart", "Cart", new { area = string.Empty })';
@@ -250,7 +250,7 @@
                                 <a href="~">
                                     @if (sellerLogo != null)
                                     {
-                                        <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" style="max-width: 100%;"/>
+                                        <img src="~/Images/SellerLogo/@sellerLogo.ImageUrl" alt="@seller.Name" style="max-width: 100%;" />
                                     }
                                 </a>
                             </div>
@@ -545,6 +545,7 @@
 
     <script src="~/Scripts/seller/ecolife/jquery-3.5.1.min.js"></script>
     <script src="~/Scripts/seller/ecolife/modernizr-3.7.1.min.js"></script>
+    <script type="text/javascript" src="~/Scripts/jquery.autocomplete.min.js" defer></script>
 
     <!--====== Plugins js ======-->
     <!-- <script src="assets/js/plugins/bootstrap.min.js"></script>
@@ -567,5 +568,6 @@
     <script src="~/Scripts/essential.js"></script>
     <script src="~/Scripts/site.js"></script>
     @RenderSection("scripts", false)
+    @Html.Partial("_RegionModal")
 </body>
 </html>

@@ -9459,3 +9459,13 @@ textarea {
     color: #a5a3a3;
     vertical-align: middle;
 }
+
+.region_wrapper .js_city_chooser {
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    padding-right: 14px;
+    position: relative;
+}
