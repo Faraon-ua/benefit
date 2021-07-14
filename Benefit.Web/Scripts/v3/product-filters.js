@@ -142,7 +142,7 @@ $(function () {
         $(".select-product:checked").siblings(".remove-from-favorites ").click();
     });
     $("#buy-selected").click(function () {
-        $(".select-product:checked").closest(".product-item").find(".product_buy.lg-hidden").click();
+        $(".select-product:checked").closest(".product-item").find(".product_buy").eq(0).click();
     });
 
     $("#buy-all").click(function () {

@@ -47,7 +47,7 @@
         var productTemplateLayout = 2;
         var term = "@Request.QueryString["term"]";
         var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category.Id, area = string.Empty })';
-        
+
         $(function () {
             @if(!isFavorites)
             {
@@ -83,47 +83,51 @@
         }
         <div class="row">
             <div class="col-lg-9 order-lg-last col-md-12 order-md-first">
-                <!-- Shop Top Area Start -->
-                <div class="shop-top-bar">
-                    <!-- Left Side start -->
-                    @*<div class="shop-tab nav mb-res-sm-15">
-                        <a href="#shop-1" data-toggle="tab">
-                            <i class="fa fa-th show_grid"></i>
-                        </a>
-                        <a class="active" href="#shop-2" data-toggle="tab">
-                            <i class="fa fa-list-ul"></i>
-                        </a>
-                    </div>*@
-                    <!-- Left Side End -->
-                    <!-- Right Side Start -->
-                    <div class="select-shoing-wrap">
-                        <div class="shot-product">
-                            <p>Показати спочатку:</p>
-                        </div>
-                        <div class="shop-select">
-                            @if (RouteDataHelper.ControllerName.ToLower() != "search" && !Model.IsFavorites)
-                            {
-                                <div class="fn_products_sort clearfix sort_header margin-top-10 visible-lg">
-                                    <div class="sort_filter visible-lg filter-section d-flex justify-content-between" data-filter-name="sort" style="padding-top: 3px;">
-                                        <a href="" data-sort-value="Rating" class="sort_btn text-black-50 mx-2" rel="nofollow">
-                                            <span class="padding-10">По рейтингу</span>
-                                        </a>
-                                        <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
-                                            <span class="padding-10">По алфавіту</span>
-                                        </a>
-                                        <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
-                                            <span class="padding-10">Дешеві</span>
-                                        </a>
-                                        <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
-                                            <span class="padding-10">Дорогі</span>
-                                        </a>
+                <!-- Shop Top Area Start --> @if (!Model.IsFavorites)
+                {
+                    <div class="shop-top-bar">
+                        <!-- Left Side start -->
+                        @*<div class="shop-tab nav mb-res-sm-15">
+                                <a href="#shop-1" data-toggle="tab">
+                                    <i class="fa fa-th show_grid"></i>
+                                </a>
+                                <a class="active" href="#shop-2" data-toggle="tab">
+                                    <i class="fa fa-list-ul"></i>
+                                </a>
+                            </div>*@
+                        <!-- Left Side End -->
+                        <!-- Right Side Start -->
+
+                        <div class="select-shoing-wrap">
+                            <div class="shot-product">
+                                <p>Показати спочатку:</p>
+                            </div>
+                            <div class="shop-select">
+                                @if (RouteDataHelper.ControllerName.ToLower() != "search" && !Model.IsFavorites)
+                                {
+                                    <div class="fn_products_sort clearfix sort_header margin-top-10 visible-lg">
+                                        <div class="sort_filter visible-lg filter-section d-flex justify-content-between" data-filter-name="sort" style="padding-top: 3px;">
+                                            <a href="" data-sort-value="Rating" class="sort_btn text-black-50 mx-2" rel="nofollow">
+                                                <span class="padding-10">По рейтингу</span>
+                                            </a>
+                                            <a href="" data-sort-value="NameAsc" class="sort_btn" rel="nofollow">
+                                                <span class="padding-10">По алфавіту</span>
+                                            </a>
+                                            <a href="" data-sort-value="PriceAsc" class="sort_btn" rel="nofollow">
+                                                <span class="padding-10">Дешеві</span>
+                                            </a>
+                                            <a href="" data-sort-value="PriceDesc" class="sort_btn" rel="nofollow">
+                                                <span class="padding-10">Дорогі</span>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
+                        <!-- Right Side End -->
                     </div>
-                    <!-- Right Side End -->
-                </div>
+                }
+
                 <!-- Shop Top Area End -->
                 <!-- Shop Bottom Area Start -->
                 <div class="shop-bottom-area mt-35">
@@ -143,24 +147,27 @@
             </div>
             <!-- Sidebar Area Start -->
             <div class="col-lg-3 order-lg-first col-md-12 order-md-last mb-res-md-60px mb-res-sm-60px">
-                <div class="left-sidebar">
-                    <div class="sidebar-heading">
-                        <div class="main-heading">
-                            <h2>Фільтри</h2>
-                        </div>
+                @if (!Model.IsFavorites)
+                {
+                    <div class="left-sidebar">
+                        <div class="sidebar-heading">
+                            <div class="main-heading">
+                                <h2>Фільтри</h2>
+                            </div>
 
-                    </div>
-                    <div class="filters_block">
-                        <div class="filters_heading fn_switch md-hidden">
-                            <i class="angle_icon"></i>
                         </div>
-                        <div class="area-product-filters filters mobile-hidden product-filters">
-                            <div style="width:100%; text-align:center;">
-                                <img src="~/Content/img/loading.gif" />
+                        <div class="filters_block">
+                            <div class="filters_heading fn_switch md-hidden">
+                                <i class="angle_icon"></i>
+                            </div>
+                            <div class="area-product-filters filters mobile-hidden product-filters">
+                                <div style="width:100%; text-align:center;">
+                                    <img src="~/Content/img/loading.gif" />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
             <!-- Sidebar Area End -->
         </div>

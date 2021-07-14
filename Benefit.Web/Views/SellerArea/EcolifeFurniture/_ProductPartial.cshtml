@@ -17,7 +17,17 @@
     }
 }
 
-<div class="@className products_item product-item" id="@Model.Id" data-seller-id="@Model.SellerId">
+<div class="@className products_item product-item position-relative" id="@Model.Id" data-seller-id="@Model.SellerId">
+    @if (isFavorites.GetValueOrDefault(false))
+    {
+        <div class="position-absolute" style="width: 80%; z-index: 10000;">
+            <input type="checkbox" class="doublesize-checkbox m-3 select-product" />
+            <a href="#" class="remove-from-favorites pull-right h3" data-product-id="@Model.Id">
+                <i class="fa fa-remove"></i>
+            </a>
+            <div class="clearfix"></div>
+        </div>
+    }
     <article class="list-product">
         <div class="product-desc-wrap">
             <div class="img-block">
@@ -83,108 +93,10 @@
                         </div>
                     </li>
                     <li class="flex-grow-1">
-                        <a href="wishlist.html"><i class="ion-android-favorite-outline"></i></a>
-                    </li>
-                    <li class="flex-grow-1">
-                        <a href="compare.html"><i class="ion-ios-shuffle-strong"></i></a>
+                        <a href="#" data-product-id="@Model.Id" class="fn_wishlist wishlist_button fav-switch add-to-favorites"><i class="ion-android-favorite-outline"></i></a>
                     </li>
                 </ul>
             </div>
         </div>
     </article>
 </div>
-
-
-
-
-
-
-
-<!--<div class="col-sm-6 col-xl-3 col-xs-6 products_item product-item" id="@Model.Id">
-    @if (isFavorites.GetValueOrDefault(false))
-    {
-        <div class="padding_5">
-            <input type="checkbox" class="doublesize-checkbox margin-5 select-product" />
-            <a href="#" class="remove-from-favorites pull-right" data-product-id="@Model.Id">
-                <i class="fa fa-remove"></i>
-            </a>
-            <div class="clearfix"></div>
-        </div>
-    }
-    <div class="preview fn_product">
-        <div class="fn_transfer clearfix">
-            <div class="stickers">-->
-@*@if (categoryDiscount > 0)
-    {
-        <div class="sticker_sale_text">Кешбек @categoryDiscount%</div>
-    }
-    @if (Model.Seller.SafePurchase)
-    {
-        <div class="sticker_safe">Безпечна покупка</div>
-    }*@
-<!--</div>
-<a class="preview_image" href="@productDetailsUrl">
-    @if (Model.DefaultImage == null)
-    {
-        <img class="fn_img preview_img" src="~/Images/ProductGallery/default_product_thumbnail.png" alt="@Model.Title" title="@Model.Title">
-    }
-    else
-    {
-        if (Model.DefaultImage.IsAbsoluteUrl)
-        {
-            <img class="fn_img preview_img" src="@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
-        }
-        else
-        {
-            <img class="fn_img preview_img" src="~/Images/ProductGallery/@Model.Id/@Model.DefaultImage.ImageUrl" alt="Фото @Model.Name" title="Купить @Model.Name" />
-        }
-    }
-</a>
-@{
-    var favClass = Model.IsFavorite ? "selected remove-from-favorites" : "add-to-favorites";
-}
-<div class="overlay_buttons">-->
-@*<a class="fn_comparison comparison_button" href="#" data-id="114" title="В сравнение" data-result-text="Из сравнения"><i class="compare_icon"></i></a>*@
-<!--<a href="#" data-product-id="@Model.Id" class="fn_wishlist wishlist_button fav-switch @favClass" title="В улюлене">
-                    <i class="wish_icon"></i>
-                </a>
-            </div>
-            <div class="preview_details">
-                <a class="product_name" data-product="114" href="@productDetailsUrl">@Model.Name</a>
-                <div class="price_container">
-                    @if (Model.OldPrice.HasValue)
-                    {
-                        <div class="old_price">
-                            <span class="fn_old_price">@Model.OldPrice.Value.ToString("F")</span> <span>грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span>
-                        </div>
-                    }
-                    <div class="price">
-                        <span class="fn_price">@Model.Price.ToString("F")</span> <span>грн/@(@Model.IsWeightProduct ? "кг" : "шт")</span>
-                    </div>
-                </div>
-                @{
-                    var availableForPurchase = Model.AvailableForPurchase(RegionService.GetRegionId());
-                }
-                <div class="fn_variants preview_form" style="margin-right:3px;">
-                    @if (availableForPurchase.State != ComputedProductAvailabilityState.NotAvailable)
-                    {
-                        <button class="button fn_is_stock lg-hidden product_buy" type="submit" style="padding: 7px 17px 5px 13px;" data-product-id="@Model.Id" data-seller-id="@Model.SellerId" data-is-weight-product="@Model.IsWeightProduct">
-                            <img src="~/Content/seller/megashop/images/basket.png">
-                        </button>
-                        <button class="button fn_is_stock small-hidden product_buy" type="submit" style="padding:9px 15px 9px 15px; font-size:14px;" data-product-id="@Model.Id" data-seller-id="@Model.SellerId" data-is-weight-product="@Model.IsWeightProduct">Купити</button>
-                        <div class="amount fn_product_amount counter partial" data-weight-product="@Model.IsWeightProduct">
-                            <input class="input_amount quantity" type="text" name="quantity" value="1" data-weight-product="@Model.IsWeightProduct">
-                            <span class="plus"></span>
-                            <span class="minus"></span>
-                        </div>
-                    }
-                    else
-                    {
-                        <a class="button disable_button" href="@productDetailsUrl" style="padding:9px 15px 9px 15px; font-size:14px;">Детальніше</a>
-                    }
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>-->

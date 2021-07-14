@@ -78,6 +78,7 @@ namespace Benefit.Services.Domain
             {
                 var productIds = db.Favorites.Where(entry => entry.UserId == userId).Select(entry => entry.ProductId).ToList();
                 return db.Products
+                    .Include(entry => entry.DefaultImage)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller.ShippingMethods)
                     .Where(entry => productIds.Contains(entry.Id)).ToList(); 

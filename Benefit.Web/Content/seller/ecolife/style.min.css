@@ -9469,3 +9469,10 @@ textarea {
     padding-right: 14px;
     position: relative;
 }
+.doublesize-checkbox {
+    -ms-transform: scale(2);
+    -moz-transform: scale(2);
+    -webkit-transform: scale(2);
+    -o-transform: scale(2);
+    padding: 10px;
+}
