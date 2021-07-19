@@ -9,10 +9,11 @@
     {
         isExternalRequest = true;
     }
+    var sellerInfo = string.Format("{0}<br/>{1}", Model.SellerName, Model.SellerPhone);
 }
 <div class="order-wrap" data-collapsed="true" @(isExternalRequest ? "style=height:auto" : "") data-order-id="@Model.Id" data-order-time="@Model.Time">
     <div class="order-preview">
-        <div class="col text-left border-bottom order-number-wrap" style="width: 190px;">
+        <div class="col text-left border-bottom order-number-wrap" style="width: 250px;">
             <a href="#" class="order-number">
                 <i class="icon @(isExternalRequest ? "icon-chevron-up" : "icon-chevron-down")"></i>
                 № @Html.DisplayFor(modelItem => Model.OrderNumber)
@@ -29,8 +30,18 @@
                     .Where(entry => !string.IsNullOrEmpty(entry.Comment))
                     .OrderBy(entry => entry.Time)
                     .Select(entry => string.Format("<p>{0} <b>{1}</b><br /><i class='icon icon-circle' style='color:#4ebf42; margin-right:5px;'></i> {2}</p>", entry.Time.ToLocalDateTimeWithFormat(), entry.UpdatedBy, entry.Comment)));
-                <i class="fas fa-file seller-comments" style="color:#8b0000;  margin-left: 5px;" data-rel="hoverpopover" title="" data-content="@comments" data-html="true" data-original-title="Коментар менеджера" data-trigger="hover"></i>
+                <i class="fas fa-file seller-comments" style="color:#8b0000;  margin-left: 5px;" data-rel="hoverpopover" title="" data-content="@comments" data-html="true" data-original-title="Коментар менеджера"></i>
 
+            }
+            <i class="fas fa-store-alt" style="color:#74d46b;  margin-left: 5px;" data-rel="popover" title="" data-content="@sellerInfo" data-html="true" data-original-title="Інфо постачальника" role="button" data-toggle="popover"></i>
+            @if (Model.OrderStatusStamps.Any())
+            {
+                var statuses = string.Join(
+                    "",
+                    Model.OrderStatusStamps
+                    .OrderBy(entry => entry.Time)
+                    .Select(entry => string.Format("<p>{0} <b>{1}</b><br /><i class='icon icon-circle' style='color:#4ebf42; margin-right:5px;'></i> {2}</p>", entry.Time.ToLocalDateTimeWithFormat(), Enumerations.GetEnumDescription((OrderStatus)entry.Status), entry.UpdatedBy)));
+                <i class="fas fa-list" style="color:#6FB3E0;  margin-left: 5px;" data-rel="popover" title="" data-content="@statuses" data-html="true" data-original-title="Історія зміни статусів"></i>
             }
         </div>
         <div class="col border-bottom" style="width: 145px;">

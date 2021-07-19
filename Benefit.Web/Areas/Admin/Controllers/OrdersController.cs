@@ -201,6 +201,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 };
                 var productIdsInOrders = ordersFilters.Orders.Items.SelectMany(entry => entry.OrderProducts).Select(entry => entry.ProductId).Distinct().ToList();
                 var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
+                var sellerIds = ordersFilters.Orders.Items.Select(entry => entry.SellerId).Distinct().ToList();
+                var allOrderSellers = db.Sellers.Where(entry => sellerIds.Contains(entry.Id)).ToList();
                 ordersFilters.Orders.Items.ForEach(order =>
                 {
                     if (order.User == null)
@@ -211,6 +213,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             PhoneNumber = order.UserPhone
                         };
                     }
+                    var orderSeller = allOrderSellers.FirstOrDefault(entry => entry.Id == order.SellerId);
+                    order.SellerPhone = orderSeller == null ? null : orderSeller.OnlineOrdersPhone;
                     foreach (var orderProduct in order.OrderProducts)
                     {
                         var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
@@ -256,7 +260,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 .Include(entry => entry.OrderStatusStamps)
                 .Include(entry => entry.OrderProducts)
                 .FirstOrDefault(entry => entry.OrderNumber.ToString() == id || entry.Id == id);
-
+                var orderSeller = db.Sellers.Find(order.SellerId);
+                order.SellerPhone = orderSeller == null ? null : orderSeller.OnlineOrdersPhone;
                 var productIdsInOrders = order.OrderProducts.Select(entry => entry.ProductId).Distinct().ToList();
                 var productsInOrders = db.Products.Include(entry => entry.Images).Where(entry => productIdsInOrders.Contains(entry.Id)).ToList();
                 foreach (var orderProduct in order.OrderProducts)
