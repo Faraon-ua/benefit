@@ -33,9 +33,9 @@
             <div class="slider-height-10 d-flex align-items-start justify-content-start bg-img" style="background-image: url(Images/PrimaryMainPage/@image.ImageUrl);">
                 <div class="container">
                     <div class="slider-content-13 slider-animated-1 text-left">
-                        <span class="animated">@image.Description</span>
+                        <span class="animated">@Html.Raw(image.Description)</span>
                         <h1 class="animated">
-                            @image.Title
+                            @Html.Raw(image.Title)
                         </h1>
                         <a href="@image.NavigationUrl" class="shop-btn animated">Детальніше</a>
                     </div>

@@ -59,6 +59,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [ValidateInput(false)]
         public ActionResult CreateOrUpdate(Banner banner)
         {
             using (var db = new ApplicationDbContext())

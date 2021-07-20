@@ -251,7 +251,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [ValidateInput(false)]
-
         public ActionResult Moderation(ModerationProduct product)
         {
             using (var db = new ApplicationDbContext())

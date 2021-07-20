@@ -1,6 +1,8 @@
-﻿using Benefit.Common.Extensions;
+﻿using Benefit.Common.Constants;
+using Benefit.Common.Extensions;
 using Benefit.Common.Helpers;
 using Benefit.DataTransfer.ApiDto.Rozetka;
+using Benefit.Domain;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 using Benefit.HttpClient;
@@ -157,6 +159,15 @@ namespace Benefit.Services.ExternalApi
                                     UserName = rOrder.delivery.recipient_title,
                                     UserPhone = rOrder.user_phone
                                 };
+                                var statusStamp = new StatusStamp()
+                                {
+                                    Id = Guid.NewGuid().ToString(),
+                                    OrderId = order.Id,
+                                    Status = (int)order.Status,
+                                    Time = DateTime.UtcNow,
+                                    UpdatedBy = "Rozetka"
+                                };
+                                db.StatusStamps.Add(statusStamp);
                                 foreach (var rProduct in rOrder.purchases)
                                 {
                                     var suffix = orderSuffixRegex.Match(rProduct.item_name).Value.ToLower();

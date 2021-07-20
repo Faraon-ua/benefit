@@ -215,6 +215,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                     var orderSeller = allOrderSellers.FirstOrDefault(entry => entry.Id == order.SellerId);
                     order.SellerPhone = orderSeller == null ? null : orderSeller.OnlineOrdersPhone;
+                    order.SellerName = orderSeller == null ? null : orderSeller.Name;
                     foreach (var orderProduct in order.OrderProducts)
                     {
                         var product = productsInOrders.FirstOrDefault(entry => entry.Id == orderProduct.ProductId);
