@@ -715,6 +715,10 @@
     <Compile Include="Migrations\202104132058050_ExtendOrderStampComment.Designer.cs">
       <DependentUpon>202104132058050_ExtendOrderStampComment.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202107221002505_UpdateBannerDetails.cs" />
+    <Compile Include="Migrations\202107221002505_UpdateBannerDetails.designer.cs">
+      <DependentUpon>202107221002505_UpdateBannerDetails.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1236,6 +1240,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202106280827049_ModifyStatusStamp.resx">
       <DependentUpon>202106280827049_ModifyStatusStamp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202107221002505_UpdateBannerDetails.resx">
+      <DependentUpon>202107221002505_UpdateBannerDetails.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

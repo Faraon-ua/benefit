@@ -90,7 +90,13 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             System.IO.File.Delete(path);
                         }
                         logo.SaveAs(path);
-                        imageService.ResizeToSiteRatio(path, ImageType.Banner, banner.BannerType, imageFormat: format);
+                        SellerEcommerceTemplate? sellerTemplate = null;
+                        if (Seller.CurrentAuthorizedSellerId != null)
+                        {
+                            var seller = db.Sellers.Find(Seller.CurrentAuthorizedSellerId);
+                            sellerTemplate = seller.EcommerceTemplate;
+                        }
+                        imageService.ResizeToSiteRatio(path, ImageType.Banner, banner.BannerType, imageFormat: format, sellerTemplate);
                     }
                     else
                     {

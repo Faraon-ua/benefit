@@ -3625,7 +3625,9 @@ a.meanmenu-reveal.meanclose {
 }
 
 .slider-area .container {
-    align-self: center
+    align-self: center;
+    position: absolute;
+    left: var(--bs-gutter-x,.75rem);
 }
 
 .home-20 .slider-area {
@@ -3692,7 +3694,8 @@ a.meanmenu-reveal.meanclose {
 
 .bg-img {
     background-position: center center;
-    background-size: cover;
+    background-size: contain;
+    background-repeat: no-repeat;
     position: relative;
     z-index: 1;
     background-color: #bebebe

@@ -105,7 +105,7 @@ namespace Benefit.Services
             }
         }
 
-        public void ResizeToSiteRatio(string imagePath, ImageType imageType, BannerType? bannerType = null, ImageFormat imageFormat = null)
+        public void ResizeToSiteRatio(string imagePath, ImageType imageType, BannerType? bannerType = null, ImageFormat imageFormat = null, SellerEcommerceTemplate? sellerTemplate = null)
         {
             if (!File.Exists(imagePath)) return;
             Bitmap img;
@@ -153,15 +153,23 @@ namespace Benefit.Services
                     }
                     if (bannerType == BannerType.PrimaryMainPage)
                     {
-                        if (Seller.CurrentAuthorizedSellerId == null)
+                        if (!sellerTemplate.HasValue)
                         {
                             maxWidth = 724;
                             maxHeight = 433;
                         }
                         else
                         {
-                            maxWidth = 994;
-                            maxHeight = 487;
+                            if (sellerTemplate.Value == SellerEcommerceTemplate.MegaShop)
+                            {
+                                maxWidth = 994;
+                                maxHeight = 487;
+                            }
+                            if (sellerTemplate.Value == SellerEcommerceTemplate.EcolifeFurniture)
+                            {
+                                maxWidth = 1520;
+                                maxHeight = 550;
+                            }
                         }
                     }
                     if (bannerType == BannerType.SideTopMainPage || bannerType == BannerType.SideBottomMainPage)

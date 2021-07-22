@@ -30,17 +30,18 @@
     <div class="slider-active-3 owl-carousel slider-hm8 owl-dot-style">
         @foreach (var image in Model.Banners.Where(entry => entry.BannerType == BannerType.PrimaryMainPage).OrderBy(entry => entry.Order))
         {
-            <div class="slider-height-10 d-flex align-items-start justify-content-start bg-img" style="background-image: url(Images/PrimaryMainPage/@image.ImageUrl);">
-                <div class="container">
-                    <div class="slider-content-13 slider-animated-1 text-left">
-                        <span class="animated">@Html.Raw(image.Description)</span>
-                        <h1 class="animated">
-                            @Html.Raw(image.Title)
-                        </h1>
-                        <a href="@image.NavigationUrl" class="shop-btn animated">Детальніше</a>
-                    </div>
+        <div class="d-flex align-items-start justify-content-start bg-img">
+            <img src="~/Images/PrimaryMainPage/@image.ImageUrl" />
+            <div class="container">
+                <div class="slider-content-13 slider-animated-1 text-left">
+                    <span class="animated">@Html.Raw(image.Description)</span>
+                    <h1 class="animated">
+                        @Html.Raw(image.Title)
+                    </h1>
+                    <a href="@image.NavigationUrl" class="shop-btn animated">Детальніше</a>
                 </div>
             </div>
+        </div>
         }
     </div>
 </div>
