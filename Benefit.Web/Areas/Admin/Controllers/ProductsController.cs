@@ -310,6 +310,18 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 dbProduct.CategoryId = product.CategoryId;
                 dbProduct.ShortDescription = product.ShortDescription;
                 dbProduct.Description = product.Description;
+                if (dbProduct.ModerationStatus != ModerationStatus.ToCheck)
+                {
+                    var stamp = new StatusStamp
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        ProductId = product.Id,
+                        Time = DateTime.UtcNow,
+                        Status = (int)ModerationStatus.ToCheck,
+                        UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                    };
+                    db.StatusStamps.Add(stamp);
+                }
                 dbProduct.ModerationStatus = ModerationStatus.ToCheck;
 
                 if (ModelState.IsValid)
@@ -324,15 +336,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             dbProduct.DefaultImageId = imagesService.AddProductDefaultImage(image, format);
                         }
                     }
-                    var stamp = new StatusStamp
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        ProductId = product.Id,
-                        Time = DateTime.UtcNow,
-                        Status = (int)ModerationStatus.ToCheck,
-                        UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
-                    };
-                    db.StatusStamps.Add(stamp);
                     db.SaveChanges();
                     TempData["SuccessMessage"] = "Товар відмодеровано";
                     return RedirectToAction("CreateOrUpdate", new { id = product.Id });
@@ -427,8 +430,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                     product.LastModified = DateTime.UtcNow;
                     product.LastModifiedBy = User.Identity.Name;
-                    var existingProduct = db.Products.AsNoTracking().FirstOrDefault(entry=>entry.Id == product.Id);
-                    if (existingProduct!=null)
+                    var existingProduct = db.Products.AsNoTracking().FirstOrDefault(entry => entry.Id == product.Id);
+                    if (existingProduct != null)
                     {
                         db.Entry(product).State = EntityState.Modified;
                         if (product.ModerationStatus != existingProduct.ModerationStatus)
@@ -555,10 +558,34 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (product == null) return HttpNotFound();
                 if (accept)
                 {
+                    if (product.ModerationStatus != ModerationStatus.Moderated)
+                    {
+                        var stamp = new StatusStamp
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            ProductId = product.Id,
+                            Time = DateTime.UtcNow,
+                            Status = (int)ModerationStatus.Moderated,
+                            UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                        };
+                        db.StatusStamps.Add(stamp);
+                    }
                     product.ModerationStatus = ModerationStatus.Moderated;
                 }
                 else
                 {
+                    if (product.ModerationStatus != ModerationStatus.UnappropriateContent)
+                    {
+                        var stamp = new StatusStamp
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            ProductId = product.Id,
+                            Time = DateTime.UtcNow,
+                            Status = (int)ModerationStatus.UnappropriateContent,
+                            UpdatedBy = HttpUtility.UrlDecode(Request.Cookies[RouteConstants.FullNameCookieName].Value)
+                        };
+                        db.StatusStamps.Add(stamp);
+                    }
                     product.ModerationStatus = ModerationStatus.UnappropriateContent;
                 }
                 product.Comment = comment;
