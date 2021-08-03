@@ -253,7 +253,7 @@ namespace Benefit.Web.Controllers
         [HttpPost]
         [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
-        public ActionResult Order(CompleteOrder completeOrder)
+        public async Task<ActionResult> Order(CompleteOrder completeOrder)
         {
             var order = Cart.CurrentInstance.Orders.FirstOrDefault(entry => entry.SellerId == completeOrder.SellerId);
             completeOrder.Order = AutoMapper.Mapper.Map<Order>(order);
@@ -313,9 +313,7 @@ namespace Benefit.Web.Controllers
                 //order notifications
                 var NotificationService = new NotificationsService();
                 var orderUrl = Url.Action("details", "orders", new { id = completeOrder.Order.Id, area = RouteConstants.AdminAreaName }, Request.Url.Scheme);
-                Task.Run(() =>
-                    NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl,
-                        completeOrder.Order.SellerId));
+                await NotificationService.NotifySeller(completeOrder.Order.OrderNumber, orderUrl, completeOrder.Order.SellerId).ConfigureAwait(false);
                 return RedirectToAction("ordercompleted", new { number = orderNumber });
             }
             using (var db = new ApplicationDbContext())

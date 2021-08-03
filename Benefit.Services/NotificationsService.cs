@@ -38,7 +38,7 @@ namespace Benefit.Services
                 return apiName;
             }
         }
-        public void NotifyApiFailRequest(string orderNumber, string marketPlaceName, OrderStatus oldStatus, OrderStatus newStatus)
+        public async Task NotifyApiFailRequest(string orderNumber, string marketPlaceName, OrderStatus oldStatus, OrderStatus newStatus)
         {
             using (var db = new ApplicationDbContext())
             {
@@ -49,7 +49,14 @@ namespace Benefit.Services
                 foreach (var notificationChannel in notificationChannels)
                 {
                     var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
-                    telegram.SendTextMessageAsync(notificationChannel.Address, message).ConfigureAwait(false);
+                    try
+                    {
+                        await telegram.SendTextMessageAsync(notificationChannel.Address, message).ConfigureAwait(false);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Fatal("Telegram send message fail " + ex.ToString());
+                    }
                 }
             }
         }
@@ -72,7 +79,7 @@ namespace Benefit.Services
                 }
             }
         }
-        public void NotifySeller(int orderNumber, string orderUrl, string sellerId)
+        public async Task NotifySeller(int orderNumber, string orderUrl, string sellerId)
         {
             using (var db = new ApplicationDbContext())
             {
@@ -93,8 +100,15 @@ namespace Benefit.Services
                         //Telegram
                         if (notificationChannel.ChannelType == NotificationChannelType.Telegram)
                         {
-                            var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
-                            telegram.SendTextMessageAsync(notificationChannel.Address, message);
+                            try
+                            {
+                                var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
+                                var result =  await telegram.SendTextMessageAsync(notificationChannel.Address, message).ConfigureAwait(false);
+                            }
+                            catch (Exception ex)
+                            {
+                                _logger.Fatal(ex.ToString());
+                            }
                         }
                         //SMS
                         if (notificationChannel.ChannelType == NotificationChannelType.Phone)
