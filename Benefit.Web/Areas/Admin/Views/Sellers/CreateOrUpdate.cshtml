@@ -26,6 +26,7 @@
     <script src="~/Areas/Admin/assets/js/dropzone.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
     <script src="~/Areas/Admin/assets/js/date-time/bootstrap-datepicker.min.js"></script>
+    <script src="~/Areas/Admin/assets/js/bootstrap-tag.min.js"></script>
     <script src="~/Scripts/seller/fileupload.js"></script>
 
     <script>
@@ -37,6 +38,12 @@
         var deletePromotionUrl = '@Url.Action("DeletePromotion")';
         var removeReviewUrl = '@Url.Action("RemoveReview","Reviews")';
         var sellerId = '@Model.Seller.Id';
+
+        var tag_input = $('[data-role=tagsinput]');
+        tag_input.tag(
+            {
+                placeholder: tag_input.attr('placeholder')
+            });
 
         $("body").on("change",
             ".predefined-shipping",

@@ -49,7 +49,7 @@ namespace Benefit.Web.Controllers
                         .GroupBy(entry => entry)
                         .OrderByDescending(s => s.Count())
                         .Select(entry => entry.Key)
-                        .Take(ListConstants.DefaultTakePerPage * 2).ToList();
+                        .Take(ListConstants.DefaultTakePerPage * 10).ToList();
                     viewModel.Items.AddRange(db.Products
                         .Include(entry => entry.Category.SellerCategories)
                         .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
@@ -60,9 +60,11 @@ namespace Benefit.Web.Controllers
                             (!entry.Category.IsSellerCategory || (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)) &&
                             productIds.Contains(entry.Id) &&
                             (entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable ||
-                             entry.AvailabilityState == ProductAvailabilityState.Available) && entry.Images.Any())
-                        .ToList().OrderBy(entry => productIds.IndexOf(entry.Id))
-                        .Take(ListConstants.DefaultTakePerPage + 1));
+                             entry.AvailabilityState == ProductAvailabilityState.Available)
+                             && entry.IsActive
+                             && entry.Seller.IsActive
+                             && entry.Category.IsActive
+                             && entry.Images.Any()));
                     if (productIds.Count < ListConstants.DefaultTakePerPage)
                     {
                         viewModel.Items.AddRange(
@@ -112,6 +114,7 @@ namespace Benefit.Web.Controllers
                             entry.Price = (double)(entry.Price * entry.Currency.Rate);
                         }
                     });
+                    ((ProductsViewModel)viewModel).PagesCount = (viewModel.Items.Count - 1) / ListConstants.DefaultTakePerPage + 1;
                 }
                 else
                 {
@@ -131,7 +134,6 @@ namespace Benefit.Web.Controllers
                     //viewModel.Category = selectedCat;
                     //viewModel = SellerService.GetSellerProductsCatalog(categories, seller.UrlName, category, options);
                 }
-
                 viewModel.Breadcrumbs = null;
                 viewModel.Seller = seller;
                 return View("~/Views/Catalog/ProductsCatalog.cshtml", viewModel);

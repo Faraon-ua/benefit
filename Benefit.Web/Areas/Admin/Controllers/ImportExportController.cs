@@ -62,13 +62,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     .ThenByDescending(entry => entry.LastSync).ToList();
                 foreach (var task in importTasks)
                 {
-                    if (DateTime.Now - task.LastSync > TimeSpan.FromDays(3) && task.IsActive)
+                    if (task.IsActive)
                     {
-                        task.Status = ImportStatus.Error;
-                    }
-                    if (DateTime.Now - task.LastSync < TimeSpan.FromDays(3) && task.IsActive)
-                    {
-                        task.Status = ImportStatus.Success;
+                        if (DateTime.Now - task.LastSync < TimeSpan.FromDays(3) && task.LastUpdateStatus.GetValueOrDefault(false))
+                        {
+                            task.Status = ImportStatus.Success;
+                        }
+                        else
+                        {
+                            task.Status = ImportStatus.Error;
+                        }
                     }
                 }
                 return View(importTasks);

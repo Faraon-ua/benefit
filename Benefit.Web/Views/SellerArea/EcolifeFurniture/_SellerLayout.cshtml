@@ -39,6 +39,7 @@
     <!-- ===== Responsive Css Files ===== -->
     <!-- <link rel="stylesheet" href="assets/css/responsive.css" /> -->
     <!--====== Use the minified version files listed below for better performance and remove the files listed above ======-->
+    <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/Content/seller/ecolife/plugins.min.css">
     <link rel="stylesheet" href="~/Content/seller/ecolife/style.min.css">
     <link rel="stylesheet" href="~/Content/seller/ecolife/responsive.min.css">
@@ -120,6 +121,12 @@
                                             <div id="selectRegionWrap" class="margin-left-10 inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
                                                 @Html.Partial("_SelectRegionPartial", false)
                                             </div>
+                                        </li>
+                                        <li class="menu_item visible-xs">
+                                            @foreach (var phone in seller.OnlineOrdersPhone.Split(','))
+                                            {
+                                                <a href="tel:@phone">@phone</a>
+                                            }
                                         </li>
                                     </ul>
                                 </div>
@@ -227,8 +234,19 @@
                                     <div class="contact-link-wrap">
                                         <div class="contact-link">
                                             <div class="phone">
-                                                <p>Телефон:</p>
-                                                <a href="tel:@seller.OnlineOrdersPhone">@seller.OnlineOrdersPhone</a>
+                                                <div class="dropdown">
+                                                    <a href="tel:@seller.OnlineOrdersPhone.Split(',')[0]" class="dropbtn">
+                                                        <p class="font-weight-light">Телефон:</p>
+                                                        @seller.OnlineOrdersPhone.Split(',')[0]
+                                                    </a>
+                                                    <div class="dropdown-content">
+                                                        @foreach (var phone in seller.OnlineOrdersPhone.Split(',').Skip(1))
+                                                        {
+                                                            <a href="tel:@phone">@phone</a>
+                                                        }
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>

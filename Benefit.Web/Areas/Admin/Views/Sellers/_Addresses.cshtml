@@ -5,9 +5,8 @@
     <legend>Телефони</legend>
     <div class="form-group">
         <label class="col-sm-2 control-label no-padding-right">Онлайн замовлення</label>
-
         <div class="col-sm-9">
-            @Html.TextBox("Seller.OnlineOrdersPhone", Model.OnlineOrdersPhone, new { @class = "col-xs-10 col-sm-5", style="border: solid 1px;" })
+            @Html.TextBox("Seller.OnlineOrdersPhone", Model.OnlineOrdersPhone, new { @class = "col-xs-10 col-sm-5", style = "border: solid 1px;", data_role = "tagsinput", placeholder="Додати номер телефону" })
         </div>
     </div>
 </fieldset>
