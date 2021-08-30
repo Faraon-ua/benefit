@@ -113,7 +113,10 @@ namespace Benefit.Services.Domain
                 }
 
                 var productIds = exportTask.ExportProducts.Select(entry => entry.ProductId).ToList();
-                var products = db.Products.AsNoTracking()
+                var products = new List<Product>();
+                //workaround for sql (can not process queries more than 2000 records for IN clause)
+                var count = 0;
+                var query = db.Products.AsNoTracking()
                     .Include(entry => entry.Seller.ShippingMethods)
                     .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
                     .Include(entry => entry.ProductOptions.Select(op => op.ChildProductOptions))
@@ -122,8 +125,13 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.Category.ExportCategories)
                     .Include(entry => entry.Category.SellerCategories)
                     .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
-                    .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
-                    .Where(entry => productIds.Contains(entry.Id)).ToList();
+                    .Include(entry => entry.Category.MappedParentCategory.SellerCategories);
+                while (count < productIds.Count)
+                {
+                    var ids = productIds.OrderBy(id => id).Skip(count).Take(500).ToList();
+                    products.AddRange(query.Where(entry => ids.Contains(entry.Id)));
+                    count += 500;
+                }
 
                 #region Categories
                 var dbcategories = products.Select(entry => entry.Category).ToList();

@@ -17,7 +17,7 @@
         }
         else
         {
-            title = Model.Category.Name + ". " + Model.Seller.Name;
+            title = Model.Category.Name + Model.Seller.Name;
             description = string.Format("{0}. {1} на Benefit-Company по кращим цінам. ✅Гарантія якості ✅Доставка по Україні.", Model.Category.Name, Model.Seller.Name);
             h1 = Model.Category.Name;
         }
@@ -99,13 +99,14 @@
         var showMessagePopupUrl = '@Url.Action("ShowMessagePopup", "Home")';
         var hasCategory = "@((Model.Category == null).ToString().ToLower())" === 'false';
         var categoryId = '@(Model.Category == null ? "" : Model.Category.Id)';
-        var sellerId ='@(Model.Seller == null ? "" : Model.Seller.Id)';
+        var sellerId = '@(Model.Seller == null ? "" : Model.Seller.Id)';
         var categoryUrlName = '@(Model.Category == null ? "" : Model.Category.UrlName.ToLower())';
         var pagesCount = parseInt('@Model.PagesCount');
         var takePerPage = parseInt('@ListConstants.DefaultTakePerPage');
         var term = "";
+        var fetchFeaturedProducts = '@(ViewBag.FetchFeatured == null ? "false" : ViewBag.FetchFeatured.ToString().ToLower())' === 'true';
         var showCartOnOrder = '@(Model.Category == null ? "false" : Model.Category.ShowCartOnOrder.ToString())'.toLowerCase() === 'true';
-        var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category == null ? null : Model.Category.Id, area = string.Empty })';
+        var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category == null ? null : Model.Category.Id ?? Model.Category.UrlName, area = string.Empty, sellerId = (Model.Seller == null ? null : Model.Seller.Id) })';
         var productTemplateLayout = null;
         window.addEventListener('DOMContentLoaded', function() {
             $(".seo-fix").css("height", $(".group_description_block").outerHeight());
@@ -115,16 +116,15 @@
             @if(!isFavorites)
             {
                 <text>
-            $.get(getProductParameters, function (data) {
-                $(".area-product-filters").html(data);
-                $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
-            });
+                    $.get(getProductParameters, function (data) {
+                        $(".area-product-filters").html(data);
+                    });
                 </text>
             }
             else
             {
                 <text>
-            $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
+                    $.getScript(routePrefix + "/Scripts/v3/product-filters.js")
                 </text>
             }
             $(".seller-wrap a").click(function () {
@@ -137,6 +137,7 @@
         });
     </script>
     <script src="~/Scripts/v3/products.js" defer></script>
+    <script src="~/Scripts/v3/product-filters.js" defer></script>
     <script src="~/Scripts/bootstrap-slider.min.js" defer></script>
 }
 

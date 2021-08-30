@@ -191,7 +191,9 @@ $(function () {
             "&options=" +
             options +
             "&term=" +
-            term;
+            term +
+            "&fetchFeaturedProducts=" + fetchFeaturedProducts;
+
         if (typeof productTemplateLayout !== 'undefined') {
             getProductsWithDataUrl = getProductsWithDataUrl + "&layout=" + productTemplateLayout;
         }
@@ -382,7 +384,8 @@ $(function () {
                     "&options=" +
                     options +
                     "&page=1" +
-                    "&isFilterRequest=true";
+                    "&isFilterRequest=true" +
+                    "&fetchFeaturedProducts=" + fetchFeaturedProducts;
                 if (typeof productTemplateLayout !== 'undefined' && productTemplateLayout !== null) {
                     getProductsWithDataUrl = getProductsWithDataUrl + "&layout=" + productTemplateLayout;
                 }

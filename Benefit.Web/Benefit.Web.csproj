@@ -735,6 +735,8 @@
     <Content Include="Content\seller\ecolife\fonts\fa-regular-400.woff2" />
     <Content Include="Content\seller\ecolife\fonts\fa-solid-900.eot" />
     <Content Include="Content\seller\ecolife\fonts\fa-solid-900.woff2" />
+    <Content Include="Content\seller\ecolife\images\amount.png" />
+    <Content Include="Content\seller\ecolife\images\icon_contact.png" />
     <Content Include="Content\seller\ecolife\plugins.min.css" />
     <Content Include="Content\seller\ecolife\responsive.min.css" />
     <Content Include="Content\seller\ecolife\style.min.css" />

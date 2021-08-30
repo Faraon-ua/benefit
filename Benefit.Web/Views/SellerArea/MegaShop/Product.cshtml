@@ -206,7 +206,7 @@
         <meta itemprop="url" content="@Request.Url.AbsoluteUri" />
         <meta itemprop="price" content="@Model.Product.Price" />
         <meta itemprop="priceCurrency" content="UAH" />
-        @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+        @if (availableForPurchase.State == ComputedProductAvailabilityState.Available || availableForPurchase.State == ComputedProductAvailabilityState.AvailableInOtherRegion)
         {
             <link itemprop="availability" href="http://schema.org/InStock" />
         }
@@ -303,7 +303,7 @@
                                 <div class="available col-sm-6">
                                     <span class="details_label" data-language="available">Наявність:</span>
 
-                                    @if (Model.Product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable || Model.Product.AvailabilityState == ProductAvailabilityState.Available)
+                                    @if (availableForPurchase.State == ComputedProductAvailabilityState.Available || availableForPurchase.State == ComputedProductAvailabilityState.AvailableInOtherRegion)
                                     {
                                         <span class="in_stock" data-language="product_in_stock">В наявності</span>
                                     }

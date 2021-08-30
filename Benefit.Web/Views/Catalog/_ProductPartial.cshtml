@@ -63,11 +63,18 @@
                 {
                     <div class="sticker_safe">Безпечна покупка</div>
                 }
-                @if (DateTime.UtcNow - Model.AddedOn < TimeSpan.FromDays(14))
+                @if (Model.IsNewProduct)
                 {
-                    <div class="sticker_safe">Новинка</div>
+                    <div class="sticker_sovetuem">Новинка</div>
                 }
-                @*<div class="sticker_khit">Хит</div>*@
+                @if (Model.OldPrice != null)
+                {
+                    <div class="sticker_aktsiya">Акція</div>
+                }
+                @if (Model.IsFeatured)
+                {
+                    <div class="sticker_khit">Хіт</div>
+                }
             </div>
 
             <a href="@productDetailsUrl" class="dark_link" style="font-size: 16px; font-weight: bold; height: 66px; display: block; overflow: hidden;">@Model.Name</a>

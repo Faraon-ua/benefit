@@ -107,7 +107,7 @@ namespace Benefit.Web.Controllers
         }
 
         [FetchSeller(Order = 0)]
-        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page, SellerEcommerceTemplate? layout, bool isFilterRequest = false)
+        public ActionResult GetProducts(string categoryId, string sellerId, string options, int page, SellerEcommerceTemplate? layout, bool isFilterRequest = false, bool fetchFeaturedProducts = false)
         {
             List<Product> products = null;
             var templateName = "_ProductPartial";
@@ -121,7 +121,7 @@ namespace Benefit.Web.Controllers
             }
             var seller = ViewBag.Seller as Seller;
             var catalogService = new CatalogService();
-            var catalog = catalogService.GetSellerProductsCatalog(seller == null ? null : seller.Id, categoryId, User.Identity.GetUserId(), options, page == 1 ? true : false);
+            var catalog = catalogService.GetSellerProductsCatalog(seller == null ? sellerId : seller.Id, categoryId, User.Identity.GetUserId(), options, page == 1 ? true : false, fetchFeaturedProducts);
             products = catalog.Items;
             if (isFilterRequest)
             {

@@ -5,7 +5,7 @@
 
 @{
     //var sellerUrl = Url.SubdomainAction(Model.UrlName, "Index", "Home", null);
-    var detailsUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.UrlName, category = string.Empty, options = string.Empty });
+    var detailsUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.UrlName, category = "golovna", options = string.Empty });
     var isExternalLink = Model.RedirectUrl != null;
     var sellerUrl = isExternalLink ? Model.RedirectUrl : detailsUrl;
     var logo = Model.Images.FirstOrDefault(entry => entry.SellerId == Model.Id && entry.ImageType == ImageType.SellerLogo);

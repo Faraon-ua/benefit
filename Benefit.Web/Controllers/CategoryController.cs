@@ -14,13 +14,13 @@ namespace Benefit.Web.Controllers
             catalogService = new CatalogService();
         }
         [FetchSeller()]
-        public ActionResult GetProductFilters(string categoryId)
+        public ActionResult GetProductFilters(string categoryId, string sellerId)
         {
             var seller = ViewBag.Seller as Seller;
             ICollection<ProductParameter> parameters = null;
             if (categoryId != null)
             {
-                parameters = catalogService.GetProductParameters(categoryId, seller == null ? null : seller.Id);
+                parameters = catalogService.GetProductParameters(categoryId, seller == null ? sellerId : seller.Id);
             }
             if (seller != null && seller.HasEcommerce)
             {

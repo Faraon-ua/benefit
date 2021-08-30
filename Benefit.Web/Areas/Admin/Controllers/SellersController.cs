@@ -229,7 +229,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Personnels)
                     .Include(entry => entry.Schedules)
-                    .Include(entry => entry.ShippingMethods.Select(sp => sp.Region))
+                    .Include(entry => entry.ShippingMethods.Select(sp => sp.Region.Parent.Parent))
                     .Include(entry => entry.SellerCategories.Select(sc => sc.Category))
                     .Include(entry => entry.Promotions)
                     .FirstOrDefault(entry => entry.Id == id);

@@ -221,7 +221,7 @@ namespace Benefit.Services.ExternalApi
                     _logger.Error("Rozetka auth token is null");
                 }
             }
-            HttpContext.Current.Application["IsRozetkaProcessing"] = false;
+            HttpRuntime.Cache["IsRozetkaProcessing"] = false;
         }
     }
 }

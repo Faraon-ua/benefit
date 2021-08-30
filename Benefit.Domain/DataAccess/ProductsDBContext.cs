@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Text;
 
 namespace Benefit.Domain.DataAccess
 {
@@ -92,9 +93,9 @@ namespace Benefit.Domain.DataAccess
         }
         public int GetCatalogCount(string categoryId, string sellerId, string where, IEnumerable<SqlParameter> sqlParameters)
         {
-            var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
+            var sellerWhere = sellerId == null ? string.Empty : "and p.SellerId = @sellerId";
             //products in mapped categories
-            cmd.CommandText = string.Format(@"select count(Id) from
+            var strBld = new StringBuilder(string.Format(@"select count(Id) from
               (SELECT p.Id,
                 (p.Price * ISNULL(c.Rate, 1)) as Price
               FROM Products p
@@ -103,11 +104,17 @@ namespace Benefit.Domain.DataAccess
 	            join Categories cat on cat.Id = p.CategoryId
 	            left join Categories pCat on cat.MappedParentCategoryId = pCat.Id
               WHERE
-	            p.IsActive = 1 and
-	            p.ModerationStatus = 0 and
-	            {0}
-	            (cat.IsActive = 1 or pCat.IsActive = 1) and
-	            (cat.Id = @categoryId or pCat.Id = @categoryId) {1}) as result", sellerWhere, where);
+	            p.IsActive = 1 
+	            and p.ModerationStatus = 0
+	            {0} {1}
+	            and (cat.IsActive = 1 or pCat.IsActive = 1)", sellerWhere, where));
+
+            if (categoryId != null)
+            {
+                strBld.Append("and (cat.Id = @categoryId or pCat.Id = @categoryId)");
+            }
+            strBld.Append(") as result");
+            cmd.CommandText = strBld.ToString();
             if (sellerId != null)
             {
                 var sellerIdParam = new SqlParameter
@@ -119,14 +126,17 @@ namespace Benefit.Domain.DataAccess
                 };
                 cmd.Parameters.Add(sellerIdParam);
             }
-            var categoryIdParam = new SqlParameter
+            if (categoryId != null)
             {
-                ParameterName = "@categoryId",
-                SqlDbType = SqlDbType.NVarChar,
-                Direction = ParameterDirection.Input,
-                Value = categoryId
-            };
-            cmd.Parameters.Add(categoryIdParam);
+                var categoryIdParam = new SqlParameter
+                {
+                    ParameterName = "@categoryId",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Direction = ParameterDirection.Input,
+                    Value = categoryId
+                };
+                cmd.Parameters.Add(categoryIdParam);
+            }
             cmd.Parameters.AddRange(sqlParameters.ToArray());
             int count = 0;
             cmd.Connection.Open();
@@ -136,8 +146,8 @@ namespace Benefit.Domain.DataAccess
         }
         public List<Product> GetCatalog(string categoryId, string sellerId, string userId, string where, string orderBy, int skip, int take, IEnumerable<SqlParameter> sqlParams)
         {
-            var sellerWhere = sellerId == null ? string.Empty : "p.SellerId = @sellerId and";
-            cmd.CommandText = string.Format(@"SELECT p.Id
+            var sellerWhere = string.IsNullOrEmpty(sellerId) ? string.Empty : "and p.SellerId = @sellerId";
+            var strBld = new StringBuilder(string.Format(@"SELECT p.Id
                   ,p.SellerId
                     ,s.IsActive as SellerIsActive
                     ,s.Name as SellerName
@@ -154,6 +164,8 @@ namespace Benefit.Domain.DataAccess
                   ,p.UrlName
                   ,p.SKU
                   ,p.IsWeightProduct
+                  ,p.IsFeatured
+                  ,p.IsNewProduct
                   ,[AvailableAmount] 
 	              ,(SELECT CASE 
                   WHEN 
@@ -173,7 +185,7 @@ namespace Benefit.Domain.DataAccess
                         ELSE 2 END) as AvailabilityState
                   ,(p.Price * ISNULL(c.Rate, 1)) as Price
                   ,(p.OldPrice * ISNULL(c.Rate, 1)) as OldPrice
-                  ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{1}')
+                  ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{0}')
                         THEN CAST(1 AS BIT)
                         ELSE CAST(0 AS BIT) END) as IsFavorite
                   ,(SELECT CASE WHEN EXISTS (SELECT * FROM Images WHERE ProductId = p.Id)
@@ -188,19 +200,29 @@ namespace Benefit.Domain.DataAccess
               WHERE
 	            p.IsActive = 1 and
 	            p.ModerationStatus = 0 and
-	            {0}
-	            (cat.IsActive = 1 or pCat.IsActive = 1) and
-	            (cat.Id = @categoryId or pcat.Id = @categoryId) {2}
-                order by {3}
-	            OFFSET {4} ROWS FETCH NEXT {5} ROWS ONLY", sellerWhere, userId, where, orderBy, skip, take);
-            cmd.Parameters.Clear();
-            cmd.Parameters.Add(new SqlParameter
+	            (cat.IsActive = 1 or pCat.IsActive = 1)", userId));
+
+            if (!string.IsNullOrEmpty(categoryId))
             {
-                ParameterName = "@categoryId",
-                SqlDbType = SqlDbType.NVarChar,
-                Direction = ParameterDirection.Input,
-                Value = categoryId
-            });
+                strBld.Append(" and (cat.Id = @categoryId or pcat.Id = @categoryId)");
+            }
+            strBld.AppendFormat(@" {0} {1}
+                order by {2}
+                OFFSET {3}
+                ROWS FETCH NEXT {4}
+                ROWS ONLY", sellerWhere, where, orderBy, skip, take);
+            cmd.CommandText = strBld.ToString();
+            cmd.Parameters.Clear();
+            if (!string.IsNullOrEmpty(categoryId))
+            {
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    ParameterName = "@categoryId",
+                    SqlDbType = SqlDbType.NVarChar,
+                    Direction = ParameterDirection.Input,
+                    Value = categoryId
+                });
+            }
             if (sellerId != null)
             {
                 cmd.Parameters.Add(new SqlParameter

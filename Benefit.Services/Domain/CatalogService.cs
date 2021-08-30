@@ -6,6 +6,7 @@ using Benefit.Domain.Models.Enums;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Entity;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
@@ -57,7 +58,8 @@ namespace Benefit.Services.Domain
             }
             return productParameters;
         }
-        public ProductsViewModel GetSellerProductsCatalog(string sellerId, string categoryId, string userId, string options, bool fetchPaging = true)
+
+        public ProductsViewModel GetSellerProductsCatalog(string sellerId, string categoryId, string userId, string options, bool fetchPaging = true, bool fetchFeaturedProducts = false)
         {
             var result = new ProductsViewModel();
             var where = new StringBuilder();
@@ -220,7 +222,11 @@ namespace Benefit.Services.Domain
                     orderby = "AvailabilityState, Price desc, p.SKU";
                     break;
             }
-
+            //fetch featured, new, sale products
+            if (fetchFeaturedProducts)
+            {
+                where.Append(" and (p.IsFeatured = 1 or p.IsNewProduct = 1 or p.OldPrice is not null)");
+            }
             //if (sellerId != null)
             //{
             //    var mappedCategories = db.Categories
@@ -239,6 +245,22 @@ namespace Benefit.Services.Domain
                 result.PagesCount = (productsDBContext.GetCatalogCount(categoryId, sellerId, where.ToString(), sqlParams) - 1) / ListConstants.DefaultTakePerPage + 1;
             }
             result.Items = productsDBContext.GetCatalog(categoryId, sellerId, userId, where.ToString(), orderby, ListConstants.DefaultTakePerPage * (result.Page - 1), ListConstants.DefaultTakePerPage + 1, sqlParams);
+            result.Items.ForEach(entry =>
+            {
+                var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;
+                var sellerCategory = produCat.SellerCategories.FirstOrDefault(sc => sc.CategoryId == produCat.Id && sc.SellerId == entry.SellerId);
+                if (sellerCategory != null)
+                {
+                    if (sellerCategory.CustomMargin.HasValue)
+                    {
+                        if (entry.OldPrice.HasValue)
+                        {
+                            entry.OldPrice += entry.OldPrice * sellerCategory.CustomMargin.Value / 100;
+                        }
+                        entry.Price += entry.Price * sellerCategory.CustomMargin.Value / 100;
+                    }
+                }
+            });
             return result;
         }
 
