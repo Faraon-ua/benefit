@@ -44,6 +44,7 @@
         var productTemplateLayout = 1;
         var term = "@Request.QueryString["term"]";
         var getProductParameters = '@Url.Action("GetProductFilters", "Category", new { categoryId = Model.Category.Id, area = string.Empty })';
+        var fetchFeaturedProducts = false;
 
         $(function () {
             @if(!isFavorites)

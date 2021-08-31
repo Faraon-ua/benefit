@@ -137,19 +137,7 @@ $(function () {
     });
 
     if ($.fn.inputmask) {
-        $('.js-mask-url').inputmask("url", {
-            mask: "https://*{1,20}",
-            greedy: false,
-            clearMaskOnLostFocus: false,
-            clearIncomplete: false,
-            definitions: {
-                '*': {
-                    validator: "[0-9A-Za-z.!#$%&'*+/=?^_`{|}~\-]",
-                    cardinality: 1,
-                    casing: "lower"
-                }
-            }
-        });
+        $('.js-mask-url').inputmask({ regex: "https://.*" })
     }
     if ($.fn.mask) {
         $('.number-input').mask("#");
