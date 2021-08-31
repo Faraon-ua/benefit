@@ -55,7 +55,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
             {
                 if (type == ImageType.ProductGallery)
                 {
-                    imagesService.DeleteByFileName(fileName, parentId, type);
+                    imagesService.DeleteFile(fileName, parentId, type);
                 }
                 else
                 {
