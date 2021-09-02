@@ -9,17 +9,17 @@ namespace Benefit.Domain.DataAccess.Firebird
     {
         protected readonly string connectionString;
         private const string getProductsSql = @"Select
-												com.idkey as Id,
-												gr.text as CategoryName,
-												gr.idkey as CategoryId,
-												com.text as Name,
-												rem.saleprice as Price,
-												rem.barcode as Barcode,
-												Sum(Rem.quantity_rem) as Quantity
-												from commodity com
-												left join Remainder_quick rem on rem.idcommodity = com.idkey
-												inner join commoditytree gr on gr.idkey = com.idcommoditytree
-												group by 1,2,3,4,5,6";
+                                                com.idkey as Id,
+                                                gr.text as CategoryName,
+                                                gr.idkey as CategoryId,
+                                                com.text as Name,
+                                                rem.saleprice as Price,
+                                                iif(rem.barcode is null,Com.barcode,rem.barcode) as Barcode,
+                                                Sum(Rem.quantity_rem) as Quantity
+                                                from commodity com
+                                                left join Remainder_quick rem on rem.idcommodity = com.idkey
+                                                inner join commoditytree gr on gr.idkey = com.idcommoditytree
+                                                group by 1,2,3,4,5,6";
         protected T ConvertFromDBVal<T>(object obj)
         {
             if (obj == null || obj == DBNull.Value)
