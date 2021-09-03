@@ -856,7 +856,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     if (filters.IsAvailable.Value)
                     {
                         products = products.Where(entry =>
-                            entry.AvailabilityState != ProductAvailabilityState.NotInStock ||
+                            entry.AvailabilityState != ProductAvailabilityState.NotInStock &&
                             entry.AvailableAmount > 0);
                     }
                     else
