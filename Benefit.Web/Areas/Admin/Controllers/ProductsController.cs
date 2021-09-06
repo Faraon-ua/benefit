@@ -861,7 +861,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                     else
                     {
-                        products = products.Where(entry => entry.AvailabilityState == ProductAvailabilityState.NotInStock);
+                        products = products.Where(entry => 
+                            entry.AvailabilityState == ProductAvailabilityState.NotInStock ||
+                            entry.AvailableAmount == 0);
                     }
                 }
                 if (filters.HasOriginCountry.HasValue)

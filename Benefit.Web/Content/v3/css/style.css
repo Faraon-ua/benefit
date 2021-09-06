@@ -22543,11 +22543,7 @@ hr.bottoms {
 .cost.prices .price, .module-cart .row_titles .item_title, .module-cart .row_values .price {
     font-size: 18px;
     font-weight: 700;
-    line-height: 15px
-}
-
-.cost.prices .price {
-    margin-bottom: 8px;
+    line-height: 10px
 }
 
 .module-cart .cost.prices .price {

@@ -6,6 +6,7 @@ using Benefit.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -21,7 +22,12 @@ namespace Benefit.Services.Import
         {
             using (var db = new ApplicationDbContext())
             {
-                var xml = XDocument.Load(importTask.FileUrl);
+                System.Net.HttpWebRequest req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(importTask.FileUrl);
+                req.Timeout = 1000 * 60 * 5; // milliseconds
+                System.Net.WebResponse res = req.GetResponse();
+                Stream responseStream = res.GetResponseStream();
+                var xml = XDocument.Load(responseStream);
+                responseStream.Close();
                 var rawXmlCategories = xml.Descendants("Группы").First().Elements().ToList();
                 var resultXmlCategories = GetAllFiniteCategories(rawXmlCategories);
                 var resultXmlCategoryIds = resultXmlCategories.Select(entry => entry.Element("Ид").Value);
