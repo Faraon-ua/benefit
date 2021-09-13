@@ -1,10 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Benefit.Domain.Models
 {
+    public class ProductParameterComparer : IEqualityComparer<ProductParameter>
+    {
+        public bool Equals(ProductParameter x, ProductParameter y)
+        {
+            if (ReferenceEquals(x, y)) return true;
+
+            if (object.ReferenceEquals(x, null) || Object.ReferenceEquals(y, null))
+                return false;
+
+            return x.Id == y.Id;
+        }
+
+        public int GetHashCode(ProductParameter product)
+        {
+            if (Object.ReferenceEquals(product, null)) return 0;
+            return product.Id.GetHashCode();
+        }
+
+    }
     public class ProductParameter
     {
         public ProductParameter()

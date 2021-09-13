@@ -113,7 +113,7 @@
         });
 
         $(function () {
-            @if(!isFavorites)
+            @if(!isFavorites && Model.ProductParameters == null)
             {
                 <text>
                     $.get(getProductParameters, function (data) {
@@ -241,7 +241,14 @@
             }
             <div class="area-product-filters">
                 <div style="width:100%; text-align:center;">
-                    <img src="~/Content/img/loading.gif" />
+                    @if (Model.ProductParameters == null)
+                    {
+                        <img src="~/Content/img/loading.gif" />
+                    }
+                    else
+                    {
+                        @Html.Partial("~/Views/Catalog/_ProductFilters.cshtml", Model.ProductParameters)
+                    }
                 </div>
             </div>
         </div>

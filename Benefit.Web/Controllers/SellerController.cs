@@ -85,6 +85,7 @@ namespace Benefit.Web.Controllers
                             }
                         });
                     }
+                    ((ProductsViewModel)viewModel).ProductParameters = catalogService.GetProductParameters(null, null, viewModel.Items.ToList());
                     viewModel.Category = new CategoryVM { UrlName = "golovna" };
                     ViewBag.FetchFeatured = true;
                 }

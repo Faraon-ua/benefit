@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
 
 namespace Benefit.DataTransfer.ViewModels.Base

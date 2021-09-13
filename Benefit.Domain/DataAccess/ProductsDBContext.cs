@@ -148,7 +148,9 @@ namespace Benefit.Domain.DataAccess
         {
             var sellerWhere = string.IsNullOrEmpty(sellerId) ? string.Empty : "and p.SellerId = @sellerId";
             var strBld = new StringBuilder(string.Format(@"SELECT p.Id
-                  ,p.SellerId
+                    ,p.SellerId
+                    ,p.Vendor
+                    ,p.OriginCountry
                     ,s.IsActive as SellerIsActive
                     ,s.Name as SellerName
 	                ,s.SafePurchase as SellerSafePurchase

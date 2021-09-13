@@ -20,12 +20,36 @@ namespace Benefit.Services.Domain
         {
             productsDBContext = new ProductsDBContext();
         }
-        public ICollection<ProductParameter> GetProductParameters(string categoryId, string sellerId)
+        public ICollection<ProductParameter> GetProductParameters(string categoryId, string sellerId, List<Product> featuredProducts = null)
         {
             var ppContext = new ProductParametersDBContext();
-            var catalogParams = productsDBContext.GetCatalogParams(categoryId, sellerId);
-            var productParameters = ppContext.Get(categoryId, sellerId);
-
+            CatalogParams catalogParams = null;
+            List<ProductParameter> productParameters = new List<ProductParameter>();
+            if (featuredProducts == null)
+            {
+                catalogParams = productsDBContext.GetCatalogParams(categoryId, sellerId);
+                productParameters = ppContext.Get(categoryId, sellerId);
+            }
+            else
+            {
+                using(var db = new ApplicationDbContext())
+                {
+                    var productIds = featuredProducts.Select(entry => entry.Id).ToList();
+                    catalogParams = new CatalogParams()
+                    {
+                        SellerNames = string.Empty,
+                        SellerUrls = string.Empty,
+                        ProductParameters = string.Join(",",db.ProductParameterProducts
+                            .Where(entry => productIds.Contains(entry.ProductId))
+                            .Select(entry => entry.StartValue).ToList())
+                    };
+                    var prices = featuredProducts.Select(entry => entry.Price).DefaultIfEmpty().ToList();
+                    catalogParams.MinPrice = prices.Min();
+                    catalogParams.MaxPrice = prices.Max();
+                    catalogParams.OriginCountries = string.Join(",",featuredProducts.Select(entry => entry.OriginCountry).Distinct());
+                    catalogParams.Vendors = string.Join(",",featuredProducts.Select(entry => entry.Vendor).Distinct());
+                }
+            }
             var generalParams = FetchGeneralProductParameters(catalogParams, sellerId == null);
             var productParametersInItems = catalogParams.ProductParameters.Split(',').Distinct().Select(entry => entry.ToLower().Replace("&", string.Empty)).ToList();
             productParametersInItems.AddRange(generalParams.SelectMany(entry => entry.ProductParameterValues).Select(entry => entry.ParameterValueUrl).ToList());
@@ -151,7 +175,7 @@ namespace Benefit.Services.Domain
                                 Value = optionValues[index]
                             });
                             sqlParams.AddRange(countryParams);
-                            where.Append(string.Format(" and p.Vendor in ({0})", countries));
+                            where.Append(string.Format(" and p.OriginCountry in ({0})", countries));
                             break;
                         case "price":
                             var prices = optionValues[0].Split('-');
@@ -307,7 +331,7 @@ namespace Benefit.Services.Domain
                 DisplayInFilters = true,
                 ProductParameterValues = availableList
             });
-            if (fetchSellers)
+            if (fetchSellers && !string.IsNullOrEmpty(catalogParams.SellerNames))
             {
                 var sellerNames = catalogParams.SellerNames.Split(',');
                 var sellerUrls = catalogParams.SellerUrls.Split(',');
@@ -331,7 +355,7 @@ namespace Benefit.Services.Domain
                 });
             }
 
-            if (catalogParams.Vendors != null)
+            if (!string.IsNullOrEmpty(catalogParams.Vendors))
             {
                 var vendorParams =
                     catalogParams.Vendors.Split(',').Select(entry => new ProductParameterValue()
@@ -352,7 +376,7 @@ namespace Benefit.Services.Domain
                 }
             }
 
-            if (catalogParams.OriginCountries != null)
+            if (!string.IsNullOrEmpty(catalogParams.OriginCountries))
             {
                 var originCountryParams =
                  catalogParams.OriginCountries.Split(',').Select(entry => new ProductParameterValue()
@@ -394,6 +418,5 @@ namespace Benefit.Services.Domain
             result = result.Reverse().ToDictionary(x => x.Key, x => x.Value);
             return result;
         }
-
     }
 }

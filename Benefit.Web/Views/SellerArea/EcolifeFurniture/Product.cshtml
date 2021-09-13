@@ -370,6 +370,7 @@
                 <a data-toggle="tab" class="active" href="#des-details1">Опис</a>
                 <a data-toggle="tab" href="#des-details2">Характеристики</a>
                 <a data-toggle="tab" href="#des-details3">Відгуки (@Model.Product.ReviewsCount)</a>
+                <a data-toggle="tab" href="#delivery">Доставка та оплата</a>
             </div>
             <div class="tab-content description-review-bottom">
                 <div id="des-details2" class="tab-pane">
@@ -421,6 +422,11 @@
                                 TargetName = Model.Product.Name,
                             })
                         </div>
+                    </div>
+                </div>
+                <div id="delivery" class="tab-pane">
+                    <div class="product-anotherinfo-wrapper">
+                        @Html.Raw(seller.ShippingDescription)
                     </div>
                 </div>
             </div>
