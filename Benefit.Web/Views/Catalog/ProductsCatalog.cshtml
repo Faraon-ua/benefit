@@ -113,7 +113,7 @@
         });
 
         $(function () {
-            @if(!isFavorites && Model.ProductParameters == null)
+            @if(!isFavorites && !Model.ProductParameters.Any())
             {
                 <text>
                     $.get(getProductParameters, function (data) {
@@ -241,7 +241,7 @@
             }
             <div class="area-product-filters">
                 <div style="width:100%; text-align:center;">
-                    @if (Model.ProductParameters == null)
+                    @if (!Model.ProductParameters.Any())
                     {
                         <img src="~/Content/img/loading.gif" />
                     }

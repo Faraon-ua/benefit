@@ -225,31 +225,33 @@ namespace Benefit.Services.Domain
                 }
                 where.Append(")");
             }
-            switch (sort)
-            {
-                case ProductSortOption.Rating:
-                    orderby = "p.[Order], IsNewProduct desc, AvailabilityState, HasImages desc, p.AddedOn, p.AvarageRating, p.SKU";
-                    break;
-                case ProductSortOption.Order:
-                    orderby = "AvailabilityState, HasImages desc, p.SKU";
-                    break;
-                case ProductSortOption.NameAsc:
-                    orderby = "AvailabilityState, HasImages desc, p.Name, p.SKU";
-                    break;
-                case ProductSortOption.NameDesc:
-                    orderby = "AvailabilityState, HasImages desc, p.Name desc, p.SKU";
-                    break;
-                case ProductSortOption.PriceAsc:
-                    orderby = "AvailabilityState, Price, p.SKU";
-                    break;
-                case ProductSortOption.PriceDesc:
-                    orderby = "AvailabilityState, Price desc, p.SKU";
-                    break;
-            }
-            //fetch featured, new, sale products
             if (fetchFeaturedProducts)
             {
-                where.Append(" and (p.IsFeatured = 1 or p.IsNewProduct = 1 or p.OldPrice is not null)");
+                orderby = "p.IsFeatured desc, p.IsNewProduct desc, CASE WHEN OldPrice IS NULL THEN 1 ELSE 0 END, AvailabilityState, HasImages desc, p.SKU";
+            }
+            else
+            {
+                switch (sort)
+                {
+                    case ProductSortOption.Rating:
+                        orderby = "p.[Order], IsNewProduct desc, AvailabilityState, HasImages desc, p.AddedOn, p.AvarageRating, p.SKU";
+                        break;
+                    case ProductSortOption.Order:
+                        orderby = "AvailabilityState, HasImages desc, p.SKU";
+                        break;
+                    case ProductSortOption.NameAsc:
+                        orderby = "AvailabilityState, HasImages desc, p.Name, p.SKU";
+                        break;
+                    case ProductSortOption.NameDesc:
+                        orderby = "AvailabilityState, HasImages desc, p.Name desc, p.SKU";
+                        break;
+                    case ProductSortOption.PriceAsc:
+                        orderby = "AvailabilityState, Price, p.SKU";
+                        break;
+                    case ProductSortOption.PriceDesc:
+                        orderby = "AvailabilityState, Price desc, p.SKU";
+                        break;
+                }
             }
             //if (sellerId != null)
             //{

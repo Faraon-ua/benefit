@@ -45,46 +45,6 @@ namespace Benefit.Web.Controllers
                 if (category == "golovna")
                 {
                     viewModel = catalogService.GetSellerProductsCatalog(seller.Id, null, User.Identity.GetUserId(), options, true, true);
-                    if (viewModel.Items.Count < ListConstants.DefaultTakePerPage)
-                    {
-                        viewModel.Items.AddRange(
-                            db.Products
-                                .Include(entry => entry.Currency)
-                                .Include(entry => entry.Images)
-                                .Include(entry => entry.Category.SellerCategories)
-                                .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
-                                .Include(entry => entry.Seller.ShippingMethods.Select(sh => sh.Region))
-                                .Where(entry => entry.SellerId == id && entry.IsActive && entry.Category.IsActive &&
-                                                (!entry.Category.IsSellerCategory || entry.Category.IsSellerCategory &&
-                                                 entry.Category.MappedParentCategory != null))
-                                .OrderBy(entry => entry.AvailabilityState)
-                                .ThenByDescending(entry => entry.Images.Any())
-                                .Take(ListConstants.DefaultTakePerPage + 1).ToList());
-                        viewModel.Items.ForEach(entry =>
-                        {
-                            var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;
-                            var sellerCategory = produCat.SellerCategories.FirstOrDefault(sc => sc.CategoryId == produCat.Id && sc.SellerId == entry.SellerId);
-                            if (sellerCategory != null)
-                            {
-                                if (sellerCategory.CustomMargin.HasValue)
-                                {
-                                    if (entry.OldPrice.HasValue)
-                                    {
-                                        entry.OldPrice += entry.OldPrice * sellerCategory.CustomMargin.Value / 100;
-                                    }
-                                    entry.Price += entry.Price * sellerCategory.CustomMargin.Value / 100;
-                                }
-                            }
-                            if (entry.Currency != null)
-                            {
-                                if (entry.OldPrice.HasValue)
-                                {
-                                    entry.OldPrice = (double)(entry.OldPrice * entry.Currency.Rate);
-                                }
-                                entry.Price = (double)(entry.Price * entry.Currency.Rate);
-                            }
-                        });
-                    }
                     ((ProductsViewModel)viewModel).ProductParameters = catalogService.GetProductParameters(null, null, viewModel.Items.ToList());
                     viewModel.Category = new CategoryVM { UrlName = "golovna" };
                     ViewBag.FetchFeatured = true;
