@@ -150,15 +150,11 @@ $(function () {
         $(".products_item").each(function () { $(this).find(".product_buy").eq(0).click(); })
     });
 
-    $("body").on("click", ".ajax_load_btn, .paging", function (e) {
-        e.preventDefault();
-        if ($(this).parent().hasClass("active"))
-            return;
+    function loadPagingData(moreBtn) {
         parts = location.href.split('/');
         lastSegment = (parts.pop() || parts.pop()).replace("#", "");
         lastSegment = lastSegment.replace(location.search, ""); //handle query params
         $(".products-wrapper").css("opacity", "0.3");
-        var moreBtn = $(this);
         var page = parseInt(moreBtn.attr("data-page"));
         var pageUrl;
         if (lastSegment === categoryUrlName) {
@@ -281,6 +277,17 @@ $(function () {
                     $("title").text(title + " сторінка " + (page + 1));
                 }
             });
+    }
+
+    $("body").on("click", ".ajax_load_btn, .paging", function (e) {
+        e.preventDefault();
+        if ($(this).parent().hasClass("active"))
+            return;
+        loadPagingData($(this));
+    });
+    $(window).on("popstate", function (e) {
+        var moreBtn = $(".pagination page_item.active");
+        loadPagingData(moreBtn);
     });
 
     $("body").on("click", "#reset-filters", function () {
