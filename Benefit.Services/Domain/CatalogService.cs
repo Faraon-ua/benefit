@@ -227,7 +227,7 @@ namespace Benefit.Services.Domain
             }
             if (fetchFeaturedProducts)
             {
-                orderby = "p.IsFeatured desc, p.IsNewProduct desc, CASE WHEN OldPrice IS NULL THEN 1 ELSE 0 END, AvailabilityState, HasImages desc, p.SKU";
+                orderby = "AvailabilityState, HasImages desc, p.IsFeatured desc, p.IsNewProduct desc, CASE WHEN OldPrice IS NULL THEN 1 ELSE 0 END, p.SKU";
             }
             else
             {
