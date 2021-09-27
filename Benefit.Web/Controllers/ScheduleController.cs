@@ -59,6 +59,8 @@ namespace Benefit.Web.Controllers
                 }
                 foreach (var seller_id in sellerIds)
                 {
+                    if (db.SellerReports.Any(entry => entry.SellerId == seller_id && entry.Month == month && entry.Year == year))
+                        continue;
                     var bytes = sellerReportService.GenerateSellerReport(seller_id, startDate, endDate);
                     var reportPath = Path.Combine(reportsPath, seller_id);
                     if (!Directory.Exists(reportPath))
