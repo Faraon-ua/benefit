@@ -11,6 +11,7 @@ namespace Benefit.Web.Models.Admin
         public ProductFilterValues()
         {
             Take = ListConstants.DefaultTakePerPage;
+            IsAvailable = true;
         }
         public string Search { get; set; }
         public string CategoryId { get; set; }
@@ -42,7 +43,7 @@ namespace Benefit.Web.Models.Admin
         public IEnumerable<SelectListItem> HasParameters { get; set; }
         public IEnumerable<SelectListItem> HasVendor { get; set; }
         public IEnumerable<SelectListItem> HasOriginCountry { get; set; }
-        public IEnumerable<SelectListItem> IsAvailable { get; set; }
+        public IEnumerable<SelectListItem> IsAvailableList { get; set; }
         public IEnumerable<SelectListItem> ModerationStatuses { get; set; }
         public IEnumerable<SelectListItem> Moderators { get; set; }
         public bool IsActive{ get; set; }

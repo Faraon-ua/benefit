@@ -179,9 +179,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 new SelectListItem() {Text = "Задано", Value = "true"},
                 new SelectListItem() {Text = "Не задано", Value = "false"}
             };
-                productsViewModel.ProductFilters.IsAvailable = new List<SelectListItem>()
+                productsViewModel.ProductFilters.IsAvailableList = new List<SelectListItem>()
             {
-                new SelectListItem() {Text = "В наявності", Value = "true"},
+                new SelectListItem() {Text = "В наявності", Value = "true", Selected = true},
                 new SelectListItem() {Text = "Немає в наявності", Value = "false"}
             };
                 productsViewModel.ProductFilters.ModerationStatuses = EnumHelper.GetSelectList(typeof(ModerationStatus));
@@ -856,14 +856,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     if (filters.IsAvailable.Value)
                     {
                         products = products.Where(entry =>
-                            entry.AvailabilityState != ProductAvailabilityState.NotInStock &&
-                            entry.AvailableAmount > 0);
+                            (entry.AvailabilityState != ProductAvailabilityState.NotInStock &&
+                            entry.AvailableAmount > 0) || entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable);
                     }
                     else
                     {
                         products = products.Where(entry => 
                             entry.AvailabilityState == ProductAvailabilityState.NotInStock ||
-                            entry.AvailableAmount == 0);
+                            (entry.AvailableAmount == 0 && entry.AvailabilityState != ProductAvailabilityState.AlwaysAvailable));
                     }
                 }
                 if (filters.HasOriginCountry.HasValue)
