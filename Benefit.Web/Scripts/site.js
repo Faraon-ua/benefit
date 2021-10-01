@@ -309,7 +309,7 @@ $(function () {
                 setCartSummary(data);
                 var orderWrap = parentRow.parents(".order-wrap");
                 parentRow.remove();
-                if (orderWrap.find("tbody tr").length === 0) {
+                if (orderWrap.find("tbody tr, li").length === 0) {
                     orderWrap.remove();
                 }
                 CalculateCartSum(sellerId);

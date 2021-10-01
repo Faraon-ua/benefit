@@ -41,11 +41,6 @@
         });
 
         /*---------------------
-            Nice Select
-        --------------------- */
-        $('select').niceSelect();
-
-        /*---------------------
             Cart Dropdown 
         --------------------- */
         var iconCart = $('.mini-cart-warp a');

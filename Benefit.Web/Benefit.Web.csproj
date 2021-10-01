@@ -1644,6 +1644,7 @@
     <Content Include="Views\SellerArea\EcolifeFurniture\_ProductFilters.cshtml" />
     <Content Include="Views\SellerArea\MegaShop\_ProductFilters.cshtml" />
     <Content Include="Views\SellerArea\EcolifeFurniture\_CartPartial.cshtml" />
+    <Content Include="Views\SellerArea\EcolifeFurniture\_ShippingMethods.cshtml" />
     <None Include="Web.Staging.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
