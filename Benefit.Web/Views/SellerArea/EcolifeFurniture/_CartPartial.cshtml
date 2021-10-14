@@ -29,10 +29,18 @@
                     {
                         <img src="~/Images/ProductGallery/default_product_thumbnail.png">
                     }
+                </a>
             </div>
             <div class="shopping-cart-title">
                 <h4><a href="@productUrl">@product.ProductName</a></h4>
                 <span class="actual-product-price">@((showWholesale ? product.WholesaleProductPrice.Value : product.ProductPrice).ToString("F")) грн</span>
+                <div class="purchase_amount basket_modal">
+                    <div class="fn_is_preorder amount" data-weight-product="@product.IsWeightProduct">
+                        <input class="input_amount quantity" value="@product.Amount" data-max="50" type="text">
+                        <span class="plus"></span>
+                        <span class="minus"></span>
+                    </div>
+                </div>
                 <div class="shopping-cart-delete delete_product" data-product-id="@product.ProductId">
                     <a href="#"><i class="ion-android-cancel"></i></a>
                 </div>

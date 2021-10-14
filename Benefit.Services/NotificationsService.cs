@@ -103,7 +103,7 @@ namespace Benefit.Services
                             try
                             {
                                 var telegram = new TelegramBotClient(SettingsService.Telegram.BotToken);
-                                var result =  await telegram.SendTextMessageAsync(notificationChannel.Address, message).ConfigureAwait(false);
+                                var result = await telegram.SendTextMessageAsync(notificationChannel.Address, message).ConfigureAwait(false);
                             }
                             catch (Exception ex)
                             {
