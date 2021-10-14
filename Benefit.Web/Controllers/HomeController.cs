@@ -62,6 +62,15 @@ namespace Benefit.Web.Controllers
                         .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
                         .Where(entry =>
                             entry.IsActive && entry.SellerId == seller.Id && entry.IsNewProduct).Take(8).ToList();
+                    seller.RecommendedProducts =
+                        db.Products
+                        .Include(entry => entry.Favorites)
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.Category)
+                        .Include(entry => entry.Seller)
+                        .Include(entry => entry.Seller.ShippingMethods.Select(sm => sm.Region))
+                        .Where(entry =>
+                            entry.IsActive && entry.SellerId == seller.Id && entry.IsRecommended).Take(8).ToList();
                     seller.PromotionProducts = db.Products
                         .Include(entry => entry.Favorites)
                         .Include(entry => entry.Images)

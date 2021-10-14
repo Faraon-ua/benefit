@@ -118,6 +118,7 @@ namespace Benefit.Domain.Models
         public ProductAvailabilityState AvailabilityState { get; set; }
         public int? AvailableAmount { get; set; }
         #region advertisement
+        public bool IsRecommended { get; set; }
         public bool IsFeatured { get; set; }
         public bool IsNewProduct { get; set; }
         public DateTime AddedOn { get; set; }

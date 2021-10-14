@@ -150,6 +150,7 @@ namespace Benefit.Domain.Models
         public bool IsAcquiringActive { get; set; }
         public bool IsFeatured { get; set; }
         public bool AreProductsFeatured { get; set; }
+        public bool GenerateRecommendedProducts { get; set; }
         public bool GenerateFeaturedProducts { get; set; }
         public bool HasEcommerce { get; set; }
         public SellerEcommerceTemplate? EcommerceTemplate { get; set; }
@@ -201,6 +202,8 @@ namespace Benefit.Domain.Models
         public ICollection<Product> PromotionProducts { get; set; }
         [NotMapped]
         public ICollection<Product> NewProducts { get; set; }
+        [NotMapped]
+        public ICollection<Product> RecommendedProducts { get; set; }
 
         [NotMapped]
         public virtual string LogoUrl

@@ -32,6 +32,13 @@
                             <div class="shopping-cart-title">
                                 <h4><a href="`+ url + `">` + name + `</a></h4>
                                 <span>`+ price + ` грн</span>
+                                <div class="purchase_amount basket_modal">
+                                    <div class="fn_is_preorder amount" data-weight-product="False">
+                                        <input class="input_amount quantity" value="1" data-max="50" type="text">
+                                        <span class="plus"></span>
+                                        <span class="minus"></span>
+                                    </div>
+                                </div>
                                 <div class="shopping-cart-delete delete_product" data-product-id="`+ id + `">
                                     <a href="#"><i class="ion-android-cancel"></i></a>
                                 </div>

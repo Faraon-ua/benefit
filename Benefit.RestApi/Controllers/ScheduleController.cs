@@ -27,7 +27,7 @@ namespace Benefit.RestApi.Controllers
             {
                 var importTasks =
                 db.ExportImports
-                .Where(entry => entry.SyncType != SyncType.YmlExport && entry.IsActive ).ToList();
+                .Where(entry => entry.SyncType != SyncType.YmlExport && entry.IsActive).ToList();
                 Task.Run(() =>
                 {
                     foreach (var importTask in importTasks)
@@ -104,6 +104,10 @@ namespace Benefit.RestApi.Controllers
                 {
                     product.IsNewProduct = false;
                 }
+                foreach (var product in db.Products.Where(entry => entry.IsRecommended))
+                {
+                    product.IsRecommended = false;
+                }
 
                 foreach (var seller in db.Sellers.Where(entry => entry.IsActive && entry.GenerateFeaturedProducts))
                 {
@@ -146,6 +150,29 @@ namespace Benefit.RestApi.Controllers
                     foreach (var newProduct in newProducts)
                     {
                         newProduct.IsNewProduct = true;
+                    }
+                }
+                foreach (var seller in db.Sellers.Where(entry => entry.IsActive && entry.GenerateRecommendedProducts))
+                {
+                    var recommendedProducts =
+                        db.Products
+                            .Include(entry => entry.Images)
+                            .Include(entry => entry.Category)
+                            .Where(entry =>
+                                entry.IsActive &&
+                                entry.Category.IsActive &&
+                                entry.ModerationStatus == ModerationStatus.Moderated &&
+                               ((entry.AvailableAmount > 0 &&
+                                entry.AvailabilityState == ProductAvailabilityState.Available) ||
+                                 entry.AvailabilityState == ProductAvailabilityState.AlwaysAvailable) &&
+                                entry.Images.Any() && entry.SellerId == seller.Id &&
+                                (!entry.Category.IsSellerCategory ||
+                                 (entry.Category.IsSellerCategory && entry.Category.MappedParentCategoryId != null)))
+                            .OrderBy(entry => Guid.NewGuid())
+                            .Take(ListConstants.FeaturedProductsPerSellerNumber);
+                    foreach (var rProduct in recommendedProducts)
+                    {
+                        rProduct.IsRecommended = true;
                     }
                 }
 

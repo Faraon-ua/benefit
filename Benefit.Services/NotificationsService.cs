@@ -84,8 +84,8 @@ namespace Benefit.Services
             using (var db = new ApplicationDbContext())
             {
                 var message = string.Format(
-                "Вітаємо! Ви отримали замовлення №{0} з торгової площадки benefit.ua. Щоб обробити його перейдіть за посиланням {1}",
-                orderNumber, orderUrl);
+                "Вітаємо! Ви отримали замовлення №{0} з торгової площадки benefit.ua. Щоб обробити його, перейдіть в адмінку вашого кабінету.",
+                orderNumber);
                 var seller = db.Sellers.Include(entry => entry.NotificationChannels).FirstOrDefault(entry => entry.Id == sellerId);
                 if (seller != null)
                 {
