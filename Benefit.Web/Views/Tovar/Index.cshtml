@@ -286,20 +286,30 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="x-product-info__content">
+                                <div class="x-product-info__content ">
                                     <h1 class="x-title">@Model.Product.Name</h1>
-                                    @if (Model.DiscountPercent > 0)
-                                    {
-                                        <span style="color: white; background: red; padding: 5px;">Кешбек @Model.DiscountPercent%</span>
-                                    }
-                                    @if (Model.Product.Seller.SafePurchase)
-                                    {
-                                        <span style="color: white; background: #4fad00; padding: 5px;">Безпечна покупка</span>
-                                    }
-                                    @if (DateTime.UtcNow - Model.Product.AddedOn < TimeSpan.FromDays(14))
-                                    {
-                                        <span style="color: white; background: #4fad00; padding: 5px;">Новинка</span>
-                                    }
+                                    <div class="stickers">
+                                        @if (Model.DiscountPercent > 0)
+                                        {
+                                            <span class="sticker_sale_text">Кешбек @Model.DiscountPercent%</span>
+                                        }
+                                        @if (Model.Product.Seller.SafePurchase)
+                                        {
+                                            <div class="sticker_safe">Безпечна покупка</div>
+                                        }
+                                        @if (Model.Product.IsNewProduct)
+                                        {
+                                            <div class="sticker_sovetuem">Новинка</div>
+                                        }
+                                        @if (Model.Product.OldPrice != null)
+                                        {
+                                            <div class="sticker_aktsiya">Акція</div>
+                                        }
+                                        @if (Model.Product.IsFeatured)
+                                        {
+                                            <div class="sticker_khit">Хіт</div>
+                                        }
+                                    </div>
                                     <div class="x-product-info__identity margin-top-5">
                                         <div class="x-product-info__identity-item">
                                             <span>Код:&nbsp;</span>
