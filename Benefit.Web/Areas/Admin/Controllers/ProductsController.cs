@@ -516,6 +516,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var sellerCurrencies = db.Currencies.Where(entry => entry.SellerId == seller.Id);
                 resultCurrencies.AddRange(sellerCurrencies);
                 ViewBag.CurrencyId = new SelectList(resultCurrencies, "Id", "ExpandedName", product.CurrencyId);
+                product.Currency = db.Currencies.FirstOrDefault(entry => entry.Id == product.CurrencyId);
+                product.StatusStamps = db.StatusStamps.Where(entry => entry.ProductId == product.Id).ToList();
                 return View(product);
             }
         }
