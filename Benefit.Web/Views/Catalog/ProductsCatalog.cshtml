@@ -121,7 +121,8 @@
                     });
                 </text>
             }
-            $(".seller-wrap a").click(function () {
+            $(".seller-wrap a").click(function (e) {
+                e.preventDefault();
                 var title = $(this).html();
                 var body = $(this).next(".content").html();
                 $(".seller-content .modal-title").html(title);

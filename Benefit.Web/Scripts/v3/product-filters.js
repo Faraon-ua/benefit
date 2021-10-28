@@ -150,32 +150,45 @@ $(function () {
         $(".products_item").each(function () { $(this).find(".product_buy").eq(0).click(); })
     });
 
-    function loadPagingData(moreBtn) {
+    function loadPagingData(moreBtn, isBackButton) {
         parts = location.href.split('/');
         lastSegment = (parts.pop() || parts.pop()).replace("#", "");
         lastSegment = lastSegment.replace(location.search, ""); //handle query params
         $(".products-wrapper").css("opacity", "0.3");
-        var page = parseInt(moreBtn.attr("data-page"));
-        var pageUrl;
-        if (lastSegment === categoryUrlName) {
-            options = "page=" + (page + 1) + ";";
-            pageUrl = lastSegment + "/" + options;
-        } else {
+        $(".loader").show();
+        var page;
+        if (isBackButton) {
+            $("html, body").animate({ scrollTop: 0 }, 1000);
             if (lastSegment.indexOf("page=") >= 0) {
-                options = pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
+                var pageOption = lastSegment.match(/page=\d+/g)[0];
+                page = parseInt(pageOption.match(/\d+/)[0]) - 1;
             }
             else {
-                pageUrl = lastSegment + "page=" + (page + 1) + ";";
+                page = 0;
             }
         }
-        if (categoryUrlName === "search") {
-            pageUrl += location.search;
-        }
-        history.pushState("history", "page " + page, pageUrl);
+        else {
+            page = parseInt(moreBtn.attr("data-page"));
+            var pageUrl;
+            if (lastSegment === categoryUrlName) {
+                options = "page=" + (page + 1) + ";";
+                pageUrl = lastSegment + "/" + options;
+            } else {
+                if (lastSegment.indexOf("page=") >= 0) {
+                    options = pageUrl = lastSegment.replace(/page=\d+/g, 'page=' + (page + 1));
+                }
+                else {
+                    pageUrl = lastSegment + "page=" + (page + 1) + ";";
+                }
+            }
+            if (categoryUrlName === "search") {
+                pageUrl += location.search;
+            }
+            history.pushState("history", "page " + page, pageUrl);
 
-        $(".loader").show();
-        if (!moreBtn.hasClass("ajax_load_btn")) {
-            $("html, body").animate({ scrollTop: 0 }, 1000);
+            if (!moreBtn.hasClass("ajax_load_btn")) {
+                $("html, body").animate({ scrollTop: 0 }, 1000);
+            }
         }
         var getProductsWithDataUrl = getProductsUrl +
             "?categoryId=" +
@@ -198,7 +211,7 @@ $(function () {
                 var maxNumber = parseInt($(".paging:not(.next)").last().attr("data-page"));
                 $(".paging").parent().show();
                 $(".split").remove();
-                if (moreBtn.hasClass("ajax_load_btn")) {
+                if (moreBtn != null && moreBtn.hasClass("ajax_load_btn")) {
                     if (data.number <= takePerPage) {
                         moreBtn.hide();
                         $(".paging.next").parent().hide();
@@ -283,11 +296,11 @@ $(function () {
         e.preventDefault();
         if ($(this).parent().hasClass("active"))
             return;
-        loadPagingData($(this));
+        loadPagingData($(this), false);
     });
+
     $(window).on("popstate", function (e) {
-        var moreBtn = $(".pagination page_item.active");
-        loadPagingData(moreBtn);
+        loadPagingData(null, true);
     });
 
     $("body").on("click", "#reset-filters", function () {
