@@ -236,6 +236,12 @@ namespace Benefit.Services.Import
                             oldPrice = null;
                         }
                     }
+                    int? quantity = null;
+                    var quantityStr = xmlProduct.Element("stock_quantity").GetValueOrDefault(null);
+                    if (quantityStr != null)
+                    {
+                        quantity = int.Parse(quantityStr);
+                    }
                     if (category == null)
                     {
                         return;
@@ -255,10 +261,10 @@ namespace Benefit.Services.Import
                         Price = double.Parse(xmlProduct.Element("price").Value, CultureInfo.InvariantCulture),
                         OldPrice = oldPrice,
                         CurrencyId = currencies.First(entry => entry.Name == currencyId).Id,
-
                         AvailabilityState = xmlProduct.Attribute("available").Value == "true"
                             ? ProductAvailabilityState.Available
                             : ProductAvailabilityState.NotInStock,
+                        AvailableAmount = quantity,
                         IsActive = true,
                         IsImported = true,
                         DoesCountForShipping = true,
@@ -330,6 +336,12 @@ namespace Benefit.Services.Import
                             oldPrice = null;
                         }
                     }
+                    int? quantity = null;
+                    var quantityStr = xmlProduct.Element("stock_quantity").GetValueOrDefault(null);
+                    if (quantityStr != null)
+                    {
+                        quantity = int.Parse(quantityStr);
+                    }
                     product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
 
                     //product.Name = name;
@@ -344,6 +356,7 @@ namespace Benefit.Services.Import
                     product.AvailabilityState = xmlProduct.Attribute("available").Value == "true"
                         ? ProductAvailabilityState.Available
                         : ProductAvailabilityState.OnDemand;
+                    product.AvailableAmount = quantity;
                     product.LastModified = DateTime.UtcNow;
                     //product.AltText = name.Truncate(100);
                     //product.ShortDescription = name;
