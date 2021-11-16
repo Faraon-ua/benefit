@@ -34,6 +34,9 @@
             @Html.ValidationMessageFor(model => model.SKU)
         </div>
     </div>
+    @{ 
+        var priceWithCurrency = Model.Price * Model.Currency.Rate;
+    }
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Ціна</label>
         <div class="col-md-9">
@@ -43,9 +46,14 @@
             @Html.ValidationMessageFor(model => model.Price)
             @if (Model.CurrencyId != null)
             {
-                <div class="pull-left padding-5"> = @((Model.Price*Model.Currency.Rate).ToString("F"))</div>
+                <div class="pull-left padding-5"> = @(priceWithCurrency.ToString("F"))</div>
             }
         </div>
+        @if (ViewBag.SellerCategory != null && ViewBag.SellerCategory.CustomMargin != null)
+        {
+            <label class="col-sm-3 control-label no-padding-right red">Націнка категорії</label>
+            <div class="col-md-9 red padding-top-5"> @ViewBag.SellerCategory.CustomMargin % (@priceWithCurrency + @ViewBag.SellerCategory.CustomMargin % = @((priceWithCurrency + priceWithCurrency * ViewBag.SellerCategory.CustomMargin/100).ToString("F")))</div>
+        }
     </div>
     <div class="form-group">
         <label class="col-sm-3 control-label no-padding-right">Стара Ціна</label>

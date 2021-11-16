@@ -111,7 +111,7 @@ namespace Benefit.Services.Import
                 var maxSku = db.Products.Max(entry => entry.SKU) + 1;
                 var xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
                 var dbProducts = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported).ToList();
-                var dbProductIds = dbProducts.Select(entry => entry.Id).ToList();
+                var dbProductIds = dbProducts.Select(entry => entry.ExternalId).ToList();
                 var productIdsToAdd = xmlProductIds.Where(entry => !dbProductIds.Contains(entry)).ToList();
                 var xmlProductsToAdd = xmlProducts.Where(entry => productIdsToAdd.Contains(entry.Attribute("id").Value)).ToList();
                 var productIdsToUpdate = xmlProductIds.Where(dbProductIds.Contains).ToList();
@@ -248,8 +248,8 @@ namespace Benefit.Services.Import
                     }
                     var product = new Product()
                     {
-                        Id = xmlProduct.Attribute("id").Value,
-                        ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null),
+                        Id = Guid.NewGuid().ToString(),
+                        ExternalId = xmlProduct.Attribute("id").Value,
                         Name = name,
                         UrlName = urlName,
                         Vendor = xmlProduct.Element("vendor").GetValueOrDefault(null),
@@ -312,9 +312,9 @@ namespace Benefit.Services.Import
 
                 Parallel.ForEach(productIdsToUpdate, (productIdToUpdate) =>
                 {
-                    var product = dbProducts.FirstOrDefault(entry => entry.Id == productIdToUpdate);
+                    var product = dbProducts.FirstOrDefault(entry => entry.ExternalId == productIdToUpdate);
                     var xmlProduct = xmlProducts.First(entry => entry.Attribute("id").Value == productIdToUpdate);
-                    var currencyId = xmlProduct.Element("currencyId").Value;
+                    var currencyId = xmlProduct.Element("currencyId") == null ? "UAH" : xmlProduct.Element("currencyId").Value;
                     var category =
                         categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value);
                     if (category == null)
@@ -342,13 +342,11 @@ namespace Benefit.Services.Import
                     {
                         quantity = int.Parse(quantityStr);
                     }
-                    product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
-
-                    //product.Name = name;
-                    product.ExternalId = xmlProduct.Element("vendorCode").GetValueOrDefault(null);
-                    //product.UrlName = name.Translit().Truncate(128);
-                    //product.CategoryId = categories.FirstOrDefault(entry => entry.ExternalIds == xmlProduct.Element("categoryId").Value).Id;
-                    //product.Description = string.IsNullOrEmpty(descr) ? name : descr;
+                    var currency = currencies.First(entry => entry.Name == currencyId);
+                    if (currency != null)
+                    {
+                        product.CurrencyId = currency.Id;
+                    }
                     product.Price = double.Parse(xmlProduct.Element("price").Value, CultureInfo.InvariantCulture);
                     product.OldPrice = oldPrice;
                     //product.CurrencyId = currencies.First(entry => entry.Name == currencyId).Id;
