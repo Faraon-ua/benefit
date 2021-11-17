@@ -47,6 +47,9 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string SellerId { get; set; }
         public Seller Seller { get; set; }
+        [MaxLength(128)]
+        public string DefaultCurrencyId { get; set; }
+        public Currency DefaultCurrency { get; set; }
         public bool HasNewContent { get; set; }
 
         public ICollection<ExportProduct> ExportProducts { get; set; }

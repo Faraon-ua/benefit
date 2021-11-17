@@ -33,7 +33,7 @@ namespace Benefit.Services.Import
                 db.SaveChanges();
 
                 var xmlProducts = root.Descendants("goods").ToList();
-                AddAndUpdateGbsProducts(xmlProducts, importTask.SellerId, xmlCategoryIds, db);
+                AddAndUpdateGbsProducts(xmlProducts, importTask.SellerId, importTask.DefaultCurrencyId, xmlCategoryIds, db);
                 db.SaveChanges();
                 DeleteGbsProducts(xmlProducts, importTask.SellerId, db);
                 db.SaveChanges();
@@ -104,7 +104,7 @@ namespace Benefit.Services.Import
                 importTask.HasNewContent = true;
             }
         }
-        private void AddAndUpdateGbsProducts(List<XElement> xmlProducts, string sellerId, IEnumerable<string> categoryIds, ApplicationDbContext db)
+        private void AddAndUpdateGbsProducts(List<XElement> xmlProducts, string sellerId, string defaultCurrencyId, IEnumerable<string> categoryIds, ApplicationDbContext db)
         {
             var maxSku = db.Products.Max(entry => entry.SKU) + 1;
             var xmlProductIds = xmlProducts.Select(entry => entry.Element("barcode").Value).ToList();
@@ -118,6 +118,7 @@ namespace Benefit.Services.Import
                 .Where(entry => xmlCategoryIds.Contains(entry.ExternalIds) && entry.SellerId == sellerId).ToList();
             var productsToAddList = new List<Product>();
             var categryIds = categories.Select(pr => pr.Id).ToList();
+            var currencyId = defaultCurrencyId ?? db.Currencies.FirstOrDefault(entry => entry.Provider == CurrencyProvider.PrivatBank && entry.Name == "UAH").Id;  
 
             Parallel.ForEach(productIdsToAdd, (productIdToAdd) =>
             {
@@ -141,6 +142,7 @@ namespace Benefit.Services.Import
                     SellerId = sellerId,
                     IsWeightProduct = false,
                     Price = double.Parse(xmlProduct.Element("price").Value),
+                    CurrencyId = currencyId,
                     AvailableAmount = int.Parse(xmlProduct.Element("stock").Value),
                     IsActive = true,
                     IsImported = true,
@@ -167,6 +169,7 @@ namespace Benefit.Services.Import
                     return;
                 }
                 product.Price = double.Parse(xmlProduct.Element("price").Value, CultureInfo.InvariantCulture);
+                product.CurrencyId = currencyId;
                 product.AvailabilityState = ProductAvailabilityState.Available;
                 product.AvailableAmount = int.Parse(xmlProduct.Element("stock").Value);
                 product.LastModified = DateTime.UtcNow;

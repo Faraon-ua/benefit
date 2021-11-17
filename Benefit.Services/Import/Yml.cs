@@ -433,7 +433,7 @@ namespace Benefit.Services.Import
         private void DeleteYmlProducts(List<XElement> xmlProducts, string sellerId, ApplicationDbContext db)
         {
             var currentSellerProductIds = db.Products.Where(entry => entry.SellerId == sellerId && entry.IsImported)
-                .Select(entry => entry.Id).ToList();
+                .Select(entry => entry.ExternalId).ToList();
             List<string> xmlProductIds = null;
             xmlProductIds = xmlProducts.Select(entry => entry.Attribute("id").Value).ToList();
             var productIdsToRemove = currentSellerProductIds.Except(xmlProductIds).Where(entry => entry != null).ToList();

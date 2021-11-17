@@ -156,13 +156,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         };
 
                 var updateFrequency = new List<SelectListItem>()
-            {
-                new SelectListItem() { Text = "Щоденно", Value = 1.ToString()},
-                new SelectListItem() { Text = "Раз в 3 дні", Value = 3.ToString()},
-                new SelectListItem() { Text = "Раз в тиждень", Value = 7.ToString()},
-                new SelectListItem() { Text = "Раз в місяць", Value = 30.ToString()}
-            };
+                {
+                    new SelectListItem() { Text = "Щоденно", Value = 1.ToString()},
+                    new SelectListItem() { Text = "Раз в 3 дні", Value = 3.ToString()},
+                    new SelectListItem() { Text = "Раз в тиждень", Value = 7.ToString()},
+                    new SelectListItem() { Text = "Раз в місяць", Value = 30.ToString()}
+                };
                 ViewBag.SyncPeriod = new SelectList(updateFrequency, "Value", "Text", importTask.SyncPeriod.ToString());
+                var currencies =
+                   db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank).OrderBy(entry => entry.Id).ToList();
+                ViewBag.DefaultCurrencyId = new SelectList(currencies, "Id", "ExpandedName", importTask.DefaultCurrencyId);
                 return PartialView("_ImportForm", importTask);
             }
         }
@@ -193,6 +196,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     import.IsActive = exportImport.IsActive;
                     import.FileUrl = exportImport.FileUrl;
                     import.SyncPeriod = exportImport.SyncPeriod;
+                    import.DefaultCurrencyId = exportImport.DefaultCurrencyId;
 
                     db.Links.RemoveRange(db.Links.Where(entry => entry.ExportImportId == import.Id));
                     db.SaveChanges();

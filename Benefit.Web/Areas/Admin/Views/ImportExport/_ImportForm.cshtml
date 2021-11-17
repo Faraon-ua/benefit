@@ -5,99 +5,106 @@
 @using (Html.BeginForm("CreateOrUpdate", "ImportExport"))
 {
     @Html.AntiForgeryToken()
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true)
-        @Html.HiddenFor(model => model.Id)
-        @Html.HiddenFor(model => model.SellerId)
-        @Html.HiddenFor(model => model.SyncType)
+<div class="form-horizontal">
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.SellerId)
+    @Html.HiddenFor(model => model.SyncType)
 
-        <div class="form-group">
-            <label class="control-label col-md-2" for="IsActive">Статус</label>
-            <div class="col-md-10">
-                @Html.CheckBoxFor(m => m.IsActive)
-            </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="IsActive">Статус</label>
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.IsActive)
         </div>
-        <div class="form-group">
-            <label class="control-label col-md-2" for="IsImport">В процессі обробки</label>
-            <div class="col-md-10">
-                @Html.CheckBoxFor(m => m.IsImport) (має бути неактивно)
-            </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="IsImport">В процессі обробки</label>
+        <div class="col-md-10">
+            @Html.CheckBoxFor(m => m.IsImport) (має бути неактивно)
         </div>
-        <div class="form-group">
-            @if (Model.SyncType != SyncType.FirebirdSql)
+    </div>
+    <div class="form-group">
+        @if (Model.SyncType != SyncType.FirebirdSql)
+        {
+            <label class="control-label col-md-2" for="FileUrl">URL</label>
+        }
+        else
+        {
+            <label class="control-label col-md-2" for="FileUrl">Connection String</label>
+        }
+        <div class="col-md-10">
+            @if (Model.SyncType != SyncType.YmlExport)
             {
-                <label class="control-label col-md-2" for="FileUrl">URL</label>
+                @Html.TextBoxFor(model => model.FileUrl, new { @class = "width-90" })
             }
             else
             {
-                <label class="control-label col-md-2" for="FileUrl">Connection String</label>
+                @Html.TextBoxFor(model => model.FileUrl, new { @class = "width-90", @readonly = "readonly" })
             }
-            <div class="col-md-10">
-                @if (Model.SyncType != SyncType.YmlExport)
-                {
-                    @Html.TextBoxFor(model => model.FileUrl, new { @class = "width-90" })
-                }
-                else
-                {
-                    @Html.TextBoxFor(model => model.FileUrl, new { @class = "width-90", @readonly = "readonly" })
-                }
-                @Html.ValidationMessageFor(model => model.FileUrl)
-                <br />
-            </div>
-        </div>
-        @for (var i = 0; i < Model.Links.Count; i++)
-        {
-            @Html.Partial("_LinkForm", new KeyValuePair<int, string>(i, Model.Links.ElementAt(i).Url))
-        }
-        <a href="#" class="fn-add-import-file" data-link-count="0" style="float:right; margin-right: 10%;">
-            <i class="icon-plus"></i> Додати файл імпорту
-        </a>
-
-        @if (Model.SyncType != SyncType.YmlExport)
-        {
-            <div class="form-group">
-                <label class="control-label col-md-2" for="SyncPeriod">Частота оновлення</label>
-                <div class="col-md-10">
-                    @Html.DropDownList("SyncPeriod", null, new { @class = "col-md-3" })
-                </div>
-            </div>
-
-            if (Model.LastUpdateStatus.HasValue && Model.LastSync != null)
-            {
-                <div class="form-group">
-                    <label class="control-label col-md-2">Статус останнього оновлення</label>
-                    <div class="col-md-10">
-                        @if (Model.LastUpdateStatus.GetValueOrDefault(false))
-                        {
-                            <i class="icon icon-check green bigger-200"></i>
-                        }
-                        else
-                        {
-                            <i class="icon icon-remove red bigger-200"></i>
-                            <div>Помилка: @Model.LastUpdateMessage</div>
-                        }
-                        <div>
-                            Час: @Model.LastSync.Value.ToLocalDateTimeWithFormat()
-                        </div>
-                        <div>
-                            Наступне оновлення відбудеться: @Model.LastSync.Value.AddDays(Model.SyncPeriod).ToLocalDateTimeWithFormat()
-                        </div>
-                    </div>
-                </div>
-            }
-            else if (Model.Id != null && Model.IsActive)
-            {
-                <div class="col-md-offset-2">
-                    Наступне оновлення відбудеться: @DateTime.UtcNow.ToLocalTime().EndOfDay().AddHours(3).ToLocalDateTimeWithFormat()
-                </div>
-            }
-        }
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Зберегти" class="btn btn-info" />
-                @*<button type="button" class="margin-left-30 btn btn-success fn-launch-import" data-import-type="@Model.SyncType.ToString()">Запустити</button>*@
-            </div>
+            @Html.ValidationMessageFor(model => model.FileUrl)
+            <br />
         </div>
     </div>
+    @for (var i = 0; i < Model.Links.Count; i++)
+    {
+        @Html.Partial("_LinkForm", new KeyValuePair<int, string>(i, Model.Links.ElementAt(i).Url))
+    }
+    <a href="#" class="fn-add-import-file" data-link-count="0" style="float:right; margin-right: 10%;">
+        <i class="icon-plus"></i> Додати файл імпорту
+    </a>
+
+    <div class="form-group">
+        <label class="control-label col-md-2" for="IsActive">Валюта за замовчуванням</label>
+        <div class="col-md-10">
+            @Html.DropDownList("DefaultCurrencyId", null, new { @class = "col-sm-3" })
+        </div>
+    </div>
+
+    @if (Model.SyncType != SyncType.YmlExport)
+    {
+        <div class="form-group">
+            <label class="control-label col-md-2" for="SyncPeriod">Частота оновлення</label>
+            <div class="col-md-10">
+                @Html.DropDownList("SyncPeriod", null, new { @class = "col-md-3" })
+            </div>
+        </div>
+
+        if (Model.LastUpdateStatus.HasValue && Model.LastSync != null)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-2">Статус останнього оновлення</label>
+                <div class="col-md-10">
+                    @if (Model.LastUpdateStatus.GetValueOrDefault(false))
+                    {
+                        <i class="icon icon-check green bigger-200"></i>
+                    }
+                    else
+                    {
+                        <i class="icon icon-remove red bigger-200"></i>
+                        <div>Помилка: @Model.LastUpdateMessage</div>
+                    }
+                    <div>
+                        Час: @Model.LastSync.Value.ToLocalDateTimeWithFormat()
+                    </div>
+                    <div>
+                        Наступне оновлення відбудеться: @Model.LastSync.Value.AddDays(Model.SyncPeriod).ToLocalDateTimeWithFormat()
+                    </div>
+                </div>
+            </div>
+        }
+        else if (Model.Id != null && Model.IsActive)
+        {
+            <div class="col-md-offset-2">
+                Наступне оновлення відбудеться: @DateTime.UtcNow.ToLocalTime().EndOfDay().AddHours(3).ToLocalDateTimeWithFormat()
+            </div>
+        }
+    }
+
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Зберегти" class="btn btn-info" />
+            @*<button type="button" class="margin-left-30 btn btn-success fn-launch-import" data-import-type="@Model.SyncType.ToString()">Запустити</button>*@
+        </div>
+    </div>
+</div>
 }
