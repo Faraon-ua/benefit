@@ -48,7 +48,7 @@
             }
         </div>
         <div class="col-md-6 col-xs-12">
-            @if (Model.LastModified != null)
+            @if (Model.LastModified != null && Model.StatusStamps != null)
             {
                 <h3 class="header smaller lighter green no-margin-top">Історія статусів</h3>
                 foreach (var status in Model.StatusStamps.OrderBy(entry => entry.Time))

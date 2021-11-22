@@ -235,10 +235,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     Value = entry.Id,
                     Level = entry.HierarchicalLevel
                 });
+                var mappedCategoryId = product.Category == null ? null : product.Category.MappedParentCategoryId;
                 var sellerCategory = db.SellerCategories.FirstOrDefault(entry =>
                                          entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId) ??
                                      db.SellerCategories.FirstOrDefault(entry =>
-                                         entry.CategoryId == product.Category.MappedParentCategoryId &&
+                                         entry.CategoryId == mappedCategoryId &&
                                          entry.SellerId == product.SellerId);
                 ViewBag.SellerCategory = sellerCategory;
                 ViewBag.SellerId = new SelectList(db.Sellers.ToList(), "Id", "Name", product.SellerId);
