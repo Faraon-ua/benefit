@@ -136,7 +136,7 @@ namespace Benefit.Services.Import
                     Id = Guid.NewGuid().ToString(),
                     ExternalId = xmlProduct.Element("barcode").Value,
                     Name = name,
-                    Description = name,
+                    Description = xmlProduct.Element("comment").GetValueOrDefault(name),
                     UrlName = urlName,
                     CategoryId = category.Id,
                     SellerId = sellerId,
