@@ -227,7 +227,14 @@ namespace Benefit.Domain.Models
                 return Reviews.Where(entry => entry.IsActive && entry.Rating != null).ToList();
             }
         }
-
+        [NotMapped]
+        public static bool IsSellerAdmin
+        {
+            get
+            {
+                return CurrentAuthorizedSellerId != null;
+            }
+        }
         [NotMapped]
         public static string CurrentAuthorizedSellerId
         {

@@ -34,7 +34,7 @@
             @Html.ValidationMessageFor(model => model.SKU)
         </div>
     </div>
-    @{ 
+    @{
         var priceWithCurrency = Model.Price * (Model.Currency == null ? 1 : Model.Currency.Rate);
     }
     <div class="form-group">
@@ -52,7 +52,13 @@
         @if (ViewBag.SellerCategory != null && ViewBag.SellerCategory.CustomMargin != null)
         {
             <label class="col-sm-3 control-label no-padding-right red">Націнка категорії</label>
-            <div class="col-md-9 red padding-top-5"> @ViewBag.SellerCategory.CustomMargin % (@priceWithCurrency + @ViewBag.SellerCategory.CustomMargin % = @((priceWithCurrency + priceWithCurrency * ViewBag.SellerCategory.CustomMargin/100).ToString("F")))</div>
+            <div class="col-md-9 red padding-top-5">
+                @ViewBag.SellerCategory.CustomMargin % (@priceWithCurrency + @ViewBag.SellerCategory.CustomMargin % = @((priceWithCurrency + priceWithCurrency * ViewBag.SellerCategory.CustomMargin/100).ToString("F")))
+                @if (!Seller.IsSellerAdmin)
+                {
+                    <a href="@Url.Action("CreateOrUpdate", "Sellers", new { id=Model.SellerId })#categories" target="_blank">Редагувати</a>
+                }
+            </div>
         }
     </div>
     <div class="form-group">
