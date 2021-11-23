@@ -17,7 +17,7 @@
     }
     var shareUrl = string.Format("{0}?{1}={2}", Request.Url.AbsoluteUri, RouteConstants.ReferalUrlName, CookiesService.Instance.GetCookieValue<string>(RouteConstants.SelfReferalCookieName));
     //var sellerUrl = Url.SubdomainAction(Model.Product.Seller.UrlName, "Index", "Home", null);
-    var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.Product.Seller.UrlName });
+    var sellerUrl = Url.RouteUrl(RouteConstants.SellerCatalogRouteName, new { id = Model.Product.Seller.UrlName, category = "golovna" });
     var sellerLogo = Model.Product.Seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
     var sellerAddress = Model.Product.Seller.Addresses.FirstOrDefault();
     var sellerAddressStr = sellerAddress == null ? "" : string.Format("{0}, {1}", sellerAddress.Region.Name_ua, sellerAddress.AddressLine);
