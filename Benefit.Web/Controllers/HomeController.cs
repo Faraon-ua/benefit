@@ -380,7 +380,7 @@ namespace Benefit.Web.Controllers
         }
 
         [HttpGet]
-        public ActionResult Pivacy()
+        public ActionResult Privacy()
         {
             return View();
         }

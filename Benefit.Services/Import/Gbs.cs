@@ -168,6 +168,7 @@ namespace Benefit.Services.Import
                 {
                     return;
                 }
+                product.CategoryId = category.Id;
                 product.Price = double.Parse(xmlProduct.Element("price").Value, CultureInfo.InvariantCulture);
                 product.CurrencyId = currencyId;
                 product.AvailabilityState = ProductAvailabilityState.Available;
