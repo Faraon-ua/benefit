@@ -135,7 +135,14 @@
                                             @Html.Password("UserPassword", null, new { @class = "form_input", placeholder = "Пароль" })
                                         </div>
                                     </div>
-                                    <button class="button btn-ajax-login" name="login" data-language="login_sign_in" type="button">Увійти</button>
+                                    <div class="row">
+                                        <div class="col-sm-6 col-md-6 col-xs-6">
+                                            <button class="button btn-ajax-login" name="login" data-language="login_sign_in" type="button">Увійти</button>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 col-xs-6">
+                                            @Html.ActionLink("Забули пароль?", "forgotpassword", "account", null, new { @class = "pull-right" })
+                                        </div>
+                                    </div>
                                     <hr style="border: 1px solid #e5e5e5;" />
                                     <p>Увійти через акаунт</p>
                                     @using (Html.BeginForm("ExternalLogin", "Account", new { returnUrl = "/cart/order/" + Model.SellerId }))
