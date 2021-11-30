@@ -512,6 +512,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         Level = entry.HierarchicalLevel
                     });
                 }
+                if (product.CategoryId != null)
+                {
+                    product.Category = db.Categories.Find(product.CategoryId);
+                }
                 var sellerCategory = db.SellerCategories.FirstOrDefault(entry =>
                                          entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId) ??
                                      db.SellerCategories.FirstOrDefault(entry =>
