@@ -152,7 +152,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
 
                 productsViewModel.ProductFilters.Exports = db.ExportImports
-                    .Where(entry => entry.SyncType == SyncType.YmlExport).Select(entry => new SelectListItem()
+                    .Where(entry => entry.SyncType == SyncType.YmlExport || entry.SyncType == SyncType.YmlExportEpicentr).Select(entry => new SelectListItem()
                     {
                         Text = entry.Name,
                         Value = entry.Id

@@ -10,8 +10,6 @@ namespace Benefit.Domain.Models
         [Required]
         [MaxLength(128)]
         public string ResourceId { get; set; }
-        [NotMapped]
-        public string ResourceOriginalValue { get; set; }
         [Required]
         [MaxLength(128)]
         public string ResourceType { get; set; }
@@ -23,5 +21,7 @@ namespace Benefit.Domain.Models
         [Required]
         [MaxLength(4)]
         public string LanguageCode { get; set; }
+        [NotMapped]
+        public string ResourceOriginalValue { get; set; }
     }
 }

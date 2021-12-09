@@ -83,14 +83,14 @@ namespace Benefit.Web.Areas.Admin.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var exports = db.ExportImports
-                .Include(entry => entry.Seller)
-                .Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
+                    .Include(entry => entry.Seller)
+                    .Where(entry => entry.SyncType == SyncType.YmlExport || entry.SyncType == SyncType.YmlExportEpicentr).ToList();
 
                 return View(exports);
             }
         }
 
-        public ActionResult CreateOrUpdateExport(string name)
+        public ActionResult CreateOrUpdateExport(string name, SyncType SyncType)
         {
             using (var db = new ApplicationDbContext())
             {
@@ -98,13 +98,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     TempData["ErrorMessage"] = "Назва не може бути порожньою";
                 }
+                else if (db.ExportImports.Any(entry => entry.Name == name)) 
+                {
+                    TempData["ErrorMessage"] = "Експорт з такою назвою вже існує";
+                }
                 else
                 {
                     var export = new ExportImport()
                     {
                         Id = Guid.NewGuid().ToString(),
                         Name = name,
-                        SyncType = SyncType.YmlExport,
+                        SyncType = SyncType,
                         IsActive = true
                     };
                     db.ExportImports.Add(export);

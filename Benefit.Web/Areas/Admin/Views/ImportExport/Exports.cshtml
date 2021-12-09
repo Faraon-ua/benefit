@@ -44,7 +44,7 @@
                 <a href="@link" target="_blank">@link</a>
             </td>
             <td>
-                @Html.ActionLink("Згенерувати", "GenerateExportFiles", "Schedule", new { key="15e77370-9268-4007-a00d-49aca257b7d6", exportId = export.Id, area = string.Empty }, new { @class="btn btn-success" })
+                @Html.ActionLink("Згенерувати", "GenerateExportFiles", "Schedule", new { key = "15e77370-9268-4007-a00d-49aca257b7d6", exportId = export.Id, area = string.Empty }, new { @class = "btn btn-success" })
                 |
                 @Html.ActionLink("Видалити", "DeleteExport", new { id = export.Id }, new { onclick = "return confirm('Ви впевнені? Також видаляться звязані назви категорій і звязки товарів з експортом. ');" })
             </td>
@@ -55,7 +55,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Новий експорт</h5>
+                <h4 class="modal-title pull-left">Новий експорт</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -63,7 +63,23 @@
             @using (Html.BeginForm("CreateOrUpdateExport", "ImportExport"))
             {
                 <div class="modal-body">
-                    @Html.TextBox("Name", null, new { placeholder = "Назва" })
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right">* Назва</label>
+                            <div class="col-sm-9">
+                                @Html.TextBox("Name", null, new { placeholder = "Назва" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label no-padding-right">Тип</label>
+                            <div class="col-sm-9">
+                                <select name="SyncType">
+                                    <option value="YmlExport">YML Rozetka</option>
+                                    <option value="YmlExportEpicentr">YML Epicentr</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Зберегти</button>

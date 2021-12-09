@@ -26,7 +26,9 @@ namespace Benefit.Services.Domain
                 priceChange += variant.PriceGrowth;
 
                 var prod = new XElement("offer", new XAttribute("id", product.Id + variant.Id));
-                var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
+                var available = product.IsActive
+                           && (product.AvailabilityState != ProductAvailabilityState.NotInStock && product.AvailabilityState != ProductAvailabilityState.OnDemand)
+                           && product.AvailableAmount.GetValueOrDefault(0) > 0;
                 prod.Add(new XAttribute("available", available));
                 prod.Add(new XAttribute("group_id", groups.Count()));
                 prod.Add(new XElement("name", string.Format("{0} {1}", product.Name, newSuffix)));
@@ -162,24 +164,39 @@ namespace Benefit.Services.Domain
                 var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
                 var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
                 var yml_catalog = new XElement(ns + "yml_catalog", new XAttribute("date", DateTime.Now.ToLocalDateTimeWithFormat()));
-                var shop = new XElement("shop");
-                var domain = Request.Url.Host;
-                domain = domain.Substring(0, domain.IndexOf(".") > 0 ? domain.IndexOf(".") : domain.Length);
-                var seller = db.Sellers.FirstOrDefault(entry => entry.Domain == domain || entry.UrlName == domain);
-                var name = new XElement("name", "Интернет магазин " + (seller == null ? "Benefit-Company" : seller.Name));
-                var company = new XElement("company", seller == null ? "Benefit-Company" : seller.Name);
-                var url = new XElement("url", string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host));
-                //var email = new XElement("email", "info.benefitcompany@gmail.com");
-                var currencies = new XElement("currencies");
-                var uah = new XElement("currency", new XAttribute("id", "UAH"), new XAttribute("rate", "1"));
-                currencies.Add(uah);
-                var categories = new XElement("categories");
-                foreach (var category in exportCategories)
+                XElement shop = null;
+                if (exportTask.SyncType == SyncType.YmlExport)
                 {
-                    var cat = new XElement("category") { Value = category.Value };
-                    cat.Add(new XAttribute("id", category.Key));
-                    categories.Add(cat);
+                    shop = new XElement("shop");
+                    var domain = Request.Url.Host;
+                    domain = domain.Substring(0, domain.IndexOf(".") > 0 ? domain.IndexOf(".") : domain.Length);
+                    var seller = db.Sellers.FirstOrDefault(entry => entry.Domain == domain || entry.UrlName == domain);
+                    var name = new XElement("name", "Интернет магазин " + (seller == null ? "Benefit-Company" : seller.Name));
+                    var company = new XElement("company", seller == null ? "Benefit-Company" : seller.Name);
+                    var url = new XElement("url", string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host));
+                    //var email = new XElement("email", "info.benefitcompany@gmail.com");
+                    var currencies = new XElement("currencies");
+                    var uah = new XElement("currency", new XAttribute("id", "UAH"), new XAttribute("rate", "1"));
+                    currencies.Add(uah);
+                    var categories = new XElement("categories");
+                    foreach (var category in exportCategories)
+                    {
+                        var cat = new XElement("category") { Value = category.Value };
+                        cat.Add(new XAttribute("id", category.Key));
+                        categories.Add(cat);
+                    }
+                    shop.Add(name);
+                    shop.Add(company);
+                    shop.Add(url);
+                    //shop.Add(email);
+                    shop.Add(currencies);
+                    shop.Add(categories);
                 }
+                else if (exportTask.SyncType == SyncType.YmlExportEpicentr)
+                {
+                    shop = yml_catalog;
+                }
+
                 #endregion
 
                 var offers = new XElement("offers");
@@ -187,17 +204,48 @@ namespace Benefit.Services.Domain
                 List<XElement> groupsList = new List<XElement>();
                 foreach (var product in products)
                 {
+                    var LocalizationService = new LocalizationService();
+                    product.Localizations = LocalizationService.Get(product,
+                                entry => entry.Name,
+                                entry => entry.Description,
+                                entry => entry.ShortDescription,
+                                entry => entry.AltText,
+                                entry => entry.Title);
                     var variantGroups = product.ProductOptions.Where(entry => entry.IsVariant).ToList();
-                    if (variantGroups.Any())
+                    if (variantGroups.Any() && exportTask.SyncType == SyncType.YmlExport)
                     {
                         FetchOffers(offersList, groupsList, product, variantGroups, variantGroups[0], string.Empty, 0, Request);
                     }
                     else
                     {
                         var prod = new XElement("offer", new XAttribute("id", product.Id));
-                        var available = product.IsActive && product.AvailabilityState != ProductAvailabilityState.NotInStock;
+                        var available = product.IsActive
+                            && (product.AvailabilityState != ProductAvailabilityState.NotInStock && product.AvailabilityState != ProductAvailabilityState.OnDemand)
+                            && product.AvailableAmount.GetValueOrDefault(0) > 0;
                         prod.Add(new XAttribute("available", available));
-                        prod.Add(new XElement("name", product.Name));
+                        var name = new XElement("name", product.Name);
+                        name.Add(new XAttribute("lang", "ua"));
+                        prod.Add(name);
+                        var descr = new XElement("description", new XCData(product.Description));
+                        descr.Add(new XAttribute("lang", "ua"));
+                        prod.Add(descr);
+                        if (product.Localizations.Any())
+                        {
+                            var ruNameLoc = product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Name");
+                            var ruDescrLoc = product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Description");
+                            if (ruNameLoc != null && !string.IsNullOrEmpty(ruNameLoc.ResourceValue))
+                            {
+                                var ruName = new XElement("name", product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Name").ResourceValue);
+                                ruName.Add(new XAttribute("lang", "ru"));
+                                prod.Add(ruName);
+                            }
+                            if (ruDescrLoc != null && !string.IsNullOrEmpty(ruDescrLoc.ResourceValue))
+                            {
+                                var ruDescr = new XElement("name", product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Description").ResourceValue);
+                                ruDescr.Add(new XAttribute("lang", "ru"));
+                                prod.Add(ruDescr);
+                            }
+                        }
                         prod.Add(new XElement("vendor", product.Vendor));
                         prod.Add(new XElement("vendorCode", product.SKU));
                         if (product.Currency != null)
@@ -239,8 +287,16 @@ namespace Benefit.Services.Domain
                         {
                             categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
                         }
-                        prod.Add(new XElement("categoryId", categoryId));
-                        foreach (var picture in product.Images.Where(entry=>entry.ImageType == ImageType.ProductGallery).OrderBy(entry => entry.Order))
+                        if (exportTask.SyncType == SyncType.YmlExport)
+                        {
+                            prod.Add(new XElement("categoryId", categoryId));
+                        }
+                        else if (exportTask.SyncType == SyncType.YmlExportEpicentr)
+                        {
+                            var cat = exportCategories.FirstOrDefault(entry => entry.Key == categoryId);
+                            prod.Add(new XElement("category", cat.Value));
+                        }
+                        foreach (var picture in product.Images.Where(entry => entry.ImageType == ImageType.ProductGallery).OrderBy(entry => entry.Order))
                         {
                             var pictureUrl = picture.IsAbsoluteUrl
                                 ? picture.ImageUrl
@@ -248,8 +304,6 @@ namespace Benefit.Services.Domain
                                     picture.ImageUrl);
                             prod.Add(new XElement("picture", pictureUrl));
                         }
-
-                        prod.Add(new XElement("description", new XCData(product.Description)));
                         prod.Add(new XElement("country_of_origin", product.OriginCountry));
                         foreach (var parameterProduct in product.ProductParameterProducts)
                         {
@@ -263,9 +317,12 @@ namespace Benefit.Services.Domain
                         {
                             paymentSB.Append("Наличными");
                         }
-
                         if (product.Seller.IsAcquiringActive)
                         {
+                            if (paymentSB.Length > 0)
+                            {
+                                paymentSB.Append(", ");
+                            }
                             paymentSB.Append("Картой Visa/MasterCard");
                         }
 
@@ -280,12 +337,6 @@ namespace Benefit.Services.Domain
                     offers.Add(o);
                 }
 
-                shop.Add(name);
-                shop.Add(company);
-                shop.Add(url);
-                //shop.Add(email);
-                shop.Add(currencies);
-                shop.Add(categories);
                 if (groupsList.Any())
                 {
                     var groups = new XElement("groups");
@@ -296,8 +347,15 @@ namespace Benefit.Services.Domain
                     shop.Add(groups);
                 }
                 shop.Add(offers);
-                yml_catalog.Add(shop);
-                doc.Add(yml_catalog);
+                if (exportTask.SyncType == SyncType.YmlExport)
+                {
+                    yml_catalog.Add(shop);
+                    doc.Add(yml_catalog);
+                }
+                else if (exportTask.SyncType == SyncType.YmlExportEpicentr)
+                {
+                    doc.Add(shop);
+                }
                 if (savePath != null)
                 {
                     if (File.Exists(savePath))

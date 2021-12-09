@@ -966,7 +966,7 @@
                         </div>
 
                         @{
-                            var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).ToList();
+                            var parameters = Model.Product.ProductParameterProducts.Where(entry => entry.StartValue != null).OrderBy(entry=>entry.ProductParameter.Order).ToList();
                         }
                         <div class="tabs_section">
                             <div class="tabs">

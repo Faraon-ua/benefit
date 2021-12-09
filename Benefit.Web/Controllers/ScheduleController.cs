@@ -90,7 +90,7 @@ namespace Benefit.Web.Controllers
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             using (var db = new ApplicationDbContext())
             {
-                var exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport).ToList();
+                var exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport || entry.SyncType == SyncType.YmlExportEpicentr).ToList();
                 if (exportId != null)
                 {
                     exports = exports.Where(entry => entry.Id == exportId).ToList();

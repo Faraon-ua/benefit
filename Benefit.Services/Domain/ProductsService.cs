@@ -191,6 +191,10 @@ namespace Benefit.Services.Domain
                         }
                     }
                 }
+                if (result.Product.ProductParameterProducts != null)
+                {
+                    result.Product.ProductParameterProducts = result.Product.ProductParameterProducts.OrderBy(entry => entry.ProductParameter.Order).ToList();
+                }
 
                 return result;
             }
