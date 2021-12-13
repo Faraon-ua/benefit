@@ -220,6 +220,7 @@ namespace Benefit.Services
                           Parent = key,
                           Items = g.ToList()
                       }, new CategoryComparer())
+                .Where(entry => entry.Parent != null)
                 .ToList();
 
                 var categoryFilters = groupedCategoryResults.Select(entry => new ProductParameterValue()

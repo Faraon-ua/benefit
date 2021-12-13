@@ -14,7 +14,14 @@
                 @HttpContext.GetGlobalResourceObject("Resources", Model.Localizations[i].ResourceField, new CultureInfo("ru-RU"))
             </label>
             <div class="col-md-10">
-                @Html.TextBoxFor(m => m.Localizations[i].ResourceValue)
+                @if (Model.Localizations[i].ResourceField.Contains("Description"))
+                {
+                    @Html.TextAreaFor(m => m.Localizations[i].ResourceValue, new { @class = "width-100" })
+                }
+                else
+                {
+                    @Html.TextBoxFor(m => m.Localizations[i].ResourceValue, new { @class = "width-100" })
+                }
             </div>
         </div>
     }
