@@ -28,7 +28,7 @@ namespace Benefit.Services.Domain
                 var prod = new XElement("offer", new XAttribute("id", product.Id + variant.Id));
                 var available = product.IsActive
                            && (product.AvailabilityState != ProductAvailabilityState.NotInStock && product.AvailabilityState != ProductAvailabilityState.OnDemand)
-                           && product.AvailableAmount.GetValueOrDefault(0) > 0;
+                           && (product.AvailableAmount.GetValueOrDefault(0) > 0 || product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable);
                 prod.Add(new XAttribute("available", available));
                 prod.Add(new XAttribute("group_id", groups.Count()));
                 prod.Add(new XElement("name", string.Format("{0} {1}", product.Name, newSuffix)));
@@ -67,7 +67,7 @@ namespace Benefit.Services.Domain
                     prod.Add(new XElement("picture", pictureUrl));
                 }
 
-                prod.Add(new XElement("description", product.Description));
+                prod.Add(new XElement("description", new XCData(product.Description)));
                 prod.Add(new XElement("country_of_origin", product.OriginCountry));
                 //add group param (variant)
                 prod.Add(new XElement("param", new XAttribute("name", currentVariant.Name), new XAttribute("paramid", currentVariant.Id), variant.Name));
@@ -221,29 +221,32 @@ namespace Benefit.Services.Domain
                         var prod = new XElement("offer", new XAttribute("id", product.Id));
                         var available = product.IsActive
                             && (product.AvailabilityState != ProductAvailabilityState.NotInStock && product.AvailabilityState != ProductAvailabilityState.OnDemand)
-                            && product.AvailableAmount.GetValueOrDefault(0) > 0;
+                            && (product.AvailableAmount.GetValueOrDefault(0) > 0 || product.AvailabilityState == ProductAvailabilityState.AlwaysAvailable);
                         prod.Add(new XAttribute("available", available));
                         var name = new XElement("name", product.Name);
-                        name.Add(new XAttribute("lang", "ua"));
                         prod.Add(name);
                         var descr = new XElement("description", new XCData(product.Description));
-                        descr.Add(new XAttribute("lang", "ua"));
                         prod.Add(descr);
-                        if (product.Localizations.Any())
+                        if (exportTask.SyncType == SyncType.YmlExportEpicentr)
                         {
-                            var ruNameLoc = product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Name");
-                            var ruDescrLoc = product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Description");
-                            if (ruNameLoc != null && !string.IsNullOrEmpty(ruNameLoc.ResourceValue))
+                            name.Add(new XAttribute("lang", "ua"));
+                            descr.Add(new XAttribute("lang", "ua"));
+                            if (product.Localizations.Any())
                             {
-                                var ruName = new XElement("name", product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Name").ResourceValue);
-                                ruName.Add(new XAttribute("lang", "ru"));
-                                prod.Add(ruName);
-                            }
-                            if (ruDescrLoc != null && !string.IsNullOrEmpty(ruDescrLoc.ResourceValue))
-                            {
-                                var ruDescr = new XElement("name", product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Description").ResourceValue);
-                                ruDescr.Add(new XAttribute("lang", "ru"));
-                                prod.Add(ruDescr);
+                                var ruNameLoc = product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Name");
+                                var ruDescrLoc = product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Description");
+                                if (ruNameLoc != null && !string.IsNullOrEmpty(ruNameLoc.ResourceValue))
+                                {
+                                    var ruName = new XElement("name", product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Name").ResourceValue);
+                                    ruName.Add(new XAttribute("lang", "ru"));
+                                    prod.Add(ruName);
+                                }
+                                if (ruDescrLoc != null && !string.IsNullOrEmpty(ruDescrLoc.ResourceValue))
+                                {
+                                    var ruDescr = new XElement("name", new XCData(product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Description").ResourceValue));
+                                    ruDescr.Add(new XAttribute("lang", "ru"));
+                                    prod.Add(ruDescr);
+                                }
                             }
                         }
                         prod.Add(new XElement("vendor", product.Vendor));

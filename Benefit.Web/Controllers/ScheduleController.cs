@@ -24,7 +24,7 @@ namespace Benefit.Web.Controllers
                 db.ExportImports
                     .Include(entry => entry.Seller)
                     .Include(entry => entry.Seller.MappedCategories)
-                    .Where(entry => entry.IsActive && entry.SyncType != SyncType.YmlExport).ToList();
+                    .Where(entry => entry.IsActive && entry.SyncType != SyncType.YmlExport && entry.SyncType != SyncType.YmlExport).ToList();
                 Task.Run(() =>
                 {
                     foreach (var importTask in importTasks)
