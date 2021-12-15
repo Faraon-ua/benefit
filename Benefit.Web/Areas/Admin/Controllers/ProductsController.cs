@@ -275,6 +275,16 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     ModelState.AddModelError("AvailableAmount", "Доступна кількість не може бути негативного значення");
                 }
+                for (var i = 0; i < product.Localizations.Count; i++)
+                {
+                    if (product.Localizations[i].ResourceValue == null)
+                    {
+                        foreach (var key in ModelState.Keys.Where(entry => entry.Contains(string.Format("Localizations[{0}]", i))))
+                        {
+                            ModelState[key].Errors.Clear();
+                        }
+                    }
+                }
                 product.ProductParameterProducts = product.ProductParameterProducts.ToList().Where(entry => entry.StartText != null).ToArray();
                 product.ProductParameterProducts.ForEach(entry => entry.StartValue = entry.StartText.Translit());
                 var exceededParams = product.ProductParameterProducts.Where(entry => entry.StartValue.Length >= ProductConstants.ParameterStartTextMaxLength);
@@ -344,6 +354,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         }
                     }
                     db.SaveChanges();
+                    var LocalizationService = new LocalizationService();
+                    LocalizationService.Save(product.Localizations);
                     TempData["SuccessMessage"] = "Товар відмодеровано";
                     return RedirectToAction("CreateOrUpdate", new { id = product.Id });
                 }
@@ -366,6 +378,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank || entry.SellerId == dbProduct.SellerId)
                         .OrderBy(entry => entry.Id).ToList();
                 ViewBag.CurrencyId = new SelectList(currencies, "Id", "ExpandedName", product.CurrencyId);
+                dbProduct.Localizations = product.Localizations;
                 return View("Moderation", dbProduct);
             }
         }

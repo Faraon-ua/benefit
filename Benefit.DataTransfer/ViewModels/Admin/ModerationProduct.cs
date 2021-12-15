@@ -42,5 +42,6 @@ namespace Benefit.DataTransfer.ViewModels.Admin
         [MaxLength(128)]
         public string CurrencyId { get; set; }
         public ICollection<ProductParameterProduct> ProductParameterProducts { get; set; }
+        public List<Localization> Localizations { get; set; }
     }
 }
