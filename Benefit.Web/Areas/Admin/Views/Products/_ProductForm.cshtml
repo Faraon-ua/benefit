@@ -170,6 +170,10 @@
                 Value = Model.CategoryId,
                 Items = ViewBag.Categories
             })
+            @if (Model.Category.MappedParentCategory != null)
+            {
+                <label>=> @Model.Category.MappedParentCategory.Name</label>
+            }
             @Html.ValidationMessageFor(model => model.CategoryId)
         </div>
     </div>

@@ -211,6 +211,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                               .Include(entry => entry.ProductParameterProducts)
                               .Include(entry => entry.Category)
                               .Include(entry => entry.Category.ProductParameters)
+                              .Include(entry => entry.Category.MappedParentCategory)
                               .Include(entry => entry.Category.MappedParentCategory.ProductParameters)
                               .Include(entry => entry.Currency)
                               .Include(entry => entry.Reviews)
@@ -229,12 +230,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             entry => entry.ShortDescription,
                             entry => entry.AltText,
                             entry => entry.Title);
-                ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
+                IEnumerable<Category> cats = db.Categories.Where(entry => !entry.IsSellerCategory || entry.SellerId == product.SellerId);
+                if (Seller.CurrentAuthorizedSellerId != null)
                 {
-                    Text = entry.IsSellerCategory ? string.Format("[seller]{0}", entry.Name) : entry.Name,
+                    var sellerCats = db.SellerCategories.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId).Select(entry => entry.CategoryId).ToList();
+                    cats = cats.Where(entry => sellerCats.Contains(entry.Id) || entry.IsSellerCategory).OrderBy(entry=>entry.Name);
+                }
+                else
+                {
+                    cats = cats.ToList().SortByHierarchy();
+                }
+                ViewBag.Categories = cats.Select(entry => new HierarchySelectItem()
+                {
+                    Text = entry.IsSellerCategory ? string.Format("[імпорт] {0}", entry.Name) : entry.Name,
                     Value = entry.Id,
                     Level = entry.HierarchicalLevel
-                });
+                }).ToList();
                 var mappedCategoryId = product.Category == null ? null : product.Category.MappedParentCategoryId;
                 var sellerCategory = db.SellerCategories.FirstOrDefault(entry =>
                                          entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId) ??
@@ -502,7 +513,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     ViewBag.Categories = db.Categories.Where(entry => !entry.IsSellerCategory || entry.SellerId == product.SellerId).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
                     {
-                        Text = entry.IsSellerCategory ? string.Format("[seller]{0}", entry.Name) : entry.Name,
+                        Text = entry.IsSellerCategory ? string.Format("[імпорт] {0}", entry.Name) : entry.Name,
                         Value = entry.Id,
                         Level = entry.HierarchicalLevel
                     });
@@ -893,7 +904,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     }
                     else
                     {
-                        products = products.Where(entry => 
+                        products = products.Where(entry =>
                             entry.AvailabilityState == ProductAvailabilityState.NotInStock ||
                             (entry.AvailableAmount == 0 && entry.AvailabilityState != ProductAvailabilityState.AlwaysAvailable));
                     }

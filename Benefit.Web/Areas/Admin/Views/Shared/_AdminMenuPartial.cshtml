@@ -1,199 +1,201 @@
 ﻿@using Benefit.Common.Constants
 @using Benefit.Domain.Models
 @using Microsoft.AspNet.Identity
-    <ul class="nav nav-list">
-        @if (User.IsInRole(DomainConstants.AdminRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Index", "Dashboard")">
-                    <i class="icon-home"></i>
-                    <span class="menu-text">Головна</span>
-                </a>
-            </li>
-        }
-        @if ((User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName)) && !User.IsInRole(DomainConstants.AdminRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Cabinet", "Dashboard")">
-                    <i class="icon-home"></i>
-                    <span class="menu-text">Особистий кабінет</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Balance")">
-                    <i class="icon-dollar"></i>
-                    <span class="menu-text">Баланс</span>
-                </a>
-            </li>
-        }
-        @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Index", "Orders")">
-                    <i class="icon-shopping-cart"></i>
-                    <span class="menu-text"> Замовлення </span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Banners")">
-                    <i class="icon-desktop"></i>
-                    <span class="menu-text">Банери</span>
-                </a>
-            </li>
-        }
-        @if (User.IsInRole(DomainConstants.AdminRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Index", "Users")">
-                    <i class="icon-group"></i>
-                    <span class="menu-text"> Партнери </span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Sellers")">
-                    <i class="icon-truck"></i>
-                    <span class="menu-text"> Постачальники </span>
-                </a>
-            </li>
-        }
-        else if (User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
-        {
-            <li>
-                <a href="@Url.Action("CreateOrUpdate", "Sellers", new { id = Seller.CurrentAuthorizedSellerId })">
-                    <i class="icon-truck"></i>
-                    <span class="menu-text"> Дані постачальника </span>
-                </a>
-            </li>
-            if (!(bool)Session[DomainConstants.SellerEcommerceKey])
-            {
-                <li>
-                    <a href="@Url.Action("SellerCatalog", "Images")">
-                        <i class="icon-picture"></i>
-                        <span class="menu-text"> Фотогалерея меню</span>
-                    </a>
-                </li>
-            }
-        }
-
-        @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Index", "Products")">
-                    <i class="icon-barcode"></i>
-                    <span class="menu-text"> Товари</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "InfoPages")">
-                    <i class="icon-desktop"></i>
-                    <span class="menu-text">Інформаційні сторінки</span>
-                </a>
-            </li>
-        }
-        @if (User.IsInRole(DomainConstants.AdminRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Index", "Reviews")">
-                    <i class="icon-star"></i>
-                    <span class="menu-text"> Відгуки</span>
-                </a>
-            </li>
-        }
-
-        @if (User.IsInRole(DomainConstants.AdminRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Index", "Categories")">
-                    <i class="icon-list"></i>
-                    <span class="menu-text"> Категорії</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("SellerTurnover", "Statistics")">
-                    <i class="icon-book"></i>
-                    <span class="menu-text">Звітність</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Cards")">
-                    <i class="icon-credit-card"></i>
-                    <span class="menu-text">Картки та брелоки</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Regions")">
-                    <i class="icon-globe"></i>
-                    <span class="menu-text"> Регіони</span>
-                </a>
-            </li>
-            if (User.IsInRole(DomainConstants.SuperAdminRoleName))
-            {
-                <li>
-                    <a href="@Url.Action("Exports", "ImportExport")">
-                        <i class="icon-download-alt"></i>
-                        <span class="menu-text">Експорт</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="@Url.Action("Index", "AdminStuff")">
-                        <i class="icon-key"></i>
-                        <span class="menu-text">VIP функції</span>
-                    </a>
-                </li>
-            }
-        }
-        @if (User.IsInRole(DomainConstants.SellerModeratorRoleName) || User.IsInRole(DomainConstants.SellerRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Index", "ImportExport")">
-                    <i class="icon-download-alt"></i>
-                    <span class="menu-text">Імпорт/Експорт</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Mapping", "Categories")">
-                    <i class="icon-arrow-right"></i>
-                    <span class="menu-text">Зведення категорій</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Currencies")">
-                    <i class="icon-money"></i>
-                    <span class="menu">Курси та індекси</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Notifications")">
-                    <i class="icon-bullhorn"></i>
-                    <span class="menu">Сповіщення</span>
-                </a>
-            </li>
-        }
-        @if (User.IsInRole(DomainConstants.AdminRoleName))
-        {
-            <li>
-                <a href="@Url.Action("Status", "ImportExport")">
-                    <i class="icon-bar-chart"></i>
-                    <span class="menu-text">Статус імпорту постачальників</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("OnlineStatus", "Terminal")">
-                    <i class="icon-terminal"></i>
-                    <span class="menu-text">Статус терміналів</span>
-                </a>
-            </li>
-            <li>
-                <a href="@Url.Action("Index", "Localizations")">
-                    <i class="icon-globe"></i>
-                    <span class="menu">Локалізація</span>
-                </a>
-            </li>
-        }
+<ul class="nav nav-list">
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
         <li>
-            <a href="@Url.Action("TabableContent", "InfoPages", new { pageUrls = "instrukciya_dlya_postachalnika"})">
-                <i class="icon-laptop"></i>
-                <span class="menu-text">Інструкції</span>
+            <a href="@Url.Action("Index", "Dashboard")">
+                <i class="icon-home"></i>
+                <span class="menu-text">Головна</span>
             </a>
         </li>
-    </ul>
+    }
+    @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Index", "Orders")">
+                <i class="icon-shopping-cart"></i>
+                <span class="menu-text">Замовлення</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Banners")">
+                <i class="icon-desktop"></i>
+                <span class="menu-text">Банери</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "SellerCategories")">
+                <i class="icon-list"></i>
+                <span class="menu-text"> Категорії</span>
+            </a>
+        </li>
+    }
+    @if ((User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName)) && !User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Cabinet", "Dashboard")">
+                <i class="icon-home"></i>
+                <span class="menu-text">Особистий кабінет</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Balance")">
+                <i class="icon-dollar"></i>
+                <span class="menu-text">Баланс</span>
+            </a>
+        </li>
+    }
+    @if (User.IsInRole(DomainConstants.AdminRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Index", "Products")">
+                <i class="icon-barcode"></i>
+                <span class="menu-text"> Товари</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "InfoPages")">
+                <i class="icon-desktop"></i>
+                <span class="menu-text">Інформаційні сторінки</span>
+            </a>
+        </li>
+    }
+    @if (User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.SellerRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Index", "ImportExport")">
+                <i class="icon-download-alt"></i>
+                <span class="menu-text">Імпорт/Експорт</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Mapping", "Categories")">
+                <i class="icon-arrow-right"></i>
+                <span class="menu-text">Зведення категорій</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Currencies")">
+                <i class="icon-money"></i>
+                <span class="menu">Курси та індекси</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Notifications")">
+                <i class="icon-bullhorn"></i>
+                <span class="menu">Сповіщення</span>
+            </a>
+        </li>
+    }
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Index", "Users")">
+                <i class="icon-group"></i>
+                <span class="menu-text"> Партнери </span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Sellers")">
+                <i class="icon-truck"></i>
+                <span class="menu-text"> Постачальники </span>
+            </a>
+        </li>
+    }
+    else if (User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerModeratorRoleName))
+    {
+        <li>
+            <a href="@Url.Action("CreateOrUpdate", "Sellers", new { id = Seller.CurrentAuthorizedSellerId })">
+                <i class="icon-truck"></i>
+                <span class="menu-text"> Дані постачальника </span>
+            </a>
+        </li>
+        if (!(bool)Session[DomainConstants.SellerEcommerceKey])
+        {
+            <li>
+                <a href="@Url.Action("SellerCatalog", "Images")">
+                    <i class="icon-picture"></i>
+                    <span class="menu-text"> Фотогалерея меню</span>
+                </a>
+            </li>
+        }
+    }
+
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Index", "Reviews")">
+                <i class="icon-star"></i>
+                <span class="menu-text"> Відгуки</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Categories")">
+                <i class="icon-list"></i>
+                <span class="menu-text"> Категорії</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("SellerTurnover", "Statistics")">
+                <i class="icon-book"></i>
+                <span class="menu-text">Звітність</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Cards")">
+                <i class="icon-credit-card"></i>
+                <span class="menu-text">Картки та брелоки</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Regions")">
+                <i class="icon-globe"></i>
+                <span class="menu-text"> Регіони</span>
+            </a>
+        </li>
+        if (User.IsInRole(DomainConstants.SuperAdminRoleName))
+        {
+            <li>
+                <a href="@Url.Action("Exports", "ImportExport")">
+                    <i class="icon-download-alt"></i>
+                    <span class="menu-text">Експорт</span>
+                </a>
+            </li>
+            <li>
+                <a href="@Url.Action("Index", "AdminStuff")">
+                    <i class="icon-key"></i>
+                    <span class="menu-text">VIP функції</span>
+                </a>
+            </li>
+        }
+    }
+    @if (User.IsInRole(DomainConstants.AdminRoleName))
+    {
+        <li>
+            <a href="@Url.Action("Status", "ImportExport")">
+                <i class="icon-bar-chart"></i>
+                <span class="menu-text">Статус імпорту постачальників</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("OnlineStatus", "Terminal")">
+                <i class="icon-terminal"></i>
+                <span class="menu-text">Статус терміналів</span>
+            </a>
+        </li>
+        <li>
+            <a href="@Url.Action("Index", "Localizations")">
+                <i class="icon-globe"></i>
+                <span class="menu">Локалізація</span>
+            </a>
+        </li>
+    }
+    <li>
+        <a href="@Url.Action("TabableContent", "InfoPages", new { pageUrls = "instrukciya_dlya_postachalnika"})">
+            <i class="icon-laptop"></i>
+            <span class="menu-text">Інструкції</span>
+        </a>
+    </li>
+</ul>

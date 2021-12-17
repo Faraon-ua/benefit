@@ -727,6 +727,10 @@
     <Compile Include="Migrations\202111171047254_AddImportDefaultCurrency.designer.cs">
       <DependentUpon>202111171047254_AddImportDefaultCurrency.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202112151433477_ExtendSellerCategory.cs" />
+    <Compile Include="Migrations\202112151433477_ExtendSellerCategory.designer.cs">
+      <DependentUpon>202112151433477_ExtendSellerCategory.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1257,6 +1261,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202111171047254_AddImportDefaultCurrency.resx">
       <DependentUpon>202111171047254_AddImportDefaultCurrency.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112151433477_ExtendSellerCategory.resx">
+      <DependentUpon>202112151433477_ExtendSellerCategory.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

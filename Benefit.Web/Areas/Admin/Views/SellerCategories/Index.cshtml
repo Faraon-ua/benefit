@@ -1,0 +1,77 @@
+﻿@using Benefit.Common.Extensions
+@model List<Benefit.Domain.Models.SellerCategory>
+
+@{
+    ViewBag.Title = "Категорії";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+@section styles
+{
+    <link href="~/Areas/Admin/styles/admin.css" rel="stylesheet" />
+    <link href="~/Areas/Admin/assets/css/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" />
+}
+@section scripts{
+    <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript">
+        var saveCatsOrderUrl = '@Url.Action("SaveCategoriesOrder")';
+        $(function () {
+            $("#catOrder").sortable({
+                update: function (event, ui) {
+                    var currentListContaner = $("#catOrder");
+                    var sortedcats= [];
+                    currentListContaner.children("div").each(function () {
+                        var catId = $(this).attr("data-category-id");
+                        sortedcats.push(catId);
+                    });
+                    $.ajax({
+                        type: 'Post',
+                        dataType: 'json',
+                        url: saveCatsOrderUrl,
+                        data: JSON.stringify({ sortedCats: sortedcats }),
+                        contentType: 'application/json; charset=utf-8',
+                        async: true,
+                        success: function (data) {
+                            flashMessage(data.message, 1);
+                        },
+                        error: function (data) {
+                            console.debug(data);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+<h3 class="header smaller lighter red">Категорії</h3>
+<div class="" id="catOrder">
+    @foreach (var cat in Model)
+    {
+        <div class="well padding-10" data-category-id="@cat.CategoryId">
+            <div class="display-flex">
+                <div class="margin-right-15">
+                    @if (cat.CustomImageUrl != null)
+                    {
+                        <img height="60" src="~/Images/CategoryLogo/@cat.CustomImageUrl?time=@DateTime.Now.ToLocalDateTimeWithFormat().Replace(" ", "-")" />
+                    }
+                    else
+                    {
+                        <img height="60" src="~/Images/CategoryLogo/@cat.Category.ImageUrl?time=@DateTime.Now.ToLocalDateTimeWithFormat().Replace(" ", "-")" />
+                    }
+                </div>
+                <div class="well-caption">
+                    @(cat.CustomName ?? cat.Category.Name)
+                </div>
+                <div class="well-buttons-right">
+                    <a class="btn btn-xs btn-warning" href="@Url.Action("CreateOrUpdate", new { id = cat.CategoryId })">
+                        <i class="icon-edit"></i>
+                    </a>
+                    <div class="cursor-move pull-right">
+                        <i class="icon-ellipsis-vertical margin-left-10"></i>
+                        <i class="icon-ellipsis-vertical"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+

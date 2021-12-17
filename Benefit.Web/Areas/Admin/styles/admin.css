@@ -1,39 +1,56 @@
-﻿.belong-category {
+﻿.well-buttons-right {
+    line-height: 60px;
+    margin-left: auto;
+    font-size: 20px;
+    color: #478fca;
+}
+
+.well-caption {
+    color: #478fca;
+    font-size: 18px;
+    line-height: 60px;
+}
+
+.belong-category {
     border-bottom: solid 1px rgb(229, 229, 229);
 }
+
     .belong-category div {
         padding: 7px 0;
     }
+
 #imagesOrder li {
     position: relative;
 }
+
     #imagesOrder li .js-main-badge {
         padding: 3px;
         position: absolute;
         bottom: 10px;
         left: 5px;
     }
-    .counter .minus, .counter .plus {
-        color: #3e77aa;
-        width: 35px;
-        height: 34px;
-        line-height: 32px !important;
-        display: inline-block;
-        border: 1px solid transparent;
-        border-radius: 3px;
-        text-align: center;
-        font-size: 1.5em;
-    }
+
+.counter .minus, .counter .plus {
+    color: #3e77aa;
+    width: 35px;
+    height: 34px;
+    line-height: 32px !important;
+    display: inline-block;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    text-align: center;
+    font-size: 1.5em;
+}
 
     .counter .minus:hover, .counter .plus:hover {
         border: 1px solid #fb3f4c;
         color: #fb3f4c;
-        text-decoration:none;
+        text-decoration: none;
     }
 
 .counter .quantity {
     width: 48px;
-    text-align:center;
+    text-align: center;
 }
 
 .remove-sign {
@@ -41,13 +58,14 @@
     opacity: 0.5;
     font-size: 2em;
 }
-.remove-sign:hover {
-    opacity:1;
-}
 
-    .transactions-table td, .transactions-table th {
-        padding: 15px;
+    .remove-sign:hover {
+        opacity: 1;
     }
+
+.transactions-table td, .transactions-table th {
+    padding: 15px;
+}
 
 .transactions-table th, .transactions-table .secondary {
     color: #999 !important;

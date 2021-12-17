@@ -6,6 +6,9 @@ namespace Benefit.Domain.Models
 {
     public class SellerCategory
     {
+        [MaxLength(64)]
+        public string CustomName { get; set; }
+        public string CustomImageUrl { get; set; }
         public int? Order { get; set; }
         public int? CustomMargin { get; set; }
         public double? CustomDiscount { get; set; }

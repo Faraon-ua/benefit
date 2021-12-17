@@ -267,6 +267,7 @@
     <Compile Include="Areas\Admin\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Admin\Controllers\RegionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\ReviewsController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SellerCategoriesController.cs" />
     <Compile Include="Areas\Admin\Controllers\SellersController.cs" />
     <Compile Include="Areas\Admin\Controllers\StatisticsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
@@ -1068,6 +1069,8 @@
     <Content Include="Areas\Admin\Views\Products\_ModerationProductForm.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExport\_LinkForm.cshtml" />
     <Content Include="Areas\Admin\Views\Products\_ProductLocalization.cshtml" />
+    <Content Include="Areas\Admin\Views\SellerCategories\CreateOrUpdate.cshtml" />
+    <Content Include="Areas\Admin\Views\SellerCategories\Index.cshtml" />
     <None Include="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
