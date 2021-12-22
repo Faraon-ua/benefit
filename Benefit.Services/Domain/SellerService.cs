@@ -301,7 +301,17 @@ namespace Benefit.Services.Domain
                         parent = parent.ParentCategory;
                     }
                 }
-                return all.Distinct(new CategoryComparer()).ToList();
+                all = all.Distinct(new CategoryComparer()).ToList();
+                foreach (var cat in all)
+                {
+                    var sellerCat = seller.SellerCategories.FirstOrDefault(entry => entry.CategoryId == cat.Id);
+                    if (sellerCat != null)
+                    {
+                        cat.Name = sellerCat.CustomName ?? cat.Name;
+                        cat.Name = sellerCat.CustomImageUrl ?? cat.ImageUrl;
+                    }
+                }
+                return all;
             }
         }
 

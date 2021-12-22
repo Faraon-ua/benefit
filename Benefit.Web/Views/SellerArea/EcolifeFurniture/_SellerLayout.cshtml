@@ -122,12 +122,15 @@
                                                 @Html.Partial("_SelectRegionPartial", false)
                                             </div>
                                         </li>
-                                        <li class="menu_item visible-xs">
-                                            @foreach (var phone in seller.OnlineOrdersPhone.Split(','))
-                                            {
-                                                <a href="tel:@phone">@phone</a>
-                                            }
-                                        </li>
+                                        @if (!string.IsNullOrEmpty(seller.OnlineOrdersPhone))
+                                        {
+                                            <li class="menu_item visible-xs">
+                                                @foreach (var phone in seller.OnlineOrdersPhone.Split(','))
+                                                {
+                                                    <a href="tel:@phone">@phone</a>
+                                                }
+                                            </li>
+                                        }
                                     </ul>
                                 </div>
                                 <!--Main Navigation End -->
