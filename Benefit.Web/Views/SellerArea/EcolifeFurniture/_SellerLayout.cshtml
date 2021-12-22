@@ -117,20 +117,11 @@
                                         <li class="menu_item">
                                             <a class="menu_link" href="@Url.Action("contacts", "home")">Контакти</a>
                                         </li>
-                                        <li class="menu_item visible-xs">
-                                            <div id="selectRegionWrap" class="margin-left-10 inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
+                                        <li class="menu_item">
+                                            <div id="selectRegionWrap" class="inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
                                                 @Html.Partial("_SelectRegionPartial", false)
                                             </div>
                                         </li>
-                                        @if (!string.IsNullOrEmpty(seller.OnlineOrdersPhone))
-                                        {
-                                            <li class="menu_item visible-xs">
-                                                @foreach (var phone in seller.OnlineOrdersPhone.Split(','))
-                                                {
-                                                    <a href="tel:@phone">@phone</a>
-                                                }
-                                            </li>
-                                        }
                                     </ul>
                                 </div>
                                 <!--Main Navigation End -->
@@ -352,11 +343,20 @@
                                     <li class="menu_item">
                                         <a class="menu_link" href="@Url.Action("contacts", "home")">Контакти</a>
                                     </li>
-                                    <li class="menu_item visible-xs">
+                                    <li class="pl-4 pb-2 menu_item visible-xs">
                                         <div id="selectRegionWrap" class="margin-left-10 inline-block pull-left" data-url="@Url.Action("GetSelectRegionsForm","ProductRegions")">
                                             @Html.Partial("_SelectRegionPartial", false)
                                         </div>
                                     </li>
+                                    @if (!string.IsNullOrEmpty(seller.OnlineOrdersPhone))
+                                    {
+                                        <li class="menu_item visible-xs">
+                                            @foreach (var phone in seller.OnlineOrdersPhone.Split(','))
+                                            {
+                                                <a href="tel:@phone">@phone</a>
+                                            }
+                                        </li>
+                                    }
                                 </ul>
                             </nav>
                         </div>
