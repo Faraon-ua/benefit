@@ -308,7 +308,7 @@ namespace Benefit.Services.Domain
                     if (sellerCat != null)
                     {
                         cat.Name = sellerCat.CustomName ?? cat.Name;
-                        cat.Name = sellerCat.CustomImageUrl ?? cat.ImageUrl;
+                        cat.ImageUrl = sellerCat.CustomImageUrl ?? cat.ImageUrl;
                     }
                 }
                 return all;
