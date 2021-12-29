@@ -27,7 +27,7 @@ namespace Benefit.RestApi.Controllers
             {
                 var importTasks =
                 db.ExportImports
-                .Where(entry => entry.SyncType != SyncType.YmlExport && entry.SyncType != SyncType.YmlExportEpicentr && entry.IsActive).ToList();
+                .Where(entry => entry.SyncType != SyncType.YmlExport && entry.SyncType != SyncType.YmlExportEpicentr && entry.SyncType != SyncType.YmlExportProm && entry.IsActive).ToList();
                 Task.Run(() =>
                 {
                     foreach (var importTask in importTasks)

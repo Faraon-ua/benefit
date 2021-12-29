@@ -289,6 +289,9 @@
                         <th>
                             Зведена назва категорії
                         </th>
+                        <th>
+                            ID категорії на порталі
+                        </th>
                     </tr>
                     @{
                         var exports = (List<ExportImport>)ViewBag.Exports;
@@ -306,6 +309,9 @@
                                 @Html.TextBox(string.Format("ExportCategories[{0}].Name", i), exportCategory == null ? string.Empty : exportCategory.Name)
                                 @Html.Hidden(string.Format("ExportCategories[{0}].CategoryId", i), Model.Id)
                                 @Html.Hidden(string.Format("ExportCategories[{0}].ExportId", i), exports[i].Id)
+                            </td>
+                            <td>
+                                @Html.TextBox(string.Format("ExportCategories[{0}].ExternalId", i), exportCategory == null ? string.Empty : exportCategory.ExternalId)
                             </td>
                         </tr>
                     }

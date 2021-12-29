@@ -104,14 +104,18 @@
         <div class="clearfix margin-bottom-15">
             @foreach (var cat in Model)
             {
-                <div class="row col-md-4">
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="">
+                <div class="col-md-6 padding-10">
+                    <div class="display-flex">
+                        <div>
+                            <div>
+                                @if (cat.SellerId != null)
+                                {
+                                    <span>[@cat.Seller.Name]</span>
+                                }
                                 @cat.Name
                             </div>
                         </div>
-                        <div class="col-sm-6 controls" style="">
+                        <div class="controls" style="margin-left: auto;">
                             <a class="btn btn-danger btn-sm pull-right btn-xs" onclick="DeleteCategory('@cat.Id', '@cat.Name')" title="Видалити категорію">
                                 <i class="icon-trash"></i>
                             </a>

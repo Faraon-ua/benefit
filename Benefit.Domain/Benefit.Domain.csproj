@@ -731,6 +731,10 @@
     <Compile Include="Migrations\202112151433477_ExtendSellerCategory.designer.cs">
       <DependentUpon>202112151433477_ExtendSellerCategory.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202112281032134_AddExportCategoryId.cs" />
+    <Compile Include="Migrations\202112281032134_AddExportCategoryId.designer.cs">
+      <DependentUpon>202112281032134_AddExportCategoryId.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1264,6 +1268,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202112151433477_ExtendSellerCategory.resx">
       <DependentUpon>202112151433477_ExtendSellerCategory.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202112281032134_AddExportCategoryId.resx">
+      <DependentUpon>202112281032134_AddExportCategoryId.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

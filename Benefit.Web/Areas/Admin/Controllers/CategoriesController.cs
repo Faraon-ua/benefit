@@ -50,7 +50,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var model = new List<Category>();
                 if (!string.IsNullOrEmpty(search))
                 {
-                    model = db.Categories.Where(entry => entry.Name.ToLower().Contains(search.ToLower()) || entry.Id == search).ToList();
+                    model = db.Categories
+                        .Include(entry=>entry.Seller)
+                        .Where(entry => entry.Name.ToLower().Contains(search.ToLower()) || entry.Id == search).ToList();
                 }
                 return View(model);
             }
@@ -121,7 +123,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }).ToList();
                 categories.Insert(0, new HierarchySelectItem() { Text = "Не обрано", Value = string.Empty, Level = 0 });
                 ViewBag.Categories = categories;
-                ViewBag.Exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport || entry.SyncType == SyncType.YmlExportEpicentr).ToList();
+                ViewBag.Exports = db.ExportImports.Where(entry => entry.SyncType == SyncType.YmlExport || entry.SyncType == SyncType.YmlExportEpicentr || entry.SyncType == SyncType.YmlExportProm).ToList();
                 category.Localizations = LocalizationService.Get(category,
                     entry => entry.Name,
                     entry => entry.Description,

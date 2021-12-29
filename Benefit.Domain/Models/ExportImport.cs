@@ -19,7 +19,8 @@ namespace Benefit.Domain.Models
         YmlExport,
         Gbs,
         FirebirdSql,
-        YmlExportEpicentr
+        YmlExportEpicentr,
+        YmlExportProm
     }
     public class ExportImport
     {

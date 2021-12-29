@@ -119,15 +119,18 @@ namespace Benefit.Services.Domain
                 //workaround for sql (can not process queries more than 2000 records for IN clause)
                 var count = 0;
                 var query = db.Products.AsNoTracking()
+                    .Include(entry => entry.Seller)
                     .Include(entry => entry.Seller.ShippingMethods)
                     .Include(entry => entry.ProductParameterProducts.Select(pp => pp.ProductParameter))
                     .Include(entry => entry.ProductOptions.Select(op => op.ChildProductOptions))
                     .Include(entry => entry.Images)
                     .Include(entry => entry.Currency)
+                    .Include(entry => entry.Category)
                     .Include(entry => entry.Category.ExportCategories)
                     .Include(entry => entry.Category.SellerCategories)
                     .Include(entry => entry.Category.MappedParentCategory.ExportCategories)
-                    .Include(entry => entry.Category.MappedParentCategory.SellerCategories);
+                    .Include(entry => entry.Category.MappedParentCategory.SellerCategories)
+                    .Where(entry => entry.IsActive && entry.Seller.IsActive && entry.Category.IsActive);
                 while (count < productIds.Count)
                 {
                     var ids = productIds.OrderBy(id => id).Skip(count).Take(500).ToList();
@@ -149,23 +152,20 @@ namespace Benefit.Services.Domain
                         dbcategories[i] = dbcategories[i].MappedParentCategory;
                     }
                 }
-                dbcategories = dbcategories.Where(entry => entry != null).ToList();
-                var exportCategories = new Dictionary<int, string>();
+                dbcategories = dbcategories.Where(entry => entry != null).Distinct(new CategoryComparer()).ToList();
                 foreach (var dbCat in dbcategories)
                 {
-                    var id = Math.Abs(dbCat.Id.GetHashCode());
-                    if (!exportCategories.ContainsKey(id))
-                    {
-                        var catExport = dbCat.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId);
-                        var catName = catExport == null ? "Не задано мапінг " + dbCat.Id : catExport.Name;
-                        exportCategories.Add(id, catName);
-                    }
+                    var id = Math.Abs(dbCat.Id.GetHashCode()).ToString();
+                    var catExport = dbCat.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId);
+                    dbCat.Id = id;
+                    dbCat.Name = catExport == null ? "Не задано мапінг " + dbCat.Id : catExport.Name;
+                    dbCat.ExternalIds = catExport == null ? null : catExport.ExternalId;
                 }
                 var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
                 var ns = XNamespace.Get("http://www.sitemaps.org/schemas/sitemap/0.9");
                 var yml_catalog = new XElement(ns + "yml_catalog", new XAttribute("date", DateTime.Now.ToLocalDateTimeWithFormat()));
                 XElement shop = null;
-                if (exportTask.SyncType == SyncType.YmlExport)
+                if (exportTask.SyncType == SyncType.YmlExport || exportTask.SyncType == SyncType.YmlExportProm)
                 {
                     shop = new XElement("shop");
                     var domain = Request.Url.Host;
@@ -179,10 +179,14 @@ namespace Benefit.Services.Domain
                     var uah = new XElement("currency", new XAttribute("id", "UAH"), new XAttribute("rate", "1"));
                     currencies.Add(uah);
                     var categories = new XElement("categories");
-                    foreach (var category in exportCategories)
+                    foreach (var category in dbcategories)
                     {
-                        var cat = new XElement("category") { Value = category.Value };
-                        cat.Add(new XAttribute("id", category.Key));
+                        var cat = new XElement("category") { Value = category.Name };
+                        cat.Add(new XAttribute("id", category.Id));
+                        if (exportTask.SyncType == SyncType.YmlExportProm || category.ExternalIds != null)
+                        {
+                            cat.Add(new XAttribute("portal_id", category.ExternalIds));
+                        }
                         categories.Add(cat);
                     }
                     shop.Add(name);
@@ -285,10 +289,10 @@ namespace Benefit.Services.Domain
                         prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
 
                         prod.Add(new XElement("url", string.Format("{0}://{1}/t/{2}-{3}", Request.Url.Scheme, Request.Url.Host, product.UrlName, product.SKU)));
-                        var categoryId = Math.Abs(product.CategoryId.GetHashCode());
+                        var categoryId = Math.Abs(product.CategoryId.GetHashCode()).ToString();
                         if (product.Category.MappedParentCategory != null)
                         {
-                            categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode());
+                            categoryId = Math.Abs(product.Category.MappedParentCategoryId.GetHashCode()).ToString();
                         }
                         if (exportTask.SyncType == SyncType.YmlExport)
                         {
@@ -296,8 +300,8 @@ namespace Benefit.Services.Domain
                         }
                         else if (exportTask.SyncType == SyncType.YmlExportEpicentr)
                         {
-                            var cat = exportCategories.FirstOrDefault(entry => entry.Key == categoryId);
-                            prod.Add(new XElement("category", cat.Value));
+                            var cat = dbcategories.FirstOrDefault(entry => entry.Id == categoryId);
+                            prod.Add(new XElement("category", cat.Name));
                         }
                         foreach (var picture in product.Images.Where(entry => entry.ImageType == ImageType.ProductGallery).OrderBy(entry => entry.Order))
                         {

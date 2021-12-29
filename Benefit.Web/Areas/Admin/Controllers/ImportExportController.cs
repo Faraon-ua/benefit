@@ -84,7 +84,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             {
                 var exports = db.ExportImports
                     .Include(entry => entry.Seller)
-                    .Where(entry => entry.SyncType == SyncType.YmlExport || entry.SyncType == SyncType.YmlExportEpicentr).ToList();
+                    .Where(entry => entry.SyncType == SyncType.YmlExport || entry.SyncType == SyncType.YmlExportEpicentr || entry.SyncType == SyncType.YmlExportProm).ToList();
 
                 return View(exports);
             }

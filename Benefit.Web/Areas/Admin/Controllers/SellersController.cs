@@ -152,7 +152,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {
-                    filters.Search = filters.Search.ToLower();
+                    filters.Search = filters.Search.Trim().ToLower();
                     sellers = sellers.Where(entry => entry.Name.ToString().Contains(filters.Search) ||
                         entry.Personnels.Any(pers => pers.CardNumber.Contains(filters.Search)));
                 }
