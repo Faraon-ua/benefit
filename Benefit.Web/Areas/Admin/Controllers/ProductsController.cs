@@ -234,7 +234,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (Seller.CurrentAuthorizedSellerId != null)
                 {
                     var sellerCats = db.SellerCategories.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId).Select(entry => entry.CategoryId).ToList();
-                    cats = cats.Where(entry => sellerCats.Contains(entry.Id) || entry.IsSellerCategory).OrderBy(entry=>entry.Name);
+                    cats = cats.Where(entry => sellerCats.Contains(entry.Id) || entry.IsSellerCategory).OrderBy(entry => entry.Name);
                 }
                 else
                 {
@@ -651,13 +651,17 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string export_Id, int availability_Id, string currency_Id, ModerationStatus moderate_status, string moderator_id, ProductFilterValues filters = null)
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string[] export_Id, int availability_Id, string currency_Id, ModerationStatus moderate_status, string moderator_id, ProductFilterValues filters = null)
         {
+            if(productIds == null && !action.ToString().Contains("All"))
+            {
+                TempData["ErrorMessage"] = "Не обрано жодного товару";
+                return new HttpStatusCodeResult(200);
+            }
             using (var db = new ApplicationDbContext())
             {
                 var productService = new ProductsService();
                 List<string> products = null;
-                List<string> existingExportProducts = null;
                 switch (action)
                 {
                     case ProductsBulkAction.SetCategory:
@@ -698,59 +702,55 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         });
                         break;
                     case ProductsBulkAction.ExportSelected:
-                        existingExportProducts = db.ExportProducts
-                            .Where(entry => productIds.Contains(entry.ProductId) && entry.ExportId == export_Id)
-                            .Select(entry => entry.ProductId).ToList();
-                        productIds = productIds.Except(existingExportProducts).ToArray();
+                        db.ExportProducts.RemoveRange(db.ExportProducts.Where(entry => productIds.Contains(entry.ProductId)));
                         db.Products.Where(entry => productIds.Contains(entry.Id))
                           .ForEach(entry =>
                           {
                               if (!entry.Name.Contains("(bc-"))
                               {
                                   entry.Name += string.Format(" (bc-{0})", entry.SKU);
+                                  db.Entry(entry).State = EntityState.Modified;
                               }
-                              db.Entry(entry).State = EntityState.Modified;
                           });
+                        db.SaveChanges();
                         foreach (var productId in productIds)
                         {
-                            var exportProduct = new ExportProduct()
+                            foreach (var exportId in export_Id)
                             {
-                                ProductId = productId,
-                                ExportId = export_Id
-                            };
-                            db.ExportProducts.Add(exportProduct);
+                                var exportProduct = new ExportProduct()
+                                {
+                                    ProductId = productId,
+                                    ExportId = exportId
+                                };
+                                db.ExportProducts.Add(exportProduct);
+                            }
                         }
                         break;
                     case ProductsBulkAction.ExportAll:
-                        products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
-                        existingExportProducts = db.ExportProducts
-                            .Where(entry => products.Contains(entry.ProductId) && entry.ExportId == export_Id)
-                            .Select(entry => entry.ProductId).ToList();
-                        productIds = products.Except(existingExportProducts).ToArray();
-                        db.Products.Where(entry => productIds.Contains(entry.Id))
-                         .ForEach(entry =>
-                         {
-                             if (!entry.Name.Contains("(bc-"))
-                             {
-                                 entry.Name += string.Format(" (bc-{0})", entry.SKU);
-                             }
-                             db.Entry(entry).State = EntityState.Modified;
-                         });
-                        var exportProducts = productIds.Select(entry => new ExportProduct
+                        var dbProducts = GetFilteredProducts(filters);
+                        products = dbProducts.Select(entry => entry.Id).ToList();
+                        db.ExportProducts.RemoveRange(db.ExportProducts.Where(entry => products.Contains(entry.ProductId)));
+                        db.SaveChanges();
+                        dbProducts.ForEach(entry =>
                         {
-                            ProductId = entry,
-                            ExportId = export_Id
+                            if (!entry.Name.Contains("(bc-"))
+                            {
+                                entry.Name += string.Format(" (bc-{0})", entry.SKU);
+                                db.Entry(entry).State = EntityState.Modified;
+                            }
                         });
-                        db.ExportProducts.AddRange(exportProducts);
-                        break;
-                    case ProductsBulkAction.DeleteFromExport:
-                        var productExports = db.ExportProducts.Where(entry => productIds.Contains(entry.ProductId));
-                        db.ExportProducts.RemoveRange(productExports);
-                        break;
-                    case ProductsBulkAction.DeleteFromExportAll:
-                        products = GetFilteredProducts(filters).Select(entry => entry.Id).ToList();
-                        var productExportAlls = db.ExportProducts.Where(entry => products.Contains(entry.ProductId));
-                        db.ExportProducts.RemoveRange(productExportAlls);
+                        foreach (var exportId in export_Id)
+                        {
+                            foreach (var productId in products)
+                            {
+                                var exportProduct = new ExportProduct()
+                                {
+                                    ProductId = productId,
+                                    ExportId = exportId
+                                };
+                                db.ExportProducts.Add(exportProduct);
+                            }
+                        }
                         break;
                     case ProductsBulkAction.ApplyCurrency:
                         db.Products.Where(entry => productIds.Contains(entry.Id))

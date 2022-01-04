@@ -664,6 +664,7 @@
     <Content Include="Areas\Admin\styles\invoice.css" />
     <Content Include="Content\css\address.css" />
     <Content Include="Content\css\autocomplete.css" />
+    <Content Include="Content\css\bootstrap-select.css" />
     <Content Include="Content\css\bootstrap-select.min.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\bootstrap.min.css" />
@@ -888,6 +889,7 @@
     <Content Include="Areas\Admin\Views\InfoPages\Index.cshtml" />
     <Content Include="Areas\Admin\Views\InfoPages\_PageLocalizedInfo.cshtml" />
     <Content Include="Scripts\bootstrap3.3.7.min.js" />
+    <Content Include="Scripts\bootstrap4.1.min.js" />
     <Content Include="Scripts\ckeditor\adapters\jquery.js" />
     <Content Include="Scripts\ckeditor\CHANGES.html" />
     <Content Include="Scripts\ckeditor\ckeditor.asp" />

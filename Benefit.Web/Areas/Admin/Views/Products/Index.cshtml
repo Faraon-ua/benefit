@@ -12,6 +12,7 @@
     <script src="~/Scripts/hierarchy-select.min.js"></script>
     <script src="~/Areas/Admin/assets/js/chosen.jquery.min.js"></script>
     <script src="~/Areas/Admin/assets/js/jquery-ui-1.10.3.custom.min.js"></script>
+    <script src="~/Scripts/bootstrap-select.js"></script>
     @*    <script src="~/Scripts/sorting-filtering.js"></script>*@
 
 <script>
@@ -22,6 +23,7 @@
         var removeExportUrl = '@Url.Action("RemoveFromExport")';
         var cloneUrl = '@Url.Action("Clone")';
         var hSelect;
+
         $(function () {
             $(".fn-clone").click(function () {
                 var btn = $(this);
@@ -133,9 +135,9 @@
                 }
                 if ($(this).val() == "@((int)ProductsBulkAction.ExportAll)" ||
                     $(this).val() == "@((int)ProductsBulkAction.ExportSelected)") {
-                    $("#exportId").show();
+                    $("#exportId").parent().show();
                 } else {
-                    $("#exportId").hide();
+                    $("#exportId").parent().hide();
                 }
                 if ($(this).val() == "@((int)ProductsBulkAction.AssignModerator)" ||
                     $(this).val() == "@((int)ProductsBulkAction.AssignModeratorAll)") {
@@ -184,6 +186,9 @@
                         window.location.reload();
                     });
             });
+
+            $("#exportId").selectpicker();
+            $("#exportId").parent().hide();
 
             $(".chosen-select").chosen({
                 search_contains: true
@@ -254,6 +259,7 @@
     <link href="~/Content/css/pygments.css" rel="stylesheet" />
     <link href="~/Content/css/hierarchy-select.min.css" rel="stylesheet" />
     <link href="~/Content/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/css/bootstrap-select.css" rel="stylesheet" />
     <style>
         #select-all {
             cursor: pointer;
@@ -359,7 +365,7 @@
                                     Items = Model.ProductFilters.Categories
                                 })
                                
-                                @Html.DropDownList("exportId", Model.ProductFilters.Exports, null, new { id = "exportId", style = "display:none;" })
+                                @Html.ListBox("exportId", Model.ProductFilters.Exports, new { id = "exportId", style = "display:none;" })
 
                                 @Html.DropDownList("currencyId", Model.ProductFilters.Currencies, null, new { id = "currencyId", style = "display:none;" })
 
@@ -374,7 +380,7 @@
                                 }
                             </div>
                         </div>
-                        <button class="btn btn-success pull-right" id="products-bulk-action-btn">Застосувати</button>
+                        <button class="btn btn-success pull-right height-40px" id="products-bulk-action-btn">Застосувати</button>
                     </div>
                 </fieldset>
             }

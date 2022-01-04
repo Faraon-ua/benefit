@@ -14,14 +14,10 @@ namespace Benefit.Web.Models.Enumerations
         DeleteSelected,
         [Display(Name = "Видалити відфільтровані")]
         DeleteAll,
-        [Display(Name="Додати в експорт обрані")]
+        [Display(Name="Додати/видалити в експорт обрані")]
         ExportSelected,
-        [Display(Name= "Додати в експорт відфільтровані")]
+        [Display(Name= "Додати/видалити в експорт відфільтровані")]
         ExportAll,
-        [Display(Name="Видалити із експорту обрані")]
-        DeleteFromExport,
-        [Display(Name= "Видалити із експорту відфільтровані")]
-        DeleteFromExportAll,
         [Display(Name="Застосувати курс/індекс для обраних")]
         ApplyCurrency,
         [Display(Name = "Застосувати курс/індекс для відфільтрованих")]
