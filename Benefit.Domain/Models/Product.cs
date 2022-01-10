@@ -102,6 +102,7 @@ namespace Benefit.Domain.Models
         public string UrlName { get; set; }
         [Index(IsUnique = true)]
         public int SKU { get; set; }
+        public int? Barcode { get; set; }
         [MaxLength(128)]
         public string Vendor { get; set; }
         [MaxLength(64)]
@@ -197,7 +198,7 @@ namespace Benefit.Domain.Models
                 {
                     AvailabilityState = ProductAvailabilityState.Ending;
                 }
-                if(AvailabilityState == ProductAvailabilityState.AlwaysAvailable)
+                if (AvailabilityState == ProductAvailabilityState.AlwaysAvailable)
                 {
                     AvailabilityState = ProductAvailabilityState.Available;
                 }
@@ -221,7 +222,7 @@ namespace Benefit.Domain.Models
         [NotMapped]
         public int ReviewsCount { get; set; }
         [NotMapped]
-        public bool IsFavorite { get; set; } 
+        public bool IsFavorite { get; set; }
         [NotMapped]
         public bool IsPromotion { get; set; }
     }

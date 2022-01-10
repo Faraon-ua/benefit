@@ -157,6 +157,13 @@ namespace Benefit.Services.Import
                     LastModifiedBy = "FirebirdImport",
                     LastModified = DateTime.UtcNow
                 };
+                int barcode = 0;
+                int.TryParse(fbProduct.Barcode, out barcode);
+                if (barcode != 0)
+                {
+                    product.Barcode = barcode;
+                }
+
                 var statusStamp = new StatusStamp()
                 {
                     Id = Guid.NewGuid().ToString(),

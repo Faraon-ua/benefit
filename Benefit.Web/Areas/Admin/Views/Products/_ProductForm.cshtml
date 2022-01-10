@@ -34,6 +34,13 @@
             @Html.ValidationMessageFor(model => model.SKU)
         </div>
     </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label no-padding-right">Штрихкод товару</label>
+        <div class="col-md-9">
+            @Html.TextBoxFor(model => model.Barcode, new { @class = "col-xs-10 col-sm-5" })
+            @Html.ValidationMessageFor(model => model.Barcode)
+        </div>
+    </div>
     @{
         var priceWithCurrency = Model.Price * (Model.Currency == null ? 1 : Model.Currency.Rate);
     }
@@ -170,7 +177,7 @@
                 Value = Model.CategoryId,
                 Items = ViewBag.Categories
             })
-            @if (Model.Category.MappedParentCategory != null)
+            @if (Model.Category != null && Model.Category.MappedParentCategory != null)
             {
                 <label>=> @Model.Category.MappedParentCategory.Name</label>
             }
