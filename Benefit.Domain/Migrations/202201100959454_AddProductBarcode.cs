@@ -7,7 +7,7 @@
     {
         public override void Up()
         {
-            AddColumn("dbo.Products", "Barcode", c => c.Int());
+            AddColumn("dbo.Products", "Barcode", c => c.Long());
         }
         
         public override void Down()

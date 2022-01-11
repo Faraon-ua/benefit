@@ -102,7 +102,7 @@ namespace Benefit.Domain.Models
         public string UrlName { get; set; }
         [Index(IsUnique = true)]
         public int SKU { get; set; }
-        public int? Barcode { get; set; }
+        public Int64? Barcode { get; set; }
         [MaxLength(128)]
         public string Vendor { get; set; }
         [MaxLength(64)]

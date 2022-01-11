@@ -157,8 +157,8 @@ namespace Benefit.Services.Import
                     LastModifiedBy = "FirebirdImport",
                     LastModified = DateTime.UtcNow
                 };
-                int barcode = 0;
-                int.TryParse(fbProduct.Barcode, out barcode);
+                Int64 barcode = 0;
+                Int64.TryParse(fbProduct.Barcode, out barcode);
                 if (barcode != 0)
                 {
                     product.Barcode = barcode;
