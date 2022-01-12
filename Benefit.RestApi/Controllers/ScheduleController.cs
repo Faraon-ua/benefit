@@ -6,6 +6,7 @@ using Benefit.Services;
 using Benefit.Services.Admin;
 using Benefit.Services.ExternalApi;
 using Benefit.Services.Import;
+using NLog;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace Benefit.RestApi.Controllers
     public class ScheduleController : Controller
     {
         private ScheduleService ScheduleService = new ScheduleService();
+        private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
         public ActionResult ProcessImportTasks()
         {
@@ -27,13 +29,17 @@ namespace Benefit.RestApi.Controllers
             {
                 var importTasks =
                 db.ExportImports
+                .Include(entry=>entry.Seller)
                 .Where(entry => entry.SyncType != SyncType.YmlExport && entry.SyncType != SyncType.YmlExportEpicentr && entry.SyncType != SyncType.YmlExportProm && entry.IsActive).ToList();
+                _logger.Info("DB get success import tasks for " + string.Join(",", importTasks.Select(entry=>entry.Seller.Name)));
                 Task.Run(() =>
                 {
                     foreach (var importTask in importTasks)
                     {
+                        _logger.Info("Resolving import task for " + importTask.Seller.Name);
                         if (importTask.LastSync.HasValue && (DateTime.UtcNow - importTask.LastSync.Value).TotalDays < importTask.SyncPeriod)
                         {
+                            _logger.Info("Canceling import task for " + importTask.Seller.Name);
                             continue;
                         }
                         ImportServiceFactory.GetImportServiceInstance(importTask.SyncType).Import(importTask.Id);
