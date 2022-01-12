@@ -6,6 +6,7 @@ using Benefit.Services;
 using Benefit.Services.Admin;
 using Benefit.Services.ExternalApi;
 using Benefit.Services.Import;
+using NLog;
 using System;
 using System.Data.Entity;
 using System.Linq;
@@ -20,6 +21,7 @@ namespace Benefit.RestApi.Controllers
     public class ScheduleController : Controller
     {
         private ScheduleService ScheduleService = new ScheduleService();
+        private static Logger _logger = LogManager.GetCurrentClassLogger();
 
         public ActionResult ProcessImportTasks()
         {
@@ -57,7 +59,14 @@ namespace Benefit.RestApi.Controllers
                 {
                     HttpRuntime.Cache[key] = true;
                     var service = BaseMarketPlaceApi.GetMarketplaceServiceInstance(type);
-                    await service.ProcessOrders();
+                    try
+                    {
+                        await service.ProcessOrders();
+                    }
+                    catch(Exception ex)
+                    {
+                        _logger.Fatal(string.Format("Export for {0} failed. ", type.ToString()) + ex.ToString());
+                    }
                     result.AppendFormat("Замовлення з {0} успішно синхронізовані<br/>", type.ToString());
                 }
                 else
