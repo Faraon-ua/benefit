@@ -63,7 +63,14 @@ namespace Benefit.RestApi.Controllers
                 {
                     HttpRuntime.Cache[key] = true;
                     var service = BaseMarketPlaceApi.GetMarketplaceServiceInstance(type);
-                    await service.ProcessOrders();
+                    try
+                    {
+                        await service.ProcessOrders();
+                    }
+                    catch(Exception ex)
+                    {
+                        _logger.Fatal(string.Format("Export for {0} failed. ", type.ToString()) + ex.ToString());
+                    }
                     result.AppendFormat("Замовлення з {0} успішно синхронізовані<br/>", type.ToString());
                 }
                 else

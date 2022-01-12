@@ -183,7 +183,7 @@ namespace Benefit.Services.Domain
                     {
                         var cat = new XElement("category") { Value = category.Name };
                         cat.Add(new XAttribute("id", category.Id));
-                        if (exportTask.SyncType == SyncType.YmlExportProm || category.ExternalIds != null)
+                        if (exportTask.SyncType == SyncType.YmlExportProm && category.ExternalIds != null)
                         {
                             cat.Add(new XAttribute("portal_id", category.ExternalIds));
                         }
@@ -354,7 +354,7 @@ namespace Benefit.Services.Domain
                     shop.Add(groups);
                 }
                 shop.Add(offers);
-                if (exportTask.SyncType == SyncType.YmlExport)
+                if (exportTask.SyncType == SyncType.YmlExport || exportTask.SyncType == SyncType.YmlExportProm)
                 {
                     yml_catalog.Add(shop);
                     doc.Add(yml_catalog);
