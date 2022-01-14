@@ -146,21 +146,8 @@ namespace Benefit.Services.ExternalApi
                         var rOrders = ordersResult.Data.orders.Where(entry => !db.Orders.Any(or => or.ExternalId == entry.id && or.OrderType == OrderType.Allo)).ToList();
                         foreach (var rOrder in rOrders)
                         {
-                            var products = new List<Product>();
-                            foreach (var entry in rOrder.products)
-                            {
-                                var productNameSuffix = orderSuffixRegex.Match(entry.name).Value.ToLower();
-                                productNameSuffix = productNameSuffix == string.Empty ? null : productNameSuffix;
-                                var product = db.Products.FirstOrDefault(x => x.Name.ToLower().Contains(productNameSuffix));
-                                if (product == null)
-                                {
-                                    await _notificationService.NotifyApiFailRequest(string.Format("Не знайдено товару в локальній базі даних. № Замовлення на Allo: {0}, назва товару: {1}", rOrder.id, entry.name)).ConfigureAwait(false);
-                                }
-                                else
-                                {
-                                    products.Add(product);
-                                }
-                            }
+                            var productNames = rOrder.products.Select(entry => orderSuffixRegex.Match(entry.name).Value.ToLower()).ToList();
+                            var products = db.Products.Where(entry => productNames.Any(pn => entry.Name.ToLower().Contains(pn))).ToList();
                             var sellerIds = products.Select(entry => entry.SellerId).Distinct().ToList();
                             foreach (var sellerId in sellerIds)
                             {
@@ -229,21 +216,29 @@ namespace Benefit.Services.ExternalApi
                                 }
                                 foreach (var rProduct in rOrder.products)
                                 {
-                                    var product = products.FirstOrDefault(entry => entry.Name == rProduct.name);
-                                    var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                                    var orderProduct = new OrderProduct()
+                                    var suffix = orderSuffixRegex.Match(rProduct.name).Value.ToLower();
+                                    var product = products.FirstOrDefault(entry => entry.Name.ToLower().Contains(suffix));
+                                    if (product == null)
                                     {
-                                        Id = Guid.NewGuid().ToString(),
-                                        ExternalId = rProduct.sku,
-                                        OrderId = order.Id,
-                                        ProductName = rProduct.name,
-                                        ProductId = product.Id,
-                                        ProductSku = product.SKU,
-                                        ProductPrice = rProduct.price,
-                                        Amount = rProduct.quantity,
-                                        ProductImageUrl = image == null ? null : image.ImageUrl
-                                    };
-                                    order.OrderProducts.Add(orderProduct);
+                                        Task.Run(() => _notificationService.NotifyApiFailRequest(string.Format("Не знайдено товару в локальній базі даних. № замовлення в Benefit: {0}, № Замовлення на Rozetka: {1}, назва товару: {2}", order.OrderNumber, rOrder.id, rProduct.name)));
+                                    }
+                                    else
+                                    {
+                                        var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
+                                        var orderProduct = new OrderProduct()
+                                        {
+                                            Id = Guid.NewGuid().ToString(),
+                                            ExternalId = rProduct.sku,
+                                            OrderId = order.Id,
+                                            ProductName = rProduct.name,
+                                            ProductId = product.Id,
+                                            ProductSku = product.SKU,
+                                            ProductPrice = rProduct.price,
+                                            Amount = rProduct.quantity,
+                                            ProductImageUrl = image == null ? null : image.ImageUrl
+                                        };
+                                        order.OrderProducts.Add(orderProduct);
+                                    }
                                 }
                                 order.Sum = order.GetOrderSum();
                                 orders.Add(order);
