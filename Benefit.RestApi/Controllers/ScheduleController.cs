@@ -37,7 +37,7 @@ namespace Benefit.RestApi.Controllers
                     foreach (var importTask in importTasks)
                     {
                         _logger.Info("Resolving import task for " + importTask.Seller.Name);
-                        if (importTask.LastSync.HasValue && (DateTime.UtcNow - importTask.LastSync.Value).TotalDays < importTask.SyncPeriod)
+                        if (importTask.LastSync.HasValue && (DateTime.UtcNow - importTask.LastSync.Value).TotalHours < importTask.SyncPeriod*23)
                         {
                             _logger.Info("Canceling import task for " + importTask.Seller.Name);
                             continue;

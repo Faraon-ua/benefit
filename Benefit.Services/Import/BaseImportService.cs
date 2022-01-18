@@ -23,7 +23,11 @@ namespace Benefit.Services.Import
                     .Include(entry => entry.Seller)
                     .Include(entry => entry.Seller.SellerCategories)
                     .FirstOrDefault(entry => entry.Id == importTaskId);
-                if (importTask.IsImport == true) return;
+                if (importTask.IsImport == true)
+                {
+                    _logger.Info("Canceling (isimport true) import task for " + importTask.Seller.Name);
+                    return;
+                }
                 //show that import task is processing
                 importTask.IsImport = true;
                 db.SaveChanges();
@@ -39,7 +43,7 @@ namespace Benefit.Services.Import
                 {
                     _logger.Error(ex);
                     importTask.LastUpdateStatus = false;
-                    importTask.LastUpdateMessage = "Неможливо обробити файл "+ ex.ToString();
+                    importTask.LastUpdateMessage = "Неможливо обробити файл " + ex.ToString();
                 }
                 finally
                 {
@@ -67,7 +71,7 @@ namespace Benefit.Services.Import
             if (importType == SyncType.Gbs)
             {
                 xmlCategoryIds = xmlCategories.Select(entry => entry.Element("Id").Value).ToList();
-            } 
+            }
             var catIdsToRemove = currentSellercategoyIds.Except(xmlCategoryIds).ToList();
             foreach (var catId in catIdsToRemove)
             {

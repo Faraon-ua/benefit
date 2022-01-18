@@ -51,8 +51,10 @@ namespace Benefit.Services.Import
             var hasNewContent = false;
             foreach (var fbCategory in fbCategories)
             {
+                var urlname = string.Format("{0}-{1}-{2}", sellerId, fbCategory.Id, fbCategory.Name.Translit()).Truncate(128);
                 var dbCategory =
-                    db.Categories.FirstOrDefault(entry => entry.ExternalIds == fbCategory.Id && entry.SellerId == sellerId);
+                    db.Categories.FirstOrDefault(entry => (entry.ExternalIds == fbCategory.Id && entry.SellerId == sellerId)
+                    || entry.UrlName == urlname);
                 if (dbCategory == null)
                 {
                     if (!hasNewContent)
@@ -77,11 +79,13 @@ namespace Benefit.Services.Import
                 }
                 else
                 {
-                    dbCategory.IsActive = true;
                     dbCategory.ExternalIds = fbCategory.Id;
-                    dbCategory.Name = fbCategory.Name.Truncate(64);
+                    dbCategory.SellerId = sellerId;
                     dbCategory.UrlName =
                         string.Format("{0}-{1}-{2}", sellerId, fbCategory.Id, fbCategory.Name.Translit()).Truncate(128);
+
+                    dbCategory.IsActive = true;
+                    dbCategory.Name = fbCategory.Name.Truncate(64);
                     dbCategory.LastModified = DateTime.UtcNow;
                     dbCategory.LastModifiedBy = "FirebirdImport";
                     db.Entry(dbCategory).State = EntityState.Modified;

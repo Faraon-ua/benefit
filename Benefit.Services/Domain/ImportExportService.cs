@@ -157,8 +157,8 @@ namespace Benefit.Services.Domain
                 {
                     var id = Math.Abs(dbCat.Id.GetHashCode()).ToString();
                     var catExport = dbCat.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId);
-                    dbCat.Id = id;
                     dbCat.Name = catExport == null ? "Не задано мапінг " + dbCat.Id : catExport.Name;
+                    dbCat.Id = id;
                     dbCat.ExternalIds = catExport == null ? null : catExport.ExternalId;
                 }
                 var doc = new XDocument(new XDeclaration("1.0", "utf-8", null));
