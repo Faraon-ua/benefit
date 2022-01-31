@@ -53,10 +53,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiDto\Allo\AuthDto.cs" />
-    <Compile Include="ApiDto\Allo\AuthIngest.cs" />
-    <Compile Include="ApiDto\Allo\OrdersDto.cs" />
-    <Compile Include="ApiDto\Allo\OrdersIngest.cs" />
+    <Compile Include="ApiDto\Marketplace\Allo\AuthDto.cs" />
+    <Compile Include="ApiDto\Marketplace\Allo\AuthIngest.cs" />
+    <Compile Include="ApiDto\Marketplace\Allo\OrdersDto.cs" />
+    <Compile Include="ApiDto\Marketplace\Allo\OrdersIngest.cs" />
     <Compile Include="ApiDto\Facebook\MessengerApiModels.cs" />
     <Compile Include="ApiDto\OldApi\KassirAuth.cs" />
     <Compile Include="ApiDto\OldApi\Orders.cs" />
@@ -64,11 +64,11 @@
     <Compile Include="ApiDto\OldApi\SellerAuth.cs" />
     <Compile Include="ApiDto\OldApi\UserAuth.cs" />
     <Compile Include="ApiDto\PrivatBank\PrivatBankCurrency.cs" />
-    <Compile Include="ApiDto\Rozetka\AuthDto.cs" />
-    <Compile Include="ApiDto\Rozetka\AuthIngest.cs" />
-    <Compile Include="ApiDto\Rozetka\BaseDto.cs" />
-    <Compile Include="ApiDto\Rozetka\OrderDto.cs" />
-    <Compile Include="ApiDto\Rozetka\OrderIngest.cs" />
+    <Compile Include="ApiDto\Marketplace\Rozetka\AuthDto.cs" />
+    <Compile Include="ApiDto\Marketplace\Rozetka\AuthIngest.cs" />
+    <Compile Include="ApiDto\Marketplace\Rozetka\BaseDto.cs" />
+    <Compile Include="ApiDto\Marketplace\Rozetka\OrderDto.cs" />
+    <Compile Include="ApiDto\Marketplace\Rozetka\OrderIngest.cs" />
     <Compile Include="ApiDto\SendPulse\AuthDto.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="JSON\AutocompleteSearch.cs" />

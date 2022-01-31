@@ -5,6 +5,7 @@ using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
 using Benefit.Domain.DataAccess;
+using Benefit.RestApi.App_Start;
 
 namespace Benefit.RestApi
 {
@@ -18,6 +19,7 @@ namespace Benefit.RestApi
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
             Database.SetInitializer<ApplicationDbContext>(null);
+            AutomapperConfig.Init();
         }
     }
 }

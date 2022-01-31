@@ -71,6 +71,10 @@ namespace Benefit.RestApi.Controllers
                     {
                         _logger.Fatal(string.Format("Export for {0} failed. ", type.ToString()) + ex.ToString());
                     }
+                    finally
+                    {
+                        HttpRuntime.Cache[key] = false;
+                    }
                     result.AppendFormat("Замовлення з {0} успішно синхронізовані<br/>", type.ToString());
                 }
                 else

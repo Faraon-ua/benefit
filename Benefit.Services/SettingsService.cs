@@ -220,6 +220,7 @@ namespace Benefit.Services
                 {
                     return new Dictionary<int, OrderStatus>()
                     {
+                        {0, OrderStatus.Created},
                         {1, OrderStatus.AwaitingDelivery},
                         {2, OrderStatus.IsDelivering},
                         {3, OrderStatus.WaitingInSelfPickup},

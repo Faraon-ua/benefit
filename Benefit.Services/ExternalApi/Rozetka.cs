@@ -24,8 +24,33 @@ namespace Benefit.Services.ExternalApi
     {
         private BenefitHttpClient _httpClient = new BenefitHttpClient();
         private Logger _logger = LogManager.GetCurrentClassLogger();
-        private NotificationsService _notificationService = new NotificationsService();
 
+        private Order MapToDbOrder(OrderDto rOrder)
+        {
+            var order = AutoMapper.Mapper.Map<Order>(rOrder);
+            order.OrderType = OrderType.Rozetka;
+            switch (rOrder.payment_type)
+            {
+                case "cash":
+                    order.PaymentType = PaymentType.Cash;
+                    break;
+                case "card":
+                case "credit":
+                case "part_pay":
+                case "apple_pay":
+                case "google_pay":
+                case "instantly_pay":
+                case "instantly_pay_promo":
+                case "no_cash":
+                case "privat24":
+                    order.PaymentType = PaymentType.Acquiring;
+                    break;
+                default:
+                    order.PaymentType = PaymentType.Cash;
+                    break;
+            }
+            return order;
+        }
         public override string GetAccessToken(string userName, string password)
         {
             var auth = new AuthIngest
@@ -110,7 +135,7 @@ namespace Benefit.Services.ExternalApi
                 var orders = new List<Order>();
                 if (getOrdersUrl == null)
                 {
-                    getOrdersUrl = SettingsService.Rozetka.BaseUrl + "orders/search?expand=purchases,delivery&page=1&type=1";
+                    getOrdersUrl = SettingsService.Rozetka.BaseUrl + "orders/search?expand=purchases,delivery,payment_type&page=1&type=1";
                     var lastOrder = db.Orders.Where(entry => entry.OrderType == OrderType.Rozetka).OrderByDescending(entry => entry.Time).FirstOrDefault();
                     if (lastOrder != null)
                     {
@@ -134,81 +159,26 @@ namespace Benefit.Services.ExternalApi
                         var rOrders = ordersResult.Data.content.orders.Where(entry => !db.Orders.Any(or => or.ExternalId == entry.id && or.OrderType == OrderType.Rozetka)).ToList();
                         foreach (var rOrder in rOrders)
                         {
-                            var productNames = rOrder.purchases.Select(entry => orderSuffixRegex.Match(entry.item_name).Value.ToLower()).ToList();
-                            var products = db.Products.Where(entry => productNames.Any(pn => entry.Name.ToLower().Contains(pn))).ToList();
-                            var sellerIds = products.Select(entry => entry.SellerId).Distinct().ToList();
-                            foreach (var sellerId in sellerIds)
+                            var baseOrder = MapToDbOrder(rOrder);
+                            var ordersBySellers = new List<Order>();
+                            foreach (var rProduct in rOrder.purchases)
                             {
-                                var order = new Order()
-                                {
-                                    Id = Guid.NewGuid().ToString(),
-                                    ExternalId = rOrder.id,
-                                    OrderType = OrderType.Rozetka,
-                                    PaymentType = PaymentType.Cash,
-                                    Description = rOrder.comment,
-                                    SellerId = sellerId,
-                                    OrderNumber = ++maxOrderNumber,
-                                    Time = DateTime.Parse(rOrder.created),
-                                    Status = ((OrderStatus)rOrder.status - 1),
-                                    ShippingName = rOrder.delivery.delivery_service_name,
-                                    ShippingCost = rOrder.delivery.cost.GetValueOrDefault(0),
-                                    ShippingAddress = string.Format("{0}, {1} {2}", rOrder.delivery.city.title, rOrder.delivery.place_street, rOrder.delivery.place_house + " " + rOrder.delivery.place_flat),
-                                    PersonalBonusesSum = 0,
-                                    PointsSum = 0,
-                                    LastModified = DateTime.UtcNow,
-                                    UserName = rOrder.delivery.recipient_title,
-                                    UserPhone = rOrder.user_phone
-                                };
-                                var statusStamp = new StatusStamp()
-                                {
-                                    Id = Guid.NewGuid().ToString(),
-                                    OrderId = order.Id,
-                                    Status = (int)order.Status,
-                                    Time = DateTime.UtcNow,
-                                    UpdatedBy = "Rozetka"
-                                };
-                                db.StatusStamps.Add(statusStamp);
-                                foreach (var rProduct in rOrder.purchases)
-                                {
-                                    var suffix = orderSuffixRegex.Match(rProduct.item_name).Value.ToLower();
-                                    var product = products.FirstOrDefault(entry => entry.Name.ToLower().Contains(suffix));
-                                    if (product == null)
-                                    {
-                                        Task.Run(() => _notificationService.NotifyApiFailRequest(string.Format("Не знайдено товару в локальній базі даних. № замовлення в Benefit: {0}, № Замовлення на Rozetka: {1}, назва товару: {2}", order.OrderNumber, rOrder.id, rProduct.item_name)));
-                                    }
-                                    else
-                                    {
-                                        var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                                        var orderProduct = new OrderProduct()
-                                        {
-                                            Id = Guid.NewGuid().ToString(),
-                                            ExternalId = rProduct.id,
-                                            OrderId = order.Id,
-                                            ProductName = rProduct.item_name,
-                                            ProductId = product.Id,
-                                            ProductSku = product.SKU,
-                                            ProductPrice = rProduct.price,
-                                            Amount = rProduct.quantity,
-                                            ProductImageUrl = image == null ? null : image.ImageUrl
-                                        };
-                                        order.OrderProducts.Add(orderProduct);
-                                    }
-                                }
-                                order.Sum = order.GetOrderSum();
-                                orders.Add(order);
+                                var baseOrderProduct = AutoMapper.Mapper.Map<OrderProduct>(rProduct);
+                                ProcessOrder(baseOrderProduct, baseOrder, ordersBySellers, ref maxOrderNumber, db);
                             }
+                            orders.AddRange(ordersBySellers);
                         }
                         db.Orders.AddRange(orders);
                         db.SaveChanges();
                         if (ordersResult.Data.content._meta.currentPage != ordersResult.Data.content._meta.pageCount && ordersResult.Data.content._meta.pageCount != 0)
                         {
                             getOrdersUrl = getOrdersUrl.Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=" + (ordersResult.Data.content._meta.currentPage + 1));
-                            ProcessOrders(getOrdersUrl, authToken, type);
+                            await ProcessOrders(getOrdersUrl, authToken, type);
                         }
                         else if (type < 3)
                         {
                             getOrdersUrl = getOrdersUrl.Replace("type=" + type, "type=" + (type + 1)).Replace("page=" + ordersResult.Data.content._meta.currentPage, "page=1");
-                            ProcessOrders(getOrdersUrl, authToken, ++type);
+                            await ProcessOrders(getOrdersUrl, authToken, ++type);
                         }
                     }
                     else

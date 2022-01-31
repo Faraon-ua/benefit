@@ -22,6 +22,44 @@ namespace Benefit.Services.ExternalApi
         private BenefitHttpClient _httpClient = new BenefitHttpClient();
         private Logger _logger = LogManager.GetCurrentClassLogger();
         private NotificationsService _notificationService = new NotificationsService();
+        private Order MapToDbOrder(OrderDto rOrder)
+        {
+            var order = AutoMapper.Mapper.Map<Order>(rOrder);
+            order.OrderType = OrderType.Allo;
+            double shippingPrice;
+            double.TryParse(rOrder.shipping.price, out shippingPrice);
+            order.ShippingCost = shippingPrice;
+            if (rOrder.shipping.stock != null)
+            {
+                order.ShippingAddress = string.Format("{0} ({1}) {2}", rOrder.shipping.city, rOrder.shipping.region_name, rOrder.shipping.stock.name);
+            }
+            if (rOrder.shipping.address != null)
+            {
+                order.ShippingAddress = string.Format("{0}, {1}, {2} {3}", rOrder.shipping.address.city, rOrder.shipping.address.street, rOrder.shipping.address.house, rOrder.shipping.address.apartment);
+            }
+            switch (rOrder.payment_type_id)
+            {
+                case "checkmo":
+                    order.PaymentType = PaymentType.Cash;
+                    break;
+                case "wayforpay_payment":
+                    order.PaymentType = PaymentType.Acquiring;
+                    break;
+                case "masterpass":
+                    order.PaymentType = PaymentType.Acquiring;
+                    break;
+                case "applepay":
+                    order.PaymentType = PaymentType.Acquiring;
+                    break;
+                case "googlepay":
+                    order.PaymentType = PaymentType.Acquiring;
+                    break;
+                default:
+                    order.PaymentType = PaymentType.Cash;
+                    break;
+            }
+            return order;
+        }
 
         public override string GetAccessToken(string userName, string password)
         {
@@ -119,7 +157,6 @@ namespace Benefit.Services.ExternalApi
                 {
                     args = new OrdersIngestArgs { limit = limit, offset = offset }
                 };
-                var orderSuffixRegex = new Regex(SettingsService.MarketplaceApi.OrderSuffixRegex, RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 var orders = new List<Order>();
                 getOrdersUrl = SettingsService.Allo.BaseUrl + "call?apiPath=orders.orderList";
                 var lastOrder = db.Orders.Where(entry => entry.OrderType == OrderType.Allo).OrderByDescending(entry => entry.Time).FirstOrDefault();
@@ -146,103 +183,14 @@ namespace Benefit.Services.ExternalApi
                         var rOrders = ordersResult.Data.orders.Where(entry => !db.Orders.Any(or => or.ExternalId == entry.id && or.OrderType == OrderType.Allo)).ToList();
                         foreach (var rOrder in rOrders)
                         {
-                            var productNames = rOrder.products.Select(entry => orderSuffixRegex.Match(entry.name).Value.ToLower()).ToList();
-                            var products = db.Products.Where(entry => productNames.Any(pn => entry.Name.ToLower().Contains(pn))).ToList();
-                            var sellerIds = products.Select(entry => entry.SellerId).Distinct().ToList();
-                            foreach (var sellerId in sellerIds)
+                            var baseOrder = MapToDbOrder(rOrder);
+                            var ordersBySellers = new List<Order>();
+                            foreach (var rProduct in rOrder.products)
                             {
-                                var order = new Order()
-                                {
-                                    Id = Guid.NewGuid().ToString(),
-                                    ExternalId = rOrder.id,
-                                    OrderType = OrderType.Allo,
-                                    Description = rOrder.payment_type,
-                                    SellerId = sellerId,
-                                    OrderNumber = ++maxOrderNumber,
-                                    Time = DateTime.Parse(rOrder.created_date),
-                                    Status = SettingsService.Allo.OrderStatusMapping[rOrder.status.status],
-                                    ShippingName = rOrder.shipping.type,
-                                    ShippingTrackingNumber = rOrder.shipping.tracking_number,
-                                    PersonalBonusesSum = 0,
-                                    PointsSum = 0,
-                                    LastModified = DateTime.UtcNow,
-                                    UserName = string.Format("{0} {1}", rOrder.customer.firstname, rOrder.customer.lastname),
-                                    UserPhone = rOrder.customer.telephone
-                                };
-                                if (rOrder.note != null)
-                                {
-                                    var stamp = new StatusStamp()
-                                    {
-                                        Id = Guid.NewGuid().ToString(),
-                                        OrderId = order.Id,
-                                        Status = (int)order.Status,
-                                        Time = DateTime.UtcNow,
-                                        Comment = rOrder.note.Truncate(256),
-                                        UpdatedBy = "Allo"
-                                    };
-                                    db.StatusStamps.Add(stamp);
-                                }
-                                double shippingPrice = 0;
-                                double.TryParse(rOrder.shipping.price, out shippingPrice);
-                                order.ShippingCost = shippingPrice;
-                                if (rOrder.shipping.stock != null)
-                                {
-                                    order.ShippingAddress = string.Format("{0} ({1}) {2}", rOrder.shipping.city, rOrder.shipping.region_name, rOrder.shipping.stock.name);
-                                }
-                                if (rOrder.shipping.address != null)
-                                {
-                                    order.ShippingAddress = string.Format("{0}, {1}, {2} {3}", rOrder.shipping.address.city, rOrder.shipping.address.street, rOrder.shipping.address.house, rOrder.shipping.address.apartment);
-                                }
-                                switch (rOrder.payment_type_id)
-                                {
-                                    case "checkmo":
-                                        order.PaymentType = PaymentType.Cash;
-                                        break;
-                                    case "wayforpay_payment":
-                                        order.PaymentType = PaymentType.Acquiring;
-                                        break;
-                                    case "masterpass":
-                                        order.PaymentType = PaymentType.Acquiring;
-                                        break;
-                                    case "applepay":
-                                        order.PaymentType = PaymentType.Acquiring;
-                                        break;
-                                    case "googlepay":
-                                        order.PaymentType = PaymentType.Acquiring;
-                                        break;
-                                    default:
-                                        order.PaymentType = PaymentType.Cash;
-                                        break;
-                                }
-                                foreach (var rProduct in rOrder.products)
-                                {
-                                    var suffix = orderSuffixRegex.Match(rProduct.name).Value.ToLower();
-                                    var product = products.FirstOrDefault(entry => entry.Name.ToLower().Contains(suffix));
-                                    if (product == null)
-                                    {
-                                        Task.Run(() => _notificationService.NotifyApiFailRequest(string.Format("Не знайдено товару в локальній базі даних. № замовлення в Benefit: {0}, № Замовлення на Rozetka: {1}, назва товару: {2}", order.OrderNumber, rOrder.id, rProduct.name)));
-                                    }
-                                    else
-                                    {
-                                        var image = product.Images.OrderBy(entry => entry.Order).FirstOrDefault();
-                                        var orderProduct = new OrderProduct()
-                                        {
-                                            Id = Guid.NewGuid().ToString(),
-                                            ExternalId = rProduct.sku,
-                                            OrderId = order.Id,
-                                            ProductName = rProduct.name,
-                                            ProductId = product.Id,
-                                            ProductSku = product.SKU,
-                                            ProductPrice = rProduct.price,
-                                            Amount = rProduct.quantity,
-                                            ProductImageUrl = image == null ? null : image.ImageUrl
-                                        };
-                                        order.OrderProducts.Add(orderProduct);
-                                    }
-                                }
-                                order.Sum = order.GetOrderSum();
-                                orders.Add(order);
+                                var baseOrderProduct = AutoMapper.Mapper.Map<OrderProduct>(rProduct);
+                                ProcessOrder(baseOrderProduct, baseOrder, ordersBySellers, ref maxOrderNumber, db);
                             }
+                            orders.AddRange(ordersBySellers);
                         }
                         db.Orders.AddRange(orders);
                         db.SaveChanges();
@@ -261,7 +209,6 @@ namespace Benefit.Services.ExternalApi
                     _logger.Error("Allo auth token is null");
                 }
             }
-            HttpRuntime.Cache["IsAlloProcessing"] = false;
         }
     }
 }
