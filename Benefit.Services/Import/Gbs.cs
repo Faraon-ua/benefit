@@ -59,9 +59,11 @@ namespace Benefit.Services.Import
             {
                 var catId = xmlCategory.Element("Id").Value;
                 var catName = xmlCategory.Element("Name").Value.Replace("\n", "").Replace("\r", "").Trim();
+                var urlname = string.Format("{0}-{1}-{2}", sellerId, catId, catName.Translit()).Truncate(128);
                 var dbCategory =
                     db.Categories.FirstOrDefault(entry => entry.ExternalIds == catId && entry.SellerId == sellerId) ??
-                    db.Categories.FirstOrDefault(entry => entry.Id == catId && entry.SellerId == sellerId);
+                    db.Categories.FirstOrDefault(entry => entry.Id == catId && entry.SellerId == sellerId) ??
+                    db.Categories.FirstOrDefault(entry =>entry.UrlName == urlname);
                 if (dbCategory == null)
                 {
                     if (!hasNewContent)
@@ -89,6 +91,7 @@ namespace Benefit.Services.Import
                 {
                     dbCategory.IsActive = true;
                     dbCategory.ExternalIds = catId;
+                    dbCategory.SellerId = sellerId;
                     dbCategory.ParentCategoryId = parent == null ? null : parent.Id;
                     dbCategory.Name = catName.Truncate(64);
                     dbCategory.UrlName =

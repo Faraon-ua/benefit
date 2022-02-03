@@ -51,7 +51,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 if (!string.IsNullOrEmpty(search))
                 {
                     model = db.Categories
-                        .Include(entry=>entry.Seller)
+                        .Include(entry => entry.Seller)
                         .Where(entry => entry.Name.ToLower().Contains(search.ToLower()) || entry.Id == search).ToList();
                 }
                 return View(model);
@@ -149,6 +149,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         {
                             ModelState[key].Errors.Clear();
                         }
+                        category.ExportCategories[i] = null;
                     }
                 }
                 for (var i = 0; i < category.Localizations.Count; i++)
@@ -167,7 +168,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 }
                 if (ModelState.IsValid)
                 {
-                    var exportCategories = category.ExportCategories.Where(entry => entry != null).ToList();
+                    var exportCategories = category.ExportCategories.Where(entry => entry != null && entry.Name != null).ToList();
                     category.LastModified = DateTime.UtcNow;
                     category.LastModifiedBy = User.Identity.Name;
 
