@@ -267,6 +267,7 @@ namespace Benefit.Services.Domain
                 var product =
                     db.Products.Include(entry => entry.Images)
                         .Include(entry => entry.ProductOptions)
+                        .Include(entry => entry.StatusStamps)
                         .Include(entry => entry.ProductParameterProducts)
                         .FirstOrDefault(entry => entry.Id == productId);
                 if (product == null)
@@ -278,6 +279,7 @@ namespace Benefit.Services.Domain
                 imagesService.DeleteAll(product.Images, productId, ImageType.ProductGallery, true, false);
 
                 db.ProductOptions.RemoveRange(product.ProductOptions);
+                db.StatusStamps.RemoveRange(product.StatusStamps);
                 db.ProductParameterProducts.RemoveRange(product.ProductParameterProducts);
                 db.Products.Remove(product);
                 db.SaveChanges();
