@@ -105,7 +105,6 @@
                         $.post('@SettingsService.NovaPoshta.ApiUrl',
                             strWarehouseData,
                             function (warRes) {
-                                warRes = JSON.parse(warRes);
                                 $.each(warRes.data,
                                     function (index, warValue) {
                                         $("#npWarehouse").append($("<option></option>")

@@ -58,6 +58,7 @@
     <Compile Include="ApiDto\Marketplace\Allo\OrdersDto.cs" />
     <Compile Include="ApiDto\Marketplace\Allo\OrdersIngest.cs" />
     <Compile Include="ApiDto\Facebook\MessengerApiModels.cs" />
+    <Compile Include="ApiDto\Marketplace\Epicentr\CategoriesDto.cs" />
     <Compile Include="ApiDto\OldApi\KassirAuth.cs" />
     <Compile Include="ApiDto\OldApi\Orders.cs" />
     <Compile Include="ApiDto\OldApi\Payments.cs" />

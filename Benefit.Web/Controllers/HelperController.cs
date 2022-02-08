@@ -8,6 +8,8 @@ using Benefit.Domain.Models;
 using Benefit.Services;
 using Benefit.Services.Domain;
 using Microsoft.AspNet.Identity;
+using Benefit.DataTransfer.ApiDto.Marketplace.Epicentr;
+using Benefit.Services.ExternalApi;
 
 namespace Benefit.Web.Controllers
 {
@@ -197,6 +199,12 @@ namespace Benefit.Web.Controllers
                 db.SaveChanges();
             }
             return Content("Ok");
+        }
+
+        public ActionResult GetEpicentrCategoryCodes()
+        {
+            var epicentrService = new EpicentrApiService();
+            return File(epicentrService.CategoriesToCSV(), "text/csv", "epicentr_categories.csv");
         }
     }
 }

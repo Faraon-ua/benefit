@@ -25,15 +25,15 @@
                 <span class="menu-text">Банери</span>
             </a>
         </li>
+    }
+    @if ((User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName)) && !User.IsInRole(DomainConstants.AdminRoleName))
+    {
         <li>
             <a href="@Url.Action("Index", "SellerCategories")">
                 <i class="icon-list"></i>
                 <span class="menu-text"> Категорії</span>
             </a>
         </li>
-    }
-    @if ((User.IsInRole(DomainConstants.OrdersManagerRoleName) || User.IsInRole(DomainConstants.SellerRoleName) || User.IsInRole(DomainConstants.SellerOperatorRoleName)) && !User.IsInRole(DomainConstants.AdminRoleName))
-    {
         <li>
             <a href="@Url.Action("Cabinet", "Dashboard")">
                 <i class="icon-home"></i>
@@ -62,7 +62,7 @@
             </a>
         </li>
     }
-    @if (User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.SellerRoleName))
+    @if (User.IsInRole(DomainConstants.SellerModeratorRoleName) || User.IsInRole(DomainConstants.SellerRoleName))
     {
         <li>
             <a href="@Url.Action("Index", "ImportExport")">

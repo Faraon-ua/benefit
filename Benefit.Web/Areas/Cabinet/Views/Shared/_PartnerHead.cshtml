@@ -34,18 +34,9 @@
         <p class="ref_code">Реєстраційний код:<br>@Model.ExternalNumber</p>
 
         <p class="bonus_available bonus_available_mobile">Доступні бонуси: <span class="bonus_border">@Model.BonusAccount.ToDoubleDigits()</span></p>
-        <p class="user_statuse user-balls-mobile margin-top-10">
-            Особисті бали за поточний період:<br><span class="bonus_border">
-                @string.Format("{0:0.00}", Math.Truncate(Model.PointsAccount*100)/100)
-            </span>
-        </p>
-        <p class="total-bonuses">
-            Загальний чек:<br><span class="bonus_border"> @Model.TotalBonusAccount.ToString("F")</span>
-        </p>
     </div>
 
     <p class="card_numb">Номер картки або брелока:<br>@Model.CardNumber</p>
-    <p class="bonus_count">Загальний чек:<br><span class="bonus_border">@Model.TotalBonusAccount.ToString("F")</span></p>
     <p class="bonus_available">
         Доступні бонуси:
         <br />
@@ -60,39 +51,4 @@
             @string.Format("{0:0.00}", Math.Truncate(Model.HangingBonusAccount * 100) / 100)
         </span>
     </p>
-    <p class="bonus_personal">
-        Особисті бонуси за поточний період:
-        <br />
-        <span class="bonus_border">
-            @string.Format("{0:0.00}", Math.Truncate(Model.CurrentBonusAccount * 100) / 100)
-        </span>
-    </p>
-    <p class="ball_personal">
-        Особисті бали за поточний період:<br><span class="bonus_border">
-            @string.Format("{0:0.00}", Math.Truncate(Model.PointsAccount * 100) / 100)
-        </span>
-    </p>
-    @{
-        var batteryStatus = "battary_full";
-        //todo: to constants
-        if (Model.PointsAccount <= 199.99)
-        {
-            batteryStatus = "battary_low";
-        }
-        if (Model.PointsAccount >= 200 && Model.PointsAccount < 500)
-        {
-            batteryStatus = "battary_middle";
-        }
-        string qualificationEpsilonStr;
-        var qualificationEpsilon = 500 - Model.PointsAccount;
-        if (qualificationEpsilon > 0)
-        {
-            qualificationEpsilonStr = string.Format("До виконання кваліфікації та отримання комісійної винагороди залишилось набрати {0} балів", qualificationEpsilon.ToString("F"));
-        }
-        else
-        {
-            qualificationEpsilonStr = "Ви виконали кваліфікацію!";
-        }
-    }
-    <div class="battery @batteryStatus" data-toggle="tooltip" data-placement="top" title="@qualificationEpsilonStr"></div>
 </div>

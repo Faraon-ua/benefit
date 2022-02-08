@@ -162,8 +162,6 @@ namespace Benefit.Domain.Models
         [MaxLength(128)]
         public string OwnerId { get; set; }
         //для рассчета процента тому, кто подключил заведение
-        public double PointsAccount { get; set; }
-        public double HangingPointsAccount { get; set; }
         [ForeignKey("OwnerId")]
         public virtual ApplicationUser Owner { get; set; }
         [MaxLength(128)]

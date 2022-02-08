@@ -129,22 +129,19 @@ namespace Benefit.Services.Cart
                         orderProduct.WholesaleFrom = product.WholesaleFrom.Value;
                     }
                     //fetch amount of bonuses to be acquired for this product
-                    int totalBonusesDiscount = seller.TotalDiscount;
+                    double userBonusesPercent = seller.UserDiscount;
                     if (sellerCategory != null)
                     {
                         if (sellerCategory.CustomDiscount.HasValue)
                         {
-                            totalBonusesDiscount = (int)sellerCategory.CustomDiscount;
+                            userBonusesPercent = sellerCategory.CustomDiscount.GetValueOrDefault(userBonusesPercent);
                         }
                         if (sellerCategory.CustomMargin.HasValue)
                         {
                             orderProduct.ProductPrice += orderProduct.ProductPrice * sellerCategory.CustomMargin.Value / 100;
                         }
                     }
-                    var userDiscount = totalBonusesDiscount <= 10
-                        ? totalBonusesDiscount / 2
-                        : 5 + totalBonusesDiscount - 10;
-                    orderProduct.BonusesAcquired = orderProduct.ActualPrice * userDiscount / 100;
+                    orderProduct.BonusesAcquired = orderProduct.ActualPrice * userBonusesPercent / 100;
                     foreach (var orderProductOption in orderProduct.OrderProductOptions)
                     {
                         var productOption = db.ProductOptions.Find(orderProductOption.ProductOptionId);

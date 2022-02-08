@@ -7,14 +7,10 @@ namespace Benefit.DataTransfer.ViewModels
     {
         public PartnerTransactionsViewModel()
         {
-            General = new List<Transaction>();
-            Personal = new List<Transaction>();
-            Referals = new List<Transaction>();
+            Transactions = new List<Transaction>();
         }
         public ApplicationUser User { get; set; }
         public string DateRange { get; set; }
-        public List<Transaction> General { get; set; } 
-        public List<Transaction> Personal { get; set; } 
-        public List<Transaction> Referals { get; set; } 
+        public List<Transaction> Transactions { get; set; } 
     }
 }

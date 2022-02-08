@@ -387,7 +387,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         };
                         db.StatusStamps.Add(statusStamp);
 
-
                         if (orderStatus == OrderStatus.Abandoned)
                         {
                             if (order.ExternalId != null && order.OrderType == OrderType.Rozetka)
@@ -431,8 +430,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                 }
                                 db.Entry(product).State = EntityState.Modified;
                             }
-                            var PromotionService = new PromotionService();
-                            PromotionService.ProcessPromotions(order);
                         }
                         else
                         {
@@ -756,11 +753,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             using (var db = new ApplicationDbContext())
             {
                 var tr = db.Transactions.Include(entry => entry.Payee).FirstOrDefault(entry => entry.Id == transactionId);
-                if (tr.Type == TransactionType.PersonalSiteBonus)
-                {
-                    tr.Payee.CurrentBonusAccount = tr.Payee.CurrentBonusAccount - tr.Bonuses;
-                }
-                if (tr.Type == TransactionType.OrderRefund)
+                if (tr.Type == TransactionType.CashbackBonus || tr.Type == TransactionType.OrderRefund)
                 {
                     tr.Payee.BonusAccount = tr.Payee.BonusAccount - tr.Bonuses;
                 }

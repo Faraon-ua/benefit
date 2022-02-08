@@ -208,7 +208,6 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ImportController.cs" />
-    <Compile Include="Controllers\OldApiController.cs" />
     <Compile Include="Controllers\NfcReaderController.cs" />
     <Compile Include="Controllers\ScheduleController.cs" />
     <Compile Include="Filters\CustomKeyAuthAttribute.cs" />

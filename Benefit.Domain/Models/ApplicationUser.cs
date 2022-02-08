@@ -49,11 +49,7 @@ namespace Benefit.Domain.Models
         public ApplicationUser Referal { get; set; }
         public DateTime RegisteredOn { get; set; }
         public double BonusAccount { get; set; }
-        public double TotalBonusAccount { get; set; }
-        public double CurrentBonusAccount { get; set; }
         public double HangingBonusAccount { get; set; }
-        public double PointsAccount { get; set; }
-        public double HangingPointsAccount { get; set; }
         [MaxLength(64)]
         public string Avatar { get; set; }
         public int? StatusCompletionMonths { get; set; }

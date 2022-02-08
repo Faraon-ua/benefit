@@ -1,8 +1,9 @@
 ﻿@using Benefit.Common.Extensions
 @using Benefit.Domain.Models
+@using Benefit.Common.Helpers
 @model Benefit.DataTransfer.ViewModels.PartnerTransactionsViewModel
-<div id="personal_charges" class="personal_charges tab-pane fade">
-    <div class="controls_block clearfix">
+<div id="personal_charges" class="personal_charges tab-pane fade active in">
+    <div class="controls_block clearfix padding-top-15">
         <form class="controls_block_form">
             <div class="finance_tab_title">
                 <a href="" class="partner_menu_back"></a>
@@ -24,34 +25,57 @@
             <tr>
                 <th>Дата</th>
                 <th>Вид операції</th>
-                <th>Бали</th>
                 <th>Бонуси</th>
+                <th>Баланс в обробці</th>
+                <th>Баланс доступні</th>
             </tr>
-            @foreach (var transaction in Model.Personal)
-        {
-        <tr>
-            <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
-            @if (transaction.Type == TransactionType.PersonalBenefitCardBonus)
-                {
-                <td>@string.Format("Користування карткою в закладі \"{0}\"", transaction.Order.SellerName)</td>
-                }
-            @if (transaction.Type == TransactionType.PersonalSiteBonus)
-                {
-                <td>
-                    <span>
-                        Онлайн замовлення №@transaction.Order.OrderNumber
-                    </span>
-                    <div class="details_button" data-order-id="@transaction.Order.Id"></div>
-                </td>
-                }
-            <td>
-                @((transaction.Order == null ? 0 : transaction.Order.PointsSum).ToDoubleDigits())
-            </td>
-            <td>
-                @transaction.Bonuses.ToDoubleDigits()
-            </td>
-        </tr>
-        }
+            @foreach (var transaction in Model.Transactions)
+            {
+                <tr>
+                    <td>@transaction.Time.ToLocalTimeWithDateFormat()</td>
+                    <td>
+                        <span>
+                            @Enumerations.GetEnumDescription(transaction.Type)
+                            @if (transaction.Type == TransactionType.CashbackBonus || transaction.Type == TransactionType.HangingToGeneral)
+                            {
+                                <span>№@transaction.Order.OrderNumber</span>
+                            }
+                        </span>
+                        @if (transaction.Type == TransactionType.CashbackBonus || transaction.Type == TransactionType.HangingToGeneral)
+                        {
+                            <div class="details_button" data-order-id="@transaction.Order.Id"></div>
+                        }
+                    </td>
+                    @{ var className = transaction.Bonuses > 0 ? "text-success" : "text-danger"; }
+                    <td class="@className">
+                        @if (transaction.Bonuses > 0)
+                        {
+                            <span>+</span>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
+                        @transaction.Bonuses.ToDoubleDigits()
+                    </td>
+                    <td>
+                        @if (transaction.Type == TransactionType.CashbackBonus)
+                        {
+                            <span>
+                                @transaction.BonusesBalans.ToDoubleDigits()
+                            </span>
+                        }
+                    </td>
+                    <td>
+                        @if (transaction.Type != TransactionType.CashbackBonus)
+                        {
+                            <span>
+                                @transaction.BonusesBalans.ToDoubleDigits()
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
         </table>
     </div>
 </div>

@@ -127,8 +127,6 @@ namespace Benefit.Services.Domain
         //            .Select(entry => new SelectListItem { Text = entry.Name, Value = entry.Id });
         //}
 
-
-
         public string AddOrder(CompleteOrder model)
         {
             using (var db = new ApplicationDbContext())
@@ -143,10 +141,7 @@ namespace Benefit.Services.Domain
                 order.Description =
                     string.Format("{0}<br/>--------------------------------------------<br/> Заказ створено на {1}",
                         model.Comment, HttpContext.Current.Request.Url.Host);
-                //order.PersonalBonusesSum = order.SumWithDiscount * seller.UserDiscount / 100;
                 order.PersonalBonusesSum = order.OrderProducts.Sum(entry => entry.BonusesAcquired * entry.Amount);
-
-                order.PointsSum = Double.IsInfinity(order.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount]) ? 0 : order.SumWithDiscount / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
                 order.SellerName = seller.Name;
 
                 var shipping = db.ShippingMethods.FirstOrDefault(entry => entry.Id == model.ShippingMethodId);
@@ -246,38 +241,13 @@ namespace Benefit.Services.Domain
             using (var db = new ApplicationDbContext())
             {
                 var order = db.Orders.Include(entry => entry.OrderProducts).Include(entry => entry.User)
-                .Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == orderId);
+                                .Include(entry => entry.Transactions).FirstOrDefault(entry => entry.Id == orderId);
                 var now = DateTime.UtcNow;
                 var seller = db.Sellers.FirstOrDefault(entry => entry.Id == order.SellerId);
-                if (seller != null)
+                order.User.BonusAccount = order.User.BonusAccount - order.PersonalBonusesSum;
+                if (order.PaymentType == PaymentType.Bonuses)
                 {
-                    if (order.Time > now.StartOfMonth() && order.Time < now.EndOfMonth())
-                    {
-                        seller.PointsAccount = seller.PointsAccount - order.PointsSum;
-                    }
-                    if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
-                    {
-                        seller.HangingPointsAccount = seller.HangingPointsAccount - order.PointsSum;
-                    }
-                    db.Entry(seller).State = EntityState.Modified;
-                }
-                if (order.Time > now.StartOfMonth() && order.Time < now.EndOfMonth())
-                {
-                    order.User.PointsAccount = order.User.PointsAccount - order.PointsSum;
-                    order.User.CurrentBonusAccount = order.User.CurrentBonusAccount - order.PersonalBonusesSum;
-                    if (order.PaymentType == PaymentType.Bonuses)
-                    {
-                        order.User.BonusAccount = order.User.BonusAccount + order.Sum;
-                    }
-                }
-                if (order.Time > now.StartOfMonth().AddMonths(-1) && order.Time < now.EndOfMonth().AddMonths(-1))
-                {
-                    order.User.HangingPointsAccount = order.User.HangingPointsAccount - order.PointsSum;
-                    order.User.HangingBonusAccount = order.User.HangingBonusAccount - order.PersonalBonusesSum;
-                    if (order.PaymentType == PaymentType.Bonuses)
-                    {
-                        order.User.BonusAccount = order.User.BonusAccount + order.Sum;
-                    }
+                    order.User.BonusAccount = order.User.BonusAccount + order.Sum;
                 }
 
                 db.Transactions.RemoveRange(order.Transactions);

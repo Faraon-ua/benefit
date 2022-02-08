@@ -122,11 +122,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     RegisteredOn = user.RegisteredOn,
                     Addresses = user.Addresses,
                     BonusAccount = user.BonusAccount.ToDoubleDigitsNumber(),
-                    TotalBonusAccount = user.TotalBonusAccount.ToDoubleDigitsNumber(),
-                    CurrentBonusAccount = user.CurrentBonusAccount.ToDoubleDigitsNumber(),
                     HangingBonusAccount = user.HangingBonusAccount.ToDoubleDigitsNumber(),
-                    PointsAccount = user.PointsAccount.ToDoubleDigitsNumber(),
-                    HangingPointsAccount = user.HangingPointsAccount.ToDoubleDigitsNumber(),
                 };
                 var userRoles = UserManager.GetRoles(id);
                 userViewModel.Roles =
@@ -193,11 +189,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     existingUser.PhoneNumber = user.PhoneNumber;
 
                     existingUser.BonusAccount = user.BonusAccount;
-                    existingUser.TotalBonusAccount = user.TotalBonusAccount;
-                    existingUser.CurrentBonusAccount = user.CurrentBonusAccount;
                     existingUser.HangingBonusAccount = user.HangingBonusAccount;
-                    existingUser.PointsAccount = user.PointsAccount;
-                    existingUser.HangingPointsAccount = user.HangingPointsAccount;
 
                     db.Entry(existingUser).State = EntityState.Modified;
 
@@ -243,19 +235,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         .OrderBy(entry => entry.Text).ToList();
                 return View(user);
             }
-        }
-        public ActionResult AddCustomBonusesPayment(string id, double sum, string comment)
-        {
-            var TransactionService = new TransactionsService();
-            try
-            {
-                TransactionService.AddCustomBonusesPayment(id, sum, comment);
-            }
-            catch (Exception ex)
-            {
-                return Content(ex.Message);
-            }
-            return Content(string.Empty);
         }
 
         public ActionResult GetNfcCode(string cardNumber, string userId)

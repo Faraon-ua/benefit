@@ -2,32 +2,7 @@
 @{
     ViewBag.Title = "VIP функції";
 }
-@section scripts{
-    <script>
-        $("#start-bonuses-calculations").click(function () {
-            $("#start-bonuses-calculations").attr('disabled', 'disabled');
-            $("#start-bonuses-calculations").after("<h1>НЕ ЗАКРИВАЙТЕ ЦЕ ВІКНО БРАЗУРА ДО ЗАВЕРШЕННЯ РОЗРАХУНКУ!</h1>");
-        });
 
-        $("#start-close-period").click(function () {
-            $("#start-close-period").attr('disabled', 'disabled');
-            $("#start-close-period").after("<h1>НЕ ЗАКРИВАЙТЕ ЦЕ ВІКНО БРАЗУРА ДО ЗАВЕРШЕННЯ ЗАКРИТТЯ ПЕРІОДУ!</h1>");
-        });
-    </script>
-}
-<fieldset>
-    <legend>
-        Розрахунок (15 число, зробити бекап та тестувати на біз)
-    </legend>
-    <a class="btn btn-info" id="start-bonuses-calculations" href="@Url.Action("BonusesCalculation", "AdminStuff")">Провести розрахунок</a>
-</fieldset>
-
-<fieldset>
-    <legend>
-        Закриття періоду (30 число)
-    </legend>
-    <a class="btn btn-info" id="start-close-period" href="@Url.Action("ClosePeriod", "AdminStuff")">Закрити період</a>
-</fieldset>
 <fieldset>
     <legend>
         SEO

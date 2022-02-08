@@ -924,7 +924,8 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     filters.Search = filters.Search.ToLower().Trim();
                     products = products.Where(entry => entry.SKU.ToString().Contains(filters.Search) ||
-                                                       entry.Name.ToString().Contains(filters.Search));
+                                                       entry.Name.Contains(filters.Search) ||
+                                                       entry.Barcode.ToString().Contains(filters.Search));
                 }
                 if (filters.Sorting.HasValue)
                 {

@@ -739,6 +739,10 @@
     <Compile Include="Migrations\202201100959454_AddProductBarcode.designer.cs">
       <DependentUpon>202201100959454_AddProductBarcode.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202031355393_RemoveUserPoints.cs" />
+    <Compile Include="Migrations\202202031355393_RemoveUserPoints.designer.cs">
+      <DependentUpon>202202031355393_RemoveUserPoints.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1278,6 +1282,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201100959454_AddProductBarcode.resx">
       <DependentUpon>202201100959454_AddProductBarcode.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202031355393_RemoveUserPoints.resx">
+      <DependentUpon>202202031355393_RemoveUserPoints.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

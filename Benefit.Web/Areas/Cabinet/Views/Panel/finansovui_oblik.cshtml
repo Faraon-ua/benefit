@@ -107,113 +107,17 @@
 }
 <div class="partner_main col-lg-9 col-md-9 col-sm-9 col-xs-9">
     <div class="finance_bonuses_mobile">
-        <p class="finance_bonuses_mobile_title">Доступні бонуси:</p>
-        <p class="finance_bonuses_mobile_description">@Model.User.BonusAccount.ToDoubleDigits()</p>
-        <p class="finance_bonuses_mobile_title">Бонуси в обробці:</p>
-        <p class="finance_bonuses_mobile_description">@Model.User.HangingBonusAccount.ToDoubleDigits()</p>
-        <p class="finance_bonuses_mobile_title">Баловий товарообіг партнерів за поточний період:</p>
-        <p class="finance_bonuses_mobile_description">-</p>
     </div>
     <div class="finance_fixed_block show_on_tablet">
-        <div class="bonuses_available">Доступні бонуси: <span>@Model.User.BonusAccount.ToDoubleDigits()</span></div>
-        <div class="bonuses_processing">Бонуси в обробці:  <span>55,85</span></div>
-        <div class="products_full">Баловий товарообіг партнерів за поточний період: <span>@Model.User.HangingBonusAccount.ToDoubleDigits()</span></div>
     </div>
 
     <ul class="profile_menu nav nav-tabs">
-        <li class="active"><a data-toggle="tab" href="#bonus_account">Облік <br>бонусів</a></li>
-        <li><a data-toggle="tab" href="#personal_charges">Особисті <br>нарахування</a></li>
-        <li><a data-toggle="tab" href="#bonuses_invitation">Бонус за <br>запрошення</a></li>
-        @*        <li><a data-toggle="tab" href="#bonuses_sum">Загальна <br>сума бонусів</a></li>*@
+        <li class="active"><a data-toggle="tab" href="#personal_charges">Облік <br>бонусів</a></li>
         <li><a data-toggle="tab" href="#bonuses_used">Використати <br>бонуси</a></li>
     </ul>
 
-    <div class="finance_fixed_block tablet_hidden">
-        <div class="bonuses_available">
-            Доступні бонуси: <span>
-                @Model.User.BonusAccount.ToDoubleDigits()
-            </span>
-        </div>
-        <div class="bonuses_processing">
-            Бонуси в обробці:  <span>
-                @Model.User.HangingBonusAccount.ToDoubleDigits()
-            </span>
-        </div>
-        @*        <div class="products_full">Баловий товарообіг партнерів за поточний період: <span>650,97</span></div>*@
-    </div>
-
-    <div class="tab-content finance_mobile_hidden">
-        @Html.Partial("_FinanceGeneralPrtial", Model)
-
+    <div class="tab-content finance_mobile_hidden active in">
         @Html.Partial("_FinancePersonalPartial", Model)
-
-        @Html.Partial("_FinanceMentorPartial", Model)
-
-
-        @*<div id="bonuses_sum" class="bonuses_sum tab-pane fade">
-                <table class="bonuses_sum_table main_table">
-                    <tr>
-                        <th>Період</th>
-                        <th>Сума нарахувань</th>
-                    </tr>
-                    <tr>
-                        <td>вересень 2016</td>
-                        <td>3250,00</td>
-                    </tr>
-                    <tr>
-                        <td>серпень 2016</td>
-                        <td>8965,5</td>
-                    </tr>
-                    <tr>
-                        <td>липень  2016 </td>
-                        <td>13,01</td>
-                    </tr>
-                    <tr>
-                        <td>червень  2016 </td>
-                        <td>14,00</td>
-                    </tr>
-                    <tr>
-                        <td>травень 2016 </td>
-                        <td>6565,00</td>
-                    </tr>
-                    <tr>
-                        <td>квітень 2016 </td>
-                        <td>2270,00</td>
-                    </tr>
-                    <tr>
-                        <td>березень 2016 </td>
-                        <td>4143,20</td>
-                    </tr>
-                    <tr>
-                        <td>лютий 2016 </td>
-                        <td>250,00</td>
-                    </tr>
-                    <tr>
-                        <td>січень 2016 </td>
-                        <td>65,98</td>
-                    </tr>
-                    <tr>
-                        <td>грудень 2015 </td>
-                        <td>300,26</td>
-                    </tr>
-                    <tr class="bonuses_sum_total_row">
-                        <td>Всього</td>
-                        <td class="bonuses_sum_total">356089,90</td>
-                    </tr>
-                </table>
-
-                <div class="bottom_control clearfix">
-                    <div class="pagination_wrap">
-                        <div class="pagination_prew">&lt;</div>
-                        <ul class="pagination">
-                            <li class="active">1</li>
-                            <li>2</li>
-                        </ul>
-                        <div class="pagination_next">&gt;</div>
-                    </div>
-                </div>
-            </div>*@
-
 
         <div id="bonuses_used" class="bonuses_used tab-pane fade">
             <div class="finance_tab_title">

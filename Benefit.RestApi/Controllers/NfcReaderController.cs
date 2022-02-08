@@ -115,125 +115,125 @@ namespace Benefit.RestApi.Controllers
             return NotFound();
         }
 
-        [HttpPost]
-        [Route("ProcessPayment")]
-        public HttpResponseMessage ProcessPayment(PaymentIngest paymentIngest)
-        {
-            double sumToPay = 0;
-            BenefitCard benefitCard = null;
-            try
-            {
-                var cashier =
-                    db.Personnels.Include(entry => entry.Seller)
-                        .FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == paymentIngest.CashierNfc.ToLower());
-                if (cashier == null || cashier.Seller.Id != User.Identity.Name)
-                {
-                    return Request.CreateErrorResponse(HttpStatusCode.NotFound, "cashier not found");
-                }
-                var seller = cashier.Seller;
+        //[HttpPost]
+        //[Route("ProcessPayment")]
+        //public HttpResponseMessage ProcessPayment(PaymentIngest paymentIngest)
+        //{
+        //    double sumToPay = 0;
+        //    BenefitCard benefitCard = null;
+        //    try
+        //    {
+        //        var cashier =
+        //            db.Personnels.Include(entry => entry.Seller)
+        //                .FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == paymentIngest.CashierNfc.ToLower());
+        //        if (cashier == null || cashier.Seller.Id != User.Identity.Name)
+        //        {
+        //            return Request.CreateErrorResponse(HttpStatusCode.NotFound, "cashier not found");
+        //        }
+        //        var seller = cashier.Seller;
 
-                var user =
-                    db.Users.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == paymentIngest.UserNfc.ToLower());
-                if (user == null)
-                {
-                    benefitCard =
-                        db.BenefitCards.Include(entry => entry.User).FirstOrDefault(
-                            entry => entry.NfcCode.ToLower() == paymentIngest.UserNfc.ToLower());
-                    if (benefitCard == null)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.NotFound, "User not found");
-                    }
-                    user = benefitCard.User;
-                }
-                var points = paymentIngest.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
-                var bonuses = paymentIngest.Sum * seller.UserDiscount / 100;
-                //add finished order with benefit card type
-                var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
-                var order = new Order()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    CardNumber = benefitCard == null ? user.CardNumber : benefitCard.Id,
-                    OrderNumber = orderNumber + 1,
-                    OrderType = OrderType.BenefitCard,
-                    PaymentType = paymentIngest.ChargeBonuses ? PaymentType.Bonuses : PaymentType.Cash,
-                    SellerId = seller.Id,
-                    SellerName = seller.Name,
-                    PersonnelName = cashier.Name,
-                    Time = DateTime.UtcNow,
-                    Status = OrderStatus.Finished,
-                    UserId = user.Id,
-                    Description = paymentIngest.BillNumber,
-                    ShippingAddress = "kassa",
-                    ShippingCost = 0,
-                    ShippingName = null,
-                    Sum = paymentIngest.Sum,
-                    PointsSum = points,
-                    PersonalBonusesSum = bonuses
-                };
-                db.Orders.Add(order);
+        //        var user =
+        //            db.Users.FirstOrDefault(entry => entry.NFCCardNumber.ToLower() == paymentIngest.UserNfc.ToLower());
+        //        if (user == null)
+        //        {
+        //            benefitCard =
+        //                db.BenefitCards.Include(entry => entry.User).FirstOrDefault(
+        //                    entry => entry.NfcCode.ToLower() == paymentIngest.UserNfc.ToLower());
+        //            if (benefitCard == null)
+        //            {
+        //                return Request.CreateErrorResponse(HttpStatusCode.NotFound, "User not found");
+        //            }
+        //            user = benefitCard.User;
+        //        }
+        //        var points = paymentIngest.Sum / SettingsService.DiscountPercentToPointRatio[seller.TotalDiscount];
+        //        var bonuses = paymentIngest.Sum * seller.UserDiscount / 100;
+        //        //add finished order with benefit card type
+        //        var orderNumber = db.Orders.Max(entry => (int?)entry.OrderNumber) ?? SettingsService.OrderMinValue;
+        //        var order = new Order()
+        //        {
+        //            Id = Guid.NewGuid().ToString(),
+        //            CardNumber = benefitCard == null ? user.CardNumber : benefitCard.Id,
+        //            OrderNumber = orderNumber + 1,
+        //            OrderType = OrderType.BenefitCard,
+        //            PaymentType = paymentIngest.ChargeBonuses ? PaymentType.Bonuses : PaymentType.Cash,
+        //            SellerId = seller.Id,
+        //            SellerName = seller.Name,
+        //            PersonnelName = cashier.Name,
+        //            Time = DateTime.UtcNow,
+        //            Status = OrderStatus.Finished,
+        //            UserId = user.Id,
+        //            Description = paymentIngest.BillNumber,
+        //            ShippingAddress = "kassa",
+        //            ShippingCost = 0,
+        //            ShippingName = null,
+        //            Sum = paymentIngest.Sum,
+        //            PointsSum = points,
+        //            PersonalBonusesSum = bonuses
+        //        };
+        //        db.Orders.Add(order);
 
-                //add transaction with personal bonuses with type benefit card
-                var transaction = new Transaction()
-                {
-                    Id = Guid.NewGuid().ToString(),
-                    Bonuses = bonuses,
-                    BonusesBalans = user.CurrentBonusAccount + bonuses,
-                    OrderId = order.Id,
-                    PayeeId = user.Id,
-                    Time = DateTime.UtcNow,
-                    Type = TransactionType.PersonalBenefitCardBonus
-                };
-                db.Transactions.Add(transaction);
+        //        //add transaction with personal bonuses with type benefit card
+        //        var transaction = new Transaction()
+        //        {
+        //            Id = Guid.NewGuid().ToString(),
+        //            Bonuses = bonuses,
+        //            BonusesBalans = user.HangingBonusAccount + bonuses,
+        //            OrderId = order.Id,
+        //            PayeeId = user.Id,
+        //            Time = DateTime.UtcNow,
+        //            Type = TransactionType.CashbackBonus
+        //        };
+        //        db.Transactions.Add(transaction);
 
-                //add points to seller account
-                seller.PointsAccount += points;
-                db.Entry(seller).State = EntityState.Modified;
+        //        //add points to seller account
+        //        seller.PointsAccount += points;
+        //        db.Entry(seller).State = EntityState.Modified;
 
-                //add points and bonuses to personal user account
-                user.PointsAccount += points;
-                user.CurrentBonusAccount += bonuses;
+        //        //add points and bonuses to personal user account
+        //        user.PointsAccount += points;
+        //        user.CurrentBonusAccount += bonuses;
 
-                //charge bonuses
-                if (paymentIngest.ChargeBonuses)
-                {
-                    sumToPay = order.Sum - order.SellerDiscount.GetValueOrDefault(0);
-                    if (user.BonusAccount < sumToPay)
-                    {
-                        return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Недостатньо бонусів на рахунку");
-                    }
-                    //add transaction for personal purchase
-                    var bonusesPaymentTransaction = new Transaction()
-                    {
-                        Id = Guid.NewGuid().ToString(),
-                        Bonuses = -(sumToPay),
-                        BonusesBalans = user.BonusAccount - sumToPay,
-                        OrderId = order.Id,
-                        PayeeId = user.Id,
-                        Time = DateTime.UtcNow,
-                        Type = TransactionType.BenefitCardBonusesPayment,
-                        Description = seller.Name
-                    };
-                    user.BonusAccount = bonusesPaymentTransaction.BonusesBalans;
-                    db.Transactions.Add(bonusesPaymentTransaction);
-                }
+        //        //charge bonuses
+        //        if (paymentIngest.ChargeBonuses)
+        //        {
+        //            sumToPay = order.Sum - order.SellerDiscount.GetValueOrDefault(0);
+        //            if (user.BonusAccount < sumToPay)
+        //            {
+        //                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Недостатньо бонусів на рахунку");
+        //            }
+        //            //add transaction for personal purchase
+        //            var bonusesPaymentTransaction = new Transaction()
+        //            {
+        //                Id = Guid.NewGuid().ToString(),
+        //                Bonuses = -(sumToPay),
+        //                BonusesBalans = user.BonusAccount - sumToPay,
+        //                OrderId = order.Id,
+        //                PayeeId = user.Id,
+        //                Time = DateTime.UtcNow,
+        //                Type = TransactionType.BenefitCardBonusesPayment,
+        //                Description = seller.Name
+        //            };
+        //            user.BonusAccount = bonusesPaymentTransaction.BonusesBalans;
+        //            db.Transactions.Add(bonusesPaymentTransaction);
+        //        }
 
-                db.Entry(user).State = EntityState.Modified;
-                db.SaveChangesAsync();
+        //        db.Entry(user).State = EntityState.Modified;
+        //        db.SaveChangesAsync();
 
-                return Request.CreateResponse(HttpStatusCode.OK,
-                    new PaymentResultDto()
-                    {
-                        BonusesCharged = sumToPay,
-                        BonusesAcquired = bonuses,
-                        BonusesAccount = user.BonusAccount
-                    });
-            }
-            catch (Exception ex)
-            {
-                _logger.Error(ex, "BenefitCard Payment exception:");
-                return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.ToString());
-            }
-        }
+        //        return Request.CreateResponse(HttpStatusCode.OK,
+        //            new PaymentResultDto()
+        //            {
+        //                BonusesCharged = sumToPay,
+        //                BonusesAcquired = bonuses,
+        //                BonusesAccount = user.BonusAccount
+        //            });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.Error(ex, "BenefitCard Payment exception:");
+        //        return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, ex.ToString());
+        //    }
+        //}
 
         [Route("PingOnline")]
         [HttpGet]

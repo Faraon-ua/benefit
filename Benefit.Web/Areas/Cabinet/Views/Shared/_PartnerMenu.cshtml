@@ -38,7 +38,7 @@
                 <a href="@Url.Action("finansovui_oblik", "Panel")">
                     <i class="fa fa-dollar"></i>
                     <br />
-                    Фінансовий облік
+                    Облік бонусів
                 </a>
             </li>
             @{
@@ -152,7 +152,7 @@
                 {
                     <a href="@Url.Action("Index", "Panel", new { userId = Request.QueryString[DomainConstants.UserIdKey] })" class="partner_menu_back"></a>
                 }
-                <a href="@Url.Action("finansovui_oblik", "Panel", new { userId = Request.QueryString[DomainConstants.UserIdKey] })">Фінансовий облік</a>
+                <a href="@Url.Action("finansovui_oblik", "Panel", new { userId = Request.QueryString[DomainConstants.UserIdKey] })">Облік бонусів</a>
             </li>
             @{
                 active = ViewContext.RouteData.GetRequiredString("action") == "history" ? ActiveStatus.Active : ActiveStatus.None;

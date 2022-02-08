@@ -29,15 +29,15 @@ namespace Benefit.RestApi.Controllers
             {
                 var importTasks =
                 db.ExportImports
-                .Include(entry=>entry.Seller)
+                .Include(entry => entry.Seller)
                 .Where(entry => entry.SyncType != SyncType.YmlExport && entry.SyncType != SyncType.YmlExportEpicentr && entry.SyncType != SyncType.YmlExportProm && entry.IsActive).ToList();
-                _logger.Info("DB get success import tasks for " + string.Join(",", importTasks.Select(entry=>entry.Seller.Name)));
+                _logger.Info("DB get success import tasks for " + string.Join(",", importTasks.Select(entry => entry.Seller.Name)));
                 Task.Run(() =>
                 {
                     foreach (var importTask in importTasks)
                     {
                         _logger.Info("Resolving import task for " + importTask.Seller.Name);
-                        if (importTask.LastSync.HasValue && (DateTime.UtcNow - importTask.LastSync.Value).TotalHours < importTask.SyncPeriod*23)
+                        if (importTask.LastSync.HasValue && (DateTime.UtcNow - importTask.LastSync.Value).TotalHours < importTask.SyncPeriod * 23)
                         {
                             _logger.Info("Canceling import task for " + importTask.Seller.Name);
                             continue;
@@ -67,7 +67,7 @@ namespace Benefit.RestApi.Controllers
                     {
                         await service.ProcessOrders();
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         _logger.Fatal(string.Format("Export for {0} failed. ", type.ToString()) + ex.ToString());
                     }
@@ -197,6 +197,56 @@ namespace Benefit.RestApi.Controllers
             }
             return Content("Ok");
         }
+        public ActionResult ProcessHangingBonuses()
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                var dueDate = DateTime.UtcNow.AddDays(-14);
+                var transactions = db.Transactions.Where(entry => !entry.IsProcessed && entry.Time < dueDate && entry.Type == TransactionType.CashbackBonus).ToList();
+                foreach (var transaction in transactions)
+                {
+                    var user = db.Users.Find(transaction.PayeeId);
+                    //add transaction for personal purchase
+                    var bonusTransferTransaction = new Transaction()
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        Bonuses = transaction.Bonuses,
+                        BonusesBalans = user.BonusAccount + transaction.Bonuses,
+                        OrderId = transaction.OrderId,
+                        PayeeId = user.Id,
+                        Time = DateTime.UtcNow,
+                        Type = TransactionType.HangingToGeneral
+                    };
+                    db.Transactions.Add(bonusTransferTransaction);
+                    user.BonusAccount = bonusTransferTransaction.BonusesBalans;
+                    user.HangingBonusAccount -= transaction.Bonuses;
+                    transaction.IsProcessed = true;
+                    db.Entry(user).State = EntityState.Modified;
+                    db.Entry(transaction).State = EntityState.Modified;
+
+                    //10% from partner cashback
+                    var mentor = db.Users.Find(user.ReferalId);
+                    if (mentor != null)
+                    {
+                        var mentorTransaction = new Transaction()
+                        {
+                            Id = Guid.NewGuid().ToString(),
+                            Bonuses = transaction.Bonuses * 0.1,
+                            BonusesBalans = mentor.BonusAccount + transaction.Bonuses * 10 / 100,
+                            PayerId = user.Id,
+                            PayeeId = mentor.Id,
+                            Time = DateTime.UtcNow,
+                            Type = TransactionType.CashbackMentorBonus
+                        };
+                        db.Transactions.Add(mentorTransaction);
+                        mentor.BonusAccount = mentorTransaction.BonusesBalans;
+                        db.Entry(mentor).State = EntityState.Modified;
+                    }
+                }
+                db.SaveChanges();
+            }
+            return Content("Бонуси рохраховані");
+        }
 
         public ActionResult SaveCompanyRevenue()
         {
@@ -217,7 +267,6 @@ namespace Benefit.RestApi.Controllers
                     Id = Guid.NewGuid().ToString(),
                     Stamp = DateTime.UtcNow,
                     TotalBonuses = db.Users.Sum(entry => entry.BonusAccount),
-                    TotalEarnedBonuses = db.Users.Sum(entry => entry.TotalBonusAccount),
                     TotalHangingBonuses = db.Users.Sum(entry => entry.HangingBonusAccount)
                 };
                 db.CompanyRevenues.Add(revenue);
