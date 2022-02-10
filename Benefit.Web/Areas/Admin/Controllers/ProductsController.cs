@@ -713,6 +713,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                               }
                           });
                         db.SaveChanges();
+                        export_Id = export_Id.Where(entry => !string.IsNullOrEmpty(entry)).ToArray();
                         foreach (var productId in productIds)
                         {
                             foreach (var exportId in export_Id)

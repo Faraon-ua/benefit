@@ -111,7 +111,10 @@
                     </div>
                     <div class="col-sm-6">
                         <label> Реферальний код (за наявності)</label>
-                        @Html.TextBox("ReferalNumber", null)
+                        @{ 
+                            string referal = ViewBag.Referal == null ? null : ViewBag.Referal.ToString();
+                        }
+                        @Html.TextBox("ReferalNumber", referal)
                         <p style="text-align: center; font-size: 1.2em;" id="referal-name">
                         </p>
                     </div>

@@ -58,9 +58,10 @@ namespace Benefit.Web.Controllers
         [FetchLastNews]
         [FetchSeller(Order = 0)]
         [FetchCategories(Order = 1)]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login(string returnUrl, string id)
         {
             ViewBag.ReturnUrl = returnUrl;
+            ViewBag.Referal = id;
             var seller = ViewBag.Seller as Seller;
             if (seller != null)
             {

@@ -35,8 +35,9 @@ namespace Benefit.Domain.Models
             Promotions = new Collection<Promotion>();
             InfoPages = new Collection<InfoPage>();
             Reviews = new Collection<Review>();
+            FeaturedCategories = new List<Category>();
         }
-       
+
         [Required]
         [MaxLength(128)]
         [Index]
