@@ -247,7 +247,7 @@ namespace Benefit.Services.Domain
                                 }
                                 if (ruDescrLoc != null && !string.IsNullOrEmpty(ruDescrLoc.ResourceValue))
                                 {
-                                    var ruDescr = new XElement("name", new XCData(product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Description").ResourceValue));
+                                    var ruDescr = new XElement("description", new XCData(product.Localizations.FirstOrDefault(entry => entry.ResourceField == "Description").ResourceValue));
                                     ruDescr.Add(new XAttribute("lang", "ru"));
                                     prod.Add(ruDescr);
                                 }
@@ -274,7 +274,7 @@ namespace Benefit.Services.Domain
                             {
                                 product.OldPrice *= product.Currency.Rate;
                             }
-                            prod.Add(new XElement("price_old", product.OldPrice));
+                            prod.Add(new XElement("price_old", product.OldPrice.Value.ToString("F")));
                         }
                         if (product.PromoPrice.HasValue)
                         {
@@ -284,7 +284,7 @@ namespace Benefit.Services.Domain
                             }
                             prod.Add(new XElement("price_promo", product.PromoPrice));
                         }
-                        prod.Add(new XElement("price", product.Price));
+                        prod.Add(new XElement("price", product.Price.ToString("F")));
                         prod.Add(new XElement("currencyId", "UAH"));
                         prod.Add(new XElement("stock_quantity", product.AvailableAmount ?? 100));
 
@@ -301,7 +301,13 @@ namespace Benefit.Services.Domain
                         else if (exportTask.SyncType == SyncType.YmlExportEpicentr)
                         {
                             var cat = dbcategories.FirstOrDefault(entry => entry.Id == categoryId);
-                            prod.Add(new XElement("category", cat.Name));
+                            var exportCat = db.ExportCategories.FirstOrDefault(entry => entry.ExportId == exportId && entry.CategoryId == categoryId);
+                            var xmlCat = new XElement("category", cat.Name);
+                            if (exportCat != null && exportCat.ExportId != null)
+                            {
+                                xmlCat.Add(new XAttribute("code", exportCat.ExportId));
+                            }
+                            prod.Add(xmlCat);
                         }
                         foreach (var picture in product.Images.Where(entry => entry.ImageType == ImageType.ProductGallery).OrderBy(entry => entry.Order))
                         {
