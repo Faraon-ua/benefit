@@ -42,6 +42,11 @@
     @if (User.IsInRole(DomainConstants.SellerOperatorRoleName) || User.IsInRole(DomainConstants.ProductsModeratorRoleName))
     {
         <td>@Enumerations.GetDisplayNameValue(Model.ModerationStatus)</td>
+        <td>
+            <a class="btn btn-xs btn-info" href="@Url.RouteUrl(RouteConstants.ProductRouteName, new { productUrl = string.Format("{0}-{1}", Model.UrlName, Model.SKU) })" target="_blank" title="Переглянути товар як покупець">
+                <i class="icon-eye-open bigger-120"></i>
+            </a>
+        </td>
     }
     else
     {
