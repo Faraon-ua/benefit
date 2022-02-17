@@ -73,6 +73,10 @@
                     </a>
                 }
             </div>
+            @if (Model.ModerationAssignee != null)
+            {
+                <span>@Model.ModerationAssignee.FullName</span>
+            }
         </td>
         <td>
             @Model.Price

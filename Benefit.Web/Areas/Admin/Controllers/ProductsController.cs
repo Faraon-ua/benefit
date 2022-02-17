@@ -653,7 +653,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
         public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string[] export_Id, int availability_Id, string currency_Id, ModerationStatus moderate_status, string moderator_id, ProductFilterValues filters = null)
         {
-            if(productIds == null && !action.ToString().Contains("All"))
+            if (productIds == null && !action.ToString().Contains("All"))
             {
                 TempData["ErrorMessage"] = "Не обрано жодного товару";
                 return new HttpStatusCodeResult(200);
@@ -789,10 +789,19 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         db.Products.Where(entry => productIds.Contains(entry.Id))
                            .ForEach(entry =>
                            {
-                               if (entry.ModerationAssigneeId == null && entry.ModerationStatus == ModerationStatus.IsModerating)
+                               if (moderator_id == "notassigned")
+                               {
+                                   entry.ModerationAssigneeId = null;
+                                   db.Entry(entry).State = EntityState.Modified;
+                               }
+                               else if (entry.ModerationAssigneeId == null && entry.ModerationStatus == ModerationStatus.IsModerating)
                                {
                                    entry.ModerationAssigneeId = moderator_id;
                                    db.Entry(entry).State = EntityState.Modified;
+                               }
+                               else
+                               {
+                                   TempData["ErrorMessage"] = "Деяким товарам не було назначено модератора, бо вони вже модеруються іншим";
                                }
                            });
                         break;
@@ -826,6 +835,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         .Include(entry => entry.Images)
                         .Include(entry => entry.ExportProducts.Select(ep => ep.Export))
                         .Include(entry => entry.ProductParameterProducts)
+                        .Include(entry => entry.ModerationAssignee)
                         .AsQueryable();
                 if (User.IsInRole(DomainConstants.ProductsModeratorRoleName))
                 {
