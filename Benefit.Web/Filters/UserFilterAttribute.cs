@@ -31,6 +31,8 @@ namespace Benefit.Web.Filters
                     {
                         Expires = DateTime.UtcNow.AddYears(1)
                     };
+                    fullNameCookie.Path = "/";
+                    fullNameCookie.Domain = "." + filterContext.RequestContext.HttpContext.Request.Url.Host;
                     HttpContext.Current.Response.Cookies.Add(fullNameCookie);
                     HttpContext.Current.Response.Cookies.Add(selfReferalNumber);
                 }
