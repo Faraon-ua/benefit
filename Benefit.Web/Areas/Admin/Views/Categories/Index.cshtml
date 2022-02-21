@@ -119,9 +119,12 @@
                             <a class="btn btn-danger btn-sm pull-right btn-xs" onclick="DeleteCategory('@cat.Id', '@cat.Name')" title="Видалити категорію">
                                 <i class="icon-trash"></i>
                             </a>
-                            <a class="btn btn-primary btn-sm pull-right btn-xs" href="@Url.Action("CreateOrUpdate", new { id = cat.Id })" target="_blank" title="Редагувати категорію">
-                                <i class="icon-edit"></i>
-                            </a>
+                            @if (!cat.IsSellerCategory)
+                            {
+                                <a class="btn btn-primary btn-sm pull-right btn-xs" href="@Url.Action("CreateOrUpdate", new { id = cat.Id })" target="_blank" title="Редагувати категорію">
+                                    <i class="icon-edit"></i>
+                                </a>
+                            }
                             <a class="btn btn-purple btn-sm pull-right btn-xs" href="@Url.Action("Index", "ProductOptions", new { categoryId =cat.Id})" title="Редагувати додаткові опції" target="_blank">
                                 <i class="icon-plus"></i>
                             </a>

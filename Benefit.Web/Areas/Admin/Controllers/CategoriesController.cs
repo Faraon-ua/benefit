@@ -52,6 +52,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 {
                     model = db.Categories
                         .Include(entry => entry.Seller)
+                        .Where(entry=>!entry.IsSellerCategory)
                         .Where(entry => entry.Name.ToLower().Contains(search.ToLower()) || entry.Id == search).ToList();
                 }
                 return View(model);
@@ -115,6 +116,10 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                Id = Guid.NewGuid().ToString(),
                                ParentCategoryId = parentCategoryId
                            };
+                if (category.IsSellerCategory)
+                {
+                    return new HttpStatusCodeResult(403);
+                }
                 var categories = db.Categories.Where(entry => !entry.IsSellerCategory).ToList().SortByHierarchy().ToList().Select(entry => new HierarchySelectItem()
                 {
                     Text = entry.Name,
