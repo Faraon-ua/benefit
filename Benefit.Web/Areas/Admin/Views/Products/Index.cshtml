@@ -15,7 +15,7 @@
     <script src="~/Scripts/bootstrap-select.js"></script>
     @*    <script src="~/Scripts/sorting-filtering.js"></script>*@
 
-<script>
+    <script>
         var updateWeightProductUrl = '@Url.Action("UpdateWeightProduct")';
         var moderateProductUrl = '@Url.Action("Moderate")';
         var bulkProductsActionUrl = '@Url.Action("BulkProductsAction")';
@@ -153,11 +153,17 @@
                 } else {
                     $("#currencyId").hide();
                 }
-                 if ($(this).val() == "@((int)ProductsBulkAction.Moderate)" ||
+                if ($(this).val() == "@((int)ProductsBulkAction.Moderate)" ||
                     $(this).val() == "@((int)ProductsBulkAction.ModerateAll)") {
                     $("#moderateStatus").show();
                 } else {
                     $("#moderateStatus").hide();
+                }
+                if ($(this).val() == "@((int)ProductsBulkAction.CustomMargin)" ||
+                    $(this).val() == "@((int)ProductsBulkAction.CustomMarginAll)") {
+                    $("#txtCustomMargin").show();
+                } else {
+                    $("#txtCustomMargin").hide();
                 }
             });
 
@@ -171,6 +177,7 @@
                 var exportId = $("[name=exportId]").val();
                 var currencyId = $("[name=currencyId]").val();
                 var moderateStatus = $("[name=moderateStatus]").val();
+                var customMargin = $("[name=customMargin]").val();
                 var moderatorId = $("[name=moderatorId]").val();
                 $.post(bulkProductsActionUrl + location.search,
                     {
@@ -181,7 +188,8 @@
                         "export_Id": exportId,
                         "currency_Id": currencyId,
                         "moderator_Id": moderatorId,
-                        "moderate_status": moderateStatus
+                        "moderate_status": moderateStatus,
+                        "customMargin": customMargin
                     }, function() {
                         window.location.reload();
                     });
@@ -251,7 +259,7 @@
                     });
             }
         }
-</script>
+    </script>
 }
 
 @section styles{
@@ -364,7 +372,7 @@
                                     Value = null,
                                     Items = Model.ProductFilters.Categories
                                 })
-                               
+
                                 @Html.ListBox("exportId", Model.ProductFilters.Exports, new { id = "exportId", style = "display:none;" })
 
                                 @Html.DropDownList("currencyId", Model.ProductFilters.Currencies, null, new { id = "currencyId", style = "display:none;" })
@@ -373,6 +381,9 @@
 
                                 @Html.DropDownList("availabilityId", EnumHelper.GetSelectList(typeof(ProductAvailabilityState)), new { id = "availabilityId", style = "display: none;" })
 
+                                <span id="txtCustomMargin" style="display: none;">
+                                    <input type="number" name="customMargin" min="0" /> %
+                                </span>
                                 <span id="moderator-hint" style="display:none;">* оберіть постачальника * </span>
                                 @if (Model.ProductFilters.Moderators != null)
                                 {

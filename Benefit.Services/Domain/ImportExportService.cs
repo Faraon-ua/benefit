@@ -257,23 +257,22 @@ namespace Benefit.Services.Domain
                         prod.Add(new XElement("vendorCode", product.SKU));
                         if (product.Currency != null)
                         {
-                            product.Price *= product.Currency.Rate;
-                        }
-                        var sellerCategory = product.Category.SellerCategories.FirstOrDefault(sc => sc.CategoryId == product.CategoryId && sc.SellerId == product.SellerId);
-                        if (sellerCategory != null && sellerCategory.CustomMargin.HasValue)
-                        {
-                            if (product.OldPrice.HasValue)
-                            {
-                                product.OldPrice += product.OldPrice * sellerCategory.CustomMargin.Value / 100;
-                            }
-                            product.Price += product.Price * sellerCategory.CustomMargin.Value / 100;
-                        }
-                        if (product.OldPrice.HasValue)
-                        {
-                            if (product.Currency != null)
+                            if (product.OldPrice != null)
                             {
                                 product.OldPrice *= product.Currency.Rate;
                             }
+                            product.Price *= product.Currency.Rate;
+                        }
+                        if (product.CustomMargin != null)
+                        {
+                            if (product.OldPrice.HasValue)
+                            {
+                                product.OldPrice += product.OldPrice * product.CustomMargin.Value / 100;
+                            }
+                            product.Price += product.Price * product.CustomMargin.Value / 100;
+                        }
+                        if (product.OldPrice.HasValue)
+                        {
                             prod.Add(new XElement("price_old", product.OldPrice.Value.ToString("F")));
                         }
                         if (product.PromoPrice.HasValue)

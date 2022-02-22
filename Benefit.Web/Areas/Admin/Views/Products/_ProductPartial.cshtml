@@ -79,11 +79,18 @@
             }
         </td>
         <td>
+            @{
+                var priceWithCurrency = Model.Price * (Model.Currency == null ? 1 : Model.Currency.Rate);
+            }
             @Model.Price
             @if (Model.CurrencyId != null)
             {
                 @Model.Currency.Name
-                <div class="pull-left padding-5">(@((int)(Model.Price*Model.Currency.Rate)))</div>
+                <div class="padding-5">(@((int)(Model.Price*Model.Currency.Rate)))</div>
+            }
+            @if (Model.CustomMargin != null)
+            {
+                <div class="red">@(priceWithCurrency + priceWithCurrency * Model.CustomMargin/100)</div>
             }
         </td>
         <td>

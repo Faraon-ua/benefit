@@ -81,7 +81,7 @@ namespace Benefit.Services.Domain
                     .Include(entry => entry.DefaultImage)
                     .Include(entry => entry.Category)
                     .Include(entry => entry.Seller.ShippingMethods)
-                    .Where(entry => productIds.Contains(entry.Id)).ToList(); 
+                    .Where(entry => productIds.Contains(entry.Id)).ToList();
             }
         }
 
@@ -117,6 +117,14 @@ namespace Benefit.Services.Domain
                     }
                     product.Price = product.Price * product.Currency.Rate;
                 }
+                if (product.CustomMargin != null)
+                {
+                    if (product.OldPrice.HasValue)
+                    {
+                        product.OldPrice = product.OldPrice + product.OldPrice * product.CustomMargin.Value / 100;
+                    }
+                    product.Price = product.Price + product.Price * product.CustomMargin.Value / 100;
+                }
 
                 var categoriesService = new CategoriesService();
                 var categoryId = product.CategoryId;
@@ -149,14 +157,6 @@ namespace Benefit.Services.Domain
                                          entry.SellerId == product.SellerId);
                 if (sellerCategory != null)
                 {
-                    if (sellerCategory.CustomMargin.HasValue)
-                    {
-                        if (product.OldPrice.HasValue)
-                        {
-                            product.OldPrice += product.OldPrice * sellerCategory.CustomMargin.Value / 100;
-                        }
-                        product.Price += product.Price * sellerCategory.CustomMargin.Value / 100;
-                    }
                     if (sellerCategory.CustomDiscount.HasValue)
                     {
                         result.DiscountPercent = sellerCategory.CustomDiscount.Value;
@@ -188,6 +188,11 @@ namespace Benefit.Services.Domain
                         {
                             relatedProduct.Price = relatedProduct.Price * relatedProduct.Currency.Rate;
                             relatedProduct.OldPrice = relatedProduct.OldPrice * relatedProduct.Currency.Rate;
+                        }
+                        if (relatedProduct.CustomMargin != null)
+                        {
+                            relatedProduct.Price = relatedProduct.Price + relatedProduct.Price * relatedProduct.CustomMargin.Value / 100;
+                            relatedProduct.OldPrice = relatedProduct.OldPrice + relatedProduct.OldPrice * relatedProduct.CustomMargin.Value / 100;
                         }
                     }
                 }

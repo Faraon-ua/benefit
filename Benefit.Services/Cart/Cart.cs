@@ -136,10 +136,6 @@ namespace Benefit.Services.Cart
                         {
                             userBonusesPercent = sellerCategory.CustomDiscount.GetValueOrDefault(userBonusesPercent);
                         }
-                        if (sellerCategory.CustomMargin.HasValue)
-                        {
-                            orderProduct.ProductPrice += orderProduct.ProductPrice * sellerCategory.CustomMargin.Value / 100;
-                        }
                     }
                     orderProduct.BonusesAcquired = orderProduct.ActualPrice * userBonusesPercent / 100;
                     foreach (var orderProductOption in orderProduct.OrderProductOptions)

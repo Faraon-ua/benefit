@@ -10,7 +10,6 @@ namespace Benefit.Domain.Models
         public string CustomName { get; set; }
         public string CustomImageUrl { get; set; }
         public int? Order { get; set; }
-        public int? CustomMargin { get; set; }
         public double? CustomDiscount { get; set; }
         public bool RootDisplay { get; set; }
         [Key, Column(Order = 0)]

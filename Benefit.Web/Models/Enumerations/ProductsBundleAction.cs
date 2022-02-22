@@ -30,5 +30,9 @@ namespace Benefit.Web.Models.Enumerations
         AssignModerator,
         [Display(Name = "Назначити модератора відфільтрованим товарам")]
         AssignModeratorAll,
+        [Display(Name = "Націнка обраним")]
+        CustomMargin,
+        [Display(Name = "Націнка відфільтрованим")]
+        CustomMarginAll,
     }
 }

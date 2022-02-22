@@ -185,8 +185,8 @@ namespace Benefit.Domain.DataAccess
 	                and cat.IsActive = 1
                         THEN 1
                         ELSE 2 END) as AvailabilityState
-                  ,(p.Price * ISNULL(c.Rate, 1)) as Price
-                  ,(p.OldPrice * ISNULL(c.Rate, 1)) as OldPrice
+                  ,(p.Price * ISNULL(c.Rate, 1) + p.Price * ISNULL(c.Rate, 1) * ISNULL(p.CustomMargin, 100) / 100) as Price
+                  ,(p.OldPrice * ISNULL(c.Rate, 1) + p.Price * ISNULL(c.Rate, 1) * ISNULL(p.CustomMargin, 100) / 100) as OldPrice
                   ,(SELECT CASE WHEN EXISTS (SELECT * FROM Favorites WHERE ProductId = p.Id and UserId = '{0}')
                         THEN CAST(1 AS BIT)
                         ELSE CAST(0 AS BIT) END) as IsFavorite

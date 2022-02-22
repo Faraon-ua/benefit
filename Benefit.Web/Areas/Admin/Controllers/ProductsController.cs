@@ -247,12 +247,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     Level = entry.HierarchicalLevel
                 }).ToList();
                 var mappedCategoryId = product.Category == null ? null : product.Category.MappedParentCategoryId;
-                var sellerCategory = db.SellerCategories.FirstOrDefault(entry =>
-                                         entry.CategoryId == product.CategoryId && entry.SellerId == product.SellerId) ??
-                                     db.SellerCategories.FirstOrDefault(entry =>
-                                         entry.CategoryId == mappedCategoryId &&
-                                         entry.SellerId == product.SellerId);
-                ViewBag.SellerCategory = sellerCategory;
                 ViewBag.SellerId = new SelectList(db.Sellers.ToList(), "Id", "Name", product.SellerId);
                 var currencies =
                     db.Currencies.Where(entry => entry.Provider == CurrencyProvider.PrivatBank || entry.SellerId == product.SellerId)
@@ -651,7 +645,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string[] export_Id, int availability_Id, string currency_Id, ModerationStatus moderate_status, string moderator_id, ProductFilterValues filters = null)
+        public ActionResult BulkProductsAction(string[] productIds, ProductsBulkAction action, string category_Id, string[] export_Id, int availability_Id, string currency_Id, ModerationStatus moderate_status, string moderator_id, int? customMargin, ProductFilterValues filters = null)
         {
             if (productIds == null && !action.ToString().Contains("All"))
             {
@@ -814,6 +808,22 @@ namespace Benefit.Web.Areas.Admin.Controllers
                                 entry.ModerationAssigneeId = moderator_id;
                                 db.Entry(entry).State = EntityState.Modified;
                             }
+                        });
+                        break;
+                    case ProductsBulkAction.CustomMargin:
+                        db.Products.Where(entry => productIds.Contains(entry.Id))
+                           .ForEach(entry =>
+                           {
+                               entry.CustomMargin = customMargin;
+                               db.Entry(entry).State = EntityState.Modified;
+                           });
+                        break;
+                    case ProductsBulkAction.CustomMarginAll:
+                        var marginProducts = GetFilteredProducts(filters).ToList();
+                        marginProducts.ForEach(entry =>
+                        {
+                            entry.CustomMargin = customMargin;
+                            db.Entry(entry).State = EntityState.Modified;
                         });
                         break;
                 }

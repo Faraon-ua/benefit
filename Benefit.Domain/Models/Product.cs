@@ -112,6 +112,7 @@ namespace Benefit.Domain.Models
         public string Description { get; set; }
         public double Price { get; set; }
         public double? OldPrice { get; set; }
+        public int? CustomMargin { get; set; }
         public double? WholesalePrice { get; set; }
         public double? PromoPrice { get; set; }
         public int? WholesaleFrom { get; set; }

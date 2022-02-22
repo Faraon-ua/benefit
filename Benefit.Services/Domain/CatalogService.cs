@@ -271,22 +271,6 @@ namespace Benefit.Services.Domain
                 result.PagesCount = (productsDBContext.GetCatalogCount(categoryId, sellerId, where.ToString(), sqlParams) - 1) / ListConstants.DefaultTakePerPage + 1;
             }
             result.Items = productsDBContext.GetCatalog(categoryId, sellerId, userId, where.ToString(), orderby, ListConstants.DefaultTakePerPage * (result.Page - 1), ListConstants.DefaultTakePerPage + 1, sqlParams);
-            result.Items.ForEach(entry =>
-            {
-                var produCat = entry.Category.IsSellerCategory ? entry.Category.MappedParentCategory : entry.Category;
-                var sellerCategory = produCat.SellerCategories.FirstOrDefault(sc => sc.CategoryId == produCat.Id && sc.SellerId == entry.SellerId);
-                if (sellerCategory != null)
-                {
-                    if (sellerCategory.CustomMargin.HasValue)
-                    {
-                        if (entry.OldPrice.HasValue)
-                        {
-                            entry.OldPrice += entry.OldPrice * sellerCategory.CustomMargin.Value / 100;
-                        }
-                        entry.Price += entry.Price * sellerCategory.CustomMargin.Value / 100;
-                    }
-                }
-            });
             return result;
         }
 

@@ -743,6 +743,10 @@
     <Compile Include="Migrations\202202031355393_RemoveUserPoints.designer.cs">
       <DependentUpon>202202031355393_RemoveUserPoints.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202202221047252_CustomMarginToProduct.cs" />
+    <Compile Include="Migrations\202202221047252_CustomMarginToProduct.designer.cs">
+      <DependentUpon>202202221047252_CustomMarginToProduct.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Banner.cs" />
     <Compile Include="Models\Base\BaseDomainModel.cs" />
@@ -1285,6 +1289,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202202031355393_RemoveUserPoints.resx">
       <DependentUpon>202202031355393_RemoveUserPoints.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202202221047252_CustomMarginToProduct.resx">
+      <DependentUpon>202202221047252_CustomMarginToProduct.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
