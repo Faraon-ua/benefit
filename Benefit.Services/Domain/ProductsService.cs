@@ -275,20 +275,29 @@ namespace Benefit.Services.Domain
                         .Include(entry => entry.StatusStamps)
                         .Include(entry => entry.ProductParameterProducts)
                         .FirstOrDefault(entry => entry.Id == productId);
-                if (product == null)
-                {
-                    return;
-                }
-
-                var imagesService = new ImagesService();
-                imagesService.DeleteAll(product.Images, productId, ImageType.ProductGallery, true, false);
-
-                db.ProductOptions.RemoveRange(product.ProductOptions);
-                db.StatusStamps.RemoveRange(product.StatusStamps);
-                db.ProductParameterProducts.RemoveRange(product.ProductParameterProducts);
-                db.Products.Remove(product);
-                db.SaveChanges();
+                Delete(product, db);
             }
+        }
+
+        public void Delete(Product product, ApplicationDbContext db)
+        {
+            if (product == null)
+            {
+                return;
+            }
+
+            var imagesService = new ImagesService(db);
+            product.DefaultImageId = null;
+            db.Entry(product).State = EntityState.Modified;
+            db.SaveChanges();
+            imagesService.DeleteAllWithFolderAndFiles(product.Images, product.Id, ImageType.ProductGallery);
+            imagesService.DeleteAllWithFolderAndFiles(product.Images, product.Id, ImageType.ProductDefault);
+
+            db.ProductOptions.RemoveRange(product.ProductOptions);
+            db.StatusStamps.RemoveRange(product.StatusStamps);
+            db.ProductParameterProducts.RemoveRange(product.ProductParameterProducts);
+            db.Products.Remove(product);
+            db.SaveChanges();
         }
 
         public void DeleteProductParameter(string id)

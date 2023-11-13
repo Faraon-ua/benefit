@@ -11,7 +11,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
 {
     public class ImagesController : Controller
     {
-        ImagesService ImagesService = new ImagesService();
 
         public ActionResult SellerCatalog()
         {
@@ -20,12 +19,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var images = db.Images.Where(entry => entry.SellerId == Seller.CurrentAuthorizedSellerId && entry.ImageType == ImageType.SellerCatalog).OrderBy(entry => entry.Order).ToList();
                 return View(images);
             }
-        }
-
-        public ActionResult DeleteSellerCatalogImage(string id)
-        {
-            ImagesService.Delete(id, Seller.CurrentAuthorizedSellerId, ImageType.SellerCatalog);
-            return RedirectToAction("SellerCatalog");
         }
 
         public ActionResult AddSellerCatalogImage()
@@ -56,7 +49,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
 
                     db.Images.Add(img);
                     sellerLogo.SaveAs(Path.Combine(pathString, img.ImageUrl));
-                    var imagesService = new ImagesService();
+                    var imagesService = new ImagesService(db);
                     imagesService.ResizeToSiteRatio(Path.Combine(pathString, img.ImageUrl), ImageType.SellerLogo);
                     db.SaveChanges();
                     TempData["SuccessMessage"] = "Файл каталогу збережено";

@@ -20,7 +20,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
     {
         ProductsService ProductService = new ProductsService();
         EmailService EmailService = new EmailService();
-        ImagesService ImagesService = new ImagesService();
         ExportService ImportService = new ExportService();
         private static Logger _logger = LogManager.GetCurrentClassLogger();
 

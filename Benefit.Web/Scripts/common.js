@@ -1,7 +1,7 @@
-﻿//var apiUrl = "https://benefit-api.pp.ua/";
-//var routePrefix = "";
-var apiUrl = "http://localhost/Benefit.RestApi/";
-var routePrefix = "/Benefit.Web";
+﻿var apiUrl = "https://benefit-api.pp.ua/";
+var routePrefix = "";
+//var apiUrl = "http://localhost/Benefit.RestApi/";
+//var routePrefix = "/Benefit.Web";
 
 jQuery.expr[':'].hasValue = function (el, index, match) {
     return el.value != "";

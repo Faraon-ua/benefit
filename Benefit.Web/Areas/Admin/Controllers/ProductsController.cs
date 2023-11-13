@@ -353,7 +353,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var image = db.Images.Where(entry => entry.ProductId == product.Id).OrderBy(entry => entry.Order).FirstOrDefault();
                         if (image != null)
                         {
-                            ImagesService imagesService = new ImagesService();
+                            ImagesService imagesService = new ImagesService(db);
                             var format = imagesService.GetImageFormatByExtension(image.ImageUrl);
                             dbProduct.DefaultImageId = imagesService.AddProductDefaultImage(image, format);
                         }
@@ -489,7 +489,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var image = db.Images.Where(entry => entry.ProductId == product.Id).OrderBy(entry => entry.Order).FirstOrDefault();
                         if (image != null)
                         {
-                            ImagesService imagesService = new ImagesService();
+                            ImagesService imagesService = new ImagesService(db);
                             var format = imagesService.GetImageFormatByExtension(image.ImageUrl);
                             product.DefaultImageId = imagesService.AddProductDefaultImage(image, format);
                         }

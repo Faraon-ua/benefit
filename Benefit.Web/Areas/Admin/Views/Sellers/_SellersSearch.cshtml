@@ -1,4 +1,5 @@
 ﻿@using Benefit.Services
+@using Benefit.Domain.Models.ModelExtensions
 @model IEnumerable<Benefit.Domain.Models.Seller>
 @if (!Model.Any())
 {
@@ -94,7 +95,7 @@ else
                                     <i class="lockUser-@seller.Id icon-@lockClassName bigger-120"></i>
                                 </a>
 
-                                <a class="btn btn-xs btn-danger" onclick="DeleteSeller('@seller.Id','@seller.Name');">
+                                <a class="btn btn-xs btn-danger" onclick="DeleteSeller('@seller.Id','@seller.Name.Sanitize()');">
                                     <i class="icon-trash bigger-120"></i>
                                 </a>
                             </div>

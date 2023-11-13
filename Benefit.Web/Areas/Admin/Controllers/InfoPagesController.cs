@@ -114,7 +114,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var pathString = Path.Combine(originalDirectory, relativePathString);
                         newsLogo.SaveAs(pathString);
                         infopage.ImageUrl = infopage.Id + fileExt;
-                        var imagesService = new ImagesService();
+                        var imagesService = new ImagesService(db);
                         imagesService.ResizeToSiteRatio(pathString, ImageType.NewsLogo);
                     }
                     if (db.InfoPages.Any(entry => entry.Id == infopage.Id))

@@ -22,7 +22,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
                 var first = images.First();
                 if (first.ProductId != null)
                 {
-                    var imagesService = new ImagesService();
+                    var imagesService = new ImagesService(db);
                     var product = db.Products.Find(first.ProductId);
                     var oldImageId = product.DefaultImageId;
                     var format = imagesService.GetImageFormatByExtension(first.ImageUrl);
@@ -46,22 +46,25 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
         }
         public ActionResult DeleteUploadedFile(string fileName, string parentId, ImageType type)
         {
-            var imagesService = new ImagesService();
-            if (Uri.IsWellFormedUriString(fileName, UriKind.Absolute))
+            using (var db = new ApplicationDbContext())
             {
-                imagesService.DeleteAbsoluteUrlImage(fileName, parentId);
-            }
-            else
-            {
-                if (type == ImageType.ProductGallery)
+                var imagesService = new ImagesService(db);
+                if (Uri.IsWellFormedUriString(fileName, UriKind.Absolute))
                 {
-                    imagesService.DeleteFile(fileName, parentId, type);
+                    imagesService.DeleteAbsoluteUrlImage(fileName, parentId);
                 }
                 else
                 {
-                    var dotIndex = fileName.LastIndexOf('.');
-                    var id = fileName.Substring(0, dotIndex);
-                    imagesService.Delete(id, parentId, type);
+                    if (type == ImageType.ProductGallery)
+                    {
+                        imagesService.DeleteFile(fileName, parentId, type);
+                    }
+                    else
+                    {
+                        var dotIndex = fileName.LastIndexOf('.');
+                        var id = fileName.Substring(0, dotIndex);
+                        imagesService.Delete(id, parentId, type);
+                    }
                 }
             }
             return Json(true);
@@ -89,7 +92,7 @@ namespace Benefit.Web.Areas.Admin.Controllers.Base
                             Directory.CreateDirectory(pathString);
                         var path = string.Format("{0}\\{1}.{2}", pathString, imageId, fileExt);
                         file.SaveAs(path);
-                        var imagesService = new ImagesService();
+                        var imagesService = new ImagesService(null);
                         imagesService.ResizeToSiteRatio(path, ImageType.SellerGallery);
                     }
                 }

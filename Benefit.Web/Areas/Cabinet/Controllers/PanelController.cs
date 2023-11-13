@@ -310,7 +310,7 @@ namespace Benefit.Web.Areas.Cabinet.Controllers
                 var fullPath = Path.Combine(pathString, imageName);
 
                 avatar.SaveAs(fullPath);
-                var imagesService = new ImagesService();
+                var imagesService = new ImagesService(null);
                 imagesService.ResizeToSiteRatio(Path.Combine(pathString, fullPath), ImageType.UserAvatar);
             }
             return RedirectToAction("Index");

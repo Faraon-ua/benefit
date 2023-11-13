@@ -17,7 +17,6 @@ namespace Benefit.Services.Import
     public class ExcelImportService : BaseImportService
     {
         private CategoriesService categoriesService = new CategoriesService();
-        private ImagesService ImagesService = new ImagesService();
 
         private void ProcessExcelCategories(IEnumerable<string> allCats, List<Category> allDbCats, string sellerId, string parentName, ApplicationDbContext db, string parentId = null)
         {
@@ -64,6 +63,7 @@ namespace Benefit.Services.Import
         {
             using (var db = new ApplicationDbContext())
             {
+                var ImagesService = new ImagesService(db);
                 var sellerId = importTask.SellerId;
                 var ftpDirectory = new DirectoryInfo(originalDirectory).FullName;
                 var sellerPath = Path.Combine(ftpDirectory, "FTP", "LocalUser", importTask.Seller.UrlName);
@@ -321,7 +321,7 @@ namespace Benefit.Services.Import
                 foreach (var excelProduct in excelProducts.Where(entry => !string.IsNullOrEmpty(entry.ImagesList)))
                 {
                     var productId = allProductIds[excelProduct.Product.ExternalId];
-                    ImagesService.DeleteAll(db.Images.Where(entry => entry.ProductId == productId).ToList(), productId,
+                    ImagesService.DeleteAllWithFolderAndFiles(db.Images.Where(entry => entry.ProductId == productId).ToList(), productId,
                                             imageType);
                     var destPath = Path.Combine(originalDirectory, "Images", imageType.ToString(), productId);
                     var isExists = Directory.Exists(destPath);

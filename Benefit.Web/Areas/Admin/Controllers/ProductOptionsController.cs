@@ -118,7 +118,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         }
                         productparameter.Image = productparameter.Id + fileExt;
                         image.SaveAs(path);
-                        var imageService = new ImagesService();
+                        var imageService = new ImagesService(db);
                         imageService.ResizeToSiteRatio(path, ImageType.ProductGallery);
                     }
                     db.SaveChanges();

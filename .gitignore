@@ -27,6 +27,7 @@ _UpgradeReport_Files/
 # Directories #
 ###############
 .vs/
+.well-known/
 bin/
 FTP/
 Reports/
@@ -35,7 +36,21 @@ logs/
 obj/
 TestResults/
 Images/
+App_Data/
 Benefit.Web/Data/
+###################
+# Push manifests #
+###################
+sp-push*.js
+sp-push*.json
+###################
+# Google files #
+###################
+google*.html
+###################
+# Sitemaps #
+###################
+sitemap*.xml
 ###################
 # Web publish log #
 ###################
@@ -84,3 +99,5 @@ _[Ss]cripts
 *.nupkg
 *.ncrunchsolution
 *.dot[Cc]over
+UpgradeLog.htm
+*.tmp

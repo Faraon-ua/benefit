@@ -219,7 +219,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var path = Path.Combine(Server.MapPath("~/Images/CategoryLogo/"), category.Id + fileExt);
                         category.ImageUrl = category.Id + fileExt;
                         categoryImage.SaveAs(path);
-                        var imageService = new ImagesService();
+                        var imageService = new ImagesService(db);
                         imageService.ResizeToSiteRatio(path, ImageType.CategoryLogo);
                     }
                     else

@@ -68,7 +68,7 @@ namespace Benefit.Services.Domain
                 var user = db.Users.Find(id);
                 if (!string.IsNullOrEmpty(user.Avatar))
                 {
-                    var ImagesService = new ImagesService();
+                    var ImagesService = new ImagesService(db);
                     ImagesService.DeleteFile(user.Avatar, "", ImageType.UserAvatar);
                 }
                 if (user != null)

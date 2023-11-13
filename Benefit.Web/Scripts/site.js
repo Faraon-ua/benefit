@@ -1,5 +1,5 @@
-﻿var routePrefix = "/Benefit.Web";
-//var routePrefix = "";
+﻿//var routePrefix = "/Benefit.Web";
+var routePrefix = "";
 
 function setCartSummary(data) {
     setCookie("cartNumber", data.ProductsNumber, { expires: 21600, path: "/" });

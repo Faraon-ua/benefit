@@ -10,7 +10,7 @@
     <!-- basic styles -->
     <link href="~/Content/css/bootstrap.min.css" rel="stylesheet" />
     <link href="~/Areas/Admin/assets/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="~/Content/css/common.css" rel="stylesheet" />
+    <link href="~/Content/css/common.css?v=@DateTime.Now.ToString("HHmmssddMMyyyy")" rel="stylesheet" />
     <!-- page specific plugin styles -->
     @RenderSection("styles", required: false)
     <!-- fonts -->
@@ -328,7 +328,7 @@
     <script src="~/Areas/Admin/assets/js/typeahead-bs2.min.js"></script>
     <script src="~/Areas/Admin/assets/js/ace-elements.min.js"></script>
     <script src="~/Areas/Admin/assets/js/ace.min.js"></script>
-    <script src="~/Scripts/common.js"></script>
+    <script src="~/Scripts/common.js?v=@DateTime.Now.ToString("HHmmssddMMyyyy")"></script>
     <!-- scripts related to this page -->
     @RenderSection("scripts", required: false)
 </body>

@@ -144,11 +144,11 @@ namespace Benefit.Web.Areas.Admin.Controllers
             using (var db = new ApplicationDbContext())
             {
                 IQueryable<Seller> sellers = db.Sellers
-                    .Include(entry=>entry.Owner)
+                    .Include(entry => entry.Owner)
                     .AsQueryable();
                 if (filters.CategoryId == "all")
                 {
-                    return PartialView("_SellersSearch", sellers);
+                    return PartialView("_SellersSearch", sellers.ToList());
                 }
                 if (!string.IsNullOrEmpty(filters.Search))
                 {
@@ -225,7 +225,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 var existingSeller =
                 db.Sellers.Include(entry => entry.BusinessLevelIndexes)
                     .Include(entry => entry.Images)
-                    .Include(entry => entry.Addresses.Select(add=>add.Region.Parent.Parent))
+                    .Include(entry => entry.Addresses.Select(add => add.Region.Parent.Parent))
                     .Include(entry => entry.Reviews)
                     .Include(entry => entry.Personnels)
                     .Include(entry => entry.Schedules)
@@ -259,7 +259,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                 seller.Seller.Schedules = seller.Seller.Schedules.OrderBy(entry => entry.Day).ToList();
                 if (existingSeller != null)
                 {
-                    existingSeller.SellerCategories = existingSeller.SellerCategories.ToList().OrderBy(entry=>entry.Order).ThenBy(entry => entry.Category.ExpandedName).OrderBy(entry => entry.Category.ExpandedName).ToList();
+                    existingSeller.SellerCategories = existingSeller.SellerCategories.ToList().OrderBy(entry => entry.Order).ThenBy(entry => entry.Category.ExpandedName).OrderBy(entry => entry.Category.ExpandedName).ToList();
                     seller.OwnerExternalId = existingSeller.Owner.ExternalNumber;
                     if (existingSeller.BenefitCardReferal != null)
                         seller.BenefitCardReferaExternalId = existingSeller.BenefitCardReferal.ExternalNumber;
@@ -386,7 +386,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                             db.Entry(businessLevel).State = EntityState.Modified;
                         }
                     }
-                    var imagesService = new ImagesService();
+                    var imagesService = new ImagesService(db);
                     var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                     if (sellerLogo != null && sellerLogo.ContentLength != 0)
                     {
@@ -402,9 +402,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         };
                         img.ImageUrl = img.Id + fileExt;
                         var images = db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerLogo).ToList();
-                        foreach(var logo in images)
+                        foreach (var logo in images)
                         {
-                            imagesService.DeleteWithFile(logo, db);
+                            imagesService.DeleteWithFile(logo);
                         }
                         db.Images.Add(img);
                         sellerLogo.SaveAs(Path.Combine(pathString, img.ImageUrl));
@@ -427,7 +427,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var images = db.Images.Where(entry => entry.SellerId == seller.Id && entry.ImageType == ImageType.SellerFavicon).ToList();
                         foreach (var fav in images)
                         {
-                            imagesService.DeleteWithFile(fav, db);
+                            imagesService.DeleteWithFile(fav);
                         }
                         db.Images.Add(img);
                         sellerFavicon.SaveAs(Path.Combine(pathString, img.ImageUrl));
@@ -460,19 +460,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
         [HttpPost]
         public ActionResult Delete(string id)
         {
-            using (var db = new ApplicationDbContext())
-            {
-                var categoriesService = new CategoriesService();
-                var seller = db.Sellers.Find(id);
-                var imagesService = new ImagesService();
-                imagesService.DeleteAll(seller.Images, id, ImageType.SellerGallery, true, false);
-                imagesService.DeleteAll(seller.Images, id, ImageType.SellerLogo, true, false);
-                db.ExportImports.RemoveRange(db.ExportImports.Where(entry => entry.SellerId == id));
-                db.Categories.Where(entry => entry.SellerId == id).ToList().ForEach(entry => categoriesService.Delete(entry.Id));
-                db.Sellers.Remove(seller);
-                db.SaveChanges();
-                return Json(true);
-            }
+            var sellersService = new SellerService();
+            sellersService.Remove(id);
+            return Json(true);
         }
 
         public ActionResult PromotionDetails(string id)

@@ -375,5 +375,70 @@ namespace Benefit.Services.Domain
                 db.SaveChanges();
             }
         }
+
+        public void Remove(string id)
+        {
+            var categoriesService = new CategoriesService();
+            var productsService = new ProductsService();
+            var bannersService = new BannersService();
+
+            using (var db = new ApplicationDbContext())
+            {
+                var seller = db.Sellers.Find(id);
+                var imagesService = new ImagesService(db);
+                imagesService.DeleteAllWithFolderAndFiles(seller.Images, id, ImageType.SellerGallery);
+                var sellerLogo = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerLogo);
+                if (sellerLogo != null)
+                {
+                    imagesService.DeleteWithFile(sellerLogo);
+                }
+                var sellerFavicon = seller.Images.FirstOrDefault(entry => entry.ImageType == ImageType.SellerFavicon);
+                if (sellerFavicon != null)
+                {
+                    imagesService.DeleteWithFile(sellerFavicon);
+                }
+                db.ExportImports.RemoveRange(db.ExportImports.Where(entry => entry.SellerId == id));
+                db.Schedules.RemoveRange(db.Schedules.Where(entry => entry.SellerId == id));
+                db.Addresses.RemoveRange(db.Addresses.Where(entry => entry.SellerId == id));
+                db.Currencies.RemoveRange(db.Currencies.Where(entry => entry.SellerId == id));
+                db.ShippingMethods.RemoveRange(db.ShippingMethods.Where(entry => entry.SellerId == id));
+                db.SellerCategories.RemoveRange(db.SellerCategories.Where(entry => entry.SellerId == id));
+                db.ProductOptions.RemoveRange(db.ProductOptions.Where(entry => entry.SellerId == id));
+                db.Personnels.RemoveRange(db.Personnels.Where(entry => entry.SellerId == id));
+                db.Promotions.RemoveRange(db.Promotions.Where(entry => entry.SellerId == id));
+                db.InfoPages.RemoveRange(db.InfoPages.Where(entry => entry.SellerId == id));
+                var reviews = db.Reviews.Include(entry => entry.ChildReviews).Where(entry => entry.SellerId == id).ToList();
+                db.Reviews.RemoveRange(reviews.SelectMany(entry => entry.ChildReviews));
+                db.Reviews.RemoveRange(reviews);
+                var categories = db.Categories
+                    .Include(entry => entry.MappedCategories)
+                    .Include(entry => entry.SellerCategories)
+                    .Include(entry => entry.ProductParameters)
+                    .Include(entry => entry.ProductOptions)
+                    .Include(entry => entry.ExportCategories)
+                    .Where(entry => entry.SellerId == id).ToList();
+                foreach (var category in categories)
+                {
+                    categoriesService.Delete(category, db);
+                }
+                var products = db.Products.Include(entry => entry.Images)
+                        .Include(entry => entry.ProductOptions)
+                        .Include(entry => entry.StatusStamps)
+                        .Include(entry => entry.ProductParameterProducts)
+                        .Where(entry => entry.SellerId == id).ToList();
+                foreach (var product in products)
+                {
+                    productsService.Delete(product, db);
+                }
+                var banners = db.Banners
+                        .Where(entry => entry.SellerId == id).ToList();
+                foreach (var banner in banners)
+                {
+                    bannersService.Delete(banner, db);
+                }
+                db.Sellers.Remove(seller);
+                db.SaveChanges();
+            }
+        }
     }
 }

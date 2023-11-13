@@ -8,6 +8,7 @@ using Benefit.Domain.Models;
 using Benefit.Domain.DataAccess;
 using Benefit.Services;
 using Benefit.Web.Helpers;
+using Benefit.Services.Domain;
 
 namespace Benefit.Web.Areas.Admin.Controllers
 {
@@ -79,7 +80,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                     var logo = Request.Files[0];
                     if (logo != null && logo.ContentLength != 0)
                     {
-                        var imageService = new ImagesService();
+                        var imageService = new ImagesService(db);
                         var format = imageService.GetImageFormatByExtension(logo.FileName);
                         var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
                         var pathString = Path.Combine(originalDirectory, "Images", banner.BannerType.ToString());
@@ -119,20 +120,9 @@ namespace Benefit.Web.Areas.Admin.Controllers
         }
         public ActionResult Delete(string id)
         {
-            using (var db = new ApplicationDbContext())
-            {
-                var banner = db.Banners.Find(id);
-                var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
-                var pathString = Path.Combine(originalDirectory, "Images", banner.BannerType.ToString(), banner.ImageUrl);
-                var file = new FileInfo(pathString);
-                if (file.Exists)
-                {
-                    file.Delete();
-                }
-                db.Banners.Remove(banner);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+            var bannersService = new BannersService();
+            bannersService.Delete(id);
+            return RedirectToAction("Index");
         }
     }
 }

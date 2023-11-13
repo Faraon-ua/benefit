@@ -48,7 +48,7 @@
                 });
         }
 
-        function DeleteSeller(id) {
+        function DeleteSeller(id, name) {
             if (confirm("Видалити постачальника " + name + "?")) {
                 $.post(routePrefix + "/Admin/Sellers/Delete?id=" + id,
                     function (data) {

@@ -14,7 +14,6 @@ namespace Benefit.Services.Import
 {
     public class YmlImportService : BaseImportService
     {
-        private ImagesService ImagesService = new ImagesService();
         object lockObj = new object();
         protected override void ProcessImport(ExportImport importTask)
         {
@@ -425,6 +424,7 @@ namespace Benefit.Services.Import
                 {
                     var uri = new Uri(image.ImageUrl);
                     var path = originalDirectory + uri.LocalPath;
+                    ImagesService ImagesService = new ImagesService(db);
                     ImagesService.ResizeToSiteRatio(path, ImageType.ProductGallery);
                 }
             }

@@ -58,7 +58,7 @@ namespace Benefit.Web.Areas.Admin.Controllers
                         var path = Path.Combine(Server.MapPath("~/Images/CategoryLogo/"), category.CategoryId + sellerId + fileExt);
                         existingSC.CustomImageUrl = category.Category + category.SellerId + fileExt;
                         categoryImage.SaveAs(path);
-                        var imageService = new ImagesService();
+                        var imageService = new ImagesService(db);
                         imageService.ResizeToSiteRatio(path, ImageType.CategoryLogo);
                     }
                     else

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Benefit.Common.Constants;
 using Benefit.DataTransfer.ViewModels;
 using Benefit.Domain.DataAccess;
 using Benefit.Domain.Models;
@@ -27,7 +28,7 @@ namespace Benefit.Web.Controllers
         private Logger _logger = NLog.LogManager.GetCurrentClassLogger();
         [FetchSeller(Order = 0, Include = "Banners,SellerCategories")]
         [FetchCategories(Order = 1)]
-        //[OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByCustom = "IsMobile")]
+        [OutputCache(Location = System.Web.UI.OutputCacheLocation.Any, Duration = CacheConstants.OutputCacheLength, VaryByCustom = "IsMobile")]
         public async Task<ActionResult> Index()
         {
             var productsDbContext = new ProductsDBContext();

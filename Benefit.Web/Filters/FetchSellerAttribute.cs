@@ -30,6 +30,10 @@ namespace Benefit.Web.Filters
                 {
                     var sellerService = new SellersDBContext();
                     seller = sellerService.Get(string.Format("UrlName = '{0}'", subdomain)).FirstOrDefault();
+                    //if (HttpContext.Current.Request.Url.AbsoluteUri.Contains("pp.ua"))
+                    //{
+                    //    seller.EcommerceTemplate = SellerEcommerceTemplate.EcolifeFurniture;
+                    //}
                     seller.Include<Image>("Images").Include<InfoPage>("InfoPages");
                     if (!string.IsNullOrEmpty(Include))
                     {

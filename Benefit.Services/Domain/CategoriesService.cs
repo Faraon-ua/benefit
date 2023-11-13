@@ -242,54 +242,69 @@ namespace Benefit.Services.Domain
             using (var db = new ApplicationDbContext())
             {
                 var category = db.Categories
-                .Include(entry => entry.MappedCategories)
-                .Include(entry => entry.SellerCategories)
-                .Include(entry => entry.ProductParameters)
-                .Include(entry => entry.ProductOptions)
-                .Include(entry => entry.ExportCategories)
-                .FirstOrDefault(entry => entry.Id == id);
-                if (category == null) return;
-                var mappedCatsIds = category.MappedCategories.Select(entry => entry.Id).ToList();
-                foreach (var mappedCategoryId in mappedCatsIds)
-                {
-                    Delete(mappedCategoryId);
-                }
-                db.SellerCategories.RemoveRange(category.SellerCategories);
-
-                var productParameters = category.ProductParameters.ToList();
-                var productParameterIds = productParameters.Select(entry => entry.Id).ToList();
-                var productParameterValues =
-                    db.ProductParameterValues.Where(
-                        entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
-                var productParameterProducts = db.ProductParameterProducts.Where(
-                        entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
-
-                db.ExportCategories.RemoveRange(category.ExportCategories);
-                db.ProductParameterProducts.RemoveRange(productParameterProducts);
-                db.ProductParameterValues.RemoveRange(productParameterValues);
-                db.ProductParameters.RemoveRange(productParameters);
-                db.ProductOptions.RemoveRange(category.ProductOptions.ToList());
-                db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
-                if (category.ImageUrl != null)
-                {
-                    var image = new FileInfo(Path.Combine(HttpContext.Current.Server.MapPath("~/Images/"), category.ImageUrl));
-                    if (image.Exists)
-                        image.Delete();
-                }
-                db.SaveChanges();
-                var products = db.Products.AsNoTracking().Where(entry => entry.CategoryId == id).Select(entry => entry.Id).ToList();
-                foreach (var productId in products)
-                {
-                    ProductsService.Delete(productId);
-                }
-                var childCatIds = db.Categories.AsNoTracking().Where(entry => entry.ParentCategoryId == id).Select(entry => entry.Id).ToList();
-                foreach (var childCategoryId in childCatIds)
-                {
-                    Delete(childCategoryId);
-                }
-                db.Categories.Remove(category);
-                db.SaveChanges();
+                    .Include(entry => entry.MappedCategories)
+                    .Include(entry => entry.SellerCategories)
+                    .Include(entry => entry.ProductParameters)
+                    .Include(entry => entry.ProductOptions)
+                    .Include(entry => entry.ExportCategories)
+                    .FirstOrDefault(entry => entry.Id == id);
+                Delete(category, db);
             }
+        }
+        public void Delete(Category category, ApplicationDbContext db)
+        {
+            if (category == null) return;
+            var mappedCats = category.MappedCategories.ToList();
+            foreach (var mappedCategory in mappedCats)
+            {
+                Delete(mappedCategory, db);
+            }
+            db.SellerCategories.RemoveRange(category.SellerCategories);
+
+            var productParameters = category.ProductParameters.ToList();
+            var productParameterIds = productParameters.Select(entry => entry.Id).ToList();
+            var productParameterValues =
+                db.ProductParameterValues.Where(
+                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+            var productParameterProducts = db.ProductParameterProducts.Where(
+                    entry => productParameterIds.Contains(entry.ProductParameterId)).ToList();
+
+            db.ExportCategories.RemoveRange(category.ExportCategories);
+            db.ProductParameterProducts.RemoveRange(productParameterProducts);
+            db.ProductParameterValues.RemoveRange(productParameterValues);
+            db.ProductParameters.RemoveRange(productParameters);
+            db.ProductOptions.RemoveRange(category.ProductOptions.ToList());
+            db.Localizations.RemoveRange(db.Localizations.Where(entry => entry.ResourceId == category.Id));
+            if (category.ImageUrl != null)
+            {
+                var image = new FileInfo(Path.Combine(HttpContext.Current.Server.MapPath("~/Images/"), category.ImageUrl));
+                if (image.Exists)
+                    image.Delete();
+            }
+            db.SaveChanges();
+            var products = db.Products
+                        .Include(entry => entry.Images)
+                        .Include(entry => entry.ProductOptions)
+                        .Include(entry => entry.StatusStamps)
+                        .Include(entry => entry.ProductParameterProducts).Where(entry => entry.CategoryId == category.Id).ToList();
+            foreach (var product in products)
+            {
+                ProductsService.Delete(product, db);
+            }
+            var childCats = db.Categories
+                .Include(entry => entry.MappedCategories)
+                    .Include(entry => entry.SellerCategories)
+                    .Include(entry => entry.ProductParameters)
+                    .Include(entry => entry.ProductOptions)
+                    .Include(entry => entry.ExportCategories)
+                    .Where(entry => entry.ParentCategoryId == category.Id).ToList();
+            foreach (var childCategory in childCats)
+            {
+                Delete(childCategory, db);
+            }
+            db.Categories.Attach(category);
+            db.Categories.Remove(category);
+            db.SaveChanges();
         }
     }
 }

@@ -16,7 +16,6 @@ namespace Benefit.Services.Import
 {
     public class OneСImportService : BaseImportService
     {
-        private ImagesService ImagesService = new ImagesService();
         object lockObj = new object();
         protected override void ProcessImport(ExportImport importTask)
         {
@@ -203,6 +202,7 @@ namespace Benefit.Services.Import
             {
                 var uri = new Uri(image.ImageUrl);
                 var path = originalDirectory + uri.LocalPath;
+                var ImagesService = new ImagesService(db);
                 ImagesService.ResizeToSiteRatio(path, ImageType.ProductGallery);
             }
         }

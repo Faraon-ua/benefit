@@ -18,7 +18,6 @@ namespace Benefit.Web.Areas.Admin.Controllers
 {
     public class BalanceController : Controller
     {
-
         public ActionResult GetBankForm(int invoiceNumber)
         {
             using (var db = new ApplicationDbContext())

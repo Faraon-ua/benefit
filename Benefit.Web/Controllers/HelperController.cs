@@ -73,7 +73,7 @@ namespace Benefit.Web.Controllers
                     }
                     else if (System.IO.File.Exists(Path.Combine(pathString, first.ImageUrl)))
                     {
-                        ImagesService imagesService = new ImagesService();
+                        ImagesService imagesService = new ImagesService(db);
                         if (product.DefaultImageId != null)
                         {
                             imagesService.DeleteFile(product.DefaultImage.ImageUrl, product.Id, ImageType.ProductGallery);
@@ -151,7 +151,7 @@ namespace Benefit.Web.Controllers
         }
         public ActionResult ResizeAllImages(ImageType imageType)
         {
-            var imagesService = new ImagesService();
+            var imagesService = new ImagesService(null);
             var originalDirectory = AppDomain.CurrentDomain.BaseDirectory.Replace(@"bin\Debug\", string.Empty);
             var pathString = Path.Combine(originalDirectory, "Images", imageType.ToString());
             var dir = new DirectoryInfo(pathString);
